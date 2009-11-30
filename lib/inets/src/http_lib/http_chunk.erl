@@ -186,13 +186,6 @@ decode_data(ChunkSize, TotalChunk,
 	    Info = {MaxBodySize, BodySoFar, AccLength, MaxHeaderSize, Stream}) 
   when ChunkSize =< size(TotalChunk) ->
     case TotalChunk of
-	%% Potential last chunk
-	<<_:ChunkSize/binary, ?CR, ?LF, "0">> ->
-	    {?MODULE, decode_data, [ChunkSize, TotalChunk, Info]};
-	<<_:ChunkSize/binary, ?CR, ?LF, "0", ?CR>> ->
-	    {?MODULE, decode_data, [ChunkSize, TotalChunk, Info]};
-	<<_:ChunkSize/binary, ?CR, ?LF>> ->
-	    {?MODULE, decode_data, [ChunkSize, TotalChunk, Info]};
 	%% Last chunk
 	<<Data:ChunkSize/binary, ?CR, ?LF, "0", ";">> ->
 	    %% Note ignore_extensions will call decode_trailer/1
@@ -223,6 +216,9 @@ decode_data(ChunkSize, TotalChunk,
 			   NewBody,
 			   integer_to_list(AccLength));
 	%% There are more chunks, so here we go agin...
+	<<Data:ChunkSize/binary, ?CR, ?LF>> ->
+			 {NewBody, NewStream} = stream(<<BodySoFar/binary, Data/binary>>, Stream),
+			 {?MODULE, decode_size, [<<>>, [], {MaxBodySize, NewBody, AccLength, MaxHeaderSize, NewStream}]};
 	<<Data:ChunkSize/binary, ?CR, ?LF, Rest/binary>> 
 	when (AccLength < MaxBodySize) or (MaxBodySize == nolimit)  ->
 	    {NewBody, NewStream} = 
