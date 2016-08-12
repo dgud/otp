@@ -180,7 +180,7 @@ closest_preceding_fingers(#id{key=This}=N, Id, Fingers) ->
 
 update_others(#id{key=Key}=Id, I)
   when I =< ?KEY_BIT_SIZE ->
-    Prev = (?KEY_SIZE + Key - (1 bsl (I-1))) rem ?KEY_SIZE,
+    Prev = (?KEY_SIZE + Key - (1 bsl (I-1)) + 1) rem ?KEY_SIZE,
     {Pred,_} = find_predecessor(Id, Prev),
     io:format("UPD ~p (~p) => Pred ~p ~s~n", [I, Key, Prev, print_key(Pred)]),
     cast(Pred, {update_finger_table, Id, I}),
@@ -206,6 +206,8 @@ memberNN(Id, Near, Far)
     true;
 memberNN(Id, Near, Far)
   when Near > Far andalso ((Near < Id) orelse (Id < Far)) ->
+    true;
+memberNN(Id, Near, Near) when Id =/= Near ->
     true;
 memberNN(_, _, _) ->
     false.
@@ -244,6 +246,7 @@ call(#id{pid=Pid}, Msg) ->
 call(Pid, Msg) when is_pid(Pid) ->
     gen_server:call(Pid, Msg, infinity).
 
+%%% Debug
 
 print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}) ->
     io:format("~nTHIS: ~p ~s~n", [self(), print_key(This)]),
@@ -258,7 +261,8 @@ print_finger(#finger{start=Start, last=Last, node=Node}) ->
 print_key(#id{key=Key, pid=Pid}) ->
     io_lib:format("<~.3p ~p>", [Key,Pid]).
 
-%%
+
+%% Temporary testing
 
 test() ->
     spawn_link(fun() -> key_server(init) end),
@@ -274,6 +278,9 @@ test() ->
     timer:sleep(20),
     ok = choord:print_state(P1, debug),
     ok.
+
+%%%%%%%%%%%%
+%% Debug
 
 key_server(State) ->
     try
@@ -296,6 +303,8 @@ key_server_loop(State) ->
 	    Pid ! {key, Next},
 	    key_server_loop(Next)
     end.
+
+
 
 debug() ->
     i:ii(?MODULE),
