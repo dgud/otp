@@ -11,7 +11,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/1]).
+-export([start/1, start_link/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -42,6 +42,10 @@
 -spec start_link([pid()]) -> {ok, pid()} | ignore | {error, term()}.
 start_link(Gates) ->
     gen_server:start_link(?MODULE, [Gates], []).
+
+-spec start([pid()]) -> {ok, pid()} | ignore | {error, term()}.
+start(Gates) ->
+    gen_server:start(?MODULE, [Gates], []).
 
 -spec key(term()) -> integer().
 %% key(Atom) when is_atom(Atom) -> erlang:phash2(atom_to_list(Atom), ?KEY_SIZE);
@@ -89,6 +93,7 @@ handle_cast({update_finger_table, S, I}, State) ->
     [#finger{node=Succs}|_] = Fingers,
     {noreply, State#state{succ=[Succs], fingers=Fingers}};
 handle_cast({set_predecessor, Id}, State) ->
+    monitor(process, get_pid(Id)),
     {noreply, State#state{pred=Id}};
 handle_cast({debug_state, Start, Level}, #state{id=Id, succ=[Succs|_]}=State) ->
     case Start of
@@ -133,6 +138,8 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 	{error, _} ->
 	    init_neighbors(Gates, State0);
 	{Pred, Succs} ->
+	    setup_monitor(Pred),
+	    setup_monitor(Succs),
 	    State1 = State0#state{pred=Pred, succ=[Succs]},
 	    F = F0#finger{node=Succs},
 	    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
@@ -149,9 +156,11 @@ init_neighbors(_Id, State) ->
 init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
     case memberIN(Start, N, NodeId) of
 	true  ->
+	    setup_monitor(Prev),
 	    [F#finger{node=Prev}|init_fingers(Fs, N, Prev, Gate)];
 	false ->
 	    {_, Succs} = find_successor(Gate, Start),
+	    setup_monitor(Succs),
 	    [F#finger{node=Succs}|init_fingers(Fs, N, Succs, Gate)]
     end;
 init_fingers([], _, _, _) -> [].
@@ -195,6 +204,7 @@ update_finger_table(#id{key=SKey}=S, I,
 	false ->
 	    Fingers0;
 	true ->
+	    setup_monitor(S),
 	    F = F0#finger{node=S},
 	    cast(Pred, {update_finger_table, S, I}),
 	    Part1 ++ [F|Part2]
@@ -246,6 +256,17 @@ call(#id{pid=Pid}, Msg) ->
 call(Pid, Msg) when is_pid(Pid) ->
     gen_server:call(Pid, Msg, infinity).
 
+get_pid(#id{pid=Pid}) -> Pid;
+get_pid(Pid) when is_pid(Pid) -> Pid.
+
+setup_monitor(S) ->
+    Pid = get_pid(S),
+    {monitors, Ms} = process_info(self(), monitors),
+    case lists:member(Pid, Ms) of
+	true  -> already_montiored;
+	false -> monitor(process, Pid)
+    end.
+
 %%% Debug
 
 print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}) ->
@@ -268,15 +289,20 @@ test() ->
     spawn_link(fun() -> key_server(init) end),
     timer:sleep(10),
     io:format("TESTING~n",[]),
-    {ok,P1} = choord:start_link([]),
-    {ok,_P2} = choord:start_link([P1]),
+    {ok, P1} = choord:start([]),
+    {ok,_P2} = choord:start([P1]),
     timer:sleep(20),
     ok = choord:print_state(P1, debug),
     timer:sleep(20),
     io:format("~n**********~n~n"),
-    {ok,_P3} = choord:start_link([P1]),
+    {ok,P3} = choord:start([P1]),
     timer:sleep(20),
     ok = choord:print_state(P1, debug),
+    io:format("~n**********~n~n"),
+    {ok,_P4} = choord:start([P3]),
+    timer:sleep(20),
+    ok = choord:print_state(P1, debug),
+
     ok.
 
 %%%%%%%%%%%%
