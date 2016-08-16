@@ -17,7 +17,8 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 %% debug
--export([print_ring/1, print_state/2, test/0, debug/0]).
+-export([print_ring/1, print_state/1, test/0, debug/0]).
+-compile(export_all).
 
 -define(KEY_BIT_SIZE, 3).
 -define(KEY_SIZE, (1 bsl ?KEY_BIT_SIZE)).
@@ -54,8 +55,12 @@ key(_Term) ->
 
 find_successor(Gate, Id) ->
     Res = {Pred, Succs} = find_predecessor(Gate, Id),
-    Succs = call(Pred, get_successor), %% Assert
-    Res.
+    case call(Pred, get_successor) of %% Assert
+	Succs -> Res;
+	Changed ->
+	    io:format("Changed ~p ~p ~n",[Succs, Changed]),
+	    {Pred, Succs}
+    end.
 
 find_predecessor(Gate, Id) ->
     case call(Gate, {find_predecessor, Id}) of
@@ -63,11 +68,11 @@ find_predecessor(Gate, Id) ->
 	{cont, Next} -> find_predecessor(Next, Id)
     end.
 
-print_state(Gate, Level) ->
-    cast(Gate, {debug_state, start, Level}).
+print_state(Gate) ->
+    cast(Gate, {debug_state, start, max}).
 
 print_ring(Gate) ->
-    cast(Gate, {start_print_ring, Gate}).
+    cast(Gate, {debug_state, start, ring}).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -106,10 +111,11 @@ handle_cast({debug_state, Start, Level}, #state{id=Id, succ=[Succs|_]}=State) ->
     case Start of
 	Id -> ignore;
 	start ->
-	    print_state(State),
+	    io:format("~n*****************~n"),
+	    print_state(State, Level),
 	    cast(Succs, {debug_state, Id, Level});
 	_ ->
-	    print_state(State),
+	    print_state(State, Level),
 	    cast(Succs, {debug_state, Start, Level})
     end,
     {noreply, State};
@@ -127,6 +133,26 @@ handle_cast(_Msg, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Msg]),
     {noreply, State}.
 
+handle_info({'DOWN', _, process, Pid, _},
+	    #state{id=Id, pred=Pred, succ=Succs, fingers=Fingers} = State) ->
+    io:format("~p: Lost node ~p~n", [self(), Pid]),
+    PredPid = get_pid(Pred),
+    SuccPid = get_pid(hd(Succs)),
+    if PredPid == Pid, SuccPid == Pid -> %% We are the only left
+	    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
+	    {noreply, State#state{pred=Id, succ=[Id], fingers=UpdFingers}};
+       PredPid == Pid ->
+	    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
+	    {noreply, State#state{pred=undefined, fingers=UpdFingers}};
+       SuccPid == Pid ->
+	    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
+	    Next = next_succs(Fingers, Pid),
+	    {_, Succ} = set_predecessor(Next, Id),
+	    {noreply, State#state{succ=[Succ], fingers=UpdFingers}};
+       true ->
+	    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
+	    {noreply, State#state{fingers=UpdFingers}}
+    end;
 handle_info(_Info, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Info]),
     {noreply, State}.
@@ -169,13 +195,10 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 	    State1 = State0#state{pred=Pred, succ=[Succs]},
 	    F = F0#finger{node=Succs},
 	    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
-	    io:format("INIT: ~s~n~s~n", [print_key(Id), [print_finger(Fi) || Fi <- Fs]]),
 	    spawn_link(fun() -> update_others(Id, 1) end),
 	    State1#state{fingers=Fs}
     end;
-init_neighbors(_Id, State) ->
-    #state{id=Id, fingers=[F0|Fingers]}=State,
-    io:format("INIT: ~s~n F0:~s F1:~s~n", [print_key(Id), print_finger(F0), print_finger(hd(tl(Fingers)))]),
+init_neighbors(_Gs, State) ->
     State.
 
 init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
@@ -189,6 +212,17 @@ init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
 	    [F#finger{node=Succs}|init_fingers(Fs, N, Succs, Gate)]
     end;
 init_fingers([], _, _, _) -> [].
+
+fix_fingers(Pid, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
+    case Acc of
+	[] ->
+	    fix_fingers(Pid, Me, Fingers, [F1#finger{node=Me}|Acc]);
+	[#finger{node=Next}|_] ->
+	    fix_fingers(Pid, Me, Fingers, [F1#finger{node=Next}|Acc])
+    end;
+fix_fingers(Pid, Me, [F1|Fingers], Acc) ->
+    fix_fingers(Pid, Me, Fingers, [F1|Acc]);
+fix_fingers(_Pid, _Me, [], Acc) -> Acc.
 
 find_predecessor_impl(Id, #state{id=This, succ=[Succs|_], fingers=Fingers}) ->
     case memberNI(Id, This#id.key, Succs#id.key) of
@@ -212,11 +246,16 @@ closest_preceding_fingers(#id{key=This}=N, Id, Fingers) ->
 	[#finger{node=Node}|_] -> Node
     end.
 
+next_succs([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
+    next_succs(Fingers, Pid);
+next_succs([#finger{node=Next}|_], _) ->
+    Next.
+
 update_others(#id{key=Key}=Id, I)
   when I =< ?KEY_BIT_SIZE ->
     Prev = (?KEY_SIZE + Key - (1 bsl (I-1)) + 1) rem ?KEY_SIZE,
     {Pred,_} = find_predecessor(Id, Prev),
-    io:format("UPD ~p (~p) => Pred ~p ~s~n", [I, Key, Prev, print_key(Pred)]),
+    %io:format("UPD ~p (~p) => Pred ~p ~s~n", [I, Key, Prev, print_key(Pred)]),
     cast(Pred, {update_finger_table, Id, I}),
     update_others(Id, I+1);
 update_others(_, _) -> ok.
@@ -261,11 +300,9 @@ memberNI(_, _, _) ->
 %% open range pre
 memberIN(Id, Near, Far)
   when Near =< Id andalso Id < Far ->
-%    io:format("~p ", [?LINE]),
     true;
 memberIN(Id, Near, Far)
   when Near >= Far andalso ((Near =< Id) orelse (Id < Far)) ->
-%    io:format("~p ", [?LINE]),
     true;
 %%memberIN(Near, Near, Near) -> io:format("~p ", [?LINE]), true;    % Near = Far  min set
 memberIN(_, _, _) ->
@@ -287,14 +324,16 @@ get_pid(Pid) when is_pid(Pid) -> Pid.
 setup_monitor(S) ->
     Pid = get_pid(S),
     {monitors, Ms} = process_info(self(), monitors),
-    case lists:member(Pid, Ms) of
-	true  -> already_montiored;
+    case lists:member({process,Pid}, Ms) of
+	true  -> already_monitored;
 	false -> monitor(process, Pid)
     end.
 
 %%% Debug
 
-print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}) ->
+print_state(#state{id=This, pred=Pred, succ=[Succ|_]}, ring) ->
+    io:format("~s <- ~s -> ~s~n", [print_key(Pred), print_key(This), print_key(Succ)]);
+print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}, _) ->
     io:format("~nTHIS: ~p ~s~n", [self(), print_key(This)]),
     io:format("PRED: ~s~n", [print_key(Pred)]),
     io:format("SUCC: ~p~n", [[lists:flatten(print_key(S)) || S <- Succs]]),
@@ -316,20 +355,49 @@ test() ->
     io:format("TESTING~n",[]),
     {ok, P1} = choord:start([]),
     {ok,_P2} = choord:start([P1]),
-%    timer:sleep(20),
-    ok = choord:print_state(P1, debug),
-%    timer:sleep(20),
+%%    timer:sleep(20), ok = check_net([P1,_P2]),
+    ok = choord:print_state(P1),
+%%    timer:sleep(20),
     io:format("~n**********~n~n"),
     {ok,P3} = choord:start([P1]),
-%    timer:sleep(20),
-    ok = choord:print_state(P1, debug),
+%%    timer:sleep(20), ok = check_net([P1,_P2,P3]),
+    ok = choord:print_state(P1),
     io:format("~n**********~n~n"),
     {ok,_P4} = choord:start([P3]),
-%    timer:sleep(20),
-    ok = choord:print_state(P1, debug),
+    timer:sleep(20),     ok = check_net([P1,_P2,P3,_P4]),
+    ok = choord:print_state(P1),
     timer:sleep(100),
     ok = choord:print_ring(P1),
+    timer:sleep(100),
+    exit(P3, die),
+    timer:sleep(50),
+    ok = choord:print_state(P1),
     ok.
+
+check_net([Gate]) ->
+    {Pred, Pred} = ?MODULE:find_predecessor(Gate, 0),
+    ok;
+check_net(Pids) when is_list(Pids) ->
+    check_net(0, Pids).
+
+check_net(Id, Pids) when Id =< ?KEY_BIT_SIZE ->
+    Index = Id * (?KEY_SIZE div ?KEY_BIT_SIZE),
+    ok = check_net_1((?KEY_SIZE + Index - 1) rem ?KEY_SIZE, Pids),
+    ok = check_net_1(Index, Pids),
+    check_net(Id+1, Pids);
+check_net(_, _) ->
+    ok.
+
+check_net_1(Id, [Gate|Connected]) ->
+    ok = check_net(Connected, Id, ?MODULE:find_predecessor(Gate, Id)).
+
+check_net([], _, {Pred, Succs})
+  when Pred =/= Succs -> ok;
+check_net([Gate|Gates], Id, PS) ->
+    PS = ?MODULE:find_predecessor(Gate, Id),
+    check_net(Gates, PS).
+
+
 
 %%%%%%%%%%%%
 %% Debug
