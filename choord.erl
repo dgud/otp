@@ -17,7 +17,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 %% debug
--export([print_state/2, test/0]).
+-export([print_ring/1, print_state/2, test/0]).
 
 -compile(export_all).
 
@@ -68,6 +68,9 @@ find_predecessor(Gate, Id) ->
 print_state(Gate, Level) ->
     cast(Gate, {debug_state, start, Level}).
 
+print_ring(Gate) ->
+    cast(Gate, {start_print_ring, Gate}).
+
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
@@ -79,6 +82,13 @@ init([Gates]) ->
 
 %% handle_call(fetch_neighbors, _From, #state{pred=Pred, succ=Succs}=State) ->
 %%     {reply, {Pred, Succs}, State};
+handle_call({set_predecessor, NewPred}, _From, #state{id=Id, pred=OldPred}=State) ->
+    case memberIN(NewPred, OldPred, Id) of
+        true ->
+            {reply, {ok, OldPred}, State#state{pred=NewPred}};
+        false ->
+            {reply, {error, OldPred}, State}
+    end;
 handle_call(get_successor, _From, #state{succ=[Succs|_]}=State) ->
     {reply, Succs, State};
 handle_call({find_predecessor, Id}, _From, State) ->
@@ -106,6 +116,16 @@ handle_cast({debug_state, Start, Level}, #state{id=Id, succ=[Succs|_]}=State) ->
 	    cast(Succs, {debug_state, Start, Level})
     end,
     {noreply, State};
+handle_cast({print_ring, Start}, #state{id={_, _, Start}}=State) ->
+    {noreply, State};
+handle_cast({print_ring, Start}, #state{id=Id, pred=Pred,succ=[Succ|_]}=State) ->
+    io:format("~p <- ~p -> ~p~n", [Pred, Id, Succ]),
+    cast(Succ, {print_ring, Start}),
+    {noreply, State};
+handle_cast({start_print_ring, Start},  #state{id=Id, pred=Pred,succ=[Succ|_]}=State) ->
+    io:format("~p <- ~p -> ~p~n", [Pred, Id, Succ]),
+    cast(Succ, {print_ring, Start}),
+    {noreply, State};
 handle_cast(_Msg, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Msg]),
     {noreply, State}.
@@ -123,6 +143,14 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
+set_successor(Id, Succs) ->
+    case call(Succs, {set_predecessor, Id}) of
+        {ok, Pred} ->
+            {Pred, Succs};
+        {error, NewSuccs} ->
+            set_successor(Id, NewSuccs)
+    end.
+
 make_fingers(#id{key=N} = Id) ->
     Start = [(N + (1 bsl (K-1))) rem ?KEY_SIZE ||
 		K <- lists:seq(1, ?KEY_BIT_SIZE)],
@@ -137,7 +165,8 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
     case find_successor(Gate, Start) of
 	{error, _} ->
 	    init_neighbors(Gates, State0);
-	{Pred, Succs} ->
+	{_, Succs0} ->
+	    {Pred, Succs} = set_successor(Id, Succs0),
 	    setup_monitor(Pred),
 	    setup_monitor(Succs),
 	    State1 = State0#state{pred=Pred, succ=[Succs]},
@@ -291,18 +320,19 @@ test() ->
     io:format("TESTING~n",[]),
     {ok, P1} = choord:start([]),
     {ok,_P2} = choord:start([P1]),
-    timer:sleep(20),
+%    timer:sleep(20),
     ok = choord:print_state(P1, debug),
-    timer:sleep(20),
+%    timer:sleep(20),
     io:format("~n**********~n~n"),
     {ok,P3} = choord:start([P1]),
-    timer:sleep(20),
+%    timer:sleep(20),
     ok = choord:print_state(P1, debug),
     io:format("~n**********~n~n"),
     {ok,_P4} = choord:start([P3]),
-    timer:sleep(20),
+%    timer:sleep(20),
     ok = choord:print_state(P1, debug),
-
+    timer:sleep(100),
+    ok = choord:print_ring(P1),
     ok.
 
 %%%%%%%%%%%%
