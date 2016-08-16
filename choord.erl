@@ -17,9 +17,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 %% debug
--export([print_ring/1, print_state/2, test/0]).
-
--compile(export_all).
+-export([print_ring/1, print_state/2, test/0, debug/0]).
 
 -define(KEY_BIT_SIZE, 3).
 -define(KEY_SIZE, (1 bsl ?KEY_BIT_SIZE)).
@@ -85,6 +83,8 @@ init([Gates]) ->
 handle_call({set_predecessor, NewPred}, _From, #state{id=Id, pred=OldPred}=State) ->
     case memberIN(NewPred, OldPred, Id) of
         true ->
+            monitor(process, get_pid(NewPred)),
+            %TODO demonitor OldPred
             {reply, {ok, OldPred}, State#state{pred=NewPred}};
         false ->
             {reply, {error, OldPred}, State}
@@ -102,9 +102,6 @@ handle_cast({update_finger_table, S, I}, State) ->
     Fingers = update_finger_table(S, I, State),
     [#finger{node=Succs}|_] = Fingers,
     {noreply, State#state{succ=[Succs], fingers=Fingers}};
-handle_cast({set_predecessor, Id}, State) ->
-    monitor(process, get_pid(Id)),
-    {noreply, State#state{pred=Id}};
 handle_cast({debug_state, Start, Level}, #state{id=Id, succ=[Succs|_]}=State) ->
     case Start of
 	Id -> ignore;
@@ -143,12 +140,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-set_successor(Id, Succs) ->
+set_predecessor(Id, Succs) ->
     case call(Succs, {set_predecessor, Id}) of
         {ok, Pred} ->
             {Pred, Succs};
         {error, NewSuccs} ->
-            set_successor(Id, NewSuccs)
+            set_predecessor(Id, NewSuccs)
     end.
 
 make_fingers(#id{key=N} = Id) ->
@@ -166,13 +163,12 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 	{error, _} ->
 	    init_neighbors(Gates, State0);
 	{_, Succs0} ->
-	    {Pred, Succs} = set_successor(Id, Succs0),
+	    {Pred, Succs} = set_predecessor(Id, Succs0),
 	    setup_monitor(Pred),
 	    setup_monitor(Succs),
 	    State1 = State0#state{pred=Pred, succ=[Succs]},
 	    F = F0#finger{node=Succs},
 	    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
-	    cast(Succs, {set_predecessor, Id}),
 	    io:format("INIT: ~s~n~s~n", [print_key(Id), [print_finger(Fi) || Fi <- Fs]]),
 	    spawn_link(fun() -> update_others(Id, 1) end),
 	    State1#state{fingers=Fs}
