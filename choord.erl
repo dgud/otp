@@ -128,16 +128,6 @@ handle_cast({debug_state, Start, Level}, #state{id=Id, succ=[Succs|_]}=State) ->
 	    cast(Succs, {debug_state, Start, Level})
     end,
     {noreply, State};
-handle_cast({print_ring, Start}, #state{id={_, _, Start}}=State) ->
-    {noreply, State};
-handle_cast({print_ring, Start}, #state{id=Id, pred=Pred,succ=[Succ|_]}=State) ->
-    io:format("~p <- ~p -> ~p~n", [Pred, Id, Succ]),
-    cast(Succ, {print_ring, Start}),
-    {noreply, State};
-handle_cast({start_print_ring, Start},  #state{id=Id, pred=Pred,succ=[Succ|_]}=State) ->
-    io:format("~p <- ~p -> ~p~n", [Pred, Id, Succ]),
-    cast(Succ, {print_ring, Start}),
-    {noreply, State};
 handle_cast(_Msg, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Msg]),
     {noreply, State}.
