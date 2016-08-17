@@ -58,7 +58,6 @@ find_successor(Gate, Id) ->
     case call(Pred, get_successor) of %% Assert
 	Succs -> Res;
 	Changed ->
-	    io:format("Changed ~p ~p ~n",[Succs, Changed]),
 	    {Pred, Succs}
     end.
 
@@ -165,12 +164,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-set_predecessor(Id, Succs) ->
+set_predecessor(Succs, Id) ->
     case call(Succs, {set_predecessor, Id}) of
         {ok, Pred} ->
             {Pred, Succs};
         {error, NewSuccs} ->
-            set_predecessor(Id, NewSuccs)
+            set_predecessor(NewSuccs, Id)
     end.
 
 make_fingers(#id{key=N} = Id) ->
@@ -188,7 +187,7 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 	{error, _} ->
 	    init_neighbors(Gates, State0);
 	{_, Succs0} ->
-	    {Pred, Succs} = set_predecessor(Id, Succs0),
+	    {Pred, Succs} = set_predecessor(Succs0, Id),
 	    setup_monitor(Pred),
 	    setup_monitor(Succs),
 	    State1 = State0#state{pred=Pred, succ=[Succs]},
@@ -354,21 +353,22 @@ test() ->
     io:format("TESTING~n",[]),
     {ok, P1} = choord:start([]),
     {ok,_P2} = choord:start([P1]),
-%%    timer:sleep(20), ok = check_net([P1,_P2]),
     ok = choord:print_state(P1),
+    ok = check_net([P1,_P2]),
 %%    timer:sleep(20),
     io:format("~n**********~n~n"),
     {ok,P3} = choord:start([P1]),
-%%    timer:sleep(20), ok = check_net([P1,_P2,P3]),
+    ok = check_net([P1,_P2,P3]),
     ok = choord:print_state(P1),
     io:format("~n**********~n~n"),
     {ok,_P4} = choord:start([P3]),
-    timer:sleep(20),     ok = check_net([P1,_P2,P3,_P4]),
+    ok = check_net([P1,_P2,P3,_P4]),
     ok = choord:print_state(P1),
     timer:sleep(100),
     ok = choord:print_ring(P1),
     timer:sleep(100),
     exit(P3, die),
+    ok = check_net([P1,_P2,_P4]),
     timer:sleep(50),
     ok = choord:print_state(P1),
     exit(P1, die),
@@ -378,7 +378,7 @@ test() ->
     ok.
 
 check_net([Gate]) ->
-    {Pred, Pred} = ?MODULE:find_predecessor(Gate, 0),
+    {Pred, Pred} = ?MODULE:find_successor(Gate, 0),
     ok;
 check_net(Pids) when is_list(Pids) ->
     check_net(0, Pids).
@@ -392,15 +392,25 @@ check_net(_, _) ->
     ok.
 
 check_net_1(Id, [Gate|Connected]) ->
-    ok = check_net(Connected, Id, ?MODULE:find_predecessor(Gate, Id)).
+    case check_net(Connected, Id, ?MODULE:find_successor(Gate, Id)) of
+	ok -> ok;
+	{retry, _, _} ->
+	    PS = ?MODULE:find_successor(Gate, Id),
+	    case check_net(Connected, Id, PS) of
+		ok -> ok;
+		{retry, Fail, Failed} ->
+		    io:format("~p:~p: Exp ~p got ~p~n", [Fail, Id, PS, Failed]),
+		    error
+	    end
+    end.
 
 check_net([], _, {Pred, Succs})
   when Pred =/= Succs -> ok;
 check_net([Gate|Gates], Id, PS) ->
-    PS = ?MODULE:find_predecessor(Gate, Id),
-    check_net(Gates, PS).
-
-
+    case ?MODULE:find_successor(Gate, Id) of
+	PS -> check_net(Gates, PS);
+	Failed -> {retry, Gate, Failed}
+    end.
 
 %%%%%%%%%%%%
 %% Debug
