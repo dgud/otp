@@ -143,10 +143,7 @@ handle_info({'DOWN', _, process, Pid, _},
 	    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
 	    {noreply, State#state{pred=undefined, fingers=UpdFingers}};
        SuccPid == Pid ->
-	    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
-	    Next = next_succs(Fingers, Pid),
-	    {_, Succ} = set_predecessor(Next, Id),
-	    {noreply, State#state{succ=[Succ], fingers=UpdFingers}};
+	    {noreply, handle_dead_successor(State, Pid)};
        true ->
 	    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
 	    {noreply, State#state{fingers=UpdFingers}}
@@ -163,6 +160,16 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+handle_dead_successor(#state{id=Id, pred=Pred, fingers=Fingers}=State, Pid) ->
+    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
+    Next = next_succs(Fingers, Pid),
+    case catch set_predecessor(Next, Id) of
+	{'EXIT', {noproc, _}} ->
+	    handle_dead_successor(State, Pid);
+	{_, Succ} ->
+	    State#state{succ=[Succ], fingers=UpdFingers}
+    end.
 
 set_predecessor(Succs, Id) ->
     case call(Succs, {set_predecessor, Id}) of
@@ -187,14 +194,18 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 	{error, _} ->
 	    init_neighbors(Gates, State0);
 	{_, Succs0} ->
-	    {Pred, Succs} = set_predecessor(Succs0, Id),
-	    setup_monitor(Pred),
-	    setup_monitor(Succs),
-	    State1 = State0#state{pred=Pred, succ=[Succs]},
-	    F = F0#finger{node=Succs},
-	    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
-	    spawn_link(fun() -> update_others(Id, 1) end),
-	    State1#state{fingers=Fs}
+	    case catch set_predecessor(Succs0, Id) of
+		{'EXIT', {noproc, _}} ->
+		    init_neighbors([Gate|Gates], State0);
+		{Pred, Succs} ->
+		    setup_monitor(Pred),
+		    setup_monitor(Succs),
+		    State1 = State0#state{pred=Pred, succ=[Succs]},
+		    F = F0#finger{node=Succs},
+		    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
+		    spawn_link(fun() -> update_others(Id, 1) end),
+		    State1#state{fingers=Fs}
+	    end
     end;
 init_neighbors(_Gs, State) ->
     State.
@@ -352,27 +363,29 @@ test() ->
     timer:sleep(10),
     io:format("TESTING~n",[]),
     {ok, P1} = choord:start([]),
-    {ok,_P2} = choord:start([P1]),
+    {ok, P2} = choord:start([P1]),
     ok = choord:print_state(P1),
-    ok = check_net([P1,_P2]),
+    ok = check_net([P1, P2]),
 %%    timer:sleep(20),
     io:format("~n**********~n~n"),
     {ok,P3} = choord:start([P1]),
-    ok = check_net([P1,_P2,P3]),
+    ok = check_net([P1, P2,P3]),
     ok = choord:print_state(P1),
     io:format("~n**********~n~n"),
     {ok,_P4} = choord:start([P3]),
-    ok = check_net([P1,_P2,P3,_P4]),
+    ok = check_net([P1, P2,P3,_P4]),
     ok = choord:print_state(P1),
     timer:sleep(100),
     ok = choord:print_ring(P1),
     timer:sleep(100),
     exit(P3, die),
-    ok = check_net([P1,_P2,_P4]),
+    ok = check_net([P1, P2,_P4]),
+    exit(P2, die),
     timer:sleep(50),
     ok = choord:print_state(P1),
+    ok = choord:print_ring(P1),
+    timer:sleep(50),
     exit(P1, die),
-    exit(_P2, die),
     exit(_P4, die),
     exit(KeyServer, die),
     ok.
