@@ -85,14 +85,23 @@ init([Gates]) ->
 
 %% handle_call(fetch_neighbors, _From, #state{pred=Pred, succ=Succs}=State) ->
 %%     {reply, {Pred, Succs}, State};
+handle_call({set_predecessor, NewPred}, _From, #state{pred=undefined=OldPred}=State) ->
+    setup_monitor(NewPred),
+    {reply, {ok, OldPred}, State#state{pred=NewPred}};
 handle_call({set_predecessor, NewPred}, _From, #state{id=Id, pred=OldPred}=State) ->
-    case memberIN(NewPred, OldPred, Id) of
+    case is_process_alive(get_pid(OldPred)) of
         true ->
-            monitor(process, get_pid(NewPred)),
-            %TODO demonitor OldPred
-            {reply, {ok, OldPred}, State#state{pred=NewPred}};
+            case memberIN(NewPred, OldPred, Id) of
+                true ->
+                    setup_monitor(NewPred),
+                    %TODO demonitor OldPred
+                    {reply, {ok, OldPred}, State#state{pred=NewPred}};
+                false ->
+                    {reply, {error, OldPred}, State}
+            end;
         false ->
-            {reply, {error, OldPred}, State}
+            setup_monitor(NewPred),
+            {reply, {ok, undefined}, State#state{pred=NewPred}}
     end;
 handle_call(get_successor, _From, #state{succ=[Succs|_]}=State) ->
     {reply, Succs, State};
@@ -350,7 +359,7 @@ print_key(#id{key=Key, pid=Pid}) ->
 %% Temporary testing
 
 test() ->
-    spawn_link(fun() -> key_server(init) end),
+    KeyServer = spawn(fun() -> key_server(init) end),
     timer:sleep(10),
     io:format("TESTING~n",[]),
     {ok, P1} = choord:start([]),
@@ -372,6 +381,10 @@ test() ->
     exit(P3, die),
     timer:sleep(50),
     ok = choord:print_state(P1),
+    exit(P1, die),
+    exit(_P2, die),
+    exit(_P4, die),
+    exit(KeyServer, die),
     ok.
 
 check_net([Gate]) ->
