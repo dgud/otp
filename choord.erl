@@ -20,17 +20,18 @@
 -export([print_ring/1, print_state/1, test/0, debug/0]).
 -compile(export_all).
 
--define(KEY_BIT_SIZE, 3).
--define(KEY_SIZE, (1 bsl ?KEY_BIT_SIZE)).
+-define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
 
 -record(id, {key::range(), pid::pid()}).
 -record(finger, {start::range(), last::range(), node::id()}).
 -record(state, {id :: id(),
 		pred :: id(),
 		succ=[] :: [id()],
-		fingers=[] :: [finger()]}).
+		fingers=[] :: [finger()],
+		key_bit_sz :: integer()
+	       }).
 
--type range() :: 0..?KEY_SIZE.
+-type range() :: non_neg_integer().
 -type id() :: #id{}.
 -type finger() :: #finger{}.
 
@@ -38,27 +39,23 @@
 %%% API
 %%%===================================================================
 
--spec start_link([pid()]) -> {ok, pid()} | ignore | {error, term()}.
-start_link(Gates) ->
-    gen_server:start_link(?MODULE, [Gates], []).
+-spec start_link([{atom(), term()}]) -> {ok, pid()} | ignore | {error, term()}.
+start_link(Props) when is_list(Props) ->
+    gen_server:start_link(?MODULE, Props, []).
 
--spec start([pid()]) -> {ok, pid()} | ignore | {error, term()}.
-start(Gates) ->
-    gen_server:start(?MODULE, [Gates], []).
+-spec start([{atom(), term()}]) -> {ok, pid()} | ignore | {error, term()}.
+start(Props) when is_list(Props) ->
+    gen_server:start(?MODULE, Props, []).
 
--spec key(term()) -> integer().
-%% key(Atom) when is_atom(Atom) -> erlang:phash2(atom_to_list(Atom), ?KEY_SIZE);
-%% key(Term) -> erlang:phash2(Term, ?KEY_SIZE).
-key(_Term) ->
-    key_server ! {get_key, self()},
-    receive {key, Key} -> Key end.
+-spec key(term(), range()) -> integer().
+key(Atom, Size) when is_atom(Atom) -> erlang:phash2(atom_to_list(Atom), ?KEY_SIZE(Size));
+key(Term, Size) -> erlang:phash2(Term, ?KEY_SIZE(Size)).
 
 find_successor(Gate, Id) ->
     Res = {Pred, Succs} = find_predecessor(Gate, Id),
     case call(Pred, get_successor) of %% Assert
 	Succs -> Res;
-	Changed ->
-	    {Pred, Succs}
+	Changed -> {Changed, Succs}
     end.
 
 find_predecessor(Gate, Id) ->
@@ -68,22 +65,24 @@ find_predecessor(Gate, Id) ->
     end.
 
 print_state(Gate) ->
-    cast(Gate, {debug_state, start, max}).
+    gen_server:call(Gate, {debug_state, max}).
 
 print_ring(Gate) ->
-    cast(Gate, {debug_state, start, ring}).
+    gen_server:call(Gate, {debug_state, ring}).
 
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
 
-init([Gates]) ->
-    Id = #id{key=key(self()), pid=self()},
-    Fingers0 = make_fingers(Id),
-    {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succ=[Id], fingers=Fingers0})}.
+init(Props) ->
+    io:format("PROPS: ~p~n",[Props]),
+    Gates = proplists:get_value(gates, Props, []),
+    KeyBSZ = proplists:get_value(key_bit_sz, Props, 32),
+    Key = proplists:get_value(key, Props, key(self(), KeyBSZ)),
+    Id = #id{key=Key, pid=self()},
+    Fingers0 = make_fingers(Id, KeyBSZ),
+    {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succ=[Id], fingers=Fingers0, key_bit_sz=KeyBSZ})}.
 
-%% handle_call(fetch_neighbors, _From, #state{pred=Pred, succ=Succs}=State) ->
-%%     {reply, {Pred, Succs}, State};
 handle_call({set_predecessor, NewPred}, _From, #state{pred=undefined=OldPred}=State) ->
     setup_monitor(NewPred),
     {reply, {ok, OldPred}, State#state{pred=NewPred}};
@@ -106,7 +105,12 @@ handle_call(get_successor, _From, #state{succ=[Succs|_]}=State) ->
     {reply, Succs, State};
 handle_call({find_predecessor, Id}, _From, State) ->
     Reply = find_predecessor_impl(Id, State),
-    {reply, Reply, State}.
+    {reply, Reply, State};
+handle_call({debug_state, Level}, From, #state{id=Id, succ=[Succs|_]}=State) ->
+    io:format("~n*****************~n"),
+    print_state(State, Level),
+    cast(Succs, {debug_state, Level, Id, From}),
+    {noreply, State}.
 
 handle_cast({update_finger_table, Id, _I}, #state{id=Id}=State) ->
     %% My own state is already correct
@@ -115,16 +119,12 @@ handle_cast({update_finger_table, S, I}, State) ->
     Fingers = update_finger_table(S, I, State),
     [#finger{node=Succs}|_] = Fingers,
     {noreply, State#state{succ=[Succs], fingers=Fingers}};
-handle_cast({debug_state, Start, Level}, #state{id=Id, succ=[Succs|_]}=State) ->
+handle_cast({debug_state, Level, Start, From}=Cont, #state{id=Id, succ=[Succs|_]}=State) ->
     case Start of
-	Id -> ignore;
-	start ->
-	    io:format("~n*****************~n"),
-	    print_state(State, Level),
-	    cast(Succs, {debug_state, Id, Level});
+	Id -> gen_server:reply(From, ok);
 	_ ->
 	    print_state(State, Level),
-	    cast(Succs, {debug_state, Start, Level})
+	    cast(Succs, Cont)
     end,
     {noreply, State};
 handle_cast(_Msg, State) ->
@@ -179,9 +179,9 @@ set_predecessor(Succs, Id) ->
             set_predecessor(NewSuccs, Id)
     end.
 
-make_fingers(#id{key=N} = Id) ->
-    Start = [(N + (1 bsl (K-1))) rem ?KEY_SIZE ||
-		K <- lists:seq(1, ?KEY_BIT_SIZE)],
+make_fingers(#id{key=N} = Id, KeyBSZ) ->
+    Start = [(N + (1 bsl (K-1))) rem ?KEY_SIZE(KeyBSZ) ||
+		K <- lists:seq(1, KeyBSZ)],
     make_fingers(Start, N, Id).
 
 make_fingers([Start|[Next|_]=Rest], Last, Id) ->
@@ -203,7 +203,7 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 		    State1 = State0#state{pred=Pred, succ=[Succs]},
 		    F = F0#finger{node=Succs},
 		    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
-		    spawn_link(fun() -> update_others(Id, 1) end),
+		    spawn_link(fun() -> update_others(Id, 1, State0#state.key_bit_sz) end),
 		    State1#state{fingers=Fs}
 	    end
     end;
@@ -260,14 +260,15 @@ next_succs([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
 next_succs([#finger{node=Next}|_], _) ->
     Next.
 
-update_others(#id{key=Key}=Id, I)
-  when I =< ?KEY_BIT_SIZE ->
-    Prev = (?KEY_SIZE + Key - (1 bsl (I-1)) + 1) rem ?KEY_SIZE,
+update_others(#id{key=Key}=Id, I, KeyBSZ)
+  when I =< KeyBSZ ->
+    KeySize = ?KEY_SIZE(KeyBSZ),
+    Prev = (KeySize + Key - (1 bsl (I-1)) + 1) rem KeySize,
     {Pred,_} = find_predecessor(Id, Prev),
     %io:format("UPD ~p (~p) => Pred ~p ~s~n", [I, Key, Prev, print_key(Pred)]),
     cast(Pred, {update_finger_table, Id, I}),
-    update_others(Id, I+1);
-update_others(_, _) -> ok.
+    update_others(Id, I+1, KeyBSZ);
+update_others(_, _, _) -> ok.
 
 update_finger_table(#id{key=SKey}=S, I,
 		    #state{id=#id{key=N}, fingers=Fingers0, pred=Pred}) ->
@@ -359,57 +360,52 @@ print_key(#id{key=Key, pid=Pid}) ->
 %% Temporary testing
 
 test() ->
-    KeyServer = spawn(fun() -> key_server(init) end),
-    timer:sleep(10),
-    io:format("TESTING~n",[]),
-    {ok, P1} = choord:start([]),
-    {ok, P2} = choord:start([P1]),
-    ok = choord:print_state(P1),
-    ok = check_net([P1, P2]),
-%%    timer:sleep(20),
-    io:format("~n**********~n~n"),
-    {ok,P3} = choord:start([P1]),
-    ok = check_net([P1, P2,P3]),
-    ok = choord:print_state(P1),
-    io:format("~n**********~n~n"),
-    {ok,_P4} = choord:start([P3]),
-    ok = check_net([P1, P2,P3,_P4]),
-    ok = choord:print_state(P1),
-    timer:sleep(100),
-    ok = choord:print_ring(P1),
-    timer:sleep(100),
-    exit(P3, die),
-    ok = check_net([P1, P2,_P4]),
-    exit(P2, die),
-    timer:sleep(50),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    timer:sleep(50),
-    exit(P1, die),
-    exit(_P4, die),
-    exit(KeyServer, die),
+    ok = paper_example(),
     ok.
 
-check_net([Gate]) ->
+paper_example() ->
+    KBSZ = 3,
+    Props = [{key_bit_sz, KBSZ}],
+    {ok, P1} = choord:start([{key,0}|Props]),
+    {ok, P2} = choord:start([{gates,[P1]}, {key,3}|Props]),
+    ok = check_net([P1,P2], KBSZ),
+    {ok, P3} = choord:start([{gates,[P1]}, {key,1}|Props]),
+    ok = check_net([P1,P2,P3], KBSZ),
+    {ok, P4} = choord:start([{gates,[P1]}, {key,6}|Props]),
+    ok = check_net([P1,P2,P3,P4], KBSZ),
+    ok = choord:print_state(P1),
+    ok = choord:print_ring(P1),
+    exit(P3, die),
+    ok = check_net([P1,P2,P4], KBSZ),
+    exit(P2, die),
+    ok = check_net([P1,P4], KBSZ),
+    ok = choord:print_state(P1),
+    ok = choord:print_ring(P1),
+    exit(P1, die),
+    exit(P4, die),
+    ok.
+
+check_net([Gate], _KBSZ) ->
     {Pred, Pred} = ?MODULE:find_successor(Gate, 0),
     ok;
-check_net(Pids) when is_list(Pids) ->
-    check_net(0, Pids).
+check_net(Pids, KBSZ) when is_list(Pids) ->
+    check_net(0, Pids, KBSZ).
 
-check_net(Id, Pids) when Id =< ?KEY_BIT_SIZE ->
-    Index = Id * (?KEY_SIZE div ?KEY_BIT_SIZE),
-    ok = check_net_1((?KEY_SIZE + Index - 1) rem ?KEY_SIZE, Pids),
+check_net(Id, Pids, KBSZ) when Id =< KBSZ ->
+    KEY_SIZE = ?KEY_SIZE(KBSZ),
+    Index = Id * (KEY_SIZE div KBSZ),
+    ok = check_net_1((KEY_SIZE + Index - 1) rem KEY_SIZE, Pids),
     ok = check_net_1(Index, Pids),
-    check_net(Id+1, Pids);
-check_net(_, _) ->
+    check_net(Id+1, Pids, KBSZ);
+check_net(_, _, _) ->
     ok.
 
 check_net_1(Id, [Gate|Connected]) ->
-    case check_net(Connected, Id, ?MODULE:find_successor(Gate, Id)) of
+    case check_net_1(Connected, Id, ?MODULE:find_successor(Gate, Id)) of
 	ok -> ok;
 	{retry, _, _} ->
 	    PS = ?MODULE:find_successor(Gate, Id),
-	    case check_net(Connected, Id, PS) of
+	    case check_net_1(Connected, Id, PS) of
 		ok -> ok;
 		{retry, Fail, Failed} ->
 		    io:format("~p:~p: Exp ~p got ~p~n", [Fail, Id, PS, Failed]),
@@ -417,43 +413,19 @@ check_net_1(Id, [Gate|Connected]) ->
 	    end
     end.
 
-check_net([], _, {Pred, Succs})
+check_net_1([], _, {Pred, Succs})
   when Pred =/= Succs -> ok;
-check_net([Gate|Gates], Id, PS) ->
+check_net_1([Gate|Gates], Id, PS) ->
     case ?MODULE:find_successor(Gate, Id) of
-	PS -> check_net(Gates, PS);
+	PS -> check_net_1(Gates, Id, PS);
 	Failed -> {retry, Gate, Failed}
     end.
 
 %%%%%%%%%%%%
 %% Debug
 
-key_server(State) ->
-    try
-	unlink(whereis(key_server)),
-        exit(whereis(key_server), foo)
-    catch _:_ -> ok end,
-    timer:sleep(10),
-    register(key_server, self()),
-    key_server_loop(State).
-
-key_server_loop(State) ->
-    receive
-	{get_key, Pid} ->
-	    Next = case State of
-		       init -> 0;
-		       0 -> 3;
-		       3 -> 1;
-		       1 -> 6
-		   end,
-	    Pid ! {key, Next},
-	    key_server_loop(Next)
-    end.
-
-
-
 debug() ->
     i:ii(?MODULE),
     i:ib(?MODULE, handle_call, 3),
     i:ib(?MODULE, handle_cast, 2),
-    i:ib(?MODULE, update_others, 2).
+    i:ib(?MODULE, update_others, 3).
