@@ -75,10 +75,9 @@ print_ring(Gate) ->
 %%%===================================================================
 
 init(Props) ->
-    io:format("PROPS: ~p~n",[Props]),
     Gates = proplists:get_value(gates, Props, []),
     KeyBSZ = proplists:get_value(key_bit_sz, Props, 32),
-    Key = proplists:get_value(key, Props, key(self(), KeyBSZ)),
+    Key = proplists:get_value(key, Props, key(self(), KeyBSZ)),  %% For debugging only
     Id = #id{key=Key, pid=self()},
     Fingers0 = make_fingers(Id, KeyBSZ),
     {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succ=[Id], fingers=Fingers0, key_bit_sz=KeyBSZ})}.
@@ -133,7 +132,6 @@ handle_cast(_Msg, State) ->
 
 handle_info({'DOWN', _, process, Pid, _},
 	    #state{id=Id, pred=Pred, succ=Succs, fingers=Fingers} = State) ->
-    io:format("~p: Lost node ~p~n", [self(), Pid]),
     PredPid = get_pid(Pred),
     SuccPid = get_pid(hd(Succs)),
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
@@ -329,7 +327,7 @@ call(Pid, Msg) when is_pid(Pid) ->
     gen_server:call(Pid, Msg, infinity).
 
 get_pid(#id{pid=Pid}) -> Pid;
-get_pid(Pid) when is_pid(Pid) -> Pid.
+get_pid(Pid) -> Pid.
 
 setup_monitor(S) ->
     Pid = get_pid(S),
@@ -361,7 +359,7 @@ print_key(#id{key=Key, pid=Pid}) ->
 
 test() ->
     ok = paper_example(),
-    ok.
+    test_256_nodes().
 
 paper_example() ->
     KBSZ = 3,
@@ -385,8 +383,57 @@ paper_example() ->
     exit(P4, die),
     ok.
 
+test_256_nodes() ->
+    KBSZ = 8,
+    Props = [{key_bit_sz, KBSZ}],
+    rand:seed(exs64, {12383, 55421,135412}), %% Set seed so we can debug
+    [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ)),
+    {ok, Pid0} = choord:start([{key, First}|Props]),
+    Make = fun(Key) ->
+		   {ok, Pid} = choord:start_link([{gates,[Pid0]},{key, Key}|Props]),
+		   Pid
+	   end,
+    All = [{First, Pid0} | [{Key, Make(Key)} || Key <- Keys]],
+    %% print_ring(Pid0),
+    ok = check_net(All, KBSZ),
+    A0 = remove(All, 20),
+    ok = check_net(A0, KBSZ),
+    A1 = remove(A0, 40),
+    ok = check_net(A1, KBSZ),
+    A2 = remove(A1, 100),
+    ok = check_net(A2, KBSZ),
+    A3 = remove(A2, 90),
+    ok = check_net(A3, KBSZ),
+    print_ring(p(hd(A3))),
+    ok.
+
+make_reordered_keys(256) ->
+    KL0 = [[K+16*I || K <- lists:seq(0, 15)] || I <- lists:seq(0, 15)],
+    {KL1,[KL2|KL3]} = lists:split(8, KL0),
+    KL4 = zip([KL2|[lists:reverse(Ks) || Ks <- lists:reverse(KL3)]]),
+    {KL5, KL6} = lists:split(4, KL1),
+    {KL7, KL8} = lists:split(4, KL4),
+    lists:flatten(zip([lists:flatten(zip([KL5,KL7])),lists:flatten(zip([KL6,KL8]))])).
+
+zip([[X | Xs] | Xss]) ->
+    [[X | [H || [H | _] <- Xss]] | zip([Xs | [T || [_ | T] <- Xss]])];
+zip([[] | Xss]) -> zip(Xss);
+zip([]) -> [].
+
+remove(Net, N) when N > 0 ->
+    Pick = rand:uniform(length(Net)-1),
+    {N1,[{Key, Pid}|N2]} = lists:split(Pick, Net),
+    unlink(Pid), exit(Pid, die),
+    io:format("Kill: ~p ~p~n",[Key, Pid]),
+    remove(N1++N2, N-1);
+remove(Net, _) -> Net.
+
+
+p({_Key,Pid}) -> Pid;
+p(Pid) -> Pid.
+
 check_net([Gate], _KBSZ) ->
-    {Pred, Pred} = ?MODULE:find_successor(Gate, 0),
+    {Pred, Pred} = ?MODULE:find_successor(p(Gate), 0),
     ok;
 check_net(Pids, KBSZ) when is_list(Pids) ->
     check_net(0, Pids, KBSZ).
@@ -401,10 +448,10 @@ check_net(_, _, _) ->
     ok.
 
 check_net_1(Id, [Gate|Connected]) ->
-    case check_net_1(Connected, Id, ?MODULE:find_successor(Gate, Id)) of
+    case check_net_1(Connected, Id, ?MODULE:find_successor(p(Gate), Id)) of
 	ok -> ok;
 	{retry, _, _} ->
-	    PS = ?MODULE:find_successor(Gate, Id),
+	    PS = ?MODULE:find_successor(p(Gate), Id),
 	    case check_net_1(Connected, Id, PS) of
 		ok -> ok;
 		{retry, Fail, Failed} ->
@@ -416,7 +463,7 @@ check_net_1(Id, [Gate|Connected]) ->
 check_net_1([], _, {Pred, Succs})
   when Pred =/= Succs -> ok;
 check_net_1([Gate|Gates], Id, PS) ->
-    case ?MODULE:find_successor(Gate, Id) of
+    case ?MODULE:find_successor(p(Gate), Id) of
 	PS -> check_net_1(Gates, Id, PS);
 	Failed -> {retry, Gate, Failed}
     end.
