@@ -17,7 +17,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 %% debug
--export([print_ring/1, print_state/1, test/0, debug/0]).
+-export([print_ring/1, print_state/1]).
 -compile(export_all).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
@@ -130,20 +130,24 @@ handle_cast(_Msg, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Msg]),
     {noreply, State}.
 
-handle_info({'DOWN', _, process, Pid, _},
+handle_info({'DOWN', _, process, Pid, _} = Msg,
 	    #state{id=Id, pred=Pred, succ=Succs, fingers=Fingers} = State) ->
     PredPid = get_pid(Pred),
     SuccPid = get_pid(hd(Succs)),
+    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
-	    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
 	    {noreply, State#state{pred=Id, succ=[Id], fingers=UpdFingers}};
        PredPid == Pid ->
-	    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
 	    {noreply, State#state{pred=undefined, fingers=UpdFingers}};
-       SuccPid == Pid ->
-	    {noreply, handle_dead_successor(State, Pid)};
+      SuccPid == Pid ->
+	    case handle_dead_successor(State#state{fingers=UpdFingers}, Pid) of
+		error ->
+		    self() ! Msg,
+		    {noreply, State};
+		NewState ->
+		    {noreply, NewState}
+	    end;
        true ->
-	    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
 	    {noreply, State#state{fingers=UpdFingers}}
     end;
 handle_info(_Info, State) ->
@@ -159,14 +163,13 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-handle_dead_successor(#state{id=Id, pred=Pred, fingers=Fingers}=State, Pid) ->
-    UpdFingers = fix_fingers(Pid, Pred, lists:reverse(Fingers), []),
+handle_dead_successor(#state{id=Id, fingers=Fingers}=State, Pid) ->
     Next = next_succs(Fingers, Pid),
     case catch set_predecessor(Next, Id) of
-	{'EXIT', {noproc, _}} ->
-	    handle_dead_successor(State, Pid);
-	{_, Succ} ->
-	    State#state{succ=[Succ], fingers=UpdFingers}
+	{'EXIT', _} ->
+	    error;
+	{_, #id{}=Succ} ->
+	    State#state{succ=[Succ]}
     end.
 
 set_predecessor(Succs, Id) ->
@@ -221,6 +224,7 @@ init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
 init_fingers([], _, _, _) -> [].
 
 fix_fingers(Pid, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
+    spawn(fun() -> fix_finger(Me, F1, length(Fingers)) end),
     case Acc of
 	[] ->
 	    fix_fingers(Pid, Me, Fingers, [F1#finger{node=Me}|Acc]);
@@ -230,6 +234,20 @@ fix_fingers(Pid, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
 fix_fingers(Pid, Me, [F1|Fingers], Acc) ->
     fix_fingers(Pid, Me, Fingers, [F1|Acc]);
 fix_fingers(_Pid, _Me, [], Acc) -> Acc.
+
+fix_finger(Me, #finger{start=Start}=F, I) ->
+    case catch find_successor(Me, Start) of
+        {'EXIT', _} ->
+            case is_process_alive(get_pid(Me)) of
+                true ->
+                    fix_finger(Me, F, I); %TODO should we spin here?
+                false ->
+                    ok
+            end;
+        {_, Succs} ->
+            setup_monitor(Succs),
+            cast(Me, {update_finger_table, Succs, I+1})
+    end.
 
 find_predecessor_impl(Id, #state{id=This, succ=[Succs|_], fingers=Fingers}) ->
     case memberNI(Id, This#id.key, Succs#id.key) of
@@ -316,13 +334,15 @@ memberIN(Id, Near, Far)
 memberIN(_, _, _) ->
     false.
 
+cast(undefined, _Msg) ->
+    ok; %TODO is it safe to drop here?
 cast(#id{pid=Pid}, Msg) ->
     gen_server:cast(Pid, Msg);
 cast(Pid, Msg) when is_pid(Pid) ->
     gen_server:cast(Pid, Msg).
 
 call(#id{pid=Pid}, Msg) ->
-    gen_server:call(Pid, Msg, infinity);
+    call(Pid, Msg);
 call(Pid, Msg) when is_pid(Pid) ->
     gen_server:call(Pid, Msg, infinity).
 
@@ -354,125 +374,3 @@ print_finger(#finger{start=Start, last=Last, node=Node}) ->
 print_key(#id{key=Key, pid=Pid}) ->
     io_lib:format("<~.3p ~p>", [Key,Pid]).
 
-
-%% Temporary testing
-
-test() ->
-    ok = paper_example(),
-    test_256_nodes().
-
-paper_example() ->
-    KBSZ = 3,
-    Props = [{key_bit_sz, KBSZ}],
-    {ok, P1} = choord:start([{key,0}|Props]),
-    {ok, P2} = choord:start([{gates,[P1]}, {key,3}|Props]),
-    ok = check_net([P1,P2], KBSZ),
-    {ok, P3} = choord:start([{gates,[P1]}, {key,1}|Props]),
-    ok = check_net([P1,P2,P3], KBSZ),
-    {ok, P4} = choord:start([{gates,[P1]}, {key,6}|Props]),
-    ok = check_net([P1,P2,P3,P4], KBSZ),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    exit(P3, die),
-    ok = check_net([P1,P2,P4], KBSZ),
-    exit(P2, die),
-    ok = check_net([P1,P4], KBSZ),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    exit(P1, die),
-    exit(P4, die),
-    ok.
-
-test_256_nodes() ->
-    KBSZ = 8,
-    Props = [{key_bit_sz, KBSZ}],
-    rand:seed(exs64, {12383, 55421,135412}), %% Set seed so we can debug
-    [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ)),
-    {ok, Pid0} = choord:start([{key, First}|Props]),
-    Make = fun(Key) ->
-		   {ok, Pid} = choord:start_link([{gates,[Pid0]},{key, Key}|Props]),
-		   Pid
-	   end,
-    All = [{First, Pid0} | [{Key, Make(Key)} || Key <- Keys]],
-    %% print_ring(Pid0),
-    ok = check_net(All, KBSZ),
-    A0 = remove(All, 20),
-    ok = check_net(A0, KBSZ),
-    A1 = remove(A0, 40),
-    ok = check_net(A1, KBSZ),
-    A2 = remove(A1, 100),
-    ok = check_net(A2, KBSZ),
-    A3 = remove(A2, 90),
-    ok = check_net(A3, KBSZ),
-    print_ring(p(hd(A3))),
-    ok.
-
-make_reordered_keys(256) ->
-    KL0 = [[K+16*I || K <- lists:seq(0, 15)] || I <- lists:seq(0, 15)],
-    {KL1,[KL2|KL3]} = lists:split(8, KL0),
-    KL4 = zip([KL2|[lists:reverse(Ks) || Ks <- lists:reverse(KL3)]]),
-    {KL5, KL6} = lists:split(4, KL1),
-    {KL7, KL8} = lists:split(4, KL4),
-    lists:flatten(zip([lists:flatten(zip([KL5,KL7])),lists:flatten(zip([KL6,KL8]))])).
-
-zip([[X | Xs] | Xss]) ->
-    [[X | [H || [H | _] <- Xss]] | zip([Xs | [T || [_ | T] <- Xss]])];
-zip([[] | Xss]) -> zip(Xss);
-zip([]) -> [].
-
-remove(Net, N) when N > 0 ->
-    Pick = rand:uniform(length(Net)-1),
-    {N1,[{Key, Pid}|N2]} = lists:split(Pick, Net),
-    unlink(Pid), exit(Pid, die),
-    io:format("Kill: ~p ~p~n",[Key, Pid]),
-    remove(N1++N2, N-1);
-remove(Net, _) -> Net.
-
-
-p({_Key,Pid}) -> Pid;
-p(Pid) -> Pid.
-
-check_net([Gate], _KBSZ) ->
-    {Pred, Pred} = ?MODULE:find_successor(p(Gate), 0),
-    ok;
-check_net(Pids, KBSZ) when is_list(Pids) ->
-    check_net(0, Pids, KBSZ).
-
-check_net(Id, Pids, KBSZ) when Id =< KBSZ ->
-    KEY_SIZE = ?KEY_SIZE(KBSZ),
-    Index = Id * (KEY_SIZE div KBSZ),
-    ok = check_net_1((KEY_SIZE + Index - 1) rem KEY_SIZE, Pids),
-    ok = check_net_1(Index, Pids),
-    check_net(Id+1, Pids, KBSZ);
-check_net(_, _, _) ->
-    ok.
-
-check_net_1(Id, [Gate|Connected]) ->
-    case check_net_1(Connected, Id, ?MODULE:find_successor(p(Gate), Id)) of
-	ok -> ok;
-	{retry, _, _} ->
-	    PS = ?MODULE:find_successor(p(Gate), Id),
-	    case check_net_1(Connected, Id, PS) of
-		ok -> ok;
-		{retry, Fail, Failed} ->
-		    io:format("~p:~p: Exp ~p got ~p~n", [Fail, Id, PS, Failed]),
-		    error
-	    end
-    end.
-
-check_net_1([], _, {Pred, Succs})
-  when Pred =/= Succs -> ok;
-check_net_1([Gate|Gates], Id, PS) ->
-    case ?MODULE:find_successor(p(Gate), Id) of
-	PS -> check_net_1(Gates, Id, PS);
-	Failed -> {retry, Gate, Failed}
-    end.
-
-%%%%%%%%%%%%
-%% Debug
-
-debug() ->
-    i:ii(?MODULE),
-    i:ib(?MODULE, handle_call, 3),
-    i:ib(?MODULE, handle_cast, 2),
-    i:ib(?MODULE, update_others, 3).
