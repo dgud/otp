@@ -163,13 +163,20 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-handle_dead_successor(#state{id=Id, fingers=Fingers}=State, Pid) ->
-    Next = next_succs(Fingers, Pid),
-    case catch set_predecessor(Next, Id) of
-	{'EXIT', _} ->
-	    error;
-	{_, #id{}=Succ} ->
-	    State#state{succ=[Succ]}
+handle_dead_successor(#state{id=Id, pred=Pred, fingers=Fingers}=State, Pid) ->
+    Next = case next_succs(Fingers, Pid) of
+	       Id    -> Pred;
+	       Other -> Other
+	   end,
+    if Next =:= undefined ->
+	    State#state{pred=Id, succ=[Id]};
+       Next =:= Id ->
+	    State#state{succ=[Id]};
+       true ->
+	    try set_predecessor(Next, Id) of
+		{_, #id{}=Succ} -> State#state{succ=[Succ]}
+	    catch exit:_ -> error
+	    end
     end.
 
 set_predecessor(Succs, Id) ->
@@ -371,6 +378,7 @@ print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}, _) ->
 print_finger(#finger{start=Start, last=Last, node=Node}) ->
     io_lib:format(" {~.3w ~.5w ~s}~n",[Start, Last, print_key(Node)]).
 
+print_key(undefined) -> "undefined";
 print_key(#id{key=Key, pid=Pid}) ->
     io_lib:format("<~.3p ~p>", [Key,Pid]).
 

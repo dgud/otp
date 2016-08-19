@@ -3,7 +3,7 @@
 -export([test/0, paper_example/0, test_fast_joins/0, test_multiple_exits/0, debug/0]).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
-
+-compile(export_all).
 %% Temporary testing
 
 test() ->
@@ -60,7 +60,11 @@ test_256_nodes() ->
     ok = check_net(A2, KBSZ),
     A3 = remove(A2, 50), % From 146 To 96
     ok = check_net(A3, KBSZ),
-    choord:print_ring(p(hd(A3))),
+    A4 = remove(A3, 50), % From 96 To 46
+    ok = check_net(A4, KBSZ),
+    A5 = remove(A4, 20), % From 46 To 26
+    ok = check_net(A5, KBSZ),
+    choord:print_ring(p(hd(A5))),
     ok.
 
 make_reordered_keys(256) ->
@@ -92,6 +96,7 @@ check_net([Gate], _KBSZ) ->
     {Pred, Pred} = choord:find_successor(p(Gate), 0),
     ok;
 check_net(Pids, KBSZ) when is_list(Pids) ->
+    io:format("Check ~p nodes~n",[length(Pids)]),
     check_net(0, Pids, KBSZ).
 
 check_net(Id, Pids, KBSZ) when Id =< KBSZ ->
@@ -111,6 +116,7 @@ check_net_1(Id, [Gate|Connected]) ->
 	    case check_net_1(Connected, Id, PS) of
 		ok -> ok;
 		{retry, Fail, Failed} ->
+		    choord:print_state(p(Gate)),
 		    io:format("~p:~p: Exp ~p got ~p~n", [Fail, Id, PS, Failed]),
 		    error
 	    end
