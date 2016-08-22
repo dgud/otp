@@ -82,24 +82,10 @@ init(Props) ->
     Fingers0 = make_fingers(Id, KeyBSZ),
     {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succ=[Id], fingers=Fingers0, key_bit_sz=KeyBSZ})}.
 
-handle_call({set_predecessor, NewPred}, _From, #state{pred=undefined=OldPred}=State) ->
-    setup_monitor(NewPred),
-    {reply, {ok, OldPred}, State#state{pred=NewPred}};
-handle_call({set_predecessor, NewPred}, _From, #state{id=Id, pred=OldPred}=State) ->
-    case is_process_alive(get_pid(OldPred)) of
-        true ->
-            case memberIN(NewPred, OldPred, Id) of
-                true ->
-                    setup_monitor(NewPred),
-                    %TODO demonitor OldPred
-                    {reply, {ok, OldPred}, State#state{pred=NewPred}};
-                false ->
-                    {reply, {error, OldPred}, State}
-            end;
-        false ->
-            setup_monitor(NewPred),
-            {reply, {ok, undefined}, State#state{pred=NewPred}}
-    end;
+handle_call({set_predecessor, Pred}, _From, State0) ->
+    {Res, State} = set_predecessor_impl(Pred, State0),
+    {reply, Res, State};
+
 handle_call(get_successor, _From, #state{succ=[Succs|_]}=State) ->
     {reply, Succs, State};
 handle_call({find_predecessor, Id}, _From, State) ->
@@ -116,8 +102,28 @@ handle_cast({update_finger_table, Id, _I}, #state{id=Id}=State) ->
     {noreply, State};
 handle_cast({update_finger_table, S, I}, State) ->
     Fingers = update_finger_table(S, I, State),
-    [#finger{node=Succs}|_] = Fingers,
-    {noreply, State#state{succ=[Succs], fingers=Fingers}};
+    case I of
+	1 ->
+	    [#finger{node=Succs}|_] = Fingers,
+	    case hd(State#state.succ) of
+		Succs ->
+		    {noreply, State#state{fingers=Fingers}};
+		Orig ->
+		    io:format("~s: UPDATE SUCCS ~s => ~s~n",
+			      [print_key(State#state.id), print_key(Orig), print_key(Succs)]),
+		    cast(Succs, {set_predecessor, State#state.id}),
+		    {noreply, State#state{succ=[Succs], fingers=Fingers}}
+	    end;
+	_ ->
+	    {noreply, State#state{fingers=Fingers}}
+    end;
+handle_cast({set_predecessor, Pred}, State0) ->
+    case set_predecessor_impl(Pred, State0) of
+	{{ok, _}, State} ->
+	    {noreply, State};
+	{{error, _}, State} -> %% Hmm what TODO?
+	    {noreply, State}
+    end;
 handle_cast({debug_state, Level, Start, From}=Cont, #state{id=Id, succ=[Succs|_]}=State) ->
     case Start of
 	Id -> gen_server:reply(From, ok);
@@ -139,7 +145,7 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
 	    {noreply, State#state{pred=Id, succ=[Id], fingers=UpdFingers}};
        PredPid == Pid ->
 	    {noreply, State#state{pred=undefined, fingers=UpdFingers}};
-      SuccPid == Pid ->
+       SuccPid == Pid ->
 	    case handle_dead_successor(State#state{fingers=UpdFingers}, Pid) of
 		error ->
 		    self() ! Msg,
@@ -168,17 +174,20 @@ handle_dead_successor(#state{id=Id, pred=Pred, fingers=Fingers}=State, Pid) ->
 	       Id    -> Pred;
 	       Other -> Other
 	   end,
-    if Next =:= undefined ->
+    case Next of
+	undefined ->
 	    State#state{pred=Id, succ=[Id]};
-       Next =:= Id ->
-	    State#state{succ=[Id]};
-       true ->
+	_ ->
 	    try set_predecessor(Next, Id) of
-		{_, #id{}=Succ} -> State#state{succ=[Succ]}
+		myself ->
+		    State#state{succ=[Id]};
+		{_, #id{}=Succ} ->
+		    State#state{succ=[Succ]}
 	    catch exit:_ -> error
 	    end
     end.
 
+set_predecessor(Id, Id) -> myself;
 set_predecessor(Succs, Id) ->
     case call(Succs, {set_predecessor, Id}) of
         {ok, Pred} ->
@@ -202,8 +211,8 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 	{error, _} ->
 	    init_neighbors(Gates, State0);
 	{_, Succs0} ->
-	    case catch set_predecessor(Succs0, Id) of
-		{'EXIT', {noproc, _}} ->
+	    try set_predecessor(Succs0, Id) of
+		myself ->
 		    init_neighbors([Gate|Gates], State0);
 		{Pred, Succs} ->
 		    setup_monitor(Pred),
@@ -213,6 +222,8 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 		    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
 		    spawn_link(fun() -> update_others(Id, 1, State0#state.key_bit_sz) end),
 		    State1#state{fingers=Fs}
+	    catch _:{noproc, _} ->
+		    init_neighbors([Gate|Gates], State0)
 	    end
     end;
 init_neighbors(_Gs, State) ->
@@ -276,6 +287,26 @@ closest_preceding_fingers(#id{key=This}=N, Id, Fingers) ->
     case lists:dropwhile(Check, lists:reverse(Fingers)) of
 	[] -> N;
 	[#finger{node=Node}|_] -> Node
+    end.
+
+
+set_predecessor_impl(NewPred, #state{pred=undefined=OldPred}=State) ->
+    setup_monitor(NewPred),
+    {{ok, OldPred}, State#state{pred=NewPred}};
+set_predecessor_impl(NewPred, #state{id=Id, pred=OldPred}=State) ->
+    case is_process_alive(get_pid(OldPred)) of
+        true ->
+            case memberIN(NewPred, OldPred, Id) of
+                true ->
+                    setup_monitor(NewPred),
+		    %%TODO demonitor OldPred
+                    {{ok, OldPred}, State#state{pred=NewPred}};
+                false ->
+                    {{error, OldPred}, State}
+            end;
+        false ->
+            setup_monitor(NewPred),
+            {{ok, undefined}, State#state{pred=NewPred}}
     end.
 
 next_succs([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
@@ -369,8 +400,8 @@ setup_monitor(S) ->
 print_state(#state{id=This, pred=Pred, succ=[Succ|_]}, ring) ->
     io:format("~s <- ~s -> ~s~n", [print_key(Pred), print_key(This), print_key(Succ)]);
 print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}, _) ->
-    io:format("~nTHIS: ~p ~s~n", [self(), print_key(This)]),
-    io:format("PRED: ~s~n", [print_key(Pred)]),
+    io:format("~nPRED: ~s~n", [print_key(Pred)]),
+    io:format("*THIS*: ~p ~s~n", [self(), print_key(This)]),
     io:format("SUCC: ~p~n", [[lists:flatten(print_key(S)) || S <- Succs]]),
     io:format("Fingers: ~n", []),
     [io:put_chars(print_finger(F)) || F <- Fingers].

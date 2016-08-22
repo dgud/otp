@@ -1,6 +1,6 @@
 -module(choord_test).
 
--export([test/0, paper_example/0, test_fast_joins/0, test_multiple_exits/0, debug/0]).
+-export([test/0, paper_example/0, test_fast_joins/0, test_multiple_exits/0]).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
 -compile(export_all).
@@ -20,28 +20,69 @@ paper_example() ->
     io:format("~n********************~n~n"),
     {ok, P1} = choord:start([{key,0}|Props]),
     {ok, P2} = choord:start([{gates,[P1]}, {key,3}|Props]),
-    ok = check_net([P1,P2], KBSZ),
+    ok = check_net([{0,P1},{3,P2}], KBSZ),
     {ok, P3} = choord:start([{gates,[P1]}, {key,1}|Props]),
-    ok = check_net([P1,P2,P3], KBSZ),
+    ok = check_net([{0,P1},{3,P2},{1,P3}], KBSZ),
     {ok, P4} = choord:start([{gates,[P1]}, {key,6}|Props]),
-    ok = check_net([P1,P2,P3,P4], KBSZ),
+    ok = check_net([{0,P1},{3,P2},{1,P3},{6,P4}], KBSZ),
     ok = choord:print_state(P1),
     ok = choord:print_ring(P1),
     exit(P3, die),
-    ok = check_net([P1,P2,P4], KBSZ),
+    ok = check_net([{0,P1},{3,P2},{6,P4}], KBSZ),
     exit(P2, die),
-    ok = check_net([P1,P4], KBSZ),
+    ok = check_net([{0,P1},{6,P4}], KBSZ),
     ok = choord:print_state(P1),
     ok = choord:print_ring(P1),
     exit(P1, die),
     exit(P4, die),
     ok.
 
+
+test_fast_joins() ->
+    io:format("~n~nTESTING MULTIPLE AND FAST JOINS~n",[]),
+    io:format("~n*********************************~n~n"),
+    KBSZ = 3,
+    Props = [{key_bit_sz, KBSZ}],
+    {ok, P1} = choord:start([{key,0}|Props]),
+    Gates = join(Props, [5, 2, 6, 3, 7, 1, 4], [{0,P1}]),
+    ok = check_net(Gates, KBSZ),
+    ok = choord:print_state(P1),
+    ok = choord:print_ring(P1),
+    [exit(p(P), die) || P <- Gates],
+    ok.
+
+test_multiple_exits() ->
+    io:format("~n~nTESTING MULTIPLE AND FAST EXITS~n",[]),
+    io:format("~n*********************************~n~n"),
+    KBSZ = 3,
+    Props = [{key_bit_sz, KBSZ}],
+    {ok, P1} = choord:start([{key,0}|Props]),
+    Gates = join(Props, [5, 2, 6, 3, 7, 1, 4], [{0,P1}]),
+    ok = check_net(Gates, KBSZ),
+    Exits = [hd(Gates), hd(tl(Gates)), hd(tl(tl(Gates)))],
+    io:format("Killing: ~p~n", [Exits]),
+    [exit(p(P), die) || P <- Exits],
+    timer:sleep(100),
+    Left = lists:subtract(Gates, Exits),
+    io:format("Left: ~p~n",  [Left]),
+    ok = check_net(Left, KBSZ),
+    ok = choord:print_ring(p(hd(Left))),
+    [exit(p(P), die) || P <- Left],
+    ok.
+
+join(_, [], Gates) ->
+    Gates;
+join(Props, [Key|Keys], Gates) ->
+    Gs = [p(G) || G <- Gates],
+    {ok, P} = choord:start([{gates,Gs}, {key,Key}|Props]),
+    join(Props, Keys, [{Key, P}|Gates]).
+
+
 test_256_nodes() ->
     KBSZ = 8,
     Props = [{key_bit_sz, KBSZ}],
-    io:format("~n~nTEST 256 NODES~n",[]), 
-    io:format("~n~n**************~n",[]), 
+    io:format("~n~nTEST 256 NODES~n",[]),
+    io:format("~n~n**************~n",[]),
     rand:seed(exs64, {12383, 55421,135412}), %% Set seed so we can debug
     [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ)),
     {ok, Pid0} = choord:start([{key, First}|Props]),
@@ -95,9 +136,18 @@ p(Pid) -> Pid.
 check_net([Gate], _KBSZ) ->
     {Pred, Pred} = choord:find_successor(p(Gate), 0),
     ok;
-check_net(Pids, KBSZ) when is_list(Pids) ->
+check_net([{_Key,_Pid}|_]=Pids, KBSZ) ->
     io:format("Check ~p nodes~n",[length(Pids)]),
-    check_net(0, Pids, KBSZ).
+    check_net(0, Pids, KBSZ),
+    Ordered = lists:sort(Pids),
+    case check_ring(Ordered, lists:last(Ordered), hd(Ordered)) of
+	true  ->
+	    ok;
+	false ->
+	    choord:print_state(p(hd(Pids))),
+	    unlink(self()),
+	    exit(error)
+    end.
 
 check_net(Id, Pids, KBSZ) when Id =< KBSZ ->
     KEY_SIZE = ?KEY_SIZE(KBSZ),
@@ -130,8 +180,8 @@ check_net_1([Gate|Gates], Id, PS) ->
 	Failed -> {retry, Gate, Failed}
     end.
 
-find_successor(_Gate, _Id, 0) ->
-    failed;
+find_successor(Gate, _Id, 0) ->
+    {failed, Gate};
 find_successor(Gate, Id, Retries) ->
     case catch choord:find_successor(p(Gate), Id) of
         {'EXIT', _} ->
@@ -141,49 +191,31 @@ find_successor(Gate, Id, Retries) ->
             Reply
     end.
 
+%% White box testing
+check_ring([This|[Succs|_]=Ordered], Pred, Last) ->
+    check_ring_1(Pred, This, Succs) andalso
+	check_ring(Ordered, This, Last);
+check_ring([This], Pred, Succs) ->
+    check_ring_1(Pred, This, Succs).
+
+check_ring_1(Pred, This, Succs) ->
+    {state, ThisId, PredId, SuccsIds, _Fingers,_} = sys:get_state(p(This)),
+    (T1 = check_id(This, ThisId)) orelse
+	io:format("Error This: ~p ~p~n",[This, ThisId]),
+    (T2 = check_id(Pred, PredId)) orelse
+	io:format("Error Pred: ~p ~p~n",[Pred, PredId]),
+    (T3 = check_id(Succs, hd(SuccsIds))) orelse
+	io:format("Error Succs: ~p ~p~n",[Succs, hd(SuccsIds)]),
+    if T1, T2, T3 ->
+	    true;
+       true ->
+	    io:format("~p ~p ~p =>~n  ~p ~p ~p~n",
+		      [Pred, This, Succs, PredId, ThisId, SuccsIds]),
+	    false
+    end.
+
+check_id({Key,Pid}, {id,Key,Pid}) -> true;
+check_id(_, _) -> false.
+
 %%%%%%%%%%%%
 %% Debug
-
-debug() ->
-    i:ii(choord),
-    i:ib(choord, handle_call, 3),
-    i:ib(choord, handle_cast, 2),
-    i:ib(choord, update_others, 3).
-
-test_fast_joins() ->
-    io:format("~n~nTESTING MULTIPLE AND FAST JOINS~n",[]),
-    io:format("~n*********************************~n~n"),
-    KBSZ = 3,
-    Props = [{key_bit_sz, KBSZ}],
-    {ok, P1} = choord:start([{key,0}|Props]),
-    Gates = join(Props, [5, 2, 6, 3, 7, 1, 4], [P1]),
-    ok = check_net(Gates, KBSZ),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    [exit(P, die) || P <- Gates],
-    ok.
-
-test_multiple_exits() ->
-    io:format("~n~nTESTING MULTIPLE AND FAST EXITS~n",[]),
-    io:format("~n*********************************~n~n"),
-    KBSZ = 3,
-    Props = [{key_bit_sz, KBSZ}],
-    {ok, P1} = choord:start([{key,0}|Props]),
-    Gates = join(Props, [5, 2, 6, 3, 7, 1, 4], [P1]),
-    ok = check_net(Gates, KBSZ),
-    Exits = [P1, hd(Gates), hd(tl(Gates))],
-    io:format("Killing: ~p~n", [Exits]),
-    [exit(P, die) || P <- Exits],
-    timer:sleep(100),
-    Left = lists:subtract(Gates, Exits),
-    ok = check_net(Left, KBSZ),
-    ok = choord:print_ring(hd(Left)),
-    [exit(P, die) || P <- Left],
-    ok.
-
-join(_, [], Gates) ->
-    Gates;
-join(Props, [Key|Keys], Gates) ->
-    {ok, P} = choord:start([{gates,Gates}, {key,Key}|Props]),
-    join(Props, Keys, [P|Gates]).
-
