@@ -87,25 +87,31 @@ test_256_nodes() ->
     [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ)),
     {ok, Pid0} = choord:start([{key, First}|Props]),
     Make = fun(Key) ->
-		{ok, Pid} = choord:start_link([{gates,[Pid0]},{key, Key}|Props]),
-		Pid
+		   {ok, Pid} = choord:start_link([{gates,[Pid0]},{key, Key}|Props]),
+		   Pid
 	   end,
     All = [{First, Pid0} | [{Key, Make(Key)} || Key <- Keys]],
-    %% print_ring(Pid0),
-    ok = check_net(All, KBSZ),
-    A0 = remove(All, 20), % From 256 To 236
-    ok = check_net(A0, KBSZ),
-    A1 = remove(A0, 40), % From 236 To 196
-    ok = check_net(A1, KBSZ),
-    A2 = remove(A1, 50), % From 196 To 146
-    ok = check_net(A2, KBSZ),
-    A3 = remove(A2, 50), % From 146 To 96
-    ok = check_net(A3, KBSZ),
-    A4 = remove(A3, 50), % From 96 To 46
-    ok = check_net(A4, KBSZ),
-    A5 = remove(A4, 20), % From 46 To 26
-    ok = check_net(A5, KBSZ),
-    choord:print_ring(p(hd(A5))),
+    try
+	%% print_ring(Pid0),
+	ok = check_net(All, KBSZ),
+	A0 = remove(All, 20), % From 256 To 236
+	ok = check_net(A0, KBSZ),
+	A1 = remove(A0, 40), % From 236 To 196
+	ok = check_net(A1, KBSZ),
+	A2 = remove(A1, 50), % From 196 To 146
+	ok = check_net(A2, KBSZ),
+	A3 = remove(A2, 50), % From 146 To 96
+	ok = check_net(A3, KBSZ),
+	A4 = remove(A3, 50), % From 96 To 46
+	ok = check_net(A4, KBSZ),
+	A5 = remove(A4, 20), % From 46 To 26
+	ok = check_net(A5, KBSZ),
+	choord:print_ring(p(hd(A5))),
+	exit(p(hd(tl(A5))), ok),
+	exit(Pid0, test_done)
+    catch error:Reason ->
+	    io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()])
+    end,
     ok.
 
 make_reordered_keys(256) ->
@@ -145,8 +151,7 @@ check_net([{_Key,_Pid}|_]=Pids, KBSZ) ->
 	    ok;
 	false ->
 	    choord:print_state(p(hd(Pids))),
-	    unlink(self()),
-	    exit(error)
+	    error({error, ?LINE})
     end.
 
 check_net(Id, Pids, KBSZ) when Id =< KBSZ ->

@@ -122,6 +122,8 @@ handle_cast({set_predecessor, Pred}, State0) ->
 	{{ok, _}, State} ->
 	    {noreply, State};
 	{{error, _}, State} -> %% Hmm what TODO?
+	    %error({error, Pred, State}),
+	    io:format("Set PRED ~p ~p~n", [Pred, State]),
 	    {noreply, State}
     end;
 handle_cast({debug_state, Level, Start, From}=Cont, #state{id=Id, succ=[Succs|_]}=State) ->
@@ -140,7 +142,11 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
 	    #state{id=Id, pred=Pred, succ=Succs, fingers=Fingers} = State) ->
     PredPid = get_pid(Pred),
     SuccPid = get_pid(hd(Succs)),
-    UpdFingers = fix_fingers(Pid, Id, lists:reverse(Fingers), []),
+    LastKnown = if Pred =:= undefined -> Id;
+		   PredPid =:= Pid -> Id;
+		   true -> Pred
+		end,
+    UpdFingers = fix_fingers(Pid, LastKnown, Id, lists:reverse(Fingers), []),
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
 	    {noreply, State#state{pred=Id, succ=[Id], fingers=UpdFingers}};
        PredPid == Pid ->
@@ -149,7 +155,7 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
 	    case handle_dead_successor(State#state{fingers=UpdFingers}, Pid) of
 		error ->
 		    self() ! Msg,
-		    {noreply, State};
+		    {noreply, State#state{fingers=UpdFingers}};
 		NewState ->
 		    {noreply, NewState}
 	    end;
@@ -176,10 +182,12 @@ handle_dead_successor(#state{id=Id, pred=Pred, fingers=Fingers}=State, Pid) ->
 	   end,
     case Next of
 	undefined ->
+	    io:format("~p: ~p~n",[?LINE,Id]),
 	    State#state{pred=Id, succ=[Id]};
 	_ ->
 	    try set_predecessor(Next, Id) of
 		myself ->
+		    io:format("~p: ~p~n",[?LINE,Id]),
 		    State#state{succ=[Id]};
 		{_, #id{}=Succ} ->
 		    State#state{succ=[Succ]}
@@ -241,17 +249,17 @@ init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
     end;
 init_fingers([], _, _, _) -> [].
 
-fix_fingers(Pid, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
+fix_fingers(Pid, Last, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
     spawn(fun() -> fix_finger(Me, F1, length(Fingers)) end),
     case Acc of
 	[] ->
-	    fix_fingers(Pid, Me, Fingers, [F1#finger{node=Me}|Acc]);
+	    fix_fingers(Pid, Last, Me, Fingers, [F1#finger{node=Last}|Acc]);
 	[#finger{node=Next}|_] ->
-	    fix_fingers(Pid, Me, Fingers, [F1#finger{node=Next}|Acc])
+	    fix_fingers(Pid, Last, Me, Fingers, [F1#finger{node=Next}|Acc])
     end;
-fix_fingers(Pid, Me, [F1|Fingers], Acc) ->
-    fix_fingers(Pid, Me, Fingers, [F1|Acc]);
-fix_fingers(_Pid, _Me, [], Acc) -> Acc.
+fix_fingers(Pid, Last, Me, [F1|Fingers], Acc) ->
+    fix_fingers(Pid, Last, Me, Fingers, [F1|Acc]);
+fix_fingers(_Pid, _, _Me, [], Acc) -> Acc.
 
 fix_finger(Me, #finger{start=Start}=F, I) ->
     case catch find_successor(Me, Start) of
@@ -263,7 +271,6 @@ fix_finger(Me, #finger{start=Start}=F, I) ->
                     ok
             end;
         {_, Succs} ->
-            setup_monitor(Succs),
             cast(Me, {update_finger_table, Succs, I+1})
     end.
 
@@ -325,17 +332,18 @@ update_others(#id{key=Key}=Id, I, KeyBSZ)
 update_others(_, _, _) -> ok.
 
 update_finger_table(#id{key=SKey}=S, I,
-		    #state{id=#id{key=N}, fingers=Fingers0, pred=Pred}) ->
+		    #state{id=#id{key=N}=Id, fingers=Fingers0, pred=Pred}) ->
     {Part1, [F0|Part2]} = lists:split(I-1, Fingers0),
     #finger{node=#id{key=Node}} = F0,
     case memberIN(SKey, N, Node) of
 	false ->
 	    Fingers0;
+	true when Id =:= Pred ->
+	    Part1 ++ [F0#finger{node=S}|Part2];
 	true ->
 	    setup_monitor(S),
-	    F = F0#finger{node=S},
 	    cast(Pred, {update_finger_table, S, I}),
-	    Part1 ++ [F|Part2]
+	    Part1 ++ [F0#finger{node=S}|Part2]
     end.
 
 %% Closed range
