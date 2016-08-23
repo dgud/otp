@@ -82,6 +82,7 @@ init(Props) ->
     Fingers0 = make_fingers(Id, KeyBSZ),
     {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succ=[Id], fingers=Fingers0, key_bit_sz=KeyBSZ})}.
 
+
 handle_call({set_predecessor, Pred}, _From, State0) ->
     {Res, State} = set_predecessor_impl(Pred, State0),
     {reply, Res, State};
@@ -340,6 +341,15 @@ update_finger_table(#id{key=SKey}=S, I,
 	    Fingers0;
 	true when Id =:= Pred ->
 	    Part1 ++ [F0#finger{node=S}|Part2];
+        true when N =:= Node ->
+            case memberIN(SKey, N+1, Node) of
+                true ->
+                    setup_monitor(S),
+                    cast(Pred, {update_finger_table, S, I}),
+                    Part1 ++ [F0#finger{node=S}|Part2];
+                false ->
+                    Fingers0
+            end;
 	true ->
 	    setup_monitor(S),
 	    cast(Pred, {update_finger_table, S, I}),
