@@ -204,15 +204,19 @@ check_ring([This], Pred, Succs) ->
     check_ring_1(Pred, This, Succs).
 
 check_ring_1(Pred, This, Succs) ->
-    {state, ThisId, PredId, SuccsIds, _Fingers,_} = sys:get_state(p(This)),
+    {state, ThisId, PredId, SuccsIds, Fingers, KBsz} = St = sys:get_state(p(This)),
     (T1 = check_id(This, ThisId)) orelse
 	io:format("Error This: ~p ~p~n",[This, ThisId]),
     (T2 = check_id(Pred, PredId)) orelse
 	io:format("Error Pred: ~p ~p~n",[Pred, PredId]),
     (T3 = check_id(Succs, hd(SuccsIds))) orelse
 	io:format("Error Succs: ~p ~p~n",[Succs, hd(SuccsIds)]),
-    if T1, T2, T3 ->
+    Fs = check_fingers(Fingers, 1 bsl KBsz),
+    if T1, T2, T3, Fs ->
 	    true;
+       not Fs ->
+	    choord:print_state(St, debug),
+	    false;
        true ->
 	    io:format("~p ~p ~p =>~n  ~p ~p ~p~n",
 		      [Pred, This, Succs, PredId, ThisId, SuccsIds]),
@@ -221,6 +225,12 @@ check_ring_1(Pred, This, Succs) ->
 
 check_id({Key,Pid}, {id,Key,Pid}) -> true;
 check_id(_, _) -> false.
+
+check_fingers(_,_) -> true.
+%% check_fingers([{finger, Start, Last, {id, Key, _Pid}}|Fs], KBSz) ->
+%%     %%if Start =< Key, Start < Last -> true;
+%%     true.
+
 
 %%%%%%%%%%%%
 %% Debug
