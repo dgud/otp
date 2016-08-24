@@ -121,6 +121,7 @@ handle_cast({update_finger_table, S, I}, State) ->
 handle_cast({set_predecessor, Pred}, State0) ->
     case set_predecessor_impl(Pred, State0) of
 	{{ok, _}, State} ->
+            cast(Pred, {update_finger_table, State#state.id, 1}),
 	    {noreply, State};
 	{{error, _}, #state{pred=Orig}} -> %% Redir Pred's successor
 	    io:format("Redir: ~p succs ~p~n", [Pred, Orig]),
@@ -222,11 +223,12 @@ make_fingers([Start|[Next|_]=Rest], Last, Id) ->
 make_fingers([Start], Last, Id) ->
     [#finger{start=Start, last=Last, node=Id}].
 
-init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fingers]}=State0) ->
+init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F|Fingers]}=State0) ->
     case find_successor(Gate, Start) of
 	{error, _} ->
 	    init_neighbors(Gates, State0);
 	{_, Succs0} ->
+	    Fs = init_fingers(Fingers, Id#id.key, Succs0, Gate),
 	    try set_predecessor(Succs0, Id) of
 		myself ->
 		    init_neighbors([Gate|Gates], State0);
@@ -234,10 +236,8 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F0|Fing
 		    setup_monitor(Pred),
 		    setup_monitor(Succs),
 		    State1 = State0#state{pred=Pred, succ=[Succs]},
-		    F = F0#finger{node=Succs},
-		    Fs = [F|init_fingers(Fingers, Id#id.key, Succs, Gate)],
 		    spawn_link(fun() -> update_others(Id, 1, State0#state.key_bit_sz) end),
-		    State1#state{fingers=Fs}
+		    State1#state{fingers=[F#finger{node=Succs}|Fs]}
 	    catch _:{noproc, _} ->
 		    init_neighbors([Gate|Gates], State0)
 	    end
