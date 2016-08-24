@@ -106,10 +106,17 @@ test_256_nodes() ->
 	ok = check_net(A4, KBSZ),
 	A5 = remove(A4, 20), % From 46 To 26
 	ok = check_net(A5, KBSZ),
-	choord:print_ring(p(hd(A5))),
-	exit(p(hd(tl(A5))), ok),
-	exit(Pid0, test_done)
-    catch error:Reason ->
+	A6 = remove(A5, 14), % From 26 To 12
+	ok = check_net(A6, KBSZ),
+	A7 = remove(A6, 8), % From 12 To 4
+	ok = check_net(A7, KBSZ),
+	choord:print_ring(p(hd(A7))),
+	[] = remove(A7, 4),
+	ok
+    catch error:{error, Line, EGate, Str} ->
+	    choord:print_state(p(EGate)),
+	    io:format("~p: TEST FAILED: ~s~n",[Line, Str]);
+	  error:Reason ->
 	    io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()])
     end,
     ok.
@@ -127,11 +134,14 @@ zip([[X | Xs] | Xss]) ->
 zip([[] | Xss]) -> zip(Xss);
 zip([]) -> [].
 
+remove([{_,Pid}], 1) ->
+    unlink(Pid), exit(Pid, die),
+    [];
 remove(Net, N) when N > 0 ->
     Pick = rand:uniform(length(Net)-1),
-    {N1,[{Key, Pid}|N2]} = lists:split(Pick, Net),
+    {N1,[{_Key, Pid}|N2]} = lists:split(Pick, Net),
     unlink(Pid), exit(Pid, die),
-    io:format("Kill: ~p ~p~n",[Key, Pid]),
+    % io:format("Kill: ~p ~p~n",[_Key, Pid]),
     remove(N1++N2, N-1);
 remove(Net, _) -> Net.
 
@@ -144,46 +154,46 @@ check_net([Gate], _KBSZ) ->
     ok;
 check_net([{_Key,_Pid}|_]=Pids, KBSZ) ->
     io:format("Check ~p nodes~n",[length(Pids)]),
-    check_net(0, Pids, KBSZ),
     Ordered = lists:sort(Pids),
-    case check_ring(Ordered, lists:last(Ordered), hd(Ordered)) of
-	true  ->
-	    ok;
-	false ->
-	    choord:print_state(p(hd(Pids))),
-	    error({error, ?LINE})
-    end.
-
-check_net(Id, Pids, KBSZ) when Id =< KBSZ ->
-    KEY_SIZE = ?KEY_SIZE(KBSZ),
-    Index = Id * (KEY_SIZE div KBSZ),
-    ok = check_net_1((KEY_SIZE + Index - 1) rem KEY_SIZE, Pids),
-    ok = check_net_1(Index, Pids),
-    check_net(Id+1, Pids, KBSZ);
-check_net(_, _, _) ->
+    GetSucc = successor_test(Ordered),
+    check_net(0, Pids, GetSucc, KBSZ),
+    true = check_ring(Ordered, lists:last(Ordered), hd(Ordered)),
     ok.
 
-check_net_1(Id, [Gate|Connected]) ->
-    case check_net_1(Connected, Id, find_successor(Gate, Id, 3)) of
+check_net(Id, Pids, GetSucc, KBSZ) when Id =< KBSZ ->
+    KEY_SIZE = ?KEY_SIZE(KBSZ),
+    Index = Id * (KEY_SIZE div KBSZ),
+    ok = check_net_1((KEY_SIZE + Index - 1) rem KEY_SIZE, GetSucc, Pids),
+    ok = check_net_1(Index, GetSucc, Pids),
+    check_net(Id+1, Pids, GetSucc, KBSZ);
+check_net(_, _, _, _) ->
+    ok.
+
+check_net_1(Id, GetSucc, [Gate|Connected]) ->
+    PS = {_, Succs} = find_successor(Gate, Id, 3),
+    true = check_id(GetSucc(Id), Succs),
+    case check_net_2(Connected, Id, PS) of
 	ok -> ok;
-	{retry, _, _} ->
-	    PS = choord:find_successor(p(Gate), Id),
-	    case check_net_1(Connected, Id, PS) of
-		ok -> ok;
-		{retry, Fail, Failed} ->
-		    choord:print_state(p(Gate)),
-		    io:format("~p:~p: Exp ~p got ~p~n", [Fail, Id, PS, Failed]),
-		    error
-	    end
+	{retry, Fail, Failed} ->
+	    Str = io_lib:format("~p:~p: Exp ~p ~n  got ~p~n", [Fail, Id, PS, Failed]),
+	    error({error, ?LINE, Gate, Str})
     end.
 
-check_net_1([], _, {Pred, Succs})
+check_net_2([], _, {Pred, Succs})
   when Pred =/= Succs -> ok;
-check_net_1([Gate|Gates], Id, PS) ->
+check_net_2([Gate|Gates], Id, PS) ->
     case find_successor(Gate, Id, 3) of
-	PS -> check_net_1(Gates, Id, PS);
+	PS -> check_net_2(Gates, Id, PS);
 	Failed -> {retry, Gate, Failed}
     end.
+
+successor_test(Ordered) ->
+    fun(Id) -> successor_test(Id, Ordered, hd(Ordered)) end.
+
+successor_test(Id, [{Key,_}=Succs|_], _) when Id =< Key -> Succs;
+successor_test(Id, [_|Ns], First) ->
+    successor_test(Id, Ns, First);
+successor_test(_Id, [], Succs) -> Succs.
 
 find_successor(Gate, _Id, 0) ->
     {failed, Gate};
@@ -192,8 +202,11 @@ find_successor(Gate, Id, Retries) ->
         {'EXIT', _} ->
             timer:sleep(10), %TODO
             find_successor(Gate, Id, Retries-1);
-        Reply ->
-            Reply
+	{_P, {id, _Key, Pid}} = Reply ->
+	    case is_process_alive(Pid) of
+		true -> Reply;
+		false -> find_successor(Gate, Id, Retries-1)
+	    end
     end.
 
 %% White box testing
@@ -205,22 +218,19 @@ check_ring([This], Pred, Succs) ->
 
 check_ring_1(Pred, This, Succs) ->
     {state, ThisId, PredId, SuccsIds, Fingers, KBsz} = St = sys:get_state(p(This)),
-    (T1 = check_id(This, ThisId)) orelse
-	io:format("Error This: ~p ~p~n",[This, ThisId]),
-    (T2 = check_id(Pred, PredId)) orelse
-	io:format("Error Pred: ~p ~p~n",[Pred, PredId]),
-    (T3 = check_id(Succs, hd(SuccsIds))) orelse
-	io:format("Error Succs: ~p ~p~n",[Succs, hd(SuccsIds)]),
+    T1 = check_id(This, ThisId),
+    T2 = check_id(Pred, PredId),
+    T3 = check_id(Succs, hd(SuccsIds)),
     Fs = check_fingers(Fingers, 1 bsl KBsz),
     if T1, T2, T3, Fs ->
 	    true;
        not Fs ->
 	    choord:print_state(St, debug),
-	    false;
+	    error({error, ?LINE, This, "Finger failed"});
        true ->
-	    io:format("~p ~p ~p =>~n  ~p ~p ~p~n",
-		      [Pred, This, Succs, PredId, ThisId, SuccsIds]),
-	    false
+	    Str = io_lib:format("RING failed ~p ~p ~p =>~n  ~p ~p ~p~n",
+				[Pred, This, Succs, PredId, ThisId, SuccsIds]),
+	    error({error, ?LINE, This, Str})
     end.
 
 check_id({Key,Pid}, {id,Key,Pid}) -> true;

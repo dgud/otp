@@ -11,14 +11,13 @@
 -behaviour(gen_server).
 
 %% API
--export([start/1, start_link/1]).
+-export([start/1, start_link/1, find_successor/2]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 %% debug
--export([print_ring/1, print_state/1]).
--compile(export_all).
+-export([print_ring/1, print_state/1, print_state/2]).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
 
@@ -109,9 +108,9 @@ handle_cast({update_finger_table, S, I}, State) ->
 	    case hd(State#state.succ) of
 		Succs ->
 		    {noreply, State#state{fingers=Fingers}};
-		Orig ->
+		_Orig ->
 		    %% io:format("~s: UPDATE SUCCS ~s => ~s~n",
-		    %% 	      [print_key(State#state.id), print_key(Orig), print_key(Succs)]),
+		    %% 	      [print_key(State#state.id), print_key(_Orig), print_key(Succs)]),
 		    cast(Succs, {set_predecessor, State#state.id}),
 		    {noreply, State#state{succ=[Succs], fingers=Fingers}}
 	    end;
