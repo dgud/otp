@@ -414,17 +414,26 @@ setup_monitor(S) ->
 
 print_state(#state{id=This, pred=Pred, succ=[Succ|_]}, ring) ->
     io:format("~s <- ~s -> ~s~n", [print_key(Pred), print_key(This), print_key(Succ)]);
-print_state(#state{id=This, pred=Pred, succ=Succs, fingers=Fingers}, _) ->
-    io:format("~nPRED: ~s~n", [print_key(Pred)]),
-    io:format("*THIS*: ~p ~s~n", [self(), print_key(This)]),
-    io:format("SUCC: ~p~n", [[lists:flatten(print_key(S)) || S <- Succs]]),
-    io:format("Fingers: ~n", []),
-    [io:put_chars(print_finger(F)) || F <- Fingers].
+print_state(#state{id=This, pred=Pred, succ=[Succ|_], fingers=Fingers}, _) ->
+    io:format("~nNode ~s <- ~s -> ~s~n", [print_key(Pred), print_key(This), print_key(Succ)]),
+    io:format("Fs: ", []),
+    Print = fun(F, Acc0) ->
+		    IO = print_finger(F),
+		    Len0 = length(IO),
+		    Len = Acc0 + length(IO),
+		    Acc = if Len > 85 -> io:format("~n    "), Len0;
+			     true -> Len
+			  end,
+		    io:put_chars(IO),
+		    Acc
+	    end,
+    lists:foldl(Print, 0, Fingers),
+    io:format("~n").
 
 print_finger(#finger{start=Start, last=Last, node=Node}) ->
-    io_lib:format(" {~.3w ~.5w ~s}~n",[Start, Last, print_key(Node)]).
+    lists:flatten(io_lib:format(" {~.3w ~.3w ~s} ",[Start, Last, print_key(Node)])).
 
 print_key(undefined) -> "undefined";
 print_key(#id{key=Key, pid=Pid}) ->
-    io_lib:format("<~.3p ~p>", [Key,Pid]).
+    io_lib:format("{~.3p, ~p}", [Key,Pid]).
 
