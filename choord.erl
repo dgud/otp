@@ -18,6 +18,7 @@
 	 terminate/2, code_change/3]).
 %% debug
 -export([print_ring/1, print_state/1, print_state/2]).
+-compile(export_all).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
 
@@ -54,7 +55,7 @@ find_successor(Gate, Id) ->
     Res = {Pred, Succs} = find_predecessor(Gate, Id),
     case call(Pred, get_successor) of %% Assert
 	Succs -> Res;
-	Changed -> {Changed, Succs}
+	Changed -> {Pred, Changed}
     end.
 
 find_predecessor(Gate, Id) ->
@@ -97,6 +98,37 @@ handle_call({debug_state, Level}, From, #state{id=Id, succ=[Succs|_]}=State) ->
     cast(Succs, {debug_state, Level, Id, From}),
     {noreply, State}.
 
+handle_cast({set_predecessor, Pred}, State0) -> %% This always comes from the Pred
+    case set_predecessor_impl(Pred, State0) of
+	{{ok, undefined}, State} ->
+            cast(Pred, {set_successor, State#state.id}),
+	    {noreply, State};
+	{{ok, PrevPred}, State} ->
+            cast(PrevPred, {set_successor, Pred}),
+	    cast(Pred, {set_successor, State#state.id}),
+	    {noreply, State};
+	{{error, _}, #state{pred=Orig}} -> %% Redir Pred's successor
+	    io:format("Redir: ~p succs ~p~n", [Pred, Orig]),
+	    cast(Pred, {set_successor, Orig}),
+	    {noreply, State0}
+    end;
+handle_cast({set_successor, Me}, #state{id=Me}=State) ->
+    {noreply, State};
+handle_cast({set_successor, Succ}, #state{succ=[Succ|_]}=State) ->
+    {noreply, State};
+handle_cast({set_successor, #id{key=NewKey}=NewSucc},
+	    #state{id=#id{key=MeKey}=Me, succ=[#id{key=SuccKey}=_Orig|_],fingers=[F1|Fs]}=State) ->
+    case memberIN(NewKey, MeKey, SuccKey) of
+	true ->
+	    setup_monitor(NewSucc),
+	    io:format("~s: UPDATE SUCCS ~s => ~s~n",
+		      [print_key(Me), print_key(_Orig), print_key(NewSucc)]),
+	    cast(NewSucc, {set_predecessor, Me}),
+	    {noreply, State#state{succ=[NewSucc], fingers=[F1#finger{node=NewSucc}|Fs]}};
+	false ->
+	    io:format("Set succ failed: ~p (~p)succs ~p~n", [Me, _Orig, NewSucc]),
+	    {noreply, State}
+    end;
 handle_cast({update_finger_table, Id, _I}, #state{id=Id}=State) ->
     %% My own state is already correct
     {noreply, State};
@@ -109,23 +141,13 @@ handle_cast({update_finger_table, S, I}, State) ->
 		Succs ->
 		    {noreply, State#state{fingers=Fingers}};
 		_Orig ->
-		    %% io:format("~s: UPDATE SUCCS ~s => ~s~n",
-		    %% 	      [print_key(State#state.id), print_key(_Orig), print_key(Succs)]),
+		    io:format("~s: UPDATE SUCCS2 ~s => ~s~n",
+			      [print_key(State#state.id), print_key(_Orig), print_key(Succs)]),
 		    cast(Succs, {set_predecessor, State#state.id}),
 		    {noreply, State#state{succ=[Succs], fingers=Fingers}}
 	    end;
 	_ ->
 	    {noreply, State#state{fingers=Fingers}}
-    end;
-handle_cast({set_predecessor, Pred}, State0) ->
-    case set_predecessor_impl(Pred, State0) of
-	{{ok, _}, State} ->
-            cast(Pred, {update_finger_table, State#state.id, 1}),
-	    {noreply, State};
-	{{error, _}, #state{pred=Orig}} -> %% Redir Pred's successor
-	    io:format("Redir: ~p succs ~p~n", [Pred, Orig]),
-	    cast(Pred, {update_finger_table, Orig, 1}),
-	    {noreply, State0}
     end;
 handle_cast({debug_state, Level, Start, From}=Cont, #state{id=Id, succ=[Succs|_]}=State) ->
     case Start of
@@ -191,25 +213,16 @@ handle_dead_successor(#state{id=Id, pred=Pred, fingers=[F0|Fs]=Fingers}=State, P
 %		    io:format("~p: ~p~n",[?LINE,Id]),
 		    State#state{succ=[Id]};
 		{OldPred, #id{}=Succ} ->
-		    %% io:format("~s: UPDATE dead SUCCS ~s => ~s~n",
-		    %% 	      [print_key(State#state.id), print_key(hd(State#state.succ)), print_key(Succ)]),
+		    io:format("~s: UPDATE dead SUCCS ~s => ~s~n",
+			      [print_key(State#state.id), print_key(hd(State#state.succ)), print_key(Succ)]),
 		    case OldPred of
 			undefined -> ok;
 			Id -> ok;
-			_  -> cast(OldPred, {update_finger_table, Id, 1})
+			_  -> cast(OldPred, {set_successor, Id})
 		    end,
 		    State#state{succ=[Succ], fingers=[F0#finger{node=Succ}|Fs]}
 	    catch exit:_ -> error
 	    end
-    end.
-
-set_predecessor(Id, Id) -> myself;
-set_predecessor(Succs, Id) ->
-    case call(Succs, {set_predecessor, Id}) of
-        {ok, Pred} ->
-            {Pred, Succs};
-        {error, NewSuccs} ->
-            set_predecessor(NewSuccs, Id)
     end.
 
 make_fingers(#id{key=N} = Id, KeyBSZ) ->
@@ -257,7 +270,7 @@ init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
 init_fingers([], _, _, _) -> [].
 
 fix_fingers(Pid, Last, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
-    spawn(fun() -> fix_finger(Me, F1, length(Fingers)) end),
+    spawn_link(fun() -> fix_finger(Me, F1, length(Fingers)) end),
     case Acc of
 	[] ->
 	    fix_fingers(Pid, Last, Me, Fingers, [F1#finger{node=Last}|Acc]);
@@ -303,7 +316,17 @@ closest_preceding_fingers(#id{key=This}=N, Id, Fingers) ->
 	[#finger{node=Node}|_] -> Node
     end.
 
+set_predecessor(Id, Id) -> myself;
+set_predecessor(Succs, Id) ->
+    case call(Succs, {set_predecessor, Id}) of
+        {ok, Pred} ->
+            {Pred, Succs};
+        {error, NewSuccs} ->
+            set_predecessor(NewSuccs, Id)
+    end.
 
+set_predecessor_impl(Pred, #state{pred=Pred}=State) ->
+    {{ok, Pred}, State};
 set_predecessor_impl(NewPred, #state{pred=undefined=OldPred}=State) ->
     setup_monitor(NewPred),
     {{ok, OldPred}, State#state{pred=NewPred}};
@@ -345,11 +368,9 @@ update_finger_table(#id{key=SKey}=S, I,
     case memberIN(SKey, N, Node) of
 	false ->
 	    Fingers0;
-	true when Id =:= Pred ->
-	    Part1 ++ [F0#finger{node=S}|Part2];
 	true ->
 	    setup_monitor(S),
-	    cast(Pred, {update_finger_table, S, I}),
+	    (Id =/= Pred) andalso cast(Pred, {update_finger_table, S, I}),
 	    Part1 ++ [F0#finger{node=S}|Part2]
     end.
 
@@ -435,5 +456,5 @@ print_finger(#finger{start=Start, last=Last, node=Node}) ->
 
 print_key(undefined) -> "undefined";
 print_key(#id{key=Key, pid=Pid}) ->
-    io_lib:format("{~.3p, ~p}", [Key,Pid]).
+    io_lib:format("{~.3p,~p}", [Key,Pid]).
 

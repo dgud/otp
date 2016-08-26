@@ -106,6 +106,7 @@ test_256_nodes() ->
 	ok = check_net(A4, KBSZ),
 	A5 = remove(A4, 20), % From 46 To 26
 	ok = check_net(A5, KBSZ),
+	choord:print_ring(p(hd(A5))),
 	A6 = remove(A5, 14), % From 26 To 12
 	ok = check_net(A6, KBSZ),
 	A7 = remove(A6, 8), % From 12 To 4
@@ -114,12 +115,13 @@ test_256_nodes() ->
 	[] = remove(A7, 4),
 	ok
     catch error:{error, Line, EGate, Str} ->
-	    choord:print_state(p(EGate)),
-	    io:format("~p: TEST FAILED: ~s~n",[Line, Str]);
+	    Res = (catch choord:print_state(p(EGate))),
+	    io:format("~p: TEST FAILED: ~s~n",[Line, Str]),
+	    Res;
 	  error:Reason ->
-	    io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()])
-    end,
-    ok.
+	    io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
+	    error
+    end.
 
 make_reordered_keys(256) ->
     KL0 = [[K+16*I || K <- lists:seq(0, 15)] || I <- lists:seq(0, 15)],
@@ -170,20 +172,25 @@ check_net(_, _, _, _) ->
     ok.
 
 check_net_1(Id, GetSucc, [Gate|Connected]) ->
-    PS = {_, Succs} = find_successor(Gate, Id, 3),
-    true = check_id(GetSucc(Id), Succs),
+    Res = {PS = {_, Succs}, _} = find_successor(Gate, Id, 3),
+    case check_id(Exp=GetSucc(Id), Succs) of
+	true -> ok;
+	false ->
+	    Str = io_lib:format("Succs ~p: ~p: Exp ~p ~n  got ~p~n", [Gate, Id, Exp, Res]),
+	    error({error, ?LINE, Gate, Str})
+    end,
     case check_net_2(Connected, Id, PS) of
 	ok -> ok;
 	{retry, Fail, Failed} ->
-	    Str = io_lib:format("~p:~p: Exp ~p ~n  got ~p~n", [Fail, Id, PS, Failed]),
-	    error({error, ?LINE, Gate, Str})
+	    Str1 = io_lib:format("~p: ~p: Exp ~p ~n  got ~p~n", [Fail, Id, PS, Failed]),
+	    error({error, ?LINE, Gate, Str1})
     end.
 
 check_net_2([], _, {Pred, Succs})
   when Pred =/= Succs -> ok;
 check_net_2([Gate|Gates], Id, PS) ->
     case find_successor(Gate, Id, 3) of
-	PS -> check_net_2(Gates, Id, PS);
+	{PS,_} -> check_net_2(Gates, Id, PS);
 	Failed -> {retry, Gate, Failed}
     end.
 
@@ -195,19 +202,33 @@ successor_test(Id, [_|Ns], First) ->
     successor_test(Id, Ns, First);
 successor_test(_Id, [], Succs) -> Succs.
 
+
 find_successor(Gate, _Id, 0) ->
     {failed, Gate};
 find_successor(Gate, Id, Retries) ->
-    case catch choord:find_successor(p(Gate), Id) of
-        {'EXIT', _} ->
-            timer:sleep(10), %TODO
-            find_successor(Gate, Id, Retries-1);
-	{_P, {id, _Key, Pid}} = Reply ->
+    try debug_find_successor(Gate, Id) of
+	{{_P, {id, _Key, Pid}}, _Path} = Reply ->
 	    case is_process_alive(Pid) of
 		true -> Reply;
 		false -> find_successor(Gate, Id, Retries-1)
 	    end
+    catch exit:Reason ->
+	    % io:format("Restart ~p ~p~n",[Reason, erlang:get_stacktrace()]),
+	    timer:sleep(10), %TODO
+	    find_successor(Gate, Id, Retries-1)
     end.
+
+debug_find_successor(Gate, Id) ->
+    {{Pred, _Succs},Path} = find_predecessor(Gate, Id, []),
+    Succs = choord:call(p(Pred), get_successor),
+    {{Pred, Succs}, Path}.
+
+find_predecessor(Gate, Id, Acc) ->
+    case choord:call(p(Gate), {find_predecessor, Id}) of
+	{ok, Pred, Succs} -> {{Pred, Succs}, [Gate|Acc]};
+	{cont, Next} -> find_predecessor(Next, Id, [Gate|Acc])
+    end.
+
 
 %% White box testing
 check_ring([This|[Succs|_]=Ordered], Pred, Last) ->
