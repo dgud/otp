@@ -236,11 +236,9 @@ make_fingers([Start], Last, Id) ->
     [#finger{start=Start, last=Last, node=Id}].
 
 init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F|Fingers]}=State0) ->
-    case find_successor(Gate, Start) of
-	{error, _} ->
-	    init_neighbors(Gates, State0);
-	{_, Succs0} ->
-	    Fs = init_fingers(Fingers, Id#id.key, Succs0, Gate),
+    case catch find_successor(Gate, Start) of
+	{_, #id{}=Succs0} ->
+	    Fs = init_fingers(Fingers, Id#id.key, Succs0, [Gate|Gates]),
 	    try set_predecessor(Succs0, Id) of
 		myself ->
 		    init_neighbors([Gate|Gates], State0);
@@ -248,29 +246,55 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F|Finge
 		    setup_monitor(Pred),
 		    setup_monitor(Succs),
 		    State1 = State0#state{pred=Pred, succ=[Succs]},
+		    update_fingers(lists:reverse([F#finger{node=Succs}|Fs]), Id),
 		    spawn_link(fun() -> update_others(Id, 1, State0#state.key_bit_sz) end),
 		    State1#state{fingers=[F#finger{node=Succs}|Fs]}
 	    catch _:{noproc, _} ->
 		    init_neighbors([Gate|Gates], State0)
-	    end
+	    end;
+	_Error ->
+            %io:format("Retry after _Error in init_neighbors: ~p~n", [_Error]),
+            case is_process_alive(Gate) of
+                true -> init_neighbors([Gate|Gates], State0);
+                false -> init_neighbors(Gates, State0)
+            end
     end;
 init_neighbors(_Gs, State) ->
     State.
 
-init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, Gate) ->
+init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, [Gate|Gates]) ->
     case memberIN(Start, N, NodeId) of
 	true  ->
 	    setup_monitor(Prev),
-	    [F#finger{node=Prev}|init_fingers(Fs, N, Prev, Gate)];
+	    [F#finger{node=Prev}|init_fingers(Fs, N, Prev, [Gate|Gates])];
 	false ->
-	    {_, Succs} = find_successor(Gate, Start),
-	    setup_monitor(Succs),
-	    [F#finger{node=Succs}|init_fingers(Fs, N, Succs, Gate)]
+            try find_successor(Gate, Start) of
+                {_, Succs} ->
+                    setup_monitor(Succs),
+                    [F#finger{node=Succs}|init_fingers(Fs, N, Succs, [Gate|Gates])]
+            catch _:_Reason ->
+                %io:format("Retry after _Reason in init_fingers: ~p~n", [_Reason]),
+                case is_process_alive(Gate) of
+                    true -> init_fingers([F|Fs], N, Prev, [Gate|Gates]);
+                    false -> init_fingers([F|Fs], N, Prev, Gates)
+                end
+            end
     end;
-init_fingers([], _, _, _) -> [].
+init_fingers([], _, _, _) -> [];
+init_fingers(Fs, N, Prev, []) ->
+    case is_process_alive(Prev#id.pid) of
+        true -> init_fingers(Fs, N, Prev, [Prev#id.pid]);
+        false -> exit(failed_init_fingers)
+    end.
+
+update_fingers([F|Fs], Id) ->
+    spawn_link(fun() -> fix_finger(Id, F, length([F|Fs])) end),
+    update_fingers(Fs, Id);
+update_fingers([], _Id) ->
+    ok.
 
 fix_fingers(Pid, Last, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
-    spawn_link(fun() -> fix_finger(Me, F1, length(Fingers)) end),
+    spawn_link(fun() -> fix_finger(Me, F1, length([F1|Fingers])) end),
     case Acc of
 	[] ->
 	    fix_fingers(Pid, Last, Me, Fingers, [F1#finger{node=Last}|Acc]);
@@ -291,7 +315,7 @@ fix_finger(Me, #finger{start=Start}=F, I) ->
                     ok
             end;
         {_, Succs} ->
-            cast(Me, {update_finger_table, Succs, I+1})
+            cast(Me, {update_finger_table, Succs, I})
     end.
 
 find_predecessor_impl(Id, #state{id=This, succ=[Succs|_], fingers=Fingers}) ->
@@ -351,14 +375,22 @@ next_succs([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
 next_succs([#finger{node=Next}|_], _) ->
     Next.
 
-update_others(#id{key=Key}=Id, I, KeyBSZ)
+update_others(#id{key=Key, pid=Self}=Id, I, KeyBSZ)
   when I =< KeyBSZ ->
     KeySize = ?KEY_SIZE(KeyBSZ),
     Prev = (KeySize + Key - (1 bsl (I-1)) + 1) rem KeySize,
-    {Pred,_} = find_predecessor(Id, Prev),
-    %io:format("UPD ~p (~p) => Pred ~p ~s~n", [I, Key, Prev, print_key(Pred)]),
-    cast(Pred, {update_finger_table, Id, I}),
-    update_others(Id, I+1, KeyBSZ);
+    try find_predecessor(Id, Prev) of
+        {Pred, _} ->
+            %io:format("UPD ~p (~p) => Pred ~p ~s~n", [I, Key, Prev, print_key(Pred)]),
+            cast(Pred, {update_finger_table, Id, I}),
+            update_others(Id, I+1, KeyBSZ)
+    catch _:_Reason ->
+        %io:format("Retry after _Reason in update_others: ~p~n", [_Reason]),
+        case is_process_alive(Self) of
+            true -> update_others(Id, I, KeyBSZ);
+            false -> ok
+        end
+    end;
 update_others(_, _, _) -> ok.
 
 update_finger_table(#id{key=SKey}=S, I,
@@ -452,7 +484,7 @@ print_state(#state{id=This, pred=Pred, succ=[Succ|_], fingers=Fingers}, _) ->
     io:format("~n").
 
 print_finger(#finger{start=Start, last=Last, node=Node}) ->
-    lists:flatten(io_lib:format(" {~.3w ~.3w ~s} ",[Start, Last, print_key(Node)])).
+    lists:flatten(io_lib:format(" {~.5w ~.5w ~s} ",[Start, Last, print_key(Node)])).
 
 print_key(undefined) -> "undefined";
 print_key(#id{key=Key, pid=Pid}) ->

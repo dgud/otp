@@ -11,7 +11,8 @@ test() ->
     paper_example(),
     test_fast_joins(),
     test_multiple_exits(),
-    test_256_nodes().
+    test_256_nodes(),
+    test_up_down().
 
 paper_example() ->
     KBSZ = 3,
@@ -86,10 +87,7 @@ test_256_nodes() ->
     rand:seed(exs64, {12383, 55421,135412}), %% Set seed so we can debug
     [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ)),
     {ok, Pid0} = choord:start([{key, First}|Props]),
-    Make = fun(Key) ->
-		   {ok, Pid} = choord:start_link([{gates,[Pid0]},{key, Key}|Props]),
-		   Pid
-	   end,
+    Make = make_fun(Pid0, Props, start_link),
     All = [{First, Pid0} | [{Key, Make(Key)} || Key <- Keys]],
     try
 	%% print_ring(Pid0),
@@ -122,6 +120,58 @@ test_256_nodes() ->
 	    io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
 	    error
     end.
+
+test_up_down() ->
+    KBSZ = 10,
+    Props = [{key_bit_sz, KBSZ}],
+    io:format("~n~nTEST NODE JOINS AND LEAVES~n",[]),
+    io:format("~n~n**************************~n",[]),
+    rand:seed(exs64, {12383, 55421,135412}), %% Set seed so we can debug
+    [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ), 300),
+    {ok, Pid0} = choord:start([{key, First}|Props]),
+    Make0 = make_fun(Pid0, Props, start),
+    All = [{First, Pid0} | [{Key, Make0(Key)} || Key <- Keys]],
+    try
+        ok = check_net(All, KBSZ),
+        A0 = remove(All, 100),
+        ok = check_net(A0, KBSZ),
+        ReAdd0 = lists:subtract(All, A0),
+        Make1 = make_fun(Pid0, Props, start_link),
+        Self = self(),
+        RMPid = spawn(fun() -> rm(Self, 100, A0) end),
+        Added = readd(Make1, ReAdd0, []),
+        A1 = receive
+            {RMPid, A, done} -> A ++ Added
+            after 5000 -> exit(failed)
+        end,
+        ok = check_net(A1, KBSZ),
+        [exit(P, test_done) || {_, P} <- A1]
+    catch _:Reason ->
+        choord:print_state(Pid0),
+        io:format("TEST FAILED ~p~n ~p", [Reason, erlang:get_stacktrace()]),
+        [exit(P, failed) || {_, P} <- All]
+    end,
+    ok.
+
+readd(_, [], Added) -> 
+    Added;
+readd(Make, [{Key, _}|ReAdd], Added) ->
+    timer:sleep(1),
+    Pid = Make(Key),
+    readd(Make, ReAdd, [{Key, Pid}|Added]).
+
+rm(Parent, 0, Left) ->
+    Parent ! {self(), Left, done};
+rm(Parent, N, Left) ->
+    timer:sleep(1),
+    rm(Parent, N-1, remove(Left, 1)).
+
+%% Don't use with large key sizes!! :p
+make_reordered_keys(KSZ, Num) ->
+    All = lists:seq(1, KSZ),
+    ToSort = [{rand:uniform(), X} || X <- All],
+    Sorted = lists:sort(ToSort),
+    [X || {_, X} <- lists:sublist(Sorted, Num)].
 
 make_reordered_keys(256) ->
     KL0 = [[K+16*I || K <- lists:seq(0, 15)] || I <- lists:seq(0, 15)],
@@ -262,6 +312,9 @@ check_fingers(_,_) -> true.
 %%     %%if Start =< Key, Start < Last -> true;
 %%     true.
 
+make_fun(Pid0, Props, Start) ->
+    fun(Key) ->
+        {ok, Pid} = choord:Start([{gates,[Pid0]},{key, Key}|Props]),
+        Pid
+    end.
 
-%%%%%%%%%%%%
-%% Debug
