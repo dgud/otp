@@ -217,7 +217,7 @@ check_net([{_Key,_Pid}|_]=Pids, KBSZ) ->
     Ordered = lists:sort(Pids),
     GetSucc = successor_test(Ordered),
     check_net(0, Pids, GetSucc, KBSZ),
-    true = check_ring(Ordered, lists:last(Ordered), hd(Ordered)),
+    true = check_ring([lists:last(Ordered)|Ordered] ++ [hd(Ordered)]),
     ok.
 
 check_net(Id, Pids, GetSucc, KBSZ) when Id =< KBSZ ->
@@ -246,9 +246,9 @@ check_net_1(Id, GetSucc, [Gate|Connected]) ->
 
 check_net_2([], _, {Pred, Succs})
   when Pred =/= Succs -> ok;
-check_net_2([Gate|Gates], Id, PS) ->
+check_net_2([Gate|Gates], Id, {_, Succs}=PS) ->
     case find_successor(Gate, Id, 3) of
-	{PS,_} -> check_net_2(Gates, Id, PS);
+	{{_, Succs},_} -> check_net_2(Gates, Id, PS);
 	Failed -> {retry, Gate, Failed}
     end.
 
@@ -256,9 +256,9 @@ successor_test(Ordered) ->
     fun(Id) -> successor_test(Id, Ordered, hd(Ordered)) end.
 
 successor_test(Id, [{Key,_}=Succs|_], _) when Id =< Key -> Succs;
+successor_test(_Id, [], Succs) -> Succs;
 successor_test(Id, [_|Ns], First) ->
-    successor_test(Id, Ns, First);
-successor_test(_Id, [], Succs) -> Succs.
+    successor_test(Id, Ns, First).
 
 
 find_successor(Gate, _Id, 0) ->
@@ -270,16 +270,20 @@ find_successor(Gate, Id, Retries) ->
 		true -> Reply;
 		false -> find_successor(Gate, Id, Retries-1)
 	    end
-    catch exit:Reason ->
+    catch exit:_Reason ->
 	    % io:format("Restart ~p ~p~n",[Reason, erlang:get_stacktrace()]),
 	    timer:sleep(10), %TODO
 	    find_successor(Gate, Id, Retries-1)
     end.
 
 debug_find_successor(Gate, Id) ->
-    {{Pred, _Succs},Path} = find_predecessor(Gate, Id, []),
-    Succs = choord:call(p(Pred), get_successor),
-    {{Pred, Succs}, Path}.
+    {{Pred, Succs},Path} = find_predecessor(Gate, Id, []),
+    case choord:call(p(Pred), get_successor) of
+	Succs -> {{Pred, Succs}, Path};
+	_ -> % Unstable net, try again
+	    timer:sleep(10),
+	    debug_find_successor(Gate, Id)
+    end.
 
 find_predecessor(Gate, Id, Acc) ->
     case choord:call(p(Gate), {find_predecessor, Id}) of
@@ -289,11 +293,10 @@ find_predecessor(Gate, Id, Acc) ->
 
 
 %% White box testing
-check_ring([This|[Succs|_]=Ordered], Pred, Last) ->
+check_ring([Pred|[This, Succs|_]=Ordered]) ->
     check_ring_1(Pred, This, Succs) andalso
-	check_ring(Ordered, This, Last);
-check_ring([This], Pred, Succs) ->
-    check_ring_1(Pred, This, Succs).
+	check_ring(Ordered);
+check_ring([_,_]) -> true.
 
 check_ring_1(Pred, This, Succs) ->
     {state, ThisId, PredId, SuccsIds, Fingers, KBsz} = St = sys:get_state(p(This)),
@@ -303,6 +306,10 @@ check_ring_1(Pred, This, Succs) ->
     Fs = check_fingers(Fingers, 1 bsl KBsz),
     if T1, T2, T3, Fs ->
 	    true;
+       T2, PredId =:= undefined ->
+	    io:format("Pred undefined for ~p~n",[This]),
+	    timer:sleep(10),
+	    true = check_ring_1(Pred, This, Succs);
        not Fs ->
 	    choord:print_state(St, debug),
 	    error({error, ?LINE, This, "Finger failed"});
