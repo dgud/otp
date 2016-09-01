@@ -29,19 +29,17 @@ paper_example() ->
         ok = check_net([{0,P1},{3,P2},{1,P3},{6,P4}], KBSZ),
         ok = choord:print_state(P1),
         ok = choord:print_ring(P1),
-        unlink(P3),
-        exit(P3, die),
+        die(P3),
         ok = check_net([{0,P1},{3,P2},{6,P4}], KBSZ),
-        unlink(P2),
-        exit(P2, die),
+        die(P2),
         ok = check_net([{0,P1},{6,P4}], KBSZ),
         ok = choord:print_state(P1),
         ok = choord:print_ring(P1),
-        exit(P1, test_done)
-    catch _:{A, B, C, D} ->
-        io:format("TEST FAILED: ~p, ~p, ~p, ~p~n", [A, B, C, lists:flatten(D)]),
-        choord:print_state(P1),
-        exit(P1, test_failed)
+        die(P1)
+    catch _:{error, B, C, D} ->
+            choord:print_state(P1),
+            io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
+            exit(P1, test_failed)
     end,
     ok.
 
@@ -53,10 +51,16 @@ test_fast_joins() ->
     Props = [{key_bit_sz, KBSZ}],
     {ok, P1} = choord:start([{key,0}|Props]),
     Gates = join(Props, [5, 2, 6, 3, 7, 1, 4], [{0,P1}]),
-    ok = check_net(Gates, KBSZ),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    [exit(p(P), die) || P <- Gates],
+    try
+        ok = check_net(Gates, KBSZ),
+        ok = choord:print_state(P1),
+        ok = choord:print_ring(P1),
+        [die(P) || P <- Gates]
+    catch _:{error, B, C, D} ->
+            choord:print_state(P1),
+            io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
+            exit(test_failed)
+    end,
     ok.
 
 test_multiple_exits() ->
@@ -75,7 +79,7 @@ test_multiple_exits() ->
     io:format("Left: ~p~n",  [Left]),
     ok = check_net(Left, KBSZ),
     ok = choord:print_ring(p(hd(Left))),
-    [exit(p(P), die) || P <- Left],
+    [die(P) || P <- Left],
     ok.
 
 join(_, [], Gates) ->
@@ -111,7 +115,6 @@ test_256_nodes() ->
 	ok = check_net(A4, KBSZ),
 	A5 = remove(A4, 20), % From 46 To 26
 	ok = check_net(A5, KBSZ),
-	choord:print_ring(p(hd(A5))),
 	A6 = remove(A5, 14), % From 26 To 12
 	ok = check_net(A6, KBSZ),
 	A7 = remove(A6, 8), % From 12 To 4
@@ -153,7 +156,8 @@ test_up_down() ->
         end,
         ok = check_net(A1, KBSZ),
         choord:print_ring(p(hd(A1))),
-        [exit(P, test_done) || {_, P} <- A1]
+        [die(P) || P <- A1],
+        ok
     catch _:Reason ->
         choord:print_state(Pid0),
         io:format("TEST FAILED ~p~n ~p", [Reason, erlang:get_stacktrace()]),
@@ -194,17 +198,21 @@ zip([[X | Xs] | Xss]) ->
 zip([[] | Xss]) -> zip(Xss);
 zip([]) -> [].
 
-remove([{_,Pid}], 1) ->
-    unlink(Pid), exit(Pid, die),
+remove([Pid], 1) ->
+    die(Pid),
     [];
 remove(Net, N) when N > 0 ->
     Pick = rand:uniform(length(Net)-1),
-    {N1,[{_Key, Pid}|N2]} = lists:split(Pick, Net),
-    unlink(Pid), exit(Pid, die),
-    % io:format("Kill: ~p ~p~n",[_Key, Pid]),
+    {N1,[Pid|N2]} = lists:split(Pick, Net),
+    die(Pid),
+    %% io:format("Kill: ~p ~p~n",[_Key, Pid]),
     remove(N1++N2, N-1);
 remove(Net, _) -> Net.
 
+die(Process) ->
+    Pid = p(Process),
+    unlink(Pid),
+    exit(Pid, die).
 
 p({_Key,Pid}) -> Pid;
 p(Pid) -> Pid.
@@ -217,7 +225,8 @@ check_net([{_Key,_Pid}|_]=Pids, KBSZ) ->
     Ordered = lists:sort(Pids),
     GetSucc = successor_test(Ordered),
     check_net(0, Pids, GetSucc, KBSZ),
-    true = check_ring([lists:last(Ordered)|Ordered] ++ [hd(Ordered)]),
+    Ring = [lists:last(Ordered)|Ordered] ++ Ordered,
+    true = check_ring(length(Pids), Ring),
     ok.
 
 check_net(Id, Pids, GetSucc, KBSZ) when Id =< KBSZ ->
@@ -293,31 +302,42 @@ find_predecessor(Gate, Id, Acc) ->
 
 
 %% White box testing
-check_ring([Pred|[This, Succs|_]=Ordered]) ->
-    check_ring_1(Pred, This, Succs) andalso
-	check_ring(Ordered);
-check_ring([_,_]) -> true.
+check_ring(N, [_|Ordered]=All) when N > 0 ->
+    check_ring_1(All) andalso
+	check_ring(N-1, Ordered);
+check_ring(0, _) -> true.
 
-check_ring_1(Pred, This, Succs) ->
+check_ring_1([Pred, This|Succs]=All) ->
     {state, ThisId, PredId, SuccsIds, Fingers, KBsz} = St = sys:get_state(p(This)),
     T1 = check_id(This, ThisId),
     T2 = check_id(Pred, PredId),
-    T3 = check_id(Succs, hd(SuccsIds)),
+    T3 = check_id(hd(Succs), hd(SuccsIds)),
+    T4 = check_succs(Succs, SuccsIds),
     Fs = check_fingers(Fingers, 1 bsl KBsz),
-    if T1, T2, T3, Fs ->
+
+    if T1, T2, T3, T4, Fs ->
 	    true;
        T2, PredId =:= undefined ->
 	    io:format("Pred undefined for ~p~n",[This]),
 	    timer:sleep(10),
-	    true = check_ring_1(Pred, This, Succs);
+	    true = check_ring_1(All);
        not Fs ->
 	    choord:print_state(St, debug),
 	    error({error, ?LINE, This, "Finger failed"});
+       T1, T2, T3, Fs ->
+            {Ordered, _} = lists:split(length(SuccsIds),Succs),
+            Str1 = io_lib:format("Succ list failed~nExp: ~p~nGot: ~p~n", [Ordered, SuccsIds]),
+            error({error, ?LINE, This, Str1});
        true ->
+            {Ordered, _} = lists:split(length(SuccsIds),Succs),
 	    Str = io_lib:format("RING failed ~p ~p ~p =>~n  ~p ~p ~p~n",
-				[Pred, This, Succs, PredId, ThisId, SuccsIds]),
+				[Pred, This, Ordered, PredId, ThisId, SuccsIds]),
 	    error({error, ?LINE, This, Str})
     end.
+
+check_succs([Succ|All], [Id|Ids]) ->
+    check_id(Succ, Id) andalso check_succs(All, Ids);
+check_succs(_, []) -> true.
 
 check_id({Key,Pid}, {id,Key,Pid}) -> true;
 check_id(_, _) -> false.
