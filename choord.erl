@@ -21,7 +21,6 @@
 -compile(export_all).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
--define(R, 5).
 
 -record(id, {key::range(), pid::pid()}).
 -record(finger, {start::range(), last::range(), node::id()}).
@@ -29,7 +28,8 @@
 		pred :: id(),
 		succs=[] :: [id()],
 		fingers=[] :: [finger()],
-		key_bit_sz :: integer()
+		key_bit_sz :: integer(),
+                succ_list_sz :: integer()
 	       }).
 
 -type range() :: non_neg_integer().
@@ -59,19 +59,19 @@ find_successor(Gate, Id) ->
 	Changed -> {Pred, Changed}
     end.
 
-find_successors(Gate, Id) ->
+find_successors(Gate, Id, ListSz) ->
     {Pred, _} = find_predecessor(Gate, Id),
     Succs = call(Pred, get_successors),
-    find_successors(hd(lists:reverse(Succs)), Id, Succs).
+    find_successors(hd(lists:reverse(Succs)), Id, Succs, ListSz).
 
 % TODO optimize
-find_successors(_, _, Succs) when length(Succs) >= ?R ->
-    lists:sublist(Succs, ?R);
-find_successors(Gate, Id, Succs0) ->
+find_successors(_, _, Succs, ListSz) when length(Succs) >= ListSz ->
+    lists:sublist(Succs, ListSz);
+find_successors(Gate, Id, Succs0, ListSz) ->
     Succ = call(Gate, get_successor),
     case insert_successor(Succ, Id, Succs0) of
         Succs0 -> Succs0;
-        Succs -> find_successors(Succ, Id, Succs)
+        Succs -> find_successors(Succ, Id, Succs, ListSz)
     end.
 
 find_predecessor(Gate, Id) ->
@@ -93,10 +93,12 @@ print_ring(Gate) ->
 init(Props) ->
     Gates = proplists:get_value(gates, Props, []),
     KeyBSZ = proplists:get_value(key_bit_sz, Props, 32),
+    SuccListSZ = proplists:get_value(succ_list_sz, Props, 5),
     Key = proplists:get_value(key, Props, key(self(), KeyBSZ)),  %% For debugging only
     Id = #id{key=Key, pid=self()},
     Fingers0 = make_fingers(Id, KeyBSZ),
-    {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succs=[Id], fingers=Fingers0, key_bit_sz=KeyBSZ})}.
+    {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succs=[Id], fingers=Fingers0,
+                                      key_bit_sz=KeyBSZ, succ_list_sz=SuccListSZ})}.
 
 
 handle_call({set_predecessor, Pred}, _From, %TODO can we handle this special case differently?
@@ -136,6 +138,8 @@ handle_cast({set_predecessor, Pred}, #state{id=Id, succs=Succs}=State0) -> %% Th
     end;
 handle_cast({set_successor, Me}, #state{id=Me, pred=Me}=State) ->
     {noreply, State};
+handle_cast({set_successor, Pred}, #state{pred=Pred, succs=[Pred|_]}=State) ->
+    {noreply, State};
 handle_cast({set_successor, Me}, #state{id=Me, pred=Pred}=State) ->
     cast(Pred, {set_successor, Me}),
     {noreply, State};
@@ -144,7 +148,7 @@ handle_cast({set_successor, Succ}, #state{pred=Pred, succs=[Succ|_]}=State) ->
     {noreply, State};
 handle_cast({set_successor, NewSucc},
 	    #state{id=Me, pred=Pred, succs=Succs,fingers=[F1|Fs]}=State) ->
-    case insert_successor(NewSucc, Me, Succs) of
+    case insert_successor(NewSucc, Me, Succs, State#state.succ_list_sz) of
         Succs ->
 %	    io:format("Set succ failed: ~p (~p)succ ~p~n", [Me, Succs, NewSucc]),
             {noreply, State};
@@ -206,7 +210,7 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
     Succs = case fix_successors(Pid, Succs0) of
         Succs0 -> Succs0;
         Succs1 ->
-            spawn_link(fun() -> update_successors(Id) end),
+            spawn_link(fun() -> update_successors(Id, State#state.succ_list_sz) end),
             Succs1
     end,
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
@@ -249,7 +253,8 @@ handle_dead_successor(#state{id=Id, pred=Pred, succs=Succs, fingers=[F0|Fs]=Fing
 	_ ->
 	    try
                 cast(Next, {set_predecessor, Id}),
-		State#state{succs=insert_successor(Next, Id, Succs), fingers=[F0#finger{node=Next}|Fs]}
+		State#state{succs=insert_successor(Next, Id, Succs, State#state.succ_list_sz),
+                            fingers=[F0#finger{node=Next}|Fs]}
 	    catch exit:_ -> error
 	    end
     end.
@@ -265,7 +270,7 @@ make_fingers([Start], Last, Id) ->
     [#finger{start=Start, last=Last, node=Id}].
 
 init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F|Fingers]}=State0) ->
-    case catch find_successors(Gate, Start) of
+    case catch find_successors(Gate, Start, State0#state.succ_list_sz) of
 	[#id{}=Succ0|_] = Succs0 ->
 	    Fs = init_fingers(Fingers, Id#id.key, Succ0, [Gate|Gates]),
 	    try set_predecessor(Succ0, Id) of
@@ -273,7 +278,7 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[#finger{start=Start}=F|Finge
 		    init_neighbors([Gate|Gates], State0);
 		{Pred, Succ} ->
 		    setup_monitor(Pred),
-                    Succs = insert_successor(Succ, Id, Succs0),
+                    Succs = insert_successor(Succ, Id, Succs0, State0#state.succ_list_sz),
 		    [setup_monitor(S) || S <- Succs],
 		    State1 = State0#state{pred=Pred, succs=Succs},
 		    update_fingers(lists:reverse([F#finger{node=Succ}|Fs]), Id),
@@ -343,12 +348,12 @@ fix_finger(Me, #finger{start=Start}=F, I) ->
             cast(Me, {update_finger_table, Succ, I})
     end.
 
-update_successors(#id{key=Key}=Id) ->
+update_successors(#id{key=Key}=Id, ListSz) ->
     try
-        Succs = find_successors(Id, Key),
+        Succs = find_successors(Id, Key, ListSz),
         [cast(Id, {set_successor, Succ}) || Succ <- Succs]
     catch _:_ ->
-        update_successors(Id)
+        update_successors(Id, ListSz)
     end.
 
 fix_successors(_Pid, []) ->
@@ -456,9 +461,10 @@ update_finger_table(#id{key=SKey}=S, I,
 	    Part1 ++ [F0#finger{node=S}|Part2]
     end.
 
-insert_successor(NewSucc, #id{key=MyKey}, Succs) ->
+insert_successor(NewSucc, #id{key=MyKey}, Succs, SuccListSz) ->
     NewSuccs = insert_successor(NewSucc, MyKey, Succs),
-    lists:sublist(NewSuccs, ?R);
+    lists:sublist(NewSuccs, SuccListSz).
+
 insert_successor(Succ, _Me, [Succ|_]=Succs) ->
     Succs;
 insert_successor(#id{key=NewKey}=NewSucc, MyKey, [#id{key=SuccKey}=Succ|Succs]) ->

@@ -308,7 +308,7 @@ check_ring(N, [_|Ordered]=All) when N > 0 ->
 check_ring(0, _) -> true.
 
 check_ring_1([Pred, This|Succs]=All) ->
-    {state, ThisId, PredId, SuccsIds, Fingers, KBsz} = St = sys:get_state(p(This)),
+    {state, ThisId, PredId, SuccsIds, Fingers, KBsz, _SLsz} = St = sys:get_state(p(This)),
     T1 = check_id(This, ThisId),
     T2 = check_id(Pred, PredId),
     T3 = check_id(hd(Succs), hd(SuccsIds)),
