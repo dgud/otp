@@ -19,23 +19,30 @@ paper_example() ->
     Props = [{key_bit_sz, KBSZ}],
     io:format("~n~nPAPER EXAMPLE TEST~n",[]),
     io:format("~n********************~n~n"),
-    {ok, P1} = choord:start([{key,0}|Props]),
-    {ok, P2} = choord:start([{gates,[P1]}, {key,3}|Props]),
-    ok = check_net([{0,P1},{3,P2}], KBSZ),
-    {ok, P3} = choord:start([{gates,[P1]}, {key,1}|Props]),
-    ok = check_net([{0,P1},{3,P2},{1,P3}], KBSZ),
-    {ok, P4} = choord:start([{gates,[P1]}, {key,6}|Props]),
-    ok = check_net([{0,P1},{3,P2},{1,P3},{6,P4}], KBSZ),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    exit(P3, die),
-    ok = check_net([{0,P1},{3,P2},{6,P4}], KBSZ),
-    exit(P2, die),
-    ok = check_net([{0,P1},{6,P4}], KBSZ),
-    ok = choord:print_state(P1),
-    ok = choord:print_ring(P1),
-    exit(P1, die),
-    exit(P4, die),
+    {ok, P1} = choord:start_link([{key,0}|Props]),
+    {ok, P2} = choord:start_link([{gates,[P1]}, {key,3}|Props]),
+    try
+        ok = check_net([{0,P1},{3,P2}], KBSZ),
+        {ok, P3} = choord:start_link([{gates,[P1]}, {key,1}|Props]),
+        ok = check_net([{0,P1},{3,P2},{1,P3}], KBSZ),
+        {ok, P4} = choord:start_link([{gates,[P1]}, {key,6}|Props]),
+        ok = check_net([{0,P1},{3,P2},{1,P3},{6,P4}], KBSZ),
+        ok = choord:print_state(P1),
+        ok = choord:print_ring(P1),
+        unlink(P3),
+        exit(P3, die),
+        ok = check_net([{0,P1},{3,P2},{6,P4}], KBSZ),
+        unlink(P2),
+        exit(P2, die),
+        ok = check_net([{0,P1},{6,P4}], KBSZ),
+        ok = choord:print_state(P1),
+        ok = choord:print_ring(P1),
+        exit(P1, test_done)
+    catch _:{A, B, C, D} ->
+        io:format("TEST FAILED: ~p, ~p, ~p, ~p~n", [A, B, C, lists:flatten(D)]),
+        choord:print_state(P1),
+        exit(P1, test_failed)
+    end,
     ok.
 
 
@@ -145,6 +152,7 @@ test_up_down() ->
             after 5000 -> exit(failed)
         end,
         ok = check_net(A1, KBSZ),
+        choord:print_ring(p(hd(A1))),
         [exit(P, test_done) || {_, P} <- A1]
     catch _:Reason ->
         choord:print_state(Pid0),
