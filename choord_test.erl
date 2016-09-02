@@ -8,11 +8,12 @@
 
 test() ->
     io:format("Starting all tests~n",[]),
-    paper_example(),
-    test_fast_joins(),
-    test_multiple_exits(),
-    test_256_nodes(),
-    test_up_down().
+    A=paper_example(),
+    B=test_fast_joins(),
+    C=test_multiple_exits(),
+    D=test_256_nodes(),
+    E=test_up_down(),
+    [A, B, C, D, E].
 
 paper_example() ->
     KBSZ = 3,
@@ -35,13 +36,17 @@ paper_example() ->
         ok = check_net([{0,P1},{6,P4}], KBSZ),
         ok = choord:print_state(P1),
         ok = choord:print_ring(P1),
-        die(P1)
+        die(P1),
+        die(P4),
+        ok
     catch _:{error, B, C, D} ->
+           io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
             choord:print_state(P1),
-            io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
-            exit(P1, test_failed)
-    end,
-    ok.
+            failed;
+        error:Reason ->
+            io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
+            failed
+   end.
 
 
 test_fast_joins() ->
@@ -55,13 +60,18 @@ test_fast_joins() ->
         ok = check_net(Gates, KBSZ),
         ok = choord:print_state(P1),
         ok = choord:print_ring(P1),
-        [die(P) || P <- Gates]
-    catch _:{error, B, C, D} ->
+        [die(P) || P <- Gates],
+        ok
+    catch
+        _:{error, B, C, D} ->
             choord:print_state(P1),
             io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
-            exit(test_failed)
-    end,
-    ok.
+            exit(test_failed),
+            failed;
+        error:Reason ->
+            io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
+            failed
+   end.
 
 test_multiple_exits() ->
     io:format("~n~nTESTING MULTIPLE AND FAST EXITS~n",[]),
@@ -71,16 +81,27 @@ test_multiple_exits() ->
     {ok, P1} = choord:start([{key,0}|Props]),
     Gates = join(Props, [5, 2, 6, 3, 7, 1, 4], [{0,P1}]),
     ok = check_net(Gates, KBSZ),
-    Exits = [hd(Gates), hd(tl(Gates)), hd(tl(tl(Gates)))],
-    io:format("Killing: ~p~n", [Exits]),
-    [exit(p(P), die) || P <- Exits],
-    timer:sleep(100),
-    Left = lists:subtract(Gates, Exits),
-    io:format("Left: ~p~n",  [Left]),
-    ok = check_net(Left, KBSZ),
-    ok = choord:print_ring(p(hd(Left))),
-    [die(P) || P <- Left],
-    ok.
+    try
+        Exits = [hd(Gates), hd(tl(Gates)), hd(tl(tl(Gates)))],
+        io:format("Killing: ~p~n", [Exits]),
+        [exit(p(P), die) || P <- Exits],
+        Left = lists:subtract(Gates, Exits),
+        io:format("Left: ~p~n",  [Left]),
+        ok = check_net(Left, KBSZ),
+        ok = choord:print_ring(p(hd(Left))),
+        [die(P) || P <- Left],
+        ok
+    catch
+        _:{error, B, C, D} ->
+            choord:print_state(P1),
+            io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
+            exit(test_failed),
+            failed;
+        error:Reason ->
+            io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
+            failed
+   end.
+
 
 join(_, [], Gates) ->
     Gates;
@@ -155,15 +176,14 @@ test_up_down() ->
             after 5000 -> exit(failed)
         end,
         ok = check_net(A1, KBSZ),
-        choord:print_ring(p(hd(A1))),
         [die(P) || P <- A1],
         ok
     catch _:Reason ->
         choord:print_state(Pid0),
         io:format("TEST FAILED ~p~n ~p", [Reason, erlang:get_stacktrace()]),
-        [exit(P, failed) || {_, P} <- All]
-    end,
-    ok.
+        [exit(P, failed) || {_, P} <- All],
+        failed
+    end.
 
 readd(_, [], Added) -> 
     Added;
@@ -249,7 +269,7 @@ check_net_1(Id, GetSucc, [Gate|Connected]) ->
     case check_net_2(Connected, Id, PS) of
 	ok -> ok;
 	{retry, Fail, Failed} ->
-	    Str1 = io_lib:format("~p: ~p: Exp ~p ~n  got ~p~n", [Fail, Id, PS, Failed]),
+	    Str1 = io_lib:format("~p: Lookup ~p: Exp ~p ~n  got ~p~n", [Fail, Id, PS, Failed]),
 	    error({error, ?LINE, Gate, Str1})
     end.
 
