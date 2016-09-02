@@ -144,7 +144,7 @@ test_256_nodes() ->
     catch error:{error, Line, EGate, Str} ->
 	    Res = (catch choord:print_state(p(EGate))),
 	    io:format("~p: TEST FAILED: ~s~n",[Line, Str]),
-	    Res;
+	    {failed, Res};
 	  error:Reason ->
 	    io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
 	    error
