@@ -59,11 +59,6 @@ find_successor(Gate, Id) ->
 	Changed -> {Pred, Changed}
     end.
 
-%% Zandra
-%% find_successors(Gate, Id, ListSz) ->
-%%     {_, Succ} = find_successor(Gate, Id),
-%%     find_successors(Succ, Id, [Succ], ListSz).
-%% 
 find_successors(Gate, #id{key=Key}=Id, ListSz) ->
     {Pred, _} = find_predecessor(Gate, Key),
     Succs = call(Pred, get_successors),
