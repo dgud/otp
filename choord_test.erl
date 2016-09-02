@@ -8,12 +8,11 @@
 
 test() ->
     io:format("Starting all tests~n",[]),
-    A=paper_example(),
-    B=test_fast_joins(),
-    C=test_multiple_exits(),
-    D=test_256_nodes(),
-    E=test_up_down(),
-    [A, B, C, D, E].
+    ok=paper_example(),
+    ok=test_fast_joins(),
+    ok=test_multiple_exits(),
+    ok=test_256_nodes(),
+    ok=test_up_down().
 
 paper_example() ->
     KBSZ = 3,
@@ -40,7 +39,7 @@ paper_example() ->
         die(P4),
         ok
     catch _:{error, B, C, D} ->
-           io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
+            io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
             choord:print_state(P1),
             failed;
         error:Reason ->
@@ -66,7 +65,6 @@ test_fast_joins() ->
         _:{error, B, C, D} ->
             choord:print_state(P1),
             io:format("~n~nTEST FAILED: ~p: ~p ~s~n", [B, C, lists:flatten(D)]),
-            exit(test_failed),
             failed;
         error:Reason ->
             io:format("TEST FAILED ~p~n ~p",[Reason, erlang:get_stacktrace()]),
@@ -297,10 +295,13 @@ find_successor(Gate, Id, Retries) ->
 	{{_P, {id, _Key, Pid}}, _Path} = Reply ->
 	    case is_process_alive(Pid) of
 		true -> Reply;
-		false -> find_successor(Gate, Id, Retries-1)
+		false ->
+                    %% io:format("Restart find_succ ~p dead~n",[Pid]),
+                    timer:sleep(10), %TODO
+                    find_successor(Gate, Id, Retries-1)
 	    end
     catch exit:_Reason ->
-	    % io:format("Restart ~p ~p~n",[Reason, erlang:get_stacktrace()]),
+	    %% io:format("Restart ~p ~p~n",[_Reason, erlang:get_stacktrace()]),
 	    timer:sleep(10), %TODO
 	    find_successor(Gate, Id, Retries-1)
     end.
