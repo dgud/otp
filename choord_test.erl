@@ -244,7 +244,7 @@ check_net([{_Key,_Pid}|_]=Pids, KBSZ) ->
     GetSucc = successor_test(Ordered),
     check_net(0, Pids, GetSucc, KBSZ),
     Ring = [lists:last(Ordered)|Ordered] ++ Ordered,
-    true = check_ring(length(Pids), Ring),
+    true = check_ring(length(Pids), Ring, Ordered),
     ok.
 
 check_net(Id, Pids, GetSucc, KBSZ) when Id =< KBSZ ->
@@ -323,25 +323,25 @@ find_predecessor(Gate, Id, Acc) ->
 
 
 %% White box testing
-check_ring(N, [_|Ordered]=All) when N > 0 ->
-    check_ring_1(All) andalso
-	check_ring(N-1, Ordered);
-check_ring(0, _) -> true.
+check_ring(N, [_|Ordered]=All, Ord) when N > 0 ->
+    check_ring_1(All, Ord) andalso
+	check_ring(N-1, Ordered, Ord);
+check_ring(0, _, _) -> true.
 
-check_ring_1([Pred, This|Succs]=All) ->
+check_ring_1([Pred, This|Succs]=All, Ord) ->
     {state, ThisId, PredId, SuccsIds, Fingers, KBsz, _SLsz} = St = sys:get_state(p(This)),
     T1 = check_id(This, ThisId),
     T2 = check_id(Pred, PredId),
     T3 = check_id(hd(Succs), hd(SuccsIds)),
     T4 = check_succs(Succs, SuccsIds),
-    Fs = check_fingers(Fingers, 1 bsl KBsz),
+    Fs = check_fingers(ThisId, Ord, Fingers, KBsz),
 
     if T1, T2, T3, T4, Fs ->
 	    true;
        T2, PredId =:= undefined ->
 	    io:format("Pred undefined for ~p~n",[This]),
 	    timer:sleep(10),
-	    true = check_ring_1(All);
+	    true = check_ring_1(All, Ord);
        not Fs ->
 	    choord:print_state(St, debug),
 	    error({error, ?LINE, This, "Finger failed"});
@@ -363,10 +363,42 @@ check_succs(_, []) -> true.
 check_id({Key,Pid}, {id,Key,Pid}) -> true;
 check_id(_, _) -> false.
 
-check_fingers(_,_) -> true.
-%% check_fingers([{finger, Start, Last, {id, Key, _Pid}}|Fs], KBSz) ->
-%%     %%if Start =< Key, Start < Last -> true;
-%%     true.
+check_fingers(ThisId, Ordered, Fingers, KeyBitSize) ->
+    check_ranges(ThisId, Fingers, KeyBitSize) andalso
+        check_fingers(Ordered, Fingers).
+
+check_fingers(_, []) ->
+    true;
+check_fingers([O|Os]=Ordered, [{finger, Start, _, Node}|Fingers]) ->
+    check_finger(O, Os, Start, Node) andalso
+        check_fingers(Ordered, Fingers).
+
+check_finger({_Expected, Node}, [], _, {_, _, Node}) ->
+    true;
+check_finger(_E, [], _S, _N) ->
+    io:format("Finger failed: Start=~p, Expected: ~p, Got: ~p~n", [_S, _E, _N]),
+    false;
+check_finger({EKey, _}, [{Key, _}=Next|Nodes], Start, Id) when
+  Key >= Start, EKey >= Start, EKey > Key ->
+    check_finger(Next, Nodes, Start, Id);
+check_finger({EKey, _}, [{Key, _}=Next|Nodes], Start, Id) when
+  Key >= Start, EKey < Start ->
+    check_finger(Next, Nodes, Start, Id);
+check_finger(Expected, [_|Nodes], Start, Id) ->
+    check_finger(Expected, Nodes, Start, Id).
+
+check_ranges({id, Key, _}, Fingers, KeyBitSize) ->
+    KeySize = 1 bsl KeyBitSize,
+    Fun = fun(K) -> (Key + (1 bsl (K))) rem KeySize end,
+    Ranges = [{Fun(K-1), Fun(K)} || K <- lists:seq(1, KeyBitSize)],
+    check_ranges(Fingers, Ranges).
+
+check_ranges([], []) ->
+    true;
+check_ranges([{finger, Start, Last, _}|Fingers], [{Start, Last}|StartLasts]) ->
+    check_ranges(Fingers, StartLasts);
+check_ranges(_Fs, _SLs) ->
+    false.
 
 make_fun(Pid0, Props, Start) ->
     fun(Key) ->
