@@ -173,9 +173,6 @@ handle_cast({set_successor, NewSucc},
 	    cast(Pred, {set_successor, NewSucc}),
 	    {noreply, State#state{succs=NewSuccs}}
     end;
-handle_cast({update_finger_table, Id, _I}, #state{id=Id}=State) ->
-    %% My own state is already correct
-    {noreply, State};
 handle_cast({update_finger_table, S, I}, State) ->
     Fingers = update_finger_table(S, I, State),
     case I of
@@ -455,16 +452,21 @@ update_others(#id{key=Key}=Id, I, KeyBSZ)
 update_others(_, _, _) -> ok.
 
 update_finger_table(#id{key=SKey}=S, I,
-		    #state{id=#id{key=N}=Id, fingers=Fingers0, pred=Pred}) ->
+		    #state{id=Id, fingers=Fingers0, pred=Pred}) ->
     {Part1, [F0|Part2]} = lists:split(I-1, Fingers0),
-    #finger{node=#id{key=Node}} = F0,
-    case memberIN(SKey, N, Node) of
-	false ->
-	    Fingers0;
-	true ->
-	    setup_monitor(S),
-	    (Id =/= Pred) andalso cast(Pred, {update_finger_table, S, I}),
-	    Part1 ++ [F0#finger{node=S}|Part2]
+    #finger{start=Start, node=#id{key=Node}} = F0,
+    if
+        Start == Node ->
+            Fingers0;
+        true ->
+            case memberIN(SKey, Start, Node) of
+		false ->
+		    Fingers0;
+		true ->
+		    setup_monitor(S),
+		    (Id =/= Pred) andalso cast(Pred, {update_finger_table, S, I}),
+		    Part1 ++ [F0#finger{node=S}|Part2]
+	    end
     end.
 
 insert_successor(Ns, #id{}=Me, Ss, Sz) ->
