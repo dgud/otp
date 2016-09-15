@@ -151,12 +151,12 @@ handle_cast({set_successor, NewSucc},
 	    #state{id=Me, pred=Pred, succs=Succs,fingers=[F1|Fs]}=State) ->
     case insert_successors([NewSucc], Me, Succs, State#state.succ_list_sz) of
         Succs ->
-            case lists:member(NewSucc, Succs) of
-                true ->
-                    cast(Pred, {set_successor, NewSucc});
-                false ->
-                    ok
-            end,
+            %% case lists:member(NewSucc, Succs) of
+            %%     true ->
+            %%         cast(Pred, {set_successor, NewSucc});
+            %%     false ->
+            %%         ok
+            %% end,
 %	    io:format("Set succ failed: ~p (~p)succ ~p~n", [Me, Succs, NewSucc]),
             {noreply, State};
         [NewSucc|_] = NewSuccs ->
@@ -338,8 +338,10 @@ fix_fingers(Pid, Last, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
     spawn_link(fun() -> fix_finger(Me, F1, length([F1|Fingers])) end),
     case Acc of
 	[] ->
+            %io:format("~s:* dead ~s => ~s~n", [print_key(Me), print_finger(F1), print_key(Last)]),
 	    fix_fingers(Pid, Last, Me, Fingers, [F1#finger{node=Last}|Acc]);
 	[#finger{node=Next}|_] ->
+            %io:format("~s: dead ~s => ~s~n", [print_key(Me), print_finger(F1), print_key(Next)]),
 	    fix_fingers(Pid, Last, Me, Fingers, [F1#finger{node=Next}|Acc])
     end;
 fix_fingers(Pid, Last, Me, [F1|Fingers], Acc) ->
@@ -381,7 +383,8 @@ find_predecessor_impl(Id, #state{id=This, succs=[Succ|_], fingers=Fingers}) ->
 	false ->
 	    %% [io:put_chars(print_finger(F)) || F <- Fingers],
 	    case closest_preceding_fingers(This, Id, Fingers) of
-		This -> {ok, This, Succ};
+		This when Succ =:= This -> {cont, Succ};
+                This -> {ok, This, Succ};
 		Next -> {cont, Next}
 	    end
     end.
