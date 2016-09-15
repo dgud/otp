@@ -54,9 +54,9 @@ key(Term, Size) -> erlang:phash2(Term, ?KEY_SIZE(Size)).
 
 find_successor(Gate, Id) ->
     Res = {Pred, Succ} = find_predecessor(Gate, Id),
-    case call(Pred, get_successor) of %% Assert
+    case call(Pred, get_successors) of %% Assert
 	Succ -> Res;
-	Changed -> {Pred, Changed}
+	[Changed|_] -> {Pred, Changed}
     end.
 
 find_successors(Gate, #id{key=Key}=Id, ListSz) ->
@@ -67,11 +67,11 @@ find_successors(Gate, #id{key=Key}=Id, ListSz) ->
 find_successors(_, _, Succs, ListSz) when length(Succs) >= ListSz ->
     lists:sublist(Succs, ListSz);
 find_successors(Gate, Id, Succs0, ListSz) ->
-    % We have to take one at a time to handle concurrent joins (or don't we? TODO investigate)
-    Succ = call(Gate, get_successor),
-    case insert_successors([Succ], Id, Succs0, ListSz) of
-        Succs0 -> Succs0;
-        Succs -> find_successors(Succ, Id, Succs, ListSz)
+    GSuccs = call(Gate, get_successors),
+    %case insert_successors(GSuccs, Id, Succs0, ListSz) of
+    case insert_successors_1(GSuccs, Id, Succs0, ListSz, [], []) of
+        {Succs, []} -> Succs;
+        {Succs, _} -> find_successors(hd(GSuccs), Id, Succs, ListSz)
     end.
 
 find_predecessor(Gate, Id) ->
@@ -110,8 +110,6 @@ handle_call({set_predecessor, Pred}, _From, State0) ->
     {Res, State} = set_predecessor_impl(Pred, State0),
     {reply, Res, State};
 
-handle_call(get_successor, _From, #state{succs=[Succ|_]}=State) ->
-    {reply, Succ, State};
 handle_call(get_successors, _From, #state{succs=Succs}=State) ->
     {reply, Succs, State};
 handle_call({find_predecessor, Id}, _From, State) ->
@@ -127,20 +125,10 @@ handle_call({debug_state, Level}, From, #state{id=Id, succs=[Succ|_]}=State) ->
 handle_cast({set_predecessor, Pred}, State0) -> %% This always comes from the Pred
     State = handle_set_predecessor(Pred, State0),
     {noreply, State};
-handle_cast({set_successor, Me}, #state{id=Me, pred=Me}=State) ->
-    {noreply, State};
-handle_cast({set_successor, Pred}, #state{pred=Pred, succs=[Pred|_]}=State) ->
-    {noreply, State};
-handle_cast({set_successor, Me}, #state{id=Me, pred=Pred}=State) ->
-    cast(Pred, {set_successor, Me}),
-    {noreply, State};
-handle_cast({set_successor, Succ}, #state{pred=Pred, succs=[Succ|_]}=State) ->
-    cast(Pred, {set_successor, Succ}),
-    {noreply, State};
-handle_cast({set_successor, NewSucc},
-            #state{id=Me, succs=Succs, succ_list_sz=SLSz}=State0) ->
-    NewSuccs = insert_successors([NewSucc], Me, Succs, SLSz),
-    State = handle_set_successor(NewSuccs, NewSucc, State0),
+handle_cast({set_successors, NewSuccs},
+            #state{id=Me, succs=Succs0, succ_list_sz=SLSz}=State0) ->
+    SuccsData = insert_successors(NewSuccs, Me, Succs0, SLSz),
+    State = handle_set_successor(SuccsData, State0),
     {noreply, State};
 handle_cast({update_finger_table, S, I}, State0) ->
     Fingers = update_finger_table(S, I, State0),
@@ -208,76 +196,74 @@ code_change(_OldVsn, State, _Extra) ->
 %% update
 
 insert_successors(Ns, #id{}=Me, Ss, Sz) ->
-    Res = insert_successors_1(Ns, Me, Ss, Sz),
+    %io:format("ME: ~s~nIS: ~p~nTO: ~p~n", [print_key(Me),Ns,Ss]),
+    {Nss, New} = Res = insert_successors_1(Ns, Me, Ss, Sz, [], []),
+    %io:format("   =>~s~n NEW:~s~n~n", [print_keys(Nss), print_keys(New)]),
     Res.
 
-insert_successors_1(_, _, _, Sz) when Sz =< 0 -> [];
-insert_successors_1([Me|Ns], Me, Ss, Sz) ->
-    insert_successors_1(Ns, Me, Ss, Sz);
-insert_successors_1([Succ|Ns], Me, [Succ|Ss], Sz) ->
-    [Succ|insert_successors_1(Ns, Me, Ss, Sz-1)];
+insert_successors_1(_, _, _, Sz, Acc, New) when Sz =< 0 ->
+    {lists:reverse(Acc), lists:reverse(New)};
+insert_successors_1([Me|Ns], Me, Ss, Sz, Acc, New) ->
+    insert_successors_1(Ns, Me, Ss, Sz, Acc, New);
+insert_successors_1([Succ|Ns], Me, [Succ|Ss], Sz, Acc, New) ->
+    insert_successors_1(Ns, Me, Ss, Sz-1, [Succ|Acc], New);
 insert_successors_1([#id{key=NewKey, pid=NewPid}=NewSucc|Ns1]=Ns0,
-                   #id{key=MyKey}=Me,
-                   [#id{key=SuccKey}=Succ|Ss1]=Ss0, Sz) ->
+                    #id{key=MyKey}=Me,
+                    [#id{key=SuccKey}=Succ|Ss1]=Ss0, Sz, Acc, New) ->
     case is_process_alive(NewPid) of %% TODO we should solve this in some other way, but how? :/
+        true when Succ =:= Me ->
+            insert_successors_1(Ns1, Me, Ss1, Sz-1,
+                                add_succ(NewSucc,Acc), add_succ(NewSucc,New));
         true ->
             case memberNN(NewKey, MyKey, SuccKey) of
-                true  -> [NewSucc|insert_successors_1(Ns1, Me, Ss0, Sz-1)];
-                false -> [Succ|insert_successors_1(Ns0, Me, Ss1, Sz-1)]
+                true ->
+                    insert_successors_1(Ns1, Me, Ss0, Sz-1,
+                                        add_succ(NewSucc,Acc), add_succ(NewSucc,New));
+                false ->
+                    insert_successors_1(Ns0, Me, Ss1, Sz-1, [Succ|Acc], New)
             end;
         false ->
-            insert_successors_1(Ns1, Me, Ss0, Sz)
+            insert_successors_1(Ns1, Me, Ss0, Sz, Acc, New)
     end;
-insert_successors_1([], Me, [Succ|Ss], Sz) ->
-    [Succ|insert_successors_1([], Me, Ss, Sz-1)];
-insert_successors_1([Succ|Ss], Me, [], Sz) ->
-    [Succ|insert_successors_1([], Me, Ss, Sz-1)];
-insert_successors_1([], _, [], _) ->
-    [].
+insert_successors_1([], Me, [Me|Ss], Sz, [_|_] = Acc, New) ->
+    insert_successors_1([], Me, Ss, Sz-1, Acc, New);
+insert_successors_1([], Me, [Succ|Ss], Sz, Acc, New) ->
+    insert_successors_1([], Me, Ss, Sz-1, [Succ|Acc], New);
+insert_successors_1([Succ|Ss], Me, [], Sz, Acc, New) ->
+    insert_successors_1(Ss, Me, [], Sz-1, add_succ(Succ,Acc), add_succ(Succ,New));
+insert_successors_1([], _, [], _, Acc, New) ->
+    {lists:reverse(Acc), lists:reverse(New)}.
 
 % update messages
 
-handle_set_successor(Succs, _NewSucc, #state{succs=Succs}=State) ->
-%    case lists:member(NewSucc, Succs) of
-%        true ->
-%            cast(Pred, {set_successor, NewSucc});
-%        false ->
-%            ok
-%    end,
-%   io:format("Set succ failed: ~p (~p)succ ~p~n", [Me, Succs, NewSucc]),
+handle_set_successor({Succs, []}, #state{succs=Succs}=State) ->
     State;
-handle_set_successor([NewSucc|_]=NewSuccs, NewSucc, #state{id=Me, pred=Pred, fingers=[F1|Fs]}=State) ->
-    setup_monitor(NewSucc),
+handle_set_successor({[Succ|_]=Succs, New},
+                     #state{id=Me, pred=Pred, fingers=[F1|Fs], succs=Old}=State) ->
+    [setup_monitor(NewSucc) || NewSucc <- New],
 %    io:format("~s: UPDATE SUCCS ~s => ~s~n",
 %	      [print_key(Me), print_key(hd(Succs)), print_key(NewSucc)]),
-    cast(NewSucc, {set_predecessor, Me}),
-    cast(Pred, {set_successor, NewSucc}),
-    State#state{succs=NewSuccs, fingers=[F1#finger{node=NewSucc}|Fs]};
-handle_set_successor(NewSuccs, NewSucc, #state{pred=Pred}=State) ->
-    setup_monitor(NewSucc),
-%    io:format("~s: INSERT SUCCS ~p => ~s~n",
-%		      [print_key(Me), Succs, print_key(NewSucc)]),
-    cast(Pred, {set_successor, NewSucc}),
-    State#state{succs=NewSuccs}.
+    case hd(Old) of
+        Succ -> ok;
+        _Changed -> cast(Succ, {set_predecessor, Me})
+    end,
+    cast(Pred, {set_successors, Succs}),
+    State#state{succs=Succs, fingers=[F1#finger{node=Succ}|Fs]}.
 
 %% update / handle DOWN
 
 handle_dead_successor(#state{succs=[], fingers=[#finger{node=Next}|_]}=State, Pid) ->
     handle_dead_successor(State#state{succs=[Next]}, Pid);
-handle_dead_successor(#state{id=Id, pred=Pred, succs=Succs, fingers=[F0|Fs]=Fingers}=State, Pid) ->
-    Next = case next_succ(Succs, Fingers, Pid) of
-	       Id    -> Pred;
-	       Other -> Other
-	   end,
-    case Next of
-	undefined ->
-%	    io:format("~p: ~p~n",[?LINE,Id]),
+handle_dead_successor(#state{id=Id, pred=Pred, succs=Succs, fingers=Fingers}=State, Pid) ->
+    case next_succ(Pid, Id, Pred, Succs, Fingers) of
+	Id ->
+            %%   io:format("~p: ~p~n",[?LINE,Id]),
 	    State#state{pred=Id, succs=[Id]};
-	_ ->
+	Next ->
 	    try
                 cast(Next, {set_predecessor, Id}),
-		State#state{succs=insert_successors([Next], Id, Succs, State#state.succ_list_sz),
-                            fingers=[F0#finger{node=Next}|Fs]}
+                NewSuccs = insert_successors([Next], Id, Succs, State#state.succ_list_sz),
+                handle_set_successor(NewSuccs, State)
 	    catch exit:_ -> error
 	    end
     end.
@@ -290,7 +276,7 @@ update_successors(_Orig, _Succs, Id, SuccListSz) ->
 update_successors(#id{}=Id, ListSz) ->
     try
         Succs = find_successors(Id, Id, ListSz),
-        [cast(Id, {set_successor, Succ}) || Succ <- Succs]
+        cast(Id, {set_successors, Succs})
     catch _:_R ->
         update_successors(Id, ListSz)
     end.
@@ -301,6 +287,13 @@ fix_successors(Pid, [#id{pid=Pid}|Succs]) ->
     Succs;
 fix_successors(Pid, [Succ|Succs]) ->
     [Succ|fix_successors(Pid, Succs)].
+
+next_succ(Pid, Id, Pred, Succs, Fingers) ->
+    case next_succ(Succs, Fingers, Pid) of
+        Id when Pred =:= undefined -> Id;
+        Id -> Pred;
+        Other -> Other
+    end.
 
 next_succ([], Fingers, Pid) ->
     next_succ(Fingers, Pid);
@@ -321,16 +314,22 @@ set_predecessor(Succ, Id) ->
 handle_set_predecessor(Pred, #state{id=Id, succs=Succs}=State0) ->
     case set_predecessor_impl(Pred, State0) of
 	{{ok, undefined, _Succs}, State} ->
-	    [cast(Pred, {set_successor, S}) || S <- [Id|Succs]],
+	    cast(Pred, {set_successors, add_succ(Id, Succs)}),
 	    State;
 	{{ok, PrevPred, _Succs}, State} ->
-	    cast(PrevPred, {set_successor, Pred}),
-	    [cast(Pred, {set_successor, S}) || S <- [Id|Succs]],
+	    cast(PrevPred, {set_successors, add_succ(Pred,add_succ(Id,Succs))}),
+            cast(Pred, {set_successors, [Id|Succs]}),
 	    State;
 	{{error, _}, #state{pred=Orig}} -> %% Redir Pred's successor
 	    io:format("Redir: ~p succs ~p~n", [Pred, Orig]),
-	    cast(Pred, {set_successor, Orig}),
+	    cast(Pred, {set_successors, add_succ(Orig,add_succ(Id,Succs))}),
 	    State0
+    end.
+
+add_succ(Id, Succs) ->
+    case lists:member(Id, Succs) of
+        true  -> Succs;
+        false -> [Id|Succs]
     end.
 
 set_predecessor_impl(Pred, #state{pred=Pred, succs=Succs}=State) ->
@@ -511,7 +510,7 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fingers]}=State0) ->
 		    init_neighbors([Gate|Gates], State0);
 		{Pred, Succs1} ->
 		    setup_monitor(Pred),
-                    Succs = insert_successors(Succs1, Id, Succs0, State0#state.succ_list_sz),
+                    {Succs,_} = insert_successors(Succs1, Id, Succs0, State0#state.succ_list_sz),
 		    [setup_monitor(S) || S <- Succs],
 		    State1 = State0#state{pred=Pred, succs=Succs},
 		    update_fingers(lists:reverse([F#finger{node=hd(Succs)}|Fs]), Id),
@@ -613,6 +612,9 @@ print_state(#state{id=This, pred=Pred, succs=Succs, fingers=Fingers}, _) ->
 
 print_finger(#finger{start=Start, last=Last, node=Node}) ->
     lists:flatten(io_lib:format(" {~.5w ~.5w ~s} ",[Start, Last, print_key(Node)])).
+
+print_keys(List) ->
+    [print_key(Key) || Key <- List].
 
 print_key(undefined) -> "undefined";
 print_key(#id{key=Key, pid=Pid}) ->

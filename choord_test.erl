@@ -21,9 +21,11 @@ paper_example() ->
     io:format("~n********************~n~n"),
     {ok, P1} = choord:start_link([{key,0}|Props]),
     {ok, P2} = choord:start_link([{gates,[P1]}, {key,3}|Props]),
+    timer:sleep(1000), ok = choord:print_state(P1),
     try
         ok = check_net([{0,P1},{3,P2}], KBSZ),
         {ok, P3} = choord:start_link([{gates,[P1]}, {key,1}|Props]),
+        timer:sleep(1000), ok = choord:print_state(P1),
         ok = check_net([{0,P1},{3,P2},{1,P3}], KBSZ),
         {ok, P4} = choord:start_link([{gates,[P1]}, {key,6}|Props]),
         ok = check_net([{0,P1},{3,P2},{1,P3},{6,P4}], KBSZ),
@@ -308,8 +310,8 @@ find_successor(Gate, Id, Retries) ->
 
 debug_find_successor(Gate, Id) ->
     {{Pred, Succs},Path} = find_predecessor(Gate, Id, []),
-    case choord:call(p(Pred), get_successor) of
-	Succs -> {{Pred, Succs}, Path};
+    case choord:call(p(Pred), get_successors) of
+	[Succs|_] -> {{Pred, Succs}, Path};
 	_ -> % Unstable net, try again
 	    timer:sleep(10),
 	    debug_find_successor(Gate, Id)
