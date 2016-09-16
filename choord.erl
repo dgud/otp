@@ -159,7 +159,7 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
 	    {noreply, State#state{pred=Id, succs=[Id]}};
        PredPid == Pid ->
-            Succs = fix_successors(Pid, Succs0, lists:last(Succs0), State0#state.succ_list_sz),
+            Succs = fix_successors(Pid, Succs0, Id, State0#state.succ_list_sz, []),
 	    {noreply, State#state{succs=Succs, pred=undefined}};
        SuccPid == Pid ->
 	    case handle_dead_successor(State#state{succs=tl(Succs0)}, Pid) of
@@ -170,7 +170,7 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
 		    {noreply, NewState}
 	    end;
        true ->
-            Succs = fix_successors(Pid, Succs0, lists:last(Succs0), State0#state.succ_list_sz),
+            Succs = fix_successors(Pid, Succs0, Id, State0#state.succ_list_sz, []),
 	    {noreply, State#state{succs=Succs}}
     end;
 handle_info(_Info, State) ->
@@ -275,23 +275,27 @@ next_succ([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
 next_succ([#finger{node=Next}|_], _) ->
     Next.
 
-fix_successors(_Pid, [], _Ask, _Sz) ->
-    [];
-fix_successors(Pid, [#id{pid=Pid}=Ask|Succs], Ask, _Sz) ->
-    Succs;
-fix_successors(Pid, [#id{pid=Pid}|Succs], Ask, Sz) ->
-    spawn_link(fun() -> update_successors(Ask, Sz) end),
-    Succs;
-fix_successors(Pid, [Succ|Succs], Ask, Sz) ->
-    [Succ|fix_successors(Pid, Succs, Ask, Sz)].
+fix_successors(_Pid, [], _Me, _Sz, Acc) ->
+    lists:reverse(Acc);
+fix_successors(Pid, [#id{pid=Pid}|Succs], Me, Sz, Acc) ->
+    Ask = lists:reverse(Succs, Acc),
+    spawn_link(fun() -> update_successors(Ask, Me, Sz) end),
+    lists:reverse(Acc, Succs);
+fix_successors(Pid, [Succ|Succs], Me, Sz, Acc) ->
+    fix_successors(Pid, Succs, Me, Sz, [Succ|Acc]).
 
-update_successors(#id{}=Id, ListSz) ->
-    try
-        Succs = find_successors(Id, Id, ListSz),
-        cast(Id, {set_successors, Succs})
+update_successors([Me|Ask], Me, ListSz) ->
+    update_successors(Ask, Me, ListSz);
+update_successors([Ask|Rest], Me, ListSz) ->
+    %%find_successors(Me, Me, ListSz),
+    try call(Ask, get_successors) of
+        Succs ->
+            cast(Me, {set_successors, Succs})
     catch _:_R ->
-            update_successors(Id, ListSz)
-    end.
+            update_successors(Rest, Me, ListSz)
+    end;
+update_successors([], _Me, _) -> normal.
+
 
 %% Predecessor handling
 %%--------------------------------------------------------------------
@@ -504,7 +508,7 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fingers]}=State0) ->
 		    State1 = State0#state{pred=Pred, succs=Succs},
 		    update_fingers(lists:reverse([F#finger{node=hd(Succs)}|Fs]), Id),
 		    spawn_link(fun() -> update_others(Id, 1, State0#state.key_bit_sz) end),
-                    spawn_link(fun() -> update_successors(Id, State1#state.succ_list_sz) end),
+                    spawn_link(fun() -> update_successors(Succs, Id, State1#state.succ_list_sz) end),
 		    State1#state{fingers=[F#finger{node=hd(Succs)}|Fs]}
 	    catch _:{noproc, _} ->
 		    init_neighbors([Gate|Gates], State0)
