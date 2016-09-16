@@ -204,23 +204,18 @@ insert_successors_1([Me|Ns], Me, Ss, Sz, Acc, New) ->
     insert_successors_1(Ns, Me, Ss, Sz, Acc, New);
 insert_successors_1([Succ|Ns], Me, [Succ|Ss], Sz, Acc, New) ->
     insert_successors_1(Ns, Me, Ss, Sz-1, [Succ|Acc], New);
-insert_successors_1([#id{key=NewKey, pid=NewPid}=NewSucc|Ns1]=Ns0,
+insert_successors_1([NewSucc|Ns1], Me, [Me|Ss1], Sz, Acc, New) ->
+    insert_successors_1(Ns1, Me, Ss1, Sz-1,
+                        add_succ(NewSucc,Acc), add_succ(NewSucc,New));
+insert_successors_1([#id{key=NewKey}=NewSucc|Ns1]=Ns0,
                     #id{key=MyKey}=Me,
                     [#id{key=SuccKey}=Succ|Ss1]=Ss0, Sz, Acc, New) ->
-    case is_process_alive(NewPid) of %% TODO we should solve this in some other way, but how? :/
-        true when Succ =:= Me ->
-            insert_successors_1(Ns1, Me, Ss1, Sz-1,
-                                add_succ(NewSucc,Acc), add_succ(NewSucc,New));
+    case memberNN(NewKey, MyKey, SuccKey) of
         true ->
-            case memberNN(NewKey, MyKey, SuccKey) of
-                true ->
-                    insert_successors_1(Ns1, Me, Ss0, Sz-1,
-                                        add_succ(NewSucc,Acc), add_succ(NewSucc,New));
-                false ->
-                    insert_successors_1(Ns0, Me, Ss1, Sz-1, [Succ|Acc], New)
-            end;
+            insert_successors_1(Ns1, Me, Ss0, Sz-1,
+                                add_succ(NewSucc,Acc), add_succ(NewSucc,New));
         false ->
-            insert_successors_1(Ns1, Me, Ss0, Sz, Acc, New)
+            insert_successors_1(Ns0, Me, Ss1, Sz-1, [Succ|Acc], New)
     end;
 insert_successors_1([], Me, [Me|Ss], Sz, [_|_] = Acc, New) ->
     insert_successors_1([], Me, Ss, Sz-1, Acc, New);
