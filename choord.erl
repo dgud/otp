@@ -241,8 +241,8 @@ handle_set_successor({[Succ|_]=Succs, New},
     [setup_monitor(NewSucc) || NewSucc <- New],
 %    io:format("~s: UPDATE SUCCS ~s => ~s~n",
 %	      [print_key(Me), print_key(hd(Succs)), print_key(NewSucc)]),
-    case hd(Old) of
-        Succ -> ok;
+    case Old of
+        [Succ|_] -> ok;
         _Changed -> cast(Succ, {set_predecessor, Me})
     end,
     cast(Pred, {set_successors, Succs}),
@@ -362,8 +362,8 @@ find_predecessor_impl(Id, #state{id=This, succs=[Succ|_], fingers=Fingers}) ->
 	false ->
 	    %% [io:put_chars(print_finger(F)) || F <- Fingers],
 	    case closest_preceding_fingers(This, Id, Fingers) of
-		This when Succ =:= This -> {cont, Succ};
-                This -> {ok, This, Succ};
+                This when Succ =:= This -> {ok, This, Succ};
+                This -> {cont, Succ};
 		Next -> {cont, Next}
 	    end
     end.
@@ -462,6 +462,7 @@ fix_finger(Me, #finger{start=Start}=F, I) ->
         {'EXIT', _} ->
             fix_finger(Me, F, I);
         {_, Succ} ->
+            %% io:format("Fix: ~s ~p ~p ~s~n",[print_key(Me), I, Start, print_key(Succ)]),
             cast(Me, {update_finger_table, Succ, I})
     end.
 
