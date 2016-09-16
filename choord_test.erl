@@ -371,23 +371,23 @@ check_fingers(ThisId, Ordered, Fingers, KeyBitSize) ->
 
 check_fingers(_, []) ->
     true;
-check_fingers([O|Os]=Ordered, [{finger, Start, _, Node}|Fingers]) ->
-    check_finger(O, Os, Start, Node) andalso
+check_fingers(Ordered, [{finger, Start, _, Node}|Fingers]) ->
+    check_finger(Ordered, Start, Node) andalso
         check_fingers(Ordered, Fingers).
 
-check_finger({_Expected, Node}, [], _, {_, _, Node}) ->
+check_finger([First|_]=Ordered, Start, Actual) ->
+    case lists:dropwhile(fun({Key, _}) -> Key < Start end, Ordered) of
+        [] ->
+            assert_finger(Start, First, Actual);
+        [Expected|_T] ->
+            assert_finger(Start, Expected, Actual)
+    end.
+
+assert_finger(_Start, {_, Node}, {_, _, Node}) ->
     true;
-check_finger(_E, [], _S, _N) ->
-    io:format("Finger failed: Start=~p, Expected: ~p, Got: ~p~n", [_S, _E, _N]),
-    false;
-check_finger({EKey, _}, [{Key, _}=Next|Nodes], Start, Id) when
-  Key >= Start, EKey >= Start, EKey > Key ->
-    check_finger(Next, Nodes, Start, Id);
-check_finger({EKey, _}, [{Key, _}=Next|Nodes], Start, Id) when
-  Key >= Start, EKey < Start ->
-    check_finger(Next, Nodes, Start, Id);
-check_finger(Expected, [_|Nodes], Start, Id) ->
-    check_finger(Expected, Nodes, Start, Id).
+assert_finger(_S, _E, _A) ->
+    io:format("Finger failed: Start=~p, Expected: ~p, Actual: ~p~n", [_S, _E, _A]),
+    false.
 
 check_ranges({id, Key, _}, Fingers, KeyBitSize) ->
     KeySize = 1 bsl KeyBitSize,
