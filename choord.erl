@@ -131,8 +131,7 @@ handle_cast({set_successors, NewSuccs},
     State = handle_set_successor(SuccsData, State0),
     {noreply, State};
 handle_cast({update_finger_table, S, I}, State0) ->
-    Fingers = update_finger_table(S, I, State0),
-    State = handle_update_finger_table(I, Fingers, State0),
+    State = handle_update_finger_table(S, I, State0),
     {noreply, State};
 handle_cast({debug_state, Level, Start, From}=Cont, #state{id=Id, succs=[Succ|_]}=State) ->
     case Start of
@@ -156,25 +155,23 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
 		   true -> Pred
 		end,
     UpdFingers = fix_fingers(Pid, LastKnown, Id, lists:reverse(Fingers), []),
-    Succs = fix_successors(Pid, Succs0),
-    State = State0#state{succs=Succs, fingers=UpdFingers},
+    State = State0#state{fingers=UpdFingers},
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
 	    {noreply, State#state{pred=Id, succs=[Id]}};
        PredPid == Pid ->
-            update_successors(Succs0, Succs, Id, State#state.succ_list_sz),
-	    {noreply, State#state{pred=undefined}};
+            Succs = fix_successors(Pid, Succs0, lists:last(Succs0), State0#state.succ_list_sz),
+	    {noreply, State#state{succs=Succs, pred=undefined}};
        SuccPid == Pid ->
-	    case handle_dead_successor(State, Pid) of
+	    case handle_dead_successor(State#state{succs=tl(Succs0)}, Pid) of
 		error ->
 		    self() ! Msg,
 		    {noreply, State0#state{fingers=UpdFingers}};
 		NewState ->
-                    update_successors(Succs0, Succs, Id, State#state.succ_list_sz),
 		    {noreply, NewState}
 	    end;
        true ->
-            update_successors(Succs0, Succs, Id, State#state.succ_list_sz),
-	    {noreply, State}
+            Succs = fix_successors(Pid, Succs0, lists:last(Succs0), State0#state.succ_list_sz),
+	    {noreply, State#state{succs=Succs}}
     end;
 handle_info(_Info, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Info]),
@@ -252,8 +249,6 @@ handle_set_successor({[Succ|_]=Succs, New},
 
 %% update / handle DOWN
 
-handle_dead_successor(#state{succs=[], fingers=[#finger{node=Next}|_]}=State, Pid) ->
-    handle_dead_successor(State#state{succs=[Next]}, Pid);
 handle_dead_successor(#state{id=Id, pred=Pred, succs=Succs, fingers=Fingers}=State, Pid) ->
     case next_succ(Pid, Id, Pred, Succs, Fingers) of
 	Id ->
@@ -268,26 +263,6 @@ handle_dead_successor(#state{id=Id, pred=Pred, succs=Succs, fingers=Fingers}=Sta
 	    end
     end.
 
-update_successors(Succs, Succs, _Id, _SuccListSz) ->
-    ok;
-update_successors(_Orig, _Succs, Id, SuccListSz) ->
-    spawn_link(fun() -> update_successors(Id, SuccListSz) end).
-
-update_successors(#id{}=Id, ListSz) ->
-    try
-        Succs = find_successors(Id, Id, ListSz),
-        cast(Id, {set_successors, Succs})
-    catch _:_R ->
-        update_successors(Id, ListSz)
-    end.
-
-fix_successors(_Pid, []) ->
-    [];
-fix_successors(Pid, [#id{pid=Pid}|Succs]) ->
-    Succs;
-fix_successors(Pid, [Succ|Succs]) ->
-    [Succ|fix_successors(Pid, Succs)].
-
 next_succ(Pid, Id, Pred, Succs, Fingers) ->
     case next_succ(Succs, Fingers, Pid) of
         Id when Pred =:= undefined -> Id;
@@ -299,6 +274,29 @@ next_succ([], Fingers, Pid) ->
     next_succ(Fingers, Pid);
 next_succ([Next|_], _, _) ->
     Next.
+
+next_succ([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
+    next_succ(Fingers, Pid);
+next_succ([#finger{node=Next}|_], _) ->
+    Next.
+
+fix_successors(_Pid, [], _Ask, _Sz) ->
+    [];
+fix_successors(Pid, [#id{pid=Pid}=Ask|Succs], Ask, _Sz) ->
+    Succs;
+fix_successors(Pid, [#id{pid=Pid}|Succs], Ask, Sz) ->
+    spawn_link(fun() -> update_successors(Ask, Sz) end),
+    Succs;
+fix_successors(Pid, [Succ|Succs], Ask, Sz) ->
+    [Succ|fix_successors(Pid, Succs, Ask, Sz)].
+
+update_successors(#id{}=Id, ListSz) ->
+    try
+        Succs = find_successors(Id, Id, ListSz),
+        cast(Id, {set_successors, Succs})
+    catch _:_R ->
+            update_successors(Id, ListSz)
+    end.
 
 %% Predecessor handling
 %%--------------------------------------------------------------------
@@ -462,30 +460,26 @@ fix_finger(Me, #finger{start=Start}=F, I) ->
             cast(Me, {update_finger_table, Succ, I})
     end.
 
-next_succ([#finger{node=#id{pid=Pid}}|Fingers], Pid) ->
-    next_succ(Fingers, Pid);
-next_succ([#finger{node=Next}|_], _) ->
-    Next.
 
 %% update messages
 
-handle_update_finger_table(1, [#finger{node=Succ}|_]=Fingers, #state{succs=[Succ|_]}=State) ->
-     State#state{fingers=Fingers};
-handle_update_finger_table(1, Fingers, State) ->
-    [#finger{node=Succ}|_] = Fingers,
-%    io:format("~s: UPDATE SUCCS2 ~s => ~s~n",
-%	      [print_key(State#state.id), print_key(_Orig), print_key(Succ)]),
-    cast(Succ, {set_predecessor, State#state.id}),
-    State#state{succs=[Succ], fingers=Fingers};
-handle_update_finger_table(_I, Fingers, State) ->
-    State#state{fingers=Fingers}.
+handle_update_finger_table(Id, Indx, #state{id=Me, succs=[Orig|_]=Succs0} = State) ->
+    case update_fingers(Id, Indx, State) of
+        [#finger{node=Orig}|_] = Fingers ->
+            State#state{fingers=Fingers};
+        [#finger{node=Succ}|_] = Fingers ->
+            %%    io:format("~s: UPDATE SUCCS2 ~s => ~s~n",
+            %%	      [print_key(State#state.id), print_key(_Orig), print_key(Succ)]),
+            SuccsData = insert_successors([Succ], Me, Succs0, State#state.succ_list_sz),
+            handle_set_successor(SuccsData, State#state{fingers=Fingers})
+    end.
 
-update_finger_table(#id{key=SKey}=S, I,
-		    #state{id=Id, fingers=Fingers0, pred=Pred}) ->
+update_fingers(#id{key=SKey}=S, I,
+               #state{id=Id, fingers=Fingers0, pred=Pred}) ->
     {Part1, [F0|Part2]} = lists:split(I-1, Fingers0),
     #finger{start=Start, node=#id{key=Node}} = F0,
     if
-        Start == Node ->
+        Start =:= Node ->
             Fingers0;
         true ->
             case memberIN(SKey, Start, Node) of
