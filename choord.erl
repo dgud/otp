@@ -17,7 +17,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 %% debug
--export([print_ring/1, print_state/1, print_state/2]).
+-export([print_ring/1, print_state/1, print_state/2, print_states/1]).
 -compile(export_all).
 
 -define(KEY_SIZE(BIT_SIZE), (1 bsl (BIT_SIZE))).
@@ -81,6 +81,9 @@ find_predecessor(Gate, Id) ->
     end.
 
 print_state(Gate) ->
+    gen_server:call(Gate, {debug_state, single}).
+
+print_states(Gate) ->
     gen_server:call(Gate, {debug_state, max}).
 
 print_ring(Gate) ->
@@ -118,9 +121,12 @@ handle_call({find_predecessor, Id}, _From, State) ->
 handle_call({debug_state, Level}, From, #state{id=Id, succs=[Succ|_]}=State) ->
     io:format("~n*****************~n"),
     print_state(State, Level),
-    cast(Succ, {debug_state, Level, Id, From}),
-    {noreply, State}.
-
+    case Level of
+        single -> {reply, ok, State};
+        _ ->
+            cast(Succ, {debug_state, Level, Id, From}),
+            {noreply, State}
+    end.
 
 handle_cast({set_predecessor, Pred}, State0) -> %% This always comes from the Pred
     State = handle_set_predecessor(Pred, State0),
