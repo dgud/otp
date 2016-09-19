@@ -54,9 +54,10 @@ key(Term, Size) -> erlang:phash2(Term, ?KEY_SIZE(Size)).
 
 find_successor(Gate, Id) ->
     Res = {Pred, Succ} = find_predecessor(Gate, Id),
-    case call(Pred, get_successors) of %% Assert
-	Succ -> Res;
-	[Changed|_] -> {Pred, Changed}
+    case call(Succ, get_predecessor) of
+        Pred -> Res;
+        Changed ->
+            find_successor(Succ, Id)
     end.
 
 find_successors(Gate, #id{key=Key}=Id, ListSz) ->
@@ -113,6 +114,8 @@ handle_call({set_predecessor, Pred}, _From, State0) ->
     {Res, State} = set_predecessor_impl(Pred, State0),
     {reply, Res, State};
 
+handle_call(get_predecessor, _From, #state{pred=Pred}=State) ->
+    {reply, Pred, State};
 handle_call(get_successors, _From, #state{succs=Succs}=State) ->
     {reply, Succs, State};
 handle_call({find_predecessor, Id}, _From, State) ->
@@ -259,6 +262,7 @@ update_fingers([F|Fs]=Fs0, [Succ|Succs]=Succs0) ->
 update_fingers([], _) -> [];
 update_fingers([F|Fs], []) ->
     [F|Fs].
+
 
 %% update / handle DOWN
 
@@ -474,10 +478,9 @@ fix_finger(Me, #finger{start=Start}=F, I) ->
         {'EXIT', _} ->
             fix_finger(Me, F, I);
         {_Pred, Succ} ->
-            io:format("Fix: ~s ~p ~p ~s From ~s~n",[print_key(Me), I, Start, print_key(Succ),print_key(_Pred)]),
+            %io:format("Fix: ~s ~p ~p ~s From ~s~n",[print_key(Me), I, Start, print_key(Succ),print_key(_Pred)]),
             cast(Me, {update_finger_table, Succ, I})
     end.
-
 
 %% update messages
 
