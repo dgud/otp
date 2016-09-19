@@ -249,18 +249,21 @@ handle_set_successor({[Succ|_]=Succs, New},
         _Changed -> cast(Succ, {set_predecessor, Me})
     end,
     cast(Pred, {set_successors, Succs}),
-    Fs = update_fingers([F1#finger{node=Succ}|Fs0], Succs),
+    Fs = update_fingers([F1#finger{node=Succ}|Fs0], Succs, Pred, 1),
     State#state{succs=Succs, fingers=Fs}.
 
-update_fingers([#finger{node=Succ}=F1|Fs], [Succ|_]=Succs) ->
-    [F1|update_fingers(Fs, Succs)];
-update_fingers([F|Fs]=Fs0, [Succ|Succs]=Succs0) ->
+update_fingers([#finger{node=Succ}=F1|Fs], [Succ|_]=Succs, Pred, Index) ->
+    [F1|update_fingers(Fs, Succs, Pred, Index+1)];
+update_fingers([F|Fs]=Fs0, [Succ|Succs]=Succs0, Pred, Index) ->
     case update_finger(Succ, F) of
-        true  -> [F#finger{node=Succ}|update_fingers(Fs, Succs0)];
-        false -> update_fingers(Fs0, Succs)
+        true  ->
+            cast(Pred, {update_finger_table, Succ, Index}),
+            [F#finger{node=Succ}|update_fingers(Fs, Succs0, Pred, Index+1)];
+        false ->
+            update_fingers(Fs0, Succs, Pred, Index)
     end;
-update_fingers([], _) -> [];
-update_fingers([F|Fs], []) ->
+update_fingers([], _, _, _) -> [];
+update_fingers([F|Fs], [], _, _) ->
     [F|Fs].
 
 
@@ -514,10 +517,10 @@ update_finger(#id{key=SKey}, #finger{start=Start, node=#id{key=Node}}) ->
 
 %% init functions
 %%--------------------------------------------------------------------
-init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fingers]}=State0) ->
+init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fs0]}=State0) ->
     case catch find_successors(Gate, Id, State0#state.succ_list_sz) of
 	[#id{}=Succ0|_] = Succs0 ->
-	    Fs = init_fingers(Fingers, Id#id.key, Succ0, [Gate|Gates]),
+	    Fs = init_fingers(Fs0, Id#id.key, Succ0, [Gate|Gates]),
 	    try set_predecessor(Succ0, Id) of
 		myself ->
 		    init_neighbors([Gate|Gates], State0);
@@ -525,11 +528,13 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fingers]}=State0) ->
 		    setup_monitor(Pred),
                     {Succs,_} = insert_successors(Succs1, Id, Succs0, State0#state.succ_list_sz),
 		    [setup_monitor(S) || S <- Succs],
+                    Fingers = [F#finger{node=hd(Succs)}|Fs],
+                    update_pred_fingers(Pred, Fingers, 1),
 		    State1 = State0#state{pred=Pred, succs=Succs},
 		    check_fingers(lists:reverse([F#finger{node=hd(Succs)}|Fs]), Id),
 		    spawn_link(fun() -> update_others(Id, 1, State0#state.key_bit_sz) end),
                     spawn_link(fun() -> update_successors(Succs, Id, State1#state.succ_list_sz) end),
-		    State1#state{fingers=[F#finger{node=hd(Succs)}|Fs]}
+		    State1#state{fingers=Fingers}
 	    catch _:{noproc, _} ->
 		    init_neighbors([Gate|Gates], State0)
 	    end;
@@ -542,6 +547,12 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fingers]}=State0) ->
     end;
 init_neighbors(_Gs, State) ->
     State.
+
+update_pred_fingers(_, [], _) ->
+    ok;
+update_pred_fingers(Pred, [#finger{node=Node}|Fs], I) ->
+    cast(Pred, {update_finger_table, Node, I}),
+    update_pred_fingers(Pred, Fs, I+1).
 
 %% utility functions
 %%--------------------------------------------------------------------

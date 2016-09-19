@@ -156,18 +156,18 @@ test_up_down() ->
     io:format("~n~nTEST NODE JOINS AND LEAVES~n",[]),
     io:format("~n~n**************************~n",[]),
     rand:seed(exs64, {12383, 55421,135412}), %% Set seed so we can debug
-    [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ), 300),
+    [First|Keys] = make_reordered_keys(?KEY_SIZE(KBSZ), 450),
     {ok, Pid0} = choord:start([{key, First}|Props]),
     Make0 = make_fun(Pid0, Props, start),
     All = [{First, Pid0} | [{Key, Make0(Key)} || Key <- Keys]],
     try
         ok = check_net(All, KBSZ),
-        A0 = remove(All, 100),
+        A0 = remove(All, 220),
         ok = check_net(A0, KBSZ),
         ReAdd0 = lists:subtract(All, A0),
         Make1 = make_fun(Pid0, Props, start_link),
         Self = self(),
-        RMPid = spawn(fun() -> rm(Self, 100, A0) end),
+        RMPid = spawn(fun() -> rm(Self, 220, A0) end),
         Added = readd(Make1, ReAdd0, []),
         A1 = receive
             {RMPid, A, done} -> A ++ Added
