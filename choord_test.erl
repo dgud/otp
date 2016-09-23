@@ -329,19 +329,23 @@ check_ring(N, [_|Ordered]=All, Ord) when N > 0 ->
 check_ring(0, _, _) -> true.
 
 check_ring_1([Pred, This|Succs]=All, Ord) ->
-    {state, ThisId, PredId, SuccsIds, Fingers, KBsz, _SLsz} = St = sys:get_state(p(This)),
+    {state, ThisId, PredId, SuccsIds, Fingers, KBsz, _SLsz, Monitors} = St = sys:get_state(p(This)),
     T1 = check_id(This, ThisId),
     T2 = check_id(Pred, PredId),
     T3 = check_id(hd(Succs), hd(SuccsIds)),
     T4 = check_succs(Succs, SuccsIds),
     Fs = check_fingers(ThisId, Ord, Fingers, KBsz),
+    Mons = check_monitors(Monitors, PredId, SuccsIds, Fingers, This),
 
-    if T1, T2, T3, T4, Fs ->
+    if T1, T2, T3, T4, Fs, Mons ->
 	    true;
        T2, PredId =:= undefined ->
 	    io:format("Pred undefined for ~p~n",[This]),
 	    timer:sleep(10),
 	    true = check_ring_1(All, Ord);
+       not Mons ->
+            io:format("Monitors: ~p~n, Pred: ~p~nSuccs: ~p~nFingers~p~n", [Monitors, PredId, SuccsIds, Fingers]),
+            error({error, ?LINE, This, "Incorrect Monitoring"});
        not Fs ->
 	    choord:print_state(St, debug),
 	    error({error, ?LINE, This, "Finger failed"});
@@ -355,6 +359,17 @@ check_ring_1([Pred, This|Succs]=All, Ord) ->
 				[Pred, This, Ordered, PredId, ThisId, SuccsIds]),
 	    error({error, ?LINE, This, Str})
     end.
+
+check_monitors(Monitors, PredId, SuccsIds, Fingers, {_Key, Pid}) ->
+    {monitors, Ms} = process_info(Pid, monitors),
+    MonPids = lists:sort([P || {process, P} <- Ms]),
+    Neighbours = lists:usort(get_neighbours(Pid, PredId, SuccsIds, Fingers)),
+    Neighbours =:= MonPids andalso MonPids =:= lists:sort(maps:keys(Monitors)).
+
+get_neighbours(This, {_, _, Pid}, Succs, Fingers) ->
+    SuccPids = [P || {_, _, P} <- Succs],
+    FingerPids = [P || {_, _, _, {_, _, P}} <- Fingers],
+    lists:delete(This, [Pid|SuccPids] ++ FingerPids).
 
 check_succs([Succ|All], [Id|Ids]) ->
     check_id(Succ, Id) andalso check_succs(All, Ids);

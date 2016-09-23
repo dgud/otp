@@ -29,7 +29,8 @@
 		succs=[] :: [id()],
 		fingers=[] :: [finger()],
 		key_bit_sz :: integer(),
-                succ_list_sz :: integer()
+                succ_list_sz :: integer(),
+                monitors=maps:new() :: #{}
 	       }).
 
 -type range() :: non_neg_integer().
@@ -56,7 +57,7 @@ find_successor(Gate, Id) ->
     Res = {Pred, Succ} = find_predecessor(Gate, Id),
     case call(Succ, get_predecessor) of
         Pred -> Res;
-        Changed ->
+        _Changed ->
             find_successor(Succ, Id)
     end.
 
@@ -70,9 +71,9 @@ find_successors(_, _, Succs, ListSz) when length(Succs) >= ListSz ->
 find_successors(Gate, Id, Succs0, ListSz) ->
     GSuccs = call(Gate, get_successors),
     %case insert_successors(GSuccs, Id, Succs0, ListSz) of
-    case insert_successors_1(GSuccs, Id, Succs0, ListSz, [], []) of
-        {Succs, []} -> Succs;
-        {Succs, _} -> find_successors(hd(GSuccs), Id, Succs, ListSz)
+    case insert_successors_1(GSuccs, Id, Succs0, ListSz, []) of
+        Succs0 -> Succs0;
+        Succs -> find_successors(hd(GSuccs), Id, Succs, ListSz)
     end.
 
 find_predecessor(Gate, Id) ->
@@ -101,18 +102,17 @@ init(Props) ->
     Key = proplists:get_value(key, Props, key(self(), KeyBSZ)),  %% For debugging only
     Id = #id{key=Key, pid=self()},
     Fingers0 = make_fingers(Id, KeyBSZ),
-    {ok, init_neighbors(Gates, #state{id=Id, pred=Id, succs=[Id], fingers=Fingers0,
-                                      key_bit_sz=KeyBSZ, succ_list_sz=SuccListSZ})}.
+    {ok, update_monitors(init_neighbors(Gates, #state{id=Id, pred=Id, succs=[Id], fingers=Fingers0,
+                                        key_bit_sz=KeyBSZ, succ_list_sz=SuccListSZ}))}.
 
 
 handle_call({set_predecessor, Pred}, _From, %TODO can we handle this special case differently?
             #state{id=Id, pred=Id, succs=[Id], fingers=[F|Fs]}=State0) ->
-    setup_monitor(Pred),
     State = State0#state{pred=Pred, succs=[Pred], fingers=[F#finger{node=Pred}|Fs]},
-    {reply, {ok, Id, [Pred]}, State};
+    {reply, {ok, Id, [Pred]}, update_monitors(State)};
 handle_call({set_predecessor, Pred}, _From, State0) ->
     {Res, State} = set_predecessor_impl(Pred, State0),
-    {reply, Res, State};
+    {reply, Res, update_monitors(State)};
 
 handle_call(get_predecessor, _From, #state{pred=Pred}=State) ->
     {reply, Pred, State};
@@ -133,15 +133,15 @@ handle_call({debug_state, Level}, From, #state{id=Id, succs=[Succ|_]}=State) ->
 
 handle_cast({set_predecessor, Pred}, State0) -> %% This always comes from the Pred
     State = handle_set_predecessor(Pred, State0),
-    {noreply, State};
+    {noreply, update_monitors(State)};
 handle_cast({set_successors, NewSuccs},
             #state{id=Me, succs=Succs0, succ_list_sz=SLSz}=State0) ->
     SuccsData = insert_successors(NewSuccs, Me, Succs0, SLSz),
     State = handle_set_successor(SuccsData, State0),
-    {noreply, State};
+    {noreply, update_monitors(State)};
 handle_cast({update_finger_table, S, I}, State0) ->
     State = handle_update_finger_table(S, I, State0),
-    {noreply, State};
+    {noreply, update_monitors(State)};
 handle_cast({debug_state, Level, Start, From}=Cont, #state{id=Id, succs=[Succ|_]}=State) ->
     case Start of
 	Id -> gen_server:reply(From, ok);
@@ -166,21 +166,21 @@ handle_info({'DOWN', _, process, Pid, _} = Msg,
     UpdFingers = fix_fingers(Pid, LastKnown, Id, lists:reverse(Fingers), []),
     State = State0#state{fingers=UpdFingers},
     if PredPid == Pid, SuccPid == Pid -> %% We are the only left
-	    {noreply, State#state{pred=Id, succs=[Id]}};
+	    {noreply, update_monitors(State#state{pred=Id, succs=[Id]})};
        PredPid == Pid ->
             Succs = fix_successors(Pid, Succs0, Id, State0#state.succ_list_sz, []),
-	    {noreply, State#state{succs=Succs, pred=undefined}};
+	    {noreply, update_monitors(State#state{succs=Succs, pred=undefined})};
        SuccPid == Pid ->
 	    case handle_dead_successor(State#state{succs=tl(Succs0)}, Pid) of
 		error ->
 		    self() ! Msg,
-		    {noreply, State0#state{fingers=UpdFingers}};
+		    {noreply, update_monitors(State0#state{fingers=UpdFingers})};
 		NewState ->
-		    {noreply, NewState}
+		    {noreply, update_monitors(NewState)}
 	    end;
        true ->
             Succs = fix_successors(Pid, Succs0, Id, State0#state.succ_list_sz, []),
-	    {noreply, State#state{succs=Succs}}
+	    {noreply, update_monitors(State#state{succs=Succs})}
     end;
 handle_info(_Info, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Info]),
@@ -203,45 +203,40 @@ code_change(_OldVsn, State, _Extra) ->
 
 insert_successors(Ns, #id{}=Me, Ss, Sz) ->
     %io:format("ME: ~s~nIS: ~p~nTO: ~p~n", [print_key(Me),Ns,Ss]),
-    {Nss, New} = Res = insert_successors_1(Ns, Me, Ss, Sz, [], []),
-    %io:format("   =>~s~n NEW:~s~n~n", [print_keys(Nss), print_keys(New)]),
-    Res.
+    insert_successors_1(Ns, Me, Ss, Sz, []).
 
-insert_successors_1(_, _, _, Sz, Acc, New) when Sz =< 0 ->
-    {lists:reverse(Acc), lists:reverse(New)};
-insert_successors_1([Me|Ns], Me, Ss, Sz, Acc, New) ->
-    insert_successors_1(Ns, Me, Ss, Sz, Acc, New);
-insert_successors_1([Succ|Ns], Me, [Succ|Ss], Sz, Acc, New) ->
-    insert_successors_1(Ns, Me, Ss, Sz-1, [Succ|Acc], New);
-insert_successors_1([NewSucc|Ns1], Me, [Me|Ss1], Sz, Acc, New) ->
-    insert_successors_1(Ns1, Me, Ss1, Sz-1,
-                        add_succ(NewSucc,Acc), add_succ(NewSucc,New));
+insert_successors_1(_, _, _, Sz, Acc) when Sz =< 0 ->
+    lists:reverse(Acc);
+insert_successors_1([Me|Ns], Me, Ss, Sz, Acc) ->
+    insert_successors_1(Ns, Me, Ss, Sz, Acc);
+insert_successors_1([Succ|Ns], Me, [Succ|Ss], Sz, Acc) ->
+    insert_successors_1(Ns, Me, Ss, Sz-1, [Succ|Acc]);
+insert_successors_1([NewSucc|Ns1], Me, [Me|Ss1], Sz, Acc) ->
+    insert_successors_1(Ns1, Me, Ss1, Sz-1, add_succ(NewSucc,Acc));
 insert_successors_1([#id{key=NewKey}=NewSucc|Ns1]=Ns0,
                     #id{key=MyKey}=Me,
-                    [#id{key=SuccKey}=Succ|Ss1]=Ss0, Sz, Acc, New) ->
+                    [#id{key=SuccKey}=Succ|Ss1]=Ss0, Sz, Acc) ->
     case memberNN(NewKey, MyKey, SuccKey) of
         true ->
-            insert_successors_1(Ns1, Me, Ss0, Sz-1,
-                                add_succ(NewSucc,Acc), add_succ(NewSucc,New));
+            insert_successors_1(Ns1, Me, Ss0, Sz-1, add_succ(NewSucc,Acc));
         false ->
-            insert_successors_1(Ns0, Me, Ss1, Sz-1, [Succ|Acc], New)
+            insert_successors_1(Ns0, Me, Ss1, Sz-1, [Succ|Acc])
     end;
-insert_successors_1([], Me, [Me|Ss], Sz, [_|_] = Acc, New) ->
-    insert_successors_1([], Me, Ss, Sz-1, Acc, New);
-insert_successors_1([], Me, [Succ|Ss], Sz, Acc, New) ->
-    insert_successors_1([], Me, Ss, Sz-1, [Succ|Acc], New);
-insert_successors_1([Succ|Ss], Me, [], Sz, Acc, New) ->
-    insert_successors_1(Ss, Me, [], Sz-1, add_succ(Succ,Acc), add_succ(Succ,New));
-insert_successors_1([], _, [], _, Acc, New) ->
-    {lists:reverse(Acc), lists:reverse(New)}.
+insert_successors_1([], Me, [Me|Ss], Sz, [_|_] = Acc) ->
+    insert_successors_1([], Me, Ss, Sz-1, Acc);
+insert_successors_1([], Me, [Succ|Ss], Sz, Acc) ->
+    insert_successors_1([], Me, Ss, Sz-1, [Succ|Acc]);
+insert_successors_1([Succ|Ss], Me, [], Sz, Acc) ->
+    insert_successors_1(Ss, Me, [], Sz-1, add_succ(Succ,Acc));
+insert_successors_1([], _, [], _, Acc) ->
+    lists:reverse(Acc).
 
 % update messages
 
-handle_set_successor({Succs, []}, #state{succs=Succs}=State) ->
+handle_set_successor(Succs, #state{succs=Succs}=State) ->
     State;
-handle_set_successor({[Succ|_]=Succs, New},
+handle_set_successor([Succ|_]=Succs,
                      #state{id=Me, pred=Pred, fingers=[F1|Fs0], succs=Old}=State) ->
-    [setup_monitor(NewSucc) || NewSucc <- New],
 %    io:format("~s: UPDATE SUCCS ~s => ~s~n",
 %	      [print_key(Me), print_key(hd(Succs)), print_key(NewSucc)]),
     case Old of
@@ -357,20 +352,17 @@ add_succ(Id, Succs) ->
 set_predecessor_impl(Pred, #state{pred=Pred, succs=Succs}=State) ->
     {{ok, Pred, Succs}, State};
 set_predecessor_impl(NewPred, #state{pred=undefined=OldPred, succs=Succs}=State) ->
-    setup_monitor(NewPred),
     {{ok, OldPred, Succs}, State#state{pred=NewPred}};
 set_predecessor_impl(NewPred, #state{id=Id, pred=OldPred, succs=Succs}=State) ->
     case is_process_alive(get_pid(OldPred)) of
         true ->
             case memberIN(NewPred, OldPred, Id) of
                 true ->
-                    setup_monitor(NewPred),
                     {{ok, OldPred, Succs}, State#state{pred=NewPred}};
                 false ->
                     {{error, OldPred}, State}
             end;
         false ->
-            setup_monitor(NewPred),
             {{ok, undefined, Succs}, State#state{pred=NewPred}}
     end.
 
@@ -405,12 +397,10 @@ make_fingers([Start], Last, Id) ->
 init_fingers([#finger{start=Start}=F|Fs], N, #id{key=NodeId}=Prev, [Gate|Gates]) ->
     case memberIN(Start, N, NodeId) of
 	true  ->
-	    setup_monitor(Prev),
 	    [F#finger{node=Prev}|init_fingers(Fs, N, Prev, [Gate|Gates])];
 	false ->
             try find_successor(Gate, Start) of
                 {_, Succ} ->
-                    setup_monitor(Succ),
                     [F#finger{node=Succ}|init_fingers(Fs, N, Succ, [Gate|Gates])]
             catch _:_Reason ->
                 %io:format("Retry after _Reason in init_fingers: ~p~n", [_Reason]),
@@ -502,7 +492,6 @@ update_finger(S, I, #state{id=Id, fingers=Fingers0, pred=Pred}) ->
     {Part1, [F0|Part2]} = lists:split(I-1, Fingers0),
     case update_finger(S, F0) of
         true ->
-            setup_monitor(S),
             (Id =/= Pred) andalso cast(Pred, {update_finger_table, S, I}),
             Part1 ++ [F0#finger{node=S}|Part2];
         false ->
@@ -525,9 +514,7 @@ init_neighbors([Gate|Gates], #state{id=Id, fingers=[F|Fs0]}=State0) ->
 		myself ->
 		    init_neighbors([Gate|Gates], State0);
 		{Pred, Succs1} ->
-		    setup_monitor(Pred),
-                    {Succs,_} = insert_successors(Succs1, Id, Succs0, State0#state.succ_list_sz),
-		    [setup_monitor(S) || S <- Succs],
+                    Succs = insert_successors(Succs1, Id, Succs0, State0#state.succ_list_sz),
                     Fingers = [F#finger{node=hd(Succs)}|Fs],
                     update_pred_fingers(Pred, Fingers, 1),
 		    State1 = State0#state{pred=Pred, succs=Succs},
@@ -553,6 +540,41 @@ update_pred_fingers(_, [], _) ->
 update_pred_fingers(Pred, [#finger{node=Node}|Fs], I) ->
     cast(Pred, {update_finger_table, Node, I}),
     update_pred_fingers(Pred, Fs, I+1).
+
+
+%% Monitoring
+%%--------------------------------------------------------------------
+update_monitors(#state{monitors=Monitors0}=State) ->
+    Neighbours = get_neighbours(State),
+    Monitors1 = setup_monitors(Neighbours, Monitors0),
+    Monitors = teardown_monitors(Neighbours, Monitors1),
+    State#state{monitors=Monitors}.
+
+setup_monitors(Neighbours, Monitors) ->
+    MRefs0 = [{N, setup_monitor(N)} || N <- Neighbours],
+    MRefs = lists:filter(fun({_, MRef}) -> MRef =/= already_monitored end, MRefs0),
+    lists:foldl(fun({Pid, MRef}, Ms) -> maps:put(Pid, MRef, Ms) end, Monitors, MRefs).
+
+setup_monitor(S) ->
+    Pid = get_pid(S),
+    {monitors, Ms} = process_info(self(), monitors),
+    case lists:member({process,Pid}, Ms) of
+	true  -> already_monitored;
+	false -> monitor(process, Pid)
+    end.
+
+teardown_monitors(Neighbours, Monitors) ->
+    Rm = maps:filter(fun(K, _V) -> not lists:member(K, Neighbours) end, Monitors),
+    [demonitor(MRef) || MRef <- maps:values(Rm)],
+    maps:without(maps:keys(Rm), Monitors).
+
+get_neighbours(#state{id=#id{pid=Me}, pred=undefined, succs=Succs, fingers=Fingers}) ->
+    SuccPids = [P || #id{pid=P} <- Succs],
+    FingerPids = [P || #finger{node=#id{pid=P}} <- Fingers],
+    lists:delete(Me, SuccPids ++ FingerPids);
+get_neighbours(#state{id=#id{pid=Me}, pred=#id{pid=PredPid}}=State) ->
+    lists:delete(Me, [PredPid|get_neighbours(State#state{pred=undefined})]).
+
 
 %% utility functions
 %%--------------------------------------------------------------------
@@ -605,14 +627,6 @@ call(Pid, Msg) when is_pid(Pid) ->
 
 get_pid(#id{pid=Pid}) -> Pid;
 get_pid(Pid) -> Pid.
-
-setup_monitor(S) ->
-    Pid = get_pid(S),
-    {monitors, Ms} = process_info(self(), monitors),
-    case lists:member({process,Pid}, Ms) of
-	true  -> already_monitored;
-	false -> monitor(process, Pid)
-    end.
 
 %%% Debug
 
