@@ -154,34 +154,26 @@ handle_cast(_Msg, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Msg]),
     {noreply, State}.
 
-
+handle_info({'DOWN', _, process, Pid, _},
+            #state{id=Id, pred=#id{pid=Pid}, succs=[#id{pid=Pid}]} = State0) -> %% We are the only left
+    State = update_fingers(Pid, Id, State0),
+    {noreply, update_monitors(State#state{pred=Id, succs=[Id]})};
+handle_info({'DOWN', _, process, Pid, _}, #state{pred=#id{pid=Pid}} = State0) ->
+    State = update_neighbours(Pid, State0),
+    {noreply, update_monitors(State#state{pred=undefined})};
 handle_info({'DOWN', _, process, Pid, _} = Msg,
-	    #state{id=Id, pred=Pred, succs=Succs0, fingers=Fingers} = State0) ->
-    PredPid = get_pid(Pred),
-    SuccPid = get_pid(hd(Succs0)),
-    LastKnown = if Pred =:= undefined -> Id;
-		   PredPid =:= Pid -> Id;
-		   true -> Pred
-		end,
-    UpdFingers = fix_fingers(Pid, LastKnown, Id, lists:reverse(Fingers), []),
-    State = State0#state{fingers=UpdFingers},
-    if PredPid == Pid, SuccPid == Pid -> %% We are the only left
-	    {noreply, update_monitors(State#state{pred=Id, succs=[Id]})};
-       PredPid == Pid ->
-            Succs = fix_successors(Pid, Succs0, Id, State0#state.succ_list_sz, []),
-	    {noreply, update_monitors(State#state{succs=Succs, pred=undefined})};
-       SuccPid == Pid ->
-	    case handle_dead_successor(State#state{succs=tl(Succs0)}, Pid) of
-		error ->
-		    self() ! Msg,
-		    {noreply, update_monitors(State0#state{fingers=UpdFingers})};
-		NewState ->
-		    {noreply, update_monitors(NewState)}
-	    end;
-       true ->
-            Succs = fix_successors(Pid, Succs0, Id, State0#state.succ_list_sz, []),
-	    {noreply, update_monitors(State#state{succs=Succs})}
+           #state{pred=Pred, succs=[#id{pid=Pid}|_]=Succs0} = State0) ->
+    State = update_fingers(Pid, Pred, State0),
+    case handle_dead_successor(State#state{succs=tl(Succs0)}, Pid) of
+       error ->
+           self() ! Msg,
+           {noreply, update_monitors(State)};
+       NewState ->
+           {noreply, update_monitors(NewState)}
     end;
+handle_info({'DOWN', _, process, Pid, _}, State0) ->
+    State = update_neighbours(Pid, State0),
+    {noreply, update_monitors(State)};
 handle_info(_Info, State) ->
     io:format("~p: Unhandled ~p~n", [?LINE, _Info]),
     {noreply, State}.
@@ -195,6 +187,11 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+update_neighbours(Pid, #state{id=Id, succs=Succs0}=State0) ->
+    State = update_fingers(Pid, Id, State0),
+    Succs = fix_successors(Pid, Succs0, Id, State#state.succ_list_sz, []),
+    State#state{succs=Succs}.
 
 %% Successor list handling
 %%--------------------------------------------------------------------
@@ -451,6 +448,12 @@ closest_preceding_fingers(#id{key=This}=N, Id, Fingers) ->
     end.
 
 %% update / handle DOWN
+
+update_fingers(Pid, undefined, #state{id=Id}=State) ->
+    update_fingers(Pid, Id, State);
+update_fingers(Pid, LastKnown, #state{id=Id, fingers=Fingers}=State) ->
+    UpdFingers = fix_fingers(Pid, LastKnown, Id, lists:reverse(Fingers), []),
+    State#state{fingers=UpdFingers}.
 
 fix_fingers(Pid, Last, Me, [#finger{node=#id{pid=Pid}}=F1|Fingers], Acc) ->
     spawn_link(fun() -> fix_finger(Me, F1, length([F1|Fingers])) end),
