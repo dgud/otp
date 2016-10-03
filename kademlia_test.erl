@@ -86,6 +86,7 @@ id(P) ->
     #id{key = kademlia:key(P, 32), pid=P}.
 
 check_some_lookups(All) ->
+    timer:sleep(1000),
     [check(random_key(), All) || _ <- lists:seq(1, 100)].
 
 check(Key, All) ->
@@ -104,11 +105,15 @@ check_states(Nodes) ->
 check_states([], _Nodes) ->
     ok;
 check_states([#id{key = Key, pid = Pid} = Node|Nodes], AllNodes) ->
-    {state, #routing_table{self = Node, k_buckets = KBuckets}, _} = sys:get_state(Pid),
+    {state, #routing_table{self = Node,
+                           closest_neighbours = Neighbours,
+                           k_buckets = KBuckets,
+                           neighbour_size = NSZ}, _} = sys:get_state(Pid),
     ExpectedKBuckets = get_expected_k_buckets(Key, AllNodes, maps:new()),
+    ExpectedNeighbours = get_expected_neighbours(Key, AllNodes, NSZ),
     case check_k_buckets(ExpectedKBuckets, KBuckets) of
         true ->
-            true = check_monitors(Pid, KBuckets, maps:keys(ExpectedKBuckets)),
+            true = check_monitors(Pid, Neighbours, KBuckets, maps:keys(ExpectedKBuckets), ExpectedNeighbours),
             check_states(Nodes, AllNodes);
         false ->
             io:format("~p: KBuckets incorrect!~n   Expected: ~p~n   Acutal: ~p~n",
@@ -116,6 +121,9 @@ check_states([#id{key = Key, pid = Pid} = Node|Nodes], AllNodes) ->
             ok = retry_check_state(Node, ExpectedKBuckets, 3),%probably stabalizing
             check_states(Nodes, AllNodes)
     end.
+
+get_expected_neighbours(Key, AllNodes, NSZ) ->
+    tl(lists:sublist(routing_tables:sort(Key, AllNodes), NSZ + 1)).
 
 retry_check_state(_Node, _, 0) ->
     fail;
@@ -126,18 +134,20 @@ retry_check_state(#id{pid = Pid} = Node, ExpectedKBuckets, N) ->
         false -> retry_check_state(Node, ExpectedKBuckets, N-1)
     end.
 
-check_monitors(Pid, KBuckets, ExpectedKs) ->
-    Ms = get_monitors(maps:values(KBuckets), []),
+check_monitors(Pid, Neighbours, KBuckets, ExpectedKs, ExpectedNeighbours) ->
+    Ms = get_monitors(Neighbours ++ maps:values(KBuckets), []),
     {monitors, Mons} = process_info(Pid, monitors),
     [true = lists:member(P, Ms) || {process, P} <- Mons],
     L = length(Ms),
-    L = length(ExpectedKs),
+    L = length(ExpectedKs ++ ExpectedNeighbours),
     true.
 
 get_monitors([], Monitors) ->
     Monitors;
 get_monitors([{{_, #id{pid=Pid}}, _}|KBuckets], Monitors) ->
-    get_monitors(KBuckets, [Pid| Monitors]).
+    get_monitors(KBuckets, [Pid | Monitors]);
+get_monitors([{_, #id{pid=Pid}}|KBuckets], Monitors) ->
+    get_monitors(KBuckets, [Pid | Monitors]).
 
 get_expected_k_buckets(_Key, [], Expected) ->
     Expected;

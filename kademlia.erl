@@ -58,12 +58,14 @@ handle_call(print_state, _From, State) ->
 handle_call({find_node, Key, FromNode}, From,
             #state{routing_table = RT} = State) ->
     spawn_link(fun() -> find_node(Key, RT, From) end),
-    {noreply, State#state{routing_table = add_nodes([FromNode], RT)}};
+    RoutingTable = routing_tables:add_nodes([FromNode], RT),
+    {noreply, State#state{routing_table = RoutingTable}};
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
 
 handle_cast({add_nodes, Nodes}, #state{routing_table = RT} = State) ->
-    {noreply, State#state{routing_table = add_nodes(Nodes, RT)}};
+    RoutingTable = routing_tables:add_nodes(Nodes, RT),
+    {noreply, State#state{routing_table = RoutingTable}};
 handle_cast(refresh, State) ->
     spawn_link(fun() -> refresh(State) end),
     {noreply, State};
@@ -127,16 +129,6 @@ join(#id{key = Key} = Me, KeyBSZ) ->
     cast(Me, {add_nodes, Nodes}),
     refresh(KeyBSZ, Me).
 
-add_nodes(Nodes, RoutingTable0) ->
-    RoutingTable = routing_tables:add_nodes(Nodes, RoutingTable0),
-    case RoutingTable of
-        RoutingTable0 ->
-            RoutingTable0;
-        RoutingTable ->
-            ToNotify = routing_tables:get_closest_neighbours(RoutingTable),
-            [cast(N, {add_nodes, Nodes}) || N <- ToNotify],
-            RoutingTable
-    end.
 
 % TODO make lookup recursive & don't call all the K closest ones
 find_node1(Gate, _Key, 0) ->

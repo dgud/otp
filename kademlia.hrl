@@ -13,7 +13,9 @@
 
 -record(id, {key::key(), pid::pid()}).
 -record(routing_table, {self :: id(),
-                        k_buckets :: k_buckets()}).
+                        closest_neighbours :: [monitor_ref()],
+                        k_buckets :: k_buckets(),
+                        neighbour_size = 5 :: non_neg_integer()}).
 -record(state,
         {routing_table :: #routing_table{},
          key_bit_sz :: non_neg_integer()}).

@@ -11,16 +11,16 @@
 -include("kademlia.hrl").
 
 -export([new/2, me/1, find_node/2, add_nodes/2, remove_node/2, sort/2,
-         get_closest_neighbours/1, get_empty_k_buckets/2]).
+         get_empty_k_buckets/2]).
 
 %%%===================================================================
 %%% API
 %%%===================================================================
 
 new(Id, []) ->
-    #routing_table{self = Id, k_buckets = maps:new()};
-new(Id, [Gate|Gates]) ->
-    add_node(Gate, new(Id, Gates)).
+    #routing_table{self = Id, closest_neighbours = [], k_buckets = maps:new()};
+new(Id, Gates) ->
+    add_nodes(Gates, new(Id, [])).
 
 me(#routing_table{self = Self}) ->
     Self.
@@ -35,7 +35,8 @@ find_node(Key, #routing_table{self = Self,
     Sorted = sort(KBucketNodes, Key, Self, KBuckets),
     lists:sublist(Sorted, ?K).
 
-add_nodes([], RoutingTable) -> RoutingTable;
+add_nodes([], RoutingTable) ->
+    update_neighbours(RoutingTable);
 add_nodes([Node|Nodes], RoutingTable0) ->
     RoutingTable = add_node(Node, RoutingTable0),
     add_nodes(Nodes, RoutingTable).
@@ -47,16 +48,13 @@ remove_node(#id{key = Key} = Id,
     KBucketNodes = lists:delete(Id, KBucketNodes0),
     K = get_k(Self, Key),
     KBuckets = rm_fix_k_buckets(K, Id, Monitor0, KBucketNodes, KBuckets0),
-    RoutingTable#routing_table{k_buckets = KBuckets}.
+    update_neighbours(RoutingTable#routing_table{k_buckets = KBuckets}).
 
 sort(Key, KBucketNodes) ->
     DistanceList = [{?DISTANCE(Key, K), Contact}
                     || #id{key = K} = Contact <- KBucketNodes],
     Sorted = lists:keysort(1, DistanceList),
     [KeyContact || {_D, KeyContact} <- Sorted].
-
-get_closest_neighbours(#routing_table{k_buckets = KBuckets}) ->
-    get_closest_neighbours(maps:keys(KBuckets), KBuckets, []).
 
 get_empty_k_buckets(KeyBSZ, #routing_table{k_buckets = KBuckets}) ->
     AllKs = lists:seq(0, KeyBSZ-1),
@@ -117,17 +115,6 @@ get_all_ids(Self, KBuckets) ->
                      {_Monitor, KBucketNodes} <- maps:values(KBuckets)],
     [Self | lists:append(KBucketsNodes)].
 
-get_closest_neighbours([], _KBuckets, Neighbours) ->
-    Neighbours;
-get_closest_neighbours([K|Ks], KBuckets, Neighbours) ->
-   {_Monitor, KBucketNodes} = maps:get(K, KBuckets),
-    case KBucketNodes ++ Neighbours of
-        Closest when length(Closest) > ?K ->
-            Closest;
-        Closest ->
-            get_closest_neighbours(Ks, KBuckets, Closest)
-    end.
-
 add_node(Self, #routing_table{self = Self} = RoutingTable) ->
     RoutingTable;
 add_node(#id{key = Key} = Node,
@@ -139,4 +126,17 @@ add_node(#id{key = Key} = Node,
     K = get_k(Self, Key),
     KBuckets = maps:put(K, {Monitor, KBucketNodes}, KBuckets0),
     RoutingTable#routing_table{k_buckets = KBuckets}.
+
+update_neighbours(#routing_table{self = #id{key = Key} = Self,
+                                 closest_neighbours = Closest0,
+                                 k_buckets = KBuckets,
+                                 neighbour_size = NSize} = RoutingTable) ->
+    ClosestNeighbours = tl(lists:sublist(sort(Key, get_all_ids(Self, KBuckets)), NSize + 1)),%TODO clean
+    Closest = update_neighbour_monitors(Closest0, ClosestNeighbours),
+    RoutingTable#routing_table{closest_neighbours = Closest}.
+
+update_neighbour_monitors(Closest0, Closest1) ->
+    [demonitor(MRef) || {MRef, _Id} <- Closest0],
+    [{monitor(process, Pid), Id} || #id{pid = Pid} = Id <- Closest1].
+
 
