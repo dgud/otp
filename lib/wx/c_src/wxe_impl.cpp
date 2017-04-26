@@ -267,6 +267,8 @@ int WxeApp::dispatch_cmds()
   return more;
 }
 
+#define BREAK_BATCH 200
+
 int WxeApp::dispatch(wxeFifo * batch)
 {
   int ping = 0;
@@ -284,8 +286,8 @@ int WxeApp::dispatch(wxeFifo * batch)
       case WXE_BATCH_END:
 	if(blevel>0) {
           blevel--;
-        } else {
-          blevel = -50;
+          if(blevel==0)
+            wait = 200000;
         }
 	break;
       case WXE_BATCH_BEGIN:
@@ -318,11 +320,13 @@ int WxeApp::dispatch(wxeFifo * batch)
       erl_drv_mutex_lock(wxe_batch_locker_m);
       batch->Cleanup();
     }
-    if(blevel <= 0 || wait > 200) {
+    if(blevel <= 0 || wait > BREAK_BATCH) {
       erl_drv_mutex_unlock(wxe_batch_locker_m);
       if(blevel > 0) {
-        fprintf(stderr, "%s:%d L:%d QSZ:%d N:%d (%d)\r\n",  __FILE__, __LINE__, blevel, batch->m_max, cnt, cnt/wait);
-        fflush(stderr);
+        if(wait > (BREAK_BATCH + 1000)) {
+          fprintf(stderr, "%s:%d L:%d QSZ:%d N:%d (%d)\r\n",  __FILE__, __LINE__, blevel, batch->m_max, cnt, cnt/wait);
+          fflush(stderr);
+        }
         return 1; // We are still in a batch but we can let wx check for events
       } else {
         // fprintf(stderr, "%s:%d L:%d QSZ:%d N:%d (%d)\r\n",  __FILE__, __LINE__, blevel, batch->m_max, cnt, cnt/wait);
