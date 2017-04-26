@@ -272,10 +272,13 @@ int WxeApp::dispatch(wxeFifo * batch)
   int ping = 0;
   int blevel = 0;
   int wait = 0; // Let event handling generate events sometime
+  int cnt = 0, last=0;
   wxeCommand *event;
   erl_drv_mutex_lock(wxe_batch_locker_m);
   while(true) {
+    last = 0;
     while((event = batch->Get()) != NULL) {
+      cnt++; last++;
       erl_drv_mutex_unlock(wxe_batch_locker_m);
       switch(event->op) {
       case WXE_BATCH_END:
@@ -311,10 +314,15 @@ int WxeApp::dispatch(wxeFifo * batch)
       erl_drv_mutex_lock(wxe_batch_locker_m);
       batch->Cleanup();
     }
-    if(blevel <= 0 || wait > 3) {
+    if(blevel <= 0 || wait > 20000) {
       erl_drv_mutex_unlock(wxe_batch_locker_m);
-      if(blevel > 0) return 1; // We are still in a batch but we can let wx check for events
-      else return 0;
+      if(blevel > 0) {
+        fprintf(stderr, "%s:%d L:%d QSZ:%d N:%d (%d)\r\n",  __FILE__, __LINE__, blevel, batch->m_max, cnt, cnt/wait);
+        fflush(stderr);
+        return 1; // We are still in a batch but we can let wx check for events
+      } else {
+        return 0;
+      }
     }
     // sleep until something happens
     // fprintf(stderr, "%s:%d sleep %d %d %d\r\n", __FILE__, __LINE__, batch->m_n, blevel, wait);fflush(stderr);
