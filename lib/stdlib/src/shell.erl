@@ -350,9 +350,10 @@ bad_prompt_func(M) ->
 default_prompt(N) ->
     %% Don't bother flattening the list irrespective of what the
     %% I/O-protocol states.
+    {Pre,Post} = get_color(prompt),
     case is_alive() of
-	true  -> io_lib:format(<<"(~s)~w> ">>, [node(), N]);
-	false -> io_lib:format(<<"~w> ">>, [N])
+	true  -> [Pre,io_lib:format(<<"(~s)~w> ">>, [node(), N])|Post];
+	false -> [Pre,io_lib:format(<<"~w> ">>, [N])|Post]
     end.
 
 %% expand_hist(Expressions, CommandNumber)
@@ -591,8 +592,9 @@ report_exception(Class, Severity, {Reason,Stacktrace}, RT) ->
     SF = fun(M, _F, _A) -> (M =:= erl_eval) or (M =:= ?MODULE) end,
     Enc = encoding(),
     Str = lib:format_exception(I, Class, Reason, Stacktrace, SF, PF, Enc),
-    io:requests([{put_chars, latin1, Tag},
-                 {put_chars, unicode, Str},
+    {Pre,Post} = get_color(exception),
+    io:requests([{put_chars, latin1, [Pre,Tag]},
+                 {put_chars, unicode, [Str|Post]},
                  nl]).
 
 start_eval(Bs, RT, Ds) ->
@@ -784,7 +786,8 @@ used_records(E) ->
     {expr, E}.
 
 fwrite_severity(Severity, S, As) ->
-    io:fwrite(<<"~ts\n">>, [format_severity(Severity, S, As)]).
+    {Pre,Post} = get_color(exception),
+    io:fwrite(<<"~s~ts~s\n">>, [Pre,format_severity(Severity, S, As), Post]).
 
 format_severity(Severity, S, As) ->
     add_severity(Severity, io_lib:fwrite(S, As)).
@@ -1512,6 +1515,14 @@ colors(Colors) ->
     set_env(stdlib, shell_colors, Colors, ?DEF_COLORS).
 
 def_colors() ->
-    #{exception=>31,
-      string=>32
+    #{
+       prompt=>"\e[0;34m",
+       exception=>"\e[0;31m",
+       string=>"\e[0;32m"
      }.
+
+get_color(What) ->
+    case application:get_env(stdlib, shell_colors) of
+        {ok,Map} when is_map(Map) -> {maps:get(What, Map, "\e[0m"), "\e[0m"};
+        _ -> {"", ""}
+    end.
