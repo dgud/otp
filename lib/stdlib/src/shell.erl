@@ -23,7 +23,7 @@
 -export([whereis_evaluator/0, whereis_evaluator/1]).
 -export([start_restricted/1, stop_restricted/0]).
 -export([local_allowed/3, non_local_allowed/3]).
--export([catch_exception/1, prompt_func/1, strings/1]).
+-export([catch_exception/1, prompt_func/1, strings/1, colors/1]).
 
 -define(LINEMAX, 30).
 -define(CHAR_MAX, 60).
@@ -32,6 +32,7 @@
 -define(DEF_CATCH_EXCEPTION, false).
 -define(DEF_PROMPT_FUNC, default).
 -define(DEF_STRINGS, true).
+-define(DEF_COLORS, false).
 
 -define(RECORDS, shell_records).
 
@@ -1504,3 +1505,13 @@ prompt_func(String) ->
 
 strings(Strings) ->
     set_env(stdlib, shell_strings, Strings, ?DEF_STRINGS).
+
+colors(true) ->
+    set_env(stdlib, shell_colors, def_colors(), ?DEF_COLORS);
+colors(Colors) ->
+    set_env(stdlib, shell_colors, Colors, ?DEF_COLORS).
+
+def_colors() ->
+    #{exception=>31,
+      string=>32
+     }.
