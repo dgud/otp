@@ -592,7 +592,7 @@ report_exception(Class, Severity, {Reason,Stacktrace}, RT) ->
     SF = fun(M, _F, _A) -> (M =:= erl_eval) or (M =:= ?MODULE) end,
     Enc = encoding(),
     Str = lib:format_exception(I, Class, Reason, Stacktrace, SF, PF, Enc),
-    {Pre,Post} = get_color(exception),
+    {Pre,Post} = get_color(error),
     io:requests([{put_chars, latin1, [Pre,Tag]},
                  {put_chars, unicode, [Str|Post]},
                  nl]).
@@ -786,7 +786,7 @@ used_records(E) ->
     {expr, E}.
 
 fwrite_severity(Severity, S, As) ->
-    {Pre,Post} = get_color(exception),
+    {Pre,Post} = get_color(error),
     io:fwrite(<<"~s~ts~s\n">>, [Pre,format_severity(Severity, S, As), Post]).
 
 format_severity(Severity, S, As) ->
@@ -1411,16 +1411,18 @@ pp(V, I, RT) ->
     pp(V, I, _Depth=?LINEMAX, RT).
 
 pp(V, I, D, RT) ->
-    Strings =
-        case application:get_env(stdlib, shell_strings) of
-            {ok, false} ->
-                false;
-            _ ->
-                true
-        end,
+    Strings = case application:get_env(stdlib, shell_strings) of
+                  {ok, false} -> false;
+                  _ -> true
+              end,
+    Colors = case application:get_env(stdlib, shell_colors) of
+                 {ok, Cs0} when is_map(Cs0) -> Cs0;
+                 _ -> false
+             end,
     io_lib_pretty:print(V, ([{column, I}, {line_length, columns()},
                              {depth, D}, {max_chars, ?CHAR_MAX},
                              {strings, Strings},
+                             {colors, Colors},
                              {record_print_fun, record_print_fun(RT)}]
                             ++ enc())).
 
@@ -1516,13 +1518,15 @@ colors(Colors) ->
 
 def_colors() ->
     #{
-       prompt=>"\e[0;34m",
-       exception=>"\e[0;31m",
-       string=>"\e[0;32m"
+       prompt => "\e[0;34m",
+       error  => "\e[0;31m",
+       string => "\e[0;32m",
+       atom   => "\e[2m",
+       ref    => "\e[0;36m"  %% pid port refs funs
      }.
 
 get_color(What) ->
     case application:get_env(stdlib, shell_colors) of
-        {ok,Map} when is_map(Map) -> {maps:get(What, Map, "\e[0m"), "\e[0m"};
+        {ok,#{What:=Pre}} -> {Pre, "\e[0m"};
         _ -> {"", ""}
     end.

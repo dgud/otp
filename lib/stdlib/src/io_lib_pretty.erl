@@ -72,7 +72,8 @@ print(Term, Options) when is_list(Options) ->
     RecDefFun = get_option(record_print_fun, Options, no_fun),
     Encoding = get_option(encoding, Options, epp:default_encoding()),
     Strings = get_option(strings, Options, true),
-    print(Term, Col, Ll, D, M, RecDefFun, Encoding, Strings);
+    Colors = get_option(colors, Options, false),
+    print(Term, Col, Ll, D, M, RecDefFun, Encoding, Strings, Colors);
 print(Term, RecDefFun) ->
     print(Term, -1, RecDefFun).
 
@@ -84,7 +85,7 @@ print(Term, Depth, RecDefFun) ->
 -spec print(term(), column(), line_length(), depth()) -> chars().
 
 print(Term, Col, Ll, D) ->
-    print(Term, Col, Ll, D, _M=-1, no_fun, latin1, true).
+    print(Term, Col, Ll, D, _M=-1, no_fun, latin1, true, false).
 
 -spec print(term(), column(), line_length(), depth(), rec_print_fun()) ->
                    chars().
@@ -95,24 +96,27 @@ print(Term, Col, Ll, D, RecDefFun) ->
             rec_print_fun()) -> chars().
 
 print(Term, Col, Ll, D, M, RecDefFun) ->
-    print(Term, Col, Ll, D, M, RecDefFun, latin1, true).
+    print(Term, Col, Ll, D, M, RecDefFun, latin1, true, false).
 
 %% D = Depth, default -1 (infinite), or LINEMAX=30 when printing from shell
 %% Col = current column, default 1
 %% Ll = line length/~p field width, default 80
 %% M = CHAR_MAX (-1 if no max, 60 when printing from shell)
-print(_, _, _, 0, _M, _RF, _Enc, _Str) -> "...";
-print(Term, Col, Ll, D, M, RecDefFun, Enc, Str) when Col =< 0 ->
+print(_, _, _, 0, _M, _RF, _Enc, _Str, _Cs) -> "...";
+print(Term, Col, Ll, D, M, RecDefFun, Enc, Str, Cs) when Col =< 0 ->
     %% ensure Col is at least 1
-    print(Term, 1, Ll, D, M, RecDefFun, Enc, Str);
-print(Atom, _Col, _Ll, _D, _M, _RF, Enc, _Str) when is_atom(Atom) ->
-    write_atom(Atom, Enc);
-print(Term, Col, Ll, D, M0, RecDefFun, Enc, Str) when is_tuple(Term);
-                                                      is_list(Term);
-                                                      is_map(Term);
-                                                      is_bitstring(Term) ->
+    print(Term, 1, Ll, D, M, RecDefFun, Enc, Str, Cs);
+print(Atom, _Col, _Ll, _D, _M, _RF, Enc, _Str, Cs) when is_atom(Atom) ->
+    case get_color(atom, Cs) of
+        false -> write_atom(Atom, Enc);
+        {Pre, Post} -> [Pre, write_atom(Atom, Enc) | Post]
+    end;
+print(Term, Col, Ll, D, M0, RecDefFun, Enc, Str, Cs) when is_tuple(Term);
+                                                           is_list(Term);
+                                                           is_map(Term);
+                                                           is_bitstring(Term) ->
     %% preprocess and compute total number of chars
-    If = {_S, Len} = print_length(Term, D, RecDefFun, Enc, Str),
+    If = {_S, Len} = print_length(Term, D, RecDefFun, Enc, Str, Cs),
     %% use Len as CHAR_MAX if M0 = -1
     M = max_cs(M0, Len),
     if
@@ -126,10 +130,21 @@ print(Term, Col, Ll, D, M0, RecDefFun, Enc, Str) when is_tuple(Term);
                               1),
             pp(If, Col, Ll, M, TInd, indent(Col), 0, 0)
     end;
-print(Term, _Col, _Ll, _D, _M, _RF, _Enc, _Str) ->
+print(Term, _Col, _Ll, _D, _M, _RF, _Enc, _Str, Cs) when is_function(Term) ->
+    S = io_lib:write(Term),
+    case get_color(ref, Cs) of
+        false -> S;
+        {Pre,Post} -> [Pre,S|Post]
+    end;
+print(Term, _Col, _Ll, _D, _M, _RF, _Enc, _Str, Cs) ->
     %% atomic data types (bignums, atoms, ...) are never truncated
-    io_lib:write(Term).
-
+    S = io_lib:write(Term),
+    case (is_pid(Term) orelse is_reference(Term)
+          orelse is_port(Term)) andalso get_color(ref, Cs)
+    of
+        false -> S;
+        {Pre,Post} -> [Pre,S|Post]
+    end.
 %%%
 %%% Local functions
 %%%
@@ -403,65 +418,91 @@ write_tail(E, S) ->
 %% counted but need to be added later.
 
 %% D =/= 0
-print_length([], _D, _RF, _Enc, _Str) ->
+print_length([], _D, _RF, _Enc, _Str, _Cs) ->
     {"[]", 2};
-print_length({}, _D, _RF, _Enc, _Str) ->
+print_length({}, _D, _RF, _Enc, _Str, _Cs) ->
     {"{}", 2};
-print_length(#{}=M, _D, _RF, _Enc, _Str) when map_size(M) =:= 0 ->
+print_length(#{}=M, _D, _RF, _Enc, _Str, _Cs) when map_size(M) =:= 0 ->
     {"#{}", 3};
-print_length(Atom, _D, _RF, Enc, _Str) when is_atom(Atom) ->
+print_length(Atom, _D, _RF, Enc, _Str, Cs) when is_atom(Atom) ->
     S = write_atom(Atom, Enc),
-    {S, lists:flatlength(S)};
-print_length(List, D, RF, Enc, Str) when is_list(List) ->
+    case get_color(atom, Cs) of
+        false -> {S, lists:flatlength(S)};
+        {Pre,Post} -> {[Pre,S|Post], lists:flatlength(S)}
+    end;
+
+print_length(List, D, RF, Enc, Str, Cs) when is_list(List) ->
     %% only flat lists are "printable"
     case Str andalso printable_list(List, D, Enc) of
         true ->
             %% print as string, escaping double-quotes in the list
             S = write_string(List, Enc),
-            {S, length(S)};
+            case get_color(string, Cs) of
+                false -> {S, length(S)};
+                {Pre,Post} -> {[Pre,S|Post],length(S)}
+            end;
         %% Truncated lists could break some existing code.
         % {true, Prefix} ->
         %    S = write_string(Prefix, Enc),
         %    {[S | "..."], 3 + length(S)};
         false ->
-            print_length_list(List, D, RF, Enc, Str)
+            print_length_list(List, D, RF, Enc, Str, Cs)
     end;
-print_length(Fun, _D, _RF, _Enc, _Str) when is_function(Fun) ->
+print_length(Fun, _D, _RF, _Enc, _Str, Cs) when is_function(Fun) ->
     S = io_lib:write(Fun),
-    {S, iolist_size(S)};
-print_length(R, D, RF, Enc, Str) when is_atom(element(1, R)),
-                                      is_function(RF) ->
-    case RF(element(1, R), tuple_size(R) - 1) of
-        no -> 
-            print_length_tuple(R, D, RF, Enc, Str);
-        RDefs ->
-            print_length_record(R, D, RF, RDefs, Enc, Str)
+    case get_color(ref, Cs) of
+        false -> {S, iolist_size(S)};
+        {Pre,Post} -> {[Pre,S|Post], iolist_size(S)}
     end;
-print_length(Tuple, D, RF, Enc, Str) when is_tuple(Tuple) ->
-    print_length_tuple(Tuple, D, RF, Enc, Str);
-print_length(Map, D, RF, Enc, Str) when is_map(Map) ->
-    print_length_map(Map, D, RF, Enc, Str);
-print_length(<<>>, _D, _RF, _Enc, _Str) ->
+print_length(R, D, RF, Enc, Str, Cs) when is_atom(element(1, R)),
+                                           is_function(RF) ->
+    case RF(element(1, R), tuple_size(R) - 1) of
+        no ->
+            print_length_tuple(R, D, RF, Enc, Str, Cs);
+        RDefs ->
+            print_length_record(R, D, RF, RDefs, Enc, Str, Cs)
+    end;
+print_length(Tuple, D, RF, Enc, Str, Cs) when is_tuple(Tuple) ->
+    print_length_tuple(Tuple, D, RF, Enc, Str, Cs);
+print_length(Map, D, RF, Enc, Str, Cs) when is_map(Map) ->
+    print_length_map(Map, D, RF, Enc, Str, Cs);
+print_length(<<>>, _D, _RF, _Enc, _Str, _Cs) ->
     {"<<>>", 4};
-print_length(<<_/bitstring>>, 1, _RF, _Enc, _Str) ->
+print_length(<<_/bitstring>>, 1, _RF, _Enc, _Str, _Cs) ->
     {"<<...>>", 7};
-print_length(<<_/bitstring>>=Bin, D, _RF, Enc, Str) ->
+print_length(<<_/bitstring>>=Bin, D, _RF, Enc, Str, Cs) ->
     case bit_size(Bin) rem 8 of
         0 ->
 	    D1 = D - 1, 
 	    case Str andalso printable_bin(Bin, D1, Enc) of
                 {true, List} when is_list(List) ->
-                    S = io_lib:write_string(List, $"), %"
-	            {[$<,$<,S,$>,$>], 4 + length(S)};
+                    S0 = io_lib:write_string(List, $"), %"
+                    S = case get_color(string, Cs) of
+                            false -> S0;
+                            {Pre,Post} -> [Pre,S0|Post]
+                        end,
+	            {[$<,$<,S,$>,$>], 4 + length(S0)};
                 {false, List} when is_list(List) ->
-                    S = io_lib:write_string(List, $"), %"
-	            {[$<,$<,S,"/utf8>>"], 9 + length(S)};
+                    S0 = io_lib:write_string(List, $"), %"
+                    S = case get_color(string, Cs) of
+                            false -> S0;
+                            {Pre,Post} -> [Pre,S0|Post]
+                        end,
+	            {[$<,$<,S,"/utf8>>"], 9 + length(S0)};
 	        {true, true, Prefix} ->
-	            S = io_lib:write_string(Prefix, $"), %"
-	            {[$<,$<, S | "...>>"], 7 + length(S)};
+	            S0 = io_lib:write_string(Prefix, $"), %"
+                    S = case get_color(string, Cs) of
+                            false -> S0;
+                            {Pre,Post} -> [Pre,S0|Post]
+                        end,
+	            {[$<,$<, S | "...>>"], 7 + length(S0)};
 	        {false, true, Prefix} ->
-                    S = io_lib:write_string(Prefix, $"), %"
-	            {[$<,$<, S | "/utf8...>>"], 12 + length(S)};
+                    S0 = io_lib:write_string(Prefix, $"), %"
+                    S = case get_color(string, Cs) of
+                            false -> S0;
+                            {Pre,Post} -> [Pre,S0|Post]
+                        end,
+	            {[$<,$<, S | "/utf8...>>"], 12 + length(S0)};
 	        false ->
 	            S = io_lib:write(Bin, D),
 	            {{bin,S}, iolist_size(S)}
@@ -470,74 +511,82 @@ print_length(<<_/bitstring>>=Bin, D, _RF, Enc, Str) ->
            S = io_lib:write(Bin, D),
 	   {{bin,S}, iolist_size(S)}
     end;    
-print_length(Term, _D, _RF, _Enc, _Str) ->
+print_length(Term, _D, _RF, _Enc, _Str, Cs) ->
     S = io_lib:write(Term),
-    %% S can contain unicode, so iolist_size(S) cannot be used here
-    {S, string:length(S)}.
+    case (is_pid(Term) orelse is_reference(Term)
+          orelse is_port(Term)) andalso get_color(ref, Cs)
+    of
+        %% S can contain unicode, so iolist_size(S) cannot be used here
+        false -> {S, string:length(S)};
+        {Pre,Post} -> {[Pre,S|Post], string:length(S)}
+    end.
 
-print_length_map(_Map, 1, _RF, _Enc, _Str) ->
+print_length_map(_Map, 1, _RF, _Enc, _Str, _Cs) ->
     {"#{...}", 6};
-print_length_map(Map, D, RF, Enc, Str) when is_map(Map) ->
-    Pairs = print_length_map_pairs(erts_internal:maps_to_list(Map, D), D, RF, Enc, Str),
+print_length_map(Map, D, RF, Enc, Str, Cs) when is_map(Map) ->
+    Pairs = print_length_map_pairs(erts_internal:maps_to_list(Map, D), D, RF, Enc, Str, Cs),
     {{map, Pairs}, list_length(Pairs, 3)}.
 
-print_length_map_pairs([], _D, _RF, _Enc, _Str) ->
+print_length_map_pairs([], _D, _RF, _Enc, _Str, _Cs) ->
     [];
-print_length_map_pairs(_Pairs, 1, _RF, _Enc, _Str) ->
+print_length_map_pairs(_Pairs, 1, _RF, _Enc, _Str, _Cs) ->
     {dots, 3};
-print_length_map_pairs([{K, V} | Pairs], D, RF, Enc, Str) ->
-    [print_length_map_pair(K, V, D - 1, RF, Enc, Str) |
-     print_length_map_pairs(Pairs, D - 1, RF, Enc, Str)].
+print_length_map_pairs([{K, V} | Pairs], D, RF, Enc, Str, Cs) ->
+    [print_length_map_pair(K, V, D - 1, RF, Enc, Str, Cs) |
+     print_length_map_pairs(Pairs, D - 1, RF, Enc, Str, Cs)].
 
-print_length_map_pair(K, V, D, RF, Enc, Str) ->
-    {KS, KL} = print_length(K, D, RF, Enc, Str),
-    {VS, VL} = print_length(V, D, RF, Enc, Str),
+print_length_map_pair(K, V, D, RF, Enc, Str, Cs) ->
+    {KS, KL} = print_length(K, D, RF, Enc, Str, Cs),
+    {VS, VL} = print_length(V, D, RF, Enc, Str, Cs),
     KL1 = KL + 4,
     {{map_pair, {KS, KL1}, {VS, VL}}, KL1 + VL}.
 
-print_length_tuple(_Tuple, 1, _RF, _Enc, _Str) ->
+print_length_tuple(_Tuple, 1, _RF, _Enc, _Str, _Cs) ->
     {"{...}", 5};
-print_length_tuple(Tuple, D, RF, Enc, Str) ->
-    L = print_length_list1(tuple_to_list(Tuple), D, RF, Enc, Str),
+print_length_tuple(Tuple, D, RF, Enc, Str, Cs) ->
+    L = print_length_list1(tuple_to_list(Tuple), D, RF, Enc, Str, Cs),
     IsTagged = is_atom(element(1, Tuple)) and (tuple_size(Tuple) > 1),
     {{tuple,IsTagged,L}, list_length(L, 2)}.
 
-print_length_record(_Tuple, 1, _RF, _RDefs, _Enc, _Str) ->
+print_length_record(_Tuple, 1, _RF, _RDefs, _Enc, _Str, _Cs) ->
     {"{...}", 5};
-print_length_record(Tuple, D, RF, RDefs, Enc, Str) ->
+print_length_record(Tuple, D, RF, RDefs, Enc, Str, Cs) ->
     Name = [$# | write_atom(element(1, Tuple), Enc)],
     NameL = length(Name),
     Elements = tl(tuple_to_list(Tuple)),
-    L = print_length_fields(RDefs, D - 1, Elements, RF, Enc, Str),
+    L = print_length_fields(RDefs, D - 1, Elements, RF, Enc, Str, Cs),
     {{record, [{Name,NameL} | L]}, list_length(L, NameL + 2)}.
 
-print_length_fields([], _D, [], _RF, _Enc, _Str) ->
+print_length_fields([], _D, [], _RF, _Enc, _Str, _Cs) ->
     [];
-print_length_fields(_, 1, _, _RF, _Enc, _Str) ->
+print_length_fields(_, 1, _, _RF, _Enc, _Str, _Cs) ->
     {dots, 3};
-print_length_fields([Def | Defs], D, [E | Es], RF, Enc, Str) ->
-    [print_length_field(Def, D - 1, E, RF, Enc, Str) |
-     print_length_fields(Defs, D - 1, Es, RF, Enc, Str)].
+print_length_fields([Def | Defs], D, [E | Es], RF, Enc, Str, Cs) ->
+    [print_length_field(Def, D - 1, E, RF, Enc, Str, Cs) |
+     print_length_fields(Defs, D - 1, Es, RF, Enc, Str, Cs)].
 
-print_length_field(Def, D, E, RF, Enc, Str) ->
+print_length_field(Def, D, E, RF, Enc, Str, Cs) ->
     Name = write_atom(Def, Enc),
-    {S, L} = print_length(E, D, RF, Enc, Str),
+    {S, L} = print_length(E, D, RF, Enc, Str, Cs),
     NameL = length(Name) + 3,
-    {{field, Name, NameL, {S, L}}, NameL + L}.
+    case get_color(atom, Cs) of
+        false -> {{field, Name, NameL, {S, L}}, NameL + L};
+        {Pre,Post}  -> {{field, [Pre,Name|Post], NameL, {S, L}}, NameL + L}
+    end.
 
-print_length_list(List, D, RF, Enc, Str) ->
-    L = print_length_list1(List, D, RF, Enc, Str),
+print_length_list(List, D, RF, Enc, Str, Cs) ->
+    L = print_length_list1(List, D, RF, Enc, Str, Cs),
     {{list, L}, list_length(L, 2)}.
 
-print_length_list1([], _D, _RF, _Enc, _Str) ->
+print_length_list1([], _D, _RF, _Enc, _Str, _Cs) ->
     [];
-print_length_list1(_, 1, _RF, _Enc, _Str) ->
+print_length_list1(_, 1, _RF, _Enc, _Str, _Cs) ->
     {dots, 3};
-print_length_list1([E | Es], D, RF, Enc, Str) ->
-    [print_length(E, D - 1, RF, Enc, Str) |
-     print_length_list1(Es, D - 1, RF, Enc, Str)];
-print_length_list1(E, D, RF, Enc, Str) ->
-    print_length(E, D - 1, RF, Enc, Str).
+print_length_list1([E | Es], D, RF, Enc, Str, Cs) ->
+    [print_length(E, D - 1, RF, Enc, Str, Cs) |
+     print_length_list1(Es, D - 1, RF, Enc, Str, Cs)];
+print_length_list1(E, D, RF, Enc, Str, Cs) ->
+    print_length(E, D - 1, RF, Enc, Str, Cs).
 
 list_length([], Acc) ->
     Acc;
@@ -892,3 +941,11 @@ get_option(Key, TupleList, Default) ->
 	{Key, Value} -> Value;
 	_ -> Default
     end.
+
+get_color(What, Map) when is_map(Map) ->
+    case maps:get(What, Map, "") of
+        "" -> false;
+        Pre -> {Pre, "\e[0m"}
+    end;
+get_color(_, _) ->
+    false.
