@@ -555,6 +555,8 @@ gen_gc(Fd, GBP) ->
                  "%% To simplify binary handling in libraries the tail should be kept binary\n"
                  "%% and not a lookahead CP\n"
                 ),
+    io:put_chars(Fd, "gc_extend([CP|_]=T, Acc) when CP < 256, is_integer(Acc) ->\n"
+                 "    [Acc|T0];  %% Fast path\n\n"),
     io:put_chars(Fd, "gc_extend(T, Acc) ->\n"
                  "    gc_extend(cp(T), T, Acc).\n\n"),
     io:put_chars(Fd,
