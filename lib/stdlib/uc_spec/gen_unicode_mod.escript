@@ -485,6 +485,8 @@ gen_gc(Fd, GBP) ->
                  "    end;\n"
                  "gc_1([CP1, CP2|_]=T) when CP1 < 256, CP2 < 256 ->\n"
                  "    T;  %% Fast path\n"
+                 "gc_1([CP1|<<CP2/utf8, _/binary>>]=T) when CP1 < 256, CP2 < 256 ->\n"
+                 "    T;  %% Fast path\n"
                 ),
 
     io:put_chars(Fd, "%% Handle control\n"),
