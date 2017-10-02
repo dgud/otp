@@ -92,7 +92,7 @@ end_per_testcase(_Case, _Config) ->
     ok.
 
 debug() ->
-    Config = [{data_dir, ?MODULE_STRING++"_data"}],
+    Config = [{data_dir, "./" ++ ?MODULE_STRING++"_data"}],
     [io:format("~p:~p~n",[Test,?MODULE:Test(Config)]) ||
         {_,Tests} <- groups(), Test <- Tests].
 
