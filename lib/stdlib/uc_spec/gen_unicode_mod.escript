@@ -170,7 +170,7 @@ gen_header(Fd) ->
     io:put_chars(Fd, "-export([spec_version/0, lookup/1, get_case/1]).\n"),
     io:put_chars(Fd, "-inline([class/1]).\n"),
     io:put_chars(Fd, "-compile(nowarn_unused_vars).\n"),
-    io:put_chars(Fd, "-dialyzer({no_improper_lists, [cp/1, gc_prepend/2, gc_e_cont/2]}).\n"),
+    io:put_chars(Fd, "-dialyzer({no_improper_lists, [cp/1, gc/1, gc_prepend/2, gc_e_cont/2]}).\n"),
     io:put_chars(Fd, "-type gc() :: char()|[char()].\n\n\n"),
     ok.
 
@@ -476,6 +476,16 @@ gen_gc(Fd, GBP) ->
                  "-spec gc(String::unicode:chardata()) ->"
                  " maybe_improper_list() | {error, unicode:chardata()}.\n"),
     io:put_chars(Fd,
+                 "gc([CP1, CP2|_]=T)\n"
+                 "  when CP1 < 256, CP2 < 256, CP1 =/= $\r -> %% Ascii Fast path\n"
+                 "       T;\n"
+                 "    gc(<<CP1/utf8, Rest/binary>>) ->\n"
+                 "       case Rest of\n"
+                 "           <<CP2/utf8, _/binary>>\n"
+                 "             when CP1 < 256, CP2 < 256, CP1 =/= $\r -> %% Ascii Fast path\n"
+                 "               [CP1|Rest];\n"
+                 "           _ -> gc_1([CP1|Rest])\n"
+                 "       end;\n"
                  "gc(Str) ->\n"
                  "    gc_1(cp(Str)).\n\n"
                  "gc_1([$\\r|R0] = R) ->\n"
@@ -483,10 +493,10 @@ gen_gc(Fd, GBP) ->
                  "        [$\\n|R1] -> [[$\\r,$\\n]|R1];\n"
                  "        _ -> R\n"
                  "    end;\n"
-                 "gc_1([CP1, CP2|_]=T) when CP1 < 256, CP2 < 256 ->\n"
-                 "    T;  %% Fast path\n"
-                 "gc_1([CP1|<<CP2/utf8, _/binary>>]=T) when CP1 < 256, CP2 < 256 ->\n"
-                 "    T;  %% Fast path\n"
+                 %% "gc_1([CP1, CP2|_]=T) when CP1 < 256, CP2 < 256 ->\n"
+                 %% "    T;  %% Fast path\n"
+                 %% "gc_1([CP1|<<CP2/utf8, _/binary>>]=T) when CP1 < 256, CP2 < 256 ->\n"
+                 %% "    T;  %% Fast path\n"
                 ),
 
     io:put_chars(Fd, "%% Handle control\n"),

@@ -947,7 +947,7 @@ time_func(Fun, Mode, Bin) ->
                      end),
     receive {Pid,Msg} -> Msg end.
 
-time_func(N,Sum,SumSq, Fun, Str, _) when N < 50 ->
+time_func(N,Sum,SumSq, Fun, Str, _) when N < 20 ->
     {Time, Res} = timer:tc(fun() -> Fun(Str) end),
     time_func(N+1,Sum+Time,SumSq+Time*Time, Fun, Str, Res);
 time_func(N,Sum,SumSq, _, _, Res) ->
