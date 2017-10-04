@@ -732,10 +732,57 @@ do_measure(DataDir) ->
                  io:format("~10w ~6w ~6.2fms ±~5.2fms #~.2w gc included~n",
                            [Name, Mode, Mean/1000, Stddev/1000, N])
          end,
+    Do2 = fun(Name, Func, Mode) ->
+                  {N, Mean, Stddev, _} = time_func(Func, binary, <<>>),
+                  io:format("~10w ~6w ~6.2fms ±~5.2fms #~.2w gc included~n",
+                            [Name, Mode, Mean/1000, Stddev/1000, N])
+          end,
     io:format("----------------------~n"),
+
     Do(tokens, fun(Str) -> string:tokens(Str, [$\n,$\r]) end, list),
     Tokens = {lexemes, fun(Str) -> string:lexemes(Str, [$\n,$\r]) end},
     [Do(Name,Fun,Mode) || {Name,Fun} <- [Tokens], Mode <- [list, binary]],
+
+    S0 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.....",
+    S0B = <<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.....">>,
+    Do2(strip_l, repeat(fun() -> string:strip(S0, left, $x) end), list),
+    Do2(strip_l2, repeat(fun() -> catch string:strip_left2(S0, [$x]) end), list),
+    Do2(trim_l,  repeat(fun() -> string:trim(S0, leading, [$x]) end), list),
+    Do2(trim_l,  repeat(fun() -> string:trim(S0B, leading, [$x]) end), binary),
+    Do2(strip_r, repeat(fun() -> string:strip(S0, right, $.) end), list),
+    Do2(trim_t,  repeat(fun() -> string:trim(S0, trailing, [$.]) end), list),
+    Do2(trim_t,  repeat(fun() -> string:trim(S0B, trailing, [$.]) end), binary),
+
+    Do2(chr_sub, repeat(fun() -> string:sub_string(S0, string:chr(S0, $.)) end), list),
+    Do2(str_sub, repeat(fun() -> string:sub_string(S0, string:str(S0, [$.])) end), list),
+    Do2(find, repeat(fun() -> string:find(S0, [$.]) end), list),
+    Do2(find, repeat(fun() -> string:find(S0B, [$.]) end), binary),
+
+    Do2(rstr_sub, repeat(fun() -> string:sub_string(S0, string:rstr(S0, [$.])) end), list),
+    Do2(find_t, repeat(fun() -> string:find(S0, [$.], trailing) end), list),
+    Do2(find_t, repeat(fun() -> string:find(S0B, [$.], trailing) end), binary),
+
+    Do2(span, repeat(fun() -> N=string:span(S0, [$x]),
+                              {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
+                     end), list),
+    Do2(take, repeat(fun() -> string:take(S0, [$x]) end), list),
+    Do2(take, repeat(fun() -> string:take(S0B, [$x]) end), binary),
+
+    Do2(cspan, repeat(fun() -> N=string:cspan(S0, [$.]),
+                               {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
+                      end), list),
+    Do2(take_c, repeat(fun() -> string:take(S0, [$.], true) end), list),
+    Do2(take_c, repeat(fun() -> string:take(S0B, [$.], true) end), binary),
+    ok.
+
+repeat(F) ->
+    fun(_) -> repeat_1(F,20000) end.
+
+repeat_1(F, N) when N > 0 ->
+    F(),
+    repeat_1(F, N-1);
+repeat_1(_, _) ->
+    erlang:garbage_collect(),
     ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

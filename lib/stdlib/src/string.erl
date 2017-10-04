@@ -61,6 +61,8 @@
          next_codepoint/1, next_grapheme/1
         ]).
 
+-export([strip_left2/2]).
+
 -export([to_float/1, to_integer/1]).
 
 %% Old (will be deprecated) lists/string API kept for backwards compability
@@ -74,8 +76,9 @@
 -export([to_upper/1, to_lower/1]).
 %%
 -import(lists,[member/2]).
-
 -compile({no_auto_import,[length/1]}).
+
+-define(ASCII_LIST(C1,C2), CP1 < 256, CP2 < 256, CP1 =/= $\r).
 
 -export_type([grapheme_cluster/0]).
 
@@ -86,6 +89,7 @@
 %%% BIFs internal (not documented) should not to be used outside of this module
 %%% May be removed
 -export([list_to_float/1, list_to_integer/1]).
+
 
 %% Uses bifs: string:list_to_float/1 and string:list_to_integer/1
 -spec list_to_float(String) -> {Float, Rest} | {'error', Reason} when
@@ -631,7 +635,12 @@ casefold_bin(CPs0, Acc) ->
         [] -> Acc
     end.
 
-
+trim_l([CP1|[CP2|_]=Cont]=Str, {GCs, _, _}=Sep)
+  when ?ASCII_LIST(CP1,CP2) ->
+    case lists:member(CP1, GCs) of
+        true -> trim_l(Cont, Sep);
+        false -> Str
+    end;
 trim_l([Bin|Cont0], Sep) when is_binary(Bin) ->
     case bin_search_inv(Bin, Cont0, Sep) of
         {nomatch, Cont} -> trim_l(Cont, Sep);
@@ -652,6 +661,18 @@ trim_l(Bin, Sep) when is_binary(Bin) ->
         [Keep] -> Keep
     end.
 
+trim_t([CP1|[CP2|_]=Cont], _, {GCs, _, _}=Sep)
+  when ?ASCII_LIST(CP1,CP2) ->
+    case lists:member(CP1, GCs) of
+        true ->
+            Tail = trim_t(Cont, 0, Sep),
+            case is_empty(Tail) of
+                true -> [];
+                false -> [CP1|Tail]
+            end;
+        false ->
+            [CP1|trim_t(Cont, 0, Sep)]
+    end;
 trim_t([Bin|Cont0], N, Sep) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
     case bin_search(Rest, Cont0, Sep) of
@@ -675,24 +696,18 @@ trim_t([Bin|Cont0], N, Sep) when is_binary(Bin) ->
                     trim_t([Bin|Cont], KeepSz, Sep)
             end
     end;
-trim_t(Str, 0, {GCs,CPs,_}=Sep) when is_list(Str) ->
-    case unicode_util:cp(Str) of
-        [CP|Cs] ->
-            case lists:member(CP, CPs) of
+trim_t(Str, 0, {GCs,_,_}=Sep) when is_list(Str) ->
+    case unicode_util:gc(Str) of
+        [GC|Cs1] ->
+            case lists:member(GC, GCs) of
                 true ->
-                    [GC|Cs1] = unicode_util:gc(Str),
-                    case lists:member(GC, GCs) of
-                        true ->
-                            Tail = trim_t(Cs1, 0, Sep),
-                            case is_empty(Tail) of
-                                true -> [];
-                                false -> append(GC,Tail)
-                            end;
-                        false ->
-                            append(GC,trim_t(Cs1, 0, Sep))
+                    Tail = trim_t(Cs1, 0, Sep),
+                    case is_empty(Tail) of
+                        true -> [];
+                        false -> append(GC,Tail)
                     end;
                 false ->
-                    append(CP,trim_t(Cs, 0, Sep))
+                    append(GC,trim_t(Cs1, 0, Sep))
             end;
         [] -> []
     end;
@@ -904,6 +919,8 @@ take_tc(Bin, N, Sep) when is_binary(Bin) ->
 prefix_1(Cs, []) -> Cs;
 prefix_1(Cs, [_]=Pre) ->
     prefix_2(unicode_util:gc(Cs), Pre);
+prefix_1([CP|_]=Cs, Pre) when is_integer(CP) ->
+    prefix_2(Cs, Pre);
 prefix_1(Cs, Pre) ->
     prefix_2(unicode_util:cp(Cs), Pre).
 
@@ -1123,6 +1140,16 @@ lexeme_skip(Bin, Seps) when is_binary(Bin) ->
         [Left] -> Left
     end.
 
+find_l([C1|Cs]=Cs0, [C|_]=Needle) when is_integer(C1) ->
+    case C1 of
+        C ->
+            case prefix_1(Cs0, Needle) of
+                nomatch -> find_l(Cs, Needle);
+                _ -> Cs0
+            end;
+        _ ->
+            find_l(Cs, Needle)
+    end;
 find_l([Bin|Cont0], Needle) when is_binary(Bin) ->
     case bin_search_str(Bin, 0, Cont0, Needle) of
         {nomatch, _, Cont} ->
@@ -1147,6 +1174,16 @@ find_l(Bin, Needle) ->
         {_Before, [Cs], _After} -> Cs
     end.
 
+find_r([Cp|Cs]=Cs0, [C|_]=Needle, Res) when is_integer(Cp) ->
+    case Cp of
+        C ->
+            case prefix_1(Cs0, Needle) of
+                nomatch -> find_r(Cs, Needle, Res);
+                _ -> find_r(Cs, Needle, Cs0)
+            end;
+        _ ->
+            find_r(Cs, Needle, Res)
+    end;
 find_r([Bin|Cont0], Needle, Res) when is_binary(Bin) ->
     case bin_search_str(Bin, 0, Cont0, Needle) of
         {nomatch,_,Cont} ->
@@ -1662,6 +1699,15 @@ strip_left([Sc|S], Sc) ->
     strip_left(S, Sc);
 strip_left([_|_]=S, Sc) when is_integer(Sc) -> S;
 strip_left([], Sc) when is_integer(Sc) -> [].
+
+strip_left2([S1|[S2|_]=S], Sc) when S1 < 256, S2 < 256, S1 =/= 13 ->
+    case lists:member(S1, Sc) of
+        true -> strip_left2(S, Sc);
+        false -> S
+    end;
+strip_left2([_|_]=S, Sc) when is_integer(Sc) -> S;
+strip_left2([], Sc) when is_integer(Sc) -> [].
+
 
 strip_right([Sc|S], Sc) ->
     case strip_right(S, Sc) of
