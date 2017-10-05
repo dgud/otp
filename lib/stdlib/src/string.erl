@@ -252,10 +252,12 @@ trim(Str, leading, [Sep]) when is_list(Str), Sep < 255 ->
     trim_ls(Str, Sep);
 trim(Str, leading, Sep) when is_list(Sep) ->
     trim_l(Str, Sep);
-trim(Str, trailing, Sep) when is_list(Sep) ->
-    trim_t(Str, 0, search_pattern(Sep));
-trim(Str, both, Sep0) when is_list(Sep0) ->
-    trim_t(trim(Str,leading,Sep0), 0, search_pattern(Sep0)).
+trim(Str, trailing, [Sep]) when is_list(Str), Sep < 255 ->
+    trim_ts(Str, Sep);
+trim(Str, trailing, Seps) when is_list(Seps) ->
+    trim_t(Str, 0, Seps);
+trim(Str, both, Sep) when is_list(Sep) ->
+    trim(trim(Str,leading,Sep), trailing, Sep).
 
 %% Delete trailing newlines or \r\n
 -spec chomp(String::unicode:chardata()) -> unicode:chardata().
@@ -671,9 +673,25 @@ trim_l(Bin, Sep) when is_binary(Bin) ->
         [Keep] -> Keep
     end.
 
-trim_t([CP1|[CP2|_]=Cont], _, {GCs, _, _}=Sep)
+%% Fast path for ascii searching for one character in lists
+trim_ts([CP1|[CP2|_]=Cont], Sep)
   when ?ASCII_LIST(CP1,CP2) ->
-    case lists:member(CP1, GCs) of
+    case CP1 =:= Sep of
+        true ->
+            Tail = trim_ts(Cont, Sep),
+            case is_empty(Tail) of
+                true -> [];
+                false -> [CP1|Tail]
+            end;
+        false ->
+            [CP1|trim_ts(Cont, Sep)]
+    end;
+trim_ts(Str, Sep) ->
+    trim_t(Str, 0, [Sep]).
+
+trim_t([CP1|[CP2|_]=Cont], _, Sep)
+  when ?ASCII_LIST(CP1,CP2) ->
+    case lists:member(CP1, search_gcs(Sep)) of
         true ->
             Tail = trim_t(Cont, 0, Sep),
             case is_empty(Tail) of
@@ -683,13 +701,14 @@ trim_t([CP1|[CP2|_]=Cont], _, {GCs, _, _}=Sep)
         false ->
             [CP1|trim_t(Cont, 0, Sep)]
     end;
-trim_t([Bin|Cont0], N, {GCs,_,_}=Seps) when is_binary(Bin) ->
+trim_t([Bin|Cont0], N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
+    Seps = search_pattern(Seps0),
     case bin_search(Rest, Cont0, Seps) of
         {nomatch,_} ->
             stack(Bin, trim_t(Cont0, 0, Seps));
         [SepStart|Cont1] ->
-            case bin_search_inv(SepStart, Cont1, GCs) of
+            case bin_search_inv(SepStart, Cont1, search_gcs(Seps0)) of
                 {nomatch, Cont} ->
                     Tail = trim_t(Cont, 0, Seps),
                     case is_empty(Tail) of
@@ -706,27 +725,28 @@ trim_t([Bin|Cont0], N, {GCs,_,_}=Seps) when is_binary(Bin) ->
                     trim_t([Bin|Cont], KeepSz, Seps)
             end
     end;
-trim_t(Str, 0, {GCs,_,_}=Sep) when is_list(Str) ->
+trim_t(Str, 0, Seps) when is_list(Str) ->
     case unicode_util:gc(Str) of
         [GC|Cs1] ->
-            case lists:member(GC, GCs) of
+            case lists:member(GC, search_gcs(Seps)) of
                 true ->
-                    Tail = trim_t(Cs1, 0, Sep),
+                    Tail = trim_t(Cs1, 0, Seps),
                     case is_empty(Tail) of
                         true -> [];
                         false -> append(GC,Tail)
                     end;
                 false ->
-                    append(GC,trim_t(Cs1, 0, Sep))
+                    append(GC,trim_t(Cs1, 0, Seps))
             end;
         [] -> []
     end;
-trim_t(Bin, N, {GCs,_,_}=Seps) when is_binary(Bin) ->
+trim_t(Bin, N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
+    Seps = search_pattern(Seps0),
     case bin_search(Rest, [], Seps) of
         {nomatch,_} -> Bin;
         [SepStart] ->
-            case bin_search_inv(SepStart, [], GCs) of
+            case bin_search_inv(SepStart, [], search_gcs(Seps0)) of
                 {nomatch,_} ->
                     KeepSz = byte_size(Bin) - byte_size(SepStart),
                     <<Keep:KeepSz/binary, _/binary>> = Bin,
@@ -1271,10 +1291,14 @@ bin_search(Bin, Cont, {Seps,_,BP}) ->
 %% i.e. å in nfd form  $a "COMBINING RING ABOVE"
 %% and PREPEND characters like "ARABIC NUMBER SIGN" 1536 <<216,128>>
 %% combined with other characters are currently ignored.
+search_pattern({_,_,_}=P) -> P;
 search_pattern(Seps) ->
     CPs = search_cp(Seps),
     Bin = binary:compile_pattern(bin_pattern(CPs)),
     {Seps, CPs, Bin}.
+
+search_gcs(List) when is_list(List) -> List;
+search_gcs({GCs,_,_}) -> GCs.
 
 search_cp([CP|Seps]) when is_integer(CP) ->
     [CP|search_cp(Seps)];
