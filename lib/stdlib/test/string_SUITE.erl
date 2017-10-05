@@ -729,50 +729,49 @@ do_measure(DataDir) ->
     io:format("~p~n",[byte_size(Bin)]),
     Do = fun(Name, Func, Mode) ->
                  {N, Mean, Stddev, _} = time_func(Func, Mode, Bin),
-                 io:format("~10w ~6w ~6.2fms ±~5.2fms #~.2w gc included~n",
+                 io:format("~15w ~6w ~6.2fms ±~5.2fms #~.2w gc included~n",
                            [Name, Mode, Mean/1000, Stddev/1000, N])
          end,
     Do2 = fun(Name, Func, Mode) ->
                   {N, Mean, Stddev, _} = time_func(Func, binary, <<>>),
-                  io:format("~10w ~6w ~6.2fms ±~5.2fms #~.2w gc included~n",
+                  io:format("~15w ~6w ~6.2fms ±~5.2fms #~.2w gc included~n",
                             [Name, Mode, Mean/1000, Stddev/1000, N])
           end,
     io:format("----------------------~n"),
 
-    Do(tokens, fun(Str) -> string:tokens(Str, [$\n,$\r]) end, list),
+    Do(old_tokens, fun(Str) -> string:tokens(Str, [$\n,$\r]) end, list),
     Tokens = {lexemes, fun(Str) -> string:lexemes(Str, [$\n,$\r]) end},
     [Do(Name,Fun,Mode) || {Name,Fun} <- [Tokens], Mode <- [list, binary]],
 
-    S0 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.....",
-    S0B = <<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.....">>,
-    Do2(strip_l, repeat(fun() -> string:strip(S0, left, $x) end), list),
-    Do2(strip_l2, repeat(fun() -> catch string:strip_left2(S0, [$x]) end), list),
+    S0 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy.....",
+    S0B = <<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy.....">>,
+    Do2(old_strip_l, repeat(fun() -> string:strip(S0, left, $x) end), list),
     Do2(trim_l,  repeat(fun() -> string:trim(S0, leading, [$x]) end), list),
     Do2(trim_l,  repeat(fun() -> string:trim(S0B, leading, [$x]) end), binary),
-    Do2(strip_r, repeat(fun() -> string:strip(S0, right, $.) end), list),
+    Do2(old_strip_r, repeat(fun() -> string:strip(S0, right, $.) end), list),
     Do2(trim_t,  repeat(fun() -> string:trim(S0, trailing, [$.]) end), list),
     Do2(trim_t,  repeat(fun() -> string:trim(S0B, trailing, [$.]) end), binary),
 
-    Do2(chr_sub, repeat(fun() -> string:sub_string(S0, string:chr(S0, $.)) end), list),
-    Do2(str_sub, repeat(fun() -> string:sub_string(S0, string:str(S0, [$.])) end), list),
+    Do2(old_chr_sub, repeat(fun() -> string:sub_string(S0, string:chr(S0, $.)) end), list),
+    Do2(old_str_sub, repeat(fun() -> string:sub_string(S0, string:str(S0, [$.])) end), list),
     Do2(find, repeat(fun() -> string:find(S0, [$.]) end), list),
     Do2(find, repeat(fun() -> string:find(S0B, [$.]) end), binary),
 
-    Do2(rstr_sub, repeat(fun() -> string:sub_string(S0, string:rstr(S0, [$.])) end), list),
-    Do2(find_t, repeat(fun() -> string:find(S0, [$.], trailing) end), list),
-    Do2(find_t, repeat(fun() -> string:find(S0B, [$.], trailing) end), binary),
+    Do2(old_rstr_sub, repeat(fun() -> string:sub_string(S0, string:rstr(S0, [$y])) end), list),
+    Do2(find_t, repeat(fun() -> string:find(S0, [$y], trailing) end), list),
+    Do2(find_t, repeat(fun() -> string:find(S0B, [$y], trailing) end), binary),
 
-    Do2(span, repeat(fun() -> N=string:span(S0, [$x]),
+    Do2(old_span, repeat(fun() -> N=string:span(S0, [$x, $y]),
                               {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
                      end), list),
-    Do2(take, repeat(fun() -> string:take(S0, [$x]) end), list),
-    Do2(take, repeat(fun() -> string:take(S0B, [$x]) end), binary),
+    Do2(take, repeat(fun() -> string:take(S0, [$x, $y]) end), list),
+    Do2(take, repeat(fun() -> string:take(S0B, [$x, $y]) end), binary),
 
-    Do2(cspan, repeat(fun() -> N=string:cspan(S0, [$.]),
-                               {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
-                      end), list),
-    Do2(take_c, repeat(fun() -> string:take(S0, [$.], true) end), list),
-    Do2(take_c, repeat(fun() -> string:take(S0B, [$.], true) end), binary),
+    Do2(old_cspan, repeat(fun() -> N=string:cspan(S0, [$.,$y]),
+                                   {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
+                          end), list),
+    Do2(take_c, repeat(fun() -> string:take(S0, [$.,$y], true) end), list),
+    Do2(take_c, repeat(fun() -> string:take(S0B, [$.,$y], true) end), binary),
     ok.
 
 repeat(F) ->
