@@ -742,6 +742,8 @@ do_measure(DataDir) ->
     Do(old_tokens, fun(Str) -> string:tokens(Str, [$\n,$\r]) end, list),
     Tokens = {lexemes, fun(Str) -> string:lexemes(Str, [$\n,$\r]) end},
     [Do(Name,Fun,Mode) || {Name,Fun} <- [Tokens], Mode <- [list, binary]],
+    NthTokens = {nth_lexemes, fun(Str) -> string:nth_lexeme(Str, 18000, [$\n,$\r]) end},
+    [Do(Name,Fun,Mode) || {Name,Fun} <- [NthTokens], Mode <- [list, binary]],
 
     S0 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy.....",
     S0B = <<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy.....">>,
@@ -772,6 +774,14 @@ do_measure(DataDir) ->
                           end), list),
     Do2(take_c, repeat(fun() -> string:take(S0, [$.,$y], true) end), list),
     Do2(take_c, repeat(fun() -> string:take(S0B, [$.,$y], true) end), binary),
+
+    Do2(take_t, repeat(fun() -> string:take(S0, [$.,$y], false, trailing) end), list),
+    Do2(take_t, repeat(fun() -> string:take(S0B, [$.,$y], false, trailing) end), binary),
+    Do2(take_tc, repeat(fun() -> string:take(S0, [$x], true, trailing) end), list),
+    Do2(take_tc, repeat(fun() -> string:take(S0B, [$x], true, trailing) end), binary),
+
+    split, slice, equal, reverse, length,
+
     ok.
 
 repeat(F) ->
