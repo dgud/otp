@@ -254,7 +254,8 @@ trim(Str, leading, Sep) when is_list(Sep) ->
     trim_l(Str, Sep);
 trim(Str, trailing, [Sep]) when is_list(Str), Sep < 255 ->
     trim_ts(Str, Sep);
-trim(Str, trailing, Seps) when is_list(Seps) ->
+trim(Str, trailing, Seps0) when is_list(Seps0) ->
+    Seps = search_pattern(Seps0),
     trim_t(Str, 0, Seps);
 trim(Str, both, Sep) when is_list(Sep) ->
     trim(trim(Str,leading,Sep), trailing, Sep).
@@ -674,41 +675,48 @@ trim_l(Bin, Sep) when is_binary(Bin) ->
     end.
 
 %% Fast path for ascii searching for one character in lists
-trim_ts([CP1|[CP2|_]=Cont], Sep)
-  when ?ASCII_LIST(CP1,CP2) ->
-    case CP1 =:= Sep of
-        true ->
-            Tail = trim_ts(Cont, Sep),
+trim_ts([Sep|Cs1]=Str, Sep) ->
+    case Cs1 of
+        [] -> [];
+        [CP2|_] when ?ASCII_LIST(Sep,CP2) ->
+            Tail = trim_ts(Cs1, Sep),
             case is_empty(Tail) of
                 true -> [];
-                false -> [CP1|Tail]
+                false -> [Sep|Tail]
             end;
-        false ->
-            [CP1|trim_ts(Cont, Sep)]
+        _ ->
+            trim_t(Str, 0, search_pattern([Sep]))
     end;
+trim_ts([CP|Cont],Sep) when is_integer(CP) ->
+    [CP|trim_ts(Cont, Sep)];
 trim_ts(Str, Sep) ->
-    trim_t(Str, 0, [Sep]).
+    trim_t(Str, 0, search_pattern([Sep])).
 
-trim_t([CP1|[CP2|_]=Cont], _, Sep)
-  when ?ASCII_LIST(CP1,CP2) ->
-    case lists:member(CP1, search_gcs(Sep)) of
+trim_t([CP1|Cont]=Cs0, _, {GCs,CPs,_}=Seps) when is_integer(CP1) ->
+    case lists:member(CP1, CPs) of
         true ->
-            Tail = trim_t(Cont, 0, Sep),
-            case is_empty(Tail) of
-                true -> [];
-                false -> [CP1|Tail]
+            [GC|Cs1] = unicode_util:gc(Cs0),
+            case lists:member(GC, GCs) of
+                true ->
+                    Tail = trim_t(Cs1, 0, Seps),
+                    case is_empty(Tail) of
+                        true -> [];
+                        false -> [GC|Tail]
+                    end;
+                false ->
+                    [GC|trim_t(Cs1, 0, Seps)]
             end;
         false ->
-            [CP1|trim_t(Cont, 0, Sep)]
+            [CP1|trim_t(Cont, 0, Seps)]
     end;
-trim_t([Bin|Cont0], N, Seps0) when is_binary(Bin) ->
+trim_t([Bin|Cont0], N, {GCs,_,_}=Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
     Seps = search_compile(Seps0),
     case bin_search(Rest, Cont0, Seps) of
         {nomatch,_} ->
             stack(Bin, trim_t(Cont0, 0, Seps));
         [SepStart|Cont1] ->
-            case bin_search_inv(SepStart, Cont1, search_gcs(Seps0)) of
+            case bin_search_inv(SepStart, Cont1, GCs) of
                 {nomatch, Cont} ->
                     Tail = trim_t(Cont, 0, Seps),
                     case is_empty(Tail) of
@@ -725,10 +733,10 @@ trim_t([Bin|Cont0], N, Seps0) when is_binary(Bin) ->
                     trim_t([Bin|Cont], KeepSz, Seps)
             end
     end;
-trim_t(Str, 0, Seps) when is_list(Str) ->
+trim_t(Str, 0, {GCs,_,_}=Seps) when is_list(Str) ->
     case unicode_util:gc(Str) of
         [GC|Cs1] ->
-            case lists:member(GC, search_gcs(Seps)) of
+            case lists:member(GC, GCs) of
                 true ->
                     Tail = trim_t(Cs1, 0, Seps),
                     case is_empty(Tail) of
@@ -740,13 +748,13 @@ trim_t(Str, 0, Seps) when is_list(Str) ->
             end;
         [] -> []
     end;
-trim_t(Bin, N, Seps0) when is_binary(Bin) ->
+trim_t(Bin, N, {GCs,_,_}=Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
     Seps = search_compile(Seps0),
     case bin_search(Rest, [], Seps) of
         {nomatch,_} -> Bin;
         [SepStart] ->
-            case bin_search_inv(SepStart, [], search_gcs(Seps0)) of
+            case bin_search_inv(SepStart, [], GCs) of
                 {nomatch,_} ->
                     KeepSz = byte_size(Bin) - byte_size(SepStart),
                     <<Keep:KeepSz/binary, _/binary>> = Bin,
