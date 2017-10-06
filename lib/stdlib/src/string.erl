@@ -76,7 +76,7 @@
 -import(lists,[member/2]).
 -compile({no_auto_import,[length/1]}).
 
--define(ASCII_LIST(C1,C2), CP1 < 256, CP2 < 256, CP1 =/= $\r).
+-define(ASCII_LIST(CP1,CP2), CP1 < 256, CP2 < 256, CP1 =/= $\r).
 
 -export_type([grapheme_cluster/0]).
 
@@ -703,7 +703,7 @@ trim_t([CP1|[CP2|_]=Cont], _, Sep)
     end;
 trim_t([Bin|Cont0], N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search(Rest, Cont0, Seps) of
         {nomatch,_} ->
             stack(Bin, trim_t(Cont0, 0, Seps));
@@ -742,7 +742,7 @@ trim_t(Str, 0, Seps) when is_list(Str) ->
     end;
 trim_t(Bin, N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search(Rest, [], Seps) of
         {nomatch,_} -> Bin;
         [SepStart] ->
@@ -798,7 +798,7 @@ take_lc([CP1|[CP2|_]=Cont]=Str, Seps, Acc) when ?ASCII_LIST(CP1,CP2) ->
         true  -> {rev(Acc), Str}
     end;
 take_lc([Bin|Cont0], Seps0, Acc) when is_binary(Bin) ->
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search(Bin, Cont0, Seps) of
         {nomatch, Cont} ->
             Used = cp_prefix(Cont0, Cont),
@@ -818,7 +818,7 @@ take_lc(Str, Seps, Acc) when is_list(Str) ->
         [] -> {rev(Acc), []}
     end;
 take_lc(Bin, Seps0, Acc) when is_binary(Bin) ->
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search(Bin, [], Seps) of
         {nomatch,_} ->
             {btoken(Bin, Acc), <<>>};
@@ -842,7 +842,7 @@ take_t([CP1|[CP2|_]=Cont], _, Seps) when ?ASCII_LIST(CP1,CP2) ->
     end;
 take_t([Bin|Cont0], N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search(Rest, Cont0, Seps) of
         {nomatch,Cont} ->
             Used = cp_prefix(Cont0, Cont),
@@ -884,7 +884,7 @@ take_t(Str, 0, Seps) when is_list(Str) ->
     end;
 take_t(Bin, N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search(Rest, [], Seps) of
         {nomatch,_} -> {Bin, <<>>};
         [SepStart] ->
@@ -914,7 +914,7 @@ take_tc([CP1|[CP2|_]=Cont], _, Seps) when ?ASCII_LIST(CP1,CP2) ->
 
 take_tc([Bin|Cont0], N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search_inv(Rest, Cont0, search_gcs(Seps)) of
         {nomatch,Cont} ->
             Used = cp_prefix(Cont0, Cont),
@@ -956,7 +956,7 @@ take_tc(Str, 0, Seps) when is_list(Str) ->
     end;
 take_tc(Bin, N, Seps0) when is_binary(Bin) ->
     <<_:N/binary, Rest/binary>> = Bin,
-    Seps = search_pattern(Seps0),
+    Seps = search_compile(Seps0),
     case bin_search_inv(Rest, [], search_gcs(Seps)) of
         {nomatch,_} -> {Bin, <<>>};
         [SepStart] ->
@@ -1043,6 +1043,21 @@ split_1(Bin, [_C|_]=Needle, Start, Where, Curr0, Acc) ->
             end
     end.
 
+lexemes_m([CP|_]=Cs0, {GCs,CPs,_}=Seps, Ts) when is_integer(CP) ->
+    case lists:member(CP, CPs) of
+        true ->
+            [GC|Cs2] = unicode_util:gc(Cs0),
+            case lists:member(GC, GCs) of
+                true ->
+                    lexemes_m(Cs2, Seps, Ts);
+                false ->
+                    {Lexeme,Rest} = lexeme_pick(Cs0, Seps, []),
+                    lexemes_m(Rest, Seps, [Lexeme|Ts])
+            end;
+        false ->
+            {Lexeme,Rest} = lexeme_pick(Cs0, Seps, []),
+            lexemes_m(Rest, Seps, [Lexeme|Ts])
+    end;
 lexemes_m([Bin|Cont0], {GCs,_,_}=Seps, Ts) when is_binary(Bin) ->
     case bin_search_inv(Bin, Cont0, GCs) of
         {nomatch,Cont} ->
@@ -1083,7 +1098,8 @@ lexeme_pick([CP|Cs1]=Cs0, {GCs,CPs,_}=Seps, Tkn) when is_integer(CP) ->
             end;
         false -> lexeme_pick(Cs1, Seps, [CP|Tkn])
     end;
-lexeme_pick([Bin|Cont0], Seps, Tkn) when is_binary(Bin) ->
+lexeme_pick([Bin|Cont0], Seps0, Tkn) when is_binary(Bin) ->
+    Seps = search_compile(Seps0),
     case bin_search(Bin, Cont0, Seps) of
         {nomatch,_} ->
             lexeme_pick(Cont0, Seps, [Bin|Tkn]);
@@ -1108,7 +1124,8 @@ lexeme_pick(Cs0, {GCs, CPs, _} = Seps, Tkn) when is_list(Cs0) ->
         [] ->
             {rev(Tkn), []}
     end;
-lexeme_pick(Bin, Seps, Tkn) when is_binary(Bin) ->
+lexeme_pick(Bin, Seps0, Tkn) when is_binary(Bin) ->
+    Seps = search_compile(Seps0),
     case bin_search(Bin, [], Seps) of
         {nomatch,_} ->
             {btoken(Bin,Tkn), []};
@@ -1168,7 +1185,8 @@ lexeme_skip([CP|Cs1]=Cs0, {GCs,CPs,_}=Seps) when is_integer(CP) ->
         false ->
             lexeme_skip(Cs1, Seps)
     end;
-lexeme_skip([Bin|Cont0], Seps) when is_binary(Bin) ->
+lexeme_skip([Bin|Cont0], Seps0) when is_binary(Bin) ->
+    Seps = search_compile(Seps0),
     case bin_search(Bin, Cont0, Seps) of
         {nomatch,_} -> lexeme_skip(Cont0, Seps);
         Cs -> Cs
@@ -1189,7 +1207,8 @@ lexeme_skip(Cs0, {GCs, CPs, _} = Seps) when is_list(Cs0) ->
         [] ->
             []
     end;
-lexeme_skip(Bin, Seps) when is_binary(Bin) ->
+lexeme_skip(Bin, Seps0) when is_binary(Bin) ->
+    Seps = search_compile(Seps0),
     case bin_search(Bin, [], Seps) of
         {nomatch,_} -> <<>>;
         [Left] -> Left
@@ -1319,8 +1338,13 @@ bin_search(Bin, Cont, {Seps,_,BP}) ->
 search_pattern({_,_,_}=P) -> P;
 search_pattern(Seps) ->
     CPs = search_cp(Seps),
-    Bin = binary:compile_pattern(bin_pattern(CPs)),
-    {Seps, CPs, Bin}.
+    {Seps, CPs, undefined}.
+
+search_compile({Sep, CPs, undefined}) ->
+    {Sep, CPs, binary:compile_pattern(bin_pattern(CPs))};
+search_compile({_,_,_}=Compiled) -> Compiled;
+search_compile(Seps) when is_list(Seps) -> %% TODO remove me
+    search_compile(search_pattern(Seps)).
 
 search_gcs(List) when is_list(List) -> List;
 search_gcs({GCs,_,_}) -> GCs.
