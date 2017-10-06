@@ -296,8 +296,7 @@ take(Str, [], Complement, Dir) ->
         {true,  leading} -> {Str, Empty};
         {true,  trailing} -> {Empty, Str}
     end;
-take(Str, Sep0, false, leading) ->
-    Sep = search_pattern(Sep0),
+take(Str, Sep, false, leading) ->
     take_l(Str, Sep, []);
 take(Str, Sep0, true, leading) ->
     Sep = search_pattern(Sep0),
@@ -767,12 +766,12 @@ trim_t(Bin, N, {GCs,_,_}=Seps0) when is_binary(Bin) ->
 
 take_l([CP1|[CP2|_]=Cont]=Str, Seps, Acc)
   when ?ASCII_LIST(CP1,CP2) ->
-    case lists:member(CP1, search_gcs(Seps)) of
+    case lists:member(CP1, Seps) of
         true -> take_l(Cont, Seps, append(CP1,Acc));
         false -> {rev(Acc), Str}
     end;
 take_l([Bin|Cont0], Seps, Acc) when is_binary(Bin) ->
-    case bin_search_inv(Bin, Cont0, search_gcs(Seps)) of
+    case bin_search_inv(Bin, Cont0, Seps) of
         {nomatch, Cont} ->
             Used = cp_prefix(Cont0, Cont),
             take_l(Cont, Seps, [unicode:characters_to_binary([Bin|Used])|Acc]);
@@ -784,14 +783,14 @@ take_l([Bin|Cont0], Seps, Acc) when is_binary(Bin) ->
 take_l(Str, Seps, Acc) when is_list(Str) ->
     case unicode_util:gc(Str) of
         [C|Cs] ->
-            case lists:member(C, search_gcs(Seps)) of
+            case lists:member(C, Seps) of
                 true -> take_l(Cs, Seps, append(rev(C),Acc));
                 false -> {rev(Acc), Str}
             end;
         [] -> {rev(Acc), []}
     end;
 take_l(Bin, Seps, Acc) when is_binary(Bin) ->
-    case bin_search_inv(Bin, [], search_gcs(Seps)) of
+    case bin_search_inv(Bin, [], Seps) of
         {nomatch,_} ->
             {btoken(Bin, Acc), <<>>};
         [After] ->
