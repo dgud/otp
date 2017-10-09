@@ -120,7 +120,7 @@ is_empty(_) -> false.
 %% Count the number of grapheme clusters in chardata
 -spec length(String::unicode:chardata()) -> non_neg_integer().
 length(CD) ->
-    length_1(unicode_util:gc(CD), 0).
+    length_1(CD, 0).
 
 %% Convert a string to a list of grapheme clusters
 -spec to_graphemes(String::unicode:chardata()) -> [grapheme_cluster()].
@@ -504,10 +504,13 @@ next_codepoint(CD) -> unicode_util:cp(CD).
 
 %% Internals
 
-length_1([_|Rest], N) ->
-    length_1(unicode_util:gc(Rest), N+1);
-length_1([], N) ->
-    N.
+length_1([CP1|[CP2|_]=Cont], N) when ?ASCII_LIST(CP1,CP2) ->
+    length_1(Cont, N+1);
+length_1(Str, N) ->
+    case unicode_util:gc(Str) of
+        [] -> N;
+        [_|Rest] -> length_1(Rest, N+1)
+    end.
 
 equal_1([A|AR], [B|BR]) when is_integer(A), is_integer(B) ->
     A =:= B andalso equal_1(AR, BR);
@@ -546,6 +549,8 @@ equal_norm_nocase(A0, B0, Norm) ->
         {L1,L2} when is_list(L1), is_list(L2) -> false
     end.
 
+reverse_1([CP1|[CP2|_]=Cont], Acc) when ?ASCII_LIST(CP1,CP2) ->
+    reverse_1(Cont, [CP1|Acc]);
 reverse_1(CD, Acc) ->
     case unicode_util:gc(CD) of
         [GC|Rest] -> reverse_1(Rest, [GC|Acc]);

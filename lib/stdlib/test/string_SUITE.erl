@@ -742,8 +742,6 @@ do_measure(DataDir) ->
     Do(old_tokens, fun(Str) -> string:tokens(Str, [$\n,$\r]) end, list),
     Tokens = {lexemes, fun(Str) -> string:lexemes(Str, [$\n,$\r]) end},
     [Do(Name,Fun,Mode) || {Name,Fun} <- [Tokens], Mode <- [list, binary]],
-    NthTokens = {nth_lexemes, fun(Str) -> string:nth_lexeme(Str, 18000, [$\n,$\r]) end},
-    [Do(Name,Fun,Mode) || {Name,Fun} <- [NthTokens], Mode <- [list, binary]],
 
     S0 = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy.....",
     S0B = <<"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy.....">>,
@@ -764,7 +762,7 @@ do_measure(DataDir) ->
     Do2(find_t, repeat(fun() -> string:find(S0B, [$y], trailing) end), binary),
 
     Do2(old_span, repeat(fun() -> N=string:span(S0, [$x, $y]),
-                              {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
+                                  {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
                      end), list),
     Do2(take, repeat(fun() -> string:take(S0, [$x, $y]) end), list),
     Do2(take, repeat(fun() -> string:take(S0B, [$x, $y]) end), binary),
@@ -775,12 +773,21 @@ do_measure(DataDir) ->
     Do2(take_c, repeat(fun() -> string:take(S0, [$.,$y], true) end), list),
     Do2(take_c, repeat(fun() -> string:take(S0B, [$.,$y], true) end), binary),
 
+    io:format("--~n",[]),
+    NthTokens = {nth_lexemes, fun(Str) -> string:nth_lexeme(Str, 18000, [$\n,$\r]) end},
+    [Do(Name,Fun,Mode) || {Name,Fun} <- [NthTokens], Mode <- [list, binary]],
     Do2(take_t, repeat(fun() -> string:take(S0, [$.,$y], false, trailing) end), list),
     Do2(take_t, repeat(fun() -> string:take(S0B, [$.,$y], false, trailing) end), binary),
     Do2(take_tc, repeat(fun() -> string:take(S0, [$x], true, trailing) end), list),
     Do2(take_tc, repeat(fun() -> string:take(S0B, [$x], true, trailing) end), binary),
 
-    split, slice, equal, reverse, length,
+    Length = {length, fun(Str) -> string:length(Str) end},
+    [Do(Name,Fun,Mode) || {Name,Fun} <- [Length], Mode <- [list, binary]],
+
+    Reverse = {reverse, fun(Str) -> string:reverse(Str) end},
+    [Do(Name,Fun,Mode) || {Name,Fun} <- [Reverse], Mode <- [list, binary]],
+
+    split, slice,
 
     ok.
 
