@@ -1021,6 +1021,21 @@ prefix_2([C|Cs], [C|Pre]) ->
 prefix_2(_, _) ->
     nomatch.
 
+split_1([CP1|Cs]=Cs0, [C|_]=Needle, _, Where, Curr, Acc) when is_integer(CP1) ->
+    case CP1=:=C of
+        true ->
+            case prefix_1(Cs0, Needle) of
+                nomatch -> split_1(Cs, Needle, 0, Where, append(C,Curr), Acc);
+                Rest when Where =:= leading ->
+                    [rev(Curr), Rest];
+                Rest when Where =:= trailing ->
+                    split_1(Cs, Needle, 0, Where, [C|Curr], [rev(Curr), Rest]);
+                Rest when Where =:= all ->
+                    split_1(Rest, Needle, 0, Where, [], [rev(Curr)|Acc])
+            end;
+        false ->
+            split_1(Cs, Needle, 0, Where, append(CP1,Curr), Acc)
+    end;
 split_1([Bin|Cont0], Needle, Start, Where, Curr0, Acc)
   when is_binary(Bin) ->
     case bin_search_str(Bin, Start, Cont0, Needle) of
