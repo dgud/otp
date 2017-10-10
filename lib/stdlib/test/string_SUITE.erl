@@ -763,7 +763,7 @@ do_measure(DataDir) ->
 
     Do2(old_span, repeat(fun() -> N=string:span(S0, [$x, $y]),
                                   {string:sub_string(S0,1,N),string:sub_string(S0,N+1)}
-                     end), list),
+                         end), list),
     Do2(take, repeat(fun() -> string:take(S0, [$x, $y]) end), list),
     Do2(take, repeat(fun() -> string:take(S0B, [$x, $y]) end), binary),
 
@@ -772,6 +772,10 @@ do_measure(DataDir) ->
                           end), list),
     Do2(take_c, repeat(fun() -> string:take(S0, [$.,$y], true) end), list),
     Do2(take_c, repeat(fun() -> string:take(S0B, [$.,$y], true) end), binary),
+
+    Do2(old_substr, repeat(fun() -> string:substr(S0, 21, 15) end), list),
+    Do2(slice, repeat(fun() -> string:slice(S0, 20, 15) end), list),
+    Do2(slice, repeat(fun() -> string:slice(S0B, 20, 15) end), binary),
 
     io:format("--~n",[]),
     NthTokens = {nth_lexemes, fun(Str) -> string:nth_lexeme(Str, 18000, [$\n,$\r]) end},
@@ -786,8 +790,6 @@ do_measure(DataDir) ->
 
     Reverse = {reverse, fun(Str) -> string:reverse(Str) end},
     [Do(Name,Fun,Mode) || {Name,Fun} <- [Reverse], Mode <- [list, binary]],
-
-    split, slice,
 
     ok.
 
