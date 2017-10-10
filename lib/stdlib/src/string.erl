@@ -75,7 +75,7 @@
 %%
 -import(lists,[member/2]).
 -compile({no_auto_import,[length/1]}).
-
+-inline([btoken/2, rev/2, append/2, stack/2, search_compile/1]).
 -define(ASCII_LIST(CP1,CP2), CP1 < 256, CP2 < 256, CP1 =/= $\r).
 
 -export_type([grapheme_cluster/0]).
@@ -1110,32 +1110,35 @@ lexemes_m([CP|_]=Cs0, {GCs,CPs,_}=Seps, Ts) when is_integer(CP) ->
             {Lexeme,Rest} = lexeme_pick(Cs0, Seps, []),
             lexemes_m(Rest, Seps, [Lexeme|Ts])
     end;
-lexemes_m([Bin|Cont0], {GCs,_,_}=Seps, Ts) when is_binary(Bin) ->
+lexemes_m([Bin|Cont0], {GCs,_,_}=Seps0, Ts) when is_binary(Bin) ->
     case bin_search_inv(Bin, Cont0, GCs) of
         {nomatch,Cont} ->
-            lexemes_m(Cont, Seps, Ts);
+            lexemes_m(Cont, Seps0, Ts);
         Cs ->
+            Seps = search_compile(Seps0),
             {Lexeme,Rest} = lexeme_pick(Cs, Seps, []),
             lexemes_m(Rest, Seps, [Lexeme|Ts])
     end;
-lexemes_m(Cs0, {GCs, _, _}=Seps, Ts) when is_list(Cs0) ->
+lexemes_m(Cs0, {GCs, _, _}=Seps0, Ts) when is_list(Cs0) ->
     case unicode_util:gc(Cs0) of
         [C|Cs] ->
             case lists:member(C, GCs) of
                 true  ->
-                    lexemes_m(Cs, Seps, Ts);
+                    lexemes_m(Cs, Seps0, Ts);
                 false ->
+                    Seps = search_compile(Seps0),
                     {Lexeme,Rest} = lexeme_pick(Cs0, Seps, []),
                     lexemes_m(Rest, Seps, [Lexeme|Ts])
             end;
         [] ->
             lists:reverse(Ts)
     end;
-lexemes_m(Bin, {GCs,_,_}=Seps, Ts) when is_binary(Bin) ->
+lexemes_m(Bin, {GCs,_,_}=Seps0, Ts) when is_binary(Bin) ->
     case bin_search_inv(Bin, [], GCs) of
         {nomatch,_} ->
             lists:reverse(Ts);
         [Cs] ->
+            Seps = search_compile(Seps0),
             {Lexeme,Rest} = lexeme_pick(Cs, Seps, []),
             lexemes_m(Rest, Seps, add_non_empty(Lexeme,Ts))
     end.
@@ -1150,8 +1153,7 @@ lexeme_pick([CP|Cs1]=Cs0, {GCs,CPs,_}=Seps, Tkn) when is_integer(CP) ->
             end;
         false -> lexeme_pick(Cs1, Seps, [CP|Tkn])
     end;
-lexeme_pick([Bin|Cont0], Seps0, Tkn) when is_binary(Bin) ->
-    Seps = search_compile(Seps0),
+lexeme_pick([Bin|Cont0], Seps, Tkn) when is_binary(Bin) ->
     case bin_search(Bin, Cont0, Seps) of
         {nomatch,_} ->
             lexeme_pick(Cont0, Seps, [Bin|Tkn]);
@@ -1176,8 +1178,7 @@ lexeme_pick(Cs0, {GCs, CPs, _} = Seps, Tkn) when is_list(Cs0) ->
         [] ->
             {rev(Tkn), []}
     end;
-lexeme_pick(Bin, Seps0, Tkn) when is_binary(Bin) ->
-    Seps = search_compile(Seps0),
+lexeme_pick(Bin, Seps, Tkn) when is_binary(Bin) ->
     case bin_search(Bin, [], Seps) of
         {nomatch,_} ->
             {btoken(Bin,Tkn), []};
@@ -1187,39 +1188,42 @@ lexeme_pick(Bin, Seps0, Tkn) when is_binary(Bin) ->
             {btoken(Lexeme, Tkn), Left}
     end.
 
-nth_lexeme_m([Bin|Cont0], {GCs,_,_}=Seps, N) when is_binary(Bin) ->
+nth_lexeme_m([Bin|Cont0], {GCs,_,_}=Seps0, N) when is_binary(Bin) ->
     case bin_search_inv(Bin, Cont0, GCs) of
         {nomatch,Cont} ->
-            nth_lexeme_m(Cont, Seps, N);
+            nth_lexeme_m(Cont, Seps0, N);
         Cs when N > 1 ->
-            Rest = lexeme_skip(Cs, Seps),
-            nth_lexeme_m(Rest, Seps, N-1);
+            Rest = lexeme_skip(Cs, Seps0),
+            nth_lexeme_m(Rest, Seps0, N-1);
         Cs ->
+            Seps = search_compile(Seps0),
             {Lexeme,_} = lexeme_pick(Cs, Seps, []),
             Lexeme
     end;
-nth_lexeme_m(Cs0, {GCs, _, _}=Seps, N) when is_list(Cs0) ->
+nth_lexeme_m(Cs0, {GCs, _, _}=Seps0, N) when is_list(Cs0) ->
     case unicode_util:gc(Cs0) of
         [C|Cs] ->
             case lists:member(C, GCs) of
                 true ->
-                    nth_lexeme_m(Cs, Seps, N);
+                    nth_lexeme_m(Cs, Seps0, N);
                 false when N > 1 ->
-                    Cs1 = lexeme_skip(Cs, Seps),
-                    nth_lexeme_m(Cs1, Seps, N-1);
+                    Cs1 = lexeme_skip(Cs, Seps0),
+                    nth_lexeme_m(Cs1, Seps0, N-1);
                 false ->
+                    Seps = search_compile(Seps0),
                     {Lexeme,_} = lexeme_pick(Cs0, Seps, []),
                     Lexeme
             end;
         [] ->
             []
     end;
-nth_lexeme_m(Bin, {GCs,_,_}=Seps, N) when is_binary(Bin) ->
+nth_lexeme_m(Bin, {GCs,_,_}=Seps0, N) when is_binary(Bin) ->
     case bin_search_inv(Bin, [], GCs) of
         [Cs] when N > 1 ->
-            Cs1 = lexeme_skip(Cs, Seps),
-            nth_lexeme_m(Cs1, Seps, N-1);
+            Cs1 = lexeme_skip(Cs, Seps0),
+            nth_lexeme_m(Cs1, Seps0, N-1);
         [Cs] ->
+            Seps = search_compile(Seps0),
             {Lexeme,_} = lexeme_pick(Cs, Seps, []),
             Lexeme;
         {nomatch,_} ->
