@@ -719,7 +719,15 @@ meas(Config) ->
         _ -> % No scaling
             DataDir0 = proplists:get_value(data_dir, Config),
             DataDir = filename:join(lists:droplast(filename:split(DataDir0))),
-            do_measure(DataDir)
+            case proplists:get_value(profile, Config, false) of
+                false ->
+                    do_measure(DataDir);
+                eprof ->
+                    eprof:profile(fun() -> do_measure(DataDir) end, [set_on_spawn]),
+                    eprof:stop_profiling(),
+                    eprof:analyze(),
+                    eprof:stop()
+            end
     end.
 
 do_measure(DataDir) ->
