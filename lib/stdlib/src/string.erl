@@ -1026,18 +1026,26 @@ take_tc(Bin, N, {GCs,_,_}=Seps0) when is_binary(Bin) ->
             end
     end.
 
-prefix_1(Cs, []) -> Cs;
-prefix_1(Cs, [_]=Pre) ->
-    prefix_2(unicode_util:gc(Cs), Pre);
-prefix_1([CP|_]=Cs, Pre) when is_integer(CP) ->
-    prefix_2(Cs, Pre);
-prefix_1(Cs, Pre) ->
-    prefix_2(unicode_util:cp(Cs), Pre).
-
-prefix_2([C|Cs], [C|Pre]) ->
-    prefix_1(Cs, Pre);
-prefix_2(_, _) ->
-    nomatch.
+prefix_1(Cs0, [GC]) ->
+    case unicode_util:gc(Cs0) of
+        [GC|Cs] -> Cs;
+        _ -> nomatch
+    end;
+prefix_1([CP|Cs], [Pre|PreR]) when is_integer(CP) ->
+    case CP =:= Pre of
+        true -> prefix_1(Cs,PreR);
+        false -> nomatch
+    end;
+prefix_1(<<CP/utf8, Cs/binary>>, [Pre|PreR]) ->
+    case CP =:= Pre of
+        true -> prefix_1(Cs,PreR);
+        false -> nomatch
+    end;
+prefix_1(Cs0, [Pre|PreR]) ->
+    case unicode_util:cp(Cs0) of
+        [Pre|Cs] ->  prefix_1(Cs,PreR);
+        false -> nomatch
+    end.
 
 split_1([CP1|Cs]=Cs0, [C|_]=Needle, _, Where, Curr, Acc) when is_integer(CP1) ->
     case CP1=:=C of
