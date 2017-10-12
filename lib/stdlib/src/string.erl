@@ -1244,12 +1244,12 @@ nth_lexeme_m(Cs0, {GCs, _, _}=Seps0, N) when is_list(Cs0) ->
             []
     end;
 nth_lexeme_m(Bin, {GCs,_,_}=Seps0, N) when is_binary(Bin) ->
+    Seps = search_compile(Seps0),
     case bin_search_inv(Bin, [], GCs) of
         [Cs] when N > 1 ->
-            Cs1 = lexeme_skip(Cs, Seps0),
-            nth_lexeme_m(Cs1, Seps0, N-1);
+            Cs1 = lexeme_skip(Cs, Seps),
+            nth_lexeme_m(Cs1, Seps, N-1);
         [Cs] ->
-            Seps = search_compile(Seps0),
             {Lexeme,_} = lexeme_pick(Cs, Seps, []),
             Lexeme;
         {nomatch,_} ->
@@ -1475,6 +1475,8 @@ bin_search_loop(Bin0, Start, BinSeps, Cont, Seps) ->
             end
     end.
 
+bin_search_inv(<<>>, Cont, _) ->
+    {nomatch, Cont};
 bin_search_inv(Bin, Cont, [Sep]) ->
     bin_search_inv_1(Bin, Cont, Sep);
 bin_search_inv(Bin, Cont, Seps) ->
@@ -1538,9 +1540,35 @@ bin_search_inv_n(<<>>, Cont, _Sep) ->
 bin_search_inv_n([], Cont, _Sep) ->
     {nomatch, Cont}.
 
+bin_search_str(Bin0, Start, [], SearchCPs) ->
+    Compiled = binary:compile_pattern(unicode:characters_to_binary(SearchCPs)),
+    bin_search_str_1(Bin0, Start, Compiled, SearchCPs);
 bin_search_str(Bin0, Start, Cont, [CP|_]=SearchCPs) ->
+    First = binary:compile_pattern(<<CP/utf8>>),
+    bin_search_str_2(Bin0, Start, Cont, First, SearchCPs).
+
+bin_search_str_1(Bin0, Start, First, SearchCPs) ->
     <<_:Start/binary, Bin/binary>> = Bin0,
-    case binary:match(Bin, <<CP/utf8>>) of
+    case binary:match(Bin, First) of
+        nomatch -> {nomatch, byte_size(Bin0), []};
+        {Where0, _} ->
+            Where = Start+Where0,
+            <<Keep:Where/binary, Cs0/binary>> = Bin0,
+            case prefix_1(Cs0, SearchCPs) of
+                nomatch ->
+                    <<_/utf8, Cs/binary>> = Cs0,
+                    KeepSz = byte_size(Bin0) - byte_size(Cs),
+                    bin_search_str_1(Bin0, KeepSz, First, SearchCPs);
+                [] ->
+                    {Keep, [Cs0], <<>>};
+                Rest ->
+                    {Keep, [Cs0], Rest}
+            end
+    end.
+
+bin_search_str_2(Bin0, Start, Cont, First, SearchCPs) ->
+    <<_:Start/binary, Bin/binary>> = Bin0,
+    case binary:match(Bin, First) of
         nomatch -> {nomatch, byte_size(Bin0), Cont};
         {Where0, _} ->
             Where = Start+Where0,
@@ -1549,7 +1577,7 @@ bin_search_str(Bin0, Start, Cont, [CP|_]=SearchCPs) ->
             case prefix_1(stack(Cs0,Cont), SearchCPs) of
                 nomatch when is_binary(Cs) ->
                     KeepSz = byte_size(Bin0) - byte_size(Cs),
-                    bin_search_str(Bin0, KeepSz, Cont, SearchCPs);
+                    bin_search_str_2(Bin0, KeepSz, Cont, First, SearchCPs);
                 nomatch ->
                     {nomatch, Where, stack([GC|Cs],Cont)};
                 [] ->
