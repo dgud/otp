@@ -75,7 +75,7 @@
 %%
 -import(lists,[member/2]).
 -compile({no_auto_import,[length/1]}).
--inline([btoken/2, rev/2, append/2, stack/2, search_compile/1]).
+-compile({inline, [btoken/2, rev/1, append/2, stack/2, search_compile/1]}).
 -define(ASCII_LIST(CP1,CP2), CP1 < 256, CP2 < 256, CP1 =/= $\r).
 
 -export_type([grapheme_cluster/0]).
@@ -119,6 +119,12 @@ is_empty(_) -> false.
 
 %% Count the number of grapheme clusters in chardata
 -spec length(String::unicode:chardata()) -> non_neg_integer().
+length(CD) when is_binary(CD) ->
+    case unicode_util:cp(CD) of
+        [] -> 0;
+        %[Cp|Bin] -> length_b(Cp, CD, byte_size(CD)- byte_size(Bin), 0)
+        [Cp|Bin] -> length_b(Cp, Bin, 0)
+    end;
 length(CD) ->
     length_1(CD, 0).
 
@@ -521,6 +527,18 @@ length_1(Str, N) ->
         [_|Rest] -> length_1(Rest, N+1)
     end.
 
+length_b(CP1, <<CP2/utf8, Rest/binary>>=Bin0, N) ->
+    if ?ASCII_LIST(CP1,CP2) ->
+            length_b(CP2, Rest, N+1);
+       true ->
+            [_|Bin1] = unicode_util:gc([CP1|Bin0]),
+            case unicode_util:cp(Bin1) of
+                [] -> N+1;
+                [CP3|Bin] -> length_b(CP3, Bin, N+1)
+            end
+    end;
+length_b(_, <<>>, N) -> N+1.
+
 equal_1([A|AR], [B|BR]) when is_integer(A), is_integer(B) ->
     A =:= B andalso equal_1(AR, BR);
 equal_1([], BR) -> is_empty(BR);
@@ -783,7 +801,7 @@ trim_t(Bin, N, {GCs,_,_}=Seps0) when is_binary(Bin) ->
 take_l([CP1|[CP2|_]=Cont]=Str, Seps, Acc)
   when ?ASCII_LIST(CP1,CP2) ->
     case lists:member(CP1, Seps) of
-        true -> take_l(Cont, Seps, append(CP1,Acc));
+        true -> take_l(Cont, Seps, [CP1|Acc]);
         false -> {rev(Acc), Str}
     end;
 take_l([Bin|Cont0], Seps, Acc) when is_binary(Bin) ->
