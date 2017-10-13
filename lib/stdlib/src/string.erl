@@ -83,7 +83,7 @@
 -type grapheme_cluster() :: char() | [char()].
 -type direction() :: 'leading' | 'trailing'.
 
--dialyzer({no_improper_lists, stack/2}).
+-dialyzer({no_improper_lists, [stack/2, length_b/3]}).
 %%% BIFs internal (not documented) should not to be used outside of this module
 %%% May be removed
 -export([list_to_float/1, list_to_integer/1]).
@@ -1044,7 +1044,7 @@ prefix_1(<<CP/utf8, Cs/binary>>, [Pre|PreR]) ->
 prefix_1(Cs0, [Pre|PreR]) ->
     case unicode_util:cp(Cs0) of
         [Pre|Cs] ->  prefix_1(Cs,PreR);
-        false -> nomatch
+        _ -> nomatch
     end.
 
 split_1([CP1|Cs]=Cs0, [C|_]=Needle, _, Where, Curr, Acc) when is_integer(CP1) ->
