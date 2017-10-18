@@ -1261,7 +1261,7 @@ lexeme_skip([CP|Cs1]=Cs0, {GCs,CPs,_}=Seps) when is_integer(CP) ->
         true  ->
             [GC|Cs2] = unicode_util:gc(Cs0),
             case lists:member(GC, GCs) of
-                true -> Cs0;
+                true -> Cs2;
                 false -> lexeme_skip(Cs2, Seps)
             end;
         false ->
@@ -1271,7 +1271,7 @@ lexeme_skip([Bin|Cont0], Seps0) when is_binary(Bin) ->
     Seps = search_compile(Seps0),
     case bin_search(Bin, Cont0, Seps) of
         {nomatch,_} -> lexeme_skip(Cont0, Seps);
-        Cs -> Cs
+        Cs -> tl(unicode_util:gc(Cs))
     end;
 lexeme_skip(Cs0, {GCs, CPs, _} = Seps) when is_list(Cs0) ->
     case unicode_util:cp(Cs0) of
@@ -1280,7 +1280,7 @@ lexeme_skip(Cs0, {GCs, CPs, _} = Seps) when is_list(Cs0) ->
                 true ->
                     [GC|Cs2] = unicode_util:gc(Cs0),
                     case lists:member(GC, GCs) of
-                        true -> Cs0;
+                        true -> Cs2;
                         false -> lexeme_skip(Cs2, Seps)
                     end;
                 false ->
@@ -1293,7 +1293,7 @@ lexeme_skip(Bin, Seps0) when is_binary(Bin) ->
     Seps = search_compile(Seps0),
     case bin_search(Bin, [], Seps) of
         {nomatch,_} -> <<>>;
-        [Left] -> Left
+        [Left] -> tl(unicode_util:gc(Left))
     end.
 
 find_l([C1|Cs]=Cs0, [C|_]=Needle) when is_integer(C1) ->
