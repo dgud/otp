@@ -119,12 +119,8 @@ is_empty(_) -> false.
 
 %% Count the number of grapheme clusters in chardata
 -spec length(String::unicode:chardata()) -> non_neg_integer().
-length(CD) when is_binary(CD) ->
-    case unicode_util:cp(CD) of
-        [] -> 0;
-        %[Cp|Bin] -> length_b(Cp, CD, byte_size(CD)- byte_size(Bin), 0)
-        [Cp|Bin] -> length_b(Cp, Bin, 0)
-    end;
+length(<<CP1/utf8, Bin/binary>>) ->
+    length_b(Bin, CP1, 0);
 length(CD) ->
     length_1(CD, 0).
 
@@ -174,6 +170,8 @@ equal(A, B, true, Norm) ->
 
 %% Reverse grapheme clusters
 -spec reverse(String::unicode:chardata()) -> [grapheme_cluster()].
+reverse(<<CP1/utf8, Rest/binary>>) ->
+    reverse_b(Rest, CP1, []);
 reverse(CD) ->
     reverse_1(CD, []).
 
@@ -527,17 +525,15 @@ length_1(Str, N) ->
         [_|Rest] -> length_1(Rest, N+1)
     end.
 
-length_b(CP1, <<CP2/utf8, Rest/binary>>=Bin0, N) ->
-    if ?ASCII_LIST(CP1,CP2) ->
-            length_b(CP2, Rest, N+1);
-       true ->
-            [_|Bin1] = unicode_util:gc([CP1|Bin0]),
-            case unicode_util:cp(Bin1) of
-                [] -> N+1;
-                [CP3|Bin] -> length_b(CP3, Bin, N+1)
-            end
-    end;
-length_b(_, <<>>, N) -> N+1.
+length_b(<<CP2/utf8, Rest/binary>>, CP1, N)
+  when ?ASCII_LIST(CP1,CP2) ->
+    length_b(Rest, CP2, N+1);
+length_b(Bin0, CP1, N) ->
+    [_|Bin1] = unicode_util:gc([CP1|Bin0]),
+    case unicode_util:cp(Bin1) of
+        [] -> N+1;
+        [CP3|Bin] -> length_b(Bin, CP3, N+1)
+    end.
 
 equal_1([A|AR], [B|BR]) when is_integer(A), is_integer(B) ->
     A =:= B andalso equal_1(AR, BR);
@@ -582,6 +578,16 @@ reverse_1(CD, Acc) ->
     case unicode_util:gc(CD) of
         [GC|Rest] -> reverse_1(Rest, [GC|Acc]);
         [] -> Acc
+    end.
+
+reverse_b(<<CP2/utf8, Rest/binary>>, CP1, Acc)
+  when ?ASCII_LIST(CP1,CP2) ->
+    reverse_b(Rest, CP2,  [CP1|Acc]);
+reverse_b(Bin0, CP1, Acc) ->
+    [GC|Bin1] = unicode_util:gc([CP1|Bin0]),
+    case unicode_util:cp(Bin1) of
+        [] -> [GC|Acc];
+        [CP3|Bin] -> reverse_b(Bin, CP3, [GC|Acc])
     end.
 
 slice_l([CP1|[CP2|_]=Cont], N) when ?ASCII_LIST(CP1,CP2),N > 0 ->
