@@ -182,7 +182,7 @@ reverse(CD) ->
       Start :: non_neg_integer(),
       Slice :: unicode:chardata().
 slice(CD, N) when is_integer(N), N >= 0 ->
-    case slice_l(CD, N) of
+    case slice_l0(CD, N) of
         [] when is_binary(CD) -> <<>>;
         Res -> Res
     end.
@@ -194,12 +194,12 @@ slice(CD, N) when is_integer(N), N >= 0 ->
       Slice :: unicode:chardata().
 slice(CD, N, Length)
   when is_integer(N), N >= 0, is_integer(Length), Length > 0 ->
-    case slice_l(CD, N) of
+    case slice_l0(CD, N) of
         [] when is_binary(CD) -> <<>>;
         L -> slice_trail(L, Length)
     end;
 slice(CD, N, infinity) ->
-    case slice_l(CD, N) of
+    case slice_l0(CD, N) of
         [] when is_binary(CD) -> <<>>;
         Res -> Res
     end;
@@ -590,6 +590,11 @@ reverse_b(Bin0, CP1, Acc) ->
         [CP3|Bin] -> reverse_b(Bin, CP3, [GC|Acc])
     end.
 
+slice_l0(<<CP1/utf8, Bin/binary>>, N) when N > 0 ->
+    slice_lb(Bin, CP1, N);
+slice_l0(L, N) ->
+    slice_l(L, N).
+
 slice_l([CP1|[CP2|_]=Cont], N) when ?ASCII_LIST(CP1,CP2),N > 0 ->
     slice_l(Cont, N-1);
 slice_l(CD, N) when N > 0 ->
@@ -600,13 +605,30 @@ slice_l(CD, N) when N > 0 ->
 slice_l(Cont, 0) ->
     Cont.
 
-slice_trail(CD, N) when is_list(CD) ->
-    slice_list(CD, N);
+slice_lb(<<CP2/utf8, Bin/binary>>, CP1, N) when ?ASCII_LIST(CP1,CP2), N > 1 ->
+    slice_lb(Bin, CP2, N-1);
+slice_lb(Bin, CP1, N) ->
+    [_|Rest] = unicode_util:gc([CP1|Bin]),
+    if N > 1 ->
+            case unicode_util:cp(Rest) of
+                [CP2|Cont] -> slice_lb(Cont, CP2, N-1);
+                [] -> <<>>
+            end;
+       N =:= 1 ->
+            Rest
+    end.
+
 slice_trail(Orig, N) when is_binary(Orig) ->
-    CD = slice_bin(Orig, N),
-    Sz = byte_size(Orig) - byte_size(CD),
-    <<Keep:Sz/binary, _/binary>> = Orig,
-    Keep.
+    case Orig of
+        <<CP1/utf8, Bin/binary>> when N > 0 ->
+            Length = slice_bin(Bin, CP1, N),
+            Sz = byte_size(Orig) - Length,
+            <<Keep:Sz/binary, _/binary>> = Orig,
+            Keep;
+        _ -> <<>>
+    end;
+slice_trail(CD, N) when is_list(CD) ->
+    slice_list(CD, N).
 
 slice_list([CP1|[CP2|_]=Cont], N) when ?ASCII_LIST(CP1,CP2),N > 0 ->
     [CP1|slice_list(Cont, N-1)];
@@ -618,15 +640,16 @@ slice_list(CD, N) when N > 0 ->
 slice_list(_, 0) ->
     [].
 
-slice_bin(CD, N) when N > 0 ->
-    case unicode_util:gc(CD) of
-        [_|Cont] -> slice_bin(Cont, N-1);
-        [] -> <<>>
+slice_bin(<<CP2/utf8, Bin/binary>>, CP1, N) when ?ASCII_LIST(CP1,CP2), N > 0 ->
+    slice_bin(Bin, CP2, N-1);
+slice_bin(CD, CP1, N) when N > 0 ->
+    [_|Bin] = unicode_util:gc([CP1|CD]),
+    case unicode_util:cp(Bin) of
+        [CP2|Cont] -> slice_bin(Cont, CP2, N-1);
+        [] -> 0
     end;
-slice_bin([], 0) ->
-    <<>>;
-slice_bin(CD, 0) ->
-    CD.
+slice_bin(CD, CP1, 0) ->
+    byte_size(CD)+byte_size(<<CP1/utf8>>).
 
 uppercase_list(CPs0) ->
     case unicode_util:uppercase(CPs0) of
