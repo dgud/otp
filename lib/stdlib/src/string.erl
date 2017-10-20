@@ -1224,7 +1224,7 @@ lexeme_pick(Cs0, {GCs, CPs, _} = Seps, Tkn) when is_list(Cs0) ->
                 true ->
                     [GC|Cs2] = unicode_util:gc(Cs0),
                     case lists:member(GC, GCs) of
-                        true -> {rev(Tkn), Cs0};
+                        true -> {rev(Tkn), Cs2};
                         false -> lexeme_pick(Cs2, Seps, append(rev(GC),Tkn))
                     end;
                 false ->
