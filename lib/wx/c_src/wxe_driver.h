@@ -20,7 +20,8 @@
 
 #ifndef _WXE_DRIVER_H
 #define _WXE_DRIVER_H
-#include "erl_driver.h"
+#include <erl_driver.h>
+#include <erl_nif.h>
 
 typedef unsigned char Uint8;
 typedef unsigned int Uint32;
@@ -50,7 +51,6 @@ typedef struct wxe_data_def {
    ErlDrvPDL pdl;
 } wxe_data;
 
-
 /* Number of bins per port should be small */
 #define DEF_BINS 3
 
@@ -66,6 +66,8 @@ void stop_native_gui(wxe_data *sd);
 
 
 void push_command(int op,char * buf,int len, wxe_data *);
+void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int,
+              void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int);
 void meta_command(int what, wxe_data *sd);
 
 void * wxe_ps_init();

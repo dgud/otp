@@ -33,9 +33,17 @@
 	 get_const/1,colour_bin/1,datetime_bin/1,
 	 to_bool/1,from_bool/1]).
 
--export([wxgl_dl/0, priv_dir/2, opt_error_log/3]).
+-export([queue_cmd/1,queue_cmd/2,queue_cmd/3,queue_cmd/4,queue_cmd/5,
+         queue_cmd/6,queue_cmd/7,queue_cmd/8,queue_cmd/9,queue_cmd/10,
+         queue_cmd/11,queue_cmd/12,queue_cmd/13,queue_cmd/14,queue_cmd/15]).
+
+-export([wxgl_dl/0, priv_dir/2, opt_error_log/3, init_nif/1]).
 
 -include("wxe.hrl").
+
+init_nif(Silent) ->
+    Dir = priv_dir("wxe_driver", Silent),
+    erlang:load_nif(filename:join(Dir, "wxe_driver"), 0).
 
 to_bool(0) -> false;
 to_bool(_) -> true.
@@ -76,10 +84,26 @@ call(Op, Args) ->
 	    debug_call(Dbg band 15, Op, Args, Port)
     end.
 
+queue_cmd(_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+
 rec(Op) ->
-    receive 
+    receive
 	{'_wxe_result_', Res} -> Res;
-	{'_wxe_error_', Op, Error} -> 
+	{'_wxe_error_', Op, Error} ->
 	    [{_,MF}] = ets:lookup(wx_debug_info,Op),
 	    erlang:error({Error, MF});
 	{'_wxe_error_', Old, Error} ->

@@ -31,14 +31,14 @@ ERL_COMPILE_FLAGS=+debug_info +warn_unused_vars
 COMPILER = gen_util wx_gen wx_gen_erl wx_gen_cpp
 COMPILER_T = $(COMPILER:%=$(EBIN)/%.beam)
 
-GL_COMP = gl_gen gl_gen_erl gl_gen_c gl_scan_doc
+GL_COMP = gl_gen gl_gen_erl gl_gen_c gl_gen_nif gl_scan_doc
 GL_COMP_T = $(GL_COMP:%=$(EBIN)/%.beam)
 
 TARGET_EDIR = ../src/gen
 TARGET_CDIR = ../c_src/gen
 
 C_TARGETS   = wxe_funcs.cpp
-GL_C_TARGETS = gl_funcs.cpp
+GL_C_TARGETS = gl_nif.c
 
 WX = wx_code_generated
 

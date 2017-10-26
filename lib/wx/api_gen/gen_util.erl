@@ -138,7 +138,7 @@ args(Fun, Limit, [H|R], Max, Pos) ->
 	skip -> args(Fun,Limit,R, Max, Pos);
 	Str  ->
 	    {NL, NewPos} =
-		case length(Str) + Pos of
+		case string:length(Str) + Pos of
 		    Curr when Curr > Max ->
 			{"\n  ", 0};
 		    Curr ->

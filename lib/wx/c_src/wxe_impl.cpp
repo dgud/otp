@@ -73,13 +73,31 @@ void push_command(int op,char * buf,int len, wxe_data *sd)
   int n = wxe_queue->Add(op, buf, len, sd);
 
   if(wxe_needs_signal) {
-    // wx-thread is waiting on batch end in cond_wait
     erl_drv_cond_signal(wxe_batch_locker_c);
     erl_drv_mutex_unlock(wxe_batch_locker_m);
   } else {
     // wx-thread is waiting gui-events
     erl_drv_mutex_unlock(wxe_batch_locker_m);
     if(n < 2) wxWakeUpIdle();
+  }
+}
+
+void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
+              void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int cast)
+{
+  erl_drv_mutex_lock(wxe_batch_locker_m);
+  int wait = wxe_queue->Add(env, argc, argv, op, fptr, cast);
+
+  if(wxe_needs_signal) {
+    // wx-thread is waiting on batch end in cond_wait
+    if(!wait) {
+      erl_drv_cond_signal(wxe_batch_locker_c);
+    }
+    erl_drv_mutex_unlock(wxe_batch_locker_m);
+  } else {
+    // wx-thread is waiting gui-events
+    erl_drv_mutex_unlock(wxe_batch_locker_m);
+    wxWakeUpIdle();
   }
 }
 
@@ -310,7 +328,7 @@ int WxeApp::dispatch(wxeFifo * batch)
 	  // fprintf(stderr, "  c %d (%d) \r\n", event->op, blevel);
 	  wxe_dispatch(*event);
 	} else {
-	  gl_dispatch(event->op,event->buffer,event->caller,event->bin);
+	  gl_dispatch(event);
 	}
 	break;
       }
@@ -375,7 +393,7 @@ void WxeApp::dispatch_cb(wxeFifo * batch, ErlDrvTermData process) {
 	  if(event->op < OPENGL_START) {
 	    wxe_dispatch(*event);
 	  } else {
-	    gl_dispatch(event->op,event->buffer,event->caller,event->bin);
+	    gl_dispatch(event);
 	  }
 	  break;
 	}

@@ -163,12 +163,12 @@ terminate(_Reason, _State) ->
 
 -define(FACES, 
 	%% Faces    Normal     U-axis   V-axis 
-	[{{1,2,3,4},{0,0,-1},{-1,0,0}, {0,1,0}},  % 
-	 {{8,1,4,5},{-1,0,0},{0,0,1},  {0,1,0}},  %
-	 {{2,7,6,3},{1,0,0}, {0,0,-1}, {0,1,0}},  %
-	 {{7,8,5,6},{0,0,1}, {1,0,0},  {0,1,0}},  %
-	 {{4,3,6,5},{0,1,0}, {-1,0,0}, {0,0,1}},  %
-	 {{1,2,7,8},{0,-1,0},{1,0,0},  {0,0,1}}]).
+	[{{1,2,3,4},{0.0,0.0,-1.0},{-1,0,0}, {0,1,0}},  % 
+	 {{8,1,4,5},{-1.0,0.0,0.0},{0,0,1},  {0,1,0}},  %
+	 {{2,7,6,3},{1.0,0.0,0.0}, {0,0,-1}, {0,1,0}},  %
+	 {{7,8,5,6},{0.0,0.0,1.0}, {1,0,0},  {0,1,0}},  %
+	 {{4,3,6,5},{0.0,1.0,0.0}, {-1,0,0}, {0,0,1}},  %
+	 {{1,2,7,8},{0.0,-1.0,0.0},{1,0,0},  {0,0,1}}]).
 
 -define(COLORS,{{ 0.0,  0.0,  0.0},		
 		{ 1.0,  0.0,  0.0},
@@ -217,19 +217,19 @@ drawBox(#gl{win=Win,deg=Deg,data={Fs,Vs,Colors},mat=MatT,alpha=ImgA,
     gl:matrixMode(?GL_MODELVIEW),
     gl:loadIdentity(),
     gl:pushMatrix(),
-    gl:translatef(0,0.5,0),
+    gl:translatef(0.0,0.5,0.0),
     gl:rotatef(Deg, 1.0, 1.0, 1.0),
     gl:clear(?GL_COLOR_BUFFER_BIT bor ?GL_DEPTH_BUFFER_BIT),
     gl:bindTexture(?GL_TEXTURE_2D, MatT#texture.tid),
     gl:disable(?GL_BLEND), 
-    gl:texEnvf(?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_MODULATE),
+    gl:texEnvi(?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_MODULATE),
     gl:disable(?GL_CULL_FACE),
     gl:'begin'(?GL_QUADS),
     wx:foreach(fun(Face) -> drawFace(Face,Vs,Colors) end, Fs),
     gl:'end'(),
     gl:popMatrix(),
 
-    gl:texEnvf(?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE),
+    gl:texEnvi(?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE),
 
     enter_2d_mode(Win),
     {W,H} = wxWindow:getClientSize(Win),
@@ -242,14 +242,14 @@ drawBox(#gl{win=Win,deg=Deg,data={Fs,Vs,Colors},mat=MatT,alpha=ImgA,
     gl:enable(?GL_CULL_FACE),
     gl:enable(?GL_BLEND), 
     gl:blendFunc(?GL_SRC_ALPHA, ?GL_ONE_MINUS_SRC_ALPHA),
-    gl:translatef(0,-0.8,0),
+    gl:translatef(0.0,-0.8,0.0),
     gl:bindTexture(?GL_TEXTURE_2D, Text#texture.tid),
     glu:quadricTexture(Sphere, ?GLU_TRUE),
     glu:quadricNormals(Sphere, ?GLU_SMOOTH),
     glu:quadricDrawStyle(Sphere, ?GLU_FILL),
     glu:quadricOrientation(Sphere, ?GLU_OUTSIDE),
     %%gl:scalef(2.0, 0.5, 1.0),
-    gl:rotatef(-90, 1.0, 0.0, 0.0),
+    gl:rotatef(-90.0, 1.0, 0.0, 0.0),
     gl:rotatef(-Deg, 0.0, 0.0, 1.0),
     glu:sphere(Sphere, 0.8, 50,40),
     gl:popMatrix(),
@@ -298,7 +298,7 @@ load_texture_by_image(Image) ->
 		  Format, W, H, 0,
  		  Format, ?GL_UNSIGNED_BYTE, Data),
     #texture{tid = TId, w = ImgW, h = ImgH, 
-	     minx = 0, miny = 0, maxx = ImgW / W, maxy = ImgH / H}.
+	     minx = 0.0, miny = 0.0, maxx = ImgW / W, maxy = ImgH / H}.
 
 
 %% This algorithm (based on http://d0t.dbclan.de/snippets/gltext.html)
@@ -359,13 +359,13 @@ load_texture_by_string(Font, Brush, Color, String, Flip) ->
     gl:bindTexture(?GL_TEXTURE_2D, TId),
     gl:texParameteri(?GL_TEXTURE_2D, ?GL_TEXTURE_MAG_FILTER, ?GL_LINEAR),
     gl:texParameteri(?GL_TEXTURE_2D, ?GL_TEXTURE_MIN_FILTER, ?GL_LINEAR),
-    gl:texEnvf(?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE),
+    gl:texEnvi(?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE),
     %%gl:pixelStorei(?GL_UNPACK_ROW_LENGTH, 0),
     %%gl:pixelStorei(?GL_UNPACK_ALIGNMENT, 2),
     gl:texImage2D(?GL_TEXTURE_2D, 0, ?GL_RGBA,
   		  W, H, 0, ?GL_RGBA, ?GL_UNSIGNED_BYTE, Data),
     #texture{tid = TId, w = StrW, h = StrH, 
- 	     minx = 0, miny = 0, maxx = StrW / W, maxy = StrH / H}.
+ 	     minx = 0.0, miny = 0.0, maxx = StrW / W, maxy = StrH / H}.
 
 colourize_image(Alpha, {R,G,B}) ->
     << <<R:8,G:8,B:8,A:8>> || <<A:8,_:8,_:8>> <= Alpha >>.
@@ -412,7 +412,7 @@ enter_2d_mode(Win) ->
     %% projection to correct this.  
     %% Note: We could flip the texture/image itself, but this will
     %% also work for mouse coordinates.
-    gl:ortho(0.0, W, H, 0.0, 0.0, 1.0),
+    gl:ortho(0.0, float(W), float(H), 0.0, 0.0, 1.0),
 
     gl:matrixMode(?GL_MODELVIEW),
     gl:pushMatrix(),

@@ -59,17 +59,18 @@ gen_code() ->
     {ok, Opts0} = file:consult("glapi.conf"),
     erase(func_id),
     Opts = init_defs(Opts0),
-    GLUDefs = parse_glu_defs(Opts),   
-    GLDefs  = parse_gl_defs(Opts),    
+    GLUDefs = parse_glu_defs(Opts),
+    GLDefs  = parse_gl_defs(Opts),
     {GLUDefines,GLUFuncs} = setup(GLUDefs, Opts),
     {GLDefines,GLFuncs}   = setup(GLDefs, Opts),
-    gl_gen_erl:gl_defines(GLDefines),
-    gl_gen_erl:gl_api(GLFuncs),
     gl_gen_erl:glu_defines(GLUDefines),
-    gl_gen_erl:glu_api(GLUFuncs),
+    GluNifs = gl_gen_erl:glu_api(GLUFuncs),
+    gl_gen_erl:gl_defines(GLDefines),
+    gl_gen_erl:gl_api(GLFuncs, GluNifs),
 
     %%gl_gen_erl:gen_debug(GLFuncs,GLUFuncs),
-    gl_gen_c:gen(GLFuncs,GLUFuncs),
+    %%gl_gen_c:gen(GLFuncs,GLUFuncs),
+    gl_gen_nif:gen(GLFuncs,GLUFuncs),
     ok.
 
 init_defs(Opts0) ->

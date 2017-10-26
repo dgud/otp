@@ -18,8 +18,8 @@
  * %CopyrightEnd% 
  */
 
-#include "erl_driver.h"
-
+#include <erl_driver.h>
+#include <erl_nif.h>
 /* Wrap everything from glext.h so we are not dependent on the user version of it */
 
 #ifndef _WIN32
@@ -132,19 +132,44 @@ typedef uint64_t GLuint64;
 typedef struct __GLsync *GLsync;
 #endif
 
-/* External Api */
-
-#ifdef _WIN32
-extern "C" __declspec(dllexport) int  egl_init_opengl(void *);
-extern "C" __declspec(dllexport) void egl_dispatch(int, char *, ErlDrvPort, ErlDrvTermData, char **, int *);
-#else 
-extern "C" int egl_init_opengl(void *);
-extern "C" void egl_dispatch(int, char *, ErlDrvPort, ErlDrvTermData, char **, int *);
+#ifndef DEF_EGL_CMD
+typedef struct egl_cmd_t {
+    ErlNifEnv *env;
+    ERL_NIF_TERM args[16];
+    void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *);
+    ErlNifPid pid;
+} egl_cmd;
 #endif
 
+typedef struct {
+    int op;
+    const char * name;
+    const char * alt;
+    void * func;
+    void (*nif_cb) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *);
+} gl_fns_t;
+
+extern gl_fns_t gl_fns[];
+extern int egl_load_functions();
+
 /* internal */
-int erl_tess_impl(char* buff, ErlDrvPort port, ErlDrvTermData caller);
-void gl_error();
+void init_tess();
+void erl_tess_impl(ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *);
 extern int gl_error_op;
 extern ErlDrvTermData gl_active;
 
+extern ERL_NIF_TERM EGL_ATOM_OK;
+extern ERL_NIF_TERM EGL_ATOM_REPLY;
+extern ERL_NIF_TERM EGL_ATOM_ERROR;
+extern ERL_NIF_TERM EGL_ATOM_BADARG;
+
+#define Badarg(Op, Argc) {egl_badarg(env,self,Op,Argc); return;}
+
+int egl_get_float(ErlNifEnv* env, ERL_NIF_TERM term, GLfloat* dp);
+int egl_get_short(ErlNifEnv* env, ERL_NIF_TERM term, GLshort* dp);
+int egl_get_ushort(ErlNifEnv* env, ERL_NIF_TERM term, GLushort* dp);
+int egl_get_byte(ErlNifEnv* env, ERL_NIF_TERM term, GLbyte* dp);
+int egl_get_ubyte(ErlNifEnv* env, ERL_NIF_TERM term, GLubyte* dp);
+int egl_get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp);
+ERL_NIF_TERM egl_lookup_func(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+void egl_badarg(ErlNifEnv* env, ErlNifPid *self, int op, char * argc);

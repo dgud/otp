@@ -80,12 +80,12 @@ end_per_group(_GroupName, Config) ->
 
 -define(FACES, 
 	%% Faces    Normal   
-	[{{1,2,3,4},{0,0,-1} },   % 
-	 {{3,8,5,4},{-1,0,0}},   %
-	 {{1,6,7,2},{1,0,0} },   %
-	 {{6,5,8,7},{0,0,1} },   %
-	 {{6,1,4,5},{0,1,0} },   %
-	 {{7,8,3,2},{0,-1,0}}]).
+	[{{1,2,3,4},{0.0,0.0,-1.0} },   % 
+	 {{3,8,5,4},{-1.0,0.0,0.0}},   %
+	 {{1,6,7,2},{1.0,0.0,0.0} },   %
+	 {{6,5,8,7},{0.0,0.0,1.0} },   %
+	 {{6,1,4,5},{0.0,1.0,0.0} },   %
+	 {{7,8,3,2},{0.0,-1.0,0.0}}]).
 
 
 %% Test we can create a glCanvas and that functions are loaded dynamicly
@@ -111,9 +111,7 @@ canvas(Config) ->
 
     ?m(false, wx:is_null(wxGLCanvas:getContext(Canvas))),
     ?m({'EXIT', {{error, no_gl_context,_},_}}, gl:getString(?GL_VENDOR)),
-    gl:viewport(0,0,50,50), %% Show cause an error report
-
-
+    gl:viewport(0,0,50,50), %% Should cause an error report
     ?m(ok, wxGLCanvas:setCurrent(Canvas)),
     io:format("Vendor:     ~s~n",  [gl:getString(?GL_VENDOR)]),
     io:format("Renderer:   ~s~n",  [gl:getString(?GL_RENDERER)]),
@@ -123,7 +121,6 @@ canvas(Config) ->
     gl:viewport(0,0,W,H),
     gl:matrixMode(?GL_PROJECTION),
     gl:loadIdentity(),
-    %%gl:frustum( -2.0, 2.0, -2.0, 2.0, 5.0, 25.0 ),
     gl:ortho( -2.0, 2.0, -2.0*H/W, 2.0*H/W, -20.0, 20.0),
     gl:matrixMode(?GL_MODELVIEW),
     gl:loadIdentity(),
@@ -132,20 +129,25 @@ canvas(Config) ->
     {R,G,B,_} = wxWindow:getBackgroundColour(Frame),
     gl:clearColor(R/255,B/255,G/255,1.0),
     Data = {?FACES,?VS},
-    drawBox(0, Data),
+    _Vbo = build_buffers(?FACES, ?VS),
+    drawBox(0.0, Data),
     ?m(ok, wxGLCanvas:swapBuffers(Canvas)),
     ?m([], flush()),
+    Prog = gl:createProgramObjectARB(),
+    gl:linkProgramARB(Prog),
+    %% Sync = gl:fenceSync(Cond, Flags),
+    %% gl:isSync(Sync),
     Env = wx:get_env(),
     Tester = self(),
     spawn_link(fun() ->
-		       wx:set_env(Env),
-		       ?m(ok, wxGLCanvas:setCurrent(Canvas)),
-		       ?m(ok, drawBox(1, Data)),
-		       ?m(ok, wxGLCanvas:swapBuffers(Canvas)),
-		       Tester ! works,
-		       %% This may fail when window is deleted
-		       catch draw_loop(2,Data,Canvas)
-	       end),
+        	       wx:set_env(Env),
+        	       ?m(ok, wxGLCanvas:setCurrent(Canvas)),
+        	       ?m(ok, drawBox(1.0, Data)),
+        	       ?m(ok, wxGLCanvas:swapBuffers(Canvas)),
+        	       Tester ! works,
+        	       %% This may fail when window is deleted
+        	       catch draw_loop(2.0,Data,Canvas)
+               end),
     %% Needed on mac with wx-2.9
     wxGLCanvas:connect(Canvas, paint, 
     		       [{callback, fun(_,_) ->
@@ -157,7 +159,7 @@ canvas(Config) ->
 
     ?m_receive(works),
     ?m([], flush()),
-    io:format("Undef func ~p ~n", [catch gl:uniform1d(2, 0.75)]),
+    %% io:format("Undef func ~p ~n", [catch gl:uniform1d(2, 0.75)]),
     timer:sleep(500),
     flush(),
     wx_test_lib:wx_destroy(Frame, Config).
@@ -171,7 +173,7 @@ flush(Collected) ->
     after 1 ->
 	    lists:reverse(Collected)
     end.
-    	  
+
 draw_loop(Deg,Data,Canvas) ->
     timer:sleep(15),
     {NW,NH} = wxGLCanvas:getClientSize(Canvas),
@@ -180,26 +182,43 @@ draw_loop(Deg,Data,Canvas) ->
     ?m(ok, wxGLCanvas:swapBuffers(Canvas)),
     draw_loop(Deg+1, Data,Canvas).
 
-
-
-drawBox(Deg,{Fs,Vs}) ->
+drawBox(Deg,{Fs,_Vs}) ->
     gl:matrixMode(?GL_MODELVIEW),
     gl:loadIdentity(),
     gl:rotatef(Deg, 0.0, 1.0, 0.0),
-    gl:rotatef(20, 1.0, 0.0, 1.0),
+    gl:rotatef(20.0, 1.0, 0.0, 1.0),
     gl:clear(?GL_COLOR_BUFFER_BIT bor ?GL_DEPTH_BUFFER_BIT),
-    gl:'begin'(?GL_QUADS),    
-    lists:foreach(fun(Face) -> drawFace(Face,Vs) end, Fs),
-    gl:'end'().
+    gl:drawArrays(?GL_QUADS, 0, length(Fs)*4).
 
-drawFace({{V1,V2,V3,V4},N={N1,N2,N3}}, Cube) ->
-    gl:normal3fv(N),
-    gl:color3f(abs(N1),abs(N2),abs(N3)),
-    gl:texCoord2f(0.0, 1.0), gl:vertex3fv(element(V1, Cube)),
-    gl:texCoord2f(0.0, 0.0), gl:vertex3fv(element(V2, Cube)),
-    gl:texCoord2f(1.0, 0.0), gl:vertex3fv(element(V3, Cube)),
-    gl:texCoord2f(1.0, 1.0), gl:vertex3fv(element(V4, Cube)).
+-define(F32,  32/float-native).
+-define(I32,  32/signed-native).
+-define(UI32, 32/native).
 
+build_buffers(Fs, Cube) ->
+    Get = fun(N) -> f3(element(N, Cube)) end,
+    Vs = << << (Get(V1))/binary, (Get(V2))/binary, (Get(V3))/binary, (Get(V4))/binary>>
+            || {{V1,V2,V3,V4}, _} <- Fs >>,
+    Ns = << << (f3(N))/binary, (f3(N))/binary, (f3(N))/binary, (f3(N))/binary >> || {_, N} <- Fs>>,
+    Cs = << << (c3(N))/binary, (c3(N))/binary, (c3(N))/binary, (c3(N))/binary >> || {_, N} <- Fs>>,
+    Tx = << << 0.0:?F32, 1.0:?F32, 0.0:?F32, 0.0:?F32, 1.0:?F32, 0.0:?F32, 1.0:?F32, 1.0:?F32>>
+            || _ <- Fs >>,
+    Data = << Vs/binary, Ns/binary, Cs/binary, Tx/binary>>,
+    [Vbo] = gl:genBuffers(1),
+    gl:bindBuffer(?GL_ARRAY_BUFFER, Vbo),
+    gl:bufferData(?GL_ARRAY_BUFFER, byte_size(Data), Data, ?GL_STATIC_DRAW),
+    put(data, Data),
+    gl:vertexPointer(3, ?GL_FLOAT, 3*4, 0),
+    gl:normalPointer(?GL_FLOAT, 3*4, byte_size(Vs)),
+    gl:colorPointer(3, ?GL_FLOAT, 3*4, byte_size(Vs)+byte_size(Ns)),
+%    gl:texCoordPointer(2, ?GL_FLOAT, 0, byte_size(Vs)+byte_size(Ns)+byte_size(Cs)),
+    gl:enableClientState(?GL_VERTEX_ARRAY),
+    gl:enableClientState(?GL_NORMAL_ARRAY),
+    gl:enableClientState(?GL_COLOR_ARRAY),
+%    gl:enableClientState(?GL_TEXTURE_COORD_ARRAY),
+    Vbo.
+
+f3({X,Y,Z}) -> <<X:?F32, Y:?F32, Z:?F32>>.
+c3({X,Y,Z}) -> <<(abs(X)):?F32, (abs(Y)):?F32, (abs(Z)):?F32>>.
 
 glu_tesselation(TestInfo) when is_atom(TestInfo) -> wx_test_lib:tc_info(TestInfo);
 glu_tesselation(Config) ->
@@ -214,17 +233,19 @@ glu_tesselation(Config) ->
     after 1000 -> exit(show_timeout)
     end,
     ?m(ok, wxGLCanvas:setCurrent(Canvas)),
-    
-    {RL1,RB1} = ?m({_,_}, glu:tesselate({0,0,1}, [{-1,0,0},{1,0,0},{0,1,0}])),
+    Simple = ?m({_,_}, glu:tesselate({0.0,0.0,1.0}, [{-1.0,0.0,0.0},{1.0,0.0,0.0},{0.0,1.0,0.0}])),
+    io:format("Simple ~p~n",[Simple]),
+    {RL1,RB1} = Simple,
+
     ?m(3, length(RL1)),
     ?m(8*3*3, size(RB1)),
-    {RL2,RB2} = ?m({_,_}, glu:tesselate({0,0,1}, 
-					[{-1,0,0},{1,0,0},{1,1,0},{-1,1,0}])),
+    {RL2,RB2} = ?m({_,_}, glu:tesselate({0.0,0.0,1.0},
+					[{-1.0,0.0,0.0},{0.1,0.0,0.0},{1.0,1.0,0.0},{-1.0,1.0,0.0}])),
     ?m(6, length(RL2)),
-    ?m(8*3*4, size(RB2)),    
-    {RL3,RB3} = ?m({_,_}, glu:tesselate({0,0,1}, 
-					[{-1,0,0},{1,0,0},{1,1,0},
-					 {-1,1,0},{-5,0.5,0}])),
+    ?m(8*3*4, size(RB2)),
+    {RL3,RB3} = ?m({_,_}, glu:tesselate({0.0,0.0,1.0},
+					[{-1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,1.0,0.0},
+					 {-1.0,1.0,0.0},{-5.0,0.5,0.0}])),
     ?m(9, length(RL3)),
     ?m(8*3*5, size(RB3)),
     

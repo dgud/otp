@@ -114,7 +114,7 @@ init([SilentStart]) ->
     erlang:group_leader(whereis(init), self()),
     case catch erlang:system_info(smp_support) of
 	true -> ok;
-	_ -> 
+	_ ->
 	    wxe_util:opt_error_log(SilentStart,
                                    "WX ERROR: SMP emulator required"
                                    " (start with erl -smp)",
@@ -144,6 +144,7 @@ init([SilentStart]) ->
 	    {wx_consts, List} ->
 		true = ets:insert(wx_non_consts, List)
 	end,
+        wxe_util:init_nif(SilentStart),
 	{ok, #state{cb_port=Port, driver=DriverName, users=gb_sets:empty()}}
     catch _:Err ->
 	    error({Err, "Could not initiate graphics"})

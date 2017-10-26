@@ -35,17 +35,18 @@ SO_EXT    = @SO_EXT@
 OBJC_CC=@OBJC_CC@
 OBJC_CFLAGS=@OBJC_CFLAGS@
 
-GENERAL     = wxe_driver wxe_ps_init wxe_main wxe_impl wxe_helpers wxe_callback_impl wxe_return wxe_gl
+GENERAL     = wxe_driver wxe_nif wxe_ps_init wxe_main wxe_impl \
+		wxe_helpers wxe_callback_impl wxe_return wxe_gl
 GENERAL_H   = wxe_callback_impl.h  wxe_driver.h  wxe_events.h  wxe_gl.h \
-	wxe_helpers.h  wxe_impl.h  wxe_memory.h  wxe_return.h
+		wxe_helpers.h  wxe_impl.h  wxe_memory.h  wxe_return.h
 
 GENERATED_F = wxe_funcs wxe_events wxe_init
-GENERATED_H = gen/wxe_macros.h 
+GENERATED_H = gen/wxe_macros.h
 
-GL_H = egl_impl.h gen/glu_finit.h gen/gl_finit.h gen/gl_fdefs.h 
+GL_H = egl_impl.h gen/gl_finit.h gen/gl_fdefs.h
 
 HAVE_OPENGL = true
-OPENGL_F = gl_funcs egl_impl
+OPENGL_F = gl_nif egl_impl
 
 include $(ERL_TOP)/make/target.mk
 include $(ERL_TOP)/make/output.mk

@@ -119,10 +119,11 @@ int wxeFifo::Add(int fc, char * cbuf,int buflen, wxe_data *sd)
   curr->caller = driver_caller(sd->port_handle);
   curr->port   = sd->port;
   curr->op  = fc;
-  curr->len = buflen;
   curr->bin[0].from = 0;
   curr->bin[1].from = 0;
   curr->bin[2].from = 0;
+
+  curr->len = buflen;
 
   if(cbuf) {
     if(buflen > 64)
@@ -147,6 +148,37 @@ int wxeFifo::Add(int fc, char * cbuf,int buflen, wxe_data *sd)
   return m_n;
 }
 
+int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
+                 void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int cast)
+{
+  int i;
+  unsigned int pos;
+  wxeCommand *curr;
+
+  if(m_n == (m_max-1)) { // resize
+    Realloc();
+  }
+
+  pos = (m_first + m_n) % m_max;
+  m_n++;
+
+  curr = &m_q[pos];
+  curr->op  = op;
+  curr->bin[0].from = 0;
+  curr->bin[1].from = 0;
+  curr->bin[2].from = 0;
+
+  curr->len = 8;
+  curr->env = enif_alloc_env();
+  enif_self(env, &curr->pid);
+  for(i=0; i<argc; i++)
+    curr->args[i] = enif_make_copy(curr->env, argv[i]);
+  curr->fptr = fptr;
+
+  if(cast && m_n < 30) return 1; // And not batch end!!
+  return 0;
+}
+
 void wxeFifo::Append(wxeCommand *orig)
 {
   unsigned int pos;
@@ -168,8 +200,13 @@ void wxeFifo::Append(wxeCommand *orig)
   curr->bin[1] = orig->bin[1];
   curr->bin[2] = orig->bin[2];
 
-  if(orig->len > 64)
-    curr->buffer = orig->buffer;
+  if(orig->len > 64 || curr->op > OPENGL_START) {
+    curr->env = orig->env;
+    curr->pid = orig->pid;
+    curr->fptr = orig->fptr;
+    for(int i=0; i < 16; i++)
+      curr->args[i] = orig->args[i];
+  }
   else {
     curr->buffer = curr->c_buf;
     memcpy((void *) curr->buffer, (void *) orig->buffer, orig->len);
