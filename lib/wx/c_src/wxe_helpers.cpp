@@ -66,11 +66,15 @@ wxeFifo::wxeFifo(unsigned int sz)
   for(unsigned int i = 0; i < sz; i++) {
     m_q[i].buffer = NULL;
     m_q[i].op = -1;
+    m_q[i].env = enif_alloc_env();
   }
 }
 
 wxeFifo::~wxeFifo() {
   // dealloc all memory buffers
+  for(unsigned int i=0; i < m_max; i++) {
+    enif_free_env(m_q[i].env);
+  }
   driver_free(m_q);
 }
 
@@ -169,7 +173,6 @@ int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
   curr->bin[2].from = 0;
 
   curr->len = 8;
-  curr->env = enif_alloc_env();
   enif_self(env, &curr->pid);
   for(i=0; i<argc; i++)
     curr->args[i] = enif_make_copy(curr->env, argv[i]);
@@ -183,6 +186,7 @@ void wxeFifo::Append(wxeCommand *orig)
 {
   unsigned int pos;
   wxeCommand *curr;
+  ErlNifEnv *temp;
   if(m_n == (m_max-1)) { // resize
     Realloc();
   }
@@ -200,8 +204,11 @@ void wxeFifo::Append(wxeCommand *orig)
   curr->bin[1] = orig->bin[1];
   curr->bin[2] = orig->bin[2];
 
+  temp = orig->env;
+  orig->env = curr->env;
+  curr->env = temp;
+
   if(orig->len > 64 || curr->op > OPENGL_START) {
-    curr->env = orig->env;
     curr->pid = orig->pid;
     curr->fptr = orig->fptr;
     for(int i=0; i < 16; i++)
@@ -218,7 +225,7 @@ void wxeFifo::Append(wxeCommand *orig)
 
 void wxeFifo::Realloc()
 {
-  unsigned int i;
+  unsigned int i, j;
   unsigned int growth = m_orig_sz / 2;
   unsigned int new_sz = growth + m_max;
   unsigned int max  = m_max;
@@ -234,15 +241,31 @@ void wxeFifo::Realloc()
   m_n=0;
   m_q = queue;
 
+  for(i=0; i < new_sz; i++) {
+    m_q[i].env = NULL;
+  }
   for(i=0; i < n; i++) {
     unsigned int pos = (i+first)%max;
     if(old[pos].op >= 0)
       Append(&old[pos]);
   }
-
+  // Optimize later
+  for(i=0, j=m_n; i < n; i++) {
+    if(old[i].env)
+      m_q[j++].env = old[i].env;
+  }
   for(i = m_n; i < new_sz; i++) { // Reset the rest
     m_q[i].buffer = NULL;
     m_q[i].op = -1;
+    if(!m_q[i].env)
+      m_q[i].env = enif_alloc_env();
+  }
+  for(i=0; i < new_sz; i++) {
+    if(m_q[i].env == NULL) {
+      fprintf(stderr, "i %d \r\n", i);
+      fflush(stderr);
+      abort();
+    }
   }
   // Can not free old queue here it can be used in the wx thread
   m_old = old;

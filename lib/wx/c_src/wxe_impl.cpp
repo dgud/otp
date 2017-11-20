@@ -90,8 +90,9 @@ void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
 
   if(wxe_needs_signal) {
     // wx-thread is waiting on batch end in cond_wait
-    if(!wait) {
-      erl_drv_cond_signal(wxe_batch_locker_c);
+    if(!wait)
+    {
+        erl_drv_cond_signal(wxe_batch_locker_c);
     }
     erl_drv_mutex_unlock(wxe_batch_locker_m);
   } else {

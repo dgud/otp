@@ -79,10 +79,12 @@ void gl_dispatch(wxeCommand *event){
                                enif_make_atom(event->env, "_egl_error_"),
                                enif_make_int(event->env, event->op),
                                enif_make_atom(event->env, "no_gl_context")));
-    enif_free_env(event->env);
+    event->op = -1;
+    enif_clear_env(event->env);
     return ;
   }
+  event->op = -1;
   event->fptr(event->env, &event->pid, event->args);
-  enif_free_env(event->env);
+  enif_clear_env(event->env);
 }
 
