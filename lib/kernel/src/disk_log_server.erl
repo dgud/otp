@@ -227,7 +227,7 @@ do_open({open, W, #arg{name = Name}=A}=Req, From, State) ->
     end.
 
 -spec open_distr_rpc_fun([node()], _, _) -> % XXX: underspecified
-                                fun(() -> no_return()).
+          fun(() -> no_return()).
 
 open_distr_rpc_fun(Nodes, A, From) ->
     fun() -> open_distr_rpc(Nodes, A, From) end.
@@ -291,7 +291,7 @@ check_pending(Name, From, State, Req) ->
     case lists:keysearch(Name, #pending.log, State#state.pending) of
         {value, #pending{log = Name, clients = Clients}=P} ->
             NP = lists:keyreplace(Name, #pending.log, State#state.pending, 
-                               P#pending{clients = Clients++[{Req,From}]}),
+                                  P#pending{clients = Clients++[{Req,From}]}),
             {pending, State#state{pending = NP}};
         false ->
             false

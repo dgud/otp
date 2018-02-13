@@ -156,12 +156,12 @@ send(S, AssocId, Stream, Data) ->
 	{ok,
 	 [{sctp_default_send_param,
 	   #sctp_sndrcvinfo{
-	     flags=Flags, context=Context, ppid=PPID, timetolive=TTL}}]} ->
+              flags=Flags, context=Context, ppid=PPID, timetolive=TTL}}]} ->
 	    prim_inet:sendmsg(
 	      S,
 	      #sctp_sndrcvinfo{
-		flags=Flags, context=Context, ppid=PPID, timetolive=TTL,
-		assoc_id=AssocId, stream=Stream},
+                 flags=Flags, context=Context, ppid=PPID, timetolive=TTL,
+                 assoc_id=AssocId, stream=Stream},
 	      Data);
 	_ ->
 	    prim_inet:sendmsg(

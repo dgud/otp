@@ -44,7 +44,7 @@
 
 %%% Shell callable utility
 fun2ms(ShellFun) when is_function(ShellFun) ->
-    % Check that this is really a shell fun...
+                                                % Check that this is really a shell fun...
     case erl_eval:fun_data(ShellFun) of
         {fun_data,ImportList,Clauses} ->
             case ms_transform:transform_from_shell(
@@ -662,12 +662,12 @@ init(Parent) ->
     Parent ! {self(),started},
     loop({[],[]},[]).
 
-%
-% SurviveLinks = Processes we should take with us while falling, 
-%                but not get killed by if they die (i. e. trace clients 
-%                and relay processes on other nodes)
-%                SurviveLinks = {TraceClients,Relays}
-%
+                                                %
+                                                % SurviveLinks = Processes we should take with us while falling, 
+                                                %                but not get killed by if they die (i. e. trace clients 
+                                                %                and relay processes on other nodes)
+                                                %                SurviveLinks = {TraceClients,Relays}
+                                                %
 loop({C,T}=SurviveLinks, Table) ->
     receive
 	{From,i} ->
@@ -845,7 +845,7 @@ recv_all_traces(Suspended0, Traces, Timeout) ->
 	{'EXIT', _Pid, _Reason} ->
 	    {done, Suspended0, Traces};
 	Other ->
-	    %%% Is this really a good idea?
+%%% Is this really a good idea?
             Modifier = modifier(user),
 	    io:format(user,"** tracer received garbage: ~"++Modifier++"p~n",
                       [Other]),
@@ -999,7 +999,7 @@ dhandler(Trace, Out) when element(1, Trace) == seq_trace,
 				     [TS, Lbl]),
 			   STI;
 		       {seq_trace, Lbl, STI} ->
-			  io:format(Device, "SeqTrace [~p]: ",
+                           io:format(Device, "SeqTrace [~p]: ",
 				     [Lbl]),
 			   STI 
 		   end,
@@ -1171,7 +1171,7 @@ ftup(Trace, Index, Index, Modifier) ->
     io_lib:format("~"++Modifier++"p", [element(Index, Trace)]);
 ftup(Trace, Index, Size, Modifier) ->
     [io_lib:format("~"++Modifier++"p ", [element(Index, Trace)])
-     | ftup(Trace, Index+1, Size, Modifier)].
+    | ftup(Trace, Index+1, Size, Modifier)].
 
 out({_,_}=Out) ->
     Out;
@@ -1269,7 +1269,7 @@ get_tinfo(P, Id, Acc) ->
     case tinfo(P, flags) of
         undefined ->
             Acc;
-		{flags,[]} ->
+        {flags,[]} ->
             Acc;
         {flags,Flags} ->
             [{P,Id,Flags}|Acc]
@@ -1926,7 +1926,7 @@ h(get_tracer) ->
     help_display(
       ["get_tracer() -> {ok, Tracer}",
        " - Returns the process or port to which all trace messages are sent.",
-      "get_tracer(Node) -> {ok, Tracer}",
+       "get_tracer(Node) -> {ok, Tracer}",
        " - Returns the process or port to which all trace messages are sent."]);
 h(stop) ->
     help_display(

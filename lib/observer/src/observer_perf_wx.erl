@@ -43,14 +43,14 @@
 
 -record(state,
 	{
-	  time = #ti{},
-	  active = false,
-	  parent,
-	  samples,        %% Orig data store
-	  wins=[],     %% per window content
-	  panel,
-	  paint,
-	  appmon
+         time = #ti{},
+         active = false,
+         parent,
+         samples,        %% Orig data store
+         wins=[],     %% per window content
+         panel,
+         paint,
+         appmon
 	}).
 
 -define(wxGC, wxGraphicsContext).
@@ -111,20 +111,20 @@ setup_graph_drawing(Panels) ->
     UseGC = haveGC(),
     Version28 = ?wxMAJOR_VERSION =:= 2 andalso ?wxMINOR_VERSION =:= 8,
     {Font, SmallFont}
-	= if UseGC, Version28 ->
-		  %% Def font is really small when using Graphics contexts in 2.8
-		  %% Hardcode it
-		  F = wxFont:new(12,?wxFONTFAMILY_DECORATIVE,?wxFONTSTYLE_NORMAL,?wxFONTWEIGHT_BOLD),
-		  SF = wxFont:new(10, ?wxFONTFAMILY_DECORATIVE, ?wxFONTSTYLE_NORMAL, ?wxFONTWEIGHT_NORMAL),
-		  {F, SF};
-	     true ->
-		  DefFont = wxSystemSettings:getFont(?wxSYS_DEFAULT_GUI_FONT),
-		  DefSize = wxFont:getPointSize(DefFont),
-		  DefFamily = wxFont:getFamily(DefFont),
-		  F = wxFont:new(DefSize-1, DefFamily, ?wxFONTSTYLE_NORMAL, ?wxFONTWEIGHT_BOLD),
-		  SF = wxFont:new(DefSize-2, DefFamily, ?wxFONTSTYLE_NORMAL, ?wxFONTWEIGHT_NORMAL),
-		  {F, SF}
-	  end,
+      = if UseGC, Version28 ->
+                %% Def font is really small when using Graphics contexts in 2.8
+                %% Hardcode it
+                F = wxFont:new(12,?wxFONTFAMILY_DECORATIVE,?wxFONTSTYLE_NORMAL,?wxFONTWEIGHT_BOLD),
+                SF = wxFont:new(10, ?wxFONTFAMILY_DECORATIVE, ?wxFONTSTYLE_NORMAL, ?wxFONTWEIGHT_NORMAL),
+                {F, SF};
+           true ->
+                DefFont = wxSystemSettings:getFont(?wxSYS_DEFAULT_GUI_FONT),
+                DefSize = wxFont:getPointSize(DefFont),
+                DefFamily = wxFont:getFamily(DefFont),
+                F = wxFont:new(DefSize-1, DefFamily, ?wxFONTSTYLE_NORMAL, ?wxFONTWEIGHT_BOLD),
+                SF = wxFont:new(DefSize-2, DefFamily, ?wxFONTSTYLE_NORMAL, ?wxFONTWEIGHT_NORMAL),
+                {F, SF}
+        end,
     BlackPen = wxPen:new({0,0,0}, [{width, 1}]),
     Pens = [wxPen:new(Col, [{width, 1}, {style, ?wxSOLID}])
             || Col <- tuple_to_list(colors())],
@@ -332,7 +332,7 @@ interval_dialog(Parent0, #ti{fetch=Fetch0, secs=Secs0}=Ti) ->
     Parent = observer_lib:get_wx_parent(Parent0),
     Dialog = wxDialog:new(Parent, ?wxID_ANY, "Load Chart Settings",
 			  [{style, ?wxDEFAULT_DIALOG_STYLE bor
-				?wxRESIZE_BORDER}]),
+                                       ?wxRESIZE_BORDER}]),
     {Sl1,FetchSl} = slider(Dialog, "Sample (ms)", trunc(1000 / Fetch0), 100, 10000),
     {Sl2, SecsSl} = slider(Dialog, "Length (min)", Secs0 div 60, 1, 10),
     TopSizer = wxBoxSizer:new(?wxVERTICAL),

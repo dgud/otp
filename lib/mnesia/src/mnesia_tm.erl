@@ -239,7 +239,7 @@ doit_loop(#state{coordinators=Coordinators,participants=Participants,supervisor=
 		    reply(From, {new_tid, Tid, Etab}, S2)
 	    catch error:Reason -> %% system limit
 		    Msg = "Cannot create an ets table for the "
-			"local transaction store",
+                          "local transaction store",
 		    reply(From, {error, {system_limit, Msg, Reason}}, State)
 	    end;
 
@@ -296,7 +296,7 @@ doit_loop(#state{coordinators=Coordinators,participants=Participants,supervisor=
 			    transaction_terminated(Tid),
 			    ?eval_debug_fun({?MODULE,do_commit,post},[{tid,Tid},{pid,nopid}]),
 			    doit_loop(State#state{participants=
-						  gb_trees:delete(Tid,Participants)});
+                                                      gb_trees:delete(Tid,Participants)});
 			Pid when is_pid(Pid) ->
 			    Pid ! {Tid, committed},
 			    ?eval_debug_fun({?MODULE, do_commit, post}, [{tid, Tid}, {pid, Pid}]),
@@ -334,7 +334,7 @@ doit_loop(#state{coordinators=Coordinators,participants=Participants,supervisor=
 			    mnesia_locker:release_tid(Tid),
 			    ?eval_debug_fun({?MODULE, do_abort, post}, [{tid, Tid}, {pid, nopid}]),
 			    doit_loop(State#state{participants=
-						  gb_trees:delete(Tid,Participants)});
+                                                      gb_trees:delete(Tid,Participants)});
 			Pid when is_pid(Pid) ->
 			    Pid ! {Tid, {do_abort, Reason}},
 			    ?eval_debug_fun({?MODULE, do_abort, post},
@@ -351,7 +351,7 @@ doit_loop(#state{coordinators=Coordinators,participants=Participants,supervisor=
 			  State#state{coordinators = A2})
 	    catch error:Reason -> %% system limit
 		    Msg = "Cannot create an ets table for a nested "
-			"local transaction store",
+                          "local transaction store",
 		    reply(From, {error, {system_limit, Msg, Reason}}, State)
 	    end;
 
@@ -385,7 +385,7 @@ doit_loop(#state{coordinators=Coordinators,participants=Participants,supervisor=
 			    erase_ets_tabs(Etabs),
 			    transaction_terminated(Tid),
 			    doit_loop(State#state{coordinators =
-						  gb_trees:delete(Tid,Coordinators)})
+                                                      gb_trees:delete(Tid,Coordinators)})
 		    end;
 		true ->
 		    transaction_terminated(Tid),
@@ -642,10 +642,10 @@ add_coord_store(Coords, Tid, Etab) ->
 del_coord_store(Coords, Tid, Current, Obsolete) ->
     Stores = gb_trees:get(Tid, Coords),
     Rest =
-    	case Stores of
-    	    [Obsolete, Current | Tail] -> Tail;
-    	    [Current, Obsolete | Tail] -> Tail
-    	end,
+        case Stores of
+            [Obsolete, Current | Tail] -> Tail;
+            [Current, Obsolete | Tail] -> Tail
+        end,
     ?ets_delete_table(Obsolete),
     gb_trees:update(Tid, [Current|Rest], Coords).
 
@@ -825,10 +825,10 @@ execute_transaction(Fun, Args, Factor, Retries, Type) ->
     catch throw:Value ->  %% User called throw
 	    Reason = {aborted, {throw, Value}},
 	    return_abort(Fun, Args, Reason);
-	  error:Reason ->
+          error:Reason ->
 	    ST = erlang:get_stacktrace(),
 	    check_exit(Fun, Args, Factor, Retries, {Reason,ST}, Type);
-	  _:Reason ->
+          _:Reason ->
 	    check_exit(Fun, Args, Factor, Retries, Reason, Type)
     end.
 
@@ -1141,7 +1141,7 @@ reverse([]) ->
     [];
 reverse([H=#commit{ram_copies=Ram, disc_copies=DC,
 		   disc_only_copies=DOC, ext=Ext}
-	 |R]) ->
+        |R]) ->
     [
      H#commit{
        ram_copies       = lists:reverse(Ram),
@@ -1149,7 +1149,7 @@ reverse([H=#commit{ram_copies=Ram, disc_copies=DC,
        disc_only_copies = lists:reverse(DOC),
        ext              = [{Type, lists:reverse(E)} || {Type,E} <- Ext]
       }
-     | reverse(R)].
+    | reverse(R)].
 
 prep_recs([N | Nodes], Recs) ->
     prep_recs(Nodes, [#commit{decision = presume_commit, node = N} | Recs]);
@@ -1331,7 +1331,7 @@ prepare_node(Node, Storage, [Item | Items], Rec, Kind) when Kind /= schema ->
 		Rec#commit{disc_copies = [Item | Rec#commit.disc_copies]};
 	    disc_only_copies ->
 		Rec#commit{disc_only_copies =
-			   [Item | Rec#commit.disc_only_copies]};
+                               [Item | Rec#commit.disc_only_copies]};
 	    {ext, Alias, Mod} ->
 		Ext0 = Rec#commit.ext,
 		case lists:keytake(ext_copies, 1, Ext0) of
@@ -1830,7 +1830,7 @@ do_update_op(Tid, Storage, {{Tab, K}, {RecName, Incr}, update_counter}) ->
                 New = {RecName, K, Incr},
                 mnesia_lib:db_put(Storage, Tab, New),
                 {New, []};
-	      error:_ ->
+              error:_ ->
 		Zero = {RecName, K, 0},
 		mnesia_lib:db_put(Storage, Tab, Zero),
 		{Zero, []}
@@ -2135,7 +2135,7 @@ get_info(Timeout) ->
 
 display_info(Stream, {timeout, T}) ->
     io:format(Stream, "---> No info about coordinator and participant transactions, "
-	      "timeout ~p <--- ~n", [T]);
+                      "timeout ~p <--- ~n", [T]);
 
 display_info(Stream, {info, Part, Coord}) ->
     io:format(Stream, "---> Participant transactions <--- ~n", []),

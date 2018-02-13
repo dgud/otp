@@ -96,7 +96,7 @@ sys_info() ->
      {ets_limit,  erlang:system_info(ets_limit)},
      {ets_count, length(ets:all())},
      {dist_buf_busy_limit, erlang:system_info(dist_buf_busy_limit)}
-     | MemInfo].
+    | MemInfo].
 
 alloc_info() ->
     AlcuAllocs = erlang:system_info(alloc_util_allocators),
@@ -154,7 +154,7 @@ get_port_list() ->
     [begin
 	 [{port_id,P}|erlang:port_info(P)] ++
              port_info(P,ExtraItems) ++
-             inet_port_extra(erlang:port_info(P, name), P)
+                 inet_port_extra(erlang:port_info(P, name), P)
      end || P <- erlang:ports()].
 
 port_info(P,[Item|Items]) ->
@@ -223,8 +223,8 @@ get_table_list(ets, Opts) ->
 		       ignore(HideSys andalso ordsets:is_element(RegName, sys_processes()), system_tab),
 		       ignore(HideSys andalso ordsets:is_element(Name, sys_tables()), system_tab),
 		       ignore((RegName == mnesia_monitor)
-			      andalso Name /= schema
-			      andalso is_atom((catch mnesia:table_info(Name, where_to_read))), mnesia_tab),
+                                  andalso Name /= schema
+                                  andalso is_atom((catch mnesia:table_info(Name, where_to_read))), mnesia_tab),
 		       Memory = ets:info(Id, memory) * erlang:system_info(wordsize),
 		       Tab = [{name,Name},
 			      {id,TabId},
@@ -479,7 +479,7 @@ ttb_meta_tracer_loop(MetaFile,PI,Acc,State) ->
 			    Acc),
 	    ttb_meta_tracer_loop(MetaFile,PI,NewAcc,State);
 	{trace_ts,CallingPid,call,{erlang,Spawn,[M,F,Args]},_} 
-	when Spawn==spawn;Spawn==spawn_link ->
+          when Spawn==spawn;Spawn==spawn_link ->
 	    MFA = {M,F,length(Args)},
 	    NewAcc = dict:update(CallingPid,
 				 fun(Old) -> [MFA|Old] end, [MFA], 
@@ -487,7 +487,7 @@ ttb_meta_tracer_loop(MetaFile,PI,Acc,State) ->
 	    ttb_meta_tracer_loop(MetaFile,PI,NewAcc,State);
 
 	{trace_ts,CallingPid,return_from,{erlang,Spawn,_Arity},NewPid,_} 
-	when Spawn==spawn;Spawn==spawn_link ->
+          when Spawn==spawn;Spawn==spawn_link ->
 	    NewAcc = 
 		dict:update(CallingPid,
 			    fun([H|T]) -> 
@@ -521,11 +521,11 @@ ttb_meta_tracer_loop(MetaFile,PI,Acc,State) ->
                     erlang:send_after(Ms, self(), overload_check),
                     ttb_meta_tracer_loop(MetaFile,PI,Acc, State)
             end;
-     {'DOWN', _, _, _, _} ->
+        {'DOWN', _, _, _, _} ->
             _ = stop_seq_trace(),
             self() ! stop,
             ttb_meta_tracer_loop(MetaFile,PI,Acc, State);
-     stop when PI=:=true ->
+        stop when PI=:=true ->
             try_stop_resume(State),
             try_stop_overload_check(State),
             erlang:trace_pattern({erlang,spawn,3},false,[meta]),
@@ -632,7 +632,7 @@ ttb_make_binary(Term) ->
 	    %% size field
 	    SB = term_to_binary({'$size',SizeB}),
 	    <<(byte_size(SB)):8, SB/binary, B/binary>>;
-        true ->
+       true ->
 	    <<SizeB:8, B/binary>>
     end.
 

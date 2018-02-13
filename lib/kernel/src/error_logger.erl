@@ -299,13 +299,13 @@ simple_logger() ->
 -type open_error() :: file:posix() | badarg | system_limit.
 
 -spec logfile(Request :: {open, Filename}) -> ok | {error, OpenReason} when
-                  Filename ::file:name(),
-                  OpenReason :: allready_have_logfile | open_error()
+      Filename ::file:name(),
+      OpenReason :: allready_have_logfile | open_error()
            ; (Request :: close) -> ok | {error, CloseReason} when
-                  CloseReason :: module_not_found
+      CloseReason :: module_not_found
 	   ; (Request :: filename) -> Filename | {error, FilenameReason} when
-                  Filename :: file:name(),
-                  FilenameReason :: no_log_file.
+      Filename :: file:name(),
+      FilenameReason :: no_log_file.
 
 logfile({open, File}) ->
     case lists:member(error_logger_file_h,

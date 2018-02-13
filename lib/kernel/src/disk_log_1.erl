@@ -90,7 +90,7 @@ logl([X | T], Bs, Size) ->
               false ->
                   MD5 = erlang:md5(BSz),
                   [Bs, BSz, ?BIGMAGICHEAD, MD5 | X]
-              end,
+          end,
     logl(T, NBs, Size + ?HEADERSZ + Sz);
 logl([], Bs, Size) ->
     {Bs, Size}.
@@ -158,7 +158,7 @@ do_handle_chunk(FdC, FileName, Pos, B, N) ->
 handle_chunk(B, Pos, 0, Ack) when byte_size(B) >= ?HEADERSZ ->
     {#continuation{pos = Pos, b = B}, Ack};
 handle_chunk(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8, 
-             Tail/binary>>, Pos, N, Ack) when Size < ?MIN_MD5_TERM ->
+                  Tail/binary>>, Pos, N, Ack) when Size < ?MIN_MD5_TERM ->
     case Tail of
 	<<BinTerm:Size/binary, Tail2/binary>> ->
 	    %% The client calls binary_to_term/1.
@@ -168,7 +168,7 @@ handle_chunk(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8,
             {#continuation{pos = Pos - byte_size(B), b = BytesToRead}, Ack}
     end;
 handle_chunk(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8, 
-             Tail/binary>>, Pos, _N, Ack) -> % when Size >= ?MIN_MD5_TERM
+                  Tail/binary>>, Pos, _N, Ack) -> % when Size >= ?MIN_MD5_TERM
     MD5 = erlang:md5(<<Size:?SIZESZ/unit:8>>),
     case Tail of
         %% The requested object is always bigger than a chunk.
@@ -254,7 +254,7 @@ do_handle_chunk_ro(FdC, FileName, Pos, B, N) ->
 handle_chunk_ro(B, Pos, 0, Ack, Bad) when byte_size(B) >= ?HEADERSZ ->
     {#continuation{pos = Pos, b = B}, Ack, Bad};
 handle_chunk_ro(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8,
-                Tail/binary>>, Pos, N, Ack, Bad) when Size < ?MIN_MD5_TERM ->
+                     Tail/binary>>, Pos, N, Ack, Bad) when Size < ?MIN_MD5_TERM ->
     case Tail of
 	<<BinTerm:Size/binary, Tail2/binary>> ->
 	    handle_chunk_ro(Tail2, Pos, N-1, [BinTerm | Ack], Bad);
@@ -263,7 +263,7 @@ handle_chunk_ro(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8,
             {#continuation{pos = Pos - byte_size(B), b = BytesToRead}, Ack, Bad}
     end;
 handle_chunk_ro(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8, 
-                Tail/binary>>, Pos, N, Ack, Bad) -> % when Size>=?MIN_MD5_TERM
+                     Tail/binary>>, Pos, N, Ack, Bad) -> % when Size>=?MIN_MD5_TERM
     MD5 = erlang:md5(<<Size:?SIZESZ/unit:8>>),
     case Tail of
         <<MD5:16/binary, Bin:Size/binary>> ->
@@ -278,7 +278,7 @@ handle_chunk_ro(B= <<Size:?SIZESZ/unit:8, ?BIGMAGICINT:?MAGICSZ/unit:8,
             {#continuation{pos = Pos - byte_size(B), b = []}, Ack, Bad}
     end;
 handle_chunk_ro(B= <<Size:?SIZESZ/unit:8, ?MAGICINT:?MAGICSZ/unit:8,
-                Tail/binary>>, Pos, N, Ack, Bad) ->
+                     Tail/binary>>, Pos, N, Ack, Bad) ->
     %% Version 2, before 2(a).
     case Tail of
 	<<BinTerm:Size/binary, Tail2/binary>> ->
@@ -658,9 +658,9 @@ mf_int_open(FName, MaxB, MaxF, Repair, Mode, Head, Version) ->
 	      end,
     case int_file_open(FName, First, 0, 0, Head, Repair, Mode) of
 	{ok, FdC, FileName, Lost, {NoItems, NoBytes}, FSz} ->
-	    % firstPos = NoBytes is not always correct when the file
-	    % existed, but it will have to do since we don't know
-	    % where the header ends.
+                                                % firstPos = NoBytes is not always correct when the file
+                                                % existed, but it will have to do since we don't know
+                                                % where the header ends.
 	    CurCnt = Sz + NoItems - Lost,
 	    {ok, #handle{filename = FName, maxB = MaxB,
 			 maxF = NewMaxF, curF = First, cur_fdc = FdC,
@@ -765,7 +765,7 @@ mf_int_chunk(Handle, 0, Bin, N) ->
     FirstF = find_first_file(Handle),
     mf_int_chunk(Handle, {FirstF, 0}, Bin, N);
 mf_int_chunk(#handle{curF = FileNo, cur_fdc = FdC, cur_name = FileName} 
-             = Handle, {FileNo, Pos}, Bin, N) ->
+               = Handle, {FileNo, Pos}, Bin, N) ->
     {NewFdC, Reply} = chunk(FdC, FileName, Pos, Bin, N),
     {Handle#handle{cur_fdc = NewFdC}, conv(Reply, FileNo)};
 mf_int_chunk(Handle, {FileNo, Pos}, Bin, N) ->
@@ -796,7 +796,7 @@ mf_int_chunk_read_only(Handle, 0, Bin, N) ->
     FirstF = find_first_file(Handle),
     mf_int_chunk_read_only(Handle, {FirstF, 0}, Bin, N);
 mf_int_chunk_read_only(#handle{curF = FileNo, cur_fdc = FdC, cur_name=FileName}
-                       = Handle, {FileNo, Pos}, Bin, N) ->
+                         = Handle, {FileNo, Pos}, Bin, N) ->
     {NewFdC, Reply} = do_chunk_read_only(FdC, FileName, Pos, Bin, N),
     {Handle#handle{cur_fdc = NewFdC}, conv(Reply, FileNo)};
 mf_int_chunk_read_only(Handle, {FileNo, Pos}, Bin, N) ->
@@ -1053,11 +1053,11 @@ read_index_file(FName) ->
 	{ok, Fd} ->
 	    R = case file:read(Fd, ?MAX_CHUNK_SIZE) of
 		    {ok, <<0, 0:32, Version, CurF:32, Tail/binary>>}
-		             when Version =:= ?VERSION, 
-				  0 < CurF, CurF < ?MAX_FILES -> 
+                      when Version =:= ?VERSION, 
+                           0 < CurF, CurF < ?MAX_FILES -> 
 			parse_index(CurF, Version, 1, Tail, Fd, 0, 0, 0);
 		    {ok, <<0, CurF:32, Tail/binary>>} 
-		             when 0 < CurF, CurF < ?MAX_FILES -> 
+                      when 0 < CurF, CurF < ?MAX_FILES -> 
 			parse_index(CurF, 1, 1, Tail, Fd, 0, 0, 0);
 		    {ok, <<CurF, Tail/binary>>} when 0 < CurF -> 
 			parse_index(CurF, 1, 1, Tail, Fd, 0, 0, 0);
@@ -1071,16 +1071,16 @@ read_index_file(FName) ->
     end.
 
 parse_index(CurF, V, CurF, <<CurSz:64, Tail/binary>>, Fd, _, TotSz, NFiles)
-          when V =:= ?VERSION ->
+  when V =:= ?VERSION ->
     parse_index(CurF, V, CurF+1, Tail, Fd, CurSz, TotSz, NFiles+1);
 parse_index(CurF, V, N, <<Sz:64, Tail/binary>>, Fd, CurSz, TotSz, NFiles)
-          when V =:= ?VERSION ->
+  when V =:= ?VERSION ->
     parse_index(CurF, V, N+1, Tail, Fd, CurSz, TotSz + Sz, NFiles+1);
 parse_index(CurF, V, CurF, <<CurSz:32, Tail/binary>>, Fd, _, TotSz, NFiles)
-          when V < ?VERSION ->
+  when V < ?VERSION ->
     parse_index(CurF, V, CurF+1, Tail, Fd, CurSz, TotSz, NFiles+1);
 parse_index(CurF, V, N, <<Sz:32, Tail/binary>>, Fd, CurSz, TotSz, NFiles)
-          when V < ?VERSION ->
+  when V < ?VERSION ->
     parse_index(CurF, V, N+1, Tail, Fd, CurSz, TotSz + Sz, NFiles+1);
 parse_index(CurF, V, N, B, Fd, CurSz, TotSz, NFiles) ->
     case file:read(Fd, ?MAX_CHUNK_SIZE) of
@@ -1295,8 +1295,8 @@ ext_split_bins(MaxBs, IsFirst, First, [X | Last], Bs, N) ->
         NBs =< MaxBs ->
 	    ext_split_bins(MaxBs, IsFirst, [First | X], Last, NBs, N+1);
 	IsFirst, First =:= [] ->
-            % To avoid infinite loop - we allow the file to be
-   	    % too big if it's just one item on the file.
+                                                % To avoid infinite loop - we allow the file to be
+                                                % too big if it's just one item on the file.
 	    {[X], Last, NBs, N+1}; 
 	true ->
 	    {First, [X | Last], Bs, N}
@@ -1325,8 +1325,8 @@ int_split_bins(MaxBs, IsFirst, First, [X | Last], Bs, N) ->
         NBs =< MaxBs ->
 	    int_split_bins(MaxBs, IsFirst, [First | XB], Last, NBs, N+1);
 	IsFirst, First =:= [] ->
-            % To avoid infinite loop - we allow the file to be
-   	    % too big if it's just one item on the file.
+                                                % To avoid infinite loop - we allow the file to be
+                                                % too big if it's just one item on the file.
 	    {[XB], Last, NBs, N+1}; 
 	true ->
 	    {First, [X | Last], Bs, N}

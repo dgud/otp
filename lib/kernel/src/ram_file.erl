@@ -110,15 +110,15 @@
 
 open(Data, ModeList) when is_list(ModeList) ->
     case open_mode(ModeList) of
-  	{Mode,Opts} when is_integer(Mode) ->
-  	    case ll_open(Data, Mode, Opts) of
-  		{ok,Port} ->
-  		    {ok,#file_descriptor{module=?MODULE, data=Port}};
-  		Error ->
-  		    Error
- 	    end;
- 	{error,_}=Error ->
-  	    Error
+        {Mode,Opts} when is_integer(Mode) ->
+            case ll_open(Data, Mode, Opts) of
+                {ok,Port} ->
+                    {ok,#file_descriptor{module=?MODULE, data=Port}};
+                Error ->
+                    Error
+            end;
+        {error,_}=Error ->
+            Error
     end;
 %% Old obsolete mode specification
 open(Data, Mode) ->
@@ -215,7 +215,7 @@ pread_1(Port, [{At, Sz} | T], Cs)
 	    {error, einval}
     end;
 pread_1(_, _, _243) ->
-   {error, badarg}.
+    {error, badarg}.
 
 pread_2(_Port, [], R) ->
     {ok, lists:reverse(R)};
@@ -365,23 +365,23 @@ uudecode(#file_descriptor{}) ->
     {error, enotsup}.
 
 advise(#file_descriptor{module = ?MODULE, data = Port}, Offset,
-        Length, Advise) ->
+       Length, Advise) ->
     Cmd0 = <<?RAM_FILE_ADVISE, Offset:64/signed, Length:64/signed>>,
     case Advise of
-    normal ->
-        call_port(Port, <<Cmd0/binary, ?POSIX_FADV_NORMAL:32/signed>>);
-    random ->
-        call_port(Port, <<Cmd0/binary, ?POSIX_FADV_RANDOM:32/signed>>);
-    sequential ->
-        call_port(Port, <<Cmd0/binary, ?POSIX_FADV_SEQUENTIAL:32/signed>>);
-    will_need ->
-        call_port(Port, <<Cmd0/binary, ?POSIX_FADV_WILLNEED:32/signed>>);
-    dont_need ->
-        call_port(Port, <<Cmd0/binary, ?POSIX_FADV_DONTNEED:32/signed>>);
-    no_reuse ->
-        call_port(Port, <<Cmd0/binary, ?POSIX_FADV_NOREUSE:32/signed>>);
-    _ ->
-        {error, einval}
+        normal ->
+            call_port(Port, <<Cmd0/binary, ?POSIX_FADV_NORMAL:32/signed>>);
+        random ->
+            call_port(Port, <<Cmd0/binary, ?POSIX_FADV_RANDOM:32/signed>>);
+        sequential ->
+            call_port(Port, <<Cmd0/binary, ?POSIX_FADV_SEQUENTIAL:32/signed>>);
+        will_need ->
+            call_port(Port, <<Cmd0/binary, ?POSIX_FADV_WILLNEED:32/signed>>);
+        dont_need ->
+            call_port(Port, <<Cmd0/binary, ?POSIX_FADV_DONTNEED:32/signed>>);
+        no_reuse ->
+            call_port(Port, <<Cmd0/binary, ?POSIX_FADV_NOREUSE:32/signed>>);
+        _ ->
+            {error, einval}
     end;
 advise(#file_descriptor{}, _Offset, _Length, _Advise) ->
     {error, enotsup}.

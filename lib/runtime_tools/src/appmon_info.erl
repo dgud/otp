@@ -471,7 +471,7 @@ get_pid(P) when is_port(P) -> P;
 get_pid(X) when is_tuple(X) -> element(2, X).
 
 
-%----------------------------------------------------------------------
+                                                %----------------------------------------------------------------------
 %%---------------------------------------------------------------------
 %% Handling process trees of processses that are linked to each other
 
@@ -629,7 +629,7 @@ check_sasl_ancestor(Paren, C) ->
     end.
 
 
-%----------------------------------------------------------------------
+                                                %----------------------------------------------------------------------
 %%---------------------------------------------------------------------
 %% Primitives for the database DB of all links, processes and the
 %% queue of not visited yet processes.
@@ -685,10 +685,10 @@ cmp_groupl(_, _) -> false.
 %% Do some intelligent guessing as to cut in the tree
 find_avoid() ->
     lists:foldr(fun(X, Accu) -> 
-		       case whereis(X) of
-			   P when is_pid(P) ->
-			       [P|Accu];
-			   _ -> Accu end end,
+                        case whereis(X) of
+                            P when is_pid(P) ->
+                                [P|Accu];
+                            _ -> Accu end end,
 		[undefined],
 		[application_controller, init, error_logger, gs, 
 		 node_serv, appmon, appmon_a, appmon_info]).
@@ -810,10 +810,10 @@ load(Opts) ->
 	    case get_opt(load_scale, Opts) of
 		linear ->
 		    erlang:min(trunc(load_range()*(Td/Tot+Q/6)),
-			load_range());
+                               load_range());
 		prog ->
 		    erlang:min(trunc(load_range()*prog(Td/Tot+Q/6)),
-			load_range())
+                               load_range())
 	    end;
 	queue ->
 	    case get_opt(load_scale, Opts) of
@@ -821,7 +821,7 @@ load(Opts) ->
 		    erlang:min(trunc(load_range()*Q/6), load_range());
 		prog ->
 		    erlang:min(trunc(load_range()*prog(Q/6)), load_range())
-		end
+            end
     end.
 
 

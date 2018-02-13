@@ -561,15 +561,15 @@ calc_growth_segments(Conf, AlcList0) ->
 				Segs = ?SMALL_GROWTH_SEGS,
 				SegSize = calc_seg_size(Growth, Segs),
 				{Alc#alloc{segments
-					   = #segment{size = SegSize,
-						      number = Segs}},
+                                             = #segment{size = SegSize,
+                                                        number = Segs}},
 				 {SL - Segs, AL}}
 
 			end;
 		    (Alc, Acc) -> {Alc, Acc}
 		end,
     {AlcList1, {SegsLeft, AllocsLeft}}
-	= lists:mapfoldl(CalcSmall, {Conf#conf.segments, 0}, AlcList0),
+      = lists:mapfoldl(CalcSmall, {Conf#conf.segments, 0}, AlcList0),
     case AllocsLeft of
 	0 ->
 	    AlcList1;
@@ -593,8 +593,8 @@ calc_growth_segments(Conf, AlcList0) ->
 				SegSize = calc_seg_size(Growth,
 							SegsPerAlloc),
 				Alc#alloc{segments
-					  = #segment{size = SegSize,
-						     number = SegsPerAlloc}};
+                                            = #segment{size = SegSize,
+                                                       number = SegsPerAlloc}};
 			    (Alc) ->
 				Alc
 			end,

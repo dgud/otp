@@ -196,7 +196,7 @@ io_request({put_chars,unicode,Chars}, Port, Q) -> % Binary new in R9C
         error ->
             {error,{error,put_chars},Q};
         Bin ->
-           put_chars(Bin, Port, Q)
+            put_chars(Bin, Port, Q)
     end;
 io_request({put_chars,unicode,Mod,Func,Args}, Port, Q) ->
     case catch apply(Mod,Func,Args) of
@@ -433,10 +433,10 @@ get_line_bytes(Prompt, Port, Q, Acc, Bytes, Enc) ->
     end.
 is_cr_at(Pos,Bin) ->
     case Bin of
-  	<<_:Pos/binary,$\r,_/binary>> ->
-  	    true;
-  	_ ->
-  	    false
+        <<_:Pos/binary,$\r,_/binary>> ->
+            true;
+        _ ->
+            false
     end.
 srch(<<>>,_,_) ->
     nomatch;
@@ -450,12 +450,12 @@ get_line_doit(Prompt, Port, Q, Accu, Enc) ->
 	true ->
 	    case get(eof) of
 		true ->
-		   case Accu of
-		       [] ->
-			   {ok,eof,Q};
-		       _ ->
-			   {ok,binrev(Accu,[]),Q}
-		   end;
+                    case Accu of
+                        [] ->
+                            {ok,eof,Q};
+                        _ ->
+                            {ok,binrev(Accu,[]),Q}
+                    end;
 		_ ->
 		    get_line(Prompt, Port, Q, Accu, Enc)
 	    end;
@@ -482,12 +482,12 @@ get_line_doit(Prompt, Port, Q, Accu, Enc) ->
 				case is_cr_at(Pos - 1,Bin) of
 				    false ->
 					<<H:PosPlus/binary,
-					 T/binary>> = Bin,
+                                          T/binary>> = Bin,
 					{H,T};
 				    true ->
 					PosMinus = Pos - 1,
 					<<H:PosMinus/binary,
-					 _,_,T/binary>> = Bin,
+                                          _,_,T/binary>> = Bin,
 					{binrev([],[H,$\n]),T}
 				end,
 			    case Tail of
@@ -512,12 +512,12 @@ get_line_doit(Prompt, Port, Q, Accu, Enc) ->
 				case is_cr_at(Pos - 1,Bin) of
 				    false ->
 					<<H:PosPlus/binary,
-					 T/binary>> = Bin,
+                                          T/binary>> = Bin,
 					{H,T};
 				    true ->
 					PosMinus = Pos - 1,
 					<<H:PosMinus/binary,
-					 _,_,T/binary>> = Bin,
+                                          _,_,T/binary>> = Bin,
 					{[H,$\n],T}
 				end,
 			    case Tail of

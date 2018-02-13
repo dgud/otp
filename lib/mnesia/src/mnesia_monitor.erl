@@ -90,7 +90,7 @@
 start() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE,
 			  [self()], [{timeout, infinity}
-				     %% ,{debug, [trace]}
+                                    %% ,{debug, [trace]}
 				    ]).
 
 init() ->
@@ -314,8 +314,8 @@ use_dir() ->
 %% important files
 non_empty_dir() ->
     mnesia_lib:exists(mnesia_bup:fallback_bup()) or
-    mnesia_lib:exists(mnesia_lib:tab2dmp(schema)) or
-    mnesia_lib:exists(mnesia_lib:tab2dat(schema)).
+        mnesia_lib:exists(mnesia_lib:tab2dmp(schema)) or
+        mnesia_lib:exists(mnesia_lib:tab2dat(schema)).
 
 %%----------------------------------------------------------------------
 %% Func: handle_call/3
@@ -386,7 +386,7 @@ handle_call({reopen_log, Name, Fname, Head}, _From, State) ->
 	    Msg = "Cannot rename disk_log file",
             Error = {error, {Msg, Name, Fname, Head, Reason}},
 	    fatal("~tp~n", [Error]),
- 	    {noreply, State}
+            {noreply, State}
     end;
 
 handle_call({sync_log, Name}, _From, State) ->

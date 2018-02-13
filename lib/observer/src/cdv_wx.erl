@@ -257,7 +257,7 @@ handle_event(#wx{id = ?wxID_OPEN,
 		State#state{file=File};
 	    error ->
 		State
-    end,
+        end,
     {noreply,NewState};
 
 handle_event(#wx{id = ?wxID_EXIT,
@@ -444,7 +444,7 @@ do_load_dump(Frame,FileName) ->
 
 maybe_warn_filename(FileName) ->
     case os:getenv("ERL_CRASH_DUMP_SECONDS")=="0" orelse
-        os:getenv("ERL_CRASH_DUMP_BYTES")=="0" of
+         os:getenv("ERL_CRASH_DUMP_BYTES")=="0" of
         true ->
             continue;
         false ->

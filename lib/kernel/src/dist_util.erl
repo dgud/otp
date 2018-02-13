@@ -60,7 +60,7 @@
 
 -define(i16(X1,X0),
         (?u16(X1,X0) - 
-         (if (X1) > 127 -> 16#10000; true -> 0 end))).
+             (if (X1) > 127 -> 16#10000; true -> 0 end))).
 
 -define(u16(X1,X0),
         (((X1) bsl 8) bor (X0))).
@@ -72,7 +72,7 @@
 	       write = 0,
 	       tick = 0,
 	       ticked = 0
-	       }).
+              }).
 
 dflag2str(?DFLAG_PUBLISHED) ->
     "PUBLISHED";
@@ -505,8 +505,8 @@ gen_challenge() ->
     %% A(8) B(16) C(16)
     %% D(16),E(8), F(16) G(8) H(16)
     ( ((A bsl 24) + (E bsl 16) + (G bsl 8) + F) bxor
-      (B + (C bsl 16)) bxor 
-      (D + (H bsl 16)) ) band 16#ffffffff.
+          (B + (C bsl 16)) bxor 
+          (D + (H bsl 16)) ) band 16#ffffffff.
 
 %%
 %% Get the cookies for a node from auth
@@ -515,10 +515,10 @@ get_cookies(Node) ->
     case auth:get_cookie(Node) of
 	X when is_atom(X) ->
 	    {X,X}
-%	{Y,Z} when is_atom(Y), is_atom(Z) ->
-%	    {Y,Z};
-%	_ ->
-%	    erlang:error("Corrupt cookie database")
+                                                %	{Y,Z} when is_atom(Y), is_atom(Z) ->
+                                                %	    {Y,Z};
+                                                %	_ ->
+                                                %	    erlang:error("Corrupt cookie database")
     end.    
 
 %% No error return; either succeeds or terminates the process.
@@ -561,11 +561,11 @@ mark_nodeup(#hs_data{kernel_pid = Kernel,
 	    ok;
 	{Kernel, bad_request} ->
 	    TypeT = case OtherStarted of
-		       true ->
-			   "accepting connection";
-		       _ ->
-			   "initiating connection"
-		   end,
+                        true ->
+                            "accepting connection";
+                        _ ->
+                            "initiating connection"
+                    end,
 	    error_msg("Fatal: ~p was not allowed to "
 		      "send {nodeup, ~p} to kernel when ~s~n",
 		      [self(), Node, TypeT]),
@@ -599,10 +599,10 @@ con_loop({Kernel, Node, Socket, Type, DHandle, MFTick, MFGetstat,
 		{ok, NewTick} ->
 		    con_loop(ConData, NewTick);
 		{error, not_responding} ->
- 		    error_msg("** Node ~p not responding **~n"
- 			      "** Removing (timedout) connection **~n",
- 			      [Node]),
- 		    ?shutdown2(Node, net_tick_timeout);
+                    error_msg("** Node ~p not responding **~n"
+                              "** Removing (timedout) connection **~n",
+                              [Node]),
+                    ?shutdown2(Node, net_tick_timeout);
 		_Other ->
 		    ?shutdown2(Node, send_net_tick_failed)
 	    end;
@@ -804,13 +804,13 @@ recv_status(#hs_data{kernel_pid = Kernel, socket = Socket,
 	    end;
 	Error ->
 	    ?debug({dist_util,self(),recv_status_error, 
-		Node, Error}),
+                    Node, Error}),
 	    ?shutdown2(Node, {recv_status_failed, Error})
     end.
 
 
 send_status(#hs_data{socket = Socket, other_node = Node,
-		    f_send = FSend}, Stat) ->
+                     f_send = FSend}, Stat) ->
     ?debug({dist_util,self(),send_status, Node, Stat}),
     case FSend(Socket, [$s | atom_to_list(Stat)]) of
 	{error, _} ->

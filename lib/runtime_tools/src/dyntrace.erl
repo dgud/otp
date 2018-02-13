@@ -128,10 +128,10 @@ user_trace_s1(_Message) ->
 
 -spec user_trace_i4s4(binary() | undefined,
                       integer_maybe(), integer_maybe(),
-                          integer_maybe(), integer_maybe(),
+                      integer_maybe(), integer_maybe(),
                       iolist_maybe(), iolist_maybe(),
-                          iolist_maybe(), iolist_maybe()) ->
-      true | false | error | badarg.
+                      iolist_maybe(), iolist_maybe()) ->
+          true | false | error | badarg.
 
 user_trace_i4s4(_, _, _, _, _, _, _, _, _) ->
     erlang:nif_error(nif_not_loaded).
@@ -141,7 +141,7 @@ user_trace_i4s4(_, _, _, _, _, _, _, _, _) ->
                    integer_maybe(), integer_maybe(),
                    iolist_maybe(), iolist_maybe(),
                    iolist_maybe(), iolist_maybe()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 user_trace_n(_, _, _, _, _, _, _, _, _, _) ->
     erlang:nif_error(nif_not_loaded).
@@ -237,7 +237,7 @@ p(S1, S2, S3) ->
     user_trace_int(undef, undef, undef, undef, S1, S2, S3, undef).
 
 -spec p(probe_arg(), probe_arg(), probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 p(I1, I2, I3, I4) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_int(I1, I2, I3, I4, undef, undef, undef, undef);
@@ -252,7 +252,7 @@ p(S1, S2, S3, S4) ->
 
 -spec p(probe_arg(), probe_arg(), probe_arg(), probe_arg(),
         probe_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 p(I1, I2, I3, I4, S1) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_int(I1, I2, I3, I4, S1, undef, undef, undef);
@@ -265,7 +265,7 @@ p(I1, S1, S2, S3, S4) when is_integer(I1) ->
 
 -spec p(probe_arg(), probe_arg(), probe_arg(), probe_arg(),
         probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 p(I1, I2, I3, I4, S1, S2) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_int(I1, I2, I3, I4, S1, S2, undef, undef);
@@ -276,7 +276,7 @@ p(I1, I2, S1, S2, S3, S4) when is_integer(I1), is_integer(I2) ->
 
 -spec p(probe_arg(), probe_arg(), probe_arg(), probe_arg(),
         probe_arg(), probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 p(I1, I2, I3, I4, S1, S2, S3) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_int(I1, I2, I3, I4, S1, S2, S3, undef);
@@ -285,14 +285,14 @@ p(I1, I2, I3, S1, S2, S3, S4) when is_integer(I1), is_integer(I2), is_integer(I3
 
 -spec p(probe_arg(), probe_arg(), probe_arg(), probe_arg(),
         probe_arg(), probe_arg(), probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 p(I1, I2, I3, I4, S1, S2, S3, S4) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_int(I1, I2, I3, I4, S1, S2, S3, S4).
 
 -spec user_trace_int(int_p_arg(), int_p_arg(), int_p_arg(), int_p_arg(),
                      int_p_arg(), int_p_arg(), int_p_arg(), int_p_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 user_trace_int(I1, I2, I3, I4, S1, S2, S3, S4) ->
     UTag = get_tag(),
@@ -336,7 +336,7 @@ pn(ProbeLabel, S1, S2, S3) ->
     user_trace_n_int(ProbeLabel, undef, undef, undef, undef, S1, S2, S3, undef).
 
 -spec pn(n_probe_label(), probe_arg(), probe_arg(), probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 pn(ProbeLabel, I1, I2, I3, I4) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_n_int(ProbeLabel, I1, I2, I3, I4, undef, undef, undef, undef);
@@ -350,8 +350,8 @@ pn(ProbeLabel, S1, S2, S3, S4) ->
     user_trace_n_int(ProbeLabel, undef, undef, undef, undef, S1, S2, S3, S4).
 
 -spec pn(n_probe_label(), probe_arg(), probe_arg(), probe_arg(), probe_arg(),
-        probe_arg()) ->
-      true | false | error | badarg.
+         probe_arg()) ->
+          true | false | error | badarg.
 
 pn(ProbeLabel, I1, I2, I3, I4, S1) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_n_int(ProbeLabel, I1, I2, I3, I4, S1, undef, undef, undef);
@@ -363,8 +363,8 @@ pn(ProbeLabel, I1, S1, S2, S3, S4) when is_integer(I1) ->
     user_trace_n_int(ProbeLabel, I1, undef, undef, undef, S1, S2, S3, S4).
 
 -spec pn(n_probe_label(), probe_arg(), probe_arg(), probe_arg(), probe_arg(),
-        probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+         probe_arg(), probe_arg()) ->
+          true | false | error | badarg.
 
 pn(ProbeLabel, I1, I2, I3, I4, S1, S2) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_n_int(ProbeLabel, I1, I2, I3, I4, S1, S2, undef, undef);
@@ -374,8 +374,8 @@ pn(ProbeLabel, I1, I2, S1, S2, S3, S4) when is_integer(I1), is_integer(I2) ->
     user_trace_n_int(ProbeLabel, I1, I2, undef, undef, S1, S2, S3, S4).
 
 -spec pn(n_probe_label(), probe_arg(), probe_arg(), probe_arg(), probe_arg(),
-        probe_arg(), probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+         probe_arg(), probe_arg(), probe_arg()) ->
+          true | false | error | badarg.
 
 pn(ProbeLabel, I1, I2, I3, I4, S1, S2, S3) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_n_int(ProbeLabel, I1, I2, I3, I4, S1, S2, S3, undef);
@@ -383,8 +383,8 @@ pn(ProbeLabel, I1, I2, I3, S1, S2, S3, S4) when is_integer(I1), is_integer(I2), 
     user_trace_n_int(ProbeLabel, I1, I2, I3, undef, S1, S2, S3, S4).
 
 -spec pn(n_probe_label(), probe_arg(), probe_arg(), probe_arg(), probe_arg(),
-        probe_arg(), probe_arg(), probe_arg(), probe_arg()) ->
-      true | false | error | badarg.
+         probe_arg(), probe_arg(), probe_arg(), probe_arg()) ->
+          true | false | error | badarg.
 
 pn(ProbeLabel, I1, I2, I3, I4, S1, S2, S3, S4) when is_integer(I1), is_integer(I2), is_integer(I3), is_integer(I4) ->
     user_trace_n_int(ProbeLabel, I1, I2, I3, I4, S1, S2, S3, S4).
@@ -392,7 +392,7 @@ pn(ProbeLabel, I1, I2, I3, I4, S1, S2, S3, S4) when is_integer(I1), is_integer(I
 -spec user_trace_n_int(n_probe_label(),
                        int_p_arg(), int_p_arg(), int_p_arg(), int_p_arg(),
                        int_p_arg(), int_p_arg(), int_p_arg(), int_p_arg()) ->
-      true | false | error | badarg.
+          true | false | error | badarg.
 
 user_trace_n_int(ProbeLabel, I1, I2, I3, I4, S1, S2, S3, S4) ->
     UTag = get_tag(),

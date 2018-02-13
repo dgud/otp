@@ -428,8 +428,8 @@ handle_info({ac_application_run, AppName, Res}, S) ->
     %% on this app (not only nodes that can run it).
     send_msg({dist_ac_app_started, node(), AppName, Res}, Nodes),
     NId = case Res of
-	       ok -> local;
-	       {error, _R} -> undefined
+              ok -> local;
+              {error, _R} -> undefined
 	  end,
     {value, Appl} = keysearch(AppName, #appl.name, Appls),
     %% Check if we have somebody waiting for the takeover result
@@ -614,7 +614,7 @@ handle_info({dist_ac_weight, Name, Weight, Node}, S) ->
 handle_info({nodedown, Node}, S) ->
     AppNames = dist_get_runnable(S#state.appls),
     HisAppls = filter(fun(#appl{name = Name, id = {distributed, N}}) 
-			 when Node =:= N -> lists:member(Name, AppNames);
+                            when Node =:= N -> lists:member(Name, AppNames);
 			 (_) -> false
 		      end,
 		      S#state.appls),
@@ -926,7 +926,7 @@ ac_not_started(req, Name) ->
     ?AC ! {ac_change_application_req, Name, stop_it}.
 
 ac_stop_it(Name) ->
-  ?AC ! {ac_change_application_req, Name, stop_it}.
+    ?AC ! {ac_change_application_req, Name, stop_it}.
 
 ac_takeover(reply, Name, Node, _RestartType) ->
     ?AC ! {ac_start_application_reply, Name, {takeover, Node}};
@@ -965,7 +965,7 @@ restart_appl(AppName, S) ->
     
 %% permit(ShouldBeRunning, IsRunning, ...)
 permit(false, {value, #appl{id = undefined}}, _AppName, _From, S, _LockId) ->
-   {reply, ok, S}; % It's not running
+    {reply, ok, S}; % It's not running
 permit(false, {value, #appl{id = Id}}, _AppName, _From, S, _LockId)
   when element(1, Id) =:= distributed ->
     %% It is running at another node already
@@ -1013,14 +1013,14 @@ do_start_appls(StartApps, S) ->
     SortedStartApps = StartApps,
     Appls = S#state.appls,
     {ok, foldl(
-      fun(AppName, NewS) ->
-	      case catch start_appl(AppName, NewS, req) of
-		  {error, R}  ->
-		      throw({{error, NewS}, R});
-		  {ok, NewS2, _} ->
-		      NewS2
-	      end
-      end, S#state{appls = Appls}, lists:reverse(SortedStartApps))}.
+           fun(AppName, NewS) ->
+                   case catch start_appl(AppName, NewS, req) of
+                       {error, R}  ->
+                           throw({{error, NewS}, R});
+                       {ok, NewS2, _} ->
+                           NewS2
+                   end
+           end, S#state{appls = Appls}, lists:reverse(SortedStartApps))}.
 
 %%-----------------------------------------------------------------
 %% Nodes = [node() | {node(), ..., node()}]
@@ -1416,8 +1416,8 @@ do_dist_change_update(Appls, AppName, NewTime, NewNodes) ->
 dist_merge(MyAppls, HisAppls, HisNode) ->
     zf(fun(Appl) ->
 	       #appl{name = AppName, run = Run} = Appl,
-%	       #appl{name = AppName, nodes = Nodes, run = Run} = Appl,
-%	       HeIsMember = lists:member(HisNode, flat_nodes(Nodes)),
+                                                %	       #appl{name = AppName, nodes = Nodes, run = Run} = Appl,
+                                                %	       HeIsMember = lists:member(HisNode, flat_nodes(Nodes)),
 	       HeIsMember = true,
 	       case keysearch(AppName, #appl.name, HisAppls) of
 		   {value, #appl{run = HisRun}} when HeIsMember ->
@@ -1524,14 +1524,14 @@ dist_mismatch(AppName, Node) ->
 	      [AppName, node(), Node]),
     exit({distribution_mismatch, AppName, Node}).
 
-%error_msg(Format) when is_list(Format) ->
-%    error_msg(Format, []).
+                                                %error_msg(Format) when is_list(Format) ->
+                                                %    error_msg(Format, []).
 
 error_msg(Format, ArgList) when is_list(Format), is_list(ArgList) ->
     error_logger:error_msg("dist_ac on node ~p:~n" ++ Format, [node()|ArgList]).
 
-%info_msg(Format) when is_list(Format) ->
-%    info_msg(Format, []).
+                                                %info_msg(Format) when is_list(Format) ->
+                                                %    info_msg(Format, []).
 
-%info_msg(Format, ArgList) when is_list(Format), is_list(ArgList) ->
-%    error_logger:info_msg("dist_ac on node ~p:~n" ++ Format, [node()|ArgList]).
+                                                %info_msg(Format, ArgList) when is_list(Format), is_list(ArgList) ->
+                                                %    error_logger:info_msg("dist_ac on node ~p:~n" ++ Format, [node()|ArgList]).

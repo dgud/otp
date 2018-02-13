@@ -58,7 +58,7 @@
 -define(MAX_TIMEOUT, 16#7FFFFFF).
 -define(INVALID_SERIAL, 16#FFFFFFFF).
 
-%-define(DEBUG,1).
+                                                %-define(DEBUG,1).
 -ifdef(DEBUG).
 -define(dbg(A,B), io:format(A,B)).
 -else.
@@ -75,38 +75,38 @@
 %% meant to be used in guards, check one such octet.
 -define(VALID_V4(Part), is_integer(Part), Part < 256).
 
-% Requests, one per unbique request to the PORT program, may be more than one client!!!
+                                                % Requests, one per unbique request to the PORT program, may be more than one client!!!
 -record(request, {
-	  rid, % Request id as sent to port
-	  op,
-	  proto,
-	  rdata,
-	  clients = [] % Can be more than one client per request (Pid's). 
-}).
+                  rid, % Request id as sent to port
+                  op,
+                  proto,
+                  rdata,
+                  clients = [] % Can be more than one client per request (Pid's). 
+                 }).
 
 
-% Statistics, not used yet.
+                                                % Statistics, not used yet.
 -record(statistics, {
-	  netdb_timeout = 0,
-	  netdb_internal = 0,
-	  port_crash = 0,
-	  notsup = 0,
-	  host_not_found = 0,
-	  try_again = 0,
-	  no_recovery = 0,
-	  no_data = 0
-}).
+                     netdb_timeout = 0,
+                     netdb_internal = 0,
+                     port_crash = 0,
+                     notsup = 0,
+                     host_not_found = 0,
+                     try_again = 0,
+                     no_recovery = 0,
+                     no_data = 0
+                    }).
 
-% The main loopstate...
+                                                % The main loopstate...
 -record(state, {
-	  port = noport, % Port() connected to the port program
-	  timeout = 8000, % Timeout value from inet_db:res_option
-	  requests, % Table of request
-	  req_index, % Table of {{op,proto,rdata},rid}
-	  parent,    % The supervisor bridge
-	  pool_size = 4, % Number of C processes in pool.
-	  statistics % Statistics record (records error causes).
-}).
+                port = noport, % Port() connected to the port program
+                timeout = 8000, % Timeout value from inet_db:res_option
+                requests, % Table of request
+                req_index, % Table of {{op,proto,rdata},rid}
+                parent,    % The supervisor bridge
+                pool_size = 4, % Number of C processes in pool.
+                statistics % Statistics record (records error causes).
+               }).
 -type state() :: #state{}.
 
 %% The supervisor bridge code
@@ -178,7 +178,7 @@ server_init(Starter, Ref) ->
 		    exit({already_started,whereis(?MODULE)})
 	    end;
 	Winner ->
-	   exit({already_started,Winner})
+            exit({already_started,Winner})
     end,
     Poolsize = get_poolsize(),
     Port = do_open_port(Poolsize, get_extra_args()),
@@ -216,7 +216,7 @@ handle_message({{Pid,Ref}, {?OP_CONTROL, Ctl, Data}}, State)
   when is_pid(Pid) ->
     catch port_command(State#state.port, 
 		       <<?INVALID_SERIAL:32, ?OP_CONTROL:8, 
-			Ctl:8, Data/binary>>),
+                         Ctl:8, Data/binary>>),
     Pid ! {Ref, ok},
     main_loop(State);
 
@@ -285,8 +285,8 @@ handle_message({timeout, Pid, RID}, State) ->
     main_loop(State);
 
 handle_message({system, From, Req}, State) ->
-	    sys:handle_system_msg(Req, From, State#state.parent, ?MODULE, [], 
-				  State);
+    sys:handle_system_msg(Req, From, State#state.parent, ?MODULE, [], 
+                          State);
 
 handle_message(_, State) -> % Stray messages from dying ports etc.
     main_loop(State).
@@ -341,7 +341,7 @@ pick_client(State,RID,Clid) ->
 	    case R#request.clients of
 		[SoleClient] ->
 		    {last, SoleClient}; % Note, not removed, the caller 
-					% should cleanup request data
+                                                % should cleanup request data
 		CList ->
 		    case lists:keyfind(Clid,1,CList) of
 			false ->
@@ -378,12 +378,12 @@ restart_port(#state{port = Port, requests = Requests}) ->
 		    case Op of 
 			?OP_GETHOSTBYNAME ->
 			    port_command(NewPort,[<<Rid:32,?OP_GETHOSTBYNAME:8,
-						  Proto:8>>,
+                                                    Proto:8>>,
 						  Rdata,0]);
 			?OP_GETHOSTBYADDR ->
 			    port_command(NewPort,
 					 <<Rid:32,?OP_GETHOSTBYADDR:8, Proto:8,
-					 Rdata/binary>>)
+                                           Rdata/binary>>)
 		    end
 	    end,
 	    Requests),
@@ -394,13 +394,13 @@ do_open_port(Poolsize, ExtraArgs) ->
     try 
 	open_port({spawn, 
 		   ?PORT_PROGRAM++" "++integer_to_list(Poolsize)++" "++
-		   ExtraArgs},
+                       ExtraArgs},
 		  [{packet,4},eof,binary,overlapped_io])
     catch
 	error:_ ->
 	    open_port({spawn, 
 		       ?PORT_PROGRAM++" "++integer_to_list(Poolsize)++
-		       " "++ExtraArgs},
+                           " "++ExtraArgs},
 		      [{packet,4},eof,binary])
     end.
 
@@ -557,28 +557,28 @@ ensure_started() ->
 
 parse_address(BinHostent, DefaultName) ->
     case catch 
-	begin
-	    case BinHostent of
-		<<?UNIT_ERROR, Errstring/binary>> -> 
-		    {error, list_to_atom(listify(Errstring))};
-		<<?UNIT_IPV4, Naddr:32, T0/binary>> ->
-		    {T1, Addresses} = pick_addresses_v4(Naddr, T0),
-		    {Name, Names} =
-			expand_default_name(pick_names(T1), DefaultName),
-		    {ok, #hostent{h_addr_list = Addresses, h_addrtype = inet,
-				  h_aliases = Names, h_length = ?UNIT_IPV4, 
-				  h_name = Name}};
-		<<?UNIT_IPV6, Naddr:32, T0/binary>> ->
-		    {T1, Addresses} = pick_addresses_v6(Naddr, T0),
-		    {Name, Names} =
-			expand_default_name(pick_names(T1), DefaultName),
-		    {ok, #hostent{h_addr_list = Addresses, h_addrtype = inet6,
-				  h_aliases = Names, h_length = ?UNIT_IPV6, 
-				  h_name = Name}};
-		_Else ->
-		    {error, {internal_error, {malformed_response, BinHostent}}}
-	    end
-	end of
+           begin
+               case BinHostent of
+                   <<?UNIT_ERROR, Errstring/binary>> -> 
+                       {error, list_to_atom(listify(Errstring))};
+                   <<?UNIT_IPV4, Naddr:32, T0/binary>> ->
+                       {T1, Addresses} = pick_addresses_v4(Naddr, T0),
+                       {Name, Names} =
+                           expand_default_name(pick_names(T1), DefaultName),
+                       {ok, #hostent{h_addr_list = Addresses, h_addrtype = inet,
+                                     h_aliases = Names, h_length = ?UNIT_IPV4, 
+                                     h_name = Name}};
+                   <<?UNIT_IPV6, Naddr:32, T0/binary>> ->
+                       {T1, Addresses} = pick_addresses_v6(Naddr, T0),
+                       {Name, Names} =
+                           expand_default_name(pick_names(T1), DefaultName),
+                       {ok, #hostent{h_addr_list = Addresses, h_addrtype = inet6,
+                                     h_aliases = Names, h_length = ?UNIT_IPV6, 
+                                     h_name = Name}};
+                   _Else ->
+                       {error, {internal_error, {malformed_response, BinHostent}}}
+               end
+           end of
 	{'EXIT', Reason} ->
 	    Reason;
 	Normal ->
@@ -612,7 +612,7 @@ pick_addresses_v4(N,<<A,B,C,D,Tail/binary>>) ->
 pick_addresses_v6(0,Tail) ->
     {Tail,[]};
 pick_addresses_v6(Num,<<A:16,B:16,C:16,D:16,E:16,F:16,G:16,H:16,
-		  Tail/binary>>) ->
+                        Tail/binary>>) ->
     {NTail, OList} = pick_addresses_v6(Num-1,Tail),
     {NTail, [{A,B,C,D,E,F,G,H} | OList]}.
 

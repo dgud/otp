@@ -38,8 +38,8 @@
 
 -record(sort,
 	{
-	  sort_key,
-	  sort_incr=true
+         sort_key,
+         sort_incr=true
 	}).
 
 -record(holder, {parent,
@@ -112,7 +112,7 @@ init([ParentWin, Callback, Owner]) ->
 		   callback=Callback,
 		   trunc_warn=TW,
 		   menu_cols=MenuCols
-		   },
+                  },
     {Panel, State}.
 
 %% UI-creation

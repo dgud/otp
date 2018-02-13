@@ -48,14 +48,14 @@
 
 -record(state,
 	{
-	  parent,
-	  grid,
-	  panel,
-	  node=node(),
-	  opts=#opts{},
-          holder,
-	  selected,
-	  timer
+         parent,
+         grid,
+         panel,
+         node=node(),
+         opts=#opts{},
+         holder,
+         selected,
+         timer
 	}).
 
 start_link(Notebook,  Parent, Config) ->
@@ -354,7 +354,7 @@ display_table_info(Parent0, Node, Source, Table) ->
     Title = "Table Info: " ++ atom_to_list(Table#tab.name),
     Frame = wxMiniFrame:new(Parent, ?wxID_ANY, Title,
 			    [{style, ?wxSYSTEM_MENU bor ?wxCAPTION
-				  bor ?wxCLOSE_BOX bor ?wxRESIZE_BORDER}]),
+                                         bor ?wxCLOSE_BOX bor ?wxRESIZE_BORDER}]),
 
     IdInfo = {"Identification and Owner",
 	      [{"Name", Table#tab.name},
@@ -385,7 +385,7 @@ display_table_info(Parent0, Node, Source, Table) ->
 		 {"Table Type",   Table#tab.type},
 		 {"Protection Mode", Table#tab.protection},
 		 {"Fixed",        Table#tab.fixed}
-		 | MnesiaSettings ]},
+                | MnesiaSettings ]},
     Memory = {"Memory Usage",
 	      [{"Number of objects", Table#tab.size},
 	       {"Memory allocated",  {bytes, Table#tab.memory}},

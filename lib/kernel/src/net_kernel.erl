@@ -43,7 +43,7 @@
 %% Default ticktime change transition period in seconds
 -define(DEFAULT_TRANSITION_PERIOD, 60).
 
-%-define(TCKR_DBG, 1).
+                                                %-define(TCKR_DBG, 1).
 
 -ifdef(TCKR_DBG).
 -define(tckr_dbg(X), erlang:display({?LINE, X})).
@@ -96,19 +96,19 @@
 -import(error_logger,[error_msg/2]).
 
 -record(state, {
-	  name,         %% The node name
-	  node,         %% The node name including hostname
-	  type,         %% long or short names
-	  tick,         %% tick information
-	  connecttime,  %% the connection setuptime.
-	  connections,  %% table of connections
-	  conn_owners = [], %% List of connection owner pids,
-	  pend_owners = [], %% List of potential owners
-	  listen,       %% list of  #listen
-	  allowed,       %% list of allowed nodes in a restricted system
-	  verbose = 0,   %% level of verboseness
-	  publish_on_nodes = undefined
-	 }).
+                name,         %% The node name
+                node,         %% The node name including hostname
+                type,         %% long or short names
+                tick,         %% tick information
+                connecttime,  %% the connection setuptime.
+                connections,  %% table of connections
+                conn_owners = [], %% List of connection owner pids,
+                pend_owners = [], %% List of potential owners
+                listen,       %% list of  #listen
+                allowed,       %% list of allowed nodes in a restricted system
+                verbose = 0,   %% level of verboseness
+                publish_on_nodes = undefined
+               }).
 
 -record(listen, {
 		 listen,     %% listen socket
@@ -132,8 +132,8 @@
 		    }).
 
 -record(barred_connection, {
-	  node %% remote node name
-	 }).
+                            node %% remote node name
+                           }).
 
 
 -record(tick, {ticker,        %% ticker                     : pid()
@@ -347,9 +347,9 @@ init({Name, LongOrShortNames, TickT, CleanHalt}) ->
 			tick = #tick{ticker = Ticker, time = Ticktime},
 			connecttime = connecttime(),
 			connections =
-			ets:new(sys_dist,[named_table,
-					  protected,
-					  {keypos, #connection.node}]),
+                            ets:new(sys_dist,[named_table,
+                                              protected,
+                                              {keypos, #connection.node}]),
 			listen = Listeners,
 			allowed = [],
 			verbose = 0
@@ -543,8 +543,8 @@ handle_call({is_auth, _Node}, From, State) ->
 handle_call({apply,_Mod,_Fun,_Args}, {From,Tag}, State)
   when is_pid(From), node(From) =:= node() ->
     async_gen_server_reply({From,Tag}, not_implemented),
-%    Port = State#state.port,
-%    catch apply(Mod,Fun,[Port|Args]),
+                                                %    Port = State#state.port,
+                                                %    catch apply(Mod,Fun,[Port|Args]),
     {noreply,State};
 
 handle_call(longnames, From, State) ->
@@ -557,7 +557,7 @@ handle_call({publish_on_node, Node}, From, State) ->
     NewState = case State#state.publish_on_nodes of
 		   undefined ->
 		       State#state{publish_on_nodes =
-				   global_group:publish_on_nodes()};
+                                       global_group:publish_on_nodes()};
 		   _ ->
 		       State
 	       end,
@@ -592,7 +592,7 @@ handle_call({new_ticktime,T,_TP}, From, #state{tick = #tick{time = T}} = State) 
     async_reply({reply, unchanged, State}, From);
 
 handle_call({new_ticktime,T,TP}, From, #state{tick = #tick{ticker = Tckr,
-							time = OT}} = State) ->
+                                                           time = OT}} = State) ->
     ?tckr_dbg(initiating_tick_change),
     start_aux_ticker(T, OT, TP),
     How = case T > OT of
@@ -629,7 +629,7 @@ handle_call({setopts, Node, Opts}, From, State) ->
 
 	    _ ->
 		{error, noconnection}
-    end,
+        end,
     async_reply({reply, Return, State}, From);
 
 handle_call({getopts, Node, Opts}, From, State) ->
@@ -643,7 +643,7 @@ handle_call({getopts, Node, Opts}, From, State) ->
 
 	    _ ->
 		{error, noconnection}
-    end,
+        end,
     async_reply({reply, Return, State}, From);
 
 handle_call(_Msg, _From, State) ->
@@ -786,7 +786,7 @@ handle_info({AcceptPid, {accept_pending,MyNode,Node,Address,Type}}, State) ->
 	[#connection{state=up}=Conn] ->
 	    AcceptPid ! {self(), {accept_pending, up_pending}},
 	    ets:insert(sys_dist, Conn#connection { pending_owner = AcceptPid,
-						  state = up_pending }),
+                                                   state = up_pending }),
 	    Pend = [{AcceptPid, Node} | State#state.pend_owners ],
 	    {noreply, State#state { pend_owners = Pend }};
 	[#connection{state=up_pending}] ->
@@ -992,9 +992,9 @@ nodedown(Conn, Owner, Node, Reason, Type, OldState) ->
     end.
 
 pending_nodedown(Conn, Node, Type, State) ->
-    % Don't bar connections that have never been alive
-    %mark_sys_dist_nodedown(Node),
-    % - instead just delete the node:
+                                                % Don't bar connections that have never been alive
+                                                %mark_sys_dist_nodedown(Node),
+                                                % - instead just delete the node:
     erts_internal:abort_connection(Node, Conn#connection.conn_id),
     ets:delete(sys_dist, Node),
     reply_waiting(Node,Conn#connection.waiting, false),
@@ -1113,7 +1113,7 @@ mk_monitor_nodes_error(_Flag, Opts) ->
 	    {error, {internal_error, UnexpectedError}}
     end.
 
-% -------------------------------------------------------------
+                                                % -------------------------------------------------------------
 
 do_disconnect(Node, State) ->
     case ets:lookup(sys_dist, Node) of
@@ -1162,10 +1162,10 @@ get_up_nodes() ->
 get_up_nodes('$end_of_table') -> [];
 get_up_nodes(Key) ->
     case ets:lookup(sys_dist, Key) of
- 	[#connection{state=up,node=Node,type=Type}] ->
- 	    [{Node,Type}|get_up_nodes(ets:next(sys_dist, Key))];
- 	_ ->
- 	    get_up_nodes(ets:next(sys_dist, Key))
+        [#connection{state=up,node=Node,type=Type}] ->
+            [{Node,Type}|get_up_nodes(ets:next(sys_dist, Key))];
+        _ ->
+            get_up_nodes(ets:next(sys_dist, Key))
     end.
 
 ticker(Kernel, Tick) when is_integer(Tick) ->
@@ -1274,32 +1274,32 @@ spawn_func(_,{From,Tag},M,F,A,Gleader) ->
 
 setup(ConnLookup, Node,ConnId,Type,From,State) ->
     case setup_check(ConnLookup, Node, ConnId, State) of
-		{ok, L} ->
-		    Mod = L#listen.module,
-		    LAddr = L#listen.address,
-		    MyNode = State#state.node,
-		    Pid = Mod:setup(Node,
-				    Type,
-				    MyNode,
-				    State#state.type,
-				    State#state.connecttime),
-		    Addr = LAddr#net_address {
-					      address = undefined,
-					      host = undefined },
-                    Waiting = case From of
-                                  noreply -> [];
-                                  _ -> [From]
-                              end,
-		    ets:insert(sys_dist, #connection{node = Node,
-                                                     conn_id = ConnId,
-						     state = pending,
-						     owner = Pid,
-						     waiting = Waiting,
-						     address = Addr,
-						     type = normal}),
-		    {ok, Pid};
-		Error ->
-		    Error
+        {ok, L} ->
+            Mod = L#listen.module,
+            LAddr = L#listen.address,
+            MyNode = State#state.node,
+            Pid = Mod:setup(Node,
+                            Type,
+                            MyNode,
+                            State#state.type,
+                            State#state.connecttime),
+            Addr = LAddr#net_address {
+                     address = undefined,
+                     host = undefined },
+            Waiting = case From of
+                          noreply -> [];
+                          _ -> [From]
+                      end,
+            ets:insert(sys_dist, #connection{node = Node,
+                                             conn_id = ConnId,
+                                             state = pending,
+                                             owner = Pid,
+                                             waiting = Waiting,
+                                             address = Addr,
+                                             type = normal}),
+            {ok, Pid};
+        Error ->
+            Error
     end.
 
 setup_check(ConnLookup, Node, ConnId, State) ->
@@ -1309,7 +1309,7 @@ setup_check(ConnLookup, Node, ConnId, State) ->
 	    error_msg("** Connection attempt with "
 		      "disallowed node ~w ** ~n", [Node]),
 	    {error, bad_node};
-       _ ->
+        _ ->
             case verify_new_conn_id(ConnLookup, ConnId) of
                 false ->
                     error_msg("** Connection attempt to ~w with "
@@ -1363,7 +1363,7 @@ init_node(Name, LongOrShortNames, CleanHalt) ->
 		    Error
 	    end;
 	Error ->
- 	    Error
+            Error
     end.
 
 %% Create the node name
@@ -1421,7 +1421,7 @@ create_hostpart(Name, LongOrShortNames) ->
 		{_,longnames} ->
 		    case {inet_db:gethostname(),inet_db:res_option(domain)} of
 			{H,D} when is_list(D), is_list(H),
-                        length(D)> 0, length(H)>0 ->
+                                   length(D)> 0, length(H)>0 ->
 			    {ok,"@" ++ H ++ "." ++ D};
 			_ ->
 			    {error,long}
@@ -1440,11 +1440,11 @@ validate_hostname([$@|HostPart] = Host) ->
 
 valid_name_head(Head) ->
     {ok, MP} = re:compile("^[0-9A-Za-z_\\-]*$", [unicode]),
-        case re:run(Head, MP) of
-            {match, _} ->
-                true;
-            nomatch ->
-                false
+    case re:run(Head, MP) of
+        {match, _} ->
+            true;
+        nomatch ->
+            false
     end.
 
 split_node(Name) ->
@@ -1517,10 +1517,10 @@ start_protos(Name, [Proto | Ps], Node, Ls, CleanHalt) ->
 		    AcceptPid = Mod:accept(Socket),
 		    auth:sync_cookie(),
 		    L = #listen {
-		      listen = Socket,
-		      address = Address,
-		      accept = AcceptPid,
-		      module = Mod },
+                           listen = Socket,
+                           address = Address,
+                           accept = AcceptPid,
+                           module = Mod },
 		    start_protos(Name,Ps, Node, [L|Ls], CleanHalt);
 		_ ->
 		    Mod:close(Socket),
@@ -1869,7 +1869,7 @@ merge_opts([H|T], B0) ->
     merge_opts(T, [H | B1]).
 
 -spec getopts(Node, Options) ->
-	{'ok', OptionValues} | {'error', Reason} | ignored when
+          {'ok', OptionValues} | {'error', Reason} | ignored when
       Node :: node(),
       Options :: [inet:socket_getopt()],
       OptionValues :: [inet:socket_setopt()],

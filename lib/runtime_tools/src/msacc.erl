@@ -146,11 +146,11 @@ print_int(Device, [#{ '$type' := msacc_stats }|_] = Stats, Options) ->
 -spec stats() -> msacc_data().
 stats() ->
     Fun = fun F(K,{PerfCount,StateCount}) ->
-                %% Need to handle ERTS_MSACC_STATE_COUNTERS
-                {F(K,PerfCount),StateCount};
+                  %% Need to handle ERTS_MSACC_STATE_COUNTERS
+                  {F(K,PerfCount),StateCount};
               F(_K,PerfCount) ->
-                erlang:convert_time_unit(PerfCount, perf_counter, 1000000)
-        end,
+                  erlang:convert_time_unit(PerfCount, perf_counter, 1000000)
+          end,
     UsStats = lists:map(
                 fun(#{ counters := Cnt } = M) ->
                         UsCnt = maps:map(Fun,Cnt),
@@ -181,7 +181,7 @@ stats(realtime, Stats) ->
 stats(runtime, Stats) ->
     RunTime = stats(system_runtime, Stats),
     statssort([get_thread_perc(T#{ counters := maps:remove(sleep,Cnt)}, RunTime)
-                               || T = #{ counters := Cnt } <- Stats]);
+               || T = #{ counters := Cnt } <- Stats]);
 stats(type, Stats) ->
     statssort(merge_threads(Stats, [])).
 
@@ -223,17 +223,17 @@ print_stats_header([#{ counters := Cnt }|_], #{ system := PrintSys }) ->
 print_thread_info(#{ '$type' := msacc_stats,
                      counters := Cnt } = Thread, #{ system := PrintSys }) ->
     [case maps:find(id, Thread) of
-        error ->
-            io_lib:format("~14s", [atom_to_list(maps:get(type, Thread))]);
-        {ok, Id} ->
-            io_lib:format("~10s(~2B)", [atom_to_list(maps:get(type,Thread)),Id])
-    end,
-    map(fun(_Key, #{ thread := ThreadPerc, system := SystemPerc }) when PrintSys ->
-                io_lib:format("~6.2f%(~4.1f%)", [ThreadPerc, SystemPerc]);
-           (_Key, #{ thread := ThreadPerc }) ->
-                io_lib:format("~8.2f%", [ThreadPerc])
-             end, Cnt),
-    io_lib:format("~n",[])].
+         error ->
+             io_lib:format("~14s", [atom_to_list(maps:get(type, Thread))]);
+         {ok, Id} ->
+             io_lib:format("~10s(~2B)", [atom_to_list(maps:get(type,Thread)),Id])
+     end,
+     map(fun(_Key, #{ thread := ThreadPerc, system := SystemPerc }) when PrintSys ->
+                 io_lib:format("~6.2f%(~4.1f%)", [ThreadPerc, SystemPerc]);
+            (_Key, #{ thread := ThreadPerc }) ->
+                 io_lib:format("~8.2f%", [ThreadPerc])
+         end, Cnt),
+     io_lib:format("~n",[])].
 
 get_total(Cnt, Base) ->
     maps:fold(fun(_, {Val,_}, Time) ->
@@ -250,12 +250,12 @@ get_thread_perc(#{ '$type' := msacc_data, counters := Cnt } = Thread,
              counters => get_thread_perc(Cnt, ThreadTime, SystemTime)}.
 get_thread_perc(Cnt, ThreadTime, SystemTime) ->
     maps:map(fun F(Key, {Val, C}) ->
-                    M = F(Key, Val),
-                    M#{ cnt => C };
+                     M = F(Key, Val),
+                     M#{ cnt => C };
                  F(_Key, Val) ->
-                    #{ thread => percentage(Val, ThreadTime),
-                       system => percentage(Val, SystemTime) }
-            end, Cnt).
+                     #{ thread => percentage(Val, ThreadTime),
+                        system => percentage(Val, SystemTime) }
+             end, Cnt).
 
 %% This code is a little bit messy as it has to be able to deal with
 %% both [msacc_data()] and [msacc_stats()].
@@ -318,7 +318,7 @@ add_counters(M1, M2) ->
 percentage(Divident, Divisor) ->
     if Divisor == 0 andalso Divident /= 0 ->
             100.0;
-        Divisor == 0 ->
+       Divisor == 0 ->
             0.0;
        true ->
             Divident / Divisor * 100

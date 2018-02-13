@@ -67,44 +67,44 @@ stop() ->
 %%
 
 port_please(Node, Host) ->
-  port_please(Node, Host, infinity).
+    port_please(Node, Host, infinity).
 
 port_please(Node,HostName, Timeout) when is_atom(HostName) ->
-  port_please1(Node,atom_to_list(HostName), Timeout);
+    port_please1(Node,atom_to_list(HostName), Timeout);
 port_please(Node,HostName, Timeout) when is_list(HostName) ->
-  port_please1(Node,HostName, Timeout);
+    port_please1(Node,HostName, Timeout);
 port_please(Node, EpmdAddr, Timeout) ->
-  get_port(Node, EpmdAddr, Timeout).
+    get_port(Node, EpmdAddr, Timeout).
 
 
 
 port_please1(Node,HostName, Timeout) ->
-  Family = case inet_db:res_option(inet6) of
-             true ->
-               inet6;
-             false ->
-               inet
-           end,
-  case inet:gethostbyname(HostName, Family, Timeout) of
-    {ok,{hostent, _Name, _ , _Af, _Size, [EpmdAddr | _]}} ->
-      get_port(Node, EpmdAddr, Timeout);
-    Else ->
-      Else
-  end.
+    Family = case inet_db:res_option(inet6) of
+                 true ->
+                     inet6;
+                 false ->
+                     inet
+             end,
+    case inet:gethostbyname(HostName, Family, Timeout) of
+        {ok,{hostent, _Name, _ , _Af, _Size, [EpmdAddr | _]}} ->
+            get_port(Node, EpmdAddr, Timeout);
+        Else ->
+            Else
+    end.
 
 names() ->
     {ok, H} = inet:gethostname(),
     names(H).
 
 names(HostName) when is_atom(HostName); is_list(HostName) ->
-  case inet:gethostbyname(HostName) of
-    {ok,{hostent, _Name, _ , _Af, _Size, [EpmdAddr | _]}} ->
-      get_names(EpmdAddr);
-    Else ->
-      Else
-  end;
+    case inet:gethostbyname(HostName) of
+        {ok,{hostent, _Name, _ , _Af, _Size, [EpmdAddr | _]}} ->
+            get_names(EpmdAddr);
+        Else ->
+            Else
+    end;
 names(EpmdAddr) ->
-  get_names(EpmdAddr).
+    get_names(EpmdAddr).
 
 
 register_node(Name, PortNo) ->
@@ -130,7 +130,7 @@ init(_) ->
 -type calls() :: 'client_info_req' | 'stop' | {'register', term(), term()}.
 
 -spec handle_call(calls(), term(), state()) ->
-        {'reply', term(), state()} | {'stop', 'shutdown', 'ok', state()}.
+          {'reply', term(), state()} | {'stop', 'shutdown', 'ok', state()}.
 
 handle_call({register, Name, PortNo, Family}, _From, State) ->
     case State#state.socket of
@@ -220,9 +220,9 @@ close(Socket) ->
 
 do_register_node(NodeName, TcpPort, Family) ->
     Localhost = case Family of
-        inet -> open({127,0,0,1});
-        inet6 -> open({0,0,0,0,0,0,0,1})
-    end,
+                    inet -> open({127,0,0,1});
+                    inet6 -> open({0,0,0,0,0,0,0,1})
+                end,
     case Localhost of
 	{ok, Socket} ->
 	    Name = to_string(NodeName),
@@ -253,26 +253,26 @@ do_register_node(NodeName, TcpPort, Family) ->
 epmd_dist_high() ->
     case os:getenv("ERL_EPMD_DIST_HIGH") of
 	false ->
-	   ?epmd_dist_high; 
+            ?epmd_dist_high; 
 	Version ->
 	    case (catch list_to_integer(Version)) of
 		N when is_integer(N), N < ?epmd_dist_high ->
 		    N;
 		_ ->
-		   ?epmd_dist_high
+                    ?epmd_dist_high
 	    end
     end.
 
 epmd_dist_low() ->
     case os:getenv("ERL_EPMD_DIST_LOW") of
 	false ->
-	   ?epmd_dist_low; 
+            ?epmd_dist_low; 
 	Version ->
 	    case (catch list_to_integer(Version)) of
 		N when is_integer(N), N > ?epmd_dist_low ->
 		    N;
 		_ ->
-		   ?epmd_dist_low
+                    ?epmd_dist_low
 	    end
     end.
 		    
@@ -329,7 +329,7 @@ get_port(Node, EpmdAddress, Timeout) ->
 wait_for_port_reply(Socket, SoFar) ->
     receive
 	{tcp, Socket, Data0} ->
-%	    io:format("got ~p~n", [Data0]),
+                                                %	    io:format("got ~p~n", [Data0]),
 	    case SoFar ++ Data0 of
 		[$w, Result | Rest] ->
 		    case Result of
@@ -386,16 +386,16 @@ wait_for_port_reply_cont2(Socket, Data) ->
     Low = ?u16(LowA, LowB),
     High = ?u16(HighA, HighB),
     Version = best_version(Low, High),
-%    io:format("Returning ~p~n", [{port, ?u16(A, B), Version}]),
+                                                %    io:format("Returning ~p~n", [{port, ?u16(A, B), Version}]),
     {port, ?u16(A, B), Version}.
-%    {port, ?u16(A, B)}.
+                                                %    {port, ?u16(A, B)}.
 
 %%% Throw away the rest of the message; we won't use any of it anyway,
 %%% currently.
 wait_for_port_reply_name(Socket, Len, Sofar) ->
     receive
 	{tcp, Socket, _Data} ->
-%	    io:format("data = ~p~n", _Data),
+                                                %	    io:format("data = ~p~n", _Data),
 	    wait_for_port_reply_name(Socket, Len, Sofar);
 	{tcp_closed, Socket} ->
 	    ok

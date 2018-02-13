@@ -92,7 +92,7 @@ info_fields() ->
        {"Controller",         {click,controller}},
        {"Creation",           {{format,fun format/1},creation}},
        {"Extra Info",         error}]},
-    {scroll_boxes,
-     [{"Remote Links",1,{click,remote_links}},
-      {"Remote Monitors",1,{click,remote_mon}},
-      {"Remote Monitored By",1,{click,remote_mon_by}}]}].
+     {scroll_boxes,
+      [{"Remote Links",1,{click,remote_links}},
+       {"Remote Monitors",1,{click,remote_mon}},
+       {"Remote Monitored By",1,{click,remote_mon_by}}]}].

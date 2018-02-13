@@ -552,12 +552,12 @@ add_rr(RR) ->
 
 add_rr(Domain, Class, Type, TTL, Data) ->
     call({add_rr, #dns_rr { domain = Domain, class = Class,
-		       type = Type, ttl = TTL, data = Data}}).
+                            type = Type, ttl = TTL, data = Data}}).
 
 del_rr(Domain, Class, Type, Data) ->
     call({del_rr, #dns_rr { domain = Domain, class = Class,
-		       type = Type, cnt = '_', tm = '_', ttl = '_',
-		       bm = '_', func = '_', data = Data}}).
+                            type = Type, cnt = '_', tm = '_', ttl = '_',
+                            bm = '_', func = '_', data = Data}}).
 
 res_cache_answer(Rec) ->
     lists:foreach( fun(RR) -> add_rr(RR) end, Rec#dns_rec.anlist).
@@ -903,7 +903,7 @@ reset_db(Db) ->
 %%----------------------------------------------------------------------
 
 -spec handle_call(term(), {pid(), term()}, state()) ->
-        {'reply', term(), state()} | {'stop', 'normal', 'ok', state()}.
+          {'reply', term(), state()} | {'stop', 'normal', 'ok', state()}.
 
 handle_call(Request, From, #state{db=Db}=State) ->
     case Request of
@@ -927,13 +927,13 @@ handle_call(Request, From, #state{db=Db}=State) ->
 	    {reply, ok, State};
 
 	{add_host,{A,B,C,D}=IP,[N|As]=Names}
-	when ?ip(A,B,C,D), is_list(N), is_list(As) ->
+          when ?ip(A,B,C,D), is_list(N), is_list(As) ->
 	    do_add_host(State#state.hosts_byname,
 			State#state.hosts_byaddr,
 			Names, inet, IP),
 	    {reply, ok, State};
 	{add_host,{A,B,C,D,E,F,G,H}=IP,[N|As]=Names}
-	when ?ip6(A,B,C,D,E,F,G,H), is_list(N), is_list(As) ->
+          when ?ip6(A,B,C,D,E,F,G,H), is_list(N), is_list(As) ->
 	    do_add_host(State#state.hosts_byname,
 			State#state.hosts_byaddr,
 			Names, inet6, IP),
@@ -982,8 +982,8 @@ handle_call(Request, From, #state{db=Db}=State) ->
 	    end;
 
 	{listdel, Opt} ->
- 	    ets:insert(Db, {res_optname(Opt), []}),
- 	    {reply, ok, State};
+            ets:insert(Db, {res_optname(Opt), []}),
+            {reply, ok, State};
 
 	{set_hostname, Name} ->
 	    case inet_parse:visible_string(Name) of
@@ -1038,7 +1038,7 @@ handle_call(Request, From, #state{db=Db}=State) ->
 			       clear_search,
 			       clear_cache,
 			       {search,Search}
-			       |[Opt || {nameserver,_}=Opt <- Opts]];
+                              |[Opt || {nameserver,_}=Opt <- Opts]];
 			  _ -> error
 		      end
 	      end,
@@ -1094,7 +1094,7 @@ handle_call(Request, From, #state{db=Db}=State) ->
 	    {reply, ok, State};
 
 	{add_socks_noproxy, {{A,B,C,D},{MA,MB,MC,MD}}} 
-	when ?ip(A,B,C,D), ?ip(MA,MB,MC,MD) ->
+          when ?ip(A,B,C,D), ?ip(MA,MB,MC,MD) ->
 	    [{_,As}] = ets:lookup(Db, socks5_noproxy),
 	    ets:insert(Db, {socks5_noproxy, As++[{{A,B,C,D},{MA,MB,MC,MD}}]}),
 	    {reply, ok, State};
@@ -1279,7 +1279,7 @@ handle_calls([Req|Reqs], From, State) ->
 	    handle_calls(Reqs, From, NewState);
 	{reply, _, NewState} ->
 	    {reply, error, NewState}
-	    %% {noreply,_} is currently not returned by handle_call/3
+    %% {noreply,_} is currently not returned by handle_call/3
     end;
 handle_calls(Req, From, State) ->
     handle_call(Req, From, State).

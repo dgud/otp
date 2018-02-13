@@ -65,9 +65,9 @@ behaviour_info(callbacks) ->
      {select, 3},              % (TypeAlias, Tab, Pattern) -> {[Match], Continuation'} | '$end_of_table'
      {select, 4},              % (TypeAlias, Tab, MatchSpec, Limit) {[Match], Continuation'} | '$end_of_table'
      {sender_init, 4},         % (TypeAlias, Tab, LoadReason, Pid) ->
-					% {standard, Init(), Chunk()} | {Init(), Chunk()}
+                                                % {standard, Init(), Chunk()} | {Init(), Chunk()}
      {semantics, 2},           % (TypeAlias, storage | types | index_fun | index_types) ->
-					% ram_copies | disc_copies, set | ordered_set | bag, fun(), ordered | bag
+                                                % ram_copies | disc_copies, set | ordered_set | bag, fun(), ordered | bag
      {slot, 3},                % (TypeAlias, Tab, Pos) -> '$end_of_table' | Objects | {error, Reason}
      {sync_close_table, 2},    % (TypeAlias, Tab) -> ok
      {tmp_suffixes, 0},        % () -> [FileSuffix]

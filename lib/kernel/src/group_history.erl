@@ -87,7 +87,7 @@ add(Line, enabled) ->
                     _ = open_log(), % a wild attempt we hope works!
                     disk_log:log(?LOG_NAME, Line);
                 {error, _Other} ->
-                    % just ignore, we're too late
+                                                % just ignore, we're too late
                     ok
             end;
         true ->
@@ -226,14 +226,14 @@ handle_open_error(Err) ->
 
 find_wrap_values() ->
     ConfSize = case application:get_env(kernel, shell_history_file_bytes) of
-        undefined -> ?DEFAULT_SIZE;
-        {ok, S} -> S
-    end,
+                   undefined -> ?DEFAULT_SIZE;
+                   {ok, S} -> S
+               end,
     SizePerFile = max(?MIN_HISTORY_SIZE, ConfSize div ?MAX_HISTORY_FILES),
     FileCount = if SizePerFile > ?MIN_HISTORY_SIZE ->
-                       ?MAX_HISTORY_FILES
-                 ; SizePerFile =< ?MIN_HISTORY_SIZE ->
-                       max(1, ConfSize div SizePerFile)
+                        ?MAX_HISTORY_FILES
+                  ; SizePerFile =< ?MIN_HISTORY_SIZE ->
+                        max(1, ConfSize div SizePerFile)
                 end,
     {SizePerFile, FileCount}.
 
@@ -250,12 +250,12 @@ resize_log(Name, _OldSize, NewSize) ->
          "Attempting to resize the log history file to ~p...", [NewSize]),
     Opts = lists:keydelete(size, 1, log_options()),
     _ = case disk_log:open(Opts) of
-        {error, {need_repair, _}} ->
-            _ = repair_log(Name),
-            disk_log:open(Opts);
-        _ ->
-            ok
-    end,
+            {error, {need_repair, _}} ->
+                _ = repair_log(Name),
+                disk_log:open(Opts);
+            _ ->
+                ok
+        end,
     case disk_log:change_size(Name, NewSize) of
         ok ->
             show('$#erlang-history-resize-result',

@@ -40,9 +40,9 @@
 
 -type cookie() :: atom().
 -record(state, {
-	  our_cookie    :: cookie(),  %% Our own cookie
-	  other_cookies :: ets:tab()  %% The send-cookies of other nodes
-	 }).
+                our_cookie    :: cookie(),  %% Our own cookie
+                other_cookies :: ets:tab()  %% The send-cookies of other nodes
+               }).
 -type state() :: #state{}.
 
 -include("../include/file.hrl").
@@ -148,7 +148,7 @@ init([]) ->
                | {'set_cookie', node(), term()}.
 
 -spec handle_call(calls(), {pid(), term()}, state()) ->
-        {'reply', 'hello' | 'true' | 'nocookie' | cookie(), state()}.
+          {'reply', 'hello' | 'true' | 'nocookie' | cookie(), state()}.
 
 handle_call({get_cookie, Node}, {_From,_Tag}, State) when Node =:= node() ->
     {reply, State#state.our_cookie, State};
@@ -189,12 +189,12 @@ handle_call(echo, _From, O) ->
 %%
 
 -spec handle_cast({'print', string(), [term()]}, state()) ->
-        {'noreply', state()}.
+          {'noreply', state()}.
 
 handle_cast({print,What,Args}, O) ->
-  %% always allow print outs
-  error_logger:error_msg(What, Args),
-  {noreply, O}.
+    %% always allow print outs
+    error_logger:error_msg(What, Args),
+    {noreply, O}.
 
 %% A series of bad messages that may come (from older distribution versions).
 
@@ -202,13 +202,13 @@ handle_cast({print,What,Args}, O) ->
 
 handle_info({From,badcookie,net_kernel,{From,spawn,_M,_F,_A,_Gleader}}, O) ->
     auth:print(node(From) ,"~n** Unauthorized spawn attempt to ~w **~n",
-	      [node()]),
+               [node()]),
     erlang:disconnect_node(node(From)), 
     {noreply, O};
 handle_info({From,badcookie,net_kernel,{From,spawn_link,_M,_F,_A,_Gleader}}, O) ->
     auth:print(node(From),
-	      "~n** Unauthorized spawn_link attempt to ~w **~n",
-	      [node()]),
+               "~n** Unauthorized spawn_link attempt to ~w **~n",
+               [node()]),
     erlang:disconnect_node(node(From)), 
     {noreply, O};
 handle_info({_From,badcookie,ddd_server,_Mess}, O) ->
@@ -238,8 +238,8 @@ handle_info({From,badcookie,Name,Mess}, Opened) ->
 		    catch Name ! Mess;  %% Might be a pid as well
 		_ ->
 		    auth:print(getnode(From), 
-			      "~n** Unauthorized send attempt ~w to ~w **~n",
-			      [Mess,node()]),
+                               "~n** Unauthorized send attempt ~w to ~w **~n",
+                               [Mess,node()]),
 		    erlang:disconnect_node(getnode(From))
 	    end
     end, 
@@ -372,7 +372,7 @@ check_cookie1([], Result) ->
    
 create_cookie(Name) ->
     Seed = abs(erlang:monotonic_time()
-	       bxor erlang:unique_integer()),
+                   bxor erlang:unique_integer()),
     Cookie = random_cookie(20, Seed, []),
     case file:open(Name, [write, raw]) of
 	{ok, File} ->
@@ -416,7 +416,7 @@ make_info(Name) ->
 		{Date, {0, 0, 0}};
 	    _ ->
 		{{1990, 1, 1}, {0, 0, 0}}
-	    end,
+        end,
     #file_info{mode=8#400, atime=Midnight, mtime=Midnight, ctime=Midnight}.
 
 %% This RNG is from line 21 on page 102 in Knuth: The Art of Computer Programming,

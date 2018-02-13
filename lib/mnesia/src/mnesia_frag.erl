@@ -24,7 +24,7 @@
 %%%           to be divided into several fragments.
 %%%----------------------------------------------------------------------
 
-%header_doc_include
+                                                %header_doc_include
 
 -module(mnesia_frag).
 
@@ -38,9 +38,9 @@
 	 foldl/6, foldr/6, table_info/4,
 	 first/3, next/4, prev/4, last/3,
 	 clear_table/4
-       ]).
+        ]).
 
-%header_doc_include
+                                                %header_doc_include
 
 %% -behaviour(mnesia_access).
 
@@ -69,7 +69,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Access functions
 
-%impl_doc_include
+                                                %impl_doc_include
 
 %% Callback functions which provides transparent
 %% access of fragmented tables from any activity
@@ -134,7 +134,7 @@ index_match_object(ActivityId, Opaque, Tab, Pat, Attr, LockKind) ->
 index_read(ActivityId, Opaque, Tab, Key, Attr, LockKind) ->
     Match =
 	[mnesia:index_read(ActivityId, Opaque, Frag, Key, Attr, LockKind)
-	     || Frag <- frag_names(Tab)],
+         || Frag <- frag_names(Tab)],
     lists:append(Match).
 
 foldl(ActivityId, Opaque, Fun, Acc, Tab, LockKind) ->
@@ -297,7 +297,7 @@ search_next(ActivityId, Opaque, Tab, N, FH) when N < FH#frag_state.n_fragments -
 search_next(_ActivityId, _Opaque, _Tab, _N, _FH) ->
     '$end_of_table'.
 
-%impl_doc_include
+                                                %impl_doc_include
 
 frag_size(ActivityId, Opaque, Tab) ->
     [{F, remote_table_info(ActivityId, Opaque, F, size)} || F <- frag_names(Tab)].
@@ -640,12 +640,12 @@ expand_frag_cstructs(N, NR, ND, NDO, NExt, CommonCs, Dist, Pool, FH, Mode)
     [Cs2 | CsList];
 expand_frag_cstructs(1, NR, ND, NDO, NExt, CommonCs, Dist, Pool, FH, Mode) ->
     BaseProps = CommonCs#cstruct.frag_properties ++  
-	[{foreign_key, FH#frag_state.foreign_key},
-	 {hash_module, FH#frag_state.hash_module},
-	 {hash_state,  FH#frag_state.hash_state},
-	 {n_fragments, FH#frag_state.n_fragments},
-	 {node_pool, Pool}
-	],
+                [{foreign_key, FH#frag_state.foreign_key},
+                 {hash_module, FH#frag_state.hash_module},
+                 {hash_state,  FH#frag_state.hash_state},
+                 {n_fragments, FH#frag_state.n_fragments},
+                 {node_pool, Pool}
+                ],
     BaseCs = CommonCs#cstruct{frag_properties = lists:sort(BaseProps)},
     case Mode of
 	activate ->
@@ -688,8 +688,8 @@ set_frag_node(Cs, Pos, Head) ->
 		mnesia:abort({bad_type, Cs#cstruct.name, BadNode})
 	end,
     mnesia_schema:verify(true, 
- 			 lists:member(Node, val({current,db_nodes})),
- 			 {not_active, Cs#cstruct.name, Node}),
+                         lists:member(Node, val({current,db_nodes})),
+                         {not_active, Cs#cstruct.name, Node}),
     Cs2 = setelement(Pos, Cs, [Node | Ns]),
     {Cs2, {Node, Count2}}.
 
@@ -1011,7 +1011,7 @@ adjust_before_merge(FH) ->
 		FH2 = FH#frag_state{n_fragments = N - 1,
 				    hash_state  = HashState2},
 		{FH2, FromFrags2, UnionFrags};
-		false ->
+            false ->
 		mnesia:abort({"del_frag: Last fragment number not included", N})
 	end
     catch error:BadFrags ->
@@ -1070,8 +1070,8 @@ do_merge(FH, OldN, FragNames, [Rec | Recs], Ops) ->
 		    mnesia:abort({"del_frag: Fragment not locked", NewN})
 	    end
     end;
- do_merge(_FH, _OldN, _FragNames, [], Ops) ->
-   Ops.
+do_merge(_FH, _OldN, _FragNames, [], Ops) ->
+    Ops.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Add a node to the node pool of a fragmented table
@@ -1187,7 +1187,7 @@ props_to_frag_hash(Tab, Props) ->
 				n_fragments = N,
 				hash_module = HashMod,
 				hash_state  = HashState}
-		    %% Old style. Kept for backwards compatibility.
+            %% Old style. Kept for backwards compatibility.
 	    end;
 	_ ->
 	    no_hash

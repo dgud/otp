@@ -117,8 +117,8 @@ copy_shared(_) ->
          | {atom_out_cache_index, atom()}
          | {fake_scheduler_bindings,
             default_bind | spread | processor_spread | thread_spread
-            | thread_no_node_processor_spread | no_node_processor_spread
-            | no_node_thread_spread | no_spread | unbound}
+           | thread_no_node_processor_spread | no_node_processor_spread
+           | no_node_thread_spread | no_spread | unbound}
          | {reader_groups_map, non_neg_integer()}.
 
 get_internal_state(_) ->
@@ -143,15 +143,15 @@ ic(F) when is_function(F) ->
     R.
 
 -spec lcnt_control
-    (copy_save, boolean()) -> ok;
-    (mask, list(atom())) -> ok.
+ (copy_save, boolean()) -> ok;
+ (mask, list(atom())) -> ok.
 
 lcnt_control(_Option, _Value) ->
     erlang:nif_error(undef).
 
 -spec lcnt_control
-    (copy_save) -> boolean();
-    (mask) -> list(atom()).
+ (copy_save) -> boolean();
+ (mask) -> list(atom()).
 
 lcnt_control(_Option) ->
     erlang:nif_error(undef).
@@ -159,8 +159,8 @@ lcnt_control(_Option) ->
 -type lcnt_lock_info() :: {atom(), term(), atom(), term()}.
 
 -spec lcnt_collect() ->
-    list({duration, {non_neg_integer(), non_neg_integer()}} |
-         {locks, list(lcnt_lock_info())}).
+          list({duration, {non_neg_integer(), non_neg_integer()}} |
+               {locks, list(lcnt_lock_info())}).
 
 lcnt_collect() ->
     erlang:nif_error(undef).
@@ -177,27 +177,27 @@ same(_, _) ->
     erlang:nif_error(undef).
 
 -spec set_internal_state(available_internal_state, boolean()) -> boolean();
-                           (reds_left, non_neg_integer()) -> true;
-                           (block, non_neg_integer()) -> true;
-                           (sleep, non_neg_integer()) -> true;
-                           (block_scheduler, non_neg_integer()) -> true;
-                           (next_pid, non_neg_integer()) -> false | integer();
-                           (force_gc, pid() | atom()) -> boolean();
-                           (send_fake_exit_signal, {pid() | port(), pid(), term()}) -> dead | message | unaffected | exit;
-                           (colliding_names, {atom(), non_neg_integer()}) ->
-                                   [atom()];
-                           (binary_loop_limit, default) -> -1;
-                           (binary_loop_limit, non_neg_integer()) -> non_neg_integer();
-                           (re_loop_limit, default) -> -1;
-                           (re_loop_limit, non_neg_integer()) -> non_neg_integer();
-                           (unicode_loop_limit, default) -> -1;
-                           (unicode_loop_limit, non_neg_integer()) -> non_neg_integer();
-                           (hipe_test_reschedule_suspend, term()) -> nil();
-                           (hipe_test_reschedule_resume, pid() | port()) -> boolean();
-                           (test_long_gc_sleep, non_neg_integer()) -> true;
-                           (kill_dist_connection, port()) -> boolean();
-                           (not_running_optimization, boolean()) -> boolean();
-                           (wait, deallocations) -> ok.
+                        (reds_left, non_neg_integer()) -> true;
+                        (block, non_neg_integer()) -> true;
+                        (sleep, non_neg_integer()) -> true;
+                        (block_scheduler, non_neg_integer()) -> true;
+                        (next_pid, non_neg_integer()) -> false | integer();
+                        (force_gc, pid() | atom()) -> boolean();
+                        (send_fake_exit_signal, {pid() | port(), pid(), term()}) -> dead | message | unaffected | exit;
+                        (colliding_names, {atom(), non_neg_integer()}) ->
+                            [atom()];
+                        (binary_loop_limit, default) -> -1;
+                        (binary_loop_limit, non_neg_integer()) -> non_neg_integer();
+                        (re_loop_limit, default) -> -1;
+                        (re_loop_limit, non_neg_integer()) -> non_neg_integer();
+                        (unicode_loop_limit, default) -> -1;
+                        (unicode_loop_limit, non_neg_integer()) -> non_neg_integer();
+                        (hipe_test_reschedule_suspend, term()) -> nil();
+                        (hipe_test_reschedule_resume, pid() | port()) -> boolean();
+                        (test_long_gc_sleep, non_neg_integer()) -> true;
+                        (kill_dist_connection, port()) -> boolean();
+                        (not_running_optimization, boolean()) -> boolean();
+                        (wait, deallocations) -> ok.
 
 set_internal_state(_, _) ->
     erlang:nif_error(undef).

@@ -69,8 +69,8 @@ get_details(Id, _Data) ->
 	    {ok,{Id,Proplist,TW}};
 	{error,{other_node,NodeId}} ->
 	    Info = "The port you are searching for was residing on "
-		"a remote node. No port information is available. "
-		"Show information about the remote node?",
+                   "a remote node. No port information is available. "
+                   "Show information about the remote node?",
 	    Fun = fun() -> cdv_virtual_list_wx:start_detail_win(NodeId, node) end,
 	    {yes_no, Info, Fun};
 	{error,not_found} ->
@@ -99,6 +99,6 @@ info_fields() ->
        {"Connected",        {click,connected}},
        {"Slot",             slot},
        {"Controls",         controls}]},
-    {scroll_boxes,
-     [{"Links",1,{click,links}},
+     {scroll_boxes,
+      [{"Links",1,{click,links}},
        {"Monitors",1,{click,monitors}}]}].

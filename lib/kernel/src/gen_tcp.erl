@@ -132,7 +132,7 @@ connect(Address, Port, Opts) ->
     connect(Address,Port,Opts,infinity).
 
 -spec connect(Address, Port, Options, Timeout) ->
-                     {ok, Socket} | {error, Reason} when
+          {ok, Socket} | {error, Reason} when
       Address :: inet:socket_address() | inet:hostname(),
       Port :: inet:port_number(),
       Options :: [connect_option()],

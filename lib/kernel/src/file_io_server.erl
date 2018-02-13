@@ -224,15 +224,15 @@ io_reply(From, ReplyAs, Reply) ->
 %%% file requests
 
 file_request({advise,Offset,Length,Advise},
-         #state{handle=Handle}=State) ->
+             #state{handle=Handle}=State) ->
     case ?CALL_FD(Handle, advise, [Offset, Length, Advise]) of
-    {error,Reason}=Reply ->
-        {stop,Reason,Reply,State};
-    Reply ->
-        {reply,Reply,State}
+        {error,Reason}=Reply ->
+            {stop,Reason,Reply,State};
+        Reply ->
+            {reply,Reply,State}
     end;
 file_request({allocate, Offset, Length},
-         #state{handle = Handle} = State) ->
+             #state{handle = Handle} = State) ->
     Reply = ?CALL_FD(Handle, allocate, [Offset, Length]),
     {reply, Reply, State};
 file_request({pread,At,Sz}, State)
@@ -602,8 +602,8 @@ get_chars_notempty(Mod, Func, XtraArg, S, OutEnc,
 get_chars_apply(Mod, Func, XtraArg, S0, latin1,
 		#state{read_mode=ReadMode,unic=latin1}=State, Data0) ->
     Data1 = case ReadMode of
-	       list when is_binary(Data0) -> binary_to_list(Data0);
-	       _ -> Data0
+                list when is_binary(Data0) -> binary_to_list(Data0);
+                _ -> Data0
 	    end,
     case catch Mod:Func(S0, Data1, latin1, XtraArg) of
 	{stop,Result,Buf} ->
@@ -651,7 +651,7 @@ get_chars_apply(Mod, Func, XtraArg, S0, OutEnc,
 							 list_to_binary([unicode:characters_to_binary(Buf,unicode,InEnc),NewBuff]);
 						     true ->
 							 NewBuff
-						end)}};
+                                                 end)}};
 	    {'EXIT',Reason} ->
 		{stop,Reason,{error,err_func(Mod, Func, XtraArg)},State};
 	    S1 ->
@@ -661,7 +661,7 @@ get_chars_apply(Mod, Func, XtraArg, S0, OutEnc,
 	exit:ExReason ->
             {stop,ExReason,invalid_unicode_error(Mod, Func, XtraArg, S0),State};
 	error:ErrReason ->
-	   {stop,ErrReason,{error,err_func(Mod, Func, XtraArg)},State}
+            {stop,ErrReason,{error,err_func(Mod, Func, XtraArg)},State}
     end.
 	    
 %% A hack that tries to inform the caller about the position where the
@@ -790,8 +790,8 @@ read_size(list) ->
 %% Utf utility
 count_and_find(Bin,N,Encoding) ->
     cafu(Bin,N,0,0,none,case Encoding of 
-			   unicode -> utf8;
-			   Oth -> Oth
+                            unicode -> utf8;
+                            Oth -> Oth
 			end).
 
 cafu(<<>>,0,Count,ByteCount,_SavePos,_) ->
@@ -834,10 +834,10 @@ cafu(<<_/utf32-little,Rest/binary>> = Whole, N, Count, ByteCount, SavePos, {utf3
     Delta = byte_size(Whole) - byte_size(Rest),
     cafu(Rest,N-1,Count+1,ByteCount+Delta,SavePos,{utf32,little});
 cafu(_Other,0,Count,ByteCount,_,_) -> % Non Unicode character, 
-                                     % but found our point, OK this time
+                                                % but found our point, OK this time
     {Count,ByteCount};
 cafu(Other,_N,Count,0,SavePos,Enc) -> % Not enough, but valid chomped unicode
-                                       % at end.
+                                                % at end.
     case cbv(Enc,Other) of
 	false ->
 	    exit(invalid_unicode);
@@ -845,8 +845,8 @@ cafu(Other,_N,Count,0,SavePos,Enc) -> % Not enough, but valid chomped unicode
 	    {Count,SavePos}
     end;
 cafu(Other,_N,Count,ByteCount,none,Enc) -> % Return what we'we got this far
-					   % although not complete, 
-					   % it's not (yet) in error
+                                                % although not complete, 
+                                                % it's not (yet) in error
     case cbv(Enc,Other) of
 	false ->
 	    exit(invalid_unicode);
@@ -854,7 +854,7 @@ cafu(Other,_N,Count,ByteCount,none,Enc) -> % Return what we'we got this far
 	    {Count,ByteCount}
     end;
 cafu(Other,_N,Count,_ByteCount,SavePos,Enc) -> % As above but we have 
-					       % found a position
+                                                % found a position
     case cbv(Enc,Other) of
 	false ->
 	    exit(invalid_unicode);

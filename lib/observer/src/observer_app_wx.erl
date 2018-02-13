@@ -36,16 +36,16 @@
 
 -record(state,
 	{
-	  parent,
-	  panel,
-	  apps_w,
-	  app_w,
-	  paint,
-	  current,
-	  app,
-	  sel,
-	  appmon,
-	  usegc = false
+         parent,
+         panel,
+         apps_w,
+         app_w,
+         paint,
+         current,
+         app,
+         sel,
+         appmon,
+         usegc = false
 	}).
 
 -record(paint, {font, pen, brush, sel, links}).
@@ -415,8 +415,8 @@ build_tree({Root, P2Name, Links, XLinks0}, FontW) ->
     {Tree, Dim} = calc_tree_size(Tree0),
     Fetch = fun({From, To}, Acc) ->
 		    try {value, ToPid} = gb_trees:lookup(To, Name2P),
-			 FromPid = gb_trees:get(From, Name2P),
-			 [{locate_box(FromPid, [Tree]),locate_box(ToPid, [Tree])}|Acc]
+                        FromPid = gb_trees:get(From, Name2P),
+                        [{locate_box(FromPid, [Tree]),locate_box(ToPid, [Tree])}|Acc]
 		    catch _:_ ->
 			    Acc
 		    end

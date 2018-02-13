@@ -145,7 +145,7 @@ send(S, Packet) when is_port(S) ->
     end.
 
 -spec recv(Socket, Length) ->
-                  {ok, {Address, Port, Packet}} | {error, Reason} when
+          {ok, {Address, Port, Packet}} | {error, Reason} when
       Socket :: socket(),
       Length :: non_neg_integer(),
       Address :: inet:ip_address() | inet:returned_non_ip_address(),
@@ -162,7 +162,7 @@ recv(S,Len) when is_port(S), is_integer(Len) ->
     end.
 
 -spec recv(Socket, Length, Timeout) ->
-                  {ok, {Address, Port, Packet}} | {error, Reason} when
+          {ok, {Address, Port, Packet}} | {error, Reason} when
       Socket :: socket(),
       Length :: non_neg_integer(),
       Timeout :: timeout(),

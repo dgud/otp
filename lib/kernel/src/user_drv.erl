@@ -31,7 +31,7 @@
 -define(OP_DELC,3).
 -define(OP_BEEP,4).
 -define(OP_PUTC_SYNC,5).
-% Control op
+                                                % Control op
 -define(CTRL_OP_GET_WINSIZE,100).
 -define(CTRL_OP_GET_UNICODE_STATE,101).
 -define(CTRL_OP_SET_UNICODE_STATE,102).
@@ -473,8 +473,8 @@ list_commands(Iport, Oport) ->
 		 {put_chars, unicode,"  j                 - list all jobs\n"},
 		 {put_chars, unicode,"  s [shell]         - start local shell\n"},
 		 {put_chars, unicode,"  r [node [shell]]  - start remote shell\n"}] ++
-		QuitReq ++
-		[{put_chars, unicode,"  ? | h             - this message\n"}],
+                    QuitReq ++
+                    [{put_chars, unicode,"  ? | h             - this message\n"}],
 		Iport, Oport).
 
 get_line({done,Line,_Rest,Rs}, Iport, Oport) ->
@@ -492,15 +492,15 @@ get_line({What,Cont0,Rs}, Iport, Oport) ->
 	{Iport,eof} ->
 	    get_line(edlin:edit_line(eof, Cont0), Iport, Oport)
     after
-	get_line_timeout(What) ->
+        get_line_timeout(What) ->
 	    get_line(edlin:edit_line([], Cont0), Iport, Oport)
     end.
 
 get_line_timeout(blink) -> 1000;
 get_line_timeout(more_chars) -> infinity.
 
-% Let driver report window geometry,
-% definitely outside of the common interface
+                                                % Let driver report window geometry,
+                                                % definitely outside of the common interface
 get_tty_geometry(Iport) ->
     case (catch port_control(Iport,?CTRL_OP_GET_WINSIZE,[])) of
 	List when length(List) =:= 8 -> 

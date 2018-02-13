@@ -135,7 +135,7 @@ report_activity(Tid) ->
 	{'EXIT', _} -> ok;
 	Subscribers ->
 	    deliver(Subscribers, {mnesia_activity_event, {complete, Tid}})
-	end.
+    end.
 
 report_table_event(Tab, Tid, Obj, Op) ->   
     case ?catch_val({Tab, commit_work}) of
@@ -375,7 +375,7 @@ activate(ClientPid, What, Var, OldSubscribers, SubscrTab) ->
 	   true -> 
 		case lists:keysearch(subscribers, 1, OldSubscribers) of
 		    false -> [];
-		{value, Subs} -> 
+                    {value, Subs} -> 
 			case Subs of
 			    {subscribers, L1, L2} -> 
 				L1 ++ L2;

@@ -81,7 +81,7 @@ make_rr(#dns_rr{}=RR, L) when is_list(L) ->
 make_rr(#dns_rr_opt{}=RR, L) when is_list(L) ->
     case rr_type(L, RR#dns_rr_opt.type) of
 	opt ->
-	     make_dns_rr_opt(RR, L);
+            make_dns_rr_opt(RR, L);
 	_ ->
 	    Ts = common_fields__rr__rr_opt(),
 	    make_dns_rr([Opt || {T,_}=Opt <- dns_rr_opt(RR),
@@ -126,41 +126,41 @@ decode(Buffer) when is_binary(Buffer) ->
     end.
 
 do_decode(<<Id:16,
-	   QR:1,Opcode:4,AA:1,TC:1,RD:1,
-	   RA:1,PR:1,_:2,Rcode:4,
-	   QdCount:16,AnCount:16,NsCount:16,ArCount:16,
-	   QdBuf/binary>>=Buffer) ->
+            QR:1,Opcode:4,AA:1,TC:1,RD:1,
+            RA:1,PR:1,_:2,Rcode:4,
+            QdCount:16,AnCount:16,NsCount:16,ArCount:16,
+            QdBuf/binary>>=Buffer) ->
     {AnBuf,QdList,QdTC} = decode_query_section(QdBuf,QdCount,Buffer),
     {NsBuf,AnList,AnTC} = decode_rr_section(AnBuf,AnCount,Buffer),
     {ArBuf,NsList,NsTC} = decode_rr_section(NsBuf,NsCount,Buffer),
     {Rest,ArList,ArTC} = decode_rr_section(ArBuf,ArCount,Buffer),
-	case Rest of
-	    <<>> ->
-		HdrTC = decode_boolean(TC),
-		DnsHdr =
-		    #dns_header{id=Id,
-				qr=decode_boolean(QR),
-				opcode=decode_opcode(Opcode),
-				aa=decode_boolean(AA),
-				tc=HdrTC,
-				rd=decode_boolean(RD),
-				ra=decode_boolean(RA),
-				pr=decode_boolean(PR),
-				rcode=Rcode},
-		case QdTC or AnTC or NsTC or ArTC of
-		    true when not HdrTC ->
-			throw(?DECODE_ERROR);
-		    _ ->
-			#dns_rec{header=DnsHdr,
-				 qdlist=QdList,
-				 anlist=AnList,
-				 nslist=NsList,
-				 arlist=ArList}
-		end;
-	    _ ->
-		%% Garbage data after DNS message
-		throw(?DECODE_ERROR)
-	end;
+    case Rest of
+        <<>> ->
+            HdrTC = decode_boolean(TC),
+            DnsHdr =
+                #dns_header{id=Id,
+                            qr=decode_boolean(QR),
+                            opcode=decode_opcode(Opcode),
+                            aa=decode_boolean(AA),
+                            tc=HdrTC,
+                            rd=decode_boolean(RD),
+                            ra=decode_boolean(RA),
+                            pr=decode_boolean(PR),
+                            rcode=Rcode},
+            case QdTC or AnTC or NsTC or ArTC of
+                true when not HdrTC ->
+                    throw(?DECODE_ERROR);
+                _ ->
+                    #dns_rec{header=DnsHdr,
+                             qdlist=QdList,
+                             anlist=AnList,
+                             nslist=NsList,
+                             arlist=ArList}
+            end;
+        _ ->
+            %% Garbage data after DNS message
+            throw(?DECODE_ERROR)
+    end;
 do_decode(_) ->
     %% DNS message does not even match header
     throw(?DECODE_ERROR).
@@ -195,7 +195,7 @@ decode_rr_section(Rest, 0, _Buffer, RRs) ->
 decode_rr_section(Bin, N, Buffer, RRs) ->
     case decode_name(Bin, Buffer) of
 	{<<T:16/unsigned,C:16/unsigned,TTL:4/binary,
-	  Len:16,D:Len/binary,Rest/binary>>,
+           Len:16,D:Len/binary,Rest/binary>>,
 	 Name} ->
 	    Type = decode_type(T),
 	    Class = decode_class(C),
@@ -256,9 +256,9 @@ encode_header(#dns_header{id=Id}=H, QdCount, AnCount, NsCount, ArCount) ->
     PR = encode_boolean(H#dns_header.pr),
     Rcode = H#dns_header.rcode,
     <<Id:16,
-     QR:1,Opcode:4,AA:1,TC:1,RD:1,
-     RA:1,PR:1,0:2,Rcode:4,
-     QdCount:16,AnCount:16,NsCount:16,ArCount:16>>.
+      QR:1,Opcode:4,AA:1,TC:1,RD:1,
+      RA:1,PR:1,0:2,Rcode:4,
+      QdCount:16,AnCount:16,NsCount:16,ArCount:16>>.
 
 %% RFC 1035: 4.1.2. Question section format
 %%
@@ -298,7 +298,7 @@ encode_res_section_rr(Bin0, Comp0, Rs, DName, Type, Class, TTL, Data) ->
 				 Type, Class, Data),
     DataSize = byte_size(DataBin),
     encode_res_section(<<Bin/binary,T:16,C:16,
-			TTL/binary,DataSize:16,DataBin/binary>>, Comp, Rs).
+                         TTL/binary,DataSize:16,DataBin/binary>>, Comp, Rs).
 
 %%
 %% Resource types
@@ -439,7 +439,7 @@ decode_data(Data0, _, ?S_SOA, Buffer) ->
     {Data,RName} = decode_name(Data1, Buffer),
     case Data of
 	<<Serial:32,Refresh:32/signed,Retry:32/signed,
-	 Expiry:32/signed,Minimum:32>> ->
+          Expiry:32/signed,Minimum:32>> ->
 	    {MName,RName,Serial,Refresh,Retry,Expiry,Minimum};
 	_ ->
 	    %% Broken SOA RR data
@@ -453,7 +453,7 @@ decode_data(<<A,B,C,D,Proto,BitMap/binary>>, in, ?S_WKS, _Buffer) ->
     {{A,B,C,D},Proto,BitMap};
 decode_data(Dom, _, ?S_PTR, Buffer)   -> decode_domain(Dom, Buffer);
 decode_data(<<CpuLen,CPU:CpuLen/binary,
-	     OsLen,OS:OsLen/binary>>, _, ?S_HINFO, _) ->
+              OsLen,OS:OsLen/binary>>, _, ?S_HINFO, _) ->
     {binary_to_list(CPU),binary_to_list(OS)};
 decode_data(Data0, _, ?S_MINFO, Buffer) ->
     {Data1,RM} = decode_name(Data0, Buffer),
@@ -527,7 +527,7 @@ decode_name(<<0,Rest/binary>>, _Buffer, Labels, Tail, Cnt) ->
     {if Cnt =/= 0 -> Tail; true -> Rest end,
      decode_name_labels(Labels)};
 decode_name(<<0:2,Len:6,Label:Len/binary,Rest/binary>>,
-	     Buffer, Labels, Tail, Cnt) ->
+            Buffer, Labels, Tail, Cnt) ->
     %% One plain label here
     decode_name(Rest, Buffer, [Label|Labels],
 		if Cnt =/= 0 -> Tail; true -> Rest end,
@@ -596,7 +596,7 @@ encode_data(Comp0, Pos, ?S_SOA, in,
     {B1,Comp1} = encode_name(Comp0, Pos, MName),
     {B,Comp} = encode_name(B1, Comp1, Pos+byte_size(B1), RName),
     {<<B/binary,Serial:32,Refresh:32/signed,Retry:32/signed,
-      Expiry:32/signed,Minimum:32>>,
+       Expiry:32/signed,Minimum:32>>,
      Comp};
 encode_data(Comp, Pos, ?S_MB, in, Domain) -> encode_name(Comp, Pos, Domain);
 encode_data(Comp, Pos, ?S_MG, in, Domain) -> encode_name(Comp, Pos, Domain);

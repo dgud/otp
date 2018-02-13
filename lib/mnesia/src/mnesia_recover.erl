@@ -87,7 +87,7 @@
 start() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [self()],
 			  [{timeout, infinity}
-			   %%, {debug, [trace]}
+                          %%, {debug, [trace]}
 			  ]).
 
 init() ->
@@ -105,25 +105,25 @@ next_check_overload() ->
 do_check_overload(S) ->
     %% Time to check if mnesia_tm is overloaded
     case whereis(mnesia_tm) of
-    Pid when is_pid(Pid) ->
-        Threshold = 100,
-        Prev = S#state.tm_queue_len,
-        {message_queue_len, Len} =
-        process_info(Pid, message_queue_len),
-        if
-        Len > Threshold, Prev > Threshold ->
-            What = {mnesia_tm, message_queue_len, [Prev, Len]},
-            mnesia_lib:report_system_event({mnesia_overload, What}),
-            mnesia_lib:overload_set(mnesia_tm, true),
-            S#state{tm_queue_len = 0};
-        Len > Threshold ->
-            S#state{tm_queue_len = Len};
-        true ->
-            mnesia_lib:overload_set(mnesia_tm, false),
-            S#state{tm_queue_len = 0}
-        end;
-    undefined ->
-        S
+        Pid when is_pid(Pid) ->
+            Threshold = 100,
+            Prev = S#state.tm_queue_len,
+            {message_queue_len, Len} =
+                process_info(Pid, message_queue_len),
+            if
+                Len > Threshold, Prev > Threshold ->
+                    What = {mnesia_tm, message_queue_len, [Prev, Len]},
+                    mnesia_lib:report_system_event({mnesia_overload, What}),
+                    mnesia_lib:overload_set(mnesia_tm, true),
+                    S#state{tm_queue_len = 0};
+                Len > Threshold ->
+                    S#state{tm_queue_len = Len};
+                true ->
+                    mnesia_lib:overload_set(mnesia_tm, false),
+                    S#state{tm_queue_len = 0}
+            end;
+        undefined ->
+            S
     end.
 
 allow_garb() ->
@@ -232,11 +232,11 @@ note_master_nodes(Tab, Nodes) when is_list(Nodes) ->
     ?ets_insert(mnesia_decision, Master).
 
 note_outcome(D) when D#decision.disc_nodes == [] ->
-%%    ?DBG("~w: note_tmp_decision: ~w~n", [node(), D]),
+    %%    ?DBG("~w: note_tmp_decision: ~w~n", [node(), D]),
     note_decision(D#decision.tid, filter_outcome(D#decision.outcome)),
     ?ets_delete(mnesia_decision, D#decision.tid);
 note_outcome(D) when D#decision.disc_nodes /= [] ->
-%%    ?DBG("~w: note_decision: ~w~n", [node(), D]),
+    %%    ?DBG("~w: note_decision: ~w~n", [node(), D]),
     ?ets_insert(mnesia_decision, D).
 
 do_log_decision(D) when D#decision.outcome /= unclear ->
@@ -276,7 +276,7 @@ tell_im_certain([], _D) ->
     ignore;
 tell_im_certain(Nodes, D) ->
     Msg = {im_certain, node(), D},
-  %%  mnesia_lib:verbose("~w: tell: ~w~n", [Msg, Nodes]), 
+    %%  mnesia_lib:verbose("~w: tell: ~w~n", [Msg, Nodes]), 
     abcast(Nodes, Msg).
 
 sync() ->
@@ -867,7 +867,7 @@ handle_cast({mnesia_down, Node}, State) ->
 		true ->
 		    State2 = add_remote_decision(Node, D, State),
 		    {noreply, State2}
-		end
+            end
     end;
 
 handle_cast({announce_all, Nodes}, State) ->
@@ -981,8 +981,8 @@ handle_early_msgs(State, From) ->
 do_handle_early_msgs([Msg | Msgs], State) ->
     %% The messages are in reverted order
     case do_handle_early_msgs(Msgs, State) of
-%%         {stop, Reason, Reply, State2} ->
-%% 	    {stop, Reason, Reply, State2};
+        %%         {stop, Reason, Reply, State2} ->
+        %% 	    {stop, Reason, Reply, State2};
         {stop, Reason, State2} ->
 	    {stop, Reason, State2};
 	{noreply, State2} ->
@@ -1068,8 +1068,8 @@ merge_decisions(Node, D, NewD0) ->
 	is_record(D, decision) ->
 	    DiscNs = D#decision.disc_nodes -- ([node(), Node]),
 	    OldD = filter_aborted(D#decision{disc_nodes = DiscNs}),
-%%	    mnesia_lib:dbg_out("merge ~w: NewD = ~w~n D = ~w~n OldD = ~w~n", 
-%%			       [Node, NewD, D, OldD]),
+            %%	    mnesia_lib:dbg_out("merge ~w: NewD = ~w~n D = ~w~n OldD = ~w~n", 
+            %%			       [Node, NewD, D, OldD]),
 	    if
 		OldD#decision.outcome == unclear,
 		NewD#decision.outcome == unclear ->
@@ -1120,7 +1120,7 @@ add_remote_decisions(Node, [D | Tail], State) when is_record(D, decision) ->
     add_remote_decisions(Node, Tail, State2);
 
 add_remote_decisions(Node, [C | Tail], State)
-        when is_record(C, transient_decision) ->
+  when is_record(C, transient_decision) ->
     D = #decision{tid = C#transient_decision.tid,
 		  outcome = C#transient_decision.outcome,
 		  disc_nodes = [],
@@ -1224,8 +1224,8 @@ send_decisions([]) ->
 
 arrange([To | ToNodes], D, Acc, ForceSend) when is_record(D, decision) ->
     NeedsAdd = (ForceSend or
-		lists:member(To, D#decision.disc_nodes) or
-		lists:member(To, D#decision.ram_nodes)),
+                    lists:member(To, D#decision.disc_nodes) or
+                    lists:member(To, D#decision.ram_nodes)),
     case NeedsAdd of
 	true ->
 	    Acc2 = add_decision(To, D, Acc),

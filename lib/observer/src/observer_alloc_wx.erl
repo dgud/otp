@@ -30,17 +30,17 @@
 
 -record(state,
 	{
-	  time = #ti{},
-	  active = false,
-	  parent,
-	  wins,
-	  mem,
-	  samples,
-          max,
-	  panel,
-	  paint,
-	  appmon,
-	  async
+         time = #ti{},
+         active = false,
+         parent,
+         wins,
+         mem,
+         samples,
+         max,
+         panel,
+         paint,
+         appmon,
+         async
 	}).
 
 -define(ID_REFRESH_INTERVAL, 102).

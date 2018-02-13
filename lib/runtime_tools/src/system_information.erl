@@ -29,8 +29,8 @@
 
 %% API
 -export([report/0,
-	from_file/1,
-	to_file/1]).
+         from_file/1,
+         to_file/1]).
 
 -export([start/0, stop/0,
          load_report/0, load_report/2,
@@ -55,8 +55,8 @@
 -define(REPORT_FILE_VSN, "1.0").
 
 -record(state, {
-	report
-    }).
+                report
+               }).
 
 %%===================================================================
 %% API
@@ -178,9 +178,9 @@ handle_call({application, App, Opts}, _From, #state{ report = Report } = S) ->
 
 handle_call({environment, Opts}, _From, #state{ report = Report } = S) ->
     Choices = case proplists:get_bool(full, Opts) of
-	true  -> [environment];
-	false -> [environment_erts]
-    end,
+                  true  -> [environment];
+                  false -> [environment_erts]
+              end,
     ok = print_environments(get_value(Choices, Report), Opts),
     {reply, ok, S};
 
@@ -290,8 +290,8 @@ print_application({App, Info}, Opts) ->
     case proplists:get_bool(full, Opts) of
 	true ->
 	    _ = [ begin
-			print_module(Minfo)
-		end || Minfo <- get_value([modules], Info) ],
+                      print_module(Minfo)
+                  end || Minfo <- get_value([modules], Info) ],
 	    ok;
 	false ->
 	    ok
@@ -345,36 +345,36 @@ print_module({Mod, ModInfo}) ->
 
 erlang_system_info() ->
     erlang_system_info([
-	    allocator,
-	    check_io,
-	    otp_release,
-	    port_limit,
-	    process_limit,
-	    % procs,  % not needed
-	    smp_support,
-	    system_version,
-	    system_architecture,
-	    threads,
-	    thread_pool_size,
-	    {wordsize,internal},
-	    {wordsize,external},
-	    {cpu_topology, defined},
-	    {cpu_topology, detected},
-	    scheduler_bind_type,
-	    scheduler_bindings,
-	    compat_rel,
-	    schedulers_state,
-	    build_type,
-	    logical_processors,
-	    logical_processors_online,
-	    logical_processors_available,
-	    driver_version,
-	    nif_version,
-	    emu_args,
-	    ethread_info,
-	    beam_jump_table,
-	    taints
-	]).
+                        allocator,
+                        check_io,
+                        otp_release,
+                        port_limit,
+                        process_limit,
+                                                % procs,  % not needed
+                        smp_support,
+                        system_version,
+                        system_architecture,
+                        threads,
+                        thread_pool_size,
+                        {wordsize,internal},
+                        {wordsize,external},
+                        {cpu_topology, defined},
+                        {cpu_topology, detected},
+                        scheduler_bind_type,
+                        scheduler_bindings,
+                        compat_rel,
+                        schedulers_state,
+                        build_type,
+                        logical_processors,
+                        logical_processors_online,
+                        logical_processors_available,
+                        driver_version,
+                        nif_version,
+                        emu_args,
+                        ethread_info,
+                        beam_jump_table,
+                        taints
+                       ]).
 
 erlang_system_info([]) -> [];
 erlang_system_info([Type|Types]) ->
@@ -385,60 +385,60 @@ erlang_system_info([Type|Types]) ->
 
 os_getenv_erts_specific() -> 
     os_getenv_erts_specific([
-	    "BINDIR",
-	    "DIALYZER_EMULATOR",
-	    "CERL_DETACHED_PROG",
-	    "EMU",
-	    "ERL_CONSOLE_MODE",
-	    "ERL_CRASH_DUMP",
-	    "ERL_CRASH_DUMP_NICE",
-	    "ERL_CRASH_DUMP_SECONDS",
-	    "ERL_EPMD_PORT",
-	    "ERL_EMULATOR_DLL",
-	    "ERL_FULLSWEEP_AFTER",
-	    "ERL_LIBS",
-	    "ERL_MALLOC_LIB",
-	    "ERL_MAX_PORTS",
-	    "ERL_MAX_ETS_TABLES",
-	    "ERL_NO_VFORK",
-	    "ERL_NO_KERNEL_POLL",
-	    "ERL_THREAD_POOL_SIZE",
-	    "ERLC_EMULATOR",
-	    "ESCRIPT_EMULATOR",
-	    "HOME",
-	    "HOMEDRIVE",
-	    "HOMEPATH",
-	    "LANG",
-	    "LC_ALL",
-	    "LC_CTYPE",
-	    "PATH",
-	    "PROGNAME",
-	    "RELDIR",
-	    "ROOTDIR",
-	    "TERM",
-	    %"VALGRIND_LOG_XML",
+                             "BINDIR",
+                             "DIALYZER_EMULATOR",
+                             "CERL_DETACHED_PROG",
+                             "EMU",
+                             "ERL_CONSOLE_MODE",
+                             "ERL_CRASH_DUMP",
+                             "ERL_CRASH_DUMP_NICE",
+                             "ERL_CRASH_DUMP_SECONDS",
+                             "ERL_EPMD_PORT",
+                             "ERL_EMULATOR_DLL",
+                             "ERL_FULLSWEEP_AFTER",
+                             "ERL_LIBS",
+                             "ERL_MALLOC_LIB",
+                             "ERL_MAX_PORTS",
+                             "ERL_MAX_ETS_TABLES",
+                             "ERL_NO_VFORK",
+                             "ERL_NO_KERNEL_POLL",
+                             "ERL_THREAD_POOL_SIZE",
+                             "ERLC_EMULATOR",
+                             "ESCRIPT_EMULATOR",
+                             "HOME",
+                             "HOMEDRIVE",
+                             "HOMEPATH",
+                             "LANG",
+                             "LC_ALL",
+                             "LC_CTYPE",
+                             "PATH",
+                             "PROGNAME",
+                             "RELDIR",
+                             "ROOTDIR",
+                             "TERM",
+                                                %"VALGRIND_LOG_XML",
 
-	    %% heart
-	    "COMSPEC",
-	    "HEART_COMMAND",
+                             %% heart
+                             "COMSPEC",
+                             "HEART_COMMAND",
 
-	    %% run_erl
-	    "RUN_ERL_LOG_ALIVE_MINUTES",
-	    "RUN_ERL_LOG_ACTIVITY_MINUTES",
-	    "RUN_ERL_LOG_ALIVE_FORMAT",
-	    "RUN_ERL_LOG_ALIVE_IN_UTC",
-	    "RUN_ERL_LOG_GENERATIONS",
-	    "RUN_ERL_LOG_MAXSIZE",
-	    "RUN_ERL_DISABLE_FLOWCNTRL",
+                             %% run_erl
+                             "RUN_ERL_LOG_ALIVE_MINUTES",
+                             "RUN_ERL_LOG_ACTIVITY_MINUTES",
+                             "RUN_ERL_LOG_ALIVE_FORMAT",
+                             "RUN_ERL_LOG_ALIVE_IN_UTC",
+                             "RUN_ERL_LOG_GENERATIONS",
+                             "RUN_ERL_LOG_MAXSIZE",
+                             "RUN_ERL_DISABLE_FLOWCNTRL",
 
-	    %% driver getenv
-	    "CALLER_DRV_USE_OUTPUTV",
-	    "ERL_INET_GETHOST_DEBUG",
-	    "ERL_EFILE_THREAD_SHORT_CIRCUIT",
-	    "ERL_WINDOW_TITLE",
-	    "ERL_ABORT_ON_FAILURE",
-	    "TTYSL_DEBUG_LOG"
-	]).
+                             %% driver getenv
+                             "CALLER_DRV_USE_OUTPUTV",
+                             "ERL_INET_GETHOST_DEBUG",
+                             "ERL_EFILE_THREAD_SHORT_CIRCUIT",
+                             "ERL_WINDOW_TITLE",
+                             "ERL_ABORT_ON_FAILURE",
+                             "TTYSL_DEBUG_LOG"
+                            ]).
 
 os_getenv_erts_specific([]) -> [];
 os_getenv_erts_specific([Key|Keys]) ->
@@ -485,16 +485,16 @@ consult_fd_1(Fd, Cont0, ReadResult) ->
 to_fd(Fd) ->
     EmitChunk =
         fun(Format, Args) ->
-            ok = file:write(Fd, io_lib:format(Format, Args))
+                ok = file:write(Fd, io_lib:format(Format, Args))
         end,
 
     EmitChunk("{system_information_version, ~p}.~n"
               "{system_information,["
-                  "{init_arguments,~p},"
-                  "{code_paths,~p},",
-        [?REPORT_FILE_VSN,
-         init:get_arguments(),
-         code:get_path()]),
+              "{init_arguments,~p},"
+              "{code_paths,~p},",
+              [?REPORT_FILE_VSN,
+               init:get_arguments(),
+               code:get_path()]),
 
     emit_code_info(EmitChunk),
 
@@ -505,24 +505,24 @@ to_fd(Fd) ->
                   "{environment_erts,~p},"
                   "{environment,~p},"
                   "{sanity_check,~p}"
-              "]}.~n",
-        [erlang_system_info(),
-         erlang:system_info(compile_info),
-         get_dynamic_libraries(),
-         os_getenv_erts_specific(),
-         [split_env(Env) || Env <- os:getenv()],
-         sanity_check()]).
+                  "]}.~n",
+                  [erlang_system_info(),
+                   erlang:system_info(compile_info),
+                   get_dynamic_libraries(),
+                   os_getenv_erts_specific(),
+                   [split_env(Env) || Env <- os:getenv()],
+                   sanity_check()]).
 
 %% Emits all modules/applications in the *code path order*
 emit_code_info(EmitChunk) ->
     EmitChunk("{code, [", []),
     comma_separated_foreach(EmitChunk,
-        fun(Path) ->
-            case is_application_path(Path) of
-                true -> emit_application_info(EmitChunk, Path);
-                false -> emit_code_path_info(EmitChunk, Path)
-            end
-        end, code:get_path()),
+                            fun(Path) ->
+                                    case is_application_path(Path) of
+                                        true -> emit_application_info(EmitChunk, Path);
+                                        false -> emit_code_path_info(EmitChunk, Path)
+                                    end
+                            end, code:get_path()),
     EmitChunk("]}", []).
 
 emit_application_info(EmitChunk, Path) ->
@@ -534,18 +534,18 @@ emit_application_info(EmitChunk, Path) ->
             Version = proplists:get_value(vsn, Info, []),
 
             EmitChunk("{application, {~p,["
-                          "{description,~p},"
-                          "{vsn,~p},"
-                          "{path,~p},"
-                          "{runtime_dependencies,~p},",
-                [App, Description, Version, Path, RtDeps]),
+                      "{description,~p},"
+                      "{vsn,~p},"
+                      "{path,~p},"
+                      "{runtime_dependencies,~p},",
+                      [App, Description, Version, Path, RtDeps]),
             emit_module_info_from_path(EmitChunk, Path),
             EmitChunk("]}}", [])
     end.
 
 emit_code_path_info(EmitChunk, Path) ->
     EmitChunk("{code, ["
-                  "{path, ~p},", [Path]),
+              "{path, ~p},", [Path]),
     emit_module_info_from_path(EmitChunk, Path),
     EmitChunk("]}", []).
 
@@ -554,9 +554,9 @@ emit_module_info_from_path(EmitChunk, Path) ->
 
     EmitChunk("{modules, [", []),
     comma_separated_foreach(EmitChunk,
-        fun(Beam) ->
-            emit_module_info(EmitChunk, Beam)
-        end, BeamFiles),
+                            fun(Beam) ->
+                                    emit_module_info(EmitChunk, Beam)
+                            end, BeamFiles),
     EmitChunk("]}", []).
 
 emit_module_info(EmitChunk, Beam) ->
@@ -569,17 +569,17 @@ emit_module_info(EmitChunk, Beam) ->
     Native = beam_is_native_compiled(Beam),
 
     Loaded = case code:is_loaded(Mod) of
-        false -> false;
-        _     -> true
-    end,
+                 false -> false;
+                 _     -> true
+             end,
 
     EmitChunk("{~p,["
-                  "{loaded,~p},"
-                  "{native,~p},"
-                  "{compiler,~p},"
-                  "{md5,~p}"
+              "{loaded,~p},"
+              "{native,~p},"
+              "{compiler,~p},"
+              "{md5,~p}"
               "]}",
-        [Mod, Loaded, Native, CompilerVersion, hexstring(Md5)]).
+              [Mod, Loaded, Native, CompilerVersion, hexstring(Md5)]).
 
 comma_separated_foreach(_EmitChunk, _Fun, []) ->
     ok;
@@ -658,13 +658,13 @@ get_dynamic_libraries() ->
 
 get_beam_name() ->
     Type = case erlang:system_info(build_type) of
-	opt -> "";
-	TypeName -> "." ++ atom_to_list(TypeName)
-    end,
+               opt -> "";
+               TypeName -> "." ++ atom_to_list(TypeName)
+           end,
     Flavor = case erlang:system_info(smp_support) of
-	false -> "";
-	true -> ".smp"
-    end,
+                 false -> "";
+                 true -> ".smp"
+             end,
     Beam = os:getenv("EMU", "beam"),
     Beam ++ Type ++ Flavor.
 

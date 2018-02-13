@@ -285,7 +285,7 @@ init([]) ->
 %%% to disagree of the global_groups definition.
 %%%====================================================================================
 handle_call(sync, _From, S) ->
-%    io:format("~p sync ~p~n",[node(), application:get_env(kernel, global_groups)]),
+                                                %    io:format("~p sync ~p~n",[node(), application:get_env(kernel, global_groups)]),
     case application:get_env(kernel, global_groups) of
 	undefined ->
 	    update_publish_nodes(S#state.publish_type),
@@ -343,7 +343,7 @@ handle_call(global_groups, _From, S) ->
 %%%   False => stop sending nodeup/nodedown to the requesting Pid
 %%%====================================================================================
 handle_call({monitor_nodes, Flag}, {Pid, _}, StateIn) ->
-%    io:format("***** handle_call ~p~n",[monitor_nodes]),
+                                                %    io:format("***** handle_call ~p~n",[monitor_nodes]),
     {Res, State} = monitor_nodes(Flag, Pid, StateIn),
     {reply, Res, State};
 
@@ -359,7 +359,7 @@ handle_call(own_nodes, _From, S) ->
 		    [node() | nodes()];
 		synced ->
 		    get_own_nodes()
-%		    S#state.nodes
+                                                %		    S#state.nodes
 	    end,
     {reply, Nodes, S};
 
@@ -391,7 +391,7 @@ handle_call({registered_names, {node, Node}}, _From, S) when Node =:= node() ->
     {reply, Res, S};
 handle_call({registered_names, {node, Node}}, From, S) ->
     Pid = global_search:start(names, {node, Node, From}),
-%    io:format(">>>>> registered_names Pid ~p~n",[Pid]),
+                                                %    io:format(">>>>> registered_names Pid ~p~n",[Pid]),
     Wait = get(registered_names),
     put(registered_names, [{Pid, From} | Wait]),
     {noreply, S};
@@ -545,7 +545,7 @@ handle_call({global_groups_changed, NewPara}, _From, S) ->
 %%% be disconnected from those nodes not yet been upgraded.
 %%%====================================================================================
 handle_call({global_groups_added, NewPara}, _From, S) ->
-%    io:format("### global_groups_changed, NewPara ~p ~n",[NewPara]),
+                                                %    io:format("### global_groups_changed, NewPara ~p ~n",[NewPara]),
     {NewGroupName, PubTpGrp, NewNodes, NewOther} = 
 	case catch config_scan(NewPara, publish_type) of
 	    {error, _Error2} ->
@@ -588,7 +588,7 @@ handle_call({global_groups_added, NewPara}, _From, S) ->
 %%% global_groups parameter removed
 %%%====================================================================================
 handle_call({global_groups_removed, _NewPara}, _From, S) ->
-%    io:format("### global_groups_removed, NewPara ~p ~n",[_NewPara]),
+                                                %    io:format("### global_groups_removed, NewPara ~p ~n",[_NewPara]),
     update_publish_nodes(S#state.publish_type),
     NewS = S#state{sync_state = no_conf, group_name = [], nodes = [], 
 		   sync_error = [], no_contact = [], 
@@ -631,7 +631,7 @@ handle_call(info, _From, S) ->
     Reply = [{state,          S#state.sync_state},
 	     {own_group_name, S#state.group_name},
 	     {own_group_nodes, get_own_nodes()},
-%	     {"nodes()",      lists:sort(nodes())},
+                                                %	     {"nodes()",      lists:sort(nodes())},
 	     {synced_nodes,   S#state.nodes},
 	     {sync_error,     S#state.sync_error},
 	     {no_contact,     S#state.no_contact},
@@ -670,7 +670,7 @@ handle_call({whereis_name_test, _Name}, _From, S) ->
     {reply, {error, illegal_function_call}, S};
 
 handle_call(Call, _From, S) ->
-%    io:format("***** handle_call ~p~n",[Call]),
+                                                %    io:format("***** handle_call ~p~n",[Call]),
     {reply, {illegal_message, Call}, S}.
     
 
@@ -684,13 +684,13 @@ handle_call(Call, _From, S) ->
 %%% Get a list of nodes in the own global group
 %%%====================================================================================
 handle_cast({registered_names, User}, S) ->
-%    io:format(">>>>> registered_names User ~p~n",[User]),
+                                                %    io:format(">>>>> registered_names User ~p~n",[User]),
     Res = global:registered_names(),
     User ! {registered_names_res, Res},
     {noreply, S};
 
 handle_cast({registered_names_res, Result, Pid, From}, S) ->
-%    io:format(">>>>> registered_names_res Result ~p~n",[Result]),
+                                                %    io:format(">>>>> registered_names_res Result ~p~n",[Result]),
     unlink(Pid),
     Pid ! kill,
     Wait = get(registered_names),
@@ -710,7 +710,7 @@ handle_cast({registered_names_res, Result, Pid, From}, S) ->
 %%% and return to the requesting process.
 %%%====================================================================================
 handle_cast({send_res, Result, Name, Msg, Pid, From}, S) ->
-%    io:format("~p>>>>> send_res Result ~p~n",[node(), Result]),
+                                                %    io:format("~p>>>>> send_res Result ~p~n",[node(), Result]),
     case Result of
 	{badarg,{Name, Msg}} ->
 	    continue;
@@ -732,7 +732,7 @@ handle_cast({send_res, Result, Name, Msg, Pid, From}, S) ->
 %%%====================================================================================
 handle_cast({find_name, User, Name}, S) ->
     Res = global:whereis_name(Name),
-%    io:format(">>>>> find_name Name ~p   Res ~p~n",[Name, Res]),
+                                                %    io:format(">>>>> find_name Name ~p   Res ~p~n",[Name, Res]),
     User ! {find_name_res, Res},
     {noreply, S};
 
@@ -745,8 +745,8 @@ handle_cast({find_name, User, Name}, S) ->
 %%% and return to the requesting process.
 %%%====================================================================================
 handle_cast({find_name_res, Result, Pid, From}, S) ->
-%    io:format(">>>>> find_name_res Result ~p~n",[Result]),
-%    io:format(">>>>> find_name_res get() ~p~n",[get()]),
+                                                %    io:format(">>>>> find_name_res Result ~p~n",[Result]),
+                                                %    io:format(">>>>> find_name_res get() ~p~n",[get()]),
     unlink(Pid),
     Pid ! kill,
     Wait = get(whereis_name),
@@ -760,7 +760,7 @@ handle_cast({find_name_res, Result, Pid, From}, S) ->
 %%% The node is synced successfully
 %%%====================================================================================
 handle_cast({synced, NoContact}, S) ->
-%    io:format("~p>>>>> synced ~p  ~n",[node(), NoContact]),
+                                                %    io:format("~p>>>>> synced ~p  ~n",[node(), NoContact]),
     kill_global_group_check(),
     Nodes = get_own_nodes() -- [node() | NoContact],
     {noreply, S#state{nodes = lists:sort(Nodes),
@@ -772,7 +772,7 @@ handle_cast({synced, NoContact}, S) ->
 %%% The node could not sync with some other nodes.
 %%%====================================================================================
 handle_cast({sync_error, NoContact, ErrorNodes}, S) ->
-%    io:format("~p>>>>> sync_error ~p ~p ~n",[node(), NoContact, ErrorNodes]),
+                                                %    io:format("~p>>>>> sync_error ~p ~p ~n",[node(), NoContact, ErrorNodes]),
     Txt = io_lib:format("Global group: Could not synchronize with these nodes ~p~n"
 			"because global_groups were not in agreement. ~n", [ErrorNodes]),
     error_logger:error_report(Txt),
@@ -791,7 +791,7 @@ handle_cast({conf_check, Vsn, Node, From, sync, CCName, CCNodes}, S) ->
     
 handle_cast({conf_check, Vsn, Node, From, sync, CCName, PubType, CCNodes}, S) ->
     CurNodes = S#state.nodes,
-%    io:format(">>>>> conf_check,sync  Node ~p~n",[Node]),
+                                                %    io:format(">>>>> conf_check,sync  Node ~p~n",[Node]),
     %% Another node is syncing, 
     %% done for instance after upgrade of global_groups parameter
     NS = 
@@ -851,7 +851,7 @@ handle_cast({conf_check, Vsn, Node, From, sync, CCName, PubType, CCNodes}, S) ->
 
 
 handle_cast(_Cast, S) ->
-%    io:format("***** handle_cast ~p~n",[_Cast]),
+                                                %    io:format("***** handle_cast ~p~n",[_Cast]),
     {noreply, S}.
     
 
@@ -862,12 +862,12 @@ handle_cast(_Cast, S) ->
 %%% the own global group.
 %%%====================================================================================
 handle_info({nodeup, Node}, S) when S#state.sync_state =:= no_conf ->
-%    io:format("~p>>>>> nodeup, Node ~p ~n",[node(), Node]),
+                                                %    io:format("~p>>>>> nodeup, Node ~p ~n",[node(), Node]),
     send_monitor(S#state.monitor, {nodeup, Node}, S#state.sync_state),
     global_name_server ! {nodeup, Node},
     {noreply, S};
 handle_info({nodeup, Node}, S) ->
-%    io:format("~p>>>>> nodeup, Node ~p ~n",[node(), Node]),
+                                                %    io:format("~p>>>>> nodeup, Node ~p ~n",[node(), Node]),
     OthersNG = case S#state.sync_state of
 		   synced ->
 		       X = (catch rpc:call(Node, global_group, get_own_nodes, [])),
@@ -918,12 +918,12 @@ handle_info({nodeup, Node}, S) ->
 %%% node which we are not aware of.
 %%%====================================================================================
 handle_info({nodedown, Node}, S) when S#state.sync_state =:= no_conf ->
-%    io:format("~p>>>>> nodedown, no_conf Node ~p~n",[node(), Node]),
+                                                %    io:format("~p>>>>> nodedown, no_conf Node ~p~n",[node(), Node]),
     send_monitor(S#state.monitor, {nodedown, Node}, S#state.sync_state),
     global_name_server ! {nodedown, Node},
     {noreply, S};
 handle_info({nodedown, Node}, S) ->
-%    io:format("~p>>>>> nodedown, Node ~p  ~n",[node(), Node]),
+                                                %    io:format("~p>>>>> nodedown, Node ~p  ~n",[node(), Node]),
     send_monitor(S#state.monitor, {nodedown, Node}, S#state.sync_state),
     global_name_server ! {nodedown, Node},
     NN = lists:delete(Node, S#state.nodes),
@@ -943,7 +943,7 @@ handle_info({nodedown, Node}, S) ->
 %%% included in his group any more. This could happen at release upgrade.
 %%%====================================================================================
 handle_info({disconnect_node, Node}, S) ->
-%    io:format("~p>>>>> disconnect_node Node ~p CN ~p~n",[node(), Node, S#state.nodes]),
+                                                %    io:format("~p>>>>> disconnect_node Node ~p CN ~p~n",[node(), Node, S#state.nodes]),
     case {S#state.sync_state, lists:member(Node, S#state.nodes)} of
 	{synced, true} ->
 	    send_monitor(S#state.monitor, {nodedown, Node}, S#state.sync_state);
@@ -951,7 +951,7 @@ handle_info({disconnect_node, Node}, S) ->
 	    cont
     end,
     global_name_server ! {nodedown, Node}, %% nodedown is used to inform global of the
-                                           %% disconnected node
+    %% disconnected node
     NN = lists:delete(Node, S#state.nodes),
     NNC = lists:delete(Node, S#state.no_contact),
     NSE = lists:delete(Node, S#state.sync_error),
@@ -966,7 +966,7 @@ handle_info({'EXIT', ExitPid, Reason}, S) ->
 
 
 handle_info(_Info, S) ->
-%    io:format("***** handle_info = ~p~n",[_Info]),
+                                                %    io:format("***** handle_info = ~p~n",[_Info]),
     {noreply, S}.
 
 
@@ -1141,7 +1141,7 @@ do_unlink(Pid, State) ->
 	true ->
 	    false;
 	_ ->
-%	    io:format("unlink(Pid) ~p~n",[Pid]),
+                                                %	    io:format("unlink(Pid) ~p~n",[Pid]),
 	    unlink(Pid)
     end.
 
@@ -1198,7 +1198,7 @@ safesend_nc(Pid, {Msg, Node}) ->
 %%% Check which user is associated to the crashed process.
 %%%====================================================================================
 check_exit(ExitPid, Reason) ->
-%    io:format("===EXIT===  ~p ~p ~n~p   ~n~p   ~n~p ~n~n",[ExitPid, Reason, get(registered_names), get(send), get(whereis_name)]),
+                                                %    io:format("===EXIT===  ~p ~p ~n~p   ~n~p   ~n~p ~n~n",[ExitPid, Reason, get(registered_names), get(send), get(whereis_name)]),
     check_exit_reg(get(registered_names), ExitPid, Reason),
     check_exit_send(get(send), ExitPid, Reason),
     check_exit_where(get(whereis_name), ExitPid, Reason).

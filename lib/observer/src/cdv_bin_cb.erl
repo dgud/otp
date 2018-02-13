@@ -77,10 +77,10 @@ format_hex(<<B1:4,B2:4>>,_) ->
     [integer_to_list(B1,16),integer_to_list(B2,16)];
 format_hex(<<B1:4,B2:4,Bin/binary>>,0) ->
     [integer_to_list(B1,16),integer_to_list(B2,16),$,,$\n,$\s,$\s
-     | format_hex(Bin,?line_break)];
+    | format_hex(Bin,?line_break)];
 format_hex(<<B1:4,B2:4,Bin/binary>>,N) ->
     [integer_to_list(B1,16),integer_to_list(B2,16),$,
-     | format_hex(Bin,N-1)].
+    | format_hex(Bin,N-1)].
 
 plain_html(Text) ->
     observer_html_lib:plain_page(Text).

@@ -283,7 +283,7 @@ pwrite(Fd, LocBytes) ->
     try
         CompactedLocBytes =
             [ {Offset, erlang:iolist_to_iovec(IOData)} ||
-              {Offset, IOData} <- LocBytes ],
+                {Offset, IOData} <- LocBytes ],
         wrap_call(Fd, [pwrite, CompactedLocBytes])
     catch
         error:badarg -> {error, badarg}

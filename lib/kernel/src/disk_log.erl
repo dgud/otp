@@ -141,7 +141,7 @@ log_terms(Log, Terms) ->
     req(Log, {log, internal, Bs}).
 
 -spec blog_terms(Log, BytesList) ->
-                        ok | {error, Reason :: log_error_rsn()} when
+          ok | {error, Reason :: log_error_rsn()} when
       Log :: log(),
       BytesList :: [iodata()].
 blog_terms(Log, Bytess) ->
@@ -177,7 +177,7 @@ balog_terms(Log, Bytess) ->
     notify(Log, {alog, external, Bs}).
 
 -type close_error_rsn() ::'no_such_log' | 'nonode'
-                         | {'file_error', file:filename(), file_error()}.
+                        | {'file_error', file:filename(), file_error()}.
 
 -spec close(Log) -> 'ok' | {'error', close_error_rsn()} when
       Log :: log().
@@ -335,7 +335,7 @@ format_error(Error) ->
                    | {owners, [{pid(), Notify :: boolean()}]}
                    | {users, Users :: non_neg_integer()}
                    | {status, Status ::
-                        ok | {blocked, QueueLogRecords :: boolean()}}
+                                ok | {blocked, QueueLogRecords :: boolean()}}
                    | {node, Node :: node()}
                    | {distributed, Dist :: local | [node()]}
                    | {head, Head :: none
@@ -500,7 +500,7 @@ bichunk_end(R) ->
     R.
 
 -spec chunk_step(Log, Continuation, Step) ->
-                        {'ok', any()} | {'error', Reason} when
+          {'ok', any()} | {'error', Reason} when
       Log :: log(),
       Continuation :: start | continuation(),
       Step :: integer(),
@@ -522,9 +522,9 @@ ichunk_step(_Log, _, _) ->
       InfoList :: [{node, Node :: node()}, ...],
       Reason :: {no_continuation, Continuation}.
 chunk_info(More = #continuation{}) ->
-   [{node, node(More#continuation.pid)}];
+    [{node, node(More#continuation.pid)}];
 chunk_info(BadCont) ->
-   {error, {no_continuation, BadCont}}.
+    {error, {no_continuation, BadCont}}.
 
 -spec accessible_logs() -> {[LocalLog], [DistributedLog]} when
       LocalLog :: log(),
@@ -1185,7 +1185,7 @@ add_pid(Pid, Notify, L) when is_pid(Pid) ->
             link(Pid),
 	    {ok, L#log{owners = [{Pid, Notify} | L#log.owners]}};
 	{true, Notify}  ->
-%%	    {error, {pid_already_connected, L#log.name}};
+            %%	    {error, {pid_already_connected, L#log.name}};
 	    {ok, L};
 	{true, CurNotify} when Notify =/= CurNotify ->
 	    {error, {arg_mismatch, notify, CurNotify, Notify}}
@@ -1240,7 +1240,7 @@ file_error(FileName, {error, Error}) ->
 %% "Old" error messages have been kept, arg_mismatch has been added.
 %%-spec compare_arg(dlog_options(), #arg{}, 
 compare_arg([], _A, none, _OrigHead) ->
-    % no header option given
+                                                % no header option given
     ok;
 compare_arg([], _A, Head, OrigHead) when Head =/= OrigHead ->
     {error, {arg_mismatch, head, OrigHead, Head}};
@@ -1257,7 +1257,7 @@ compare_arg([{Attr, Val} | Tail], A, Head, OrigHead) ->
     end.
 
 -spec compare_arg(atom(), _, #arg{}) ->
-	     'ok' | {'not_ok', _} | {'error', {atom(), _}}.
+          'ok' | {'not_ok', _} | {'error', {atom(), _}}.
 compare_arg(file, F, A) when F =/= A#arg.file ->
     {error, {name_already_open, A#arg.name}};
 compare_arg(mode, read_only, A) when A#arg.mode =:= read_write ->
@@ -1366,8 +1366,8 @@ check_head(_Head, _Format) ->
     {error, {badarg, head}}.
 
 check_size(wrap, {NewMaxB,NewMaxF}) when
-  is_integer(NewMaxB), is_integer(NewMaxF),
-  NewMaxB > 0, NewMaxB =< ?MAX_BYTES, NewMaxF > 0, NewMaxF < ?MAX_FILES ->
+      is_integer(NewMaxB), is_integer(NewMaxF),
+      NewMaxB > 0, NewMaxB =< ?MAX_BYTES, NewMaxF > 0, NewMaxF < ?MAX_FILES ->
     ok;
 check_size(halt, NewSize) when is_integer(NewSize), NewSize > 0 ->
     ok;
@@ -1419,8 +1419,8 @@ do_open2(halt, internal, Name, FName, Repair, Size, Mode, Head, _V) ->
     end;
 do_open2(wrap, internal, Name, FName, Repair, Size, Mode, Head, V) ->
     {MaxB, MaxF} = Size,
-    case catch 
-      disk_log_1:mf_int_open(FName, MaxB, MaxF, Repair, Mode, Head, V) of
+    case catch
+           disk_log_1:mf_int_open(FName, MaxB, MaxF, Repair, Mode, Head, V) of
 	{ok, Handle, Cnt} ->
 	    {ok, {ok, Name}, Handle, wrap_int, Cnt};
 	{repaired, Handle, Rec, Bad, Cnt} ->
@@ -1439,8 +1439,8 @@ do_open2(halt, external, Name, FName, Repair, Size, Mode, Head, _V) ->
     end;
 do_open2(wrap, external, Name, FName, Repair, Size, Mode, Head, V) ->
     {MaxB, MaxF} = Size,
-    case catch 
-      disk_log_1:mf_ext_open(FName, MaxB, MaxF, Repair, Mode, Head, V) of
+    case catch
+           disk_log_1:mf_ext_open(FName, MaxB, MaxF, Repair, Mode, Head, V) of
 	{ok, Handle, Cnt} ->
 	    {ok, {ok, Name}, Handle, wrap_ext, Cnt};
 	Error ->
@@ -1780,14 +1780,14 @@ do_trunc(#log{type = halt}=L, Head) ->
 		end
         end,
     {Reply, NewHalt} = 
-    case disk_log_1:position(FdC2, FName, cur) of
-	{ok, NewFdC, FileSize} when Reply1 =:= ok ->
-	    {ok, Halt#halt{fdc = NewFdC, curB = FileSize}};
-	{Reply2, NewFdC} ->
-	    {Reply2, Halt#halt{fdc = NewFdC}};
-	{ok, NewFdC, _} ->
-	    {Reply1, Halt#halt{fdc = NewFdC}}
-    end,
+        case disk_log_1:position(FdC2, FName, cur) of
+            {ok, NewFdC, FileSize} when Reply1 =:= ok ->
+                {ok, Halt#halt{fdc = NewFdC, curB = FileSize}};
+            {Reply2, NewFdC} ->
+                {Reply2, Halt#halt{fdc = NewFdC}};
+            {ok, NewFdC, _} ->
+                {Reply1, Halt#halt{fdc = NewFdC}}
+        end,
     put(log, L#log{extra = NewHalt}),
     Reply;
 do_trunc(#log{type = wrap}=L, Head) ->

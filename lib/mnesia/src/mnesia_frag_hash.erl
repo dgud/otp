@@ -23,7 +23,7 @@
 %%% Purpose : Implements hashing functionality for fragmented tables
 %%%----------------------------------------------------------------------
 
-%header_doc_include
+                                                %header_doc_include
 -module(mnesia_frag_hash).
 
 %% Fragmented Table Hashing callback functions
@@ -35,10 +35,10 @@
 	 match_spec_to_frag_numbers/2
 	]).
 
-%header_doc_include
+                                                %header_doc_include
 %%-behaviour(mnesia_frag_hash).
 
-%impl_doc_include
+                                                %impl_doc_include
 -record(hash_state,
 	{n_fragments,
 	 next_n_to_split,
@@ -95,7 +95,7 @@ del_frag(#hash_state{next_n_to_split = SplitN, n_doubles = L, n_fragments = N} =
 	    State2 = State#hash_state{n_fragments     = N - 1,
 				      next_n_to_split = MergeN},
 	    {State2, [N], [MergeN]}
-	end;
+    end;
 del_frag(OldState) ->
     State = convert_old_state(OldState),
     del_frag(State).
@@ -144,7 +144,7 @@ match_spec_to_frag_numbers(OldState, MatchSpec) ->
 power2(Y) ->
     1 bsl Y. % trunc(math:pow(2, Y)).
 
-%impl_doc_include
+                                                %impl_doc_include
 
 has_var(Pat) ->
     mnesia:has_var(Pat).

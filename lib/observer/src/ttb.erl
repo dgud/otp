@@ -229,9 +229,9 @@ remove_faulty_runtime_tools_vsn(Nodes) ->
       end,Nodes).
 
 check_vsn(_Node,_Vsn) -> true.
-%check_vsn(Node,_Vsn) -> 
-%    display_warning(Node,faulty_vsn_of_runtime_tools),
-%    false.
+                                                %check_vsn(Node,_Vsn) -> 
+                                                %    display_warning(Node,faulty_vsn_of_runtime_tools),
+                                                %    false.
 
 clients(Nodes, {wrap,Name}) ->
     F = fun(Node) -> 
@@ -416,11 +416,11 @@ no_store_p(ProcsPorts0,Flags0) ->
 	Flags ->
 	    ProcsPorts = procs_ports(ProcsPorts0),
 	    case lists:foldl(fun(P,{PMatched,Ps}) -> case dbg:p(P,Flags) of
-					     {ok,Matched} -> 
-						 {[{P,Matched}|PMatched],[P|Ps]};
-					     {error,Reason} -> 
-						 display_warning(P,Reason),
-						 {PMatched,Ps}
+                                                         {ok,Matched} -> 
+                                                             {[{P,Matched}|PMatched],[P|Ps]};
+                                                         {error,Reason} -> 
+                                                             display_warning(P,Reason),
+                                                             {PMatched,Ps}
 						     end
 			     end,{[],[]},ProcsPorts) of
 		{[],[]} -> {error, no_match};
@@ -443,8 +443,8 @@ procs_ports(Proc) ->
     proc_port(Proc).
 
 proc_port(P) when P=:=all; P=:=ports; P=:=processes;
-                 P=:=existing; P=:=existing_ports; P=:=existing_processes;
-                 P=:=new; P=:=new_ports; P=:=new_processes ->
+                  P=:=existing; P=:=existing_ports; P=:=existing_processes;
+                  P=:=new; P=:=new_ports; P=:=new_processes ->
     [P];
 proc_port(Name) when is_atom(Name) ->
     [Name]; % can be registered on this node or other node
@@ -656,10 +656,10 @@ stop_opts(Opts) ->
 	    {fetch, FetchDir}; % if we specify return_fetch_dir, the data should be fetched
 	{false, false} ->
 	    case lists:member(nofetch,Opts) of
-		    false -> {fetch, FetchDir};
-		    true -> nofetch
+                false -> {fetch, FetchDir};
+                true -> nofetch
 	    end;
-    {FormatData, _} ->
+        {FormatData, _} ->
             {FormatData, FetchDir}
     end.
 
@@ -669,7 +669,7 @@ ensure_fetch_dir(Dir) ->
 	true ->
 	    throw({error, exists, Dir});
 	false ->
-	   ok
+            ok
     end.
 
 stop_return(R,Opts) ->
@@ -844,11 +844,11 @@ make_node_dead(Node, NodeInfo, SessionInfo) ->
     [{dead_nodes, NewDeadNodes} | lists:keydelete(dead_nodes, 1, SessionInfo)].
 
 make_node_alive(Node, SessionInfo) ->
-            DeadNodes = proplists:get_value(dead_nodes, SessionInfo),
-            Partials = proplists:get_value(partials, SessionInfo),
-            {value, {_, MetaFile}, Dn2} = lists:keytake(Node, 1, DeadNodes),
-            SessionInfo2 = lists:keyreplace(dead_nodes, 1, SessionInfo, {dead_nodes, Dn2}),
-            {MetaFile, Partials + 1, lists:keyreplace(partials, 1, SessionInfo2, {partials, Partials + 1})}.
+    DeadNodes = proplists:get_value(dead_nodes, SessionInfo),
+    Partials = proplists:get_value(partials, SessionInfo),
+    {value, {_, MetaFile}, Dn2} = lists:keytake(Node, 1, DeadNodes),
+    SessionInfo2 = lists:keyreplace(dead_nodes, 1, SessionInfo, {dead_nodes, Dn2}),
+    {MetaFile, Partials + 1, lists:keyreplace(partials, 1, SessionInfo2, {partials, Partials + 1})}.
 
 try_send_flush_tick(State) ->
     case proplists:get_value(flush, State) of
@@ -965,11 +965,11 @@ decode_filename(3,Bin,latin1) ->
     %% variant of the filename and warning about it.
     File0 = unicode:characters_to_list(Bin,utf8),
     File = [ case X of
-                     High when High > 255 ->
-                         ["\\\\x{",erlang:integer_to_list(X, 16),$}];
-                     Low ->
-                         Low
-                 end || X <- File0 ],
+                 High when High > 255 ->
+                     ["\\\\x{",erlang:integer_to_list(X, 16),$}];
+                 Low ->
+                     Low
+             end || X <- File0 ],
     io:format("Warning: fetching file with faulty filename encoding ~ts~n"
               "Will be written as ~ts~n",
               [File0,File]),
@@ -1105,7 +1105,7 @@ format_opt(Opt) when is_list(Opt) ->
     Handler = case lists:keysearch(handler,1,Opt) of
                   {value,{handler,H}} -> H;
                   _ -> undefined
-	  end,
+              end,
     DisableSort = proplists:get_value(disable_sort, Opt, false),
     {Out,Handler,DisableSort};
 format_opt(Opt) ->

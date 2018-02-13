@@ -105,7 +105,7 @@
 -export([get_chunk/2, is_module_native/1, make_stub_module/3, module_md5/1]).
 
 -spec get_chunk(Bin, Chunk) ->
-                       binary() | undefined when
+          binary() | undefined when
       Bin :: binary(),
       Chunk :: string().
 
@@ -166,7 +166,7 @@ load_abs(File, M) when (is_list(File) orelse is_atom(File)), is_atom(M) ->
 
 %% XXX Filename is also an atom(), e.g. 'cover_compiled'
 -spec load_binary(Module, Filename, Binary) ->
-                         {module, Module} | {error, What} when
+          {module, Module} | {error, What} when
       Module :: module(),
       Filename :: loaded_filename(),
       Binary :: binary(),
@@ -320,7 +320,7 @@ get_mode() -> call(get_mode).
 %%%
 
 -spec ensure_modules_loaded([Module]) ->
-   'ok' | {'error',[{Module,What}]} when
+          'ok' | {'error',[{Module,What}]} when
       Module :: module(),
       What :: badfile | nofile | on_load_failure.
 
@@ -385,7 +385,7 @@ atomic_load(Modules) ->
     end.
 
 -spec prepare_loading(Modules) ->
-           {'ok',Prepared} | {'error',[{Module,What}]} when
+          {'ok',Prepared} | {'error',[{Module,What}]} when
       Modules :: [Module | {Module, Filename, Binary}],
       Module :: module(),
       Filename :: file:filename(),
@@ -554,7 +554,7 @@ load_bins(BinItems) ->
     do_par(F, BinItems).
 
 -type prep_fun_type() :: fun((module(), file:filename(), binary()) ->
-				    {ok,_} | {error,_}).
+                             {ok,_} | {error,_}).
 
 -spec prepare_loading_fun() -> prep_fun_type().
 
@@ -596,7 +596,7 @@ do_par_fun(Fun, L) ->
 
 -spec do_par_fun_2(prep_fun_type(),
 		   {module(),file:filename(),binary()}) ->
-			  fun(() -> no_return()).
+          fun(() -> no_return()).
 
 do_par_fun_2(Fun, Item) ->
     fun() ->
@@ -770,7 +770,7 @@ where_is_file(Tail, File, Path, Files) ->
 			  ArchiveBin :: binary(),
 			  FileInfo :: file:file_info(),
 			  ParserFun :: fun())
-			 -> 'ok' | {'error', atom()}.
+      -> 'ok' | {'error', atom()}.
 
 set_primary_archive(ArchiveFile0, ArchiveBin, #file_info{} = FileInfo,
 		    ParserFun)

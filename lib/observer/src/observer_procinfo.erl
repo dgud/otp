@@ -91,7 +91,7 @@ init([Pid, ParentFrame, Parent]) ->
     catch error:{badrpc, _} ->
 	    observer_wx:return_to_localnode(ParentFrame, node(Pid)),
 	    {stop, badrpc};
-	  process_undefined ->
+          process_undefined ->
 	    observer_lib:display_info_dialog(ParentFrame,"No such alive process"),
 	    {stop, normal}
     end.
@@ -401,32 +401,32 @@ process_info_fields(Pid, WSz) ->
 
 item_list() ->
     [ %% backtrace,
-      binary,
-      catchlevel,
-      current_function,
-      %% dictionary,
-      error_handler,
-      garbage_collection,
-      group_leader,
-      heap_size,
-      initial_call,
-      last_calls,
-      links,
-      memory,
-      message_queue_len,
-      %% messages,
-      monitored_by,
-      monitors,
-      priority,
-      reductions,
-      registered_name,
-      sequential_trace_token,
-      stack_size,
-      status,
-      suspending,
-      total_heap_size,
-      trace,
-      trap_exit].
+     binary,
+     catchlevel,
+     current_function,
+     %% dictionary,
+     error_handler,
+     garbage_collection,
+     group_leader,
+     heap_size,
+     initial_call,
+     last_calls,
+     links,
+     memory,
+     message_queue_len,
+     %% messages,
+     monitored_by,
+     monitors,
+     priority,
+     reductions,
+     registered_name,
+     sequential_trace_token,
+     stack_size,
+     status,
+     suspending,
+     total_heap_size,
+     trace,
+     trap_exit].
 
 get_gc_info(Arg) ->
     fun(Data) ->

@@ -115,30 +115,30 @@
 -type ether_address() :: [0..255].
 
 -type if_setopt() ::
-      {'addr', ip_address()} |
-      {'broadaddr', ip_address()} |
-      {'dstaddr', ip_address()} |
-      {'mtu', non_neg_integer()} |
-      {'netmask', ip_address()} |
-      {'flags', ['up' | 'down' | 'broadcast' | 'no_broadcast' |
-		 'pointtopoint' | 'no_pointtopoint' | 
-		 'running' | 'multicast']} |
-      {'hwaddr', ether_address()}.
+        {'addr', ip_address()} |
+        {'broadaddr', ip_address()} |
+        {'dstaddr', ip_address()} |
+        {'mtu', non_neg_integer()} |
+        {'netmask', ip_address()} |
+        {'flags', ['up' | 'down' | 'broadcast' | 'no_broadcast' |
+                   'pointtopoint' | 'no_pointtopoint' | 
+                   'running' | 'multicast']} |
+        {'hwaddr', ether_address()}.
 
 -type if_getopt() ::
-      'addr' | 'broadaddr' | 'dstaddr' | 
-      'mtu' | 'netmask' | 'flags' |'hwaddr'.
+        'addr' | 'broadaddr' | 'dstaddr' | 
+        'mtu' | 'netmask' | 'flags' |'hwaddr'.
 
 -type if_getopt_result() ::
-      {'addr', ip_address()} |
-      {'broadaddr', ip_address()} |
-      {'dstaddr', ip_address()} |
-      {'mtu', non_neg_integer()} |
-      {'netmask', ip_address()} |
-      {'flags', ['up' | 'down' | 'broadcast' | 'no_broadcast' |
-		 'pointtopoint' | 'no_pointtopoint' |
-		 'running' | 'multicast' | 'loopback']} |
-      {'hwaddr', ether_address()}.
+        {'addr', ip_address()} |
+        {'broadaddr', ip_address()} |
+        {'dstaddr', ip_address()} |
+        {'mtu', non_neg_integer()} |
+        {'netmask', ip_address()} |
+        {'flags', ['up' | 'down' | 'broadcast' | 'no_broadcast' |
+                   'pointtopoint' | 'no_pointtopoint' |
+                   'running' | 'multicast' | 'loopback']} |
+        {'hwaddr', ether_address()}.
 
 -type address_family() :: 'inet' | 'inet6' | 'local'.
 -type socket_protocol() :: 'tcp' | 'udp' | 'sctp'.
@@ -171,21 +171,21 @@ close(Socket) ->
 
 
 -spec peername(Socket :: socket()) ->
-		      {ok,
-		       {ip_address(), port_number()} |
-		       returned_non_ip_address()} |
-		      {error, posix()}.
+          {ok,
+           {ip_address(), port_number()} |
+           returned_non_ip_address()} |
+          {error, posix()}.
 
 peername(Socket) -> 
     prim_inet:peername(Socket).
 
 -spec setpeername(
-	Socket :: socket(),
-	Address ::
-	  {ip_address() | 'any' | 'loopback',
-	   port_number()} |
-	  socket_address()) ->
-			 'ok' | {'error', any()}.
+                 Socket :: socket(),
+                 Address ::
+                   {ip_address() | 'any' | 'loopback',
+                    port_number()} |
+                   socket_address()) ->
+          'ok' | {'error', any()}.
 
 setpeername(Socket, {IP,Port}) ->
     prim_inet:setpeername(Socket, {IP,Port});
@@ -193,16 +193,16 @@ setpeername(Socket, undefined) ->
     prim_inet:setpeername(Socket, undefined).
 
 -spec peernames(Socket :: socket()) ->
-		       {ok,
-			[{ip_address(), port_number()} |
-			 returned_non_ip_address()]} |
-		       {error, posix()}.
+          {ok,
+           [{ip_address(), port_number()} |
+            returned_non_ip_address()]} |
+          {error, posix()}.
 
 peernames(Socket) ->
     prim_inet:peernames(Socket).
 
 -spec peernames(Socket, Assoc) ->
-		       {ok, [{Address, Port}]} | {error, posix()} when
+          {ok, [{Address, Port}]} | {error, posix()} when
       Socket :: socket(),
       Assoc :: #sctp_assoc_change{} | gen_sctp:assoc_id(),
       Address :: ip_address(),
@@ -213,21 +213,21 @@ peernames(Socket, Assoc) ->
 
 
 -spec sockname(Socket :: socket()) ->
-		      {ok,
-		       {ip_address(), port_number()} |
-		       returned_non_ip_address()} |
-		      {error, posix()}.
+          {ok,
+           {ip_address(), port_number()} |
+           returned_non_ip_address()} |
+          {error, posix()}.
 
 sockname(Socket) -> 
     prim_inet:sockname(Socket).
 
 -spec setsockname(
-	Socket :: socket(),
-	Address ::
-	  {ip_address() | 'any' | 'loopback',
-	   port_number()} |
-	  socket_address()) ->
-	'ok' | {'error', any()}.
+                 Socket :: socket(),
+                 Address ::
+                   {ip_address() | 'any' | 'loopback',
+                    port_number()} |
+                   socket_address()) ->
+          'ok' | {'error', any()}.
 
 setsockname(Socket, {IP,Port}) -> 
     prim_inet:setsockname(Socket, {IP,Port});
@@ -235,16 +235,16 @@ setsockname(Socket, undefined) ->
     prim_inet:setsockname(Socket, undefined).
 
 -spec socknames(Socket :: socket()) ->
-		       {ok,
-			[{ip_address(), port_number()} |
-			 returned_non_ip_address()]} |
-		       {error, posix()}.
+          {ok,
+           [{ip_address(), port_number()} |
+            returned_non_ip_address()]} |
+          {error, posix()}.
 
 socknames(Socket) ->
     prim_inet:socknames(Socket).
 
 -spec socknames(Socket, Assoc) ->
-		       {ok, [{Address, Port}]} | {error, posix()} when
+          {ok, [{Address, Port}]} | {error, posix()} when
       Socket :: socket(),
       Assoc :: #sctp_assoc_change{} | gen_sctp:assoc_id(),
       Address :: ip_address(),
@@ -265,7 +265,7 @@ port(Socket) ->
     end.
 
 -spec send(Socket :: socket(), Packet :: iolist()) -> % iolist()?
-	'ok' | {'error', posix()}.
+          'ok' | {'error', posix()}.
 
 send(Socket, Packet) -> 
     prim_inet:send(Socket, Packet).
@@ -285,7 +285,7 @@ setopts(Socket, Opts) ->
     prim_inet:setopts(Socket, SocketOpts).
 
 -spec getopts(Socket, Options) ->
-	{'ok', OptionValues} | {'error', posix()} when
+          {'ok', OptionValues} | {'error', posix()} when
       Socket :: socket(),
       Options :: [socket_getopt()],
       OptionValues :: [socket_setopt()].
@@ -305,7 +305,7 @@ getopts(Socket, Opts) ->
     end.
 
 -spec getifaddrs(Socket :: socket()) ->
-	{'ok', [string()]} | {'error', posix()}.
+          {'ok', [string()]} | {'error', posix()}.
 
 getifaddrs(Socket) ->
     prim_inet:getifaddrs(Socket).
@@ -328,7 +328,7 @@ getifaddrs() ->
     withsocket(fun(S) -> prim_inet:getifaddrs(S) end).
 
 -spec getiflist(Socket :: socket()) ->
-	{'ok', [string()]} | {'error', posix()}.
+          {'ok', [string()]} | {'error', posix()}.
 
 getiflist(Socket) -> 
     prim_inet:getiflist(Socket).
@@ -341,13 +341,13 @@ getiflist() ->
 -spec ifget(Socket :: socket(),
             Name :: string() | atom(),
 	    Opts :: [if_getopt()]) ->
-	{'ok', [if_getopt_result()]} | {'error', posix()}.
+          {'ok', [if_getopt_result()]} | {'error', posix()}.
 
 ifget(Socket, Name, Opts) -> 
     prim_inet:ifget(Socket, Name, Opts).
 
 -spec ifget(Name :: string() | atom(), Opts :: [if_getopt()]) ->
-	{'ok', [if_getopt_result()]} | {'error', posix()}.
+          {'ok', [if_getopt_result()]} | {'error', posix()}.
 
 ifget(Name, Opts) ->
     withsocket(fun(S) -> prim_inet:ifget(S, Name, Opts) end).
@@ -355,28 +355,28 @@ ifget(Name, Opts) ->
 -spec ifset(Socket :: socket(),
             Name :: string() | atom(),
 	    Opts :: [if_setopt()]) ->
-	'ok' | {'error', posix()}.
+          'ok' | {'error', posix()}.
 
 ifset(Socket, Name, Opts) -> 
     prim_inet:ifset(Socket, Name, Opts).
 
 -spec ifset(Name :: string() | atom(), Opts :: [if_setopt()]) ->
-	'ok' | {'error', posix()}.
+          'ok' | {'error', posix()}.
 
 ifset(Name, Opts) ->
     withsocket(fun(S) -> prim_inet:ifset(S, Name, Opts) end).
 
 -spec getif() ->
-	{'ok', [{ip_address(), ip_address() | 'undefined', ip_address()}]} | 
-	{'error', posix()}.
+          {'ok', [{ip_address(), ip_address() | 'undefined', ip_address()}]} | 
+          {'error', posix()}.
 
 getif() -> 
     withsocket(fun(S) -> getif(S) end).
 
 %% backwards compatible getif
 -spec getif(Socket :: socket()) ->
-	{'ok', [{ip_address(), ip_address() | 'undefined', ip_address()}]} | 
-	{'error', posix()}.
+          {'ok', [{ip_address(), ip_address() | 'undefined', ip_address()}]} | 
+          {'error', posix()}.
 
 getif(Socket) ->
     case prim_inet:getiflist(Socket) of
@@ -415,11 +415,11 @@ popf(_Socket) ->
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% the hostname is not cached any more because this
-% could cause troubles on at least windows with plug-and-play
-% and network-cards inserted and removed in conjunction with
-% use of the DHCP-protocol
-% should never fail
+                                                % the hostname is not cached any more because this
+                                                % could cause troubles on at least windows with plug-and-play
+                                                % and network-cards inserted and removed in conjunction with
+                                                % use of the DHCP-protocol
+                                                % should never fail
 
 -spec gethostname() -> {'ok', Hostname} when
       Hostname :: string().
@@ -436,13 +436,13 @@ gethostname() ->
     end.
 
 -spec gethostname(Socket :: socket()) ->
-	{'ok', string()} | {'error', posix()}.
+          {'ok', string()} | {'error', posix()}.
 
 gethostname(Socket) ->
     prim_inet:gethostname(Socket).
 
 -spec getstat(Socket) ->
-	{ok, OptionValues} | {error, posix()} when
+          {ok, OptionValues} | {error, posix()} when
       Socket :: socket(),
       OptionValues :: [{stat_option(), integer()}].
 
@@ -450,7 +450,7 @@ getstat(Socket) ->
     prim_inet:getstat(Socket, stats()).
 
 -spec getstat(Socket, Options) ->
-	{ok, OptionValues} | {error, posix()} when
+          {ok, OptionValues} | {error, posix()} when
       Socket :: socket(),
       Options :: [stat_option()],
       OptionValues :: [{stat_option(), integer()}].
@@ -471,7 +471,7 @@ gethostbyname(Name) ->
     end.
 
 -spec gethostbyname(Hostname, Family) ->
-                           {ok, Hostent} | {error, posix()} when
+          {ok, Hostent} | {error, posix()} when
       Hostname :: hostname(),
       Family :: address_family(),
       Hostent :: hostent().
@@ -482,7 +482,7 @@ gethostbyname(Name,Family) ->
 -spec gethostbyname(Name :: hostname(),
 	            Family :: address_family(),
 	            Timeout :: non_neg_integer() | 'infinity') ->
-	{'ok', #hostent{}} | {'error', posix()}.
+          {'ok', #hostent{}} | {'error', posix()}.
 	
 gethostbyname(Name,Family,Timeout) ->
     Timer = start_timer(Timeout),
@@ -494,8 +494,8 @@ gethostbyname_tm(Name,Family,Timer) ->
     Opts0 = inet_db:res_option(lookup),
     Opts =
 	case (lists:member(native, Opts0) orelse
-	      lists:member(string, Opts0) orelse
-	      lists:member(nostring, Opts0)) of
+                  lists:member(string, Opts0) orelse
+                  lists:member(nostring, Opts0)) of
 	    true ->
 		Opts0;
 	    false ->
@@ -513,7 +513,7 @@ gethostbyaddr(Address) ->
 
 -spec gethostbyaddr(Address :: string() | ip_address(), 
 	            Timeout :: non_neg_integer() | 'infinity') ->
-	{'ok', #hostent{}} | {'error', posix()}.
+          {'ok', #hostent{}} | {'error', posix()}.
 
 gethostbyaddr(Address,Timeout) ->
     Timer = start_timer(Timeout),    
@@ -525,7 +525,7 @@ gethostbyaddr_tm(Address,Timer) ->
     gethostbyaddr_tm(Address, Timer, inet_db:res_option(lookup)).
 
 -spec ip(Ip :: ip_address() | string() | atom()) ->
-	{'ok', ip_address()} | {'error', posix()}.
+          {'ok', ip_address()} | {'error', posix()}.
 
 ip({A,B,C,D}) when ?ip(A,B,C,D) ->
     {ok, {A,B,C,D}};
@@ -548,7 +548,7 @@ getll(Socket) when is_port(Socket) ->
 %%
 
 -spec getfd(Socket :: socket()) ->
-	{'ok', non_neg_integer()} | {'error', posix()}.
+          {'ok', non_neg_integer()} | {'error', posix()}.
 
 getfd(Socket) ->
     prim_inet:getfd(Socket).
@@ -568,7 +568,7 @@ getaddr(Address, Family) ->
 -spec getaddr(Host :: ip_address() | hostname(),
 	      Family :: address_family(),
 	      Timeout :: non_neg_integer() | 'infinity') ->
-	{'ok', ip_address()} | {'error', posix()}.
+          {'ok', ip_address()} | {'error', posix()}.
 
 getaddr(Address, Family, Timeout) ->
     Timer = start_timer(Timeout),
@@ -583,7 +583,7 @@ getaddr_tm(Address, Family, Timer) ->
     end.
 
 -spec getaddrs(Host, Family) ->
-	{ok, Addresses} | {error, posix()} when
+          {ok, Addresses} | {error, posix()} when
       Host :: ip_address() | hostname(),
       Family :: address_family(),
       Addresses :: [ip_address()].
@@ -594,7 +594,7 @@ getaddrs(Address, Family) ->
 -spec getaddrs(Host :: ip_address() | string() | atom(),
 	       Family :: address_family(),
 	       Timeout :: non_neg_integer() | 'infinity') ->
-	{'ok', [ip_address()]} | {'error', posix()}.
+          {'ok', [ip_address()]} | {'error', posix()}.
 
 getaddrs(Address, Family, Timeout) ->
     Timer = start_timer(Timeout),
@@ -603,7 +603,7 @@ getaddrs(Address, Family, Timeout) ->
     Res.
 
 -spec getservbyport(Port :: port_number(), Protocol :: atom() | string()) ->
-	{'ok', string()} | {'error', posix()}.
+          {'ok', string()} | {'error', posix()}.
 
 getservbyport(Port, Proto) ->
     case inet_udp:open(0, []) of
@@ -616,7 +616,7 @@ getservbyport(Port, Proto) ->
 
 -spec getservbyname(Name :: atom() | string(),
 	            Protocol :: atom() | string()) ->
-	{'ok', port_number()} | {'error', posix()}.
+          {'ok', port_number()} | {'error', posix()}.
 
 getservbyname(Name, Protocol) when is_atom(Name) ->
     case inet_udp:open(0, []) of
@@ -634,42 +634,42 @@ ntoa(Addr) ->
     inet_parse:ntoa(Addr).
 
 -spec parse_ipv4_address(Address) ->
-	{ok, IPv4Address} | {error, einval} when
+          {ok, IPv4Address} | {error, einval} when
       Address :: string(),
       IPv4Address :: ip_address().
 parse_ipv4_address(Addr) ->
     inet_parse:ipv4_address(Addr).
 
 -spec parse_ipv6_address(Address) ->
-	{ok, IPv6Address} | {error, einval} when
+          {ok, IPv6Address} | {error, einval} when
       Address :: string(),
       IPv6Address :: ip_address().
 parse_ipv6_address(Addr) ->
     inet_parse:ipv6_address(Addr).
 
 -spec parse_ipv4strict_address(Address) ->
-	{ok, IPv4Address} | {error, einval} when
+          {ok, IPv4Address} | {error, einval} when
       Address :: string(),
       IPv4Address :: ip_address().
 parse_ipv4strict_address(Addr) ->
     inet_parse:ipv4strict_address(Addr).
 
 -spec parse_ipv6strict_address(Address) ->
-	{ok, IPv6Address} | {error, einval} when
+          {ok, IPv6Address} | {error, einval} when
       Address :: string(),
       IPv6Address :: ip_address().
 parse_ipv6strict_address(Addr) ->
     inet_parse:ipv6strict_address(Addr).
 
 -spec parse_address(Address) ->
-	{ok, IPAddress} | {error, einval} when
+          {ok, IPAddress} | {error, einval} when
       Address :: string(),
       IPAddress :: ip_address().
 parse_address(Addr) ->
     inet_parse:address(Addr).
 
 -spec parse_strict_address(Address) ->
-	{ok, IPAddress} | {error, einval} when
+          {ok, IPAddress} | {error, einval} when
       Address :: string(),
       IPAddress :: ip_address().
 parse_strict_address(Addr) ->
@@ -906,31 +906,31 @@ udp_module(Opts) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Available options for sctp:open
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Currently supported options include:
-%  (*) {mode,   list|binary}	 or just list|binary
-%  (*) {active, true|false|once|N}
-%  (*) {sctp_module, inet_sctp|inet6_sctp} or just inet|inet6
-%  (*) options set via setsockopt.
-%      The full list is below in sctp_options/0 .
-%  All other options are currently NOT supported. In particular:
-%  (*) multicast on SCTP is not (yet) supported, as it may be incompatible
-%      with automatic associations;
-%  (*) passing of open FDs ("fdopen") is not supported.
+                                                %  Currently supported options include:
+                                                %  (*) {mode,   list|binary}	 or just list|binary
+                                                %  (*) {active, true|false|once|N}
+                                                %  (*) {sctp_module, inet_sctp|inet6_sctp} or just inet|inet6
+                                                %  (*) options set via setsockopt.
+                                                %      The full list is below in sctp_options/0 .
+                                                %  All other options are currently NOT supported. In particular:
+                                                %  (*) multicast on SCTP is not (yet) supported, as it may be incompatible
+                                                %      with automatic associations;
+                                                %  (*) passing of open FDs ("fdopen") is not supported.
 sctp_options() ->
-[   % The following are generic inet options supported for SCTP sockets:
-    mode, active, buffer, tos, tclass, priority, dontroute, reuseaddr, linger, sndbuf,
-    recbuf, ipv6_v6only, high_msgq_watermark, low_msgq_watermark,
-    bind_to_device,
+    [   % The following are generic inet options supported for SCTP sockets:
+     mode, active, buffer, tos, tclass, priority, dontroute, reuseaddr, linger, sndbuf,
+     recbuf, ipv6_v6only, high_msgq_watermark, low_msgq_watermark,
+     bind_to_device,
 
-    % Other options are SCTP-specific (though they may be similar to their
-    % TCP and UDP counter-parts):
-    sctp_rtoinfo,   		 sctp_associnfo,	sctp_initmsg,
-    sctp_autoclose,		 sctp_nodelay,		sctp_disable_fragments,
-    sctp_i_want_mapped_v4_addr,  sctp_maxseg,		sctp_primary_addr,
-    sctp_set_peer_primary_addr,  sctp_adaptation_layer,	sctp_peer_addr_params,
-    sctp_default_send_param,	 sctp_events,		sctp_delayed_ack_time,
-    sctp_status,	   	 sctp_get_peer_addr_info
-].
+                                                % Other options are SCTP-specific (though they may be similar to their
+                                                % TCP and UDP counter-parts):
+     sctp_rtoinfo,   		 sctp_associnfo,	sctp_initmsg,
+     sctp_autoclose,		 sctp_nodelay,		sctp_disable_fragments,
+     sctp_i_want_mapped_v4_addr,  sctp_maxseg,		sctp_primary_addr,
+     sctp_set_peer_primary_addr,  sctp_adaptation_layer,	sctp_peer_addr_params,
+     sctp_default_send_param,	 sctp_events,		sctp_delayed_ack_time,
+     sctp_status,	   	 sctp_get_peer_addr_info
+    ].
 
 sctp_options(Opts, Mod)  ->
     case sctp_opt(Opts, Mod, #sctp_opts{}, sctp_options()) of
@@ -1334,7 +1334,7 @@ gethostbyaddr_tm_native(Addr, Timer, Opts) ->
 	   Family :: address_family(),
 	   Type :: socket_type(),
 	   Module :: atom()) ->
-	{'ok', socket()} | {'error', posix()}.
+          {'ok', socket()} | {'error', posix()}.
 
 open(FdO, Addr, Port, Opts, Protocol, Family, Type, Module)
   when is_integer(FdO), FdO < 0;
@@ -1408,7 +1408,7 @@ change_bindx_0_port({_IP, _Port}=Addr, _AssignedPort) ->
 	     Family :: address_family(),
 	     Type :: socket_type(),
 	     Module :: atom()) ->
-	{'ok', socket()} | {'error', posix()}.
+          {'ok', socket()} | {'error', posix()}.
 
 fdopen(Fd, Opts, Protocol, Family, Type, Module) ->
     fdopen(Fd, any, 0, Opts, Protocol, Family, Type, Module).

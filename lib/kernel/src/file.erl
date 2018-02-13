@@ -400,7 +400,7 @@ write_file(Name, Bin) ->
 write_file(Name, IOData, ModeList) when is_list(ModeList) ->
     case lists:member(raw, ModeList) of
         true ->
-          %% For backwards compatibility of error messages
+            %% For backwards compatibility of error messages
             try iolist_size(IOData) of
                 _Size -> do_write_file(Name, IOData, ModeList)
             catch
@@ -514,7 +514,7 @@ advise(_, _, _, _) ->
     {error, badarg}.
 
 -spec allocate(File, Offset, Length) ->
-	'ok' | {'error', posix()} when
+          'ok' | {'error', posix()} when
       File :: io_device(),
       Offset :: non_neg_integer(),
       Length :: non_neg_integer().
@@ -595,7 +595,7 @@ pread_int(_, _, _) ->
     {error, badarg}.
 
 -spec pread(IoDevice, Location, Number) ->
-             {ok, Data} | eof | {error, Reason} when
+          {ok, Data} | eof | {error, Reason} when
       IoDevice :: io_device(),
       Location :: location(),
       Number :: non_neg_integer(),
@@ -723,7 +723,7 @@ copy(Source, Dest) ->
     copy_int(Source, Dest, infinity).
 
 -spec copy(Source, Destination, ByteCount) ->
-             {ok, BytesCopied} | {error, Reason} when
+          {ok, BytesCopied} | {error, Reason} when
       Source :: io_device() | Filename | {Filename, Modes},
       Destination :: io_device() | Filename | {Filename, Modes},
       Filename :: name_all(),
@@ -949,8 +949,8 @@ ipread_s32bu_p32bu_2(_File,
 		     _MaxSize) ->
     eof;
 ipread_s32bu_p32bu_2(File,
-		    Header,
-		    MaxSize) when is_list(Header) ->
+                     Header,
+                     MaxSize) when is_list(Header) ->
     ipread_s32bu_p32bu_2(File, list_to_binary(Header), MaxSize).
 
 
@@ -1034,7 +1034,7 @@ path_eval(Path, File) ->
     path_eval(Path, File, erl_eval:new_bindings()).
 
 -spec path_eval(Path, Filename, Bindings) ->
-             {ok, FullName} | {error, Reason} when
+          {ok, FullName} | {error, Reason} when
       Path :: [Dir :: name_all()],
       Filename :: name_all(),
       Bindings :: erl_eval:binding_struct(),
@@ -1084,7 +1084,7 @@ script(File, Bs) ->
     end.
 
 -spec path_script(Path, Filename) ->
-             {ok, Value, FullName} | {error, Reason} when
+          {ok, Value, FullName} | {error, Reason} when
       Path :: [Dir :: name_all()],
       Filename :: name_all(),
       Value :: term(),
@@ -1129,7 +1129,7 @@ path_script(Path, File, Bs) ->
 %% The path list is ignored if Filename contains an absolute path.
 
 -spec path_open(Path, Filename, Modes) ->
-             {ok, IoDevice, FullName} | {error, Reason} when
+          {ok, IoDevice, FullName} | {error, Reason} when
       Path :: [Dir :: name_all()],
       Filename :: name_all(),
       Modes :: [mode()],
@@ -1209,7 +1209,7 @@ change_time(Name, {{Y, M, D}, {H, Min, Sec}}=Time)
       Reason :: posix() | badarg.
 
 change_time(Name, {{AY, AM, AD}, {AH, AMin, ASec}}=Atime,
-         {{MY, MM, MD}, {MH, MMin, MSec}}=Mtime)
+            {{MY, MM, MD}, {MH, MMin, MSec}}=Mtime)
   when is_integer(AY), is_integer(AM), is_integer(AD),
        is_integer(AH), is_integer(AMin), is_integer(ASec),
        is_integer(MY), is_integer(MM), is_integer(MD),
@@ -1224,8 +1224,8 @@ change_time(Name, {{AY, AM, AD}, {AH, AMin, ASec}}=Atime,
 -define(MAX_CHUNK_SIZE, (1 bsl 20)).
 
 -spec sendfile(RawFile, Socket, Offset, Bytes, Opts) ->
-   {'ok', non_neg_integer()} | {'error', inet:posix() | 
-				closed | badarg | not_owner} when
+          {'ok', non_neg_integer()} | {'error', inet:posix() | 
+                                       closed | badarg | not_owner} when
       RawFile :: fd(),
       Socket :: inet:socket(),
       Offset :: non_neg_integer(),
@@ -1251,10 +1251,10 @@ sendfile(File, Sock, Offset, Bytes, Opts) ->
 
 %% sendfile/2
 -spec sendfile(Filename, Socket) ->
-   {'ok', non_neg_integer()} | {'error', inet:posix() | 
-				closed | badarg | not_owner}
+          {'ok', non_neg_integer()} | {'error', inet:posix() | 
+                                       closed | badarg | not_owner}
       when Filename :: name_all(),
-	   Socket :: inet:socket().
+           Socket :: inet:socket().
 sendfile(Filename, Sock)  ->
     case file:open(Filename, [read, raw, binary]) of
 	{error, Reason} ->
@@ -1320,7 +1320,7 @@ sendfile_fallback_int(File, Sock, Bytes, ChunkSize, BytesSent)
   when Bytes > BytesSent; Bytes == 0 ->
     Size = if Bytes == 0 ->
 		   ChunkSize;
-	       (Bytes - BytesSent) < ChunkSize ->
+              (Bytes - BytesSent) < ChunkSize ->
 		   Bytes - BytesSent;
 	      true ->
 		   ChunkSize
@@ -1436,7 +1436,7 @@ file_name(N) ->
     try 
         file_name_1(N,file:native_name_encoding())
     catch Reason ->
-        {error, Reason}
+            {error, Reason}
     end.
 
 file_name_1([C|T],latin1) when is_integer(C), C < 256->
@@ -1460,7 +1460,7 @@ make_binary(List) ->
     try 
         erlang:iolist_to_binary(List)
     catch error:Reason ->
-        {error, Reason}
+            {error, Reason}
     end.
 
 mode_list(read) ->

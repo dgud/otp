@@ -123,7 +123,7 @@ do_connect(Addr = {A,B,C,D,E,F,G,H}, Port, Opts, Time)
 	    ifaddr = BAddr = {Ab,Bb,Cb,Db,Eb,Fb,Gb,Hb},
 	    port = BPort,
 	    opts = SockOpts}}
-	when ?ip6(Ab,Bb,Cb,Db,Eb,Fb,Gb,Hb), ?port(BPort) ->
+          when ?ip6(Ab,Bb,Cb,Db,Eb,Fb,Gb,Hb), ?port(BPort) ->
 	    case inet:open(
 		   Fd, BAddr, BPort, SockOpts,
 		   ?PROTO, ?FAMILY, ?TYPE, ?MODULE) of
@@ -149,7 +149,7 @@ listen(Port, Opts) ->
 	    ifaddr = BAddr = {A,B,C,D,E,F,G,H},
 	    port = BPort,
 	    opts = SockOpts} = R}
-	when ?ip6(A,B,C,D,E,F,G,H), ?port(BPort) ->
+          when ?ip6(A,B,C,D,E,F,G,H), ?port(BPort) ->
 	    case inet:open(
 		   Fd, BAddr, BPort, SockOpts,
 		   ?PROTO, ?FAMILY, ?TYPE, ?MODULE) of

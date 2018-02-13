@@ -57,7 +57,7 @@
 -import(mnesia_lib, [dbg_out/2, error/2, verbose/2]).
 
 -define(dbg(S,V), ok).
-%-define(dbg(S,V), dbg_out("~p:~p: " ++ S, [?MODULE, ?LINE] ++ V)).
+                                                %-define(dbg(S,V), dbg_out("~p:~p: " ++ S, [?MODULE, ?LINE] ++ V)).
 
 -define(ALL, '______WHOLETABLE_____').
 -define(STICK, '______STICK_____').
@@ -426,7 +426,7 @@ can_queue([{Op, WaitForTid}|Locks], Tid, Oid = {Tab, _}, _) ->
 	    dbg_out("Spurious lock conflict ~w ~w: ~w -> ~w~n",
 		    [Oid, Op, Tid, WaitForTid]),
 	    HaveQ = (ets:lookup(mnesia_lock_queue, Oid) /= [])
-		orelse (ets:lookup(mnesia_lock_queue,{Tab,?ALL}) /= []),
+                    orelse (ets:lookup(mnesia_lock_queue,{Tab,?ALL}) /= []),
 	    case HaveQ of
 		true -> {no, WaitForTid};
 		false ->  can_queue(Locks, Tid, Oid, {queue, WaitForTid})
@@ -757,7 +757,7 @@ sticky_lock(Tid, Store, {Tab, Key} = Oid, Lock) ->
     if
 	node() == N ->
 	    case need_lock(Store, Tab, Key, write) of
-	    	yes ->
+                yes ->
 		    do_sticky_lock(Tid, Store, Oid, Lock);
 		no ->
 		    dirty_sticky_lock(Tab, Key, [N], Lock)
@@ -1111,7 +1111,7 @@ ixrlock(Tid, Store, Tab, IxKey, Pos) ->
 	nowhere ->
 	    mnesia:abort({no_exists, Tab});
 	Node ->
-	    %%% Old code
+%%% Old code
 	    %% R = l_request(Node, {ix_read, Tid, Tab, IxKey, Pos}, Store),
 	    %% rlock_get_reply(Node, Store, Tab, R)
 
@@ -1266,7 +1266,7 @@ cmp(_X1, _X2) -> 1.
 
 pid_to_pid_info(Pid) when is_pid(Pid) ->
     [?VERSION_MAGIC, ?PID_EXT, ?ATOM_EXT, NNL1, NNL0 | Rest]
-	= binary_to_list(term_to_binary(Pid)),
+      = binary_to_list(term_to_binary(Pid)),
     [N3, N2, N1, N0, S3, S2, S1, S0, Creation] = drop(bytes2int(NNL1, NNL0),
 						      Rest),
     #pid_info{serial = bytes2int(S3, S2, S1, S0),

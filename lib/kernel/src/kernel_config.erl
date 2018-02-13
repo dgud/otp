@@ -99,7 +99,7 @@ sync_nodes() ->
 	{infinity, MandatoryNodes, OptionalNodes} ->
 	    case wait_nodes(MandatoryNodes, OptionalNodes) of
 		ok ->
-%		    sync(),
+                                                %		    sync(),
 		    ok;
 		Error ->
 		    Error
@@ -108,7 +108,7 @@ sync_nodes() ->
 	    spawn_link(kernel_config, send_timeout, [Timeout, self()]),
 	    case wait_nodes(MandatoryNodes, OptionalNodes) of
 		ok ->
-%		    sync(),
+                                                %		    sync(),
 		    ok;
 		Error ->
 		    Error
@@ -124,10 +124,10 @@ send_timeout(Timeout, Pid) ->
 wait_nodes(Mandatory, Optional) ->
     ok = net_kernel:monitor_nodes(true),
     lists:foreach(fun(Node) -> 
-		     case net_adm:ping(Node) of
-			 pong -> self() ! {nodeup, Node};
-			 _ -> ok
-		     end
+                          case net_adm:ping(Node) of
+                              pong -> self() ! {nodeup, Node};
+                              _ -> ok
+                          end
 		  end,
 		  Mandatory ++ Optional),
     R = rec_nodes(Mandatory, Optional),
@@ -156,8 +156,8 @@ check_up(Node, Mandatory, Optional) ->
     end.
 
 %% Syncs standard servers
-%sync() ->
-%    global:sync().
+                                                %sync() ->
+                                                %    global:sync().
 
 get_sync_data() -> 
     Timeout = get_sync_timeout(),

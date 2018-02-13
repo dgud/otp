@@ -205,8 +205,8 @@ init([]) ->
 
             {ok, {SupFlags,
                   [Code, Rpc, Global, InetDb | DistAC] ++
-                  [NetSup, GlGroup, File, SigSrv,
-                   StdError, User, Config, RefC, SafeSup] ++ Timer}}
+                      [NetSup, GlGroup, File, SigSrv,
+                       StdError, User, Config, RefC, SafeSup] ++ Timer}}
     end;
 init(safe) ->
     SupFlags = #{strategy => one_for_one,
@@ -325,13 +325,13 @@ do_distribution_change(Changed, New, Removed) ->
 				      "Not allowed to add the 'distributed' "
 				      "parameter."),
 	    {error, {distribution_not_changed, "Not allowed to add the "
-		     "'distributed' parameter"}};
+                                               "'distributed' parameter"}};
 	{false, false, _} ->
 	    error_logger:error_report("Distribution not changed: "
 				      "Not allowed to remove the "
 				      "distribution parameter."),
 	    {error, {distribution_not_changed, "Not allowed to remove the "
-		     "'distributed' parameter"}}
+                                               "'distributed' parameter"}}
     end.
 
 %%-----------------------------------------------------------------

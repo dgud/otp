@@ -21,7 +21,7 @@
 %%
 -module(inet_res).
 
-%-compile(export_all).
+                                                %-compile(export_all).
 
 -export([gethostbyname/1, gethostbyname/2, gethostbyname/3,
 	 gethostbyname_tm/3]).
@@ -112,7 +112,7 @@ resolve(Name, Class, Type) ->
     resolve(Name, Class, Type, [], infinity).
 
 -spec resolve(Name, Class, Type, Opts) ->
-                     {ok, dns_msg()} | Error when
+          {ok, dns_msg()} | Error when
       Name :: dns_name() | inet:ip_address(),
       Class :: dns_class(),
       Type :: rr_type(),
@@ -125,7 +125,7 @@ resolve(Name, Class, Type, Opts) ->
     resolve(Name, Class, Type, Opts, infinity).
 
 -spec resolve(Name, Class, Type, Opts, Timeout) ->
-                     {ok, dns_msg()} | Error when
+          {ok, dns_msg()} | Error when
       Name :: dns_name() | inet:ip_address(),
       Class :: dns_class(),
       Type :: rr_type(),
@@ -178,7 +178,7 @@ lookup(Name, Class, Type, Opts) ->
 
 lookup(Name, Class, Type, Opts, Timeout) ->
     lookup_filter(resolve(Name, Class, Type, Opts, Timeout),
-		     Class, Type).
+                  Class, Type).
 
 lookup_filter({ok,#dns_rec{anlist=Answers}}, Class, Type) ->
     [A#dns_rr.data || A <- Answers,
@@ -205,19 +205,19 @@ nslookup(Name, Class, Type) ->
     do_nslookup(Name, Class, Type, [], infinity).
 
 -spec nslookup(Name, Class, Type, Timeout) ->
-                      {ok, dns_msg()} | {error, Reason} when
-                  Name :: dns_name() | inet:ip_address(),
-                  Class :: dns_class(),
-                  Type :: rr_type(),
-                  Timeout :: timeout(),
-                  Reason :: inet:posix() | res_error();
+          {ok, dns_msg()} | {error, Reason} when
+      Name :: dns_name() | inet:ip_address(),
+      Class :: dns_class(),
+      Type :: rr_type(),
+      Timeout :: timeout(),
+      Reason :: inet:posix() | res_error();
               (Name, Class, Type, Nameservers) ->
-                      {ok, dns_msg()} | {error, Reason} when
-                  Name :: dns_name() | inet:ip_address(),
-                  Class :: dns_class(),
-                  Type :: rr_type(),
-                  Nameservers :: [nameserver()],
-                  Reason :: inet:posix() | res_error().
+                  {ok, dns_msg()} | {error, Reason} when
+      Name :: dns_name() | inet:ip_address(),
+      Class :: dns_class(),
+      Type :: rr_type(),
+      Nameservers :: [nameserver()],
+      Reason :: inet:posix() | res_error().
 
 nslookup(Name, Class, Type, Timeout) when is_integer(Timeout), Timeout >= 0 ->
     do_nslookup(Name, Class, Type, [], Timeout);
@@ -225,7 +225,7 @@ nslookup(Name, Class, Type, NSs) ->             % For backwards compatibility
     nnslookup(Name, Class, Type, NSs).          % with OTP R6B only
 
 -spec nnslookup(Name, Class, Type, Nameservers) ->
-                      {ok, dns_msg()} | {error, Reason} when
+          {ok, dns_msg()} | {error, Reason} when
       Name :: dns_name() | inet:ip_address(),
       Class :: dns_class(),
       Type :: rr_type(),
@@ -236,7 +236,7 @@ nnslookup(Name, Class, Type, NSs) ->
     nnslookup(Name, Class, Type, NSs, infinity).
 
 -spec nnslookup(Name, Class, Type, Nameservers, Timeout) ->
-                      {ok, dns_msg()} | {error, Reason} when
+          {ok, dns_msg()} | {error, Reason} when
       Name :: dns_name() | inet:ip_address(),
       Class :: dns_class(),
       Type :: rr_type(),
@@ -258,9 +258,9 @@ do_nslookup(Name, Class, Type, Opts, Timeout) ->
 %% options record
 %%
 -record(options, { % These must be sorted!
-	  alt_nameservers,edns,inet6,nameservers,recurse,
-	  retry,timeout,udp_payload_size,usevc,
-	  verbose}). % this is a local option, not in inet_db
+                  alt_nameservers,edns,inet6,nameservers,recurse,
+                  retry,timeout,udp_payload_size,usevc,
+                  verbose}). % this is a local option, not in inet_db
 %%
 %% Opts when is_list(Opts) -> #options{}
 make_options(Opts0) ->
@@ -276,17 +276,17 @@ make_options(Opts0) ->
     %% use only the nameservers the caller supplies.
     SortedOpts = 
 	lists:ukeysort(1,
-		      case lists:keymember(nameservers, 1, Opts) of
-			  true ->
-			      case lists:keymember(alt_nameservers, 1, Opts) of
-				  false ->
-				      [{alt_nameservers,[]}|Opts];
-				  true ->
-				      Opts
-			      end;
-			  false ->
-			      Opts
-		      end),
+                       case lists:keymember(nameservers, 1, Opts) of
+                           true ->
+                               case lists:keymember(alt_nameservers, 1, Opts) of
+                                   false ->
+                                       [{alt_nameservers,[]}|Opts];
+                                   true ->
+                                       Opts
+                               end;
+                           false ->
+                               Opts
+                       end),
     SortedNames = record_info(fields, options),
     inet_db:res_update_conf(),
     list_to_tuple([options|make_options(SortedOpts, SortedNames)]).
@@ -415,7 +415,7 @@ gethostbyname(Name,Family) ->
     gethostbyname_tm(Name,Family,false).
 
 -spec gethostbyname(Name, Family, Timeout) ->
-                           {ok, Hostent} | {error, Reason} when
+          {ok, Hostent} | {error, Reason} when
       Name :: dns_name(),
       Hostent :: inet:hostent(),
       Timeout :: timeout(),
@@ -442,10 +442,10 @@ gethostbyname_tm(Name,inet6,Timer) ->
 		       h_addrtype = inet6,
 		       h_length = 16,
 		       h_addr_list = 
-		       lists:map(
-			 fun({A,B,C,D}) ->
-				 {0,0,0,0,0,16#ffff,A*256+B,C*256+D}
-			 end, HEnt#hostent.h_addr_list)
+                           lists:map(
+                             fun({A,B,C,D}) ->
+                                     {0,0,0,0,0,16#ffff,A*256+B,C*256+D}
+                             end, HEnt#hostent.h_addr_list)
 		      }};
 		Error ->
 		    Error
@@ -662,9 +662,9 @@ make_query(Dname, Class, Type, Options, Edns) ->
 				      opcode='query',
 				      rd=Recurse,
 				      rcode=?NOERROR},
-		    qdlist=[#dns_query{domain=Dname, 
-				       type=Type, 
-				       class=Class}],
+                   qdlist=[#dns_query{domain=Dname, 
+                                      type=Type, 
+                                      class=Class}],
 		   arlist=ARList},
     ?verbose(Options#options.verbose, "Query: ~p~n", [dns_msg(Msg)]),
     Buffer = inet_dns:encode(Msg),
@@ -812,7 +812,7 @@ query_nss_edns(
   #q{options=#options{udp_payload_size=PSz}=Options,edns={Id,Buffer}}=Q,
   [{IP,Port}=NS|NSs]=NSs0, Timer, Retry, I, S0, ErrNSs) ->
     {S,Res}=Reply =
-	query_ns(S0, Id, Buffer, IP, Port, Timer, Retry, I, Options, PSz),
+                query_ns(S0, Id, Buffer, IP, Port, Timer, Retry, I, Options, PSz),
     case Res of
 	timeout -> {S,{error,timeout}}; % Bailout timeout
 	{ok,_} -> Reply;
@@ -830,13 +830,13 @@ query_nss_dns(
   #q{dns=Qdns}=Q0,
   [{IP,Port}=NS|NSs], Timer, Retry, I, S0, ErrNSs) ->
     #q{options=Options,dns={Id,Buffer}}=Q =
-	if
-	    is_function(Qdns, 0) -> Q0#q{dns=Qdns()};
-	    true -> Q0
-	end,
+                                            if
+                                                is_function(Qdns, 0) -> Q0#q{dns=Qdns()};
+                                                true -> Q0
+                                            end,
     {S,Res}=Reply =
-	query_ns(
-	  S0, Id, Buffer, IP, Port, Timer, Retry, I, Options, ?PACKETSZ),
+                query_ns(
+                  S0, Id, Buffer, IP, Port, Timer, Retry, I, Options, ?PACKETSZ),
     case Res of
 	timeout -> {S,{error,timeout}}; % Bailout timeout
 	{ok,_} -> Reply;
@@ -859,17 +859,17 @@ query_ns(S0, Id, Buffer, IP, Port, Timer, Retry, I,
 		{ok,S} ->
 		    Timeout =
 			inet:timeout( (Tm * (1 bsl I)) div Retry, Timer),
-		     case query_udp(
-			    S, Id, Buffer, IP, Port, Timeout, Verbose) of
-			 {ok,#dns_rec{header=H}} when H#dns_header.tc ->
-			     TcpTimeout = inet:timeout(Tm*5, Timer),
-			     {S, query_tcp(
-			       TcpTimeout, Id, Buffer, IP, Port, Verbose)};
+                    case query_udp(
+                           S, Id, Buffer, IP, Port, Timeout, Verbose) of
+                        {ok,#dns_rec{header=H}} when H#dns_header.tc ->
+                            TcpTimeout = inet:timeout(Tm*5, Timer),
+                            {S, query_tcp(
+                                  TcpTimeout, Id, Buffer, IP, Port, Verbose)};
 			{error, econnrefused} = Err ->
                             ok = udp_close(S),
 	                    {#sock{}, Err};
 			Reply -> {S, Reply}
-		     end;
+                    end;
 		Error ->
 		    {S0,Error}
 	    end
@@ -1065,4 +1065,4 @@ now_ms(Int1, Int0) ->
 
 -compile({inline, [time_now/0]}).
 time_now() ->
-	erlang:monotonic_time(1000).
+    erlang:monotonic_time(1000).

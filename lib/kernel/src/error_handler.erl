@@ -32,7 +32,7 @@
 -export([stub_function/3]).
 
 -spec undefined_function(Module, Function, Args) ->
-	any() when
+          any() when
       Module :: atom(),
       Function :: atom(),
       Args :: list().
@@ -70,7 +70,7 @@ undefined_lambda(Module, Fun, Args) ->
     end.
 
 -spec breakpoint(Module :: atom(), Function :: atom(), Args :: [_]) ->
-	any().
+          any().
 
 breakpoint(Module, Func, Args) ->
     (int()):eval(Module, Func, Args).
@@ -123,7 +123,7 @@ ensure_loaded(Module) ->
 	%% bring down the node.
 	Self ->
 	    Error = "The code server called the unloaded module `" ++
-		atom_to_list(Module) ++ "'",
+                    atom_to_list(Module) ++ "'",
 	    halt(Error);
 	Pid when is_pid(Pid) ->
 	    code:ensure_loaded(Module);

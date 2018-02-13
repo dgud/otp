@@ -104,8 +104,8 @@ do_connect(Addr = {?FAMILY, _}, 0, Opts, Time) ->
 	    ifaddr = BAddr,
 	    port = 0,
 	    opts = SockOpts}}
-	when tuple_size(BAddr) =:= 2, element(1, BAddr) =:= ?FAMILY;
-	     BAddr =:= any ->
+          when tuple_size(BAddr) =:= 2, element(1, BAddr) =:= ?FAMILY;
+               BAddr =:= any ->
 	    case inet:open(
 		   Fd,
 		   case BAddr of
@@ -137,8 +137,8 @@ listen(0, Opts) ->
 	    ifaddr = BAddr,
 	    port = 0,
 	    opts = SockOpts} = R}
-	when tuple_size(BAddr) =:= 2, element(1, BAddr) =:= ?FAMILY;
-	     BAddr =:= any ->
+          when tuple_size(BAddr) =:= 2, element(1, BAddr) =:= ?FAMILY;
+               BAddr =:= any ->
 	    case inet:open(
 		   Fd, BAddr, 0, SockOpts,
 		   ?PROTO, ?FAMILY, ?TYPE, ?MODULE) of

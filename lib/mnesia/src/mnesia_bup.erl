@@ -90,7 +90,7 @@ iterate(Mod, Fun, Opaque, Acc) ->
 	    catch throw:Err ->
 		    close_read(R2),
 		    Err;
-		  _:Reason ->
+                  _:Reason ->
 		    close_read(R2),
 		    {error, {Reason, erlang:get_stacktrace()}}
 	    end
@@ -212,7 +212,7 @@ do_read_schema_section(R, {ok, B, C, []}, Acc) ->
     end;
 
 do_read_schema_section(R, {ok, B, C, [Head | Tail]}, Acc)
-        when element(1, Head) =:= schema ->
+  when element(1, Head) =:= schema ->
     do_read_schema_section(R, {ok, B, C, Tail}, Acc ++ [Head]);
 
 do_read_schema_section(R, {ok, B, _C, Rest}, Acc) ->

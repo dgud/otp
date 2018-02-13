@@ -53,16 +53,16 @@
 
 -define(TRACE_PIDS_STR, "Trace selected process identifiers").
 -define(TRACE_NAMES_STR, "Trace selected processes, "
-	"if a process have a registered name "
-	"processes with same name will be traced on all nodes").
+                         "if a process have a registered name "
+                         "processes with same name will be traced on all nodes").
 
 
 %% Records
 
 -record(sort,
 	{
-	  sort_key=?COL_REDS,
-	  sort_incr=false
+         sort_key=?COL_REDS,
+         sort_incr=false
 	}).
 
 -record(holder, {parent,
@@ -117,7 +117,7 @@ setup(Notebook, Parent, Holder, Config) ->
 		   parent_notebook=Notebook,
 		   holder=Holder,
 		   timer=Config
-		   },
+                  },
     {ProPanel, State}.
 
 
@@ -137,7 +137,7 @@ create_pro_menu(Parent, Holder) ->
 		    [#create_menu{id=?ID_TRACE_PIDS, text="Trace processes"},
 		     #create_menu{id=?ID_TRACE_NAMES, text="Trace named processes (all nodes)"},
 		     #create_menu{id=?ID_TRACE_NEW, text="Trace new processes"}
-		     %% , #create_menu{id=?ID_TRACE_ALL_MENU, text="Trace all processes"}
+                    %% , #create_menu{id=?ID_TRACE_ALL_MENU, text="Trace all processes"}
 		    ]}
 		  ],
     observer_wx:create_menus(Parent, MenuEntries).
@@ -164,7 +164,7 @@ create_list_box(Panel, Holder) ->
 		   end,
     ListItems = [{"Pid", ?wxLIST_FORMAT_CENTRE,  120},
 		 {"Name or Initial Func", ?wxLIST_FORMAT_LEFT, 200},
-%%		 {"Time", ?wxLIST_FORMAT_CENTRE, 50},
+                 %%		 {"Time", ?wxLIST_FORMAT_CENTRE, 50},
 		 {"Reds", ?wxLIST_FORMAT_RIGHT, 100},
 		 {"Memory", ?wxLIST_FORMAT_RIGHT, 100},
 		 {"MsgQ",  ?wxLIST_FORMAT_RIGHT, 50},

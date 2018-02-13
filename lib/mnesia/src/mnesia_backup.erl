@@ -21,7 +21,7 @@
 %%
 
 %%-behaviour(mnesia_backup).
-%0
+                                                %0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -113,9 +113,9 @@ commit_write(OpaqueData) ->
             case disk_log:close(B#backup.file_desc) of
                 ok ->
 		    case file:rename(B#backup.tmp_file, B#backup.file) of
-		       ok ->
+                        ok ->
 			    {ok, B#backup.file};
-		       {error, Reason} ->
+                        {error, Reason} ->
 			    {error, Reason}
 		    end;
                 {error, Reason} ->
@@ -198,5 +198,5 @@ close_read(OpaqueData) ->
         ok -> {ok, R#restore.file};
         {error, Reason} -> {error, Reason}
     end.
-%0
+                                                %0
 

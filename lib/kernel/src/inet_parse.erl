@@ -326,7 +326,7 @@ parse_cs(Fname, Chars, Line, Fun, Ls) ->
 		    case catch Fun(Toks) of
 			{'EXIT',_} -> 
 			    error("~p:~p: erroneous line, SKIPPED~n",[Fname,Line]),
- 			    parse_cs(Fname, Chars1, Line+1, Fun, Ls);
+                            parse_cs(Fname, Chars1, Line+1, Fun, Ls);
 			{warning,Wlist,Val} ->
 			    warning("~p:~p: warning! strange domain name(s) ~p ~n",[Fname,Line,Wlist]),
 			    parse_cs(Fname, Chars1, Line+1, Fun, [Val|Ls]);
@@ -827,7 +827,7 @@ ntoa([D|T], R1, N1, R2, N2) ->
 ntoa_done(R1, R2) ->
     lists:append(
       separate(":", lists:map(fun dig_to_hex/1, lists:reverse(R1)))++
-      ["::"|separate(":", lists:map(fun dig_to_hex/1, lists:reverse(R2)))]).
+          ["::"|separate(":", lists:map(fun dig_to_hex/1, lists:reverse(R2)))]).
 
 ntoa_done(R) ->
     lists:append(separate(":", lists:map(fun dig_to_hex/1, lists:reverse(R)))).

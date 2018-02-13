@@ -109,8 +109,8 @@ collect_return_info(_E,Acc,_Col) ->
 
 init_et(Parent) ->
     process_flag(trap_exit,true),
-%    ets:new(ttb_et_table,[set,named_table,public]),
-%    ets:insert(ttb_et_table,{traci,Traci}),
+                                                %    ets:new(ttb_et_table,[set,named_table,public]),
+                                                %    ets:insert(ttb_et_table,{traci,Traci}),
     EtOpt = [{active_filter,processes},
 	     {dict_insert, {filter, collector}, fun collector/1},
 	     {dict_insert, {filter, processes}, fun processes/1},

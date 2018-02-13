@@ -20,8 +20,8 @@
 -module(heart). 
 
 -compile(no_native).
-% 'no_native' as part of a crude fix to make init:restart/0 work by clearing
-% all hipe inter-module information (hipe_mfa_info's in hipe_bif0.c).
+                                                % 'no_native' as part of a crude fix to make init:restart/0 work by clearing
+                                                % all hipe inter-module information (hipe_mfa_info's in hipe_bif0.c).
 
 %%%--------------------------------------------------------------------
 %%% This is a rewrite of pre_heart from BS.3.
@@ -299,7 +299,7 @@ loop(Parent, #state{port=Port}=S) ->
 	_ -> 
 	    loop(Parent, S)
     after
-	?TIMEOUT ->
+        ?TIMEOUT ->
 	    loop(Parent, S)
     end.
 
@@ -328,7 +328,7 @@ do_cycle_port_program(Caller, Parent, #state{port=Port} = S) ->
 		    Caller ! {?MODULE, ok},
 		    loop(Parent, S#state{port=NewPort})
 	    after
-		?CYCLE_TIMEOUT ->
+                ?CYCLE_TIMEOUT ->
 		    %% Huh! Two heart port programs running...
 		    %% well, the old one has to be sick not to respond
 		    %% so we'll settle for the new one...

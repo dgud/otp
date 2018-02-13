@@ -62,10 +62,10 @@
 %%------------------------------------------------------------------
 
 -callback start(StartType :: start_type(), StartArgs :: term()) ->
-    {'ok', pid()} | {'ok', pid(), State :: term()} | {'error', Reason :: term()}.
+              {'ok', pid()} | {'ok', pid(), State :: term()} | {'error', Reason :: term()}.
 
 -callback stop(State :: term()) ->
-    term().
+              term().
 
 %%%-----------------------------------------------------------------
 %%% This module is API towards application_controller and
@@ -207,7 +207,7 @@ start_boot(Application) ->
     start_boot(Application, temporary).
 
 -spec start_boot(Application :: atom(), RestartType :: restart_type()) ->
-	     'ok' | {'error', term()}.
+          'ok' | {'error', term()}.
 
 start_boot(Application, RestartType) ->
     application_controller:start_boot_application(Application, RestartType).
@@ -342,10 +342,10 @@ get_env(Application, Key) ->
 
 get_env(Application, Key, Def) ->
     case get_env(Application, Key) of
-    {ok, Val} ->
-        Val;
-    undefined ->
-        Def
+        {ok, Val} ->
+            Val;
+        undefined ->
+            Def
     end.
 
 -spec get_all_env() -> Env when

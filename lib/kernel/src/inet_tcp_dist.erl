@@ -191,38 +191,38 @@ do_accept(Driver, Kernel, AcceptPid, Socket, MyNode, Allowed, SetupTime) ->
 	    case check_ip(Driver, Socket) of
 		true ->
 		    HSData = #hs_data{
-		      kernel_pid = Kernel,
-		      this_node = MyNode,
-		      socket = Socket,
-		      timer = Timer,
-		      this_flags = 0,
-		      allowed = Allowed,
-		      f_send = fun Driver:send/2,
-		      f_recv = fun Driver:recv/3,
-		      f_setopts_pre_nodeup = 
-		      fun(S) ->
-			      inet:setopts(S, 
-					   [{active, false},
-					    {packet, 4},
-					    nodelay()])
-		      end,
-		      f_setopts_post_nodeup = 
-		      fun(S) ->
-			      inet:setopts(S, 
-					   [{active, true},
-					    {deliver, port},
-					    {packet, 4},
-					    nodelay()])
-		      end,
-		      f_getll = fun(S) ->
-					inet:getll(S)
-				end,
-		      f_address = fun(S, Node) -> get_remote_id(Driver, S, Node) end,
-		      mf_tick = fun(S) -> ?MODULE:tick(Driver, S) end,
-		      mf_getstat = fun ?MODULE:getstat/1,
-		      mf_setopts = fun ?MODULE:setopts/2,
-		      mf_getopts = fun ?MODULE:getopts/2
-		     },
+                                kernel_pid = Kernel,
+                                this_node = MyNode,
+                                socket = Socket,
+                                timer = Timer,
+                                this_flags = 0,
+                                allowed = Allowed,
+                                f_send = fun Driver:send/2,
+                                f_recv = fun Driver:recv/3,
+                                f_setopts_pre_nodeup = 
+                                    fun(S) ->
+                                            inet:setopts(S, 
+                                                         [{active, false},
+                                                          {packet, 4},
+                                                          nodelay()])
+                                    end,
+                                f_setopts_post_nodeup = 
+                                    fun(S) ->
+                                            inet:setopts(S, 
+                                                         [{active, true},
+                                                          {deliver, port},
+                                                          {packet, 4},
+                                                          nodelay()])
+                                    end,
+                                f_getll = fun(S) ->
+                                                  inet:getll(S)
+                                          end,
+                                f_address = fun(S, Node) -> get_remote_id(Driver, S, Node) end,
+                                mf_tick = fun(S) -> ?MODULE:tick(Driver, S) end,
+                                mf_getstat = fun ?MODULE:getstat/1,
+                                mf_setopts = fun ?MODULE:setopts/2,
+                                mf_getopts = fun ?MODULE:getopts/2
+                               },
 		    dist_util:handshake_other_started(HSData);
 		{false,IP} ->
 		    error_msg("** Connection attempt from "
@@ -299,48 +299,48 @@ do_setup(Driver, Kernel, Node, Type, MyNode, LongOrShortNames, SetupTime) ->
 		    of
 			{ok, Socket} ->
 			    HSData = #hs_data{
-			      kernel_pid = Kernel,
-			      other_node = Node,
-			      this_node = MyNode,
-			      socket = Socket,
-			      timer = Timer,
-			      this_flags = 0,
-			      other_version = Version,
-			      f_send = fun Driver:send/2,
-			      f_recv = fun Driver:recv/3,
-			      f_setopts_pre_nodeup = 
-			      fun(S) ->
-				      inet:setopts
-					(S, 
-					 [{active, false},
-					  {packet, 4},
-					  nodelay()])
-			      end,
-			      f_setopts_post_nodeup = 
-			      fun(S) ->
-				      inet:setopts
-					(S, 
-					 [{active, true},
-					  {deliver, port},
-					  {packet, 4},
-					  nodelay()])
-			      end,
+                                        kernel_pid = Kernel,
+                                        other_node = Node,
+                                        this_node = MyNode,
+                                        socket = Socket,
+                                        timer = Timer,
+                                        this_flags = 0,
+                                        other_version = Version,
+                                        f_send = fun Driver:send/2,
+                                        f_recv = fun Driver:recv/3,
+                                        f_setopts_pre_nodeup = 
+                                            fun(S) ->
+                                                    inet:setopts
+                                                      (S, 
+                                                       [{active, false},
+                                                        {packet, 4},
+                                                        nodelay()])
+                                            end,
+                                        f_setopts_post_nodeup = 
+                                            fun(S) ->
+                                                    inet:setopts
+                                                      (S, 
+                                                       [{active, true},
+                                                        {deliver, port},
+                                                        {packet, 4},
+                                                        nodelay()])
+                                            end,
 
-			      f_getll = fun inet:getll/1,
-			      f_address = 
-			      fun(_,_) ->
-				      #net_address{
-				   address = {Ip,TcpPort},
-				   host = Address,
-				   protocol = tcp,
-				   family = AddressFamily}
-			      end,
-			      mf_tick = fun(S) -> ?MODULE:tick(Driver, S) end,
-			      mf_getstat = fun ?MODULE:getstat/1,
-			      request_type = Type,
-			      mf_setopts = fun ?MODULE:setopts/2,
-			      mf_getopts = fun ?MODULE:getopts/2
-			     },
+                                        f_getll = fun inet:getll/1,
+                                        f_address = 
+                                            fun(_,_) ->
+                                                    #net_address{
+                                                       address = {Ip,TcpPort},
+                                                       host = Address,
+                                                       protocol = tcp,
+                                                       family = AddressFamily}
+                                            end,
+                                        mf_tick = fun(S) -> ?MODULE:tick(Driver, S) end,
+                                        mf_getstat = fun ?MODULE:getstat/1,
+                                        request_type = Type,
+                                        mf_setopts = fun ?MODULE:setopts/2,
+                                        mf_getopts = fun ?MODULE:getopts/2
+                                       },
 			    dist_util:handshake_we_started(HSData);
 			_ ->
 			    %% Other Node may have closed since 
@@ -423,11 +423,11 @@ get_tcp_address(Driver, Socket) ->
     {ok, Address} = inet:sockname(Socket),
     {ok, Host} = inet:gethostname(),
     #net_address {
-		  address = Address,
-		  host = Host,
-		  protocol = tcp,
-		  family = Driver:family()
-		 }.
+       address = Address,
+       host = Host,
+       protocol = tcp,
+       family = Driver:family()
+      }.
 
 %% ------------------------------------------------------------
 %% Do only accept new connection attempts from nodes at our

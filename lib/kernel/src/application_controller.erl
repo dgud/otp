@@ -543,17 +543,17 @@ check_conf_data(ConfData) when is_list(ConfData) ->
 	    end;
 	{AppName, List} when is_list(List)  ->
 	    ErrMsg = "application: "
-		++ lists:flatten(io_lib:format("~tp",[AppName]))
-		++ "; application name must be an atom",
+                     ++ lists:flatten(io_lib:format("~tp",[AppName]))
+                     ++ "; application name must be an atom",
 	    {error, ErrMsg};
 	{AppName, _List} ->
 	    ErrMsg = "application: "
-		++ lists:flatten(io_lib:format("~tp",[AppName]))
-		++ "; parameters must be a list",
+                     ++ lists:flatten(io_lib:format("~tp",[AppName]))
+                     ++ "; parameters must be a list",
 	    {error, ErrMsg};
 	Else ->
 	    ErrMsg = "invalid application name: " ++ 
-		lists:flatten(io_lib:format(" ~tp",[Else])),
+                     lists:flatten(io_lib:format(" ~tp",[Else])),
 	    {error, ErrMsg}
     end;
 check_conf_data(_ConfData) ->
@@ -576,10 +576,10 @@ check_para_kernel([{Para, _Val} | ParaList]) when is_atom(Para) ->
     check_para_kernel(ParaList);
 check_para_kernel([{Para, _Val} | _ParaList]) ->
     {error, "application: kernel; invalid parameter: " ++ 
-     lists:flatten(io_lib:format("~tp",[Para]))};
+                lists:flatten(io_lib:format("~tp",[Para]))};
 check_para_kernel(Else) ->
     {error, "application: kernel; invalid parameter list: " ++ 
-     lists:flatten(io_lib:format("~tp",[Else]))}.
+                lists:flatten(io_lib:format("~tp",[Else]))}.
     
 
 check_distributed([]) ->
@@ -600,10 +600,10 @@ check_para([{Para, _Val} | ParaList], AppName) when is_atom(Para) ->
     check_para(ParaList, AppName);
 check_para([{Para, _Val} | _ParaList], AppName) ->
     {error, "application: " ++ AppName ++ "; invalid parameter: " ++ 
-     lists:flatten(io_lib:format("~tp",[Para]))};
+                lists:flatten(io_lib:format("~tp",[Para]))};
 check_para([Else | _ParaList], AppName) ->
     {error, "application: " ++ AppName ++ "; invalid parameter: " ++ 
-     lists:flatten(io_lib:format("~tp",[Else]))}.
+                lists:flatten(io_lib:format("~tp",[Else]))}.
 
 
 -type calls() :: 'info' | 'prep_config_change' | 'which_applications'
@@ -617,7 +617,7 @@ check_para([Else | _ParaList], AppName) ->
                | {'set_env', _, _, _, _}.
 
 -spec handle_call(calls(), {pid(), term()}, state()) ->
-        {'noreply', state()} | {'reply', term(), state()}.
+          {'noreply', state()} | {'reply', term(), state()}.
 
 handle_call({load_application, Application}, From, S) ->
     case catch do_load_application(Application, S) of
@@ -912,7 +912,7 @@ handle_call(info, _From, S) ->
     {reply, Reply, S}.
 
 -spec handle_cast({'application_started', appname(), _}, state()) ->
-        {'noreply', state()} | {'stop', string(), state()}.
+          {'noreply', state()} | {'stop', string(), state()}.
 
 handle_cast({application_started, AppName, Res}, S) ->
     handle_application_started(AppName, Res, S).
@@ -954,7 +954,7 @@ handle_application_started(AppName, Res, S) ->
 				    NStopRunning = keydelete(AppName, 1, StopRunning),
 				    cntrl(AppName, NewS, {ac_application_stopped, AppName}),
 				    {noreply, NewS#state{running = NStopRunning, 
-							started = StopStarted}};
+                                                         started = StopStarted}};
 				false ->
 				    {noreply, NewS}
 			    end;
@@ -1002,7 +1002,7 @@ handle_application_started(AppName, Res, S) ->
     end.
 
 -spec handle_info(term(), state()) ->
-        {'noreply', state()} | {'stop', string(), state()}.
+          {'noreply', state()} | {'stop', string(), state()}.
 
 handle_info({ac_load_application_reply, AppName, Res}, S) ->
     case keysearchdelete(AppName, 1, S#state.loading) of
@@ -1096,7 +1096,7 @@ handle_info({ac_change_application_req, AppName, Msg}, S) ->
 		    stop_appl(AppName, Id, Type),
 		    cntrl(AppName, S, {ac_application_not_run, AppName}),
 		    NRunning = keyreplace(AppName, 1, Running, 
-					 {AppName, {distributed, []}}),
+                                          {AppName, {distributed, []}}),
 		    {noreply, S#state{running = NRunning}};
 		%% We should not try to start a running application!
 		start_it when is_pid(Id) ->
@@ -1264,7 +1264,7 @@ do_load_application(Application, S) ->
     end.
 
 %% Recursively load the application and its included apps.
-%load(S, {ApplData, ApplEnv, IncApps, Descr, Vsn, Apps}) ->
+                                                %load(S, {ApplData, ApplEnv, IncApps, Descr, Vsn, Apps}) ->
 load(S, {ApplData, ApplEnv, IncApps, Descr, Id, Vsn, Apps}) ->
     Name = ApplData#appl_data.name,
     ConfEnv = get_env_i(Name, S),
@@ -1609,7 +1609,7 @@ get_opt(Key, List, Default) ->
 get_cmd_env(Name) ->
     case init:get_argument(Name) of
 	{ok, Args} ->
-	   foldl(fun(List, Res) -> conv(List) ++ Res end, [], Args);
+            foldl(fun(List, Res) -> conv(List) ++ Res end, [], Args);
 	_ -> []
     end.
 
@@ -1632,7 +1632,7 @@ make_term(Str) ->
 
 handle_make_term_error(Mod, Reason, Str) ->
     error_logger:format("application_controller: ~ts: ~ts~n",
-        [Mod:format_error(Reason), Str]),
+                        [Mod:format_error(Reason), Str]),
     throw({error, {bad_environment_value, Str}}).
 
 get_env_i(Name, #state{conf_data = ConfData}) when is_list(ConfData) ->
@@ -1690,9 +1690,9 @@ get_env_key([], _Key, Res) -> Res.
 
 add_env(Name, Env) ->
     foreach(fun({Key, Value}) ->
-			  ets:insert(ac_tab, {{env, Name, Key}, Value})
-		  end,
-		  Env).
+                    ets:insert(ac_tab, {{env, Name, Key}, Value})
+            end,
+            Env).
 
 del_env(Name) ->
     ets:match_delete(ac_tab, {{env, Name, '_'}, '_'}).

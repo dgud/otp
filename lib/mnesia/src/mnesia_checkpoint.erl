@@ -222,7 +222,7 @@ tm_change_table_copy_type(Tab, From, To) ->
 
 map_call(Fun, [Name | Names], Res) ->
     case Fun(Name) of
-	 ok ->
+        ok ->
 	    map_call(Fun, Names, Res);
 	{error, {no_exists, Name}} ->
 	    map_call(Fun, Names, Res);
@@ -354,7 +354,7 @@ args2cp(Args) when is_list(Args)->
 	    end
     catch exit:Reason ->
 	    {error, Reason};
-	  error:Reason ->
+          error:Reason ->
 	    {error, Reason}
     end;
 args2cp(Args) ->
@@ -596,7 +596,7 @@ reply(ReplyTo, Name, Reply) ->
 
 %% Returns {ok, NewCp} or {error, Reason}
 start_retainer(Cp) ->
-    % Will never be restarted
+                                                % Will never be restarted
     Name = Cp#checkpoint_args.name,
     case supervisor:start_child(mnesia_checkpoint_sup, [Cp]) of
 	{ok, _Pid} ->
@@ -620,8 +620,8 @@ init(Cp) ->
 	PendingTab ->
 	    Rs = [prepare_tab(Cp, R) || R <- Cp#checkpoint_args.retainers],
 	    Cp2 = Cp#checkpoint_args{retainers = Rs,
-				pid = self(),
-				pending_tab = PendingTab},
+                                     pid = self(),
+                                     pending_tab = PendingTab},
 	    add(pending_checkpoint_pids, self()),
 	    add(pending_checkpoints, PendingTab),
 	    set({checkpoint, Name}, self()),
@@ -863,11 +863,11 @@ retainer_loop(Cp = #checkpoint_args{name=Name}) ->
 		true ->
 		    Store = R#retainer.store,
 		    try true = ets:member(PendingTab, Tid),
-			 %% io:format("CP: ~p ~p ~p ~p~n",[true, Tab, Key, Tid]),
-			 case retainer_get(Store, Key) of
-			     [] -> ignore;
-			     _  -> ets:delete(element(2,Store), Key)
-			 end
+                        %% io:format("CP: ~p ~p ~p ~p~n",[true, Tab, Key, Tid]),
+                        case retainer_get(Store, Key) of
+                            [] -> ignore;
+                            _  -> ets:delete(element(2,Store), Key)
+                        end
 		    catch _:_ ->
 			    %% io:format("CP: ~p ~p ~p ~p~n",[false, Tab, Key, Tid]),
 			    case retainer_get(Store, Key) of
@@ -949,7 +949,7 @@ maybe_activate(Cp)
   when Cp#checkpoint_args.wait_for_old == [],
        Cp#checkpoint_args.is_activated == false ->
     Cp#checkpoint_args{%% pending_tab = undefined,
-		       is_activated = true};
+      is_activated = true};
 maybe_activate(Cp) ->
     Cp.
 
@@ -1138,7 +1138,7 @@ do_change_copy(Cp, Tab, FromType, ToType) ->
 	    Props = [{file, Fname},
 		     {type, set},
 		     {keypos, 2},
-%%	             {ram_file, true},
+                     %%	             {ram_file, true},
 		     {estimated_no_objects, TabSize + 256},
 		     {repair, false}],
 	    {ok, _} = mnesia_lib:dets_sync_open(New, Props),

@@ -22,7 +22,7 @@
 -module(mnesia_event).
 
 -behaviour(gen_event).
-%-behaviour(mnesia_event).
+                                                %-behaviour(mnesia_event).
 
 %% gen_event callback interface
 -export([init/1,
@@ -128,14 +128,14 @@ handle_system_event({mnesia_down, Node}, State) ->
 	    case mnesia_monitor:get_env(fallback_error_function) of
 		{mnesia, lkill} ->
 		    Msg = "A fallback is installed and Mnesia "
-			"must be restarted. Forcing shutdown "
-			"after mnesia_down from ~p...~n",
+                          "must be restarted. Forcing shutdown "
+                          "after mnesia_down from ~p...~n",
 		    report_fatal(Msg, [Node], nocore, State#state.dumped_core),
 		    catch exit(whereis(mnesia_monitor), fatal),
 		    {ok, State};
 		{UserMod, UserFunc} ->
 		    Msg = "Warning: A fallback is installed and Mnesia got mnesia_down "
-			"from ~p. ~n",
+                          "from ~p. ~n",
 		    report_info(Msg, [Node]),
 		    case catch apply(UserMod, UserFunc, [Node]) of
 			{'EXIT', {undef, _Reason}} ->

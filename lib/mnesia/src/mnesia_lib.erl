@@ -35,7 +35,7 @@
 	 add_list/2,
 	 add_lsort/2,
 	 all_nodes/0,
-%%	 catch_val/1,
+         %%	 catch_val/1,
 	 copy_file/2,
 	 copy_holders/1,
 	 coredump/0,
@@ -251,7 +251,7 @@ to_list(X) -> atom_to_list(X).
 
 all_nodes() ->
     Ns = mnesia:system_info(db_nodes) ++
-	mnesia:system_info(extra_db_nodes),
+         mnesia:system_info(extra_db_nodes),
     mnesia_lib:uniq(Ns).
 
 running_nodes() ->
@@ -607,9 +607,9 @@ read_counter(Name) ->
 
 cs_to_nodes(Cs) ->
     ext_nodes(Cs#cstruct.external_copies) ++
-    Cs#cstruct.disc_only_copies ++
-    Cs#cstruct.disc_copies ++
-    Cs#cstruct.ram_copies.
+        Cs#cstruct.disc_only_copies ++
+        Cs#cstruct.disc_copies ++
+        Cs#cstruct.ram_copies.
 
 ext_nodes(Ext) ->
     lists:flatmap(fun({_, Ns}) ->
@@ -672,7 +672,7 @@ core_file() ->
     end.
    
 mkcore(CrashInfo) ->
-%   dbg_out("Making a Mnesia core dump...~p~n", [CrashInfo]),
+                                                %   dbg_out("Making a Mnesia core dump...~p~n", [CrashInfo]),
     Nodes = [node() |nodes()],
     %%TidLocks = (catch ets:tab2list(mnesia_tid_locks)),
     HeldLocks = (catch mnesia:system_info(held_locks)),
@@ -737,12 +737,12 @@ dir_info() ->
     Dir = dir(),
     [{cwd, Cwd, file:read_file_info(Cwd)},
      {mnesia_dir, Dir, file:read_file_info(Dir)}] ++
-    case file:list_dir(Dir) of
-	{ok, Files} ->
-	    [{mnesia_file, F, catch file:read_file_info(dir(F))} || F <- Files];
-	Other ->
-	    [Other]
-    end.
+        case file:list_dir(Dir) of
+            {ok, Files} ->
+                [{mnesia_file, F, catch file:read_file_info(dir(F))} || F <- Files];
+            Other ->
+                [Other]
+        end.
 
 ets_info([H|T]) ->
     [{table, H, mk_info_tuple(ets:info(H))} | ets_info(T)];
@@ -937,12 +937,12 @@ error_desc(mnesia_down) -> "A transaction involving objects at some remote "
                            "*and* object(s) are no longer available elsewhere"
                            "in the network";
 error_desc(not_a_db_node) -> "A node which is non existant in "
-                              "the schema was mentioned";
+                             "the schema was mentioned";
 error_desc(bad_type)            -> "Bad type on some provided arguments";
 error_desc(node_not_running)    -> "Node not running";
 error_desc(truncated_binary_file) -> "Truncated binary in file";
 error_desc(active)     -> "Some delete ops require that "
-                           "all active objects are removed";
+                          "all active objects are removed";
 error_desc(illegal) -> "Operation not supported on object";
 error_desc({'EXIT', Reason}) ->
     error_desc(Reason);
@@ -980,8 +980,8 @@ report_fatal(Format, Args, Core) ->
 %% We sleep longer and longer the more we try
 %% Made some testing and came up with the following constants
 random_time(Retries, _Counter0) ->    
-%    UpperLimit = 2000,
-%    MaxIntv = trunc(UpperLimit * (1-(4/((Retries*Retries)+4)))),
+                                                %    UpperLimit = 2000,
+                                                %    MaxIntv = trunc(UpperLimit * (1-(4/((Retries*Retries)+4)))),
     UpperLimit = 500,
     Dup = Retries * Retries,
     MaxIntv = trunc(UpperLimit * (1-(50/((Dup)+50)))),
@@ -1172,7 +1172,7 @@ db_foldl(Storage, Fun, Acc, Tab, Pat, Limit) ->
 
 select_foldl({Objs, Cont}, Fun, Acc, Storage) ->
     select_foldl(mnesia_lib:db_select_cont(Storage, Cont, []),
-	      Fun, lists:foldl(Fun, Acc, Objs), Storage);
+                 Fun, lists:foldl(Fun, Acc, Objs), Storage);
 select_foldl('$end_of_table', _, Acc, _) ->
     Acc.
 
@@ -1343,11 +1343,11 @@ dets_sync_open(Tab, Ref, File) ->
 
 lock_table(Tab) ->
     global:set_lock({{mnesia_table_lock, Tab}, self()}, [node()], infinity).
-%    dbg_out("dets_sync_open: ~p ~p~n", [T, self()]),
+                                                %    dbg_out("dets_sync_open: ~p ~p~n", [T, self()]),
 
 unlock_table(Tab) ->
     global:del_lock({{mnesia_table_lock, Tab}, self()}, [node()]).
-%    dbg_out("unlock_table: ~p ~p~n", [T, self()]),
+                                                %    dbg_out("unlock_table: ~p ~p~n", [T, self()]),
 
 dets_sync_open(Tab, Args) ->
     lock_table(Tab),
@@ -1410,7 +1410,7 @@ activate_debug_fun(FunId, Fun, InitialContext, File, Line) ->
 
 update_debug_info(Info) ->
     try ?ets_insert(?DEBUG_TAB, Info),
-	 ok
+        ok
     catch error:_ ->
 	    scratch_debug_fun(),
 	    ?ets_insert(?DEBUG_TAB, Info)
@@ -1451,9 +1451,9 @@ eval_debug_fun(FunId, EvalContext, EvalFile, EvalLine) ->
     end.
 	
 -ifdef(debug).
-    is_debug_compiled() -> true.
+is_debug_compiled() -> true.
 -else.
-    is_debug_compiled() -> false.
+is_debug_compiled() -> false.
 -endif.   
 
 

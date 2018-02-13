@@ -153,7 +153,7 @@ start_it(State, Type) ->
 %%-----------------------------------------------------------------
 init_loop(Pid, Tag, State, Type) ->
     receive
- 	IoReq when element(1, IoReq) =:= io_request ->
+        IoReq when element(1, IoReq) =:= io_request ->
 	    State#state.gleader ! IoReq,
 	    init_loop(Pid, Tag, State, Type);
 	{Tag, Res} ->
@@ -193,7 +193,7 @@ main_loop(Parent, State) ->
 
 terminate_loop(Child, State) ->
     receive
- 	IoReq when element(1, IoReq) =:= io_request ->
+        IoReq when element(1, IoReq) =:= io_request ->
 	    State#state.gleader ! IoReq,
 	    terminate_loop(Child, State);
 	{'EXIT', Child, _} ->
@@ -307,7 +307,7 @@ start_it_new(Tag, From, Type, M, A, Phases, Apps) ->
 %%%=====================================================
 start_the_app(Type, M, A, Phases, Apps) ->
     case start_supervisor(Type, M, A) of
- 	{ok, Pid, AppState} ->
+        {ok, Pid, AppState} ->
 	    link(Pid),
 	    case application_starter:start(Phases, Type, Apps) of
 		ok ->

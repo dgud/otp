@@ -54,7 +54,7 @@ open_next_layer(Pid, Secret, Filename, Modes) ->
     case gen_statem:call(Pid, {'$open', Secret, Filename, Modes}, infinity) of
         ok ->
             PublicFd = #file_descriptor{
-                module = raw_file_io_compressed, data = {self(), Pid} },
+                          module = raw_file_io_compressed, data = {self(), Pid} },
             {ok, PublicFd};
         Other -> Other
     end.
@@ -97,7 +97,7 @@ pwrite(Fd, LocBytes) ->
     try
         CompactedLocBytes =
             [ {Offset, erlang:iolist_to_iovec(IOData)} ||
-              {Offset, IOData} <- LocBytes ],
+                {Offset, IOData} <- LocBytes ],
         wrap_call(Fd, [pwrite, CompactedLocBytes])
     catch
         error:badarg -> {error, badarg}

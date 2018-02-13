@@ -57,7 +57,7 @@ interval_dialog(Parent0, {Timer, Value}, Min, Max) ->
     Parent = get_wx_parent(Parent0),
     Dialog = wxDialog:new(Parent, ?wxID_ANY, "Update Interval",
 			  [{style, ?wxDEFAULT_DIALOG_STYLE bor
-				?wxRESIZE_BORDER}]),
+                                       ?wxRESIZE_BORDER}]),
     Panel = wxPanel:new(Dialog),
     Check = wxCheckBox:new(Panel, ?wxID_ANY, "Periodical refresh"),
     wxCheckBox:setValue(Check, Timer /= false),
@@ -626,7 +626,7 @@ user_term(Parent, Title, Default) ->
 user_term_multiline(Parent, Title, Default) ->
     Dialog = wxDialog:new(Parent, ?wxID_ANY, Title,
 			  [{style, ?wxDEFAULT_DIALOG_STYLE bor
-			    ?wxRESIZE_BORDER}]),
+                                       ?wxRESIZE_BORDER}]),
     Panel = wxPanel:new(Dialog),
 
     TextCtrl = wxTextCtrl:new(Panel, ?wxID_ANY,
@@ -649,15 +649,15 @@ user_term_multiline(Parent, Title, Default) ->
     wxSizer:add(TopSizer, Buttons,
 		[{flag, ?wxEXPAND bor ?wxBOTTOM bor ?wxRIGHT},{border, 10}]),
 
-    % calculate the size of TopSizer when the whole user_term
-    % fits in the TextCtrl
+                                                % calculate the size of TopSizer when the whole user_term
+                                                % fits in the TextCtrl
     DC = wxClientDC:new(Panel),
     W = wxDC:getCharWidth(DC),
     H = wxDC:getCharHeight(DC),
     {EW, EH} = wxDC:getMultiLineTextExtent(DC, Default),
     wxSizer:setItemMinSize(InnerSizer, 0, EW+2*W, EH+H),
     TopSize = wxSizer:getMinSize(TopSizer),
-    % reset min size of TextCtrl to 40 chararacters * 4 lines
+                                                % reset min size of TextCtrl to 40 chararacters * 4 lines
     wxSizer:setItemMinSize(InnerSizer, 0, 40*W, 4*H),
 
     wxWindow:setSizerAndFit(Dialog, TopSizer),
@@ -717,8 +717,8 @@ create_status_bar(Panel) ->
     {X,Y,_,_} = wxTextCtrl:getTextExtent(Dummy,"WARNING"),
     wxTextCtrl:destroy(Dummy),
     StatusBar = wxTextCtrl:new(Panel, ?wxID_ANY,
-			 [{style,StatusStyle},
-			  {size,{X,Y+2}}]), % Y+2 to avoid scrollbar
+                               [{style,StatusStyle},
+                                {size,{X,Y+2}}]), % Y+2 to avoid scrollbar
     wxTextCtrl:setDefaultStyle(StatusBar,Red),
     wxTextAttr:destroy(Red),
     StatusBar.

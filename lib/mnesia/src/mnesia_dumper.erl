@@ -46,7 +46,7 @@
 	 snapshot_dcd/1
 	]).
 
- %% Internal stuff
+%% Internal stuff
 -export([regulator_init/1]).
 
 -include("mnesia.hrl").
@@ -322,9 +322,9 @@ perform_update(Tid, SchemaOps, _DumperMode, _UseDir) ->
     InPlace = mnesia_monitor:get_env(dump_log_update_in_place),
     try insert_ops(Tid, schema_ops, SchemaOps, InPlace, InitBy,
 		   mnesia_log:version()),
-	 ?eval_debug_fun({?MODULE, post_dump}, [InitBy]),
-	 close_files(InPlace, ok, InitBy),
-	 ok
+        ?eval_debug_fun({?MODULE, post_dump}, [InitBy]),
+        close_files(InPlace, ok, InitBy),
+        ok
     catch _:Reason when Reason =/= fatal ->
 	    ST = erlang:get_stacktrace(),
 	    Error = {error, {"Schema update error", {Reason, ST}}},
@@ -386,7 +386,7 @@ dets_insert(Op,Tab,Key,Val, Storage0) ->
 		    catch error:_ when Incr < 0 ->
 			    Zero = {RecName, Key, 0},
 			    ok = mnesia_lib:db_put(Storage, Tab, Zero);
-			  error:_ ->
+                          error:_ ->
 			    Init = {RecName, Key, Incr},
 			    ok = mnesia_lib:db_put(Storage, Tab, Init)
 		    end;
@@ -742,7 +742,7 @@ insert_op(Tid, _, {op, restore_recreate, TabDef}, InPlace, InitBy) ->
 		    {type, mnesia_lib:disk_type(Tab, Type)},
 		    {keypos, 2},
 		    {repair, mnesia_monitor:get_env(auto_repair)} 
-		    | DetsProps ],
+                   | DetsProps ],
 	    mnesia_monitor:open_dets(Tab, Args);
 	element(1,Storage) == ext ->
 	    {ext, Alias, Mod} = Storage,
@@ -809,7 +809,7 @@ insert_op(Tid, _, {op, create_table, TabDef}, InPlace, InitBy) ->
 			_ ->
 			    %% Indecies are still created by loader
 			    disc_delete_indecies(Tab, Cs, Storage)
-			    %% disc_delete_table(Tab, Storage)
+                    %% disc_delete_table(Tab, Storage)
 		    end,
 
 		    %% Update whereabouts and create table
@@ -829,7 +829,7 @@ insert_op(_Tid, _, {op, dump_table, Size, TabDef}, _InPlace, _InitBy) ->
 	    Dat = mnesia_lib:tab2dcd(Tab),
 	    case Size of
 		0 ->
-	    	    %% Assume that table files already are closed
+                    %% Assume that table files already are closed
 		    file:delete(Dmp),
 		    file:delete(Dat);
 		_ ->
@@ -1082,7 +1082,7 @@ try_create_disc_only_copy(disc_only_copies, Tab, Cs, DetsProps) ->
 	    {type, mnesia_lib:disk_type(Tab, Cs#cstruct.type)},
 	    {keypos, 2},
 	    {repair, mnesia_monitor:get_env(auto_repair)}
-	    | DetsProps],
+           | DetsProps],
     case mnesia_monitor:open_dets(Tab, Args) of
 	{ok, _} ->
 	    mnesia_monitor:unsafe_close_dets(Tab);
@@ -1118,7 +1118,7 @@ open_files(Tab, Semantics, Storage, UpdateInPlace, InitBy)
 				    {keypos, 2},
 				    {repair, mnesia_monitor:get_env(auto_repair)},
 				    {type, mnesia_lib:disk_type(Tab, Type)} 
-				    | DetsProps],
+                                   | DetsProps],
 			    {ok, _} = mnesia_monitor:open_dets(Tab, Args),
 			    put({?MODULE, Tab}, {opened_dumper, dat}),
 			    true;
@@ -1182,7 +1182,7 @@ needs_dump_ets(Tab) ->
 %% mechanismen, used for schema transactions.
 open_dcl(Tab) ->
     case get({?MODULE, Tab}) of
-    	{opened_dumper, _} ->
+        {opened_dumper, _} ->
 	    true;
 	_ -> %% undefined or already_dumped
 	    DclF = mnesia_lib:tab2dcl(Tab),
@@ -1299,9 +1299,9 @@ delete_cstruct(Tid, Cs, InPlace, InitBy) ->
 temp_set_master_nodes() ->
     Tabs = val({schema, local_tables}),
     Masters = [{Tab, (val({Tab, disc_copies}) ++
-		      val({Tab, ram_copies}) ++
-		      val({Tab, disc_only_copies}) ++
-		      external_copies(Tab)) -- [node()]}
+                          val({Tab, ram_copies}) ++
+                          val({Tab, disc_only_copies}) ++
+                          external_copies(Tab)) -- [node()]}
 	       || Tab <- Tabs],
     %% UseDir = false since we don't want to remember these
     %% masternodes and we are running (really soon anyway) since we want this

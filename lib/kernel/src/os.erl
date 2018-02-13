@@ -69,7 +69,7 @@ perf_counter() ->
       Unit :: erlang:time_unit().
 
 perf_counter(Unit) ->
-      erlang:convert_time_unit(os:perf_counter(), perf_counter, Unit).
+    erlang:convert_time_unit(os:perf_counter(), perf_counter, Unit).
 
 -spec set_env_var(VarName, Value) -> true when
       VarName :: env_var_name(),
@@ -127,7 +127,7 @@ getenv(VarName) ->
 getenv(VarName, DefaultValue) ->
     case os:getenv(VarName) of
         false ->
-           DefaultValue;
+            DefaultValue;
         Value ->
             Value
     end.
@@ -197,7 +197,7 @@ verify_executable(Name0, [Ext|Rest], OrigExtensions) ->
     Name1 = Name0 ++ Ext,
     case file:read_file_info(Name1) of
 	{ok, #file_info{type=regular,mode=Mode}}
-	when Mode band 8#111 =/= 0 ->
+          when Mode band 8#111 =/= 0 ->
 	    %% XXX This test for execution permission is not fool-proof
 	    %% on Unix, since we test if any execution bit is set.
 	    {ok, Name1};

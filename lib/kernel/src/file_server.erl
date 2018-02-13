@@ -91,9 +91,9 @@ init([]) ->
 %%----------------------------------------------------------------------
 
 -spec handle_call(term(), term(), state()) ->
-        {'noreply', state()} |
-	{'reply', 'eof' | 'ok' | {'error', term()} | {'ok', term()}, state()} |
-	{'stop', 'normal', 'stopped', state()}.
+          {'noreply', state()} |
+          {'reply', 'eof' | 'ok' | {'error', term()} | {'ok', term()}, state()} |
+          {'stop', 'normal', 'stopped', state()}.
 
 handle_call({open, Name, ModeList}, {Pid, _Tag} = _From, State)
   when is_list(ModeList) ->
@@ -225,7 +225,7 @@ handle_cast(Msg, State) ->
 %%----------------------------------------------------------------------
 
 -spec handle_info(term(), state()) ->
-        {'noreply', state()} | {'stop', 'normal', state()}.
+          {'noreply', state()} | {'stop', 'normal', state()}.
 
 handle_info({'EXIT', Pid, _Reason}, State) when is_pid(Pid) ->
     ets:delete(?FILE_IO_SERVER_TABLE, Pid),

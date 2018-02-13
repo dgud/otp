@@ -61,7 +61,7 @@ expandable_term_body(Heading,[],_Tab) ->
 	 "StackDump"  -> "No stack dump was found";
 	 "Dictionary" -> "No dictionary was found";
 	 "ProcState"  -> "Information could not be retrieved,"
-			     " system messages may not be handled by this process.";
+                         " system messages may not be handled by this process.";
          "SaslLog"    -> "No log entry was found"
      end];
 expandable_term_body(Heading,Expanded,Tab) ->
@@ -105,7 +105,7 @@ expandable_term_body(Heading,Expanded,Tab) ->
 						      {proc_state(Tab, Entry,Even),
 						       not Even}
 					      end, true, Expanded))]);         
-     "SaslLog"  ->
+         "SaslLog"  ->
              table(Attr,
                    [tr("BGCOLOR=white",[td("ALIGN=left", pre(href_proc_port(Expanded)))])]) ;
 	 _ ->
@@ -161,8 +161,8 @@ all_or_expand(Tab,Term,Preview,true)
     [href_proc_port(lists:flatten(Preview), false), $\n,
      href("TARGET=\"expanded\"",
 	  ["#Term?key1="++integer_to_list(Key1)++
-	       "&key2="++integer_to_list(Key2)++
-	       "&key3="++integer_to_list(Key3)],
+               "&key2="++integer_to_list(Key2)++
+               "&key3="++integer_to_list(Key3)],
 	  "Click to expand above term")];
 all_or_expand(Tab,Bin,_PreviewStr,_Expand)
   when is_binary(Bin) ->
@@ -282,9 +282,9 @@ href_proc_port("['#CDVPort'"++T,Acc,LTB) ->
 	    [X,Y] ->
 		Port = "#Port&lt;"++X++"."++Y++"&gt;",
 		href(Port,Port);
-	Ns ->
+            Ns ->
 		"#Port&lt;" ++ lists:join($.,Ns) ++"...&gt;"
-    end,
+        end,
     href_proc_port(Rest,[PortStr|Acc],LTB);
 href_proc_port("['#CDVPid'"++T,Acc,LTB) ->
     %% Pid written by crashdump_viewer:parse_term(...)
@@ -339,10 +339,10 @@ href_proc_bin(From, T, Acc, LTB) ->
 		Id = {list_to_integer(Offset),PreviewSize,list_to_integer(Pos)},
                 case crashdump_viewer:expand_binary(Id) of
                     {ok, '#CDVTruncatedBinary'} ->
-                          lists:flatten(
-                            "<FONT COLOR=\"#FF0000\">"
-                            "&lt;&lt;...(Truncated Binary)&gt;&gt;"
-                            "</FONT>");
+                        lists:flatten(
+                          "<FONT COLOR=\"#FF0000\">"
+                          "&lt;&lt;...(Truncated Binary)&gt;&gt;"
+                          "</FONT>");
                     {ok, PreviewBin} ->
                         PreviewStr = preview_string(Size, PreviewBin),
                         if LTB ->
@@ -363,8 +363,8 @@ href_proc_bin(From, T, Acc, LTB) ->
 		if LTB ->
 			href("TARGET=\"expanded\"",
 			     ["#OBSBinary?key1="++PreviewIntStr++
-				  "&key2="++SizeStr++
-				  "&key3="++Md5],
+                                  "&key2="++SizeStr++
+                                  "&key3="++Md5],
 			     PreviewStr);
 		   true ->
 			PreviewStr

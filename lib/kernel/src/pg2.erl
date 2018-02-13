@@ -216,7 +216,7 @@ handle_cast(_, S) ->
     {noreply, S}.
 
 -spec handle_info(Tuple :: tuple(), State :: state()) ->
-    {'noreply', state()}.
+          {'noreply', state()}.
 
 handle_info({'DOWN', MonitorRef, process, _Pid, _Info}, S) ->
     member_died(MonitorRef),
@@ -260,8 +260,8 @@ terminate(_Reason, _S) ->
 
 store(List) ->
     _ = [(assure_group(Name)
-          andalso
-          [join_group(Name, P) || P <- Members -- group_members(Name)]) ||
+              andalso
+              [join_group(Name, P) || P <- Members -- group_members(Name)]) ||
             [Name, Members] <- List],
     ok.
 

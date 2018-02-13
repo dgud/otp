@@ -81,16 +81,16 @@ handle_data([], {_, _, out, _, _}, _Store) ->
     [];
 handle_data(Last, {_, Pid, out, _, Time2} = G, Store) ->
     case lists:keytake(Pid, 1, Last) of
-         {_, {_, Time1}, New} ->
-             Elapsed = elapsed(Time1, Time2),
-             case ets:member(Store,Pid) of
-                  true -> ets:update_counter(Store, Pid, Elapsed);
-                  false -> ets:insert(Store,{Pid,Elapsed})
-             end,
-             New;
-         false ->
-             io:format("Erlang top got garbage ~tp~n", [G]),
-             Last
+        {_, {_, Time1}, New} ->
+            Elapsed = elapsed(Time1, Time2),
+            case ets:member(Store,Pid) of
+                true -> ets:update_counter(Store, Pid, Elapsed);
+                false -> ets:insert(Store,{Pid,Elapsed})
+            end,
+            New;
+        false ->
+            io:format("Erlang top got garbage ~tp~n", [G]),
+            Last
     end;
 handle_data(_W, {drop, D}, _) ->  %% Error case we are missing data here!
     io:format("Erlang top dropped data ~p~n", [D]),

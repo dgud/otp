@@ -395,8 +395,8 @@ do_setopts(Opts, Drv, Buf) ->
 	    ok
     end,
     case proplists:get_value(binary, Opts, case get(read_mode) of
-					      binary -> true;
-					      _ -> false
+                                               binary -> true;
+                                               _ -> false
 					   end) of
 	true ->
 	    put(read_mode, binary),
@@ -416,10 +416,10 @@ getopts(Drv,Buf) ->
 			       false
 		       end},
     Echo = {echo, case get(echo) of
-		     Bool when Bool =:= true; Bool =:= false ->
-			 Bool;
-		     _ ->
-			 false
+                      Bool when Bool =:= true; Bool =:= false ->
+                          Bool;
+                      _ ->
+                          false
 		  end},
     Bin = {binary, case get(read_mode) of
 		       binary ->
@@ -428,8 +428,8 @@ getopts(Drv,Buf) ->
 			   false
 		   end},
     Uni = {encoding, case get_unicode_state(Drv) of
-			true -> unicode;
-			_ -> latin1
+                         true -> unicode;
+                         _ -> latin1
 		     end},
     {ok,[Exp,Echo,Bin,Uni],Buf}.
     
@@ -470,8 +470,8 @@ get_chars_loop(Pbs, M, F, Xa, Drv, Buf0, State, Encoding) ->
 		 true ->
 		     get_line(Buf0, Pbs, Drv, Encoding);
 		 false ->
-		     % get_line_echo_off only deals with lists
-		     % and does not need encoding...
+                                                % get_line_echo_off only deals with lists
+                                                % and does not need encoding...
 		     get_line_echo_off(Buf0, Pbs, Drv)
 	     end,
     case Result of
@@ -546,7 +546,7 @@ get_line1({undefined,{_A,Mode,Char},Cs,Cont,Rs}, Drv, Ls0, Encoding)
 	    {more_chars,Ncont,Nrs} = edlin:start(edlin:prompt(Cont)),
 	    send_drv_reqs(Drv, Nrs),
 	    get_line1(edlin:edit_line1(lists:sublist(Lcs, 1, length(Lcs)-1),
-				      Ncont),
+                                       Ncont),
 		      Drv,
 		      Ls, Encoding)
     end;
@@ -563,7 +563,7 @@ get_line1({undefined,{_A,Mode,Char},Cs,Cont,Rs}, Drv, Ls0, Encoding)
 	    {more_chars,Ncont,Nrs} = edlin:start(edlin:prompt(Cont)),
 	    send_drv_reqs(Drv, Nrs),
 	    get_line1(edlin:edit_line1(lists:sublist(Lcs, 1, length(Lcs)-1),
-				      Ncont),
+                                       Ncont),
 		      Drv,
 		      Ls, Encoding)
     end;
@@ -633,27 +633,27 @@ get_line1({What,Cont={line,_Prompt,_Chars,search_quit},Rs}, Drv, Ls, Encoding) -
     end;
 %% Search mode is entered.
 get_line1({What,{line,Prompt,{RevCmd0,_Aft},search},Rs},
-       Drv, Ls0, Encoding) ->
+          Drv, Ls0, Encoding) ->
     send_drv_reqs(Drv, Rs),
     %% Figure out search direction. ^S and ^R are returned through edlin
     %% whenever we received a search while being already in search mode.
     {Search, Ls1, RevCmd} = case RevCmd0 of
-	[$\^S|RevCmd1] ->
-	    {fun search_down_stack/2, Ls0, RevCmd1};
-	[$\^R|RevCmd1] ->
-	    {fun search_up_stack/2, Ls0, RevCmd1};
-	_ -> % new search, rewind stack for a proper search.
-	    {fun search_up_stack/2, new_stack(get_lines(Ls0)), RevCmd0}
-    end,
+                                [$\^S|RevCmd1] ->
+                                    {fun search_down_stack/2, Ls0, RevCmd1};
+                                [$\^R|RevCmd1] ->
+                                    {fun search_up_stack/2, Ls0, RevCmd1};
+                                _ -> % new search, rewind stack for a proper search.
+                                    {fun search_up_stack/2, new_stack(get_lines(Ls0)), RevCmd0}
+                            end,
     Cmd = lists:reverse(RevCmd),
     {Ls, NewStack} = case Search(Ls1, Cmd) of
-	{none, Ls2} ->
-	    send_drv(Drv, beep),
-	    {Ls2, {RevCmd, "': "}};
-	{Line, Ls2} -> % found. Complete the output edlin couldn't have done.
-	    send_drv_reqs(Drv, [{put_chars, Encoding, Line}]),
-	    {Ls2, {RevCmd, "': "++Line}}
-    end,
+                         {none, Ls2} ->
+                             send_drv(Drv, beep),
+                             {Ls2, {RevCmd, "': "}};
+                         {Line, Ls2} -> % found. Complete the output edlin couldn't have done.
+                             send_drv_reqs(Drv, [{put_chars, Encoding, Line}]),
+                             {Ls2, {RevCmd, "': "++Line}}
+                     end,
     Cont = {line,Prompt,NewStack,search},
     more_data(What, Cont, Drv, Ls, Encoding);
 get_line1({What,Cont0,Rs}, Drv, Ls, Encoding) ->
@@ -681,7 +681,7 @@ more_data(What, Cont0, Drv, Ls, Encoding) ->
 	{'EXIT',Drv,_} ->
 	    terminated
     after
-	get_line_timeout(What)->
+        get_line_timeout(What)->
 	    get_line1(edlin:edit_line([], Cont0), Drv, Ls, Encoding)
     end.
 
@@ -787,12 +787,12 @@ save_line({stack, U, _L, D}, Line) ->
     {stack, U, Line, D}.
 
 get_lines(Ls) -> get_all_lines(Ls).
-%get_lines({stack, U, {}, []}) ->
-%    U;
-%get_lines({stack, U, {}, D}) ->
-%    tl(lists:reverse(D, U));
-%get_lines({stack, U, L, D}) ->
-%    get_lines({stack, U, {}, [L|D]}).
+                                                %get_lines({stack, U, {}, []}) ->
+                                                %    U;
+                                                %get_lines({stack, U, {}, D}) ->
+                                                %    tl(lists:reverse(D, U));
+                                                %get_lines({stack, U, L, D}) ->
+                                                %    get_lines({stack, U, {}, [L|D]}).
 
 %% There's a funny behaviour whenever the line stack doesn't have a "\n"
 %% at its end -- get_lines() seemed to work on the assumption it *will* be
@@ -869,7 +869,7 @@ get_password1({Chars,[]}, Drv) ->
 	{Drv,{data,Cs}} ->
 	    get_password1(edit_password(Cs,Chars),Drv);
 	{io_request,From,ReplyAs,Req} when is_pid(From) ->
-	    %send_drv_reqs(Drv, [{delete_chars, -length(Pbs)}]),
+                                                %send_drv_reqs(Drv, [{delete_chars, -length(Pbs)}]),
 	    io_request(Req, From, ReplyAs, Drv, []), %WRONG!!!
 	    %% I guess the reason the above line is wrong is that Buf is
 	    %% set to []. But do we expect anything but plain output?

@@ -41,8 +41,8 @@
 
 -define(TRACE_PORTS_STR, "Trace selected ports").
 -define(TRACE_NAMES_STR, "Trace selected ports, "
-	"if a process have a registered name "
-	"processes with same name will be traced on all nodes").
+                         "if a process have a registered name "
+                         "processes with same name will be traced on all nodes").
 
 -record(port,
 	{id,
@@ -66,15 +66,15 @@
 
 -record(state,
 	{
-	  parent,
-	  grid,
-	  panel,
-	  node={node(),true},
-	  opt=#opt{},
-	  right_clicked_port,
-	  ports,
-	  timer,
-	  open_wins=[]
+         parent,
+         grid,
+         panel,
+         node={node(),true},
+         opt=#opt{},
+         right_clicked_port,
+         ports,
+         timer,
+         open_wins=[]
 	}).
 
 start_link(Notebook,  Parent, Config) ->
@@ -205,7 +205,7 @@ handle_event(#wx{id=?ID_CLOSE_PORT}, State = #state{right_clicked_port=Port}) ->
 	_ ->
 	    erlang:port_close(Port#port.id),
 	    {noreply, State#state{right_clicked_port=undefined}}
-	end;
+    end;
 
 handle_event(#wx{id=?ID_TRACE_PORTS}, #state{grid=Grid, ports=Ports}=State)  ->
     case get_selected_items(Grid, Ports) of
@@ -463,7 +463,7 @@ do_display_port_info(Parent0, PortRec) ->
     Title = "Port Info: " ++ PortRec#port.id_str,
     Frame = wxMiniFrame:new(Parent, ?wxID_ANY, Title,
 			    [{style, ?wxSYSTEM_MENU bor ?wxCAPTION
-				  bor ?wxCLOSE_BOX bor ?wxRESIZE_BORDER},
+                                         bor ?wxCLOSE_BOX bor ?wxRESIZE_BORDER},
                              {size,{600,400}}]),
     ScrolledWin = wxScrolledWindow:new(Frame,[{style,?wxHSCROLL bor ?wxVSCROLL}]),
     wxScrolledWindow:enableScrolling(ScrolledWin,true,true),

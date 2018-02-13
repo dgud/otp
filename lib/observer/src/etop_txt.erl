@@ -54,9 +54,9 @@ do_update(Fd,Info,Prev,Config) ->
     case Info#etop_info.memi of
 	undefined ->
 	    io:fwrite(Fd, " ~-72w~10s~n"
-		      " Load:  cpu  ~8w~n"
-		      "        procs~8w~n"
-		      "        runq ~8w~n",
+                          " Load:  cpu  ~8w~n"
+                          "        procs~8w~n"
+                          "        runq ~8w~n",
 		      [Config#opts.node,Clock,
 		       Cpu,NProcs,RQ]);
 	Memi ->
@@ -91,7 +91,7 @@ writepinfo(Fd,[#etop_proc_info{pid=Pid,
 			       runtime=Time,
 			       cf=MFA,
 			       mq=MQ}
-	       |T],
+              |T],
            Modifier) ->
     io:fwrite(Fd,proc_format(Modifier),
               [Pid,to_string(Name,Modifier),Time,Reds,Mem,MQ,

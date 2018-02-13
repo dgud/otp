@@ -298,24 +298,24 @@ win32_load_from_registry(Type) ->
     TcpReg = os:getenv("ERL_INET_ETC_DIR", ""),
     {ok, Reg} = win32reg:open([read]),
     {TcpIp,HFileKey} =
-    case Type of
-	nt ->
-	    case TcpReg of
-		[] -> 
-		    {"\\hklm\\system\\CurrentControlSet\\Services\\TcpIp\\Parameters",
-		     "DataBasePath" };
-		Other ->
-		    {Other,"DataBasePath"}
-	    end;
-	windows ->
-	    case TcpReg of 
-		[] ->
-		    {"\\hklm\\system\\CurrentControlSet\\Services\\VxD\\MSTCP",
-		     "LMHostFile" };
-		Other ->
-		    {Other,"LMHostFile"}
-	    end
-    end,
+        case Type of
+            nt ->
+                case TcpReg of
+                    [] -> 
+                        {"\\hklm\\system\\CurrentControlSet\\Services\\TcpIp\\Parameters",
+                         "DataBasePath" };
+                    Other ->
+                        {Other,"DataBasePath"}
+                end;
+            windows ->
+                case TcpReg of 
+                    [] ->
+                        {"\\hklm\\system\\CurrentControlSet\\Services\\VxD\\MSTCP",
+                         "LMHostFile" };
+                    Other ->
+                        {Other,"LMHostFile"}
+                end
+        end,
     Result = 
 	case win32reg:change_key(Reg,TcpIp) of
 	    ok ->
@@ -354,15 +354,15 @@ win32_load1(Reg,Type,HFileKey) ->
 	    if Type =:= nt ->
 		    DBPath = win32reg:expand(DBPath0),
 		    load_hosts(filename:join(DBPath, "hosts"),nt);
-		Type =:= windows ->
+               Type =:= windows ->
 		    load_hosts(filename:join(DBPath0,""),windows)
 	    end,
-%% Maybe activate this later as an optimization
-%% For now we use native always as the SAFE way
-%%	    case NameServers of
-%%		[] -> inet_db:set_lookup([native, file]);
-%%		_  -> inet_db:set_lookup([dns, file, native])
-%%	    end;
+            %% Maybe activate this later as an optimization
+            %% For now we use native always as the SAFE way
+            %%	    case NameServers of
+            %%		[] -> inet_db:set_lookup([native, file]);
+            %%		_  -> inet_db:set_lookup([dns, file, native])
+            %%	    end;
 	    true;
 	{error, _Reason} ->
 	    error("Failed to read TCP/IP parameters from registry", [])
@@ -425,17 +425,17 @@ valid_type(win32) ->             true;
 valid_type(_) ->                 false.
 
 read_inetrc() ->
-   case application:get_env(inetrc) of
-       {ok,File} ->
-	   try_get_rc(File);
-       _ ->
-	   case os:getenv("ERL_INETRC") of
-	       false ->
-		   {nofile,[]};
-	       File ->
-		   try_get_rc(File)
-	   end
-   end.
+    case application:get_env(inetrc) of
+        {ok,File} ->
+            try_get_rc(File);
+        _ ->
+            case os:getenv("ERL_INETRC") of
+                false ->
+                    {nofile,[]};
+                File ->
+                    try_get_rc(File)
+            end
+    end.
 
 try_get_rc(File) ->
     case get_rc(File) of
@@ -470,7 +470,7 @@ error(Fmt, Args) ->
 
 warning(Fmt, Args) ->
     case application:get_env(kernel,inet_warnings) of
-	%{ok,silent} -> ok;
+                                                %{ok,silent} -> ok;
 	{ok,on} -> 
 	    error_logger:info_msg("inet_config:" ++ Fmt, Args);
 	_ ->

@@ -128,15 +128,15 @@ get_limit_count_info(Count, Limit) ->
 
 info_fields() ->
     Sys = [{"System and Architecture",
-	     [{"System Version", otp_release},
-	      {"ERTS Version", version},
-	      {"Compiled for", system_architecture},
-	      {"Emulator Wordsize", wordsize_external},
-	      {"Process Wordsize", wordsize_internal},
-	      {"SMP Support",  smp_support},
-	      {"Thread Support",  threads},
-	      {"Async thread pool size",  thread_pool_size}
-	     ]}],
+            [{"System Version", otp_release},
+             {"ERTS Version", version},
+             {"Compiled for", system_architecture},
+             {"Emulator Wordsize", wordsize_external},
+             {"Process Wordsize", wordsize_internal},
+             {"SMP Support",  smp_support},
+             {"Thread Support",  threads},
+             {"Async thread pool size",  thread_pool_size}
+            ]}],
 
     Cpu = [{"CPU's and Threads",
 	    [{"Logical CPU's", logical_processors},

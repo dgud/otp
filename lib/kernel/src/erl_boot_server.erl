@@ -44,16 +44,16 @@
 
 -record(state, 
 	{
-	  priority = 0,  %% priority of this server
-	  version = ""   :: string(),	%% Version handled i.e "4.5.3" etc
-	  udp_sock,      %% listen port for broadcase requests
-	  udp_port,      %% port number must be ?EBOOT_PORT!
-	  listen_sock,   %% listen sock for incoming file requests
-	  listen_port,   %% listen port number
-	  slaves,        %% list of accepted ip addresses
-	  bootp          :: pid(),	%% boot process
-	  prim_state     %% state for efile code loader
-	 }).
+         priority = 0,  %% priority of this server
+         version = ""   :: string(),	%% Version handled i.e "4.5.3" etc
+         udp_sock,      %% listen port for broadcase requests
+         udp_port,      %% port number must be ?EBOOT_PORT!
+         listen_sock,   %% listen sock for incoming file requests
+         listen_port,   %% listen port number
+         slaves,        %% list of accepted ip addresses
+         bootp          :: pid(),	%% boot process
+         prim_state     %% state for efile code loader
+        }).
 -type state() :: #state{}.
 
 -define(single_addr_mask, {255, 255, 255, 255}).
@@ -129,7 +129,7 @@ delete_slave(Slave) ->
     end.
 
 -spec add_subnet(Netmask :: inet:ip_address(), Addr :: inet:ip_address()) ->
-	'ok' | {'error', any()}.
+          'ok' | {'error', any()}.
 
 add_subnet(Mask, Addr) when is_tuple(Mask), is_tuple(Addr) ->
     case member_address(Addr, [{Mask, Addr}]) of
@@ -206,7 +206,7 @@ init(Slaves) ->
 	       }}.
 
 -spec handle_call('which' | {'add',atom()} | {'delete',atom()}, _, state()) ->
-        {'reply', 'ok' | [atom()], state()}.
+          {'reply', 'ok' | [atom()], state()}.
 
 handle_call({add,Address}, _, S0) ->
     Slaves = ordsets:add_element(Address, S0#state.slaves),
@@ -240,11 +240,11 @@ handle_info({udp, U, IP, Port, Data}, S0) ->
                 ok -> ok;
                 {error, not_owner} ->
                     error_logger:error_msg("** Illegal boot server connection attempt: "
-				   "not owner of ~w ** ~n", [U]);
+                                           "not owner of ~w ** ~n", [U]);
                 {error, Reason} ->
                     Err = file:format_error(Reason),
                     error_logger:error_msg("** Illegal boot server connection attempt: "
-				   "~w POSIX error ** ~n", [U, Err])
+                                           "~w POSIX error ** ~n", [U, Err])
             end,
 	    {noreply,S0};
 	{false,_,_} ->

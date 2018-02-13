@@ -48,26 +48,26 @@
 
 -record(state,
 	{
-	  parent,
-	  frame,
-	  grid,
-	  status,
-	  sizer,
-	  search,
-	  selected,
-	  node=node(),
-	  columns,
-	  pid,
-	  source,
-	  tab,
-	  attrs,
-	  timer={false, 30}
+         parent,
+         frame,
+         grid,
+         status,
+         sizer,
+         search,
+         selected,
+         node=node(),
+         columns,
+         pid,
+         source,
+         tab,
+         attrs,
+         timer={false, 30}
 	}).
 
 -record(opt,
 	{
-	  sort_key=2,
-	  sort_incr=true
+         sort_key=2,
+         sort_incr=true
 	}).
 
 -record(search,
@@ -144,7 +144,7 @@ init([Parent, Opts]) ->
 		    [{flag, ?wxEXPAND bor ?wxALL}, {proportion, 1}, {border, 5}]),
 	wxSizer:add(Sizer, Search#search.win,
 		    [{flag,?wxEXPAND bor ?wxLEFT bor ?wxRIGHT bor
-			  ?wxRESERVE_SPACE_EVEN_IF_HIDDEN},
+                               ?wxRESERVE_SPACE_EVEN_IF_HIDDEN},
 		     {border, 5}]),
 	wxWindow:setSizer(Panel, Sizer),
 	wxSizer:hide(Sizer, Search#search.win),
@@ -395,19 +395,19 @@ handle_event(#wx{id=?ID_REFRESH_INTERVAL},
     {noreply, State#state{timer=Timer}};
 
 handle_event(_Event, State) ->
-    %io:format("~p:~p, handle event ~tp\n", [?MODULE, ?LINE, Event]),
+                                                %io:format("~p:~p, handle event ~tp\n", [?MODULE, ?LINE, Event]),
     {noreply, State}.
 
 handle_sync_event(_Event, _Obj, _State) ->
-    %io:format("~p:~p, handle sync_event ~tp\n", [?MODULE, ?LINE, Event]),
+                                                %io:format("~p:~p, handle sync_event ~tp\n", [?MODULE, ?LINE, Event]),
     ok.
 
 handle_call(_Event, _From, State) ->
-    %io:format("~p:~p, handle call (~p) ~tp\n", [?MODULE, ?LINE, From, Event]),
+                                                %io:format("~p:~p, handle call (~p) ~tp\n", [?MODULE, ?LINE, From, Event]),
     {noreply, State}.
 
 handle_cast(_Event, State) ->
-    %io:format("~p:~p, handle cast ~tp\n", [?MODULE, ?LINE, Event]),
+                                                %io:format("~p:~p, handle cast ~tp\n", [?MODULE, ?LINE, Event]),
     {noreply, State}.
 
 handle_info({no_rows, N}, State = #state{grid=Grid, status=StatusBar}) ->

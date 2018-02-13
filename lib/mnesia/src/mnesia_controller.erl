@@ -194,7 +194,7 @@ val(Var) ->
 start() ->
     gen_server:start_link({local, ?SERVER_NAME}, ?MODULE, [self()],
 			  [{timeout, infinity}
-			   %% ,{debug, [trace]}
+                          %% ,{debug, [trace]}
 			  ]).
 
 sync_dump_log(InitBy) ->
@@ -330,11 +330,11 @@ release_schema_commit_lock() ->
 
 %% Special for preparation of add table copy
 get_network_copy(Tid, Tab, Cs) ->
-%   We can't let the controller queue this one
-%   because that may cause a deadlock between schema_operations
-%   and initial tableloadings which both takes schema locks.
-%   But we have to get copier_done msgs when the other side
-%   goes down.
+                                                %   We can't let the controller queue this one
+                                                %   because that may cause a deadlock between schema_operations
+                                                %   and initial tableloadings which both takes schema locks.
+                                                %   But we have to get copier_done msgs when the other side
+                                                %   goes down.
     call({add_other, self()}),
     Reason = {dumper,{add_table_copy, Tid}},
     Work = #net_load{table = Tab,reason = Reason,cstruct = Cs},
@@ -346,19 +346,19 @@ get_network_copy(Tid, Tab, Cs) ->
     process_flag(trap_exit, false),
     call({del_other, self()}),
     case Res of
- 	#loader_done{is_loaded = true} ->
- 	    Tab = Res#loader_done.table_name,
- 	    case Res#loader_done.needs_announce of
- 		true ->
- 		    i_have_tab(Tab);
- 		false ->
- 		    ignore
- 	    end,
- 	    Res#loader_done.reply;
+        #loader_done{is_loaded = true} ->
+            Tab = Res#loader_done.table_name,
+            case Res#loader_done.needs_announce of
+                true ->
+                    i_have_tab(Tab);
+                false ->
+                    ignore
+            end,
+            Res#loader_done.reply;
 	#loader_done{} ->
- 	    Res#loader_done.reply;
- 	Else ->
- 	    {not_loaded, Else}
+            Res#loader_done.reply;
+        Else ->
+            {not_loaded, Else}
     end.
 
 %% This functions is invoked from the dumper
@@ -719,7 +719,7 @@ handle_call({update_where_to_write, [add, Tab, AddNode], _From}, _Dummy, State) 
     Current = val({current, db_nodes}),
     Res =
 	case lists:member(AddNode, Current) and
-	    (State#state.schema_is_merged == true) of
+             (State#state.schema_is_merged == true) of
 	    true ->
 		mnesia_lib:add_lsort({Tab, where_to_write}, AddNode),
 		update_where_to_wlock(Tab);
@@ -844,10 +844,10 @@ late_disc_load(TabsR, Reason, RemoteLoaders, From,
     LocalTabs = gb_sets:from_ordset(lists:sort(mnesia_lib:val({schema,local_tables}))),
     Filter = fun(TabInfo0, Acc) ->
 		     TabInfo = {Tab,_} =
-			 case TabInfo0 of
-			     {_,_} -> TabInfo0;
-			     TabN -> {TabN,Reason}
-			 end,
+                                   case TabInfo0 of
+                                       {_,_} -> TabInfo0;
+                                       TabN -> {TabN,Reason}
+                                   end,
 		     case gb_sets:is_member(Tab, LocalTabs) of
 			 true ->
 			     case ?catch_val({Tab, where_to_read}) == node() of
@@ -1777,7 +1777,7 @@ update_where_to_wlock(Tab) ->
 unannounce_add_table_copy(Tab, To) ->
     ?SAFE(del_active_replica(Tab, To)),
     try To = val({Tab , where_to_read}),
-	 mnesia_lib:set_remote_where_to_read(Tab)
+        mnesia_lib:set_remote_where_to_read(Tab)
     catch _:_ -> ignore
     end.
 
@@ -1895,16 +1895,16 @@ info_format(Tab, Size, Mem, Media) ->
 handle_early_msgs([Msg | Msgs], State) ->
     %% The messages are in reverse order
     case handle_early_msg(Msg, State) of
-%%         {stop, Reason, Reply, State2} ->  % Will not happen according to dialyzer
-%% 	    {stop, Reason, Reply, State2};
+        %%         {stop, Reason, Reply, State2} ->  % Will not happen according to dialyzer
+        %% 	    {stop, Reason, Reply, State2};
         {stop, Reason, State2} ->
 	    {stop, Reason, State2};
 	{noreply, State2} ->
 	    handle_early_msgs(Msgs, State2);
- 	{reply, Reply, State2} ->
+        {reply, Reply, State2} ->
 	    {call, _Call, From} = Msg,
 	    reply(From, Reply),
- 	    handle_early_msgs(Msgs, State2)
+            handle_early_msgs(Msgs, State2)
     end;
 handle_early_msgs([], State) ->
     noreply(State).
@@ -1962,7 +1962,7 @@ add_worker(Worker = #send_table{}, State) ->
     opt_start_worker(State2);
 add_worker(Worker = #disc_load{}, State) ->
     opt_start_worker(add_loader(Worker#disc_load.table,Worker,State));
-% Block controller should be used for upgrading mnesia.
+                                                % Block controller should be used for upgrading mnesia.
 add_worker(Worker = #block_controller{}, State) ->
     Queue = State#state.dumper_queue,
     Queue2 = [Worker | Queue],

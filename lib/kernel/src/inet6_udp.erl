@@ -59,7 +59,7 @@ open(Port, Opts) ->
 	    ifaddr = BAddr = {A,B,C,D,E,F,G,H},
 	    port = BPort,
 	    opts = SockOpts}}
-	when ?ip6(A,B,C,D,E,F,G,H), ?port(BPort) ->
+          when ?ip6(A,B,C,D,E,F,G,H), ?port(BPort) ->
 	    inet:open(
 	      Fd, BAddr, BPort, SockOpts, ?PROTO, ?FAMILY, ?TYPE, ?MODULE);
 	{ok, _} -> exit(badarg)

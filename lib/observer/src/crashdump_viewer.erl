@@ -102,7 +102,7 @@
 -define(call_timeout,3600000).
 -define(chunk_size,1000). % number of bytes read from crashdump at a time
 -define(max_line_size,100). % max number of bytes (i.e. characters) the
-			    % line_head/1 function can return
+                                                % line_head/1 function can return
 -define(not_available,"N/A").
 -define(binary_size_progress_limit,10000).
 -define(max_dump_version,[0,5]).
@@ -228,7 +228,7 @@ do_script_start(StartFun) ->
 			    io:format("\ncdv crash: ~tp\n",[Reason])
 		    end;
 		_ ->
-		    %io:format("\ncdv crash: ~p\n",[unknown_reason])
+                                                %io:format("\ncdv crash: ~p\n",[unknown_reason])
                     ok
 	    end;
 	Error ->
@@ -363,7 +363,7 @@ handle_call(general_info,_From,State=#state{file=File}) ->
                      Reason ->
                          ["WARNING: The crash dump is truncated "
                           "("++Reason++"). "
-                          "Some information might be missing."]
+                                       "Some information might be missing."]
                  end;
 	     false -> []
 	 end,
@@ -541,7 +541,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%--------------------------------------------------------------------    
 call(Request) ->
-     gen_server:call(?SERVER,Request,?call_timeout).
+    gen_server:call(?SERVER,Request,?call_timeout).
 
 cast(Msg) ->
     gen_server:cast(?SERVER,Msg).
@@ -569,7 +569,7 @@ truncated_warning() ->
         Reason ->
             ["WARNING: The crash dump is truncated here "
              "("++Reason++"). "
-             "Some information might be missing."]
+                          "Some information might be missing."]
     end.
 
 truncated_here(Tag) ->
@@ -857,7 +857,7 @@ do_read_file(File) ->
 		    R = io_lib:format(
 			  "The crashdump ~ts is in the pre-R10B format, "
 			  "which is no longer supported.~n",
-			     [File]),
+                          [File]),
 		    close(Fd),
 		    {error,R};
 		_Other ->
@@ -1169,7 +1169,7 @@ get_procinfo(Fd,Fun,Proc,WS) ->
 	"Stack+heap" ->
 	    %% stored as integer so we can sort on it
 	    get_procinfo(Fd,Fun,Proc#proc{stack_heap=
-					  list_to_integer(bytes(Fd))*WS},WS);
+                                              list_to_integer(bytes(Fd))*WS},WS);
 	"Memory" ->
 	    %% stored as integer so we can sort on it
 	    get_procinfo(Fd,Fun,Proc#proc{memory=list_to_integer(bytes(Fd))},WS);
@@ -1204,8 +1204,8 @@ all_procinfo(Fd,Fun,Proc,WS,LineHead) ->
 	    get_procinfo(Fd,Fun,Proc#proc{start_time=bytes(Fd)},WS);
 	"Last scheduled in for" ->
 	    get_procinfo(Fd,Fun,Proc#proc{current_func=
-					  {"Last scheduled in for",
-					   string(Fd)}},WS);
+                                              {"Last scheduled in for",
+                                               string(Fd)}},WS);
 	"Current call" ->
 	    get_procinfo(Fd,Fun,Proc#proc{current_func={"Current call",
 							string(Fd)}},WS);
@@ -1952,7 +1952,7 @@ loaded_mods(File) ->
 		R;
 	    [] ->
 		{"unknown","unknown"}
-    end,
+        end,
     {CC,OC,lookup_and_parse_index(File,?mod,ParseFun,"modules")}.
 
 get_loaded_mod_totals(Fd,{CC,OC}) ->
@@ -2453,7 +2453,7 @@ get_hashtableinfo1(Fd,HashTable) ->
 	    get_hashtableinfo1(Fd,HashTable#hash_table{objs=bytes(Fd)});
 	"depth" ->
 	    get_hashtableinfo1(Fd,HashTable#hash_table{depth=bytes(Fd)});
-    	"=" ++ _next_tag ->
+        "=" ++ _next_tag ->
 	    HashTable;
 	Other ->
 	    unexpected(Fd,Other,"hash table information"),
@@ -2492,7 +2492,7 @@ get_indextableinfo1(Fd,IndexTable) ->
 	    get_indextableinfo1(Fd,IndexTable#index_table{rate=bytes(Fd)});
 	"entries" ->
 	    get_indextableinfo1(Fd,IndexTable#index_table{entries=bytes(Fd)});
-    	"=" ++ _next_tag ->
+        "=" ++ _next_tag ->
 	    IndexTable;
 	Other ->
 	    unexpected(Fd,Other,"index table information"),
@@ -2882,7 +2882,7 @@ get_binary(Line0,DecodeOpts) ->
         {N,":"++Line} ->
             get_binary_1(N, Line, DecodeOpts);
         _  ->
-           {'#CDVTruncatedBinary',[]}
+            {'#CDVTruncatedBinary',[]}
     end.
 
 get_binary_1(N,Line,#dec_opts{base64=false}) ->
@@ -2905,7 +2905,7 @@ get_binary_1(Offset,Size,Line,#dec_opts{base64=false}) ->
     Progress = Size > ?binary_size_progress_limit,
     Progress andalso init_progress("Reading binary",Size),
     get_binary_hex(Size, lists:sublist(Line,(Offset*2)+1,Size*2), [],
-                  Progress);
+                   Progress);
 get_binary_1(StartOffset,Size,Line,#dec_opts{base64=true}) ->
     Progress = Size > ?binary_size_progress_limit,
     Progress andalso init_progress("Reading binary",Size),

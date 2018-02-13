@@ -104,9 +104,9 @@ init([]) ->
     {ok, maps:new()}.
 
 -spec handle_call(term(), term(), state()) ->
-        {'noreply', state()} |
-	{'reply', term(), state()} |
-	{'stop', 'normal', 'stopped', state()}.
+          {'noreply', state()} |
+          {'reply', term(), state()} |
+          {'stop', 'normal', 'stopped', state()}.
 
 handle_call({call, Mod, Fun, Args, Gleader}, To, S) ->
     handle_call_call(Mod, Fun, Args, Gleader, To, S);
@@ -228,8 +228,8 @@ proxy_user() ->
 	    try register(rex_proxy_user,Pid) of
 		true -> Pid
 	    catch error:_ -> % spawn race, kill and try again
-		exit(Pid,kill),
-		proxy_user()
+                    exit(Pid,kill),
+                    proxy_user()
 	    end
     end.
 
@@ -271,7 +271,7 @@ call(N,M,F,A) ->
     do_call(N, {call,M,F,A,group_leader()}, infinity).
 
 -spec call(Node, Module, Function, Args, Timeout) ->
-                  Res | {badrpc, Reason} when
+          Res | {badrpc, Reason} when
       Node :: node(),
       Module :: module(),
       Function :: atom(),
@@ -301,7 +301,7 @@ block_call(N,M,F,A) ->
     do_call(N, {block_call,M,F,A,group_leader()}, infinity).
 
 -spec block_call(Node, Module, Function, Args, Timeout) ->
-                  Res | {badrpc, Reason} when
+          Res | {badrpc, Reason} when
       Node :: node(),
       Module :: module(),
       Function :: atom(),
@@ -505,19 +505,19 @@ multicall(M, F, A) ->
     multicall(M, F, A, infinity).
 
 -spec multicall(Nodes, Module, Function, Args) -> {ResL, BadNodes} when
-                  Nodes :: [node()],
-                  Module :: module(),
-                  Function :: atom(),
-                  Args :: [term()],
-                  ResL :: [term()],
-                  BadNodes :: [node()];
+      Nodes :: [node()],
+      Module :: module(),
+      Function :: atom(),
+      Args :: [term()],
+      ResL :: [term()],
+      BadNodes :: [node()];
                (Module, Function, Args, Timeout) -> {ResL, BadNodes} when
-                  Module :: module(),
-                  Function :: atom(),
-                  Args :: [term()],
-                  Timeout :: timeout(),
-                  ResL :: [term()],
-                  BadNodes :: [node()].
+      Module :: module(),
+      Function :: atom(),
+      Args :: [term()],
+      Timeout :: timeout(),
+      ResL :: [term()],
+      BadNodes :: [node()].
 
 multicall(Nodes, M, F, A) when is_list(Nodes) ->
     multicall(Nodes, M, F, A, infinity);
@@ -525,7 +525,7 @@ multicall(M, F, A, Timeout) ->
     multicall([node() | nodes()], M, F, A, Timeout).
 
 -spec multicall(Nodes, Module, Function, Args, Timeout) ->
-                       {ResL, BadNodes} when
+          {ResL, BadNodes} when
       Nodes :: [node()],
       Module :: module(),
       Function :: atom(),
@@ -655,7 +655,7 @@ do_yield(Key, Timeout) ->
     receive
         {Key,{promise_reply,R}} ->
             {value,R}
-        after Timeout ->
+    after Timeout ->
             timeout
     end.
 

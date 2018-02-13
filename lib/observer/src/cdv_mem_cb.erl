@@ -32,8 +32,8 @@ get_info() ->
     AreaInfo = get_area_info(),
     observer_lib:report_progress({ok,100}),
     [{"Memory",cdv_info_wx,MemInfo}
-     | [{Title,cdv_table_wx,{Cols,Data,AllocTW}} ||
-	   {Title,Cols,Data} <- AllocInfo]] ++
+    | [{Title,cdv_table_wx,{Cols,Data,AllocTW}} ||
+          {Title,Cols,Data} <- AllocInfo]] ++
 	[{"Allocated Areas",cdv_table_wx,AreaInfo}].
 
 
@@ -71,7 +71,7 @@ get_alloc_info() ->
 
 fix_alloc([{Title,Columns,Data}|Tables]) ->
     [{Title,alloc_columns(Columns),
-     [[Key|Values] || {Key,Values} <- Data]} |
+      [[Key|Values] || {Key,Values} <- Data]} |
      fix_alloc(Tables)];
 fix_alloc([{Title,[{_,V}|_]=Data}|Tables]) ->
     fix_alloc([{Title,lists:duplicate(length(V),[]),Data}|Tables]);

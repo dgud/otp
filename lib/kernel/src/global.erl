@@ -63,10 +63,10 @@
 %%-define(DEBUG, true).
 -ifdef(DEBUG).
 -define(trace(T), erlang:display({format, node(), cs(), T})).
-  cs() ->
-     {_Big, Small, Tiny} = erlang:timestamp(),
-     (Small rem 100) * 100 + (Tiny div 10000).
-%-define(trace(T), (catch my_tracer ! {node(), {line,?LINE}, T})).
+cs() ->
+    {_Big, Small, Tiny} = erlang:timestamp(),
+    (Small rem 100) * 100 + (Tiny div 10000).
+                                                %-define(trace(T), (catch my_tracer ! {node(), {line,?LINE}, T})).
 -else.
 -define(trace(_), ok).
 -endif.
@@ -231,7 +231,7 @@ register_name(Name, Pid) when is_pid(Pid) ->
     register_name(Name, Pid, fun random_exit_name/3).
 
 -type method() :: fun((Name :: term(), Pid :: pid(), Pid2 :: pid()) ->
-                             pid() | 'none').
+                      pid() | 'none').
 
 -spec register_name(Name, Pid, Resolve) -> 'yes' | 'no' when
       Name :: term(),
@@ -240,16 +240,16 @@ register_name(Name, Pid) when is_pid(Pid) ->
 register_name(Name, Pid, Method0) when is_pid(Pid) ->
     Method = allow_tuple_fun(Method0),
     Fun = fun(Nodes) ->
-        case (where(Name) =:= undefined) andalso check_dupname(Name, Pid) of
-            true ->
-                gen_server:multi_call(Nodes,
-                                      global_name_server,
-                                      {register, Name, Pid, Method}),
-                yes;
-            _ ->
-                no
-        end
-    end,
+                  case (where(Name) =:= undefined) andalso check_dupname(Name, Pid) of
+                      true ->
+                          gen_server:multi_call(Nodes,
+                                                global_name_server,
+                                                {register, Name, Pid, Method}),
+                          yes;
+                      _ ->
+                          no
+                  end
+          end,
     ?trace({register_name, self(), Name, Pid, Method}),
     gen_server:call(global_name_server, {registrar, Fun}, infinity).
 
@@ -588,9 +588,9 @@ init([]) ->
 %%-----------------------------------------------------------------
 
 -spec handle_call(term(), {pid(), term()}, state()) ->
-        {'noreply', state()} |
-	{'reply', term(), state()} |
-	{'stop', 'normal', 'stopped', state()}.
+          {'noreply', state()} |
+          {'reply', term(), state()} |
+          {'stop', 'normal', 'stopped', state()}.
 
 handle_call({registrar, Fun}, From, S) ->
     S#state.the_registrar ! {trans_all_known, Fun, From},
@@ -834,7 +834,7 @@ handle_cast(Request, S) ->
 %%========================================================================
 
 -spec handle_info(term(), state()) ->
-        {'noreply', state()} | {'stop', term(), state()}.
+          {'noreply', state()} | {'stop', term(), state()}.
 
 handle_info({'EXIT', Locker, _Reason}=Exit, #state{the_locker=Locker}=S) ->
     {stop, {locker_died,Exit}, S#state{the_locker=undefined}};
@@ -1346,9 +1346,9 @@ do_ops(Ops, ConnNode, Names_ext, ExtraInfo, S0) ->
                   {insert, {Name, Pid, Method}} <- Ops,
                   not lists:member(Name, XNames)],
     S2 = lists:foldl(fun({Name, Pid, _RegNode, Method}, S2) ->
-                            ins_name(Name, Pid, Method, ConnNode, 
-                                     ExtraInfo, S2)
-                    end, S1, Inserts),
+                             ins_name(Name, Pid, Method, ConnNode, 
+                                      ExtraInfo, S2)
+                     end, S1, Inserts),
 
     DelNames = [Name || {delete, Name} <- Ops],
     lists:foldl(fun(Name, S) -> delete_global_name2(Name, S) 
@@ -1390,8 +1390,8 @@ sync_other(Node, N) ->
     after 0 ->
             gen_server:cast({global_name_server,Node}, {in_sync,node(),true})
     end.
-    % monitor_node(Node, false),
-    % exit(normal).
+                                                % monitor_node(Node, false),
+                                                % exit(normal).
 
 insert_global_name(Name, Pid, Method, FromPidOrNode, ExtraInfo, S) ->
     {RPid, Ref} = do_monitor(Pid),
@@ -1509,11 +1509,11 @@ delete_global_name(_Name, _Pid) ->
         {local = [],          % Requests from nodes on the local host.
          remote = [],         % Other requests.
          known = [],          % Copy of global_name_server's known nodes. It's
-                              % faster to keep a copy of known than asking 
-                              % for it when needed.
+                                                % faster to keep a copy of known than asking 
+                                                % for it when needed.
          the_boss,            % max([node() | 'known'])
          just_synced = false, % true if node() synced just a moment ago
-                              %% Statistics:
+         %% Statistics:
          do_trace             % bool()
         }).
 
@@ -1822,14 +1822,14 @@ lock_is_set(S, Him, MyTag, Known1, LockId) ->
             _ = locker_trace(S, rejected, Known1),
 	    delete_global_lock(LockId, Known1),
 	    S
-        %% There used to be an 'after' clause (OTP-4902), but it is 
-        %% no longer needed:
-        %% OTP-5770. Version 5 of the protocol. Deadlock can no longer
-        %% occur due to the fact that if a partition is locked, one
-        %% node in the other partition is also locked with the same
-        %% lock-id, which makes it impossible for any node in the
-        %% other partition to lock its partition unless it negotiates
-        %% with the first partition.
+    %% There used to be an 'after' clause (OTP-4902), but it is 
+    %% no longer needed:
+    %% OTP-5770. Version 5 of the protocol. Deadlock can no longer
+    %% occur due to the fact that if a partition is locked, one
+    %% node in the other partition is also locked with the same
+    %% lock-id, which makes it impossible for any node in the
+    %% other partition to lock its partition unless it negotiates
+    %% with the first partition.
     end.
 
 %% The locker does the {new_nodes, ...} call before removing the lock.

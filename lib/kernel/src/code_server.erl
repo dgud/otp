@@ -388,7 +388,7 @@ choose_bundles(Bundles) ->
     ArchiveExt = archive_extension(),
     Bs = lists:sort([create_bundle(B, ArchiveExt) || B <- Bundles]),
     [FullName || {_Name,_NumVsn,FullName} <-
-		     choose(lists:reverse(Bs), [], ArchiveExt)].
+                 choose(lists:reverse(Bs), [], ArchiveExt)].
 
 create_bundle(FullName, ArchiveExt) ->
     BaseName = filename:basename(FullName, ArchiveExt),
@@ -834,8 +834,8 @@ archive_subdirs(AppDir) ->
     Base = filename:basename(AppDir),
     Dirs = case split_base(Base) of
 	       {Name, _} -> [Name, Base];
-	    _ -> [Base]
-	end,
+               _ -> [Base]
+           end,
     Ext = archive_extension(),
     try_archive_subdirs(AppDir ++ Ext, Base, Dirs).
 
@@ -1245,7 +1245,7 @@ absname_vr([[X, $:]|Name], _, _AbsBase) ->
 	case erl_prim_loader:get_cwd([X, $:]) of
 	    {ok, Dir}  -> Dir;
 	    error -> [X, $:, $/]
-    end,
+        end,
     absname(filename:join(Name), Dcwd).
 
 

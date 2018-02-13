@@ -71,9 +71,9 @@ monitor(_, _) ->
     erlang:nif_error(undef).
 
 -spec try_load(Path, Name, OptionList) ->
-                      {ok,Status} |
-                      {ok, PendingStatus, Ref} |
-                      {error, ErrorDesc} when
+          {ok,Status} |
+          {ok, PendingStatus, Ref} |
+          {error, ErrorDesc} when
       Path :: path(),
       Name :: driver(),
       OptionList :: [Option],
@@ -97,9 +97,9 @@ try_load(_, _, _) ->
     erlang:nif_error(undef).
 
 -spec try_unload(Name, OptionList) ->
-                        {ok, Status} |
-                        {ok, PendingStatus, Ref} |
-                        {error, ErrorAtom} when
+          {ok, Status} |
+          {ok, PendingStatus, Ref} |
+          {error, ErrorAtom} when
       Name :: driver(),
       OptionList :: [Option],
       Option :: {monitor, MonitorOption} | kill_ports,
@@ -263,5 +263,5 @@ info(Driver) ->
 info() ->
     {ok,DriverList} = erl_ddll:loaded_drivers(),
     [{X,Y} || X <- DriverList,
-	       Y <- [catch info(X)],
-	       is_list(Y), not lists:member({linked_in_driver,true},Y)]. 
+              Y <- [catch info(X)],
+              is_list(Y), not lists:member({linked_in_driver,true},Y)]. 

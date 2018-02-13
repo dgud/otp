@@ -72,7 +72,7 @@ do_get_disc_copy2(Tab, Reason, Storage, Type) when Storage == disc_copies ->
 	    mnesia_monitor:mktab(Tab, Args),
 	    _Count = mnesia_log:dcd2ets(Tab, Repair),
 	    case mnesia_monitor:get_env(dump_disc_copies_at_startup)
-		andalso mnesia_dumper:needs_dump_ets(Tab) of
+                 andalso mnesia_dumper:needs_dump_ets(Tab) of
 		true ->
 		    ok = mnesia_log:ets2dcd(Tab);
 		_ ->
@@ -128,7 +128,7 @@ do_get_disc_copy2(Tab, Reason, Storage, Type) when Storage == disc_only_copies -
 	    {type, mnesia_lib:disk_type(Tab, Type)},
 	    {keypos, 2},
 	    {repair, mnesia_monitor:get_env(auto_repair)} 
-	    | DetsOpts],
+           | DetsOpts],
     case Reason of
 	{dumper, _} ->
 	    mnesia_index:init_index(Tab, Storage),
@@ -392,11 +392,11 @@ create_table(Tab, TabSize, Storage, Cs) ->
 				       proplists:get_value(dets, StorageProps, [])),
 	    Args = [{file, Tmp},
 		    {keypos, 2},
-%%		    {ram_file, true},
+                    %%		    {ram_file, true},
 		    {estimated_no_objects, Size},
 		    {repair, mnesia_monitor:get_env(auto_repair)},
 		    {type, mnesia_lib:disk_type(Tab, Cs#cstruct.type)}
-		    | DetsOpts],
+                   | DetsOpts],
 	    file:delete(Tmp),
 	    case mnesia_lib:dets_sync_open(Tab, Args) of
 		{ok, _} ->
@@ -690,14 +690,14 @@ db_match_erase({disc_copies, Tab} , Pat) ->
 db_match_erase({disc_only_copies, Tab}, Pat) ->
     ok = dets:match_delete(Tab, Pat);
 db_match_erase({{ext, Alias, Mod}, Tab}, Pat) ->
-    % "ets style" is to return true
-    % "dets style" is to return N | { error, Reason }
-    %   or sometimes ok (?)
-    % be nice and accept both
+                                                % "ets style" is to return true
+                                                % "dets style" is to return N | { error, Reason }
+                                                %   or sometimes ok (?)
+                                                % be nice and accept both
     case Mod:match_delete(Alias, Tab, Pat) of
-      N when is_integer (N) -> ok;
-      true -> ok;
-      ok -> ok
+        N when is_integer (N) -> ok;
+        true -> ok;
+        ok -> ok
     end.
 
 db_put({ram_copies, Tab}, Val) ->

@@ -135,7 +135,7 @@ check_runtime_tools_vsn(Node) ->
         _ -> exit("Faulty version of runtime_tools on remote node")
     end.
 check_vsn(_Vsn) -> ok.
-%check_vsn(_Vsn) -> exit("Faulty version of runtime_tools on remote node").
+                                                %check_vsn(_Vsn) -> exit("Faulty version of runtime_tools on remote node").
     
 
 %% Handle the incoming data
@@ -145,7 +145,7 @@ init_data_handler(Config) ->
     Reader = 
 	if Config#opts.tracing == on -> etop_tr:reader(Config);
 	   true -> undefined
-    end,
+        end,
     data_handler(Reader, Config).
 
 data_handler(Reader, Opts) ->
@@ -333,7 +333,7 @@ loadinfo(SysI,Prev) ->
 	       runtime = RT} = SysI,
     Cpu = calculate_cpu_utilization(WC,RT,Prev#etop_info.runtime),
     Clock = io_lib:format("~2.2.0w:~2.2.0w:~2.2.0w",
-			 tuple_to_list(element(2,calendar:now_to_datetime(Now)))),
+                          tuple_to_list(element(2,calendar:now_to_datetime(Now)))),
     {Cpu,Procs,RQ,Clock}.
 
 calculate_cpu_utilization({_,WC},{_,RT},_) ->

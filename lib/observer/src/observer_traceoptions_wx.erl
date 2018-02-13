@@ -288,23 +288,23 @@ check_selector(Parent, ParsedChoices) ->
 					     GetClientData(ListBox, N)}
 			     end}]),
     Check = fun(Id, Bool) ->
-    		    wxCheckListBox:check(ListBox, Id, [{check, Bool}]),
-    		    Self ! {ListBox, Bool, GetClientData(ListBox, Id)}
-    	    end,
+                    wxCheckListBox:check(ListBox, Id, [{check, Bool}]),
+                    Self ! {ListBox, Bool, GetClientData(ListBox, Id)}
+            end,
     wxButton:connect(SelAllBtn, command_button_clicked,
-    		     [{callback, fun(#wx{}, _) ->
-    					 Count = wxListBox:getCount(ListBox),
-    					 [Check(SelId, true) ||
-    					     SelId <- lists:seq(0, Count-1),
-    					     not wxCheckListBox:isChecked(ListBox, SelId)]
-    				 end}]),
+                     [{callback, fun(#wx{}, _) ->
+                                         Count = wxListBox:getCount(ListBox),
+                                         [Check(SelId, true) ||
+                                             SelId <- lists:seq(0, Count-1),
+                                             not wxCheckListBox:isChecked(ListBox, SelId)]
+                                 end}]),
     wxButton:connect(DeSelAllBtn, command_button_clicked,
-    		     [{callback, fun(#wx{}, _) ->
-    					 Count = wxListBox:getCount(ListBox),
-    					 [Check(SelId, false) ||
-    					     SelId <- lists:seq(0, Count-1),
-    					     wxCheckListBox:isChecked(ListBox, SelId)]
-    				 end}]),
+                     [{callback, fun(#wx{}, _) ->
+                                         Count = wxListBox:getCount(ListBox),
+                                         [Check(SelId, false) ||
+                                             SelId <- lists:seq(0, Count-1),
+                                             wxCheckListBox:isChecked(ListBox, SelId)]
+                                 end}]),
     case wxDialog:showModal(Dialog) of
 	?wxID_OK ->
 	    wxDialog:destroy(Dialog),
@@ -543,7 +543,7 @@ ms_from_string(Str) ->
 add_and_select(Id, MS0, ListBox) ->
     [{Str,User}] = ms_names([MS0]),
     Sel = case Id >= 0 of
-	     true ->
+              true ->
 		  wxListBox:setString(ListBox, Id, Str),
 		  wxListBox:setClientData(ListBox, Id, User),
 		  Id;

@@ -75,8 +75,8 @@ get_details(Id, _) ->
 	    {ok,{Title,Proplist,TW}};
 	{error,{other_node,NodeId}} ->
 	    Info = "The process you are searching for was residing on "
-		"a remote node. No process information is available. "
-		"Show information about the remote node?",
+                   "a remote node. No process information is available. "
+                   "Show information about the remote node?",
 	    Fun = fun() -> cdv_virtual_list_wx:start_detail_win(NodeId, port) end,
 	    {yes_no, Info, Fun};
 	{error,not_found} ->

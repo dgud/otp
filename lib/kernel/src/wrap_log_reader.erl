@@ -67,7 +67,7 @@ open(File) when is_list(File) ->
     case read_index_file(File) of
 	%% The special case described above.
 	{ok, {CurFileNo, _CurFileSz, _TotSz, NoOfFiles}} 
-	             when CurFileNo =:= NoOfFiles + 1 ->
+          when CurFileNo =:= NoOfFiles + 1 ->
 	    FileNo = 1,
 	    ?FORMAT("open from ~p Cur = ~p, Sz = ~p, Tot = ~p, NoFiles = ~p~n",
 		    [FileNo, CurFileNo, _CurFileSz, _TotSz, NoOfFiles]),

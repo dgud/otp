@@ -54,7 +54,7 @@ format_term_fun(Format,Term,Tab) ->
 		    Warning = "This term can not be formatted with " ++ Format,
 		    observer_html_lib:warning(Warning)
             after
-                    observer_lib:report_progress({ok,stop_pulse})
+                observer_lib:report_progress({ok,stop_pulse})
 	    end
     end.
 

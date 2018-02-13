@@ -151,7 +151,7 @@ setup(#state{frame = Frame} = State) ->
 
     %% Freeze and thaw is buggy currently
     DoFreeze = [?wxMAJOR_VERSION,?wxMINOR_VERSION] < [2,9]
-        orelse element(1, os:type()) =:= win32,
+               orelse element(1, os:type()) =:= win32,
     DoFreeze andalso wxWindow:freeze(Panel),
     %% I postpone the creation of the other tabs so they can query/use
     %% the window size
@@ -270,7 +270,7 @@ handle_event(#wx{id = ?wxID_HELP, event = #wxCommand{type = command_menu_selecte
 handle_event(#wx{id = ?wxID_ABOUT, event = #wxCommand{type = command_menu_selected}},
 	     State = #state{frame=Frame}) ->
     AboutString = "Observe an erlang system\n"
-	"Authors: Olle Mattson & Magnus Eriksson & Dan Gudmundsson",
+                  "Authors: Olle Mattson & Magnus Eriksson & Dan Gudmundsson",
     Style = [{style, ?wxOK bor ?wxSTAY_ON_TOP},
 	     {caption, "About"}],
     wxMessageDialog:showModal(wxMessageDialog:new(Frame, AboutString, Style)),
@@ -431,9 +431,9 @@ handle_info({nodedown, Node},
 
 handle_info({open_link, Id0}, State = #state{panels=Panels,frame=Frame}) ->
     Id = case Id0 of
-	      [_|_] -> try list_to_pid(Id0) catch _:_ -> Id0 end;
-	      _ -> Id0
-	  end,
+             [_|_] -> try list_to_pid(Id0) catch _:_ -> Id0 end;
+             _ -> Id0
+         end,
     %% Forward to process tab
     case Id of
 	Pid when is_pid(Pid) ->
@@ -664,9 +664,9 @@ default_menus(NodesMenuItems) ->
     FileMenu = {"File", [CDV, Quit]},
     NodeMenu = case erlang:is_alive() of
 		   true ->  {"Nodes", NodesMenuItems ++
-				 [#create_menu{id = ?ID_PING, text = "Connect Node"}]};
+                                          [#create_menu{id = ?ID_PING, text = "Connect Node"}]};
 		   false -> {"Nodes", NodesMenuItems ++
-				 [#create_menu{id = ?ID_CONNECT, text = "Enable distribution"}]}
+                                          [#create_menu{id = ?ID_CONNECT, text = "Enable distribution"}]}
 	       end,
     LogMenu =  {"Log", [#create_menu{id = ?ID_LOGVIEW, text = "Toggle log view"}]},
     case os:type() =:= {unix, darwin} of
@@ -715,13 +715,13 @@ remove_menu_items([], _MB) ->
 
 get_nodes() ->
     Nodes0 = case erlang:is_alive() of
-		false -> [];
-		true  ->
-		    case net_adm:names() of
-			{error, _} -> nodes();
-			{ok, Names} ->
-			    epmd_nodes(Names) ++ nodes()
-		    end
+                 false -> [];
+                 true  ->
+                     case net_adm:names() of
+                         {error, _} -> nodes();
+                         {ok, Names} ->
+                             epmd_nodes(Names) ++ nodes()
+                     end
 	     end,
     Nodes = lists:usort(Nodes0),
     {_, Menues} =
@@ -761,22 +761,22 @@ update_node_list(State = #state{menubar=MenuBar}) ->
     State#state{nodes = Nodes}.
 
 ensure_sasl_started(Node) ->
-   %% is sasl started ?
-   Apps = rpc:block_call(Node, application, which_applications, []),
-   case lists:keyfind(sasl, 1, Apps) of
-       false        ->  throw("Error: sasl application not started."),
-                        error;
-       {sasl, _, _} ->  ok
-   end.
+    %% is sasl started ?
+    Apps = rpc:block_call(Node, application, which_applications, []),
+    case lists:keyfind(sasl, 1, Apps) of
+        false        ->  throw("Error: sasl application not started."),
+                         error;
+        {sasl, _, _} ->  ok
+    end.
 
 ensure_mf_h_handler_used(Node) ->
-   %% is log_mf_h used ?
-   Handlers = rpc:block_call(Node, gen_event, which_handlers, [error_logger]),
-   case lists:any(fun(L)-> L == log_mf_h end, Handlers) of
-       false -> throw("Error: log_mf_h handler not used in sasl."),
-                error;
-       true  -> ok
-   end.
+    %% is log_mf_h used ?
+    Handlers = rpc:block_call(Node, gen_event, which_handlers, [error_logger]),
+    case lists:any(fun(L)-> L == log_mf_h end, Handlers) of
+        false -> throw("Error: log_mf_h handler not used in sasl."),
+                 error;
+        true  -> ok
+    end.
 
 ensure_rb_mode(Node, PrevLog) ->
     ok = ensure_rb_module_loaded(Node),
@@ -786,32 +786,32 @@ ensure_rb_mode(Node, PrevLog) ->
 
 
 ensure_rb_module_loaded(Node) ->
-   %% Need to ensure that module is loaded in order to detect exported
-   %% functions on interactive nodes
-   case rpc:block_call(Node, code, ensure_loaded, [rb]) of
-       {badrpc, Reason} ->
-	   throw("Error: badrpc - " ++ io_lib:format("~tp",[Reason]));
-       {error, Reason} ->
-	   throw("Error: rb module load error - " ++ io_lib:format("~tp",[Reason]));
-       {module,rb} ->
-	   ok
-   end.
+    %% Need to ensure that module is loaded in order to detect exported
+    %% functions on interactive nodes
+    case rpc:block_call(Node, code, ensure_loaded, [rb]) of
+        {badrpc, Reason} ->
+            throw("Error: badrpc - " ++ io_lib:format("~tp",[Reason]));
+        {error, Reason} ->
+            throw("Error: rb module load error - " ++ io_lib:format("~tp",[Reason]));
+        {module,rb} ->
+            ok
+    end.
 
 is_rb_compatible(Node) ->
-   %% Simply test that rb:log_list/0 is exported
-   case rpc:block_call(Node, erlang, function_exported, [rb, log_list, 0]) of
-       false -> throw("Error: Node's Erlang release must be at least R16B02.");
-       true  -> ok
-   end.
+    %% Simply test that rb:log_list/0 is exported
+    case rpc:block_call(Node, erlang, function_exported, [rb, log_list, 0]) of
+        false -> throw("Error: Node's Erlang release must be at least R16B02.");
+        true  -> ok
+    end.
 
 is_rb_server_running(Node, LogState) ->
-   %% If already started, somebody else may use it.
-   %% We can not use it too, as far log file would be overriden. Not fair.
-   case rpc:block_call(Node, erlang, whereis, [rb_server]) of
-       Pid when is_pid(Pid), (LogState == false) ->
-	   throw("Error: rb_server is already started and maybe used by someone.");
-       Pid when is_pid(Pid) ->
-	   ok;
-       undefined ->
-	   ok
-   end.
+    %% If already started, somebody else may use it.
+    %% We can not use it too, as far log file would be overriden. Not fair.
+    case rpc:block_call(Node, erlang, whereis, [rb_server]) of
+        Pid when is_pid(Pid), (LogState == false) ->
+            throw("Error: rb_server is already started and maybe used by someone.");
+        Pid when is_pid(Pid) ->
+            ok;
+        undefined ->
+            ok
+    end.

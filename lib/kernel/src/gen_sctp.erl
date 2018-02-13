@@ -109,20 +109,20 @@ open() ->
     open([]).
 
 -spec open(Port) -> {ok, Socket} | {error, inet:posix()} when
-              Port :: inet:port_number(),
-              Socket :: sctp_socket();
+      Port :: inet:port_number(),
+      Socket :: sctp_socket();
           (Opts) -> {ok, Socket} | {error, inet:posix()} when
-              Opts :: [Opt],
-              Opt :: {ip,IP}
-                   | {ifaddr,IP}
-                   | inet:address_family()
-                   | {port,Port}
-		   | {type,SockType}
-                   | option(),
-              IP :: inet:ip_address() | any | loopback,
-              Port :: inet:port_number(),
-	      SockType :: seqpacket | stream,
-              Socket :: sctp_socket().
+      Opts :: [Opt],
+      Opt :: {ip,IP}
+           | {ifaddr,IP}
+           | inet:address_family()
+           | {port,Port}
+           | {type,SockType}
+           | option(),
+      IP :: inet:ip_address() | any | loopback,
+      Port :: inet:port_number(),
+      SockType :: seqpacket | stream,
+      Socket :: sctp_socket().
 
 open(Opts0) when is_list(Opts0) ->
     {Mod, Opts} = inet:sctp_module(Opts0),
@@ -140,12 +140,12 @@ open(X) ->
 
 -spec open(Port, Opts) -> {ok, Socket} | {error, inet:posix()} when
       Opts :: [Opt],
-              Opt :: {ip,IP}
-                   | {ifaddr,IP}
-                   | inet:address_family()
-                   | {port,Port}
-		   | {type,SockType}
-                   | option(),
+      Opt :: {ip,IP}
+           | {ifaddr,IP}
+           | inet:address_family()
+           | {port,Port}
+           | {type,SockType}
+           | option(),
       IP :: inet:ip_address() | any | loopback,
       Port :: inet:port_number(),
       SockType :: seqpacket | stream,
@@ -216,7 +216,7 @@ connect(S, Addr, Port, Opts) ->
     connect(S, Addr, Port, Opts, infinity).
 
 -spec connect(Socket, Addr, Port, Opts, Timeout) ->
-                     {ok, Assoc} | {error, inet:posix()} when
+          {ok, Assoc} | {error, inet:posix()} when
       Socket :: sctp_socket(),
       Addr :: inet:ip_address() | inet:hostname(),
       Port :: inet:port_number(),
@@ -233,7 +233,7 @@ connect(S, Addr, Port, Opts, Timeout) ->
     end.
 
 -spec connect_init(Socket, Addr, Port, Opts) ->
-                          ok | {error, inet:posix()} when
+          ok | {error, inet:posix()} when
       Socket :: sctp_socket(),
       Addr :: inet:ip_address() | inet:hostname(),
       Port :: inet:port_number(),
@@ -243,7 +243,7 @@ connect_init(S, Addr, Port, Opts) ->
     connect_init(S, Addr, Port, Opts, infinity).
 
 -spec connect_init(Socket, Addr, Port, Opts, Timeout) ->
-                          ok | {error, inet:posix()} when
+          ok | {error, inet:posix()} when
       Socket :: sctp_socket(),
       Addr :: inet:ip_address() | inet:hostname(),
       Port :: inet:port_number(),
@@ -359,7 +359,7 @@ send(S, AssocChange, Stream, Data) ->
     erlang:error(badarg, [S,AssocChange,Stream,Data]).
 
 -spec recv(Socket) -> {ok, {FromIP, FromPort, AncData, Data}}
-                          | {error, Reason} when
+                    | {error, Reason} when
       Socket :: sctp_socket(),
       FromIP   :: inet:ip_address(),
       FromPort :: inet:port_number(),
@@ -375,7 +375,7 @@ recv(S) ->
     recv(S, infinity).
 
 -spec recv(Socket, Timeout) -> {ok, {FromIP, FromPort, AncData, Data}}
-                                   | {error, Reason} when
+                             | {error, Reason} when
       Socket :: sctp_socket(),
       Timeout :: timeout(),
       FromIP   :: inet:ip_address(),

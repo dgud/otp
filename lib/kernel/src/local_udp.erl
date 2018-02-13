@@ -56,8 +56,8 @@ open(0, Opts) ->
 	    ifaddr = BAddr,
 	    port = 0,
 	    opts = SockOpts}}
-	when tuple_size(BAddr) =:= 2, element(1, BAddr) =:= ?FAMILY;
-	     BAddr =:= any ->
+          when tuple_size(BAddr) =:= 2, element(1, BAddr) =:= ?FAMILY;
+               BAddr =:= any ->
 	    inet:open(
 	      Fd,
 	      case BAddr of

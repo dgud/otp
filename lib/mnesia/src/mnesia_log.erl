@@ -331,7 +331,7 @@ open_log(Name, Header, Fname, Exists, Repair) ->
 
 open_log(Name, Header, Fname, Exists, Repair, Mode) ->
     Args = [{file, Fname}, {name, Name}, {repair, Repair}, {mode, Mode}],
-%%    io:format("~p:open_log: ~tp ~tp~n", [?MODULE, Name, Fname]),
+    %%    io:format("~p:open_log: ~tp ~tp~n", [?MODULE, Name, Fname]),
     case mnesia_monitor:open_log(Args) of
 	{ok, Log} when Exists == true ->
 	    Log;
@@ -374,8 +374,8 @@ stop() ->
     end.
 
 close_log(Log) ->
-%%    io:format("mnesia_log:close_log ~p~n", [Log]),
-%%    io:format("mnesia_log:close_log ~p~n", [Log]),
+    %%    io:format("mnesia_log:close_log ~p~n", [Log]),
+    %%    io:format("mnesia_log:close_log ~p~n", [Log]),
     case disk_log:sync(Log) of
 	ok -> ok;
 	{error, {read_only_mode, Log}} ->
@@ -387,7 +387,7 @@ close_log(Log) ->
     mnesia_monitor:close_log(Log).
 
 unsafe_close_log(Log) ->
-%%    io:format("mnesia_log:close_log ~p~n", [Log]),
+    %%    io:format("mnesia_log:close_log ~p~n", [Log]),
     mnesia_monitor:unsafe_close_log(Log).
 
 
@@ -506,7 +506,7 @@ prepare_decision_log_dump(false, Prev) ->
 	    prepare_decision_log_dump(true, Prev);
 	{error, Reason} ->
 	    fatal("Cannot rename decision log file ~tp -> ~tp: ~tp~n",
-		     [decision_log_file(), Prev, Reason])
+                  [decision_log_file(), Prev, Reason])
     end;
 prepare_decision_log_dump(true, Prev) ->
     open_log(previous_decision_log, decision_log_header(), Prev),
