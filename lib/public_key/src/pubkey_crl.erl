@@ -30,7 +30,7 @@
 		   }).
 
 validate(OtpCert, OtherDPCRLs, DP, {DerCRL, CRL}, {DerDeltaCRL, DeltaCRL},
-	     Options, RevokedState0) ->
+         Options, RevokedState0) ->
     RevokedState =
 	case verify_crl(OtpCert, DP, CRL, DerCRL, DeltaCRL,
 			DerDeltaCRL, OtherDPCRLs, Options, RevokedState0) of
@@ -74,7 +74,7 @@ fresh_crl(DP, {_, #'CertificateList'{tbsCertList = TBSCRL}} = CRL, CallBack) ->
 	    case CallBack(DP, CRL) of
 		CRL ->
 		    no_fresh_crl;
-	       NewCRL ->
+                NewCRL ->
 		    fresh_crl(DP, NewCRL, CallBack)
 	    end;
 	false ->
@@ -135,7 +135,7 @@ verify_crl(OtpCert, DP, CRL, DerCRL, DeltaCRL, DerDeltaCRL, OtherDPCRLs,
     DeltaRevoked = delta_revoked(DeltaCRL),
 
     ValidExt = verify_extensions(Extensions) and
-	verify_extensions(Revoked),
+               verify_extensions(Revoked),
 
     IntMask = compute_interim_reasons_mask(DP, IDP),
 
@@ -202,7 +202,7 @@ verify_crl_signatures(CRL, DerCRL, DeltaCRL, DerDeltaCRL, TrustedOtpCert, Path,
     try
 	VerifyFunAndState =
 	    {fun(_, {bad_cert, _} = Reason, _UserState) ->
-		    {fail, Reason};
+                     {fail, Reason};
 		(_,{extension, _}, UserState) ->
 		     {unknown, UserState};
 		(_Cert, valid, UserState) ->
@@ -253,13 +253,13 @@ delta_revoked(undefined)->
     [];
 delta_revoked(#'CertificateList'{tbsCertList =
 				     #'TBSCertList'{revokedCertificates
-						    = DeltaRevoked}}) ->
+                                                      = DeltaRevoked}}) ->
     revoked(DeltaRevoked).
 
 revoked(asn1_NOVALUE) ->
     [];
 revoked(Revoked) ->
-   Revoked.
+    Revoked.
 
 revoked_status(DP, IDP, CRLIssuer, Names, SerialNumber, Revoked, DeltaRevoked, RevokedState0) ->
     DefaultIssuer0 = default_issuer(CRLIssuer, DeltaRevoked),
@@ -340,8 +340,8 @@ verify_issuer_and_scope(#'OTPCertificate'{tbsCertificate = TBSCert}= Cert,
     end.
 
 dp_crlissuer_to_issuer(DPCRLIssuer) ->
-     [{directoryName, Issuer}] = pubkey_cert_records:transform(DPCRLIssuer, decode),
-     Issuer.
+    [{directoryName, Issuer}] = pubkey_cert_records:transform(DPCRLIssuer, decode),
+    Issuer.
 
 is_indirect_crl(#'IssuingDistributionPoint'{indirectCRL = Value})->
     Value;
@@ -375,17 +375,17 @@ verify_scope(DPName, IDPName, _, TBSCert, IDP) ->
 dp_names(asn1_NOVALUE, _, _) ->
     asn1_NOVALUE;
 dp_names({fullName, Name}, _, _) ->
-     gen_names(Name);
+    gen_names(Name);
 dp_names({nameRelativeToCRLIssuer, Fragment}, asn1_NOVALUE, {rdnSequence, RelativeDestinguistNames}) ->
     [{directoryName, {rdnSequence, RelativeDestinguistNames ++
-			  [lists:map(fun(AttrAndValue) ->
-					     pubkey_cert_records:transform(AttrAndValue, decode)
-				     end, Fragment)]}}];
+                                       [lists:map(fun(AttrAndValue) ->
+                                                          pubkey_cert_records:transform(AttrAndValue, decode)
+                                                  end, Fragment)]}}];
 dp_names({nameRelativeToCRLIssuer, Fragment},{rdnSequence, RelativeDestinguistNames}, _) ->
-     [{directoryName, {rdnSequence, RelativeDestinguistNames ++
-			   [lists:map(fun(AttrAndValue) ->
-					      pubkey_cert_records:transform(AttrAndValue, decode)
-				      end, Fragment)]}}];
+    [{directoryName, {rdnSequence, RelativeDestinguistNames ++
+                                       [lists:map(fun(AttrAndValue) ->
+                                                          pubkey_cert_records:transform(AttrAndValue, decode)
+                                                  end, Fragment)]}}];
 dp_names([{rdnSequence, _}] = Name0, _,_) ->
     [Name] = pubkey_cert_records:transform(Name0, decode),
     [{directoryName, Name}].
@@ -431,8 +431,8 @@ verify_dp_bools(TBSCert, IDP) ->
 				     TBSCert#'OTPTBSCertificate'.extensions),
 
     case verify_onlyContainsUserCerts(BasicConstraints, IDP) andalso
-	verify_onlyContainsCACerts(BasicConstraints, IDP) andalso
-	verify_onlyContainsAttributeCerts(IDP) of
+         verify_onlyContainsCACerts(BasicConstraints, IDP) andalso
+         verify_onlyContainsAttributeCerts(IDP) of
 	true ->
 	    ok;
 	_  ->
@@ -508,7 +508,7 @@ check_delta_issuer_and_scope(#'CertificateList'{tbsCertList = TBSCRL},
     end.
 
 check_delta_scope(#'TBSCertList'{crlExtensions = Extensions},
-		   #'TBSCertList'{crlExtensions = DeltaExtensions})->
+                  #'TBSCertList'{crlExtensions = DeltaExtensions})->
     IDP = issuing_distribution_point(Extensions),
     DeltaIDP = issuing_distribution_point(DeltaExtensions),
 
@@ -551,7 +551,7 @@ verify_interim_reasons_mask(#revoke_state{reasons_mask = Mask,
 			   case sets:is_element(Element, Mask) of
 			       true ->
 				   Acc;
-			   false ->
+                               false ->
 				   true
 			   end
 		   end, false, IntMask) of

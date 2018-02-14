@@ -25,11 +25,11 @@
 
 -callback is_host_key(Key :: public_key(), Host :: string(),
 		      Algorithm :: 'ssh-rsa'| 'ssh-dsa'| atom(), Options :: proplists:proplist()) ->
-    boolean().
+              boolean().
 
 -callback user_key(Algorithm ::  'ssh-rsa'| 'ssh-dsa'| atom(), Options :: list()) ->
-    {ok,  PrivateKey :: term()} | {error, string()}.
+              {ok,  PrivateKey :: term()} | {error, string()}.
 
 
 -callback add_host_key(Host :: string(), PublicKey :: term(), Options :: list()) ->
-    ok | {error, Error::term()}.
+              ok | {error, Error::term()}.

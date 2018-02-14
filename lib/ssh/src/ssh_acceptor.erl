@@ -48,7 +48,7 @@ number_of_connections(SystemSup) ->
 	       {R,X,supervisor,[ssh_subsystem_sup]} <- supervisor:which_children(SystemSup),
 	       is_pid(X),
 	       is_reference(R)
-	  ]).
+           ]).
 
 %%%----------------------------------------------------------------
 listen(Port, Options) ->
@@ -135,22 +135,22 @@ handle_connection(Callback, Address, Port, Options, Socket) ->
 	    NegTimeout = ?GET_OPT(negotiation_timeout, Options),
 	    ssh_connection_handler:start_connection(server, Socket,
                                                     ?PUT_INTERNAL_OPT(
-                                                       {supervisors, [{system_sup, SystemSup},
-                                                                      {subsystem_sup, SubSysSup},
-                                                                      {connection_sup, ConnectionSup}]},
-                                                       Options), NegTimeout);
+                                                      {supervisors, [{system_sup, SystemSup},
+                                                                     {subsystem_sup, SubSysSup},
+                                                                     {connection_sup, ConnectionSup}]},
+                                                      Options), NegTimeout);
 	false ->
 	    Callback:close(Socket),
 	    IPstr = if is_tuple(Address) -> inet:ntoa(Address);
-		     true -> Address
-		  end,
+                       true -> Address
+                    end,
 	    Str = try io_lib:format('~s:~p',[IPstr,Port])
 		  catch _:_ -> "port "++integer_to_list(Port)
 		  end,
 	    error_logger:info_report("Ssh login attempt to "++Str++" denied due to option "
-				     "max_sessions limits to "++ io_lib:write(MaxSessions) ++
-				     " sessions."
-				     ),
+                                                                   "max_sessions limits to "++ io_lib:write(MaxSessions) ++
+                                         " sessions."
+                                    ),
 	    {error,max_sessions}
     end.
 

@@ -25,8 +25,8 @@
 -include("public_key.hrl").
 
 -export([init_validation_state/3, prepare_for_next_cert/2,
- 	 validate_time/3, validate_signature/6,
- 	 validate_issuer/4, validate_names/6,
+         validate_time/3, validate_signature/6,
+         validate_issuer/4, validate_names/6,
 	 validate_extensions/4,
 	 normalize_general_name/1, is_self_signed/1,
 	 is_issuer/2, issuer_id/2, distribution_points/1, 
@@ -68,7 +68,7 @@ verify_data(DerCert) ->
 
 %%--------------------------------------------------------------------
 -spec init_validation_state(#'OTPCertificate'{}, integer(), list()) ->
-				   #path_validation_state{}.
+          #path_validation_state{}.
 %%
 %% Description: Creates inital version of path_validation_state for
 %% basic path validation of x509 certificates.
@@ -81,12 +81,12 @@ init_validation_state(#'OTPCertificate'{} = OtpCert, DefaultPathLen,
 				   expected_policy_set = [?anyPolicy]},
     MaxLen =  proplists:get_value(max_path_length, Options, DefaultPathLen),
     ExplicitPolicy = policy_indicator(MaxLen,
-		       proplists:get_value(explicit_policy, Options, false)),
+                                      proplists:get_value(explicit_policy, Options, false)),
     InhibitAnyPolicy = policy_indicator(MaxLen,
-			 proplists:get_value(inhibit_any_policy, 
-					     Options, false)),
+                                        proplists:get_value(inhibit_any_policy, 
+                                                            Options, false)),
     PolicyMapping = policy_indicator(MaxLen,
-		      proplists:get_value(policy_mapping, Options, false)),
+                                     proplists:get_value(policy_mapping, Options, false)),
     {VerifyFun, UserState} =  proplists:get_value(verify_fun, Options, ?DEFAULT_VERIFYFUN),
     State = #path_validation_state{max_path_length    =  MaxLen,
 				   valid_policy_tree  =  PolicyTree,
@@ -100,14 +100,14 @@ init_validation_state(#'OTPCertificate'{} = OtpCert, DefaultPathLen,
 
 %%--------------------------------------------------------------------
 -spec prepare_for_next_cert(#'OTPCertificate'{}, #path_validation_state{}) ->
-				   #path_validation_state{}.
+          #path_validation_state{}.
 %%
 %% Description: Update path_validation_state for next iteration.
 %%--------------------------------------------------------------------	
 prepare_for_next_cert(OtpCert, ValidationState = #path_validation_state{
-				 working_public_key_algorithm = PrevAlgo,
-				 working_public_key_parameters = 
-				 PrevParams}) ->
+                                                    working_public_key_algorithm = PrevAlgo,
+                                                    working_public_key_parameters = 
+                                                        PrevParams}) ->
     TBSCert = OtpCert#'OTPCertificate'.tbsCertificate, 
     Issuer =  TBSCert#'OTPTBSCertificate'.subject,
    
@@ -131,7 +131,7 @@ prepare_for_next_cert(OtpCert, ValidationState = #path_validation_state{
       cert_num = ValidationState#path_validation_state.cert_num + 1
      }.
 
- %%--------------------------------------------------------------------
+%%--------------------------------------------------------------------
 -spec validate_time(#'OTPCertificate'{}, term(), fun()) -> term().
 %%
 %% Description: Check that the certificate validity period includes the 
@@ -140,7 +140,7 @@ prepare_for_next_cert(OtpCert, ValidationState = #path_validation_state{
 validate_time(OtpCert, UserState, VerifyFun) ->
     TBSCert = OtpCert#'OTPCertificate'.tbsCertificate,
     {'Validity', NotBeforeStr, NotAfterStr} 
-	= TBSCert#'OTPTBSCertificate'.validity,
+      = TBSCert#'OTPTBSCertificate'.validity,
     Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time()),
     NotBefore = time_str_2_gregorian_sec(NotBeforeStr),
     NotAfter = time_str_2_gregorian_sec(NotAfterStr),
@@ -219,14 +219,14 @@ validate_names(OtpCert, Permit, Exclude, Last, UserState, VerifyFun) ->
 		    UserState;
 		false ->
 		    verify_fun(OtpCert, {bad_cert, name_not_permitted},
-			      UserState, VerifyFun)
+                               UserState, VerifyFun)
 	    end
     end.
 
 %%--------------------------------------------------------------------
 -spec validate_extensions(#'OTPCertificate'{}, #path_validation_state{},
 			  term(), fun())->
-				 {#path_validation_state{}, UserState :: term()}.
+          {#path_validation_state{}, UserState :: term()}.
 %%
 %% Description: Check extensions included in basic path validation.
 %%--------------------------------------------------------------------	
@@ -257,8 +257,8 @@ normalize_general_name({rdnSequence, Issuer}) ->
 %% Description: Checks if the certificate is self signed.
 %%--------------------------------------------------------------------	
 is_self_signed(#'OTPCertificate'{tbsCertificate=
-				 #'OTPTBSCertificate'{issuer = Issuer, 
-						      subject = Subject}}) ->
+                                     #'OTPTBSCertificate'{issuer = Issuer, 
+                                                          subject = Subject}}) ->
     is_issuer(Issuer, Subject).
 %%--------------------------------------------------------------------
 -spec is_issuer({rdnSequence, term()}, {rdnSequence, term()}) -> boolean().		       
@@ -271,7 +271,7 @@ is_issuer({rdnSequence, _} = Issuer, {rdnSequence, _} = Candidate) ->
     is_dir_name(IssuerDirName, CandidateDirName, true).
 %%--------------------------------------------------------------------
 -spec issuer_id(#'OTPCertificate'{}, self | other) -> 
-		       {ok, {integer(), term()}}  | {error, issuer_not_found}.
+          {ok, {integer(), term()}}  | {error, issuer_not_found}.
 %%
 %% Description: Extracts the issuer id from a certificate if possible.
 %%--------------------------------------------------------------------	
@@ -308,10 +308,10 @@ distribution_points(Otpcert) ->
 %% for DH key agreement.
 %%--------------------------------------------------------------------	
 is_fixed_dh_cert(#'OTPCertificate'{tbsCertificate =
-				   #'OTPTBSCertificate'{subjectPublicKeyInfo = 
-							SubjectPublicKeyInfo,
-							extensions = 
-							Extensions}}) ->
+                                       #'OTPTBSCertificate'{subjectPublicKeyInfo = 
+                                                                SubjectPublicKeyInfo,
+                                                            extensions = 
+                                                                Extensions}}) ->
     is_fixed_dh_cert(SubjectPublicKeyInfo, extensions_list(Extensions)). 
 
 
@@ -346,7 +346,7 @@ verify_fun(Otpcert, Result, UserState0, VerifyFun) ->
     end.
 %%--------------------------------------------------------------------
 -spec select_extension(Oid ::tuple(),[#'Extension'{}]) ->
-			      #'Extension'{} | undefined.
+          #'Extension'{} | undefined.
 %%
 %% Description: Extracts a specific extension from a list of extensions.
 %%--------------------------------------------------------------------
@@ -385,9 +385,9 @@ match_name(uniformResourceIdentifier, URI,  [PermittedName | Rest]) ->
 match_name(emailAddress, Name, [PermittedName | Rest]) ->
     Fun = fun(Email, PermittedEmail) ->
 		  is_valid_email_address(Email, PermittedEmail,
-				   string:tokens(PermittedEmail,"@"))
+                                         string:tokens(PermittedEmail,"@"))
 	  end,
-     match_name(Fun, Name, PermittedName, Rest);
+    match_name(Fun, Name, PermittedName, Rest);
 
 match_name(dNSName, Name, [PermittedName | Rest]) ->
     Fun = fun(Domain, [$.|Domain]) -> true;
@@ -418,8 +418,8 @@ match_name(ipAdress, IP, [PermittedIP | Rest]) ->
 				  [IP17, IP18, IP19, IP20, IP21, IP22, IP23,
 				   IP24,IP25, IP26, IP27, IP28, IP29, IP30,
 				   IP31, IP32],
-				    [M1, M2, M3, M4, M5, M6, M7, M8, M9, M10,
-				     M11, M12, M13, M14, M15, M16]);
+                                  [M1, M2, M3, M4, M5, M6, M7, M8, M9, M10,
+                                   M11, M12, M13, M14, M15, M16]);
 	     (_,_) ->
 		  false
 	  end,
@@ -439,8 +439,8 @@ match_name(Fun, Name, PermittedName, [Head | Tail]) ->
 -spec gen_test_certs(#{server_chain:= chain_opts(),
                        client_chain:= chain_opts()} |
                      chain_opts()) ->
-                            test_config() |
-                            [conf_opt()].
+          test_config() |
+          [conf_opt()].
 %%
 %% Generates server and and client configuration for testing
 %% purposes. All certificate options have default values
@@ -576,9 +576,9 @@ encoded_tbs_cert(Cert) ->
 
 public_key_info(PublicKeyInfo, 
 		#path_validation_state{working_public_key_algorithm =
-				       WorkingAlgorithm,
+                                           WorkingAlgorithm,
 				       working_public_key_parameters =
-				       WorkingParams}) ->
+                                           WorkingParams}) ->
     PublicKey = PublicKeyInfo#'OTPSubjectPublicKeyInfo'.subjectPublicKey,
     AlgInfo = PublicKeyInfo#'OTPSubjectPublicKeyInfo'.algorithm,
     
@@ -643,12 +643,12 @@ is_dir_name2(_, _) ->
     false.
 
 cert_auth_key_id(#'AuthorityKeyIdentifier'{authorityCertIssuer 
-					   = asn1_NOVALUE}) ->
+                                             = asn1_NOVALUE}) ->
     {error, issuer_not_found};
 cert_auth_key_id(#'AuthorityKeyIdentifier'{authorityCertIssuer = 
-					   AuthCertIssuer,
+                                               AuthCertIssuer,
 					   authorityCertSerialNumber = 
-					   SerialNr}) ->
+                                               SerialNr}) ->
     {ok, {SerialNr, decode_general_name(AuthCertIssuer)}}.
 
 decode_general_name([{directoryName, Issuer}]) ->
@@ -674,8 +674,8 @@ validate_extensions(_,[], ValidationState, basic_constraint, _SelfSigned,
 		    UserState, _) ->
     {ValidationState, UserState};
 validate_extensions(OtpCert, [], ValidationState =
-			#path_validation_state{max_path_length = Len,
-					       last_cert = Last},
+                                     #path_validation_state{max_path_length = Len,
+                                                            last_cert = Last},
 		    no_basic_constraint, SelfSigned, UserState0, VerifyFun) ->
     case Last of
 	true when SelfSigned ->
@@ -757,7 +757,7 @@ validate_extensions(OtpCert, [#'Extension'{extnID = ?'id-ce-subjectAltName',
     end;
 
 validate_extensions(OtpCert, [#'Extension'{extnID = ?'id-ce-nameConstraints',
-				  extnValue = NameConst} | Rest], 
+                                           extnValue = NameConst} | Rest], 
 		    ValidationState, 
 		    ExistBasicCon, SelfSigned, UserState, VerifyFun) ->
     Permitted = NameConst#'NameConstraints'.permittedSubtrees, 
@@ -781,10 +781,10 @@ validate_extensions(OtpCert, [#'Extension'{extnID = ?'id-ce-certificatePolicies'
 
 validate_extensions(OtpCert, [#'Extension'{extnID = ?'id-ce-certificatePolicies',
 					   extnValue = #'PolicyInformation'{
-					     policyIdentifier = Id,
-					     policyQualifiers = Qualifier}}
-			      | Rest], #path_validation_state{valid_policy_tree = Tree}
-		    = ValidationState,
+                                                          policyIdentifier = Id,
+                                                          policyQualifiers = Qualifier}}
+                             | Rest], #path_validation_state{valid_policy_tree = Tree}
+                                        = ValidationState,
 		    ExistBasicCon, SelfSigned, UserState, VerifyFun) ->
 
     %% TODO: Policy imp incomplete
@@ -806,9 +806,9 @@ validate_extensions(OtpCert, [#'Extension'{extnID = ?'id-ce-policyConstraints',
 			SelfSigned, UserState, VerifyFun);
 validate_extensions(OtpCert, [#'Extension'{extnID = ?'id-ce-policyConstraints',
 					   extnValue = #'PolicyConstraints'{
-					     requireExplicitPolicy = ExpPolicy,
-					     inhibitPolicyMapping = MapPolicy}}
-			      | Rest], ValidationState, ExistBasicCon,
+                                                          requireExplicitPolicy = ExpPolicy,
+                                                          inhibitPolicyMapping = MapPolicy}}
+                             | Rest], ValidationState, ExistBasicCon,
 		    SelfSigned, UserState, VerifyFun) ->
     
     %% TODO: Policy imp incomplete
@@ -971,9 +971,9 @@ is_valid_name([{Type, Name} | Rest], Constraints, Default) ->
 
 add_name_constraints(NewPermittedTrees, NewExcludedTrees, 
 		     #path_validation_state{
-					  permitted_subtrees = PermittedTrees,
-					  excluded_subtrees = ExcludedTrees} =
-		     ValidationState) ->
+                        permitted_subtrees = PermittedTrees,
+                        excluded_subtrees = ExcludedTrees} =
+                         ValidationState) ->
     NewPermitted = subtree_intersection(NewPermittedTrees, PermittedTrees),
     NewExcluded = subtree_union(NewExcludedTrees, ExcludedTrees),   
     ValidationState#path_validation_state{permitted_subtrees = NewPermitted,
@@ -994,18 +994,18 @@ subtree_intersection([], TreesInt) ->
     TreesInt.
 
 is_in_intersection(#'GeneralSubtree'{base  = 
-				     {directoryName, {rdnSequence, Name1}}} 
-		   = Name, 
+                                         {directoryName, {rdnSequence, Name1}}} 
+                     = Name, 
 		   [#'GeneralSubtree'{base = 
-				      {directoryName, {rdnSequence, Name2}}} 
-		    | Trees]) ->
+                                          {directoryName, {rdnSequence, Name2}}} 
+                   | Trees]) ->
     case is_dir_name(Name1, Name2, false) of
 	true ->
 	    [Name|Trees];
 	false ->
 	    [Name#'GeneralSubtree'{base = 
-				   {directoryName, {rdnSequence,[none]}}} 
-	     | Trees]
+                                       {directoryName, {rdnSequence,[none]}}} 
+            | Trees]
     end;
 is_in_intersection(#'GeneralSubtree'{base = {ipAdress, Ip}}, 
 		   Trees = [#'GeneralSubtree'{base = {ipAdress, Ip}} | _]) ->
@@ -1013,7 +1013,7 @@ is_in_intersection(#'GeneralSubtree'{base = {ipAdress, Ip}},
     Trees;
 is_in_intersection(#'GeneralSubtree'{base = {x400Address, OrAddr1}} = Addr, 
 		   [#'GeneralSubtree'{base = {x400Address, OrAddr2}} 
-		    | Trees]) ->	
+                   | Trees]) ->	
     case is_or_address(OrAddr1, OrAddr2) of
 	true ->
 	    [Addr|Trees];
@@ -1023,7 +1023,7 @@ is_in_intersection(#'GeneralSubtree'{base = {x400Address, OrAddr1}} = Addr,
 
 is_in_intersection(#'GeneralSubtree'{base = {Type, Name1}} = Name, 
 		   [#'GeneralSubtree'{base = {Type, Name2}} 
-		    | Trees]) ->
+                   | Trees]) ->
     case case_insensitive_match(Name1, Name2) of
 	true ->
 	    [Name|Trees];
@@ -1108,7 +1108,7 @@ add_policy_constraints(ExpPolicy, MapPolicy,
 		       #path_validation_state{cert_num = CertNum,
 					      explicit_policy = CurExpPolicy,
 					      policy_mapping = CurMapPolicy} = 
-		       ValidationState) ->
+                           ValidationState) ->
     
     NewExpPolicy = policy_constraint(CurExpPolicy, ExpPolicy, CertNum),
     NewMapPolicy = policy_constraint(CurMapPolicy, MapPolicy, CertNum),
@@ -1130,7 +1130,7 @@ process_policy_tree(_Id, _Qualifier, Tree) ->
 policy_indicator(_, true) ->
     0;
 policy_indicator(N, false) ->
-   N + 1.
+    N + 1.
 
 is_fixed_dh_cert(PublicKeyInfo, Extensions) ->
     AlgInfo = PublicKeyInfo#'OTPSubjectPublicKeyInfo'.algorithm,
@@ -1153,7 +1153,7 @@ is_digitally_sign_cert(OtpCert) ->
     Extensions = extensions_list(TBSCert#'OTPTBSCertificate'.extensions),
     case pubkey_cert:select_extension(?'id-ce-keyUsage', Extensions) of
 	undefined ->
-	     false;
+            false;
 	#'Extension'{extnValue = KeyUse} ->
 	    lists:member(keyCertSign, KeyUse)
     end.
@@ -1171,12 +1171,12 @@ missing_basic_constraints(OtpCert, SelfSigned, ValidationState, VerifyFun, UserS
     end.
 
 gen_key(KeyGen) ->
-     case is_key(KeyGen) of
-         true ->
-             KeyGen;
-         false ->
-             public_key:generate_key(KeyGen)
-     end.
+    case is_key(KeyGen) of
+        true ->
+            KeyGen;
+        false ->
+            public_key:generate_key(KeyGen)
+    end.
 
 is_key(#'DSAPrivateKey'{}) ->
     true;
@@ -1257,7 +1257,7 @@ rsa_digest_oid(sha384) ->
 rsa_digest_oid(sha256) ->
     ?'sha256WithRSAEncryption';
 rsa_digest_oid(md5) ->
-   ?'md5WithRSAEncryption'.
+    ?'md5WithRSAEncryption'.
 
 ecdsa_digest_oid(sha1) ->
     ?'ecdsa-with-SHA1';
@@ -1269,7 +1269,7 @@ ecdsa_digest_oid(sha256) ->
     ?'ecdsa-with-SHA256'.
 
 config(Role, Root, Key, Opts) ->
-   cert_chain(Role, Root, Key, Opts).
+    cert_chain(Role, Root, Key, Opts).
 
 cert_chain(Role, Root, RootKey, Opts) ->
     cert_chain(Role, Root, RootKey, Opts, 0, []).
@@ -1320,9 +1320,9 @@ public_key(#'DSAPrivateKey'{p=P, q=Q, g=G, y=Y}) ->
 				 parameters={params, #'Dss-Parms'{p=P, q=Q, g=G}}},
     #'OTPSubjectPublicKeyInfo'{algorithm = Algo, subjectPublicKey = Y};
 public_key(#'ECPrivateKey'{version = _Version,
-			  privateKey = _PrivKey,
-			  parameters = Params,
-			  publicKey = PubKey}) ->
+                           privateKey = _PrivKey,
+                           parameters = Params,
+                           publicKey = PubKey}) ->
     Algo = #'PublicKeyAlgorithm'{algorithm= ?'id-ecPublicKey', parameters=Params},
     #'OTPSubjectPublicKeyInfo'{algorithm = Algo,
 			       subjectPublicKey = #'ECPoint'{point = PubKey}}.

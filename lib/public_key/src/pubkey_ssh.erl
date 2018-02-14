@@ -77,8 +77,8 @@ encode(Bin, ssh2_pubkey) ->
     ssh2_pubkey_encode(Bin);
 encode(Entries, Type) ->
     iolist_to_binary(lists:map(fun({Key, Attributes}) ->
-					      do_encode(Type, Key, Attributes)
-				      end, Entries)).
+                                       do_encode(Type, Key, Attributes)
+                               end, Entries)).
 
 %%--------------------------------------------------------------------
 %% Description: Returns Generator and Modulus given MinSize, WantedSize
@@ -225,7 +225,7 @@ do_openssh_decode(known_hosts = FileType, [Line | Lines], Acc) ->
 				decode_comment(Comment) ++ 
 				    [{hostnames, comma_list_decode(HostNames)},
 				     {bits, integer_decode(Bits)}]} 
-			       | Acc])
+                              | Acc])
     end;
 
 do_openssh_decode(openssh_public_key = FileType, [Line | Lines], Acc) ->
@@ -294,13 +294,13 @@ do_encode(Type, Key, Attributes) ->
 
 rfc4716_encode(Key, [],[]) ->
     iolist_to_binary([begin_marker(),"\n",
-			     split_lines(?b64enc(ssh2_pubkey_encode(Key))),
-			     "\n", end_marker(), "\n"]);
+                      split_lines(?b64enc(ssh2_pubkey_encode(Key))),
+                      "\n", end_marker(), "\n"]);
 rfc4716_encode(Key, [], [_|_] = Acc) ->
     iolist_to_binary([begin_marker(), "\n",
-			     lists:reverse(Acc),
-			     split_lines(?b64enc(ssh2_pubkey_encode(Key))),
-			     "\n", end_marker(), "\n"]);
+                      lists:reverse(Acc),
+                      split_lines(?b64enc(ssh2_pubkey_encode(Key))),
+                      "\n", end_marker(), "\n"]);
 rfc4716_encode(Key, [ Header | Headers], Acc) ->
     LinesStr = rfc4716_encode_header(Header),
     rfc4716_encode(Key, Headers, [LinesStr | Acc]).
@@ -356,28 +356,28 @@ openssh_ssh2_auth_keys_encode(undefined, Key, Comment) ->
     iolist_to_binary([key_type(Key)," ",  ?b64enc(ssh2_pubkey_encode(Key)), line_end(Comment)]);
 openssh_ssh2_auth_keys_encode(Options, Key, Comment) ->
     iolist_to_binary([comma_list_encode(Options, []), " ",
-			     key_type(Key)," ", ?b64enc(ssh2_pubkey_encode(Key)), line_end(Comment)]).
+                      key_type(Key)," ", ?b64enc(ssh2_pubkey_encode(Key)), line_end(Comment)]).
 
 openssh_ssh1_auth_keys_encode(undefined, Bits,
 			      #'RSAPublicKey'{modulus = N, publicExponent = E},
 			      Comment) ->
     iolist_to_binary([integer_to_list(Bits), " ", integer_to_list(E), " ", integer_to_list(N),
-			     line_end(Comment)]);
+                      line_end(Comment)]);
 openssh_ssh1_auth_keys_encode(Options, Bits,
 			      #'RSAPublicKey'{modulus = N, publicExponent = E},
 			      Comment) ->
     iolist_to_binary([comma_list_encode(Options, []), " ", integer_to_list(Bits),
-			     " ", integer_to_list(E), " ", integer_to_list(N), line_end(Comment)]).
+                      " ", integer_to_list(E), " ", integer_to_list(N), line_end(Comment)]).
 
 openssh_ssh2_know_hosts_encode(Hostnames, Key, Comment) ->
     iolist_to_binary([comma_list_encode(Hostnames, []), " ",
-			     key_type(Key)," ",  ?b64enc(ssh2_pubkey_encode(Key)), line_end(Comment)]).
+                      key_type(Key)," ",  ?b64enc(ssh2_pubkey_encode(Key)), line_end(Comment)]).
 
 openssh_ssh1_known_hosts_encode(Hostnames, Bits,
 				#'RSAPublicKey'{modulus = N, publicExponent = E},
 				Comment) ->
     iolist_to_binary([comma_list_encode(Hostnames, [])," ", integer_to_list(Bits)," ",
-			     integer_to_list(E)," ", integer_to_list(N), line_end(Comment)]).
+                      integer_to_list(E)," ", integer_to_list(N), line_end(Comment)]).
 
 line_end("") ->
     "\n";

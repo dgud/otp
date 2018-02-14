@@ -161,8 +161,8 @@ all_or_expand(Tab,Term,Preview,true)
     [href_proc_port(lists:flatten(Preview), false), $\n,
      href("TARGET=\"expanded\"",
 	  ["#Term?key1="++integer_to_list(Key1)++
-               "&key2="++integer_to_list(Key2)++
-               "&key3="++integer_to_list(Key3)],
+           "&key2="++integer_to_list(Key2)++
+           "&key3="++integer_to_list(Key3)],
 	  "Click to expand above term")];
 all_or_expand(Tab,Bin,_PreviewStr,_Expand)
   when is_binary(Bin) ->
@@ -348,8 +348,8 @@ href_proc_bin(From, T, Acc, LTB) ->
                         if LTB ->
                                 href("TARGET=\"expanded\"",
                                      ["#Binary?offset="++Offset++
-                                          "&size="++SizeStr++
-                                          "&pos="++Pos],
+                                      "&size="++SizeStr++
+                                      "&pos="++Pos],
                                      PreviewStr);
                            true ->
                                 PreviewStr
@@ -363,8 +363,8 @@ href_proc_bin(From, T, Acc, LTB) ->
 		if LTB ->
 			href("TARGET=\"expanded\"",
 			     ["#OBSBinary?key1="++PreviewIntStr++
-                                  "&key2="++SizeStr++
-                                  "&key3="++Md5],
+                              "&key2="++SizeStr++
+                              "&key3="++Md5],
 			     PreviewStr);
 		   true ->
 			PreviewStr

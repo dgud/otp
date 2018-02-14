@@ -1628,12 +1628,12 @@ lint_tp(Pattern) ->
 
 check_list(T) ->
     case (catch lists:foldl(
-		  fun(Val,_) ->
-			  {ok,_,_,_} = 
-			      erlang:match_spec_test([],Val,trace),
-			  ok
-		  end,
-		  ok, T)) of
+                  fun(Val,_) ->
+                          {ok,_,_,_} = 
+                              erlang:match_spec_test([],Val,trace),
+                          ok
+                  end,
+                  ok, T)) of
 	{'EXIT',_} ->
 	    {error, bad_match_spec};
 	ok ->

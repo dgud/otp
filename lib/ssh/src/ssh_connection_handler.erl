@@ -67,7 +67,7 @@
 %%% Exports not intended to be used :). They are used for spawning and tests
 -export([init_connection_handler/3,	   % proc_lib:spawn needs this
 	 init_ssh_record/3,		   % Export of this internal function
-					   % intended for low-level protocol test suites
+                                                % intended for low-level protocol test suites
 	 renegotiate/1, renegotiate_data/1 % Export intended for test cases
 	]).
 
@@ -94,7 +94,7 @@ start_link(Role, Socket, Options) ->
 %% . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 stop(ConnectionHandler)->
     case call(ConnectionHandler, stop) of
-       {error, closed} ->
+        {error, closed} ->
 	    ok;
 	Other ->
 	    Other
@@ -325,41 +325,41 @@ renegotiate_data(ConnectionHandler) ->
 %% Internal process state
 %%====================================================================
 -record(data, {
-	  starter                               :: pid()
-						 | undefined,
-	  auth_user                             :: string()
-						 | undefined,
-	  connection_state                      :: #connection{},
-	  latest_channel_id         = 0         :: non_neg_integer()
-                                                 | undefined,
-	  idle_timer_ref                        :: undefined 
-						 | infinity
-						 | reference(),
-	  idle_timer_value          = infinity  :: infinity
-						 | pos_integer(),
-	  transport_protocol                    :: atom()
-                                                 | undefined,	% ex: tcp
-	  transport_cb                          :: atom()
-                                                 | undefined,	% ex: gen_tcp
-	  transport_close_tag                   :: atom()
-                                                 | undefined,	% ex: tcp_closed
-	  ssh_params                            :: #ssh{}
-                                                 | undefined,
-	  socket                                :: inet:socket()
-                                                 | undefined,
-	  decrypted_data_buffer     = <<>>      :: binary()
-                                                 | undefined,
-	  encrypted_data_buffer     = <<>>      :: binary()
-                                                 | undefined,
-	  undecrypted_packet_length             :: undefined | non_neg_integer(),
-	  key_exchange_init_msg                 :: #ssh_msg_kexinit{}
-						 | undefined,
-	  last_size_rekey           = 0         :: non_neg_integer(),
-	  event_queue               = []        :: list(),
-%	  opts                                  :: ssh_options:options(),
-	  inet_initial_recbuf_size              :: pos_integer()
-						 | undefined
-	 }).
+               starter                               :: pid()
+                                                      | undefined,
+               auth_user                             :: string()
+                                                      | undefined,
+               connection_state                      :: #connection{},
+               latest_channel_id         = 0         :: non_neg_integer()
+                                                      | undefined,
+               idle_timer_ref                        :: undefined 
+                                                      | infinity
+                                                      | reference(),
+               idle_timer_value          = infinity  :: infinity
+                                                      | pos_integer(),
+               transport_protocol                    :: atom()
+                                                      | undefined,	% ex: tcp
+               transport_cb                          :: atom()
+                                                      | undefined,	% ex: gen_tcp
+               transport_close_tag                   :: atom()
+                                                      | undefined,	% ex: tcp_closed
+               ssh_params                            :: #ssh{}
+                                                      | undefined,
+               socket                                :: inet:socket()
+                                                      | undefined,
+               decrypted_data_buffer     = <<>>      :: binary()
+                                                      | undefined,
+               encrypted_data_buffer     = <<>>      :: binary()
+                                                      | undefined,
+               undecrypted_packet_length             :: undefined | non_neg_integer(),
+               key_exchange_init_msg                 :: #ssh_msg_kexinit{}
+                                                      | undefined,
+               last_size_rekey           = 0         :: non_neg_integer(),
+               event_queue               = []        :: list(),
+                                                %	  opts                                  :: ssh_options:options(),
+               inet_initial_recbuf_size              :: pos_integer()
+                                                      | undefined
+              }).
 
 %%====================================================================
 %% Intitialisation
@@ -410,7 +410,7 @@ init([Role,Socket,Opts]) ->
                        transport_cb = Callback,
                        transport_close_tag = CloseTag,
                        ssh_params = init_ssh_record(Role, Socket, PeerAddr, Opts)
-              },
+                      },
             D = case Role of
                     client ->
                         %% Start the renegotiation timers
@@ -450,7 +450,7 @@ init_ssh_record(Role, _Socket, PeerAddr, Opts) ->
 	      userauth_supported_methods = AuthMethods,
 	      available_host_keys = available_hkey_algorithms(Role, Opts),
 	      random_length_padding = ?GET_OPT(max_random_length_padding, Opts)
-	   },
+             },
 
     {Vsn, Version} = ssh_transport:versions(Role, Opts),
     case Role of
@@ -512,7 +512,7 @@ init_ssh_record(Role, _Socket, PeerAddr, Opts) ->
       | {userauth_keyboard_interactive_extra, server          }
       | {userauth_keyboard_interactive_info_response, client  }
       | {connected,                 role()                    }
-	.
+      .
 
 %% The state names must fulfill some rules regarding
 %% where the role() and the renegotiate_flag() is placed:
@@ -545,11 +545,11 @@ callback_mode() ->
 handle_event(_, _Event, {init_error,Error}, _) ->
     case Error of
         enotconn ->
-           %% Handles the abnormal sequence:
-           %%    SYN->
-           %%            <-SYNACK
-           %%    ACK->
-           %%    RST->
+            %% Handles the abnormal sequence:
+            %%    SYN->
+            %%            <-SYNACK
+            %%    ACK->
+            %%    RST->
             {stop, {shutdown,"TCP connenction to server was prematurely closed by the client"}};
 
         OtherError ->
@@ -566,8 +566,8 @@ handle_event(_, socket_control, {hello,_}, D) ->
 	    %% Set the socket to the hello text line handling mode:
 	    inet:setopts(Socket, [{packet, line},
 				  {active, once},
-				  % Expecting the version string which might
-				  % be max ?MAX_PROTO_VERSION bytes:
+                                                % Expecting the version string which might
+                                                % be max ?MAX_PROTO_VERSION bytes:
 				  {recbuf, ?MAX_PROTO_VERSION},
 				  {nodelay,true}]),
 	    {keep_state, D#data{inet_initial_recbuf_size=Size}};
@@ -1428,7 +1428,7 @@ handle_event(Type, Ev, StateName, D) ->
     Descr =
 	case catch atom_to_list(element(1,Ev)) of
 	    "ssh_msg_" ++_ when Type==internal ->
-%%		"Message in wrong state";
+                %%		"Message in wrong state";
                 lists:flatten(io_lib:format("Message ~p in wrong state (~p)", [element(1,Ev), StateName]));
 	    _ ->
 		"Internal error"
@@ -1471,7 +1471,7 @@ terminate(Reason, StateName, State0) ->
     %% Others, e.g  undef, {badmatch,_}
     log_error(Reason),
     State = send_msg(#ssh_msg_disconnect{code = ?SSH_DISCONNECT_BY_APPLICATION,
-					   description = "Internal error"},
+                                         description = "Internal error"},
 		     State0),
     finalize_termination(StateName, State).
 
@@ -1676,14 +1676,14 @@ handle_connection_msg(Msg, StateName, D0 = #data{starter = User,
 	    {keep_state, D0#data{connection_state = Connection}};
 
 	{disconnect, Reason0, {{replies, Replies}, Connection}} ->
-	   {Repls, D} = send_replies(Replies, D0#data{connection_state = Connection}),
-	   case {Reason0,Role} of
-	       {{_, Reason}, client} when ((StateName =/= {connected,client}) and (not Renegotiation)) ->
-		   User ! {self(), not_connected, Reason};
-	       _ ->
-		   ok
-	   end,
-	   {stop_and_reply, {shutdown,normal}, Repls, D#data{connection_state = Connection}}
+            {Repls, D} = send_replies(Replies, D0#data{connection_state = Connection}),
+            case {Reason0,Role} of
+                {{_, Reason}, client} when ((StateName =/= {connected,client}) and (not Renegotiation)) ->
+                    User ! {self(), not_connected, Reason};
+                _ ->
+                    ok
+            end,
+            {stop_and_reply, {shutdown,normal}, Repls, D#data{connection_state = Connection}}
 
     catch
 	_:Error ->
@@ -1700,7 +1700,7 @@ handle_connection_msg(Msg, StateName, D0 = #data{starter = User,
 set_kex_overload_prefix(Msg = <<?BYTE(Op),_/binary>>, #data{ssh_params=SshParams})
   when Op == 30;
        Op == 31
-       ->
+      ->
     case catch atom_to_list(kex(SshParams)) of
 	"ecdh-sha2-" ++ _ ->
 	    <<"ecdh",Msg/binary>>;
@@ -1722,7 +1722,7 @@ cache(#data{connection_state=C}) -> C#connection.channel_cache.
 
 %%%----------------------------------------------------------------
 handle_ssh_msg_ext_info(#ssh_msg_ext_info{}, D=#data{ssh_params = #ssh{recv_ext_info=false}} ) ->
-    % The peer sent this although we didn't allow it!
+                                                % The peer sent this although we didn't allow it!
     D;
 
 handle_ssh_msg_ext_info(#ssh_msg_ext_info{data=Data}, D0) ->
@@ -1741,7 +1741,7 @@ ext_info({"server-sig-algs",SigAlgsStr},
 
     SigAlgs = [A || Astr <- string:tokens(SigAlgsStr, ","),
                     A <- try [list_to_existing_atom(Astr)]
-                              %% list_to_existing_atom will fail for unknown algorithms
+                         %% list_to_existing_atom will fail for unknown algorithms
                          catch _:_ -> []
                          end],
 
@@ -1794,13 +1794,13 @@ handle_request(ChannelId, Type, Data, WantReply, From, D) ->
 %%%----------------------------------------------------------------
 handle_channel_down(ChannelPid, D) ->
     ssh_channel:cache_foldl(
-	       fun(Channel, Acc) when Channel#channel.user == ChannelPid ->
-		       ssh_channel:cache_delete(cache(D),
-						Channel#channel.local_id),
-		       Acc;
-		  (_,Acc) ->
-		       Acc
-	       end, [], cache(D)),
+      fun(Channel, Acc) when Channel#channel.user == ChannelPid ->
+              ssh_channel:cache_delete(cache(D),
+                                       Channel#channel.local_id),
+              Acc;
+         (_,Acc) ->
+              Acc
+      end, [], cache(D)),
     {{replies, []}, cache_check_set_idle_timer(D)}.
 
 
@@ -1812,13 +1812,13 @@ add_request(false, _ChannelId, _From, State) ->
     State;
 add_request(true, ChannelId, From, #data{connection_state =
 					     #connection{requests = Requests0} =
-					     Connection} = State) ->
+                                                 Connection} = State) ->
     Requests = [{ChannelId, From} | Requests0],
     State#data{connection_state = Connection#connection{requests = Requests}}.
 
 new_channel_id(#data{connection_state = #connection{channel_id_seed = Id} =
-			 Connection}
-	       = State) ->
+                                            Connection}
+                 = State) ->
     {Id, State#data{connection_state =
 			Connection#connection{channel_id_seed = Id + 1}}}.
 

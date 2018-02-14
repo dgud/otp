@@ -1,4 +1,4 @@
-%
+                                                %
 %% %CopyrightBegin%
 %%
 %% Copyright Ericsson AB 2004-2017. All Rights Reserved.
@@ -123,8 +123,8 @@ connect(Host, Port, UserOptions) when is_integer(Port),
     connect(Host, Port, UserOptions, infinity).
 
 connect(Host0, Port, UserOptions, Timeout) when is_integer(Port),
-                                               Port>0,
-                                               is_list(UserOptions) ->
+                                                Port>0,
+                                                is_list(UserOptions) ->
     case ssh_options:handle_options(client, UserOptions) of
 	{error, _Reason} = Error ->
 	    Error;
@@ -175,8 +175,8 @@ channel_info(ConnectionRef, ChannelId, Options) ->
 -spec daemon(inet:port_number()) ->  ok_error(daemon_ref()).
 -spec daemon(inet:port_number()|inet:socket(), proplists:proplist()) -> ok_error(daemon_ref()).
 -spec daemon(any | inet:ip_address(), inet:port_number(), proplists:proplist()) -> ok_error(daemon_ref())
-           ;(socket, inet:socket(), proplists:proplist()) -> ok_error(daemon_ref())
-            .
+          ;(socket, inet:socket(), proplists:proplist()) -> ok_error(daemon_ref())
+ .
 
 %% Description: Starts a server listening for SSH connections
 %% on the given port.
@@ -209,7 +209,7 @@ daemon(Socket, UserOptions) when is_port(Socket) ->
                                end);
             {error,SockError} ->
                 {error,SockError}
-            end
+        end
     catch
         throw:bad_fd ->
             {error,bad_fd};
@@ -278,7 +278,7 @@ daemon_info(Pid) ->
 	    [{IP,Port,Profile}] =
 		[{IP,Prt,Prf} 
                  || {{ssh_acceptor_sup,Hst,Prt,Prf},_Pid,worker,[ssh_acceptor]} 
-                        <- supervisor:which_children(AsupPid),
+                    <- supervisor:which_children(AsupPid),
                     IP <- [case inet:parse_strict_address(Hst) of
                                {ok,IP} -> IP;
                                _ -> Hst
@@ -485,7 +485,7 @@ map_ip(Fun, {address,IP}) when is_tuple(IP) ->
     Fun(IP);
 map_ip(Fun, {address,Address}) ->
     IPs = try {ok,#hostent{h_addr_list=IP0s}} = inet:gethostbyname(Address),
-               IP0s
+              IP0s
           catch
               _:_ -> []
           end,

@@ -1224,8 +1224,8 @@ send_decisions([]) ->
 
 arrange([To | ToNodes], D, Acc, ForceSend) when is_record(D, decision) ->
     NeedsAdd = (ForceSend or
-                    lists:member(To, D#decision.disc_nodes) or
-                    lists:member(To, D#decision.ram_nodes)),
+                lists:member(To, D#decision.disc_nodes) or
+                lists:member(To, D#decision.ram_nodes)),
     case NeedsAdd of
 	true ->
 	    Acc2 = add_decision(To, D, Acc),

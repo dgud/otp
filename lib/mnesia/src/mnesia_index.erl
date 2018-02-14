@@ -428,8 +428,8 @@ add_ram_index(Tab, Storage, {Pos, _Pref}) ->
     Insert = fun(Rec, _Acc) ->
 		     PrimK = element(2, Rec),
 		     true = ?ets_insert(
-			       Index, [IxFun(V, PrimK)
-				       || V <- IxValsF(Rec)])
+                              Index, [IxFun(V, PrimK)
+                                      || V <- IxValsF(Rec)])
 	     end,
     mnesia_lib:db_fixtable(ram_copies, Tab, true),
     true = mnesia_lib:db_foldl(Storage, Insert, true, Tab),

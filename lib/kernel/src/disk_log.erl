@@ -1923,7 +1923,7 @@ monitor_request(Pid, Req) ->
 	{'DOWN', Ref, process, Pid, _Info} ->
 	    {error, no_such_log};
 	{disk_log, Pid, Reply} when not is_tuple(Reply) orelse
-                                    element(2, Reply) =/= disk_log_stopped ->
+                                        element(2, Reply) =/= disk_log_stopped ->
 	    erlang:demonitor(Ref, [flush]),
 	    Reply
     end.

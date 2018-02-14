@@ -774,7 +774,7 @@ ntoa({0,0,0,0,0,16#ffff,A,B}) when (A band B band (bnot 16#ffff)) =:= 0 ->
     "::ffff:" ++ dig_to_dec(A) ++ "." ++ dig_to_dec(B);
 ntoa({A,B,C,D,E,F,G,H})
   when (A band B band C band D band E band F band G band H band
-            (bnot 16#ffff)) =:= 0 ->
+        (bnot 16#ffff)) =:= 0 ->
     if
         A =:= 16#fe80, B =/= 0;
         A =:= 16#ff02, B =/= 0 ->

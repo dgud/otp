@@ -134,13 +134,13 @@ pem_encode(PemEntries) when is_list(PemEntries) ->
 
 %%--------------------------------------------------------------------
 -spec pem_entry_decode(pem_entry(), string()) -> term().
-%
+                                                %
 %% Description: Decodes a pem entry. pem_decode/1 returns a list of
 %% pem entries.
 %%--------------------------------------------------------------------
 pem_entry_decode({'SubjectPublicKeyInfo', Der, _}) ->
     {_, {'AlgorithmIdentifier', AlgId, Params}, Key0}
-        = der_decode('SubjectPublicKeyInfo', Der),
+      = der_decode('SubjectPublicKeyInfo', Der),
     KeyType = pubkey_cert_records:supportedPublicKeyAlgorithms(AlgId),
     case KeyType of
         'RSAPublicKey' ->
@@ -164,9 +164,9 @@ pem_entry_decode({Asn1Type, CryptDer, {Cipher, #'PBES2-params'{}}} = PemEntry,
 				is_list(Cipher) ->
     do_pem_entry_decode(PemEntry, Password);
 pem_entry_decode({Asn1Type, CryptDer, {Cipher, {#'PBEParameter'{},_}}} = PemEntry, 
- 		 Password) when is_atom(Asn1Type) andalso
- 				is_binary(CryptDer) andalso
- 				is_list(Cipher) andalso
+                 Password) when is_atom(Asn1Type) andalso
+                                is_binary(CryptDer) andalso
+                                is_list(Cipher) andalso
 				is_list(Password) ->
     do_pem_entry_decode(PemEntry, Password);
 pem_entry_decode({Asn1Type, CryptDer, {Cipher, Salt}} = PemEntry, 
@@ -213,10 +213,10 @@ pem_entry_encode(Asn1Type, Entity, {{Cipher, #'PBES2-params'{}} = CipherInfo,
 						    is_list(Cipher) ->
     do_pem_entry_encode(Asn1Type, Entity, CipherInfo, Password);
 pem_entry_encode(Asn1Type, Entity, {{Cipher,
- 				     {#'PBEParameter'{}, _}} = CipherInfo,
- 				    Password}) when is_atom(Asn1Type) andalso
- 						    is_list(Password) andalso
- 						    is_list(Cipher) ->
+                                     {#'PBEParameter'{}, _}} = CipherInfo,
+                                    Password}) when is_atom(Asn1Type) andalso
+                                                    is_list(Password) andalso
+                                                    is_list(Cipher) ->
     do_pem_entry_encode(Asn1Type, Entity, CipherInfo, Password);
 pem_entry_encode(Asn1Type, Entity, {{Cipher, Salt} = CipherInfo, 
 				    Password}) when is_atom(Asn1Type) andalso
@@ -259,7 +259,7 @@ der_decode(Asn1Type, Der) when is_atom(Asn1Type), is_binary(Der) ->
 %%--------------------------------------------------------------------
 der_encode(Asn1Type, Entity) when (Asn1Type == 'PrivateKeyInfo') or 
 				  (Asn1Type == 'EncryptedPrivateKeyInfo') ->
-     try
+    try
 	{ok, Encoded} = 'PKCS-FRAME':encode(Asn1Type, Entity),
 	Encoded
     catch
@@ -278,7 +278,7 @@ der_encode(Asn1Type, Entity) when is_atom(Asn1Type) ->
 
 %%--------------------------------------------------------------------
 -spec pkix_decode_cert(Cert::binary(), plain | otp) ->
-			      #'Certificate'{} | #'OTPCertificate'{}.
+          #'Certificate'{} | #'OTPCertificate'{}.
 %%
 %% Description: Decodes an asn1 der encoded pkix certificate. The otp
 %% option will use the customized asn1 specification OTP-PKIX.asn1 for
@@ -314,7 +314,7 @@ pkix_encode(Asn1Type, Term0, otp) when is_atom(Asn1Type) ->
 
 %%--------------------------------------------------------------------
 -spec decrypt_private(CipherText :: binary(), rsa_private_key()) -> 
-			     PlainText :: binary().
+          PlainText :: binary().
 -spec decrypt_private(CipherText :: binary(), rsa_private_key(), 
 		      public_crypt_options()) -> PlainText :: binary().
 %%
@@ -333,7 +333,7 @@ decrypt_private(CipherText,
 
 %%--------------------------------------------------------------------
 -spec decrypt_public(CipherText :: binary(), rsa_public_key() | rsa_private_key()) ->
-			    PlainText :: binary().
+          PlainText :: binary().
 -spec decrypt_public(CipherText :: binary(), rsa_public_key() | rsa_private_key(),
 		     public_crypt_options()) -> PlainText :: binary().
 %% NOTE: The rsa_private_key() is not part of the documented API it is
@@ -355,7 +355,7 @@ decrypt_public(CipherText,#'RSAPrivateKey'{modulus = N, publicExponent = E},
 
 %%--------------------------------------------------------------------
 -spec encrypt_public(PlainText :: binary(), rsa_public_key() | rsa_private_key()) ->
-			    CipherText :: binary().
+          CipherText :: binary().
 -spec encrypt_public(PlainText :: binary(), rsa_public_key() | rsa_private_key(),
 		     public_crypt_options()) ->  CipherText :: binary().
 
@@ -378,7 +378,7 @@ encrypt_public(PlainText, #'RSAPrivateKey'{modulus=N,publicExponent=E},
 
 %%--------------------------------------------------------------------
 -spec encrypt_private(PlainText :: binary(), rsa_private_key()) -> 
-			     CipherText :: binary().
+          CipherText :: binary().
 -spec encrypt_private(PlainText :: binary(), rsa_private_key(), 
 		      public_crypt_options()) -> CipherText :: binary().
 %%
@@ -406,11 +406,11 @@ dh_gex_group(Min, N, Max, Groups) ->
 
 %%--------------------------------------------------------------------
 -spec generate_key(#'DHParameter'{}) ->
-                          {Public::binary(), Private::binary()};
+          {Public::binary(), Private::binary()};
                   (ecpk_parameters_api()) ->
-                          #'ECPrivateKey'{};
+          #'ECPrivateKey'{};
                   ({rsa, Size::pos_integer(), PubExp::pos_integer()}) ->
-                          #'RSAPrivateKey'{}.
+          #'RSAPrivateKey'{}.
 
 %% Description: Generates a new keypair
 %%--------------------------------------------------------------------
@@ -438,22 +438,22 @@ generate_key({rsa, ModulusSize, PublicExponent}) ->
                              coefficient = crypto:bytes_to_integer(InvQ_mod_P)};
 
         {[E, N], [E, N, D]} -> % FIXME: what to set the other fields in #'RSAPrivateKey'?
-                               % Answer: Miller [Mil76]
-                               %   G.L. Miller. Riemann's hypothesis and tests for primality.
-                               %   Journal of Computer and Systems Sciences,
-                               %   13(3):300-307,
-                               %   1976.
+                                                % Answer: Miller [Mil76]
+                                                %   G.L. Miller. Riemann's hypothesis and tests for primality.
+                                                %   Journal of Computer and Systems Sciences,
+                                                %   13(3):300-307,
+                                                %   1976.
             Nint = crypto:bytes_to_integer(N),
             Eint = crypto:bytes_to_integer(E),
             #'RSAPrivateKey'{version = 'two-prime', % Two-factor (I guess since otherPrimeInfos is not given)
-                              modulus = Nint,
-                              publicExponent = Eint,
-                              privateExponent = crypto:bytes_to_integer(D),
-                              prime1 = '?',
-                              prime2 = '?',
-                              exponent1 = '?',
-                              exponent2 = '?',
-                              coefficient = '?'};
+                             modulus = Nint,
+                             publicExponent = Eint,
+                             privateExponent = crypto:bytes_to_integer(D),
+                             prime1 = '?',
+                             prime2 = '?',
+                             exponent1 = '?',
+                             exponent2 = '?',
+                             coefficient = '?'};
         
         Other ->
             Other
@@ -474,10 +474,10 @@ compute_key(PubKey, PrivKey, #'DHParameter'{prime = P, base = G}) ->
 
 %%--------------------------------------------------------------------
 -spec pkix_sign_types(SignatureAlg::oid()) ->
-			     %% Relevant dsa digest type is subpart of rsa digest type
-			     { DigestType :: rsa_digest_type(),
-			       SignatureType :: rsa | dsa | ecdsa
-			     }.
+          %% Relevant dsa digest type is subpart of rsa digest type
+          { DigestType :: rsa_digest_type(),
+            SignatureType :: rsa | dsa | ecdsa
+          }.
 %% Description:
 %%--------------------------------------------------------------------
 pkix_sign_types(?sha1WithRSAEncryption) ->
@@ -540,14 +540,14 @@ sign(DigestOrPlainText, DigestType, Key, Options) ->
              rsa_digest_type() | dss_digest_type() | ecdsa_digest_type(),
 	     Signature :: binary(),
              rsa_public_key() | dsa_public_key() | ec_public_key()
-               |  rsa_private_key() | dsa_private_key() | ec_private_key()
+           |  rsa_private_key() | dsa_private_key() | ec_private_key()
             ) -> boolean().
 
 -spec verify(binary() | {digest, binary()},
              rsa_digest_type() | dss_digest_type() | ecdsa_digest_type(),
 	     Signature :: binary(),
              rsa_public_key() | dsa_public_key() | ec_public_key()
-               |  rsa_private_key() | dsa_private_key() | ec_private_key(),
+           |  rsa_private_key() | dsa_private_key() | ec_private_key(),
              public_sign_options()
             ) -> boolean().
 
@@ -575,7 +575,7 @@ verify(_,_,_,_,_) ->
 
 %%--------------------------------------------------------------------
 -spec pkix_dist_point(der_encoded() | #'OTPCertificate'{}) -> 
-			      #'DistributionPoint'{}.  
+          #'DistributionPoint'{}.  
 %% Description:  Creates a distribution point for CRLs issued by the same issuer as <c>Cert</c>.
 %%--------------------------------------------------------------------
 pkix_dist_point(OtpCert) when is_binary(OtpCert) ->
@@ -599,7 +599,7 @@ pkix_dist_point(OtpCert) ->
 			 distributionPoint =  Point}.	
 %%--------------------------------------------------------------------
 -spec pkix_dist_points(der_encoded() | #'OTPCertificate'{}) -> 
-			      [#'DistributionPoint'{}].  
+          [#'DistributionPoint'{}].  
 %% Description:  Extracts distributionpoints specified in the certificates extensions.
 %%--------------------------------------------------------------------
 pkix_dist_points(OtpCert) when is_binary(OtpCert) ->
@@ -653,7 +653,7 @@ pkix_match_dist_point(#'CertificateList'{
 %%--------------------------------------------------------------------
 pkix_sign(#'OTPTBSCertificate'{signature = 
 				   #'SignatureAlgorithm'{algorithm = Alg} 
-			       = SigAlg} = TBSCert, Key) ->
+                                     = SigAlg} = TBSCert, Key) ->
 
     Msg = pkix_encode('OTPTBSCertificate', TBSCert, otp),
     {DigestType, _} = pkix_sign_types(Alg),
@@ -751,11 +751,11 @@ pkix_is_fixed_dh_cert(Cert) when is_binary(Cert) ->
 %%--------------------------------------------------------------------
 -spec pkix_issuer_id(Cert::binary()| #'OTPCertificate'{},
 		     IssuedBy :: self | other) ->
-			    {ok, {SerialNr :: integer(),
-				  Issuer :: {rdnSequence,
-					     [#'AttributeTypeAndValue'{}]}}}
-				| {error, Reason :: term()}.
-%
+          {ok, {SerialNr :: integer(),
+                Issuer :: {rdnSequence,
+                           [#'AttributeTypeAndValue'{}]}}}
+        | {error, Reason :: term()}.
+                                                %
 %% Description: Returns the issuer id.
 %%--------------------------------------------------------------------
 pkix_issuer_id(#'OTPCertificate'{} = OtpCert, Signed) when (Signed == self) or 
@@ -767,9 +767,9 @@ pkix_issuer_id(Cert, Signed) when is_binary(Cert) ->
 
 %%--------------------------------------------------------------------
 -spec pkix_crl_issuer(CRL::binary()| #'CertificateList'{}) -> 
-			     {rdnSequence,
-			      [#'AttributeTypeAndValue'{}]}.
-%
+          {rdnSequence,
+           [#'AttributeTypeAndValue'{}]}.
+                                                %
 %% Description: Returns the issuer.
 %%--------------------------------------------------------------------
 pkix_crl_issuer(CRL) when is_binary(CRL) ->
@@ -780,9 +780,9 @@ pkix_crl_issuer(#'CertificateList'{} = CRL) ->
 
 %%--------------------------------------------------------------------
 -spec pkix_normalize_name({rdnSequence,
-				   [#'AttributeTypeAndValue'{}]}) ->
-					 {rdnSequence, 
-					  [#'AttributeTypeAndValue'{}]}.
+                           [#'AttributeTypeAndValue'{}]}) ->
+          {rdnSequence, 
+           [#'AttributeTypeAndValue'{}]}.
 %%
 %% Description: Normalizes a issuer name so that it can be easily
 %%              compared to another issuer name. 
@@ -794,9 +794,9 @@ pkix_normalize_name(Issuer) ->
 -spec pkix_path_validation(Cert::binary()| #'OTPCertificate'{} | atom(),
 			   CertChain :: [binary()] ,
 			   Options :: proplists:proplist()) ->
-				  {ok, {PublicKeyInfo :: term(), 
-					PolicyTree :: term()}} |
-				  {error, {bad_cert, Reason :: term()}}.
+          {ok, {PublicKeyInfo :: term(), 
+                PolicyTree :: term()}} |
+          {error, {bad_cert, Reason :: term()}}.
 %% Description: Performs a basic path validation according to RFC 5280.
 %%--------------------------------------------------------------------
 pkix_path_validation(PathErr, [Cert | Chain], Options0) when is_atom(PathErr)->
@@ -828,7 +828,7 @@ pkix_path_validation(#'OTPCertificate'{} = TrustedCert, CertChain, Options)
 							Options),
     path_validation(CertChain, ValidationState).
 
-%--------------------------------------------------------------------
+                                                %--------------------------------------------------------------------
 -spec pkix_crls_validate(#'OTPCertificate'{},
 			 [{DP::#'DistributionPoint'{}, {DerCRL::binary(), CRL::#'CertificateList'{}}}],
 			 Options :: proplists:proplist()) -> valid | {bad_cert, revocation_status_undetermined} |
@@ -843,13 +843,13 @@ pkix_crls_validate(OtpCert, [{_,_,_} |_] = DPAndCRLs, Options) ->
 
 pkix_crls_validate(OtpCert, DPAndCRLs0, Options) ->
     CallBack = proplists:get_value(update_crl, Options, fun(_, CurrCRL) ->
-							       CurrCRL
-						       end),
+                                                                CurrCRL
+                                                        end),
     DPAndCRLs = sort_dp_crls(DPAndCRLs0, CallBack),
     pkix_crls_validate(OtpCert, DPAndCRLs, DPAndCRLs,
 		       Options, pubkey_crl:init_revokation_state()).
 
-%--------------------------------------------------------------------
+                                                %--------------------------------------------------------------------
 -spec pkix_verify_hostname(Cert :: #'OTPCertificate'{} | binary(),
 			   ReferenceIDs :: [{uri_id | dns_id | ip | srv_id | oid(),  string()}]) -> boolean().
 
@@ -923,7 +923,7 @@ pkix_verify_hostname(Cert = #'OTPCertificate'{tbsCertificate = TbsCert}, Referen
 %%--------------------------------------------------------------------
 -spec ssh_decode(binary(), public_key | ssh_file()) -> [{public_key(), Attributes::list()}]
 	      ; (binary(), ssh2_pubkey) ->  public_key()
-	      .
+      .
 %%
 %% Description: Decodes a ssh file-binary. In the case of know_hosts
 %% or auth_keys the binary may include one or more lines of the
@@ -943,7 +943,7 @@ ssh_decode(SshBin, Type) when is_binary(SshBin),
 %%--------------------------------------------------------------------
 -spec ssh_encode([{public_key(), Attributes::list()}], ssh_file()) -> binary()
 	      ; (public_key(), ssh2_pubkey) -> binary()
-	      .
+      .
 %%
 %% Description: Encodes a list of ssh file entries (public keys and
 %% attributes) to a binary. Possible attributes depends on the file
@@ -980,7 +980,7 @@ oid2ssh_curvename(?'secp521r1') -> <<"nistp521">>.
 -spec ssh_hostkey_fingerprint(public_key()) -> string().
 -spec ssh_hostkey_fingerprint( digest_type(),  public_key()) ->  string()
                            ; ([digest_type()], public_key())   -> [string()]
-                           .
+      .
 
 ssh_hostkey_fingerprint(Key) ->
     sshfp_string(md5, public_key:ssh_encode(Key,ssh2_pubkey) ).
@@ -1023,7 +1023,7 @@ fp_fmt(b64, Bin) ->
 
 %%--------------------------------------------------------------------
 -spec short_name_hash({rdnSequence, [#'AttributeTypeAndValue'{}]}) ->
-			     string().
+          string().
 
 %% Description: Generates OpenSSL-style hash of a name.
 %%--------------------------------------------------------------------
@@ -1036,8 +1036,8 @@ short_name_hash({rdnSequence, _Attributes} = Name) ->
 %%--------------------------------------------------------------------
 -spec pkix_test_data(#{chain_type() := pubkey_cert:chain_opts()} |
                      pubkey_cert:chain_opts()) ->
-                            pubkey_cert:test_config() |
-                            [pubkey_cert:conf_opt()].
+          pubkey_cert:test_config() |
+          [pubkey_cert:conf_opt()].
 
 %% Description: Generates cert(s) and ssl configuration
 %%--------------------------------------------------------------------
@@ -1112,17 +1112,17 @@ decrypt_public(CipherText, N,E, Options) ->
     crypto:public_decrypt(rsa, CipherText,[E, N], Padding).
 
 path_validation([], #path_validation_state{working_public_key_algorithm
-					   = Algorithm,
+                                             = Algorithm,
 					   working_public_key =
-					   PublicKey,
+                                               PublicKey,
 					   working_public_key_parameters 
-					   = PublicKeyParams,
+                                             = PublicKeyParams,
 					   valid_policy_tree = Tree
 					  }) ->
     {ok, {{Algorithm, PublicKey, PublicKeyParams}, Tree}};
 
 path_validation([DerCert | Rest], ValidationState = #path_validation_state{
-				    max_path_length = Len}) when Len >= 0 ->
+                                                       max_path_length = Len}) when Len >= 0 ->
     try validate(DerCert,
 		 ValidationState#path_validation_state{last_cert=Rest=:=[]}) of
 	#path_validation_state{} = NewValidationState ->
@@ -1153,15 +1153,15 @@ path_validation([Cert | _] = Path,
     end.
 
 validate(Cert, #path_validation_state{working_issuer_name = Issuer,
-					 working_public_key = Key,
-					 working_public_key_parameters = 
-					 KeyParams, 
-					 permitted_subtrees = Permit,
-					 excluded_subtrees = Exclude,
-					 last_cert = Last,
-					 user_state = UserState0,
-					 verify_fun = VerifyFun} =
-	     ValidationState0) ->
+                                      working_public_key = Key,
+                                      working_public_key_parameters = 
+                                          KeyParams, 
+                                      permitted_subtrees = Permit,
+                                      excluded_subtrees = Exclude,
+                                      last_cert = Last,
+                                      user_state = UserState0,
+                                      verify_fun = VerifyFun} =
+                   ValidationState0) ->
 
     OtpCert = otp_cert(Cert),
 
@@ -1206,16 +1206,16 @@ der_cert(Der) when is_binary(Der) ->
     Der.
 
 pkix_crls_validate(_, [],_, Options, #revoke_state{details = Details}) ->
-     case proplists:get_value(undetermined_details, Options, false) of
-         false ->
-             {bad_cert, revocation_status_undetermined};
-         true ->
-             {bad_cert, {revocation_status_undetermined, {bad_crls, format_details(Details)}}}
-     end;
+    case proplists:get_value(undetermined_details, Options, false) of
+        false ->
+            {bad_cert, revocation_status_undetermined};
+        true ->
+            {bad_cert, {revocation_status_undetermined, {bad_crls, format_details(Details)}}}
+    end;
 pkix_crls_validate(OtpCert, [{DP, CRL, DeltaCRL} | Rest],  All, Options, RevokedState0) ->
     CallBack = proplists:get_value(update_crl, Options, fun(_, CurrCRL) ->
-							       CurrCRL
-						       end),
+                                                                CurrCRL
+                                                        end),
     case pubkey_crl:fresh_crl(DP, CRL, CallBack) of
 	{fresh, CRL} ->
 	    do_pkix_crls_validate(OtpCert, [{DP, CRL, DeltaCRL} | Rest],
@@ -1300,7 +1300,7 @@ combine(CRL, DeltaCRLs) ->
 			Time2 = pubkey_cert:time_str_2_gregorian_sec(
 				  SecondTBSCRL#'TBSCertList'.thisUpdate),
 			case Time1 > Time2 of
-			      true ->
+                            true ->
 				CRL1;
 			    false ->
 				CRL2
@@ -1317,13 +1317,13 @@ format_rsa_private_key(#'RSAPrivateKey'{modulus = N, publicExponent = E,
   when is_integer(N), is_integer(E), is_integer(D),
        is_integer(P1), is_integer(P2),
        is_integer(E1), is_integer(E2), is_integer(C) ->
-   [E, N, D, P1, P2, E1, E2, C];
+    [E, N, D, P1, P2, E1, E2, C];
 
 format_rsa_private_key(#'RSAPrivateKey'{modulus = N, publicExponent = E,
 					privateExponent = D}) when is_integer(N),
 								   is_integer(E),
 								   is_integer(D) ->
-   [E, N, D].
+    [E, N, D].
 
 -spec ec_generate_key(ecpk_parameters_api()) -> #'ECPrivateKey'{}.
 ec_generate_key(Params) ->
@@ -1334,9 +1334,9 @@ ec_generate_key(Params) ->
 
 -spec ec_normalize_params(ecpk_parameters_api()) -> ecpk_parameters().
 ec_normalize_params({namedCurve, Name}) when is_atom(Name) ->
-	{namedCurve, pubkey_cert_records:namedCurves(Name)};
+    {namedCurve, pubkey_cert_records:namedCurves(Name)};
 ec_normalize_params(#'ECParameters'{} = ECParams) ->
-	{ecParameters, ECParams};
+    {ecParameters, ECParams};
 ec_normalize_params(Other) -> Other.
 
 -spec ec_curve_spec(ecpk_parameters_api()) -> term().
@@ -1346,7 +1346,7 @@ ec_curve_spec( #'ECParameters'{fieldID = #'FieldID'{fieldType = Type,
     Curve = {PCurve#'Curve'.a, PCurve#'Curve'.b, none},
     {Field, Curve, Base, Order, CoFactor};
 ec_curve_spec({ecParameters, ECParams}) ->
-	ec_curve_spec(ECParams);
+    ec_curve_spec(ECParams);
 ec_curve_spec({namedCurve, OID}) when is_tuple(OID), is_integer(element(1,OID)) ->
     ec_curve_spec({namedCurve,  pubkey_cert_records:namedCurves(OID)});
 ec_curve_spec({namedCurve, Name}) when is_atom(Name) ->
@@ -1494,9 +1494,9 @@ verify_hostname_match_default0({ip,R}, {iPAddress,P}) when length(P) == 4 ->
     %% IPv4
     try
         list_to_tuple(P)
-            == if is_tuple(R), size(R)==4 -> R;
-                  is_list(R) -> ok(inet:parse_ipv4strict_address(R))
-               end
+        == if is_tuple(R), size(R)==4 -> R;
+              is_list(R) -> ok(inet:parse_ipv4strict_address(R))
+           end
     catch
         _:_ ->
             false
@@ -1506,9 +1506,9 @@ verify_hostname_match_default0({ip,R}, {iPAddress,P}) when length(P) == 16 ->
     %% IPv6. The length 16 is due to the certificate specification.
     try
         l16_to_tup(P)
-            == if is_tuple(R), size(R)==8 -> R;
-                  is_list(R) -> ok(inet:parse_ipv6strict_address(R))
-               end
+        == if is_tuple(R), size(R)==8 -> R;
+              is_list(R) -> ok(inet:parse_ipv6strict_address(R))
+           end
     catch
         _:_ ->
             false

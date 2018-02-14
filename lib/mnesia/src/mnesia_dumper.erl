@@ -1299,9 +1299,9 @@ delete_cstruct(Tid, Cs, InPlace, InitBy) ->
 temp_set_master_nodes() ->
     Tabs = val({schema, local_tables}),
     Masters = [{Tab, (val({Tab, disc_copies}) ++
-                          val({Tab, ram_copies}) ++
-                          val({Tab, disc_only_copies}) ++
-                          external_copies(Tab)) -- [node()]}
+                      val({Tab, ram_copies}) ++
+                      val({Tab, disc_only_copies}) ++
+                      external_copies(Tab)) -- [node()]}
 	       || Tab <- Tabs],
     %% UseDir = false since we don't want to remember these
     %% masternodes and we are running (really soon anyway) since we want this

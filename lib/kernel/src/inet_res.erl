@@ -1018,18 +1018,18 @@ nsdname(_) -> {error, formerr}.
 dn_in_addr_arpa(A,B,C,D) ->
     integer_to_list(D) ++
 	("." ++	integer_to_list(C) ++ 
-	 ("." ++ integer_to_list(B) ++
-	  ("." ++ integer_to_list(A) ++ ".IN-ADDR.ARPA"))).
+         ("." ++ integer_to_list(B) ++
+          ("." ++ integer_to_list(A) ++ ".IN-ADDR.ARPA"))).
 
 dn_ip6_int(A,B,C,D,E,F,G,H) ->
     dnib(H) ++ 
 	(dnib(G) ++ 
-	 (dnib(F) ++ 
-	  (dnib(E) ++ 
-	   (dnib(D) ++ 
-	    (dnib(C) ++ 
-	     (dnib(B) ++ 
-	      (dnib(A) ++ "IP6.ARPA"))))))).
+         (dnib(F) ++ 
+          (dnib(E) ++ 
+           (dnib(D) ++ 
+            (dnib(C) ++ 
+             (dnib(B) ++ 
+              (dnib(A) ++ "IP6.ARPA"))))))).
 
 
 

@@ -25,36 +25,36 @@
 -include("ssh_connect.hrl").
 
 -callback init(Args :: term()) ->
-    {ok, State :: term()} | {ok, State :: term(), timeout() | hibernate} |
-    {stop, Reason :: term()} | ignore.
+              {ok, State :: term()} | {ok, State :: term(), timeout() | hibernate} |
+              {stop, Reason :: term()} | ignore.
 -callback handle_call(Request :: term(), From :: {pid(), Tag :: term()},
                       State :: term()) ->
-    {reply, Reply :: term(), NewState :: term()} |
-    {reply, Reply :: term(), NewState :: term(), timeout() | hibernate} |
-    {noreply, NewState :: term()} |
-    {noreply, NewState :: term(), timeout() | hibernate} |
-    {stop, Reason :: term(), Reply :: term(), NewState :: term()} |
-    {stop, Reason :: term(), NewState :: term()}.
+              {reply, Reply :: term(), NewState :: term()} |
+              {reply, Reply :: term(), NewState :: term(), timeout() | hibernate} |
+              {noreply, NewState :: term()} |
+              {noreply, NewState :: term(), timeout() | hibernate} |
+              {stop, Reason :: term(), Reply :: term(), NewState :: term()} |
+              {stop, Reason :: term(), NewState :: term()}.
 -callback handle_cast(Request :: term(), State :: term()) ->
-    {noreply, NewState :: term()} |
-    {noreply, NewState :: term(), timeout() | hibernate} |
-    {stop, Reason :: term(), NewState :: term()}.
+              {noreply, NewState :: term()} |
+              {noreply, NewState :: term(), timeout() | hibernate} |
+              {stop, Reason :: term(), NewState :: term()}.
 
 -callback terminate(Reason :: (normal | shutdown | {shutdown, term()} |
                                term()),
                     State :: term()) ->
-    term().
+              term().
 -callback code_change(OldVsn :: (term() | {down, term()}), State :: term(),
                       Extra :: term()) ->
-    {ok, NewState :: term()} | {error, Reason :: term()}.
+              {ok, NewState :: term()} | {error, Reason :: term()}.
 
 -callback handle_msg(Msg ::term(), State :: term()) ->
-    {ok, State::term()} | {stop, ChannelId::integer(), State::term()}. 
+              {ok, State::term()} | {stop, ChannelId::integer(), State::term()}. 
 
 -callback handle_ssh_msg({ssh_cm, ConnectionRef::term(), SshMsg::term()}, 
- 			 State::term()) -> {ok, State::term()} | 
- 					   {stop, ChannelId::integer(), 
- 					    State::term()}.
+                         State::term()) -> {ok, State::term()} | 
+                                           {stop, ChannelId::integer(), 
+                                            State::term()}.
 -behaviour(gen_server).
 
 %%% API
@@ -72,12 +72,12 @@
 	 get_print_info/1]).
 
 -record(state, {
-	  cm,
-	  channel_cb,
-	  channel_state,
-	  channel_id,
-	  close_sent = false
-	 }).
+                cm,
+                channel_cb,
+                channel_state,
+                channel_id,
+                close_sent = false
+               }).
 
 %%====================================================================
 %% API
@@ -91,16 +91,16 @@ call(ChannelPid, Msg, TimeOute) ->
 	Result ->
 	    Result
     catch 
- 	exit:{noproc, _} ->
- 	    {error, closed};
+        exit:{noproc, _} ->
+            {error, closed};
 	exit:{normal, _} ->
 	    {error, closed};
 	exit:{shutdown, _} ->
 	    {error, closed};
 	exit:{{shutdown, _}, _} ->
 	    {error, closed};
- 	exit:{timeout, _} ->
- 	    {error, timeout}
+        exit:{timeout, _} ->
+            {error, timeout}
     end.
 
 cast(ChannelPid, Msg) ->
@@ -207,13 +207,13 @@ handle_call(get_print_info, _From, State) ->
 
 handle_call(Request, From, #state{channel_cb = Module, 
 				  channel_state = ChannelState} = State) ->
-   try Module:handle_call(Request, From, ChannelState) of
-       Result ->
-	   handle_cb_result(Result, State)
-   catch
-       error:{undef, _} -> 
-	   {noreply, State}
-   end.
+    try Module:handle_call(Request, From, ChannelState) of
+        Result ->
+            handle_cb_result(Result, State)
+    catch
+        error:{undef, _} -> 
+            {noreply, State}
+    end.
 
 
 %%--------------------------------------------------------------------
@@ -229,9 +229,9 @@ handle_cast(Msg, #state{channel_cb = Module,
 	Result ->
 	    handle_cb_result(Result, State)
     catch
-       error:{undef, _} -> 
+        error:{undef, _} -> 
 	    {noreply, State}
-   end.
+    end.
 
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |
@@ -251,8 +251,8 @@ handle_info({ssh_cm, ConnectionManager, {closed, ChannelId}},
     {stop, normal, State#state{close_sent = true}};
 
 handle_info({ssh_cm, _, _} = Msg, #state{cm = ConnectionManager,
-			channel_cb = Module, 
-			channel_state = ChannelState0} = State) ->
+                                         channel_cb = Module, 
+                                         channel_state = ChannelState0} = State) ->
     case Module:handle_ssh_msg(Msg, ChannelState0) of
 	{ok, ChannelState} ->
 	    adjust_window(Msg),
@@ -297,8 +297,8 @@ handle_info(Msg, #state{cm = ConnectionManager, channel_cb = Module,
 %% The return value is ignored.
 %%--------------------------------------------------------------------
 terminate(Reason, #state{cm = ConnectionManager, 
- 			 channel_id = ChannelId,
- 			 close_sent = false} = State) ->
+                         channel_id = ChannelId,
+                         close_sent = false} = State) ->
     catch ssh_connection:close(ConnectionManager, ChannelId),
     terminate(Reason, State#state{close_sent = true});
 terminate(_, #state{channel_cb = Cb, channel_state = ChannelState}) ->
@@ -344,12 +344,12 @@ cache_info(num_entries, Cache) ->
     proplists:get_value(size, ets:info(Cache)).
 
 cache_find(ChannelPid, Cache) ->
-   case ets:match_object(Cache, #channel{user = ChannelPid}) of
-       [] ->
-	   undefined;
-       [Channel] ->
-	   Channel
-   end.
+    case ets:match_object(Cache, #channel{user = ChannelPid}) of
+        [] ->
+            undefined;
+        [Channel] ->
+            Channel
+    end.
 
 get_print_info(Pid) ->
     call(Pid, get_print_info, 1000).

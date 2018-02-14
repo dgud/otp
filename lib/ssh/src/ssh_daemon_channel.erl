@@ -27,16 +27,16 @@
 
 %% API to special server side channel that can be pluged into the erlang ssh daemeon
 -callback init(Args :: term()) ->
-    {ok, State :: term()} | {ok, State :: term(), timeout() | hibernate} |
-    {stop, Reason :: term()} | ignore.
+              {ok, State :: term()} | {ok, State :: term(), timeout() | hibernate} |
+              {stop, Reason :: term()} | ignore.
 
 -callback terminate(Reason :: (normal | shutdown | {shutdown, term()} |
                                term()),
                     State :: term()) ->
-    term().
+              term().
 
 -callback handle_msg(Msg ::term(), State :: term()) ->
-    {ok, State::term()} | {stop, ChannelId::integer(), State::term()}. 
+              {ok, State::term()} | {stop, ChannelId::integer(), State::term()}. 
 -callback handle_ssh_msg({ssh_cm, ConnectionRef::term(), SshMsg::term()},
 			 State::term()) -> {ok, State::term()} |
 					   {stop, ChannelId::integer(),

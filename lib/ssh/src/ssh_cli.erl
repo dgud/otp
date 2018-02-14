@@ -35,33 +35,33 @@
 
 %% state
 -record(state, {
-	  cm,
-	  channel,
-	  pty,
-	  group,
-	  buf,
-	  shell,
-	  exec
-	 }).
+                cm,
+                channel,
+                pty,
+                group,
+                buf,
+                shell,
+                exec
+               }).
 
 %%====================================================================
 %% ssh_channel callbacks
 %%====================================================================
 -spec init(Args :: term()) ->
-    {ok, State :: term()} | {ok, State :: term(), timeout() | hibernate} |
-    {stop, Reason :: term()} | ignore.
+          {ok, State :: term()} | {ok, State :: term(), timeout() | hibernate} |
+          {stop, Reason :: term()} | ignore.
 
 -spec terminate(Reason :: (normal | shutdown | {shutdown, term()} |
-                               term()),
-                    State :: term()) ->
-    term().
+                           term()),
+                State :: term()) ->
+          term().
 
 -spec handle_msg(Msg ::term(), State :: term()) ->
-    {ok, State::term()} | {stop, ChannelId::integer(), State::term()}. 
+          {ok, State::term()} | {stop, ChannelId::integer(), State::term()}. 
 -spec handle_ssh_msg({ssh_cm, ConnectionRef::term(), SshMsg::term()},
-			 State::term()) -> {ok, State::term()} |
-					   {stop, ChannelId::integer(),
-					    State::term()}.
+                     State::term()) -> {ok, State::term()} |
+                                       {stop, ChannelId::integer(),
+                                        State::term()}.
 
 %%--------------------------------------------------------------------
 %% Function: init(Args) -> {ok, State} 
@@ -90,27 +90,27 @@ handle_ssh_msg({ssh_cm, ConnectionHandler,
 		 {TermName, Width, Height, PixWidth, PixHeight, Modes}}}, 
 	       State0) ->
     State = State0#state{pty = 
-			 #ssh_pty{term = TermName,
-				  width =  not_zero(Width, 80),
-				  height = not_zero(Height, 24),
-				  pixel_width = PixWidth,
-				  pixel_height = PixHeight,
-                  modes = Modes},
-             buf = empty_buf()},
+                             #ssh_pty{term = TermName,
+                                      width =  not_zero(Width, 80),
+                                      height = not_zero(Height, 24),
+                                      pixel_width = PixWidth,
+                                      pixel_height = PixHeight,
+                                      modes = Modes},
+                         buf = empty_buf()},
     set_echo(State),
     ssh_connection:reply_request(ConnectionHandler, WantReply,
 				 success, ChannelId),
     {ok, State};
 
 handle_ssh_msg({ssh_cm, ConnectionHandler,
-	    {env, ChannelId, WantReply, _Var, _Value}}, State) ->
+                {env, ChannelId, WantReply, _Var, _Value}}, State) ->
     ssh_connection:reply_request(ConnectionHandler,
 				 WantReply, failure, ChannelId),
     {ok, State};
 
 handle_ssh_msg({ssh_cm, ConnectionHandler,
-	    {window_change, ChannelId, Width, Height, PixWidth, PixHeight}},
-	   #state{buf = Buf, pty = Pty0} = State) ->
+                {window_change, ChannelId, Width, Height, PixWidth, PixHeight}},
+               #state{buf = Buf, pty = Pty0} = State) ->
     Pty = Pty0#ssh_pty{width = Width, height = Height,
 		       pixel_width = PixWidth,
 		       pixel_height = PixHeight},
@@ -119,7 +119,7 @@ handle_ssh_msg({ssh_cm, ConnectionHandler,
     {ok, State#state{pty = Pty, buf = NewBuf}};
 
 handle_ssh_msg({ssh_cm, ConnectionHandler,
-	    {shell, ChannelId, WantReply}}, State) ->
+                {shell, ChannelId, WantReply}}, State) ->
     NewState = start_shell(ConnectionHandler, State),
     ssh_connection:reply_request(ConnectionHandler, WantReply,
 				 success, ChannelId),
@@ -202,15 +202,15 @@ handle_msg({Group, tty_geometry}, #state{group = Group,
     {ok,State};
     
 handle_msg({Group, Req}, #state{group = Group, buf = Buf, pty = Pty,
-				 cm = ConnectionHandler,
-				 channel = ChannelId} = State) ->
+                                cm = ConnectionHandler,
+                                channel = ChannelId} = State) ->
     {Chars, NewBuf} = io_request(Req, Buf, Pty, Group),
     write_chars(ConnectionHandler, ChannelId, Chars),
     {ok, State#state{buf = NewBuf}};
 
 handle_msg({'EXIT', Group, Reason}, #state{group = Group,
-					    cm = ConnectionHandler,
-					    channel = ChannelId} = State) ->
+                                           cm = ConnectionHandler,
+                                           channel = ChannelId} = State) ->
     Status = case Reason of
                  normal -> 0;
                  _      -> -1
@@ -241,12 +241,12 @@ to_group([$\^C | Tail], Group) ->
 to_group(Data, Group) ->
     Func = fun(C) -> C /= $\^C end,
     Tail = case lists:splitwith(Func, Data) of
-        {[], Right} ->
-            Right;
-        {Left, Right} ->
-            Group ! {self(), {data, Left}},
-            Right
-    end,
+               {[], Right} ->
+                   Right;
+               {Left, Right} ->
+                   Group ! {self(), {data, Left}},
+                   Right
+           end,
     to_group(Tail, Group).
 
 exec(Cmd) ->
@@ -267,13 +267,13 @@ parse(Error) ->
 
 eval({ok, Expr_list}) ->
     case (catch erl_eval:exprs(Expr_list,
- 			       erl_eval:new_bindings())) of
- 	{value, Value, _NewBindings} ->
- 	    {Value, 0};
- 	{'EXIT', {Error, _}} -> 
- 	    {Error, -1};
- 	Error -> 
- 	    {Error, -1}
+                               erl_eval:new_bindings())) of
+        {value, Value, _NewBindings} ->
+            {Value, 0};
+        {'EXIT', {Error, _}} -> 
+            {Error, -1};
+        Error -> 
+            {Error, -1}
     end;
 eval(Error) ->
     {Error, -1}.
@@ -313,7 +313,7 @@ io_request({requests,Rs}, Buf, Tty, Group) ->
 io_request(tty_geometry, Buf, Tty, Group) ->
     io_requests([{move_rel, 0}, {put_chars, unicode, [10]}],
                 Buf, Tty, [], Group);
-     %{[], Buf};
+                                                %{[], Buf};
 
 %% New in 18
 io_request({put_chars_sync, Class, Cs, Reply}, Buf, Tty, Group) ->
@@ -441,7 +441,7 @@ move_cursor(From, To, #ssh_pty{width=Width, term=Type}) ->
 	       0 -> "";
 	       I when I < 0 -> get_tty_command(left, -I, Type);
 	       I -> get_tty_command(right, I, Type)
-	end,
+           end,
     Trow = case row(To, Width) - row(From, Width) of
 	       0 -> "";
 	       J when J < 0 -> get_tty_command(up, -J, Type);
@@ -496,7 +496,7 @@ bin_to_list(I) when is_integer(I) ->
 start_shell(ConnectionHandler, State) ->
     Shell = State#state.shell,
     ConnectionInfo = ssh_connection_handler:connection_info(ConnectionHandler,
-						  [peer, user]),
+                                                            [peer, user]),
     ShellFun = case is_function(Shell) of
 		   true ->
 		       User = proplists:get_value(user, ConnectionInfo),
@@ -522,7 +522,7 @@ start_shell(_ConnectionHandler, Cmd, #state{exec={M, F, A}} = State) ->
 start_shell(ConnectionHandler, Cmd, #state{exec=Shell} = State) when is_function(Shell) ->
 
     ConnectionInfo = ssh_connection_handler:connection_info(ConnectionHandler,
-						 [peer, user]),
+                                                            [peer, user]),
     User = proplists:get_value(user, ConnectionInfo),
     ShellFun = 
 	case erlang:fun_info(Shell, arity) of
@@ -540,8 +540,8 @@ start_shell(ConnectionHandler, Cmd, #state{exec=Shell} = State) when is_function
     Group = group:start(self(), ShellFun, [{echo,Echo}]),
     State#state{group = Group, buf = empty_buf()}.
 
-% Pty can be undefined if the client never sets any pty options before
-% starting the shell.
+                                                % Pty can be undefined if the client never sets any pty options before
+                                                % starting the shell.
 get_echo(undefined) ->
     true;
 get_echo(#ssh_pty{modes = Modes}) ->
@@ -552,8 +552,8 @@ get_echo(#ssh_pty{modes = Modes}) ->
 	    true
     end.
 
-% Group is undefined if the pty options are sent between open and
-% shell messages.
+                                                % Group is undefined if the pty options are sent between open and
+                                                % shell messages.
 set_echo(#state{group = undefined}) ->
     ok;
 set_echo(#state{group = Group, pty = Pty}) ->

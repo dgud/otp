@@ -60,7 +60,7 @@
 
 -define(i16(X1,X0),
         (?u16(X1,X0) - 
-             (if (X1) > 127 -> 16#10000; true -> 0 end))).
+         (if (X1) > 127 -> 16#10000; true -> 0 end))).
 
 -define(u16(X1,X0),
         (((X1) bsl 8) bor (X0))).
@@ -145,32 +145,32 @@ publish_flag(_, OtherNode) ->
 
 -define(DFLAGS_REMOVABLE,
         (?DFLAG_DIST_HDR_ATOM_CACHE
-             bor ?DFLAG_HIDDEN_ATOM_CACHE
-             bor ?DFLAG_ATOM_CACHE)).
+         bor ?DFLAG_HIDDEN_ATOM_CACHE
+         bor ?DFLAG_ATOM_CACHE)).
 
 -define(DFLAGS_ADDABLE,
         (?DFLAGS_ALL
-             band (bnot (?DFLAG_PUBLISHED
-                             bor ?DFLAG_HIDDEN_ATOM_CACHE
-                             bor ?DFLAG_ATOM_CACHE)))).
+         band (bnot (?DFLAG_PUBLISHED
+                     bor ?DFLAG_HIDDEN_ATOM_CACHE
+                     bor ?DFLAG_ATOM_CACHE)))).
 
 -define(DFLAGS_THIS_DEFAULT,
         (?DFLAG_EXPORT_PTR_TAG
-             bor ?DFLAG_EXTENDED_PIDS_PORTS
-             bor ?DFLAG_EXTENDED_REFERENCES
-             bor ?DFLAG_DIST_MONITOR
-             bor ?DFLAG_FUN_TAGS
-             bor ?DFLAG_DIST_MONITOR_NAME
-             bor ?DFLAG_NEW_FUN_TAGS
-             bor ?DFLAG_BIT_BINARIES
-             bor ?DFLAG_NEW_FLOATS
-             bor ?DFLAG_UNICODE_IO
-             bor ?DFLAG_DIST_HDR_ATOM_CACHE
-             bor ?DFLAG_SMALL_ATOM_TAGS
-             bor ?DFLAG_UTF8_ATOMS
-             bor ?DFLAG_MAP_TAG
-             bor ?DFLAG_BIG_CREATION
-             bor ?DFLAG_SEND_SENDER)).
+         bor ?DFLAG_EXTENDED_PIDS_PORTS
+         bor ?DFLAG_EXTENDED_REFERENCES
+         bor ?DFLAG_DIST_MONITOR
+         bor ?DFLAG_FUN_TAGS
+         bor ?DFLAG_DIST_MONITOR_NAME
+         bor ?DFLAG_NEW_FUN_TAGS
+         bor ?DFLAG_BIT_BINARIES
+         bor ?DFLAG_NEW_FLOATS
+         bor ?DFLAG_UNICODE_IO
+         bor ?DFLAG_DIST_HDR_ATOM_CACHE
+         bor ?DFLAG_SMALL_ATOM_TAGS
+         bor ?DFLAG_UTF8_ATOMS
+         bor ?DFLAG_MAP_TAG
+         bor ?DFLAG_BIG_CREATION
+         bor ?DFLAG_SEND_SENDER)).
 
 make_this_flags(RequestType, AddFlags, RemoveFlags, OtherNode) ->
     case RemoveFlags band (bnot ?DFLAGS_REMOVABLE) of
@@ -185,7 +185,7 @@ make_this_flags(RequestType, AddFlags, RemoveFlags, OtherNode) ->
     Flgs1 = Flgs0 bor publish_flag(RequestType, OtherNode),
     Flgs2 = Flgs1 bor AddFlags,
     Flgs3 = Flgs2 band (bnot (?DFLAG_HIDDEN_ATOM_CACHE
-                                  bor ?DFLAG_ATOM_CACHE)),
+                              bor ?DFLAG_ATOM_CACHE)),
     Flgs3 band (bnot RemoveFlags).
 
 handshake_other_started(#hs_data{request_type=ReqType,
@@ -249,10 +249,10 @@ check_dflags(#hs_data{other_node = Node,
                       other_started = OtherStarted,
                       require_flags = RequiredFlags} = HSData) ->
     Mandatory = ((?DFLAG_EXTENDED_REFERENCES
-                      bor ?DFLAG_EXTENDED_PIDS_PORTS
-                      bor ?DFLAG_UTF8_ATOMS
-                      bor ?DFLAG_NEW_FUN_TAGS)
-                     bor RequiredFlags),
+                  bor ?DFLAG_EXTENDED_PIDS_PORTS
+                  bor ?DFLAG_UTF8_ATOMS
+                  bor ?DFLAG_NEW_FUN_TAGS)
+                 bor RequiredFlags),
     Missing = check_mandatory(0, ?DFLAGS_ALL, Mandatory,
                               OtherFlags, []),
     case Missing of
@@ -505,8 +505,8 @@ gen_challenge() ->
     %% A(8) B(16) C(16)
     %% D(16),E(8), F(16) G(8) H(16)
     ( ((A bsl 24) + (E bsl 16) + (G bsl 8) + F) bxor
-          (B + (C bsl 16)) bxor 
-          (D + (H bsl 16)) ) band 16#ffffffff.
+      (B + (C bsl 16)) bxor 
+      (D + (H bsl 16)) ) band 16#ffffffff.
 
 %%
 %% Get the cookies for a node from auth

@@ -109,7 +109,7 @@ encode_pem_entry({Type, Der, {Cipher, Salt}}) ->
 decode_pem_entries([], Entries) ->
     lists:reverse(Entries);
 decode_pem_entries([<<>>], Entries) ->
-   lists:reverse(Entries);
+    lists:reverse(Entries);
 decode_pem_entries([<<>> | Lines], Entries) ->
     decode_pem_entries(Lines, Entries);
 decode_pem_entries([Start| Lines], Entries) ->
@@ -216,7 +216,7 @@ pem_start('CertificationRequest') ->
 pem_start('ContentInfo') ->
     <<"-----BEGIN PKCS7-----">>;
 pem_start('CertificateList') ->
-     <<"-----BEGIN X509 CRL-----">>;
+    <<"-----BEGIN X509 CRL-----">>;
 pem_start('EcpkParameters') ->
     <<"-----BEGIN EC PARAMETERS-----">>;
 pem_start('ECPrivateKey') ->

@@ -494,8 +494,8 @@ gethostbyname_tm(Name,Family,Timer) ->
     Opts0 = inet_db:res_option(lookup),
     Opts =
 	case (lists:member(native, Opts0) orelse
-                  lists:member(string, Opts0) orelse
-                  lists:member(nostring, Opts0)) of
+              lists:member(string, Opts0) orelse
+              lists:member(nostring, Opts0)) of
 	    true ->
 		Opts0;
 	    false ->

@@ -181,7 +181,7 @@ load_common(Mod, Bin, Beam, Architecture) ->
     ] = binary_to_term(Bin),
     MD5 = erlang:md5(Bin), % use md5 of actual running code for module_info
     ?debug_msg("***** ErLLVM *****~nVersion: ~s~nCheckSum: ~w~nConstAlign: ~w~n" ++
-                   "ConstSize: ~w~nConstMap: ~w~nLabelMap: ~w~nExportMap ~w~nRefs ~w~n",
+               "ConstSize: ~w~nConstMap: ~w~nLabelMap: ~w~nExportMap ~w~nRefs ~w~n",
                [Version, CheckSum, ConstAlign, ConstSize, ConstMap, LabelMap, ExportMap,
                 Refs]),
     %% Write HiPE binary code to a file in the current directory in order to

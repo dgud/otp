@@ -30,19 +30,19 @@
 		    | 'ecdsa-sha2-nistp256'
 		    | 'ecdsa-sha2-nistp384'
 		    | 'ecdsa-sha2-nistp521'
-		    .
+      .
 
 -callback is_host_key(PublicKey      :: public_key:public_key(),
 		      Host           :: string(),
 		      Algorithm      :: algorithm(),
 		      ConnectOptions :: proplists:proplist()) ->
-    boolean().
+              boolean().
 
 -callback user_key(Algorithm      :: algorithm(),
 		   ConnectOptions :: proplists:proplist()) ->
-    {ok,  PrivateKey::public_key:private_key()} | {error, term()}.
+              {ok,  PrivateKey::public_key:private_key()} | {error, term()}.
 
 
 -callback add_host_key(Host :: string(), PublicKey :: public_key:public_key(),
 		       Options :: proplists:proplist()) ->
-    ok | {error, Error::term()}.
+              ok | {error, Error::term()}.

@@ -162,8 +162,8 @@ get_public_key(SigAlg, #ssh{opts = Opts}) ->
 
 
 publickey_msg([SigAlg, #ssh{user = User,
-		       session_id = SessionId,
-		       service = Service} = Ssh]) ->
+                            session_id = SessionId,
+                            service = Service} = Ssh]) ->
     case get_public_key(SigAlg, Ssh) of
 	{ok, {PrivKey,PubKeyBlob}} ->
             SigAlgStr = atom_to_list(SigAlg),
@@ -182,14 +182,14 @@ publickey_msg([SigAlg, #ssh{user = User,
                                                 ?binary(PubKeyBlob),
                                                 ?binary(SigBlob)]},
               Ssh);
-     	_ ->
+        _ ->
 	    {not_ok, Ssh}
     end.
 
 %%%----------------------------------------------------------------
 service_request_msg(Ssh) ->
     ssh_transport:ssh_packet(#ssh_msg_service_request{name = "ssh-userauth"},
-			   Ssh#ssh{service = "ssh-userauth"}).
+                             Ssh#ssh{service = "ssh-userauth"}).
 
 %%%----------------------------------------------------------------
 init_userauth_request_msg(#ssh{opts = Opts} = Ssh) ->
@@ -235,8 +235,8 @@ handle_userauth_request(#ssh_msg_userauth_request{user = User,
 	{false,Ssh1}  ->
 	    {not_authorized, {User, {error,"Bad user or password"}}, 
 	     ssh_transport:ssh_packet(#ssh_msg_userauth_failure{
-		     authentications = Methods,
-		     partial_success = false}, Ssh1)}
+                                         authentications = Methods,
+                                         partial_success = false}, Ssh1)}
     end;
 
 handle_userauth_request(#ssh_msg_userauth_request{user = User,
@@ -244,8 +244,8 @@ handle_userauth_request(#ssh_msg_userauth_request{user = User,
 						  method = "password",
 						  data = <<?TRUE,
 							   _/binary
-							   %% ?UINT32(Sz1), OldBinPwd:Sz1/binary,
-							   %% ?UINT32(Sz2), NewBinPwd:Sz2/binary
+                                                         %% ?UINT32(Sz1), OldBinPwd:Sz1/binary,
+                                                         %% ?UINT32(Sz2), NewBinPwd:Sz2/binary
 							 >>
 						 }, _, 
 			#ssh{userauth_supported_methods = Methods} = Ssh) ->

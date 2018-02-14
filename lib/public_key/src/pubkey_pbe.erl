@@ -89,7 +89,7 @@ pbdkdf1(Password, Salt, Count, Hash) ->
 
 %%--------------------------------------------------------------------
 -spec pbdkdf2(string(), iodata(), integer(), integer(), fun(), atom(), integer())
-	     -> binary().
+        -> binary().
 %%
 %% Description: Implements password based decryption key derive function 2.
 %% Exported mainly for testing purposes.
@@ -101,17 +101,17 @@ pbdkdf2(Password, Salt, Count, DerivedKeyLen, Prf, PrfHash, PrfOutputLen)->
 	   Count, Prf, PrfHash, PrfOutputLen, <<>>).
 %%--------------------------------------------------------------------
 -spec decrypt_parameters(#'EncryptedPrivateKeyInfo_encryptionAlgorithm'{}) -> 
-				{Cipher::string(), #'PBES2-params'{}}.
+          {Cipher::string(), #'PBES2-params'{}}.
 %%
 %% Description: Performs ANS1-decoding of encryption parameters.
 %%--------------------------------------------------------------------
 decrypt_parameters(#'EncryptedPrivateKeyInfo_encryptionAlgorithm'{
 		      algorithm = Oid, parameters = Param}) ->
-     decrypt_parameters(Oid, decode_handle_open_type_wrapper(Param)).
+    decrypt_parameters(Oid, decode_handle_open_type_wrapper(Param)).
     
 %%--------------------------------------------------------------------
 -spec encrypt_parameters({Cipher::string(), Params::term()}) -> 
-			#'EncryptedPrivateKeyInfo_encryptionAlgorithm'{}.
+          #'EncryptedPrivateKeyInfo_encryptionAlgorithm'{}.
 %%
 %% Description: Performs ANS1-decoding of encryption parameters.
 %%--------------------------------------------------------------------
@@ -127,12 +127,12 @@ password_to_key_and_iv(Password, _, #'PBES2-params'{} = Params) ->
 	pbdkdf2(Password, Salt, ItrCount, KeyLen, PseudoRandomFunction, PseudoHash, PseudoOtputLen),
     {Key, IV};
 password_to_key_and_iv(Password, _Cipher, {#'PBEParameter'{salt = Salt,
-							  iterationCount = Count}, Hash}) ->
+                                                           iterationCount = Count}, Hash}) ->
     <<Key:8/binary, IV:8/binary, _/binary>> 
-	= pbdkdf1(Password, Salt, Count, Hash),
+      = pbdkdf1(Password, Salt, Count, Hash),
     {Key, IV};
 password_to_key_and_iv(Password, Cipher, Salt) ->
- KeyLen = derived_key_length(Cipher, undefined),
+    KeyLen = derived_key_length(Cipher, undefined),
     <<Key:KeyLen/binary, _/binary>> = 
 	pem_encrypt(<<>>, Password, Salt, ceiling(KeyLen div 16), <<>>, md5),
     %% Old PEM encryption does not use standard encryption method
@@ -159,7 +159,7 @@ iv(#'PBES2-params_encryptionScheme'{algorithm = Algo,
 iv(#'PBES2-params_encryptionScheme'{algorithm = ?'rc2CBC',
 				    parameters =  ASN1IV}) ->
     {ok, #'RC2-CBC-Parameter'{iv = IV}} 
-	= 'PKCS-FRAME':decode('RC2-CBC-Parameter', decode_handle_open_type_wrapper(ASN1IV)),
+      = 'PKCS-FRAME':decode('RC2-CBC-Parameter', decode_handle_open_type_wrapper(ASN1IV)),
     iolist_to_binary(IV).
 
 blocks(1, N, Index, Password, Salt, Count, Prf, PrfHash, PrfLen, Acc) ->
@@ -222,7 +222,7 @@ pbe_pad(Data, {#'PBEParameter'{}, _}) ->
 pbe_pad(Data, #'PBES2-params'{}) ->
     pbe_pad(Data);
 pbe_pad(Data, _) ->
-pbe_pad(Data).%%    Data.
+    pbe_pad(Data).%%    Data.
 
 
 pbe_pad(Data) ->
