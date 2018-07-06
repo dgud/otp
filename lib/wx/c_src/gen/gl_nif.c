@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2008-2017. All Rights Reserved.
+ * Copyright Ericsson AB 2008-2018. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,757 +26,14 @@
 
 extern gl_fns_t gl_fns[];
 
-static void ecb_gluBuild1DMipmapLevels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum target;
-  GLint internalFormat;
-  GLsizei width;
-  GLenum format;
-  GLenum type;
-  GLint level;
-  GLint base;
-  GLint max;
-  ErlNifBinary data;
-  if(!enif_get_uint(env, argv[0],  &target)) Badarg(5010,"target");
-  if(!enif_get_int(env, argv[1],  &internalFormat)) Badarg(5010,"internalFormat");
-  if(!enif_get_int(env, argv[2],  &width)) Badarg(5010,"width");
-  if(!enif_get_uint(env, argv[3],  &format)) Badarg(5010,"format");
-  if(!enif_get_uint(env, argv[4],  &type)) Badarg(5010,"type");
-  if(!enif_get_int(env, argv[5],  &level)) Badarg(5010,"level");
-  if(!enif_get_int(env, argv[6],  &base)) Badarg(5010,"base");
-  if(!enif_get_int(env, argv[7],  &max)) Badarg(5010,"max");
-  if(!enif_inspect_binary(env, argv[8], &data)) Badarg(5010,"data");
-  result = wegluBuild1DMipmapLevels(target,internalFormat,width,format,type,level,base,max,(void *) data.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluBuild1DMipmaps(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum target;
-  GLint internalFormat;
-  GLsizei width;
-  GLenum format;
-  GLenum type;
-  ErlNifBinary data;
-  if(!enif_get_uint(env, argv[0],  &target)) Badarg(5011,"target");
-  if(!enif_get_int(env, argv[1],  &internalFormat)) Badarg(5011,"internalFormat");
-  if(!enif_get_int(env, argv[2],  &width)) Badarg(5011,"width");
-  if(!enif_get_uint(env, argv[3],  &format)) Badarg(5011,"format");
-  if(!enif_get_uint(env, argv[4],  &type)) Badarg(5011,"type");
-  if(!enif_inspect_binary(env, argv[5], &data)) Badarg(5011,"data");
-  result = wegluBuild1DMipmaps(target,internalFormat,width,format,type,(void *) data.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluBuild2DMipmapLevels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum target;
-  GLint internalFormat;
-  GLsizei width;
-  GLsizei height;
-  GLenum format;
-  GLenum type;
-  GLint level;
-  GLint base;
-  GLint max;
-  ErlNifBinary data;
-  if(!enif_get_uint(env, argv[0],  &target)) Badarg(5012,"target");
-  if(!enif_get_int(env, argv[1],  &internalFormat)) Badarg(5012,"internalFormat");
-  if(!enif_get_int(env, argv[2],  &width)) Badarg(5012,"width");
-  if(!enif_get_int(env, argv[3],  &height)) Badarg(5012,"height");
-  if(!enif_get_uint(env, argv[4],  &format)) Badarg(5012,"format");
-  if(!enif_get_uint(env, argv[5],  &type)) Badarg(5012,"type");
-  if(!enif_get_int(env, argv[6],  &level)) Badarg(5012,"level");
-  if(!enif_get_int(env, argv[7],  &base)) Badarg(5012,"base");
-  if(!enif_get_int(env, argv[8],  &max)) Badarg(5012,"max");
-  if(!enif_inspect_binary(env, argv[9], &data)) Badarg(5012,"data");
-  result = wegluBuild2DMipmapLevels(target,internalFormat,width,height,format,type,level,base,max,(void *) data.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluBuild2DMipmaps(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum target;
-  GLint internalFormat;
-  GLsizei width;
-  GLsizei height;
-  GLenum format;
-  GLenum type;
-  ErlNifBinary data;
-  if(!enif_get_uint(env, argv[0],  &target)) Badarg(5013,"target");
-  if(!enif_get_int(env, argv[1],  &internalFormat)) Badarg(5013,"internalFormat");
-  if(!enif_get_int(env, argv[2],  &width)) Badarg(5013,"width");
-  if(!enif_get_int(env, argv[3],  &height)) Badarg(5013,"height");
-  if(!enif_get_uint(env, argv[4],  &format)) Badarg(5013,"format");
-  if(!enif_get_uint(env, argv[5],  &type)) Badarg(5013,"type");
-  if(!enif_inspect_binary(env, argv[6], &data)) Badarg(5013,"data");
-  result = wegluBuild2DMipmaps(target,internalFormat,width,height,format,type,(void *) data.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluBuild3DMipmapLevels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum target;
-  GLint internalFormat;
-  GLsizei width;
-  GLsizei height;
-  GLsizei depth;
-  GLenum format;
-  GLenum type;
-  GLint level;
-  GLint base;
-  GLint max;
-  ErlNifBinary data;
-  if(!enif_get_uint(env, argv[0],  &target)) Badarg(5014,"target");
-  if(!enif_get_int(env, argv[1],  &internalFormat)) Badarg(5014,"internalFormat");
-  if(!enif_get_int(env, argv[2],  &width)) Badarg(5014,"width");
-  if(!enif_get_int(env, argv[3],  &height)) Badarg(5014,"height");
-  if(!enif_get_int(env, argv[4],  &depth)) Badarg(5014,"depth");
-  if(!enif_get_uint(env, argv[5],  &format)) Badarg(5014,"format");
-  if(!enif_get_uint(env, argv[6],  &type)) Badarg(5014,"type");
-  if(!enif_get_int(env, argv[7],  &level)) Badarg(5014,"level");
-  if(!enif_get_int(env, argv[8],  &base)) Badarg(5014,"base");
-  if(!enif_get_int(env, argv[9],  &max)) Badarg(5014,"max");
-  if(!enif_inspect_binary(env, argv[10], &data)) Badarg(5014,"data");
-  result = wegluBuild3DMipmapLevels(target,internalFormat,width,height,depth,format,type,level,base,max,(void *) data.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluBuild3DMipmaps(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum target;
-  GLint internalFormat;
-  GLsizei width;
-  GLsizei height;
-  GLsizei depth;
-  GLenum format;
-  GLenum type;
-  ErlNifBinary data;
-  if(!enif_get_uint(env, argv[0],  &target)) Badarg(5015,"target");
-  if(!enif_get_int(env, argv[1],  &internalFormat)) Badarg(5015,"internalFormat");
-  if(!enif_get_int(env, argv[2],  &width)) Badarg(5015,"width");
-  if(!enif_get_int(env, argv[3],  &height)) Badarg(5015,"height");
-  if(!enif_get_int(env, argv[4],  &depth)) Badarg(5015,"depth");
-  if(!enif_get_uint(env, argv[5],  &format)) Badarg(5015,"format");
-  if(!enif_get_uint(env, argv[6],  &type)) Badarg(5015,"type");
-  if(!enif_inspect_binary(env, argv[7], &data)) Badarg(5015,"data");
-  result = wegluBuild3DMipmaps(target,internalFormat,width,height,depth,format,type,(void *) data.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluCheckExtension(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLboolean result;
-  ERL_NIF_TERM reply;
-  ErlNifBinary extName;
-  ErlNifBinary extString;
-  if(!enif_inspect_binary(env, argv[0], &extName)) Badarg(5016,"extName");
-  if(!enif_inspect_binary(env, argv[1], &extString)) Badarg(5016,"extString");
-  result = wegluCheckExtension((GLubyte *) extName.data,(GLubyte *) extString.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluCylinder(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLdouble base;
-  GLdouble top;
-  GLdouble height;
-  GLint slices;
-  GLint stacks;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5017,"quad");
-  if(!enif_get_double(env, argv[1],  &base)) Badarg(5017,"base");
-  if(!enif_get_double(env, argv[2],  &top)) Badarg(5017,"top");
-  if(!enif_get_double(env, argv[3],  &height)) Badarg(5017,"height");
-  if(!enif_get_int(env, argv[4],  &slices)) Badarg(5017,"slices");
-  if(!enif_get_int(env, argv[5],  &stacks)) Badarg(5017,"stacks");
-  wegluCylinder(quad,base,top,height,slices,stacks);
-}
-
-static void ecb_gluDeleteQuadric(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5018,"quad");
-  wegluDeleteQuadric(quad);
-}
-
-static void ecb_gluDisk(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLdouble inner;
-  GLdouble outer;
-  GLint slices;
-  GLint loops;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5019,"quad");
-  if(!enif_get_double(env, argv[1],  &inner)) Badarg(5019,"inner");
-  if(!enif_get_double(env, argv[2],  &outer)) Badarg(5019,"outer");
-  if(!enif_get_int(env, argv[3],  &slices)) Badarg(5019,"slices");
-  if(!enif_get_int(env, argv[4],  &loops)) Badarg(5019,"loops");
-  wegluDisk(quad,inner,outer,slices,loops);
-}
-
-static void ecb_gluErrorString(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  const GLubyte *  result;
-  ERL_NIF_TERM reply;
-  GLenum error;
-  if(!enif_get_uint(env, argv[0],  &error)) Badarg(5020,"error");
-  result = wegluErrorString(error);
-  reply =      enif_make_string(env, (const char *) result, ERL_NIF_LATIN1);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluGetString(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  const GLubyte *  result;
-  ERL_NIF_TERM reply;
-  GLenum name;
-  if(!enif_get_uint(env, argv[0],  &name)) Badarg(5021,"name");
-  result = wegluGetString(name);
-  reply =      enif_make_string(env, (const char *) result, ERL_NIF_LATIN1);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluLookAt(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLdouble eyeX;
-  GLdouble eyeY;
-  GLdouble eyeZ;
-  GLdouble centerX;
-  GLdouble centerY;
-  GLdouble centerZ;
-  GLdouble upX;
-  GLdouble upY;
-  GLdouble upZ;
-  if(!enif_get_double(env, argv[0],  &eyeX)) Badarg(5022,"eyeX");
-  if(!enif_get_double(env, argv[1],  &eyeY)) Badarg(5022,"eyeY");
-  if(!enif_get_double(env, argv[2],  &eyeZ)) Badarg(5022,"eyeZ");
-  if(!enif_get_double(env, argv[3],  &centerX)) Badarg(5022,"centerX");
-  if(!enif_get_double(env, argv[4],  &centerY)) Badarg(5022,"centerY");
-  if(!enif_get_double(env, argv[5],  &centerZ)) Badarg(5022,"centerZ");
-  if(!enif_get_double(env, argv[6],  &upX)) Badarg(5022,"upX");
-  if(!enif_get_double(env, argv[7],  &upY)) Badarg(5022,"upY");
-  if(!enif_get_double(env, argv[8],  &upZ)) Badarg(5022,"upZ");
-  wegluLookAt(eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ);
-}
-
-static void ecb_gluNewQuadric(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *  result;
-  ERL_NIF_TERM reply;
-  result = wegluNewQuadric();
-  reply =      enif_make_uint64(env, (uint64_t) result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluOrtho2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLdouble left;
-  GLdouble right;
-  GLdouble bottom;
-  GLdouble top;
-  if(!enif_get_double(env, argv[0],  &left)) Badarg(5024,"left");
-  if(!enif_get_double(env, argv[1],  &right)) Badarg(5024,"right");
-  if(!enif_get_double(env, argv[2],  &bottom)) Badarg(5024,"bottom");
-  if(!enif_get_double(env, argv[3],  &top)) Badarg(5024,"top");
-  wegluOrtho2D(left,right,bottom,top);
-}
-
-static void ecb_gluPartialDisk(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLdouble inner;
-  GLdouble outer;
-  GLint slices;
-  GLint loops;
-  GLdouble start;
-  GLdouble sweep;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5025,"quad");
-  if(!enif_get_double(env, argv[1],  &inner)) Badarg(5025,"inner");
-  if(!enif_get_double(env, argv[2],  &outer)) Badarg(5025,"outer");
-  if(!enif_get_int(env, argv[3],  &slices)) Badarg(5025,"slices");
-  if(!enif_get_int(env, argv[4],  &loops)) Badarg(5025,"loops");
-  if(!enif_get_double(env, argv[5],  &start)) Badarg(5025,"start");
-  if(!enif_get_double(env, argv[6],  &sweep)) Badarg(5025,"sweep");
-  wegluPartialDisk(quad,inner,outer,slices,loops,start,sweep);
-}
-
-static void ecb_gluPerspective(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLdouble fovy;
-  GLdouble aspect;
-  GLdouble zNear;
-  GLdouble zFar;
-  if(!enif_get_double(env, argv[0],  &fovy)) Badarg(5026,"fovy");
-  if(!enif_get_double(env, argv[1],  &aspect)) Badarg(5026,"aspect");
-  if(!enif_get_double(env, argv[2],  &zNear)) Badarg(5026,"zNear");
-  if(!enif_get_double(env, argv[3],  &zFar)) Badarg(5026,"zFar");
-  wegluPerspective(fovy,aspect,zNear,zFar);
-}
-
-static void ecb_gluPickMatrix(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLdouble x;
-  GLdouble y;
-  GLdouble delX;
-  GLdouble delY;
-  GLint viewport[4];
-  if(!enif_get_double(env, argv[0],  &x)) Badarg(5027,"x");
-  if(!enif_get_double(env, argv[1],  &y)) Badarg(5027,"y");
-  if(!enif_get_double(env, argv[2],  &delX)) Badarg(5027,"delX");
-  if(!enif_get_double(env, argv[3],  &delY)) Badarg(5027,"delY");
-  {
-   int viewport_a;
-   const ERL_NIF_TERM *viewport_t;
-   if(!enif_get_tuple(env, argv[4], &viewport_a, &viewport_t) || viewport_a != 4) {
-     Badarg(5027,"viewport");
-   } else {
-    int i1 = 0;
-     if(!enif_get_int(env, viewport_t[i1++], &viewport[0])) Badarg(5027,"viewport");
-     if(!enif_get_int(env, viewport_t[i1++], &viewport[1])) Badarg(5027,"viewport");
-     if(!enif_get_int(env, viewport_t[i1++], &viewport[2])) Badarg(5027,"viewport");
-     if(!enif_get_int(env, viewport_t[i1++], &viewport[3])) Badarg(5027,"viewport");
-   }};
-  wegluPickMatrix(x,y,delX,delY,viewport);
-}
-
-static void ecb_gluProject(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLdouble objX;
-  GLdouble objY;
-  GLdouble objZ;
-  GLdouble model[16];
-  GLdouble proj[16];
-  GLint view[4];
-  GLdouble winX;
-  GLdouble winY;
-  GLdouble winZ;
-  if(!enif_get_double(env, argv[0],  &objX)) Badarg(5028,"objX");
-  if(!enif_get_double(env, argv[1],  &objY)) Badarg(5028,"objY");
-  if(!enif_get_double(env, argv[2],  &objZ)) Badarg(5028,"objZ");
-  {
-   int model_a;
-   const ERL_NIF_TERM *model_t;
-   if(!enif_get_tuple(env, argv[3], &model_a, &model_t)
-       || (model_a != 12 && model_a != 16)) {
-     Badarg(5028,"model");
-   } else {
-    int i1 = 0;
-     if(!enif_get_double(env, model_t[i1++], &model[0])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[1])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[2])) Badarg(5028,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[3])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[4])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[5])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[6])) Badarg(5028,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[7])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[8])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[9])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[10])) Badarg(5028,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[11])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[12])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[13])) Badarg(5028,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[14])) Badarg(5028,"model");
-     if(model_a == 16) {
-        if(!enif_get_double(env, model_t[i1++], &model[15])) Badarg(5028,"model");
-     } else {
-       model[3] = 0.0; model[7] = 0.0; model[11] = 0.0; model[15] = 1.0;
-     }
-   }};
-  {
-   int proj_a;
-   const ERL_NIF_TERM *proj_t;
-   if(!enif_get_tuple(env, argv[4], &proj_a, &proj_t)
-       || (proj_a != 12 && proj_a != 16)) {
-     Badarg(5028,"proj");
-   } else {
-    int i1 = 0;
-     if(!enif_get_double(env, proj_t[i1++], &proj[0])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[1])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[2])) Badarg(5028,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[3])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[4])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[5])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[6])) Badarg(5028,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[7])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[8])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[9])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[10])) Badarg(5028,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[11])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[12])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[13])) Badarg(5028,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[14])) Badarg(5028,"proj");
-     if(proj_a == 16) {
-        if(!enif_get_double(env, proj_t[i1++], &proj[15])) Badarg(5028,"proj");
-     } else {
-       proj[3] = 0.0; proj[7] = 0.0; proj[11] = 0.0; proj[15] = 1.0;
-     }
-   }};
-  {
-   int view_a;
-   const ERL_NIF_TERM *view_t;
-   if(!enif_get_tuple(env, argv[5], &view_a, &view_t) || view_a != 4) {
-     Badarg(5028,"view");
-   } else {
-    int i1 = 0;
-     if(!enif_get_int(env, view_t[i1++], &view[0])) Badarg(5028,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[1])) Badarg(5028,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[2])) Badarg(5028,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[3])) Badarg(5028,"view");
-   }};
-  result = wegluProject(objX,objY,objZ,model,proj,view,&winX,&winY,&winZ);
-  reply = enif_make_tuple4(env,
-          enif_make_int(env, result),
-     enif_make_double(env, winX),
-     enif_make_double(env, winY),
-     enif_make_double(env, winZ) );
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluQuadricDrawStyle(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLenum draw;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5029,"quad");
-  if(!enif_get_uint(env, argv[1],  &draw)) Badarg(5029,"draw");
-  wegluQuadricDrawStyle(quad,draw);
-}
-
-static void ecb_gluQuadricNormals(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLenum normal;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5030,"quad");
-  if(!enif_get_uint(env, argv[1],  &normal)) Badarg(5030,"normal");
-  wegluQuadricNormals(quad,normal);
-}
-
-static void ecb_gluQuadricOrientation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLenum orientation;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5031,"quad");
-  if(!enif_get_uint(env, argv[1],  &orientation)) Badarg(5031,"orientation");
-  wegluQuadricOrientation(quad,orientation);
-}
-
-static void ecb_gluQuadricTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLboolean texture;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5032,"quad");
-  if(!egl_get_ubyte(env, argv[1],  &texture)) Badarg(5032,"texture");
-  wegluQuadricTexture(quad,texture);
-}
-
-static void ecb_gluScaleImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLenum format;
-  GLsizei wIn;
-  GLsizei hIn;
-  GLenum typeIn;
-  ErlNifBinary dataIn;
-  GLsizei wOut;
-  GLsizei hOut;
-  GLenum typeOut;
-  ErlNifBinary dataOut;
-  if(!enif_get_uint(env, argv[0],  &format)) Badarg(5033,"format");
-  if(!enif_get_int(env, argv[1],  &wIn)) Badarg(5033,"wIn");
-  if(!enif_get_int(env, argv[2],  &hIn)) Badarg(5033,"hIn");
-  if(!enif_get_uint(env, argv[3],  &typeIn)) Badarg(5033,"typeIn");
-  if(!enif_inspect_binary(env, argv[4], &dataIn)) Badarg(5033,"dataIn");
-  if(!enif_get_int(env, argv[5],  &wOut)) Badarg(5033,"wOut");
-  if(!enif_get_int(env, argv[6],  &hOut)) Badarg(5033,"hOut");
-  if(!enif_get_uint(env, argv[7],  &typeOut)) Badarg(5033,"typeOut");
-  if(enif_is_binary(env, argv[8]))
-    enif_inspect_binary(env, argv[8], &dataOut);
-  else if(enif_is_tuple(env, argv[8])) {
-    int dataOut_a;
-    const ERL_NIF_TERM *dataOut_t;
-    if(enif_get_tuple(env, argv[8], &dataOut_a, &dataOut_t) ||
-         enif_is_binary(env, dataOut_t[1]))
-       enif_inspect_binary(env, dataOut_t[1], &dataOut);
-    else Badarg(5033, "dataOut");
-  } else Badarg(5033, "dataOut");
-  result = wegluScaleImage(format,wIn,hIn,typeIn,(void *) dataIn.data,wOut,hOut,typeOut,(GLvoid *) dataOut.data);
-  reply =      enif_make_int(env, result);
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluSphere(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLUquadric *quad;
-  GLdouble radius;
-  GLint slices;
-  GLint stacks;
-  if(!egl_get_ptr(env, argv[0], (void *) &quad)) Badarg(5034,"quad");
-  if(!enif_get_double(env, argv[1],  &radius)) Badarg(5034,"radius");
-  if(!enif_get_int(env, argv[2],  &slices)) Badarg(5034,"slices");
-  if(!enif_get_int(env, argv[3],  &stacks)) Badarg(5034,"stacks");
-  wegluSphere(quad,radius,slices,stacks);
-}
-
-static void ecb_gluUnProject(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLdouble winX;
-  GLdouble winY;
-  GLdouble winZ;
-  GLdouble model[16];
-  GLdouble proj[16];
-  GLint view[4];
-  GLdouble objX;
-  GLdouble objY;
-  GLdouble objZ;
-  if(!enif_get_double(env, argv[0],  &winX)) Badarg(5035,"winX");
-  if(!enif_get_double(env, argv[1],  &winY)) Badarg(5035,"winY");
-  if(!enif_get_double(env, argv[2],  &winZ)) Badarg(5035,"winZ");
-  {
-   int model_a;
-   const ERL_NIF_TERM *model_t;
-   if(!enif_get_tuple(env, argv[3], &model_a, &model_t)
-       || (model_a != 12 && model_a != 16)) {
-     Badarg(5035,"model");
-   } else {
-    int i1 = 0;
-     if(!enif_get_double(env, model_t[i1++], &model[0])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[1])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[2])) Badarg(5035,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[3])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[4])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[5])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[6])) Badarg(5035,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[7])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[8])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[9])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[10])) Badarg(5035,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[11])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[12])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[13])) Badarg(5035,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[14])) Badarg(5035,"model");
-     if(model_a == 16) {
-        if(!enif_get_double(env, model_t[i1++], &model[15])) Badarg(5035,"model");
-     } else {
-       model[3] = 0.0; model[7] = 0.0; model[11] = 0.0; model[15] = 1.0;
-     }
-   }};
-  {
-   int proj_a;
-   const ERL_NIF_TERM *proj_t;
-   if(!enif_get_tuple(env, argv[4], &proj_a, &proj_t)
-       || (proj_a != 12 && proj_a != 16)) {
-     Badarg(5035,"proj");
-   } else {
-    int i1 = 0;
-     if(!enif_get_double(env, proj_t[i1++], &proj[0])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[1])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[2])) Badarg(5035,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[3])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[4])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[5])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[6])) Badarg(5035,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[7])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[8])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[9])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[10])) Badarg(5035,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[11])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[12])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[13])) Badarg(5035,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[14])) Badarg(5035,"proj");
-     if(proj_a == 16) {
-        if(!enif_get_double(env, proj_t[i1++], &proj[15])) Badarg(5035,"proj");
-     } else {
-       proj[3] = 0.0; proj[7] = 0.0; proj[11] = 0.0; proj[15] = 1.0;
-     }
-   }};
-  {
-   int view_a;
-   const ERL_NIF_TERM *view_t;
-   if(!enif_get_tuple(env, argv[5], &view_a, &view_t) || view_a != 4) {
-     Badarg(5035,"view");
-   } else {
-    int i1 = 0;
-     if(!enif_get_int(env, view_t[i1++], &view[0])) Badarg(5035,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[1])) Badarg(5035,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[2])) Badarg(5035,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[3])) Badarg(5035,"view");
-   }};
-  result = wegluUnProject(winX,winY,winZ,model,proj,view,&objX,&objY,&objZ);
-  reply = enif_make_tuple4(env,
-          enif_make_int(env, result),
-     enif_make_double(env, objX),
-     enif_make_double(env, objY),
-     enif_make_double(env, objZ) );
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_gluUnProject4(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
-{
-  GLint result;
-  ERL_NIF_TERM reply;
-  GLdouble winX;
-  GLdouble winY;
-  GLdouble winZ;
-  GLdouble clipW;
-  GLdouble model[16];
-  GLdouble proj[16];
-  GLint view[4];
-  GLdouble nearVal;
-  GLdouble farVal;
-  GLdouble objX;
-  GLdouble objY;
-  GLdouble objZ;
-  GLdouble objW;
-  if(!enif_get_double(env, argv[0],  &winX)) Badarg(5036,"winX");
-  if(!enif_get_double(env, argv[1],  &winY)) Badarg(5036,"winY");
-  if(!enif_get_double(env, argv[2],  &winZ)) Badarg(5036,"winZ");
-  if(!enif_get_double(env, argv[3],  &clipW)) Badarg(5036,"clipW");
-  {
-   int model_a;
-   const ERL_NIF_TERM *model_t;
-   if(!enif_get_tuple(env, argv[4], &model_a, &model_t)
-       || (model_a != 12 && model_a != 16)) {
-     Badarg(5036,"model");
-   } else {
-    int i1 = 0;
-     if(!enif_get_double(env, model_t[i1++], &model[0])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[1])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[2])) Badarg(5036,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[3])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[4])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[5])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[6])) Badarg(5036,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[7])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[8])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[9])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[10])) Badarg(5036,"model");
-     if(model_a == 16)
-        if(!enif_get_double(env, model_t[i1++], &model[11])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[12])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[13])) Badarg(5036,"model");
-     if(!enif_get_double(env, model_t[i1++], &model[14])) Badarg(5036,"model");
-     if(model_a == 16) {
-        if(!enif_get_double(env, model_t[i1++], &model[15])) Badarg(5036,"model");
-     } else {
-       model[3] = 0.0; model[7] = 0.0; model[11] = 0.0; model[15] = 1.0;
-     }
-   }};
-  {
-   int proj_a;
-   const ERL_NIF_TERM *proj_t;
-   if(!enif_get_tuple(env, argv[5], &proj_a, &proj_t)
-       || (proj_a != 12 && proj_a != 16)) {
-     Badarg(5036,"proj");
-   } else {
-    int i1 = 0;
-     if(!enif_get_double(env, proj_t[i1++], &proj[0])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[1])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[2])) Badarg(5036,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[3])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[4])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[5])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[6])) Badarg(5036,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[7])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[8])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[9])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[10])) Badarg(5036,"proj");
-     if(proj_a == 16)
-        if(!enif_get_double(env, proj_t[i1++], &proj[11])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[12])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[13])) Badarg(5036,"proj");
-     if(!enif_get_double(env, proj_t[i1++], &proj[14])) Badarg(5036,"proj");
-     if(proj_a == 16) {
-        if(!enif_get_double(env, proj_t[i1++], &proj[15])) Badarg(5036,"proj");
-     } else {
-       proj[3] = 0.0; proj[7] = 0.0; proj[11] = 0.0; proj[15] = 1.0;
-     }
-   }};
-  {
-   int view_a;
-   const ERL_NIF_TERM *view_t;
-   if(!enif_get_tuple(env, argv[6], &view_a, &view_t) || view_a != 4) {
-     Badarg(5036,"view");
-   } else {
-    int i1 = 0;
-     if(!enif_get_int(env, view_t[i1++], &view[0])) Badarg(5036,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[1])) Badarg(5036,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[2])) Badarg(5036,"view");
-     if(!enif_get_int(env, view_t[i1++], &view[3])) Badarg(5036,"view");
-   }};
-  if(!enif_get_double(env, argv[7],  &nearVal)) Badarg(5036,"nearVal");
-  if(!enif_get_double(env, argv[8],  &farVal)) Badarg(5036,"farVal");
-  result = wegluUnProject4(winX,winY,winZ,clipW,model,proj,view,nearVal,farVal,&objX,&objY,&objZ,&objW);
-  reply = enif_make_tuple5(env,
-          enif_make_int(env, result),
-     enif_make_double(env, objX),
-     enif_make_double(env, objY),
-     enif_make_double(env, objZ),
-     enif_make_double(env, objW) );
-  enif_send(NULL, self, env,
-   enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
-}
-
-static void ecb_glClearIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat c;
   if(!egl_get_float(env, argv[0],  &c)) Badarg(5037,"c");
   weglClearIndex(c);
 }
 
-static void ecb_glClearColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampf red;
   GLclampf green;
@@ -789,21 +46,21 @@ static void ecb_glClearColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglClearColor(red,green,blue,alpha);
 }
 
-static void ecb_glClear(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClear(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbitfield mask;
   if(!enif_get_uint(env, argv[0],  &mask)) Badarg(5039,"mask");
   weglClear(mask);
 }
 
-static void ecb_glIndexMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint mask;
   if(!enif_get_uint(env, argv[0],  &mask)) Badarg(5040,"mask");
   weglIndexMask(mask);
 }
 
-static void ecb_glColorMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean red;
   GLboolean green;
@@ -816,7 +73,7 @@ static void ecb_glColorMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglColorMask(red,green,blue,alpha);
 }
 
-static void ecb_glAlphaFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glAlphaFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum func;
   GLclampf ref;
@@ -825,7 +82,7 @@ static void ecb_glAlphaFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglAlphaFunc(func,ref);
 }
 
-static void ecb_glBlendFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum sfactor;
   GLenum dfactor;
@@ -834,42 +91,42 @@ static void ecb_glBlendFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglBlendFunc(sfactor,dfactor);
 }
 
-static void ecb_glLogicOp(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLogicOp(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum opcode;
   if(!enif_get_uint(env, argv[0],  &opcode)) Badarg(5044,"opcode");
   weglLogicOp(opcode);
 }
 
-static void ecb_glCullFace(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCullFace(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5045,"mode");
   weglCullFace(mode);
 }
 
-static void ecb_glFrontFace(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFrontFace(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5046,"mode");
   weglFrontFace(mode);
 }
 
-static void ecb_glPointSize(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPointSize(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat size;
   if(!egl_get_float(env, argv[0],  &size)) Badarg(5047,"size");
   weglPointSize(size);
 }
 
-static void ecb_glLineWidth(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLineWidth(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat width;
   if(!egl_get_float(env, argv[0],  &width)) Badarg(5048,"width");
   weglLineWidth(width);
 }
 
-static void ecb_glLineStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLineStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint factor;
   GLushort pattern;
@@ -878,7 +135,7 @@ static void ecb_glLineStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglLineStipple(factor,pattern);
 }
 
-static void ecb_glPolygonMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPolygonMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum mode;
@@ -887,7 +144,7 @@ static void ecb_glPolygonMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglPolygonMode(face,mode);
 }
 
-static void ecb_glPolygonOffset(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPolygonOffset(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat factor;
   GLfloat units;
@@ -896,14 +153,14 @@ static void ecb_glPolygonOffset(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglPolygonOffset(factor,units);
 }
 
-static void ecb_glPolygonStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPolygonStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ErlNifBinary mask;
   if(!enif_inspect_binary(env, argv[0], &mask)) Badarg(5052,"mask");
   weglPolygonStipple((GLubyte *) mask.data);
 }
 
-static void ecb_glGetPolygonStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetPolygonStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   ErlNifBinary mask;
@@ -914,14 +171,14 @@ static void ecb_glGetPolygonStipple(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glEdgeFlag(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEdgeFlag(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean flag;
   if(!egl_get_ubyte(env, argv[0],  &flag)) Badarg(5054,"flag");
   weglEdgeFlag(flag);
 }
 
-static void ecb_glScissor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glScissor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -934,7 +191,7 @@ static void ecb_glScissor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglScissor(x,y,width,height);
 }
 
-static void ecb_glClipPlane(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClipPlane(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum plane;
   GLdouble equation[4];
@@ -954,7 +211,7 @@ static void ecb_glClipPlane(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglClipPlane(plane,equation);
 }
 
-static void ecb_glGetClipPlane(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetClipPlane(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum plane;
@@ -970,35 +227,35 @@ static void ecb_glGetClipPlane(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDrawBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5058,"mode");
   weglDrawBuffer(mode);
 }
 
-static void ecb_glReadBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glReadBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5059,"mode");
   weglReadBuffer(mode);
 }
 
-static void ecb_glEnable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEnable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum cap;
   if(!enif_get_uint(env, argv[0],  &cap)) Badarg(5060,"cap");
   weglEnable(cap);
 }
 
-static void ecb_glDisable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDisable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum cap;
   if(!enif_get_uint(env, argv[0],  &cap)) Badarg(5061,"cap");
   weglDisable(cap);
 }
 
-static void ecb_glIsEnabled(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsEnabled(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -1010,21 +267,21 @@ static void ecb_glIsEnabled(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glEnableClientState(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEnableClientState(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum cap;
   if(!enif_get_uint(env, argv[0],  &cap)) Badarg(5063,"cap");
   weglEnableClientState(cap);
 }
 
-static void ecb_glDisableClientState(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDisableClientState(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum cap;
   if(!enif_get_uint(env, argv[0],  &cap)) Badarg(5064,"cap");
   weglDisableClientState(cap);
 }
 
-static void ecb_glGetBooleanv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetBooleanv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum pname;
@@ -1040,7 +297,7 @@ static void ecb_glGetBooleanv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetDoublev(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetDoublev(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum pname;
@@ -1056,7 +313,7 @@ static void ecb_glGetDoublev(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetFloatv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetFloatv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum pname;
@@ -1072,7 +329,7 @@ static void ecb_glGetFloatv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetIntegerv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetIntegerv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum pname;
@@ -1088,31 +345,31 @@ static void ecb_glGetIntegerv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glPushAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPushAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbitfield mask;
   if(!enif_get_uint(env, argv[0],  &mask)) Badarg(5069,"mask");
   weglPushAttrib(mask);
 }
 
-static void ecb_glPopAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPopAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglPopAttrib();
 }
 
-static void ecb_glPushClientAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPushClientAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbitfield mask;
   if(!enif_get_uint(env, argv[0],  &mask)) Badarg(5071,"mask");
   weglPushClientAttrib(mask);
 }
 
-static void ecb_glPopClientAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPopClientAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglPopClientAttrib();
 }
 
-static void ecb_glRenderMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRenderMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -1124,7 +381,7 @@ static void ecb_glRenderMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetError(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetError(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum result;
   ERL_NIF_TERM reply;
@@ -1134,7 +391,7 @@ static void ecb_glGetError(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetString(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetString(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   const GLubyte *  result;
   ERL_NIF_TERM reply;
@@ -1146,17 +403,17 @@ static void ecb_glGetString(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glFinish(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFinish(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglFinish();
 }
 
-static void ecb_glFlush(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFlush(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglFlush();
 }
 
-static void ecb_glHint(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glHint(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum mode;
@@ -1165,28 +422,28 @@ static void ecb_glHint(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglHint(target,mode);
 }
 
-static void ecb_glClearDepth(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearDepth(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampd depth;
   if(!enif_get_double(env, argv[0],  &depth)) Badarg(5079,"depth");
   weglClearDepth(depth);
 }
 
-static void ecb_glDepthFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum func;
   if(!enif_get_uint(env, argv[0],  &func)) Badarg(5080,"func");
   weglDepthFunc(func);
 }
 
-static void ecb_glDepthMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean flag;
   if(!egl_get_ubyte(env, argv[0],  &flag)) Badarg(5081,"flag");
   weglDepthMask(flag);
 }
 
-static void ecb_glDepthRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampd near_val;
   GLclampd far_val;
@@ -1195,7 +452,7 @@ static void ecb_glDepthRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglDepthRange(near_val,far_val);
 }
 
-static void ecb_glClearAccum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearAccum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat red;
   GLfloat green;
@@ -1208,7 +465,7 @@ static void ecb_glClearAccum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglClearAccum(red,green,blue,alpha);
 }
 
-static void ecb_glAccum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glAccum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum op;
   GLfloat value;
@@ -1217,14 +474,14 @@ static void ecb_glAccum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglAccum(op,value);
 }
 
-static void ecb_glMatrixMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMatrixMode(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5085,"mode");
   weglMatrixMode(mode);
 }
 
-static void ecb_glOrtho(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glOrtho(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble left;
   GLdouble right;
@@ -1241,7 +498,7 @@ static void ecb_glOrtho(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglOrtho(left,right,bottom,top,near_val,far_val);
 }
 
-static void ecb_glFrustum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFrustum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble left;
   GLdouble right;
@@ -1258,7 +515,7 @@ static void ecb_glFrustum(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglFrustum(left,right,bottom,top,near_val,far_val);
 }
 
-static void ecb_glViewport(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glViewport(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -1271,22 +528,22 @@ static void ecb_glViewport(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglViewport(x,y,width,height);
 }
 
-static void ecb_glPushMatrix(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPushMatrix(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglPushMatrix();
 }
 
-static void ecb_glPopMatrix(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPopMatrix(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglPopMatrix();
 }
 
-static void ecb_glLoadIdentity(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadIdentity(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglLoadIdentity();
 }
 
-static void ecb_glLoadMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble m[16];
   {
@@ -1324,7 +581,7 @@ static void ecb_glLoadMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglLoadMatrixd(m);
 }
 
-static void ecb_glLoadMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat m[16];
   {
@@ -1362,7 +619,7 @@ static void ecb_glLoadMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglLoadMatrixf(m);
 }
 
-static void ecb_glMultMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble m[16];
   {
@@ -1400,7 +657,7 @@ static void ecb_glMultMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglMultMatrixd(m);
 }
 
-static void ecb_glMultMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat m[16];
   {
@@ -1438,7 +695,7 @@ static void ecb_glMultMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglMultMatrixf(m);
 }
 
-static void ecb_glRotated(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRotated(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble angle;
   GLdouble x;
@@ -1451,7 +708,7 @@ static void ecb_glRotated(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRotated(angle,x,y,z);
 }
 
-static void ecb_glRotatef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRotatef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat angle;
   GLfloat x;
@@ -1464,7 +721,7 @@ static void ecb_glRotatef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRotatef(angle,x,y,z);
 }
 
-static void ecb_glScaled(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glScaled(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -1475,7 +732,7 @@ static void ecb_glScaled(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglScaled(x,y,z);
 }
 
-static void ecb_glScalef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glScalef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -1486,7 +743,7 @@ static void ecb_glScalef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglScalef(x,y,z);
 }
 
-static void ecb_glTranslated(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTranslated(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -1497,7 +754,7 @@ static void ecb_glTranslated(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTranslated(x,y,z);
 }
 
-static void ecb_glTranslatef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTranslatef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -1508,7 +765,7 @@ static void ecb_glTranslatef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTranslatef(x,y,z);
 }
 
-static void ecb_glIsList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -1520,7 +777,7 @@ static void ecb_glIsList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDeleteLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint list;
   GLsizei range;
@@ -1529,7 +786,7 @@ static void ecb_glDeleteLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglDeleteLists(list,range);
 }
 
-static void ecb_glGenLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -1541,7 +798,7 @@ static void ecb_glGenLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glNewList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNewList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint list;
   GLenum mode;
@@ -1550,19 +807,19 @@ static void ecb_glNewList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglNewList(list,mode);
 }
 
-static void ecb_glEndList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEndList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglEndList();
 }
 
-static void ecb_glCallList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCallList(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint list;
   if(!enif_get_uint(env, argv[0],  &list)) Badarg(5107,"list");
   weglCallList(list);
 }
 
-static void ecb_glCallLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCallLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int lists_free = 0;
@@ -1584,26 +841,26 @@ static void ecb_glCallLists(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
  if(lists_free) enif_free(lists);
 }
 
-static void ecb_glListBase(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glListBase(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint base;
   if(!enif_get_uint(env, argv[0],  &base)) Badarg(5109,"base");
   weglListBase(base);
 }
 
-static void ecb_glBegin(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBegin(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5110,"mode");
   weglBegin(mode);
 }
 
-static void ecb_glEnd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEnd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglEnd();
 }
 
-static void ecb_glVertex2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -1612,7 +869,7 @@ static void ecb_glVertex2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex2d(x,y);
 }
 
-static void ecb_glVertex2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -1621,7 +878,7 @@ static void ecb_glVertex2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex2f(x,y);
 }
 
-static void ecb_glVertex2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -1630,7 +887,7 @@ static void ecb_glVertex2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex2i(x,y);
 }
 
-static void ecb_glVertex2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -1639,7 +896,7 @@ static void ecb_glVertex2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex2s(x,y);
 }
 
-static void ecb_glVertex3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -1650,7 +907,7 @@ static void ecb_glVertex3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex3d(x,y,z);
 }
 
-static void ecb_glVertex3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -1661,7 +918,7 @@ static void ecb_glVertex3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex3f(x,y,z);
 }
 
-static void ecb_glVertex3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -1672,7 +929,7 @@ static void ecb_glVertex3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex3i(x,y,z);
 }
 
-static void ecb_glVertex3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -1683,7 +940,7 @@ static void ecb_glVertex3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex3s(x,y,z);
 }
 
-static void ecb_glVertex4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -1696,7 +953,7 @@ static void ecb_glVertex4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex4d(x,y,z,w);
 }
 
-static void ecb_glVertex4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -1709,7 +966,7 @@ static void ecb_glVertex4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex4f(x,y,z,w);
 }
 
-static void ecb_glVertex4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -1722,7 +979,7 @@ static void ecb_glVertex4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex4i(x,y,z,w);
 }
 
-static void ecb_glVertex4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertex4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -1735,7 +992,7 @@ static void ecb_glVertex4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglVertex4s(x,y,z,w);
 }
 
-static void ecb_glNormal3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNormal3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbyte nx;
   GLbyte ny;
@@ -1746,7 +1003,7 @@ static void ecb_glNormal3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglNormal3b(nx,ny,nz);
 }
 
-static void ecb_glNormal3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNormal3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble nx;
   GLdouble ny;
@@ -1757,7 +1014,7 @@ static void ecb_glNormal3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglNormal3d(nx,ny,nz);
 }
 
-static void ecb_glNormal3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNormal3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat nx;
   GLfloat ny;
@@ -1768,7 +1025,7 @@ static void ecb_glNormal3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglNormal3f(nx,ny,nz);
 }
 
-static void ecb_glNormal3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNormal3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint nx;
   GLint ny;
@@ -1779,7 +1036,7 @@ static void ecb_glNormal3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglNormal3i(nx,ny,nz);
 }
 
-static void ecb_glNormal3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNormal3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort nx;
   GLshort ny;
@@ -1790,42 +1047,42 @@ static void ecb_glNormal3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglNormal3s(nx,ny,nz);
 }
 
-static void ecb_glIndexd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble c;
   if(!enif_get_double(env, argv[0],  &c)) Badarg(5129,"c");
   weglIndexd(c);
 }
 
-static void ecb_glIndexf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat c;
   if(!egl_get_float(env, argv[0],  &c)) Badarg(5130,"c");
   weglIndexf(c);
 }
 
-static void ecb_glIndexi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint c;
   if(!enif_get_int(env, argv[0],  &c)) Badarg(5131,"c");
   weglIndexi(c);
 }
 
-static void ecb_glIndexs(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexs(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort c;
   if(!egl_get_short(env, argv[0],  &c)) Badarg(5132,"c");
   weglIndexs(c);
 }
 
-static void ecb_glIndexub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLubyte c;
   if(!egl_get_ubyte(env, argv[0],  &c)) Badarg(5133,"c");
   weglIndexub(c);
 }
 
-static void ecb_glColor3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbyte red;
   GLbyte green;
@@ -1836,7 +1093,7 @@ static void ecb_glColor3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3b(red,green,blue);
 }
 
-static void ecb_glColor3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble red;
   GLdouble green;
@@ -1847,7 +1104,7 @@ static void ecb_glColor3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3d(red,green,blue);
 }
 
-static void ecb_glColor3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat red;
   GLfloat green;
@@ -1858,7 +1115,7 @@ static void ecb_glColor3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3f(red,green,blue);
 }
 
-static void ecb_glColor3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint red;
   GLint green;
@@ -1869,7 +1126,7 @@ static void ecb_glColor3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3i(red,green,blue);
 }
 
-static void ecb_glColor3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort red;
   GLshort green;
@@ -1880,7 +1137,7 @@ static void ecb_glColor3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3s(red,green,blue);
 }
 
-static void ecb_glColor3ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLubyte red;
   GLubyte green;
@@ -1891,7 +1148,7 @@ static void ecb_glColor3ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3ub(red,green,blue);
 }
 
-static void ecb_glColor3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint red;
   GLuint green;
@@ -1902,7 +1159,7 @@ static void ecb_glColor3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3ui(red,green,blue);
 }
 
-static void ecb_glColor3us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor3us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLushort red;
   GLushort green;
@@ -1913,7 +1170,7 @@ static void ecb_glColor3us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor3us(red,green,blue);
 }
 
-static void ecb_glColor4b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbyte red;
   GLbyte green;
@@ -1926,7 +1183,7 @@ static void ecb_glColor4b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4b(red,green,blue,alpha);
 }
 
-static void ecb_glColor4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble red;
   GLdouble green;
@@ -1939,7 +1196,7 @@ static void ecb_glColor4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4d(red,green,blue,alpha);
 }
 
-static void ecb_glColor4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat red;
   GLfloat green;
@@ -1952,7 +1209,7 @@ static void ecb_glColor4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4f(red,green,blue,alpha);
 }
 
-static void ecb_glColor4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint red;
   GLint green;
@@ -1965,7 +1222,7 @@ static void ecb_glColor4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4i(red,green,blue,alpha);
 }
 
-static void ecb_glColor4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort red;
   GLshort green;
@@ -1978,7 +1235,7 @@ static void ecb_glColor4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4s(red,green,blue,alpha);
 }
 
-static void ecb_glColor4ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLubyte red;
   GLubyte green;
@@ -1991,7 +1248,7 @@ static void ecb_glColor4ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4ub(red,green,blue,alpha);
 }
 
-static void ecb_glColor4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint red;
   GLuint green;
@@ -2004,7 +1261,7 @@ static void ecb_glColor4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4ui(red,green,blue,alpha);
 }
 
-static void ecb_glColor4us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColor4us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLushort red;
   GLushort green;
@@ -2017,35 +1274,35 @@ static void ecb_glColor4us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglColor4us(red,green,blue,alpha);
 }
 
-static void ecb_glTexCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble s;
   if(!enif_get_double(env, argv[0],  &s)) Badarg(5150,"s");
   weglTexCoord1d(s);
 }
 
-static void ecb_glTexCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat s;
   if(!egl_get_float(env, argv[0],  &s)) Badarg(5151,"s");
   weglTexCoord1f(s);
 }
 
-static void ecb_glTexCoord1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint s;
   if(!enif_get_int(env, argv[0],  &s)) Badarg(5152,"s");
   weglTexCoord1i(s);
 }
 
-static void ecb_glTexCoord1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort s;
   if(!egl_get_short(env, argv[0],  &s)) Badarg(5153,"s");
   weglTexCoord1s(s);
 }
 
-static void ecb_glTexCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble s;
   GLdouble t;
@@ -2054,7 +1311,7 @@ static void ecb_glTexCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord2d(s,t);
 }
 
-static void ecb_glTexCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat s;
   GLfloat t;
@@ -2063,7 +1320,7 @@ static void ecb_glTexCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord2f(s,t);
 }
 
-static void ecb_glTexCoord2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint s;
   GLint t;
@@ -2072,7 +1329,7 @@ static void ecb_glTexCoord2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord2i(s,t);
 }
 
-static void ecb_glTexCoord2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort s;
   GLshort t;
@@ -2081,7 +1338,7 @@ static void ecb_glTexCoord2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord2s(s,t);
 }
 
-static void ecb_glTexCoord3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble s;
   GLdouble t;
@@ -2092,7 +1349,7 @@ static void ecb_glTexCoord3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord3d(s,t,r);
 }
 
-static void ecb_glTexCoord3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat s;
   GLfloat t;
@@ -2103,7 +1360,7 @@ static void ecb_glTexCoord3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord3f(s,t,r);
 }
 
-static void ecb_glTexCoord3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint s;
   GLint t;
@@ -2114,7 +1371,7 @@ static void ecb_glTexCoord3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord3i(s,t,r);
 }
 
-static void ecb_glTexCoord3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort s;
   GLshort t;
@@ -2125,7 +1382,7 @@ static void ecb_glTexCoord3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord3s(s,t,r);
 }
 
-static void ecb_glTexCoord4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble s;
   GLdouble t;
@@ -2138,7 +1395,7 @@ static void ecb_glTexCoord4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord4d(s,t,r,q);
 }
 
-static void ecb_glTexCoord4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat s;
   GLfloat t;
@@ -2151,7 +1408,7 @@ static void ecb_glTexCoord4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord4f(s,t,r,q);
 }
 
-static void ecb_glTexCoord4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint s;
   GLint t;
@@ -2164,7 +1421,7 @@ static void ecb_glTexCoord4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord4i(s,t,r,q);
 }
 
-static void ecb_glTexCoord4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoord4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort s;
   GLshort t;
@@ -2177,7 +1434,7 @@ static void ecb_glTexCoord4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexCoord4s(s,t,r,q);
 }
 
-static void ecb_glRasterPos2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -2186,7 +1443,7 @@ static void ecb_glRasterPos2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos2d(x,y);
 }
 
-static void ecb_glRasterPos2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -2195,7 +1452,7 @@ static void ecb_glRasterPos2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos2f(x,y);
 }
 
-static void ecb_glRasterPos2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -2204,7 +1461,7 @@ static void ecb_glRasterPos2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos2i(x,y);
 }
 
-static void ecb_glRasterPos2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -2213,7 +1470,7 @@ static void ecb_glRasterPos2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos2s(x,y);
 }
 
-static void ecb_glRasterPos3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -2224,7 +1481,7 @@ static void ecb_glRasterPos3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos3d(x,y,z);
 }
 
-static void ecb_glRasterPos3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -2235,7 +1492,7 @@ static void ecb_glRasterPos3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos3f(x,y,z);
 }
 
-static void ecb_glRasterPos3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -2246,7 +1503,7 @@ static void ecb_glRasterPos3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos3i(x,y,z);
 }
 
-static void ecb_glRasterPos3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -2257,7 +1514,7 @@ static void ecb_glRasterPos3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos3s(x,y,z);
 }
 
-static void ecb_glRasterPos4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -2270,7 +1527,7 @@ static void ecb_glRasterPos4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos4d(x,y,z,w);
 }
 
-static void ecb_glRasterPos4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -2283,7 +1540,7 @@ static void ecb_glRasterPos4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos4f(x,y,z,w);
 }
 
-static void ecb_glRasterPos4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -2296,7 +1553,7 @@ static void ecb_glRasterPos4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos4i(x,y,z,w);
 }
 
-static void ecb_glRasterPos4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRasterPos4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -2309,7 +1566,7 @@ static void ecb_glRasterPos4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglRasterPos4s(x,y,z,w);
 }
 
-static void ecb_glRectd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRectd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x1;
   GLdouble y1;
@@ -2322,7 +1579,7 @@ static void ecb_glRectd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRectd(x1,y1,x2,y2);
 }
 
-static void ecb_glRectf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRectf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x1;
   GLfloat y1;
@@ -2335,7 +1592,7 @@ static void ecb_glRectf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRectf(x1,y1,x2,y2);
 }
 
-static void ecb_glRecti(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRecti(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x1;
   GLint y1;
@@ -2348,7 +1605,7 @@ static void ecb_glRecti(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRecti(x1,y1,x2,y2);
 }
 
-static void ecb_glRects(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRects(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x1;
   GLshort y1;
@@ -2361,7 +1618,7 @@ static void ecb_glRects(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRects(x1,y1,x2,y2);
 }
 
-static void ecb_glRectdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRectdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble v1[2];
   GLdouble v2[2];
@@ -2388,7 +1645,7 @@ static void ecb_glRectdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRectdv(v1,v2);
 }
 
-static void ecb_glRectfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRectfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat v1[2];
   GLfloat v2[2];
@@ -2415,7 +1672,7 @@ static void ecb_glRectfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRectfv(v1,v2);
 }
 
-static void ecb_glRectiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRectiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint v1[2];
   GLint v2[2];
@@ -2442,7 +1699,7 @@ static void ecb_glRectiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRectiv(v1,v2);
 }
 
-static void ecb_glRectsv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRectsv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort v1[2];
   GLshort v2[2];
@@ -2469,7 +1726,7 @@ static void ecb_glRectsv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglRectsv(v1,v2);
 }
 
-static void ecb_glVertexPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   GLenum type;
@@ -2487,7 +1744,7 @@ static void ecb_glVertexPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglVertexPointer(size,type,stride,ptr_idx);
 }
 
-static void ecb_glNormalPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNormalPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum type;
   GLsizei stride;
@@ -2503,7 +1760,7 @@ static void ecb_glNormalPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglNormalPointer(type,stride,ptr_idx);
 }
 
-static void ecb_glColorPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   GLenum type;
@@ -2521,7 +1778,7 @@ static void ecb_glColorPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglColorPointer(size,type,stride,ptr_idx);
 }
 
-static void ecb_glIndexPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIndexPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum type;
   GLsizei stride;
@@ -2537,7 +1794,7 @@ static void ecb_glIndexPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglIndexPointer(type,stride,ptr_idx);
 }
 
-static void ecb_glTexCoordPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexCoordPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   GLenum type;
@@ -2555,7 +1812,7 @@ static void ecb_glTexCoordPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglTexCoordPointer(size,type,stride,ptr_idx);
 }
 
-static void ecb_glEdgeFlagPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEdgeFlagPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei stride;
   ErlNifBinary ptr;
@@ -2569,14 +1826,14 @@ static void ecb_glEdgeFlagPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglEdgeFlagPointer(stride,ptr_idx);
 }
 
-static void ecb_glArrayElement(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glArrayElement(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint i;
   if(!enif_get_int(env, argv[0],  &i)) Badarg(5198,"i");
   weglArrayElement(i);
 }
 
-static void ecb_glDrawArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLint first;
@@ -2587,7 +1844,7 @@ static void ecb_glDrawArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglDrawArrays(mode,first,count);
 }
 
-static void ecb_glDrawElements(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElements(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLsizei count;
@@ -2605,7 +1862,7 @@ static void ecb_glDrawElements(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglDrawElements(mode,count,type,indices_idx);
 }
 
-static void ecb_glInterleavedArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glInterleavedArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum format;
   GLsizei stride;
@@ -2621,14 +1878,14 @@ static void ecb_glInterleavedArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglInterleavedArrays(format,stride,pointer_idx);
 }
 
-static void ecb_glShadeModel(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glShadeModel(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5204,"mode");
   weglShadeModel(mode);
 }
 
-static void ecb_glLightf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum light;
   GLenum pname;
@@ -2639,7 +1896,7 @@ static void ecb_glLightf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglLightf(light,pname,param);
 }
 
-static void ecb_glLighti(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLighti(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum light;
   GLenum pname;
@@ -2650,7 +1907,7 @@ static void ecb_glLighti(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglLighti(light,pname,param);
 }
 
-static void ecb_glLightfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum light;
   GLenum pname;
@@ -2670,7 +1927,7 @@ static void ecb_glLightfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglLightfv(light,pname,params);
 }
 
-static void ecb_glLightiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum light;
   GLenum pname;
@@ -2690,7 +1947,7 @@ static void ecb_glLightiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglLightiv(light,pname,params);
 }
 
-static void ecb_glGetLightfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetLightfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum light;
@@ -2708,7 +1965,7 @@ static void ecb_glGetLightfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetLightiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetLightiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum light;
@@ -2726,7 +1983,7 @@ static void ecb_glGetLightiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glLightModelf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightModelf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat param;
@@ -2735,7 +1992,7 @@ static void ecb_glLightModelf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglLightModelf(pname,param);
 }
 
-static void ecb_glLightModeli(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightModeli(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint param;
@@ -2744,7 +2001,7 @@ static void ecb_glLightModeli(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglLightModeli(pname,param);
 }
 
-static void ecb_glLightModelfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightModelfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat params[4];
@@ -2762,7 +2019,7 @@ static void ecb_glLightModelfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglLightModelfv(pname,params);
 }
 
-static void ecb_glLightModeliv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLightModeliv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint params[4];
@@ -2780,7 +2037,7 @@ static void ecb_glLightModeliv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglLightModeliv(pname,params);
 }
 
-static void ecb_glMaterialf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMaterialf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum pname;
@@ -2791,7 +2048,7 @@ static void ecb_glMaterialf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglMaterialf(face,pname,param);
 }
 
-static void ecb_glMateriali(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMateriali(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum pname;
@@ -2802,7 +2059,7 @@ static void ecb_glMateriali(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglMateriali(face,pname,param);
 }
 
-static void ecb_glMaterialfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMaterialfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum pname;
@@ -2822,7 +2079,7 @@ static void ecb_glMaterialfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglMaterialfv(face,pname,params);
 }
 
-static void ecb_glMaterialiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMaterialiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum pname;
@@ -2842,7 +2099,7 @@ static void ecb_glMaterialiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglMaterialiv(face,pname,params);
 }
 
-static void ecb_glGetMaterialfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMaterialfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum face;
@@ -2860,7 +2117,7 @@ static void ecb_glGetMaterialfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetMaterialiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMaterialiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum face;
@@ -2878,7 +2135,7 @@ static void ecb_glGetMaterialiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glColorMaterial(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorMaterial(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum mode;
@@ -2887,7 +2144,7 @@ static void ecb_glColorMaterial(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglColorMaterial(face,mode);
 }
 
-static void ecb_glPixelZoom(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelZoom(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat xfactor;
   GLfloat yfactor;
@@ -2896,7 +2153,7 @@ static void ecb_glPixelZoom(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglPixelZoom(xfactor,yfactor);
 }
 
-static void ecb_glPixelStoref(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelStoref(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat param;
@@ -2905,7 +2162,7 @@ static void ecb_glPixelStoref(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglPixelStoref(pname,param);
 }
 
-static void ecb_glPixelStorei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelStorei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint param;
@@ -2914,7 +2171,7 @@ static void ecb_glPixelStorei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglPixelStorei(pname,param);
 }
 
-static void ecb_glPixelTransferf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelTransferf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat param;
@@ -2923,7 +2180,7 @@ static void ecb_glPixelTransferf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglPixelTransferf(pname,param);
 }
 
-static void ecb_glPixelTransferi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelTransferi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint param;
@@ -2932,7 +2189,7 @@ static void ecb_glPixelTransferi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglPixelTransferi(pname,param);
 }
 
-static void ecb_glPixelMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum map;
   GLsizei mapsize;
@@ -2943,7 +2200,7 @@ static void ecb_glPixelMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglPixelMapfv(map,mapsize,(GLfloat *) values.data);
 }
 
-static void ecb_glPixelMapuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelMapuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum map;
   GLsizei mapsize;
@@ -2954,7 +2211,7 @@ static void ecb_glPixelMapuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglPixelMapuiv(map,mapsize,(GLuint *) values.data);
 }
 
-static void ecb_glPixelMapusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPixelMapusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum map;
   GLsizei mapsize;
@@ -2965,7 +2222,7 @@ static void ecb_glPixelMapusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglPixelMapusv(map,mapsize,(GLushort *) values.data);
 }
 
-static void ecb_glGetPixelMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetPixelMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum map;
   ErlNifBinary values;
@@ -2986,7 +2243,7 @@ static void ecb_glGetPixelMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetPixelMapuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetPixelMapuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum map;
   ErlNifBinary values;
@@ -3007,7 +2264,7 @@ static void ecb_glGetPixelMapuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetPixelMapusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetPixelMapusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum map;
   ErlNifBinary values;
@@ -3028,7 +2285,7 @@ static void ecb_glGetPixelMapusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
                          EGL_ATOM_OK));
 }
 
-static void ecb_glBitmap(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBitmap(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei width;
   GLsizei height;
@@ -3052,7 +2309,7 @@ static void ecb_glBitmap(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglBitmap(width,height,xorig,yorig,xmove,ymove,bitmap_idx);
 }
 
-static void ecb_glReadPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glReadPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -3083,7 +2340,7 @@ static void ecb_glReadPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
                          EGL_ATOM_OK));
 }
 
-static void ecb_glDrawPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei width;
   GLsizei height;
@@ -3103,7 +2360,7 @@ static void ecb_glDrawPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglDrawPixels(width,height,format,type,pixels_idx);
 }
 
-static void ecb_glCopyPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -3118,7 +2375,7 @@ static void ecb_glCopyPixels(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglCopyPixels(x,y,width,height,type);
 }
 
-static void ecb_glStencilFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum func;
   GLint ref;
@@ -3129,14 +2386,14 @@ static void ecb_glStencilFunc(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglStencilFunc(func,ref,mask);
 }
 
-static void ecb_glStencilMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilMask(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint mask;
   if(!enif_get_uint(env, argv[0],  &mask)) Badarg(5240,"mask");
   weglStencilMask(mask);
 }
 
-static void ecb_glStencilOp(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilOp(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum fail;
   GLenum zfail;
@@ -3147,14 +2404,14 @@ static void ecb_glStencilOp(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglStencilOp(fail,zfail,zpass);
 }
 
-static void ecb_glClearStencil(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearStencil(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint s;
   if(!enif_get_int(env, argv[0],  &s)) Badarg(5242,"s");
   weglClearStencil(s);
 }
 
-static void ecb_glTexGend(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexGend(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum coord;
   GLenum pname;
@@ -3165,7 +2422,7 @@ static void ecb_glTexGend(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexGend(coord,pname,param);
 }
 
-static void ecb_glTexGenf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexGenf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum coord;
   GLenum pname;
@@ -3176,7 +2433,7 @@ static void ecb_glTexGenf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexGenf(coord,pname,param);
 }
 
-static void ecb_glTexGeni(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexGeni(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum coord;
   GLenum pname;
@@ -3187,7 +2444,7 @@ static void ecb_glTexGeni(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexGeni(coord,pname,param);
 }
 
-static void ecb_glTexGendv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexGendv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum coord;
   GLenum pname;
@@ -3207,7 +2464,7 @@ static void ecb_glTexGendv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexGendv(coord,pname,params);
 }
 
-static void ecb_glTexGenfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexGenfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum coord;
   GLenum pname;
@@ -3227,7 +2484,7 @@ static void ecb_glTexGenfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexGenfv(coord,pname,params);
 }
 
-static void ecb_glTexGeniv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexGeniv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum coord;
   GLenum pname;
@@ -3247,7 +2504,7 @@ static void ecb_glTexGeniv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexGeniv(coord,pname,params);
 }
 
-static void ecb_glGetTexGendv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexGendv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum coord;
@@ -3265,7 +2522,7 @@ static void ecb_glGetTexGendv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexGenfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexGenfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum coord;
@@ -3283,7 +2540,7 @@ static void ecb_glGetTexGenfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexGeniv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexGeniv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum coord;
@@ -3301,7 +2558,7 @@ static void ecb_glGetTexGeniv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glTexEnvf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexEnvf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3312,7 +2569,7 @@ static void ecb_glTexEnvf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexEnvf(target,pname,param);
 }
 
-static void ecb_glTexEnvi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexEnvi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3323,7 +2580,7 @@ static void ecb_glTexEnvi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexEnvi(target,pname,param);
 }
 
-static void ecb_glTexEnvfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexEnvfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3343,7 +2600,7 @@ static void ecb_glTexEnvfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexEnvfv(target,pname,params);
 }
 
-static void ecb_glTexEnviv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexEnviv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3363,7 +2620,7 @@ static void ecb_glTexEnviv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglTexEnviv(target,pname,params);
 }
 
-static void ecb_glGetTexEnvfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexEnvfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -3381,7 +2638,7 @@ static void ecb_glGetTexEnvfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexEnviv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexEnviv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -3399,7 +2656,7 @@ static void ecb_glGetTexEnviv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glTexParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3410,7 +2667,7 @@ static void ecb_glTexParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglTexParameterf(target,pname,param);
 }
 
-static void ecb_glTexParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3421,7 +2678,7 @@ static void ecb_glTexParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglTexParameteri(target,pname,param);
 }
 
-static void ecb_glTexParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3441,7 +2698,7 @@ static void ecb_glTexParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglTexParameterfv(target,pname,params);
 }
 
-static void ecb_glTexParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -3461,7 +2718,7 @@ static void ecb_glTexParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglTexParameteriv(target,pname,params);
 }
 
-static void ecb_glGetTexParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -3479,7 +2736,7 @@ static void ecb_glGetTexParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -3497,7 +2754,7 @@ static void ecb_glGetTexParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexLevelParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexLevelParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -3514,7 +2771,7 @@ static void ecb_glGetTexLevelParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NI
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexLevelParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexLevelParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -3531,7 +2788,7 @@ static void ecb_glGetTexLevelParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NI
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3557,7 +2814,7 @@ static void ecb_glTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexImage1D(target,level,internalFormat,width,border,format,type,pixels_idx);
 }
 
-static void ecb_glTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3585,7 +2842,7 @@ static void ecb_glTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexImage2D(target,level,internalFormat,width,height,border,format,type,pixels_idx);
 }
 
-static void ecb_glGetTexImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3612,7 +2869,7 @@ static void ecb_glGetTexImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGenTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -3632,7 +2889,7 @@ static void ecb_glGenTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  enif_free(textures);
 }
 
-static void ecb_glDeleteTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int textures_free = 0;
@@ -3654,7 +2911,7 @@ static void ecb_glDeleteTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
  if(textures_free) enif_free(textures);
 }
 
-static void ecb_glBindTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint texture;
@@ -3663,7 +2920,7 @@ static void ecb_glBindTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglBindTexture(target,texture);
 }
 
-static void ecb_glPrioritizeTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPrioritizeTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int textures_free = 0;
@@ -3702,7 +2959,7 @@ static void ecb_glPrioritizeTextures(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  if(textures_free) enif_free(textures);
 }
 
-static void ecb_glAreTexturesResident(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glAreTexturesResident(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -3740,7 +2997,7 @@ static void ecb_glAreTexturesResident(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  if(textures_free) enif_free(textures);
 }
 
-static void ecb_glIsTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -3752,7 +3009,7 @@ static void ecb_glIsTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3776,7 +3033,7 @@ static void ecb_glTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglTexSubImage1D(target,level,xoffset,width,format,type,pixels_idx);
 }
 
-static void ecb_glTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3804,7 +3061,7 @@ static void ecb_glTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,pixels_idx);
 }
 
-static void ecb_glCopyTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3823,7 +3080,7 @@ static void ecb_glCopyTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglCopyTexImage1D(target,level,internalformat,x,y,width,border);
 }
 
-static void ecb_glCopyTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3844,7 +3101,7 @@ static void ecb_glCopyTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglCopyTexImage2D(target,level,internalformat,x,y,width,height,border);
 }
 
-static void ecb_glCopyTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3861,7 +3118,7 @@ static void ecb_glCopyTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglCopyTexSubImage1D(target,level,xoffset,x,y,width);
 }
 
-static void ecb_glCopyTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -3882,7 +3139,7 @@ static void ecb_glCopyTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglCopyTexSubImage2D(target,level,xoffset,yoffset,x,y,width,height);
 }
 
-static void ecb_glMap1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMap1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLdouble u1;
@@ -3899,7 +3156,7 @@ static void ecb_glMap1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglMap1d(target,u1,u2,stride,order,(GLdouble *) points.data);
 }
 
-static void ecb_glMap1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMap1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLfloat u1;
@@ -3916,7 +3173,7 @@ static void ecb_glMap1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglMap1f(target,u1,u2,stride,order,(GLfloat *) points.data);
 }
 
-static void ecb_glMap2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMap2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLdouble u1;
@@ -3941,7 +3198,7 @@ static void ecb_glMap2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglMap2d(target,u1,u2,ustride,uorder,v1,v2,vstride,vorder,(GLdouble *) points.data);
 }
 
-static void ecb_glMap2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMap2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLfloat u1;
@@ -3966,7 +3223,7 @@ static void ecb_glMap2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglMap2f(target,u1,u2,ustride,uorder,v1,v2,vstride,vorder,(GLfloat *) points.data);
 }
 
-static void ecb_glGetMapdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMapdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum query;
@@ -3989,7 +3246,7 @@ static void ecb_glGetMapdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum query;
@@ -4012,7 +3269,7 @@ static void ecb_glGetMapfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetMapiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMapiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum query;
@@ -4035,21 +3292,21 @@ static void ecb_glGetMapiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
                          EGL_ATOM_OK));
 }
 
-static void ecb_glEvalCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble u;
   if(!enif_get_double(env, argv[0],  &u)) Badarg(5292,"u");
   weglEvalCoord1d(u);
 }
 
-static void ecb_glEvalCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat u;
   if(!egl_get_float(env, argv[0],  &u)) Badarg(5293,"u");
   weglEvalCoord1f(u);
 }
 
-static void ecb_glEvalCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble u;
   GLdouble v;
@@ -4058,7 +3315,7 @@ static void ecb_glEvalCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglEvalCoord2d(u,v);
 }
 
-static void ecb_glEvalCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat u;
   GLfloat v;
@@ -4067,7 +3324,7 @@ static void ecb_glEvalCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglEvalCoord2f(u,v);
 }
 
-static void ecb_glMapGrid1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMapGrid1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint un;
   GLdouble u1;
@@ -4078,7 +3335,7 @@ static void ecb_glMapGrid1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglMapGrid1d(un,u1,u2);
 }
 
-static void ecb_glMapGrid1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMapGrid1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint un;
   GLfloat u1;
@@ -4089,7 +3346,7 @@ static void ecb_glMapGrid1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglMapGrid1f(un,u1,u2);
 }
 
-static void ecb_glMapGrid2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMapGrid2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint un;
   GLdouble u1;
@@ -4106,7 +3363,7 @@ static void ecb_glMapGrid2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglMapGrid2d(un,u1,u2,vn,v1,v2);
 }
 
-static void ecb_glMapGrid2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMapGrid2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint un;
   GLfloat u1;
@@ -4123,14 +3380,14 @@ static void ecb_glMapGrid2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglMapGrid2f(un,u1,u2,vn,v1,v2);
 }
 
-static void ecb_glEvalPoint1(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalPoint1(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint i;
   if(!enif_get_int(env, argv[0],  &i)) Badarg(5300,"i");
   weglEvalPoint1(i);
 }
 
-static void ecb_glEvalPoint2(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalPoint2(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint i;
   GLint j;
@@ -4139,7 +3396,7 @@ static void ecb_glEvalPoint2(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglEvalPoint2(i,j);
 }
 
-static void ecb_glEvalMesh1(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalMesh1(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLint i1;
@@ -4150,7 +3407,7 @@ static void ecb_glEvalMesh1(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglEvalMesh1(mode,i1,i2);
 }
 
-static void ecb_glEvalMesh2(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEvalMesh2(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLint i1;
@@ -4165,7 +3422,7 @@ static void ecb_glEvalMesh2(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglEvalMesh2(mode,i1,i2,j1,j2);
 }
 
-static void ecb_glFogf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat param;
@@ -4174,7 +3431,7 @@ static void ecb_glFogf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglFogf(pname,param);
 }
 
-static void ecb_glFogi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint param;
@@ -4183,7 +3440,7 @@ static void ecb_glFogi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglFogi(pname,param);
 }
 
-static void ecb_glFogfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat params[4];
@@ -4201,7 +3458,7 @@ static void ecb_glFogfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglFogfv(pname,params);
 }
 
-static void ecb_glFogiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint params[4];
@@ -4219,7 +3476,7 @@ static void ecb_glFogiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglFogiv(pname,params);
 }
 
-static void ecb_glFeedbackBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFeedbackBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei size;
   GLenum type;
@@ -4242,14 +3499,14 @@ static void ecb_glFeedbackBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
                          EGL_ATOM_OK));
 }
 
-static void ecb_glPassThrough(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPassThrough(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat token;
   if(!egl_get_float(env, argv[0],  &token)) Badarg(5309,"token");
   weglPassThrough(token);
 }
 
-static void ecb_glSelectBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSelectBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei size;
   ErlNifBinary buffer;
@@ -4270,31 +3527,31 @@ static void ecb_glSelectBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
                          EGL_ATOM_OK));
 }
 
-static void ecb_glInitNames(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glInitNames(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglInitNames();
 }
 
-static void ecb_glLoadName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint name;
   if(!enif_get_uint(env, argv[0],  &name)) Badarg(5312,"name");
   weglLoadName(name);
 }
 
-static void ecb_glPushName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPushName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint name;
   if(!enif_get_uint(env, argv[0],  &name)) Badarg(5313,"name");
   weglPushName(name);
 }
 
-static void ecb_glPopName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPopName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglPopName();
 }
 
-static void ecb_glBlendColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampf red;
   GLclampf green;
@@ -4307,14 +3564,14 @@ static void ecb_glBlendColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglBlendColor(red,green,blue,alpha);
 }
 
-static void ecb_glBlendEquation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendEquation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5316,"mode");
   weglBlendEquation(mode);
 }
 
-static void ecb_glDrawRangeElements(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawRangeElements(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLuint start;
@@ -4336,7 +3593,7 @@ static void ecb_glDrawRangeElements(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglDrawRangeElements(mode,start,end,count,type,indices_idx);
 }
 
-static void ecb_glTexImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -4366,7 +3623,7 @@ static void ecb_glTexImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglTexImage3D(target,level,internalFormat,width,height,depth,border,format,type,pixels_idx);
 }
 
-static void ecb_glTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -4398,7 +3655,7 @@ static void ecb_glTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,type,pixels_idx);
 }
 
-static void ecb_glCopyTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -4421,7 +3678,7 @@ static void ecb_glCopyTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglCopyTexSubImage3D(target,level,xoffset,yoffset,zoffset,x,y,width,height);
 }
 
-static void ecb_glColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4443,7 +3700,7 @@ static void ecb_glColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglColorTable(target,internalformat,width,format,type,table_idx);
 }
 
-static void ecb_glColorTableParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorTableParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -4465,7 +3722,7 @@ static void ecb_glColorTableParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglColorTableParameterfv(target,pname,params);
 }
 
-static void ecb_glColorTableParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorTableParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -4487,7 +3744,7 @@ static void ecb_glColorTableParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglColorTableParameteriv(target,pname,params);
 }
 
-static void ecb_glCopyColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4502,7 +3759,7 @@ static void ecb_glCopyColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglCopyColorTable(target,internalformat,x,y,width);
 }
 
-static void ecb_glGetColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum format;
@@ -4527,7 +3784,7 @@ static void ecb_glGetColorTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetColorTableParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetColorTableParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4545,7 +3802,7 @@ static void ecb_glGetColorTableParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetColorTableParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetColorTableParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4563,7 +3820,7 @@ static void ecb_glGetColorTableParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glColorSubTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorSubTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei start;
@@ -4585,7 +3842,7 @@ static void ecb_glColorSubTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglColorSubTable(target,start,count,format,type,data_idx);
 }
 
-static void ecb_glCopyColorSubTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyColorSubTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei start;
@@ -4600,7 +3857,7 @@ static void ecb_glCopyColorSubTable(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglCopyColorSubTable(target,start,x,y,width);
 }
 
-static void ecb_glConvolutionFilter1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glConvolutionFilter1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4622,7 +3879,7 @@ static void ecb_glConvolutionFilter1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglConvolutionFilter1D(target,internalformat,width,format,type,image_idx);
 }
 
-static void ecb_glConvolutionFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glConvolutionFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4646,7 +3903,7 @@ static void ecb_glConvolutionFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglConvolutionFilter2D(target,internalformat,width,height,format,type,image_idx);
 }
 
-static void ecb_glConvolutionParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glConvolutionParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -4666,7 +3923,7 @@ static void ecb_glConvolutionParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglConvolutionParameterf(target,pname,params);
 }
 
-static void ecb_glConvolutionParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glConvolutionParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -4686,7 +3943,7 @@ static void ecb_glConvolutionParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NI
   weglConvolutionParameterfv(target,pname,params);
 }
 
-static void ecb_glConvolutionParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glConvolutionParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -4706,7 +3963,7 @@ static void ecb_glConvolutionParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglConvolutionParameteri(target,pname,params);
 }
 
-static void ecb_glConvolutionParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glConvolutionParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -4726,7 +3983,7 @@ static void ecb_glConvolutionParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NI
   weglConvolutionParameteriv(target,pname,params);
 }
 
-static void ecb_glCopyConvolutionFilter1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyConvolutionFilter1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4741,7 +3998,7 @@ static void ecb_glCopyConvolutionFilter1D(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglCopyConvolutionFilter1D(target,internalformat,x,y,width);
 }
 
-static void ecb_glCopyConvolutionFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyConvolutionFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4758,7 +4015,7 @@ static void ecb_glCopyConvolutionFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglCopyConvolutionFilter2D(target,internalformat,x,y,width,height);
 }
 
-static void ecb_glGetConvolutionFilter(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetConvolutionFilter(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum format;
@@ -4783,7 +4040,7 @@ static void ecb_glGetConvolutionFilter(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetConvolutionParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetConvolutionParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4801,7 +4058,7 @@ static void ecb_glGetConvolutionParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetConvolutionParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetConvolutionParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4819,7 +4076,7 @@ static void ecb_glGetConvolutionParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glSeparableFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSeparableFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4850,7 +4107,7 @@ static void ecb_glSeparableFilter2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglSeparableFilter2D(target,internalformat,width,height,format,type,row_idx,column_idx);
 }
 
-static void ecb_glGetHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLboolean reset;
@@ -4877,7 +4134,7 @@ static void ecb_glGetHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetHistogramParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetHistogramParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4892,7 +4149,7 @@ static void ecb_glGetHistogramParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetHistogramParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetHistogramParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4907,7 +4164,7 @@ static void ecb_glGetHistogramParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLboolean reset;
@@ -4934,7 +4191,7 @@ static void ecb_glGetMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetMinmaxParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMinmaxParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4949,7 +4206,7 @@ static void ecb_glGetMinmaxParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetMinmaxParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMinmaxParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -4964,7 +4221,7 @@ static void ecb_glGetMinmaxParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei width;
@@ -4977,7 +4234,7 @@ static void ecb_glHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglHistogram(target,width,internalformat,sink);
 }
 
-static void ecb_glMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -4988,28 +4245,28 @@ static void ecb_glMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglMinmax(target,internalformat,sink);
 }
 
-static void ecb_glResetHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glResetHistogram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   if(!enif_get_uint(env, argv[0],  &target)) Badarg(5358,"target");
   weglResetHistogram(target);
 }
 
-static void ecb_glResetMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glResetMinmax(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   if(!enif_get_uint(env, argv[0],  &target)) Badarg(5359,"target");
   weglResetMinmax(target);
 }
 
-static void ecb_glActiveTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glActiveTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum texture;
   if(!enif_get_uint(env, argv[0],  &texture)) Badarg(5360,"texture");
   weglActiveTexture(texture);
 }
 
-static void ecb_glSampleCoverage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSampleCoverage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampf value;
   GLboolean invert;
@@ -5018,7 +4275,7 @@ static void ecb_glSampleCoverage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglSampleCoverage(value,invert);
 }
 
-static void ecb_glCompressedTexImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompressedTexImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -5046,7 +4303,7 @@ static void ecb_glCompressedTexImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imageSize,data_idx);
 }
 
-static void ecb_glCompressedTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompressedTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -5072,7 +4329,7 @@ static void ecb_glCompressedTexImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglCompressedTexImage2D(target,level,internalformat,width,height,border,imageSize,data_idx);
 }
 
-static void ecb_glCompressedTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompressedTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -5096,7 +4353,7 @@ static void ecb_glCompressedTexImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglCompressedTexImage1D(target,level,internalformat,width,border,imageSize,data_idx);
 }
 
-static void ecb_glCompressedTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompressedTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -5128,7 +4385,7 @@ static void ecb_glCompressedTexSubImage3D(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imageSize,data_idx);
 }
 
-static void ecb_glCompressedTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompressedTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -5156,7 +4413,7 @@ static void ecb_glCompressedTexSubImage2D(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imageSize,data_idx);
 }
 
-static void ecb_glCompressedTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompressedTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint level;
@@ -5180,7 +4437,7 @@ static void ecb_glCompressedTexSubImage1D(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglCompressedTexSubImage1D(target,level,xoffset,width,format,imageSize,data_idx);
 }
 
-static void ecb_glGetCompressedTexImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetCompressedTexImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint lod;
@@ -5203,14 +4460,14 @@ static void ecb_glGetCompressedTexImage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
                          EGL_ATOM_OK));
 }
 
-static void ecb_glClientActiveTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClientActiveTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum texture;
   if(!enif_get_uint(env, argv[0],  &texture)) Badarg(5375,"texture");
   weglClientActiveTexture(texture);
 }
 
-static void ecb_glMultiTexCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLdouble s;
@@ -5219,7 +4476,7 @@ static void ecb_glMultiTexCoord1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord1d(target,s);
 }
 
-static void ecb_glMultiTexCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLfloat s;
@@ -5228,7 +4485,7 @@ static void ecb_glMultiTexCoord1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord1f(target,s);
 }
 
-static void ecb_glMultiTexCoord1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint s;
@@ -5237,7 +4494,7 @@ static void ecb_glMultiTexCoord1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord1i(target,s);
 }
 
-static void ecb_glMultiTexCoord1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLshort s;
@@ -5246,7 +4503,7 @@ static void ecb_glMultiTexCoord1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord1s(target,s);
 }
 
-static void ecb_glMultiTexCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLdouble s;
@@ -5257,7 +4514,7 @@ static void ecb_glMultiTexCoord2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord2d(target,s,t);
 }
 
-static void ecb_glMultiTexCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLfloat s;
@@ -5268,7 +4525,7 @@ static void ecb_glMultiTexCoord2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord2f(target,s,t);
 }
 
-static void ecb_glMultiTexCoord2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint s;
@@ -5279,7 +4536,7 @@ static void ecb_glMultiTexCoord2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord2i(target,s,t);
 }
 
-static void ecb_glMultiTexCoord2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLshort s;
@@ -5290,7 +4547,7 @@ static void ecb_glMultiTexCoord2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord2s(target,s,t);
 }
 
-static void ecb_glMultiTexCoord3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLdouble s;
@@ -5303,7 +4560,7 @@ static void ecb_glMultiTexCoord3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord3d(target,s,t,r);
 }
 
-static void ecb_glMultiTexCoord3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLfloat s;
@@ -5316,7 +4573,7 @@ static void ecb_glMultiTexCoord3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord3f(target,s,t,r);
 }
 
-static void ecb_glMultiTexCoord3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint s;
@@ -5329,7 +4586,7 @@ static void ecb_glMultiTexCoord3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord3i(target,s,t,r);
 }
 
-static void ecb_glMultiTexCoord3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLshort s;
@@ -5342,7 +4599,7 @@ static void ecb_glMultiTexCoord3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord3s(target,s,t,r);
 }
 
-static void ecb_glMultiTexCoord4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLdouble s;
@@ -5357,7 +4614,7 @@ static void ecb_glMultiTexCoord4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord4d(target,s,t,r,q);
 }
 
-static void ecb_glMultiTexCoord4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLfloat s;
@@ -5372,7 +4629,7 @@ static void ecb_glMultiTexCoord4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord4f(target,s,t,r,q);
 }
 
-static void ecb_glMultiTexCoord4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLint s;
@@ -5387,7 +4644,7 @@ static void ecb_glMultiTexCoord4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord4i(target,s,t,r,q);
 }
 
-static void ecb_glMultiTexCoord4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiTexCoord4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLshort s;
@@ -5402,7 +4659,7 @@ static void ecb_glMultiTexCoord4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglMultiTexCoord4s(target,s,t,r,q);
 }
 
-static void ecb_glLoadTransposeMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadTransposeMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat m[16];
   {
@@ -5440,7 +4697,7 @@ static void ecb_glLoadTransposeMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglLoadTransposeMatrixf(m);
 }
 
-static void ecb_glLoadTransposeMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadTransposeMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble m[16];
   {
@@ -5478,7 +4735,7 @@ static void ecb_glLoadTransposeMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglLoadTransposeMatrixd(m);
 }
 
-static void ecb_glMultTransposeMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultTransposeMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat m[16];
   {
@@ -5516,7 +4773,7 @@ static void ecb_glMultTransposeMatrixf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglMultTransposeMatrixf(m);
 }
 
-static void ecb_glMultTransposeMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultTransposeMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble m[16];
   {
@@ -5554,7 +4811,7 @@ static void ecb_glMultTransposeMatrixd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglMultTransposeMatrixd(m);
 }
 
-static void ecb_glBlendFuncSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendFuncSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum sfactorRGB;
   GLenum dfactorRGB;
@@ -5567,7 +4824,7 @@ static void ecb_glBlendFuncSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglBlendFuncSeparate(sfactorRGB,dfactorRGB,sfactorAlpha,dfactorAlpha);
 }
 
-static void ecb_glMultiDrawArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultiDrawArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   ErlNifBinary first_bin;
@@ -5620,7 +4877,7 @@ static void ecb_glMultiDrawArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
  if(first_free) enif_free(first);
 }
 
-static void ecb_glPointParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPointParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat param;
@@ -5629,7 +4886,7 @@ static void ecb_glPointParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglPointParameterf(pname,param);
 }
 
-static void ecb_glPointParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPointParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLfloat params[4];
@@ -5647,7 +4904,7 @@ static void ecb_glPointParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglPointParameterfv(pname,params);
 }
 
-static void ecb_glPointParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPointParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint param;
@@ -5656,7 +4913,7 @@ static void ecb_glPointParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglPointParameteri(pname,param);
 }
 
-static void ecb_glPointParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPointParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint params[4];
@@ -5674,21 +4931,21 @@ static void ecb_glPointParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglPointParameteriv(pname,params);
 }
 
-static void ecb_glFogCoordf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogCoordf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat coord;
   if(!egl_get_float(env, argv[0],  &coord)) Badarg(5403,"coord");
   weglFogCoordf(coord);
 }
 
-static void ecb_glFogCoordd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogCoordd(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble coord;
   if(!enif_get_double(env, argv[0],  &coord)) Badarg(5404,"coord");
   weglFogCoordd(coord);
 }
 
-static void ecb_glFogCoordPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFogCoordPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum type;
   GLsizei stride;
@@ -5704,7 +4961,7 @@ static void ecb_glFogCoordPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglFogCoordPointer(type,stride,pointer_idx);
 }
 
-static void ecb_glSecondaryColor3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbyte red;
   GLbyte green;
@@ -5715,7 +4972,7 @@ static void ecb_glSecondaryColor3b(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglSecondaryColor3b(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble red;
   GLdouble green;
@@ -5726,7 +4983,7 @@ static void ecb_glSecondaryColor3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglSecondaryColor3d(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat red;
   GLfloat green;
@@ -5737,7 +4994,7 @@ static void ecb_glSecondaryColor3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglSecondaryColor3f(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint red;
   GLint green;
@@ -5748,7 +5005,7 @@ static void ecb_glSecondaryColor3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglSecondaryColor3i(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort red;
   GLshort green;
@@ -5759,7 +5016,7 @@ static void ecb_glSecondaryColor3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglSecondaryColor3s(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLubyte red;
   GLubyte green;
@@ -5770,7 +5027,7 @@ static void ecb_glSecondaryColor3ub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglSecondaryColor3ub(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint red;
   GLuint green;
@@ -5781,7 +5038,7 @@ static void ecb_glSecondaryColor3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglSecondaryColor3ui(red,green,blue);
 }
 
-static void ecb_glSecondaryColor3us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColor3us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLushort red;
   GLushort green;
@@ -5792,7 +5049,7 @@ static void ecb_glSecondaryColor3us(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglSecondaryColor3us(red,green,blue);
 }
 
-static void ecb_glSecondaryColorPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSecondaryColorPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   GLenum type;
@@ -5810,7 +5067,7 @@ static void ecb_glSecondaryColorPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglSecondaryColorPointer(size,type,stride,pointer_idx);
 }
 
-static void ecb_glWindowPos2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -5819,7 +5076,7 @@ static void ecb_glWindowPos2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos2d(x,y);
 }
 
-static void ecb_glWindowPos2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -5828,7 +5085,7 @@ static void ecb_glWindowPos2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos2f(x,y);
 }
 
-static void ecb_glWindowPos2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -5837,7 +5094,7 @@ static void ecb_glWindowPos2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos2i(x,y);
 }
 
-static void ecb_glWindowPos2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -5846,7 +5103,7 @@ static void ecb_glWindowPos2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos2s(x,y);
 }
 
-static void ecb_glWindowPos3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble x;
   GLdouble y;
@@ -5857,7 +5114,7 @@ static void ecb_glWindowPos3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos3d(x,y,z);
 }
 
-static void ecb_glWindowPos3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat x;
   GLfloat y;
@@ -5868,7 +5125,7 @@ static void ecb_glWindowPos3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos3f(x,y,z);
 }
 
-static void ecb_glWindowPos3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint x;
   GLint y;
@@ -5879,7 +5136,7 @@ static void ecb_glWindowPos3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos3i(x,y,z);
 }
 
-static void ecb_glWindowPos3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWindowPos3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLshort x;
   GLshort y;
@@ -5890,7 +5147,7 @@ static void ecb_glWindowPos3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglWindowPos3s(x,y,z);
 }
 
-static void ecb_glGenQueries(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenQueries(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -5910,7 +5167,7 @@ static void ecb_glGenQueries(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
  enif_free(ids);
 }
 
-static void ecb_glDeleteQueries(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteQueries(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int ids_free = 0;
@@ -5932,7 +5189,7 @@ static void ecb_glDeleteQueries(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
  if(ids_free) enif_free(ids);
 }
 
-static void ecb_glIsQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -5944,7 +5201,7 @@ static void ecb_glIsQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBeginQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBeginQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint id;
@@ -5953,14 +5210,14 @@ static void ecb_glBeginQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglBeginQuery(target,id);
 }
 
-static void ecb_glEndQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEndQuery(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   if(!enif_get_uint(env, argv[0],  &target)) Badarg(5429,"target");
   weglEndQuery(target);
 }
 
-static void ecb_glGetQueryiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetQueryiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -5974,7 +5231,7 @@ static void ecb_glGetQueryiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetQueryObjectiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetQueryObjectiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint id;
@@ -5988,7 +5245,7 @@ static void ecb_glGetQueryObjectiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetQueryObjectuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetQueryObjectuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint id;
@@ -6002,7 +5259,7 @@ static void ecb_glGetQueryObjectuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBindBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint buffer;
@@ -6011,7 +5268,7 @@ static void ecb_glBindBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglBindBuffer(target,buffer);
 }
 
-static void ecb_glDeleteBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int buffers_free = 0;
@@ -6033,7 +5290,7 @@ static void ecb_glDeleteBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
  if(buffers_free) enif_free(buffers);
 }
 
-static void ecb_glGenBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -6053,7 +5310,7 @@ static void ecb_glGenBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
  enif_free(buffers);
 }
 
-static void ecb_glIsBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -6065,7 +5322,7 @@ static void ecb_glIsBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBufferData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBufferData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizeiptr size;
@@ -6083,7 +5340,7 @@ static void ecb_glBufferData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglBufferData(target,size,data_idx,usage);
 }
 
-static void ecb_glBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLintptr offset;
@@ -6101,7 +5358,7 @@ static void ecb_glBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglBufferSubData(target,offset,size,data_idx);
 }
 
-static void ecb_glGetBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLintptr offset;
@@ -6126,7 +5383,7 @@ static void ecb_glGetBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetBufferParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetBufferParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -6140,7 +5397,7 @@ static void ecb_glGetBufferParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBlendEquationSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendEquationSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum modeRGB;
   GLenum modeAlpha;
@@ -6149,7 +5406,7 @@ static void ecb_glBlendEquationSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglBlendEquationSeparate(modeRGB,modeAlpha);
 }
 
-static void ecb_glDrawBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int bufs_free = 0;
@@ -6171,7 +5428,7 @@ static void ecb_glDrawBuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(bufs_free) enif_free(bufs);
 }
 
-static void ecb_glStencilOpSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilOpSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum sfail;
@@ -6184,7 +5441,7 @@ static void ecb_glStencilOpSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglStencilOpSeparate(face,sfail,dpfail,dppass);
 }
 
-static void ecb_glStencilFuncSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilFuncSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLenum func;
@@ -6197,7 +5454,7 @@ static void ecb_glStencilFuncSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglStencilFuncSeparate(face,func,ref,mask);
 }
 
-static void ecb_glStencilMaskSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilMaskSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum face;
   GLuint mask;
@@ -6206,7 +5463,7 @@ static void ecb_glStencilMaskSeparate(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglStencilMaskSeparate(face,mask);
 }
 
-static void ecb_glAttachShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glAttachShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint shader;
@@ -6215,7 +5472,7 @@ static void ecb_glAttachShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglAttachShader(program,shader);
 }
 
-static void ecb_glBindAttribLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindAttribLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint index;
@@ -6226,14 +5483,14 @@ static void ecb_glBindAttribLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglBindAttribLocation(program,index,(GLchar *) name.data);
 }
 
-static void ecb_glCompileShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompileShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint shader;
   if(!enif_get_uint(env, argv[0],  &shader)) Badarg(5450,"shader");
   weglCompileShader(shader);
 }
 
-static void ecb_glCreateProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCreateProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -6243,7 +5500,7 @@ static void ecb_glCreateProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glCreateShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCreateShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -6255,21 +5512,21 @@ static void ecb_glCreateShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDeleteProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   if(!enif_get_uint(env, argv[0],  &program)) Badarg(5453,"program");
   weglDeleteProgram(program);
 }
 
-static void ecb_glDeleteShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint shader;
   if(!enif_get_uint(env, argv[0],  &shader)) Badarg(5454,"shader");
   weglDeleteShader(shader);
 }
 
-static void ecb_glDetachShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDetachShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint shader;
@@ -6278,21 +5535,21 @@ static void ecb_glDetachShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglDetachShader(program,shader);
 }
 
-static void ecb_glDisableVertexAttribArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDisableVertexAttribArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   if(!enif_get_uint(env, argv[0],  &index)) Badarg(5456,"index");
   weglDisableVertexAttribArray(index);
 }
 
-static void ecb_glEnableVertexAttribArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEnableVertexAttribArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   if(!enif_get_uint(env, argv[0],  &index)) Badarg(5457,"index");
   weglEnableVertexAttribArray(index);
 }
 
-static void ecb_glGetActiveAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6316,7 +5573,7 @@ static void ecb_glGetActiveAttrib(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
  enif_free(name);
 }
 
-static void ecb_glGetActiveUniform(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveUniform(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6340,7 +5597,7 @@ static void ecb_glGetActiveUniform(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
  enif_free(name);
 }
 
-static void ecb_glGetAttachedShaders(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetAttachedShaders(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6363,7 +5620,7 @@ static void ecb_glGetAttachedShaders(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  enif_free(obj);
 }
 
-static void ecb_glGetAttribLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetAttribLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -6377,7 +5634,7 @@ static void ecb_glGetAttribLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6391,7 +5648,7 @@ static void ecb_glGetProgramiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6408,7 +5665,7 @@ static void ecb_glGetProgramInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  enif_free(infoLog);
 }
 
-static void ecb_glGetShaderiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetShaderiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint shader;
@@ -6422,7 +5679,7 @@ static void ecb_glGetShaderiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetShaderInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetShaderInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint shader;
@@ -6439,7 +5696,7 @@ static void ecb_glGetShaderInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
  enif_free(infoLog);
 }
 
-static void ecb_glGetShaderSource(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetShaderSource(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint shader;
@@ -6456,7 +5713,7 @@ static void ecb_glGetShaderSource(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
  enif_free(source);
 }
 
-static void ecb_glGetUniformLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -6470,7 +5727,7 @@ static void ecb_glGetUniformLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetUniformfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6488,7 +5745,7 @@ static void ecb_glGetUniformfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetUniformiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -6506,7 +5763,7 @@ static void ecb_glGetUniformiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetVertexAttribdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetVertexAttribdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint index;
@@ -6524,7 +5781,7 @@ static void ecb_glGetVertexAttribdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetVertexAttribfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetVertexAttribfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint index;
@@ -6542,7 +5799,7 @@ static void ecb_glGetVertexAttribfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetVertexAttribiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetVertexAttribiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint index;
@@ -6560,7 +5817,7 @@ static void ecb_glGetVertexAttribiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glIsProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -6572,7 +5829,7 @@ static void ecb_glIsProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glIsShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -6584,14 +5841,14 @@ static void ecb_glIsShader(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glLinkProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLinkProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   if(!enif_get_uint(env, argv[0],  &program)) Badarg(5475,"program");
   weglLinkProgram(program);
 }
 
-static void ecb_glShaderSource(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glShaderSource(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint shader;
   GLsizei count;
@@ -6611,14 +5868,14 @@ static void ecb_glShaderSource(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
  enif_free(string);
 }
 
-static void ecb_glUseProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUseProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   if(!enif_get_uint(env, argv[0],  &program)) Badarg(5477,"program");
   weglUseProgram(program);
 }
 
-static void ecb_glUniform1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLfloat v0;
@@ -6627,7 +5884,7 @@ static void ecb_glUniform1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform1f(location,v0);
 }
 
-static void ecb_glUniform2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLfloat v0;
@@ -6638,7 +5895,7 @@ static void ecb_glUniform2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform2f(location,v0,v1);
 }
 
-static void ecb_glUniform3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLfloat v0;
@@ -6651,7 +5908,7 @@ static void ecb_glUniform3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform3f(location,v0,v1,v2);
 }
 
-static void ecb_glUniform4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLfloat v0;
@@ -6666,7 +5923,7 @@ static void ecb_glUniform4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform4f(location,v0,v1,v2,v3);
 }
 
-static void ecb_glUniform1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLint v0;
@@ -6675,7 +5932,7 @@ static void ecb_glUniform1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform1i(location,v0);
 }
 
-static void ecb_glUniform2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLint v0;
@@ -6686,7 +5943,7 @@ static void ecb_glUniform2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform2i(location,v0,v1);
 }
 
-static void ecb_glUniform3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLint v0;
@@ -6699,7 +5956,7 @@ static void ecb_glUniform3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform3i(location,v0,v1,v2);
 }
 
-static void ecb_glUniform4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLint v0;
@@ -6714,7 +5971,7 @@ static void ecb_glUniform4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform4i(location,v0,v1,v2,v3);
 }
 
-static void ecb_glUniform1fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6738,7 +5995,7 @@ static void ecb_glUniform1fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
  if(value_free) enif_free(value);
 }
 
-static void ecb_glUniform2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6765,7 +6022,7 @@ static void ecb_glUniform2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform2fv(location,count,value);
 }
 
-static void ecb_glUniform3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6793,7 +6050,7 @@ static void ecb_glUniform3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform3fv(location,count,value);
 }
 
-static void ecb_glUniform4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6822,7 +6079,7 @@ static void ecb_glUniform4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform4fv(location,count,value);
 }
 
-static void ecb_glUniform1iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6846,7 +6103,7 @@ static void ecb_glUniform1iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
  if(value_free) enif_free(value);
 }
 
-static void ecb_glUniform2iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6873,7 +6130,7 @@ static void ecb_glUniform2iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform2iv(location,count,value);
 }
 
-static void ecb_glUniform3iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6901,7 +6158,7 @@ static void ecb_glUniform3iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform3iv(location,count,value);
 }
 
-static void ecb_glUniform4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6930,7 +6187,7 @@ static void ecb_glUniform4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform4iv(location,count,value);
 }
 
-static void ecb_glUniformMatrix2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6961,7 +6218,7 @@ static void ecb_glUniformMatrix2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUniformMatrix2fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -6997,7 +6254,7 @@ static void ecb_glUniformMatrix3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUniformMatrix3fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7040,14 +6297,14 @@ static void ecb_glUniformMatrix4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUniformMatrix4fv(location,count,transpose,value);
 }
 
-static void ecb_glValidateProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glValidateProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   if(!enif_get_uint(env, argv[0],  &program)) Badarg(5497,"program");
   weglValidateProgram(program);
 }
 
-static void ecb_glVertexAttrib1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -7056,7 +6313,7 @@ static void ecb_glVertexAttrib1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib1d(index,x);
 }
 
-static void ecb_glVertexAttrib1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLfloat x;
@@ -7065,7 +6322,7 @@ static void ecb_glVertexAttrib1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib1f(index,x);
 }
 
-static void ecb_glVertexAttrib1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLshort x;
@@ -7074,7 +6331,7 @@ static void ecb_glVertexAttrib1s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib1s(index,x);
 }
 
-static void ecb_glVertexAttrib2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -7085,7 +6342,7 @@ static void ecb_glVertexAttrib2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib2d(index,x,y);
 }
 
-static void ecb_glVertexAttrib2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLfloat x;
@@ -7096,7 +6353,7 @@ static void ecb_glVertexAttrib2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib2f(index,x,y);
 }
 
-static void ecb_glVertexAttrib2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLshort x;
@@ -7107,7 +6364,7 @@ static void ecb_glVertexAttrib2s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib2s(index,x,y);
 }
 
-static void ecb_glVertexAttrib3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -7120,7 +6377,7 @@ static void ecb_glVertexAttrib3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib3d(index,x,y,z);
 }
 
-static void ecb_glVertexAttrib3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLfloat x;
@@ -7133,7 +6390,7 @@ static void ecb_glVertexAttrib3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib3f(index,x,y,z);
 }
 
-static void ecb_glVertexAttrib3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLshort x;
@@ -7146,7 +6403,7 @@ static void ecb_glVertexAttrib3s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib3s(index,x,y,z);
 }
 
-static void ecb_glVertexAttrib4Nbv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4Nbv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLbyte v[4];
@@ -7166,7 +6423,7 @@ static void ecb_glVertexAttrib4Nbv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4Nbv(index,v);
 }
 
-static void ecb_glVertexAttrib4Niv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4Niv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint v[4];
@@ -7186,7 +6443,7 @@ static void ecb_glVertexAttrib4Niv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4Niv(index,v);
 }
 
-static void ecb_glVertexAttrib4Nsv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4Nsv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLshort v[4];
@@ -7206,7 +6463,7 @@ static void ecb_glVertexAttrib4Nsv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4Nsv(index,v);
 }
 
-static void ecb_glVertexAttrib4Nub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4Nub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLubyte x;
@@ -7221,7 +6478,7 @@ static void ecb_glVertexAttrib4Nub(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4Nub(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttrib4Nuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4Nuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint v[4];
@@ -7241,7 +6498,7 @@ static void ecb_glVertexAttrib4Nuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglVertexAttrib4Nuiv(index,v);
 }
 
-static void ecb_glVertexAttrib4Nusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4Nusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLushort v[4];
@@ -7261,7 +6518,7 @@ static void ecb_glVertexAttrib4Nusv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglVertexAttrib4Nusv(index,v);
 }
 
-static void ecb_glVertexAttrib4bv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4bv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLbyte v[4];
@@ -7281,7 +6538,7 @@ static void ecb_glVertexAttrib4bv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttrib4bv(index,v);
 }
 
-static void ecb_glVertexAttrib4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -7296,7 +6553,7 @@ static void ecb_glVertexAttrib4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib4d(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttrib4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLfloat x;
@@ -7311,7 +6568,7 @@ static void ecb_glVertexAttrib4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib4f(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttrib4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint v[4];
@@ -7331,7 +6588,7 @@ static void ecb_glVertexAttrib4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttrib4iv(index,v);
 }
 
-static void ecb_glVertexAttrib4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLshort x;
@@ -7346,7 +6603,7 @@ static void ecb_glVertexAttrib4s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglVertexAttrib4s(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttrib4ubv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4ubv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLubyte v[4];
@@ -7366,7 +6623,7 @@ static void ecb_glVertexAttrib4ubv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4ubv(index,v);
 }
 
-static void ecb_glVertexAttrib4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint v[4];
@@ -7386,7 +6643,7 @@ static void ecb_glVertexAttrib4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4uiv(index,v);
 }
 
-static void ecb_glVertexAttrib4usv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttrib4usv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLushort v[4];
@@ -7406,7 +6663,7 @@ static void ecb_glVertexAttrib4usv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttrib4usv(index,v);
 }
 
-static void ecb_glVertexAttribPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint size;
@@ -7428,7 +6685,7 @@ static void ecb_glVertexAttribPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglVertexAttribPointer(index,size,type,normalized,stride,pointer_idx);
 }
 
-static void ecb_glUniformMatrix2x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix2x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7461,7 +6718,7 @@ static void ecb_glUniformMatrix2x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix2x3fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix3x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix3x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7494,7 +6751,7 @@ static void ecb_glUniformMatrix3x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix3x2fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix2x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix2x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7529,7 +6786,7 @@ static void ecb_glUniformMatrix2x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix2x4fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix4x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix4x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7564,7 +6821,7 @@ static void ecb_glUniformMatrix4x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix4x2fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix3x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix3x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7603,7 +6860,7 @@ static void ecb_glUniformMatrix3x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix3x4fv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix4x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix4x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -7642,7 +6899,7 @@ static void ecb_glUniformMatrix4x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix4x3fv(location,count,transpose,value);
 }
 
-static void ecb_glColorMaski(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glColorMaski(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLboolean r;
@@ -7657,7 +6914,7 @@ static void ecb_glColorMaski(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglColorMaski(index,r,g,b,a);
 }
 
-static void ecb_glGetBooleani_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetBooleani_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -7675,7 +6932,7 @@ static void ecb_glGetBooleani_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetIntegeri_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetIntegeri_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -7693,7 +6950,7 @@ static void ecb_glGetIntegeri_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glEnablei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEnablei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -7702,7 +6959,7 @@ static void ecb_glEnablei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglEnablei(target,index);
 }
 
-static void ecb_glDisablei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDisablei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -7711,7 +6968,7 @@ static void ecb_glDisablei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglDisablei(target,index);
 }
 
-static void ecb_glIsEnabledi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsEnabledi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -7725,19 +6982,19 @@ static void ecb_glIsEnabledi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBeginTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBeginTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum primitiveMode;
   if(!enif_get_uint(env, argv[0],  &primitiveMode)) Badarg(5535,"primitiveMode");
   weglBeginTransformFeedback(primitiveMode);
 }
 
-static void ecb_glEndTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEndTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglEndTransformFeedback();
 }
 
-static void ecb_glBindBufferRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindBufferRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -7752,7 +7009,7 @@ static void ecb_glBindBufferRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglBindBufferRange(target,index,buffer,offset,size);
 }
 
-static void ecb_glBindBufferBase(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindBufferBase(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -7763,7 +7020,7 @@ static void ecb_glBindBufferBase(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglBindBufferBase(target,index,buffer);
 }
 
-static void ecb_glTransformFeedbackVaryings(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTransformFeedbackVaryings(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLsizei count;
@@ -7785,7 +7042,7 @@ static void ecb_glTransformFeedbackVaryings(ErlNifEnv* env, ErlNifPid *self, ERL
  enif_free(varyings);
 }
 
-static void ecb_glGetTransformFeedbackVarying(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTransformFeedbackVarying(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -7809,7 +7066,7 @@ static void ecb_glGetTransformFeedbackVarying(ErlNifEnv* env, ErlNifPid *self, E
  enif_free(name);
 }
 
-static void ecb_glClampColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClampColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum clamp;
@@ -7818,7 +7075,7 @@ static void ecb_glClampColor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglClampColor(target,clamp);
 }
 
-static void ecb_glBeginConditionalRender(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBeginConditionalRender(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint id;
   GLenum mode;
@@ -7827,12 +7084,12 @@ static void ecb_glBeginConditionalRender(ErlNifEnv* env, ErlNifPid *self, ERL_NI
   weglBeginConditionalRender(id,mode);
 }
 
-static void ecb_glEndConditionalRender(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEndConditionalRender(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglEndConditionalRender();
 }
 
-static void ecb_glVertexAttribIPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribIPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint size;
@@ -7852,7 +7109,7 @@ static void ecb_glVertexAttribIPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglVertexAttribIPointer(index,size,type,stride,pointer_idx);
 }
 
-static void ecb_glGetVertexAttribIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetVertexAttribIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint index;
@@ -7870,7 +7127,7 @@ static void ecb_glGetVertexAttribIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetVertexAttribIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetVertexAttribIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint index;
@@ -7888,7 +7145,7 @@ static void ecb_glGetVertexAttribIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glVertexAttribI1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint x;
@@ -7897,7 +7154,7 @@ static void ecb_glVertexAttribI1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribI1i(index,x);
 }
 
-static void ecb_glVertexAttribI2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint x;
@@ -7908,7 +7165,7 @@ static void ecb_glVertexAttribI2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribI2i(index,x,y);
 }
 
-static void ecb_glVertexAttribI3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint x;
@@ -7921,7 +7178,7 @@ static void ecb_glVertexAttribI3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribI3i(index,x,y,z);
 }
 
-static void ecb_glVertexAttribI4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint x;
@@ -7936,7 +7193,7 @@ static void ecb_glVertexAttribI4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribI4i(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttribI1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint x;
@@ -7945,7 +7202,7 @@ static void ecb_glVertexAttribI1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttribI1ui(index,x);
 }
 
-static void ecb_glVertexAttribI2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint x;
@@ -7956,7 +7213,7 @@ static void ecb_glVertexAttribI2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttribI2ui(index,x,y);
 }
 
-static void ecb_glVertexAttribI3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint x;
@@ -7969,7 +7226,7 @@ static void ecb_glVertexAttribI3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttribI3ui(index,x,y,z);
 }
 
-static void ecb_glVertexAttribI4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint x;
@@ -7984,7 +7241,7 @@ static void ecb_glVertexAttribI4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttribI4ui(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttribI4bv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI4bv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLbyte v[4];
@@ -8004,7 +7261,7 @@ static void ecb_glVertexAttribI4bv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttribI4bv(index,v);
 }
 
-static void ecb_glVertexAttribI4sv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI4sv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLshort v[4];
@@ -8024,7 +7281,7 @@ static void ecb_glVertexAttribI4sv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglVertexAttribI4sv(index,v);
 }
 
-static void ecb_glVertexAttribI4ubv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI4ubv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLubyte v[4];
@@ -8044,7 +7301,7 @@ static void ecb_glVertexAttribI4ubv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglVertexAttribI4ubv(index,v);
 }
 
-static void ecb_glVertexAttribI4usv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribI4usv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLushort v[4];
@@ -8064,7 +7321,7 @@ static void ecb_glVertexAttribI4usv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglVertexAttribI4usv(index,v);
 }
 
-static void ecb_glGetUniformuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -8082,7 +7339,7 @@ static void ecb_glGetUniformuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBindFragDataLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindFragDataLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint color;
@@ -8093,7 +7350,7 @@ static void ecb_glBindFragDataLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglBindFragDataLocation(program,color,(GLchar *) name.data);
 }
 
-static void ecb_glGetFragDataLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetFragDataLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -8107,7 +7364,7 @@ static void ecb_glGetFragDataLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glUniform1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLuint v0;
@@ -8116,7 +7373,7 @@ static void ecb_glUniform1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform1ui(location,v0);
 }
 
-static void ecb_glUniform2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLuint v0;
@@ -8127,7 +7384,7 @@ static void ecb_glUniform2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform2ui(location,v0,v1);
 }
 
-static void ecb_glUniform3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLuint v0;
@@ -8140,7 +7397,7 @@ static void ecb_glUniform3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform3ui(location,v0,v1,v2);
 }
 
-static void ecb_glUniform4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLuint v0;
@@ -8155,7 +7412,7 @@ static void ecb_glUniform4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform4ui(location,v0,v1,v2,v3);
 }
 
-static void ecb_glUniform1uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -8179,7 +7436,7 @@ static void ecb_glUniform1uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(value_free) enif_free(value);
 }
 
-static void ecb_glUniform2uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -8206,7 +7463,7 @@ static void ecb_glUniform2uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglUniform2uiv(location,count,value);
 }
 
-static void ecb_glUniform3uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -8234,7 +7491,7 @@ static void ecb_glUniform3uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglUniform3uiv(location,count,value);
 }
 
-static void ecb_glUniform4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -8263,7 +7520,7 @@ static void ecb_glUniform4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglUniform4uiv(location,count,value);
 }
 
-static void ecb_glTexParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -8283,7 +7540,7 @@ static void ecb_glTexParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglTexParameterIiv(target,pname,params);
 }
 
-static void ecb_glTexParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -8303,7 +7560,7 @@ static void ecb_glTexParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglTexParameterIuiv(target,pname,params);
 }
 
-static void ecb_glGetTexParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -8321,7 +7578,7 @@ static void ecb_glGetTexParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetTexParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetTexParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -8339,7 +7596,7 @@ static void ecb_glGetTexParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glClearBufferiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearBufferiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum buffer;
   GLint drawbuffer;
@@ -8359,7 +7616,7 @@ static void ecb_glClearBufferiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglClearBufferiv(buffer,drawbuffer,value);
 }
 
-static void ecb_glClearBufferuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearBufferuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum buffer;
   GLint drawbuffer;
@@ -8379,7 +7636,7 @@ static void ecb_glClearBufferuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglClearBufferuiv(buffer,drawbuffer,value);
 }
 
-static void ecb_glClearBufferfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearBufferfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum buffer;
   GLint drawbuffer;
@@ -8399,7 +7656,7 @@ static void ecb_glClearBufferfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglClearBufferfv(buffer,drawbuffer,value);
 }
 
-static void ecb_glClearBufferfi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearBufferfi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum buffer;
   GLint drawbuffer;
@@ -8412,7 +7669,7 @@ static void ecb_glClearBufferfi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglClearBufferfi(buffer,drawbuffer,depth,stencil);
 }
 
-static void ecb_glGetStringi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetStringi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   const GLubyte *  result;
   ERL_NIF_TERM reply;
@@ -8426,7 +7683,7 @@ static void ecb_glGetStringi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDrawArraysInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawArraysInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLint first;
@@ -8439,7 +7696,7 @@ static void ecb_glDrawArraysInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglDrawArraysInstanced(mode,first,count,primcount);
 }
 
-static void ecb_glDrawElementsInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElementsInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLsizei count;
@@ -8459,7 +7716,7 @@ static void ecb_glDrawElementsInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglDrawElementsInstanced(mode,count,type,indices_idx,primcount);
 }
 
-static void ecb_glTexBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -8470,14 +7727,14 @@ static void ecb_glTexBuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglTexBuffer(target,internalformat,buffer);
 }
 
-static void ecb_glPrimitiveRestartIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPrimitiveRestartIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   if(!enif_get_uint(env, argv[0],  &index)) Badarg(5584,"index");
   weglPrimitiveRestartIndex(index);
 }
 
-static void ecb_glGetInteger64i_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetInteger64i_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -8495,7 +7752,7 @@ static void ecb_glGetInteger64i_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetBufferParameteri64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetBufferParameteri64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -8513,7 +7770,7 @@ static void ecb_glGetBufferParameteri64v(ErlNifEnv* env, ErlNifPid *self, ERL_NI
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glFramebufferTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -8526,7 +7783,7 @@ static void ecb_glFramebufferTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglFramebufferTexture(target,attachment,texture,level);
 }
 
-static void ecb_glVertexAttribDivisor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribDivisor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLuint divisor;
@@ -8535,14 +7792,14 @@ static void ecb_glVertexAttribDivisor(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglVertexAttribDivisor(index,divisor);
 }
 
-static void ecb_glMinSampleShading(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMinSampleShading(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampf value;
   if(!egl_get_float(env, argv[0],  &value)) Badarg(5589,"value");
   weglMinSampleShading(value);
 }
 
-static void ecb_glBlendEquationi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendEquationi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint buf;
   GLenum mode;
@@ -8551,7 +7808,7 @@ static void ecb_glBlendEquationi(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglBlendEquationi(buf,mode);
 }
 
-static void ecb_glBlendEquationSeparatei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendEquationSeparatei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint buf;
   GLenum modeRGB;
@@ -8562,7 +7819,7 @@ static void ecb_glBlendEquationSeparatei(ErlNifEnv* env, ErlNifPid *self, ERL_NI
   weglBlendEquationSeparatei(buf,modeRGB,modeAlpha);
 }
 
-static void ecb_glBlendFunci(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendFunci(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint buf;
   GLenum src;
@@ -8573,7 +7830,7 @@ static void ecb_glBlendFunci(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglBlendFunci(buf,src,dst);
 }
 
-static void ecb_glBlendFuncSeparatei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlendFuncSeparatei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint buf;
   GLenum srcRGB;
@@ -8588,7 +7845,7 @@ static void ecb_glBlendFuncSeparatei(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglBlendFuncSeparatei(buf,srcRGB,dstRGB,srcAlpha,dstAlpha);
 }
 
-static void ecb_glLoadTransposeMatrixfARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadTransposeMatrixfARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat m[16];
   {
@@ -8626,7 +7883,7 @@ static void ecb_glLoadTransposeMatrixfARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglLoadTransposeMatrixfARB(m);
 }
 
-static void ecb_glLoadTransposeMatrixdARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLoadTransposeMatrixdARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble m[16];
   {
@@ -8664,7 +7921,7 @@ static void ecb_glLoadTransposeMatrixdARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglLoadTransposeMatrixdARB(m);
 }
 
-static void ecb_glMultTransposeMatrixfARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultTransposeMatrixfARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLfloat m[16];
   {
@@ -8702,7 +7959,7 @@ static void ecb_glMultTransposeMatrixfARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglMultTransposeMatrixfARB(m);
 }
 
-static void ecb_glMultTransposeMatrixdARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMultTransposeMatrixdARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLdouble m[16];
   {
@@ -8740,7 +7997,7 @@ static void ecb_glMultTransposeMatrixdARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglMultTransposeMatrixdARB(m);
 }
 
-static void ecb_glWeightbvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightbvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8762,7 +8019,7 @@ static void ecb_glWeightbvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightsvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightsvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8784,7 +8041,7 @@ static void ecb_glWeightsvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8806,7 +8063,7 @@ static void ecb_glWeightivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8828,7 +8085,7 @@ static void ecb_glWeightfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8850,7 +8107,7 @@ static void ecb_glWeightdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightubvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightubvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8872,7 +8129,7 @@ static void ecb_glWeightubvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightusvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightusvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8894,7 +8151,7 @@ static void ecb_glWeightusvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glWeightuivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWeightuivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int weights_free = 0;
@@ -8916,21 +8173,21 @@ static void ecb_glWeightuivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
  if(weights_free) enif_free(weights);
 }
 
-static void ecb_glVertexBlendARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexBlendARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint count;
   if(!enif_get_int(env, argv[0],  &count)) Badarg(5606,"count");
   weglVertexBlendARB(count);
 }
 
-static void ecb_glCurrentPaletteMatrixARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCurrentPaletteMatrixARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint index;
   if(!enif_get_int(env, argv[0],  &index)) Badarg(5607,"index");
   weglCurrentPaletteMatrixARB(index);
 }
 
-static void ecb_glMatrixIndexubvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMatrixIndexubvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int indices_free = 0;
@@ -8952,7 +8209,7 @@ static void ecb_glMatrixIndexubvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(indices_free) enif_free(indices);
 }
 
-static void ecb_glMatrixIndexusvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMatrixIndexusvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int indices_free = 0;
@@ -8974,7 +8231,7 @@ static void ecb_glMatrixIndexusvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(indices_free) enif_free(indices);
 }
 
-static void ecb_glMatrixIndexuivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMatrixIndexuivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint size;
   int indices_free = 0;
@@ -8996,7 +8253,7 @@ static void ecb_glMatrixIndexuivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(indices_free) enif_free(indices);
 }
 
-static void ecb_glProgramStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum format;
@@ -9007,7 +8264,7 @@ static void ecb_glProgramStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramStringARB(target,format,(GLsizei) string.size,(GLvoid *) string.data);
 }
 
-static void ecb_glBindProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint program;
@@ -9016,7 +8273,7 @@ static void ecb_glBindProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglBindProgramARB(target,program);
 }
 
-static void ecb_glDeleteProgramsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteProgramsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int programs_free = 0;
@@ -9038,7 +8295,7 @@ static void ecb_glDeleteProgramsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(programs_free) enif_free(programs);
 }
 
-static void ecb_glGenProgramsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenProgramsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -9058,7 +8315,7 @@ static void ecb_glGenProgramsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
  enif_free(programs);
 }
 
-static void ecb_glProgramEnvParameter4dARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramEnvParameter4dARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9075,7 +8332,7 @@ static void ecb_glProgramEnvParameter4dARB(ErlNifEnv* env, ErlNifPid *self, ERL_
   weglProgramEnvParameter4dARB(target,index,x,y,z,w);
 }
 
-static void ecb_glProgramEnvParameter4dvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramEnvParameter4dvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9097,7 +8354,7 @@ static void ecb_glProgramEnvParameter4dvARB(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramEnvParameter4dvARB(target,index,params);
 }
 
-static void ecb_glProgramEnvParameter4fARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramEnvParameter4fARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9114,7 +8371,7 @@ static void ecb_glProgramEnvParameter4fARB(ErlNifEnv* env, ErlNifPid *self, ERL_
   weglProgramEnvParameter4fARB(target,index,x,y,z,w);
 }
 
-static void ecb_glProgramEnvParameter4fvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramEnvParameter4fvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9136,7 +8393,7 @@ static void ecb_glProgramEnvParameter4fvARB(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramEnvParameter4fvARB(target,index,params);
 }
 
-static void ecb_glProgramLocalParameter4dARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramLocalParameter4dARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9153,7 +8410,7 @@ static void ecb_glProgramLocalParameter4dARB(ErlNifEnv* env, ErlNifPid *self, ER
   weglProgramLocalParameter4dARB(target,index,x,y,z,w);
 }
 
-static void ecb_glProgramLocalParameter4dvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramLocalParameter4dvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9175,7 +8432,7 @@ static void ecb_glProgramLocalParameter4dvARB(ErlNifEnv* env, ErlNifPid *self, E
   weglProgramLocalParameter4dvARB(target,index,params);
 }
 
-static void ecb_glProgramLocalParameter4fARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramLocalParameter4fARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9192,7 +8449,7 @@ static void ecb_glProgramLocalParameter4fARB(ErlNifEnv* env, ErlNifPid *self, ER
   weglProgramLocalParameter4fARB(target,index,x,y,z,w);
 }
 
-static void ecb_glProgramLocalParameter4fvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramLocalParameter4fvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -9214,7 +8471,7 @@ static void ecb_glProgramLocalParameter4fvARB(ErlNifEnv* env, ErlNifPid *self, E
   weglProgramLocalParameter4fvARB(target,index,params);
 }
 
-static void ecb_glGetProgramEnvParameterdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramEnvParameterdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9232,7 +8489,7 @@ static void ecb_glGetProgramEnvParameterdvARB(ErlNifEnv* env, ErlNifPid *self, E
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramEnvParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramEnvParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9250,7 +8507,7 @@ static void ecb_glGetProgramEnvParameterfvARB(ErlNifEnv* env, ErlNifPid *self, E
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramLocalParameterdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramLocalParameterdvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9268,7 +8525,7 @@ static void ecb_glGetProgramLocalParameterdvARB(ErlNifEnv* env, ErlNifPid *self,
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramLocalParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramLocalParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9286,7 +8543,7 @@ static void ecb_glGetProgramLocalParameterfvARB(ErlNifEnv* env, ErlNifPid *self,
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum pname;
@@ -9309,7 +8566,7 @@ static void ecb_glGetProgramStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetBufferParameterivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetBufferParameterivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9327,14 +8584,14 @@ static void ecb_glGetBufferParameterivARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDeleteObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t obj;
   if(!enif_get_uint64(env, argv[0], (void *) &obj)) Badarg(5629,"obj");
   weglDeleteObjectARB((GLhandleARB) obj);
 }
 
-static void ecb_glGetHandleARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetHandleARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLhandleARB result;
   ERL_NIF_TERM reply;
@@ -9346,7 +8603,7 @@ static void ecb_glGetHandleARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDetachObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDetachObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t containerObj;
   uint64_t attachedObj;
@@ -9355,7 +8612,7 @@ static void ecb_glDetachObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglDetachObjectARB((GLhandleARB) containerObj,(GLhandleARB) attachedObj);
 }
 
-static void ecb_glCreateShaderObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCreateShaderObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLhandleARB result;
   ERL_NIF_TERM reply;
@@ -9367,7 +8624,7 @@ static void ecb_glCreateShaderObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glShaderSourceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glShaderSourceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t shaderObj;
   GLsizei count;
@@ -9387,14 +8644,14 @@ static void ecb_glShaderSourceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
  enif_free(string);
 }
 
-static void ecb_glCompileShaderARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompileShaderARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t shaderObj;
   if(!enif_get_uint64(env, argv[0], (void *) &shaderObj)) Badarg(5634,"shaderObj");
   weglCompileShaderARB((GLhandleARB) shaderObj);
 }
 
-static void ecb_glCreateProgramObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCreateProgramObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLhandleARB result;
   ERL_NIF_TERM reply;
@@ -9404,7 +8661,7 @@ static void ecb_glCreateProgramObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NI
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glAttachObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glAttachObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t containerObj;
   uint64_t obj;
@@ -9413,28 +8670,28 @@ static void ecb_glAttachObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglAttachObjectARB((GLhandleARB) containerObj,(GLhandleARB) obj);
 }
 
-static void ecb_glLinkProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glLinkProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t programObj;
   if(!enif_get_uint64(env, argv[0], (void *) &programObj)) Badarg(5637,"programObj");
   weglLinkProgramARB((GLhandleARB) programObj);
 }
 
-static void ecb_glUseProgramObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUseProgramObjectARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t programObj;
   if(!enif_get_uint64(env, argv[0], (void *) &programObj)) Badarg(5638,"programObj");
   weglUseProgramObjectARB((GLhandleARB) programObj);
 }
 
-static void ecb_glValidateProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glValidateProgramARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t programObj;
   if(!enif_get_uint64(env, argv[0], (void *) &programObj)) Badarg(5639,"programObj");
   weglValidateProgramARB((GLhandleARB) programObj);
 }
 
-static void ecb_glGetObjectParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetObjectParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t obj;
@@ -9448,7 +8705,7 @@ static void ecb_glGetObjectParameterfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetObjectParameterivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetObjectParameterivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t obj;
@@ -9462,7 +8719,7 @@ static void ecb_glGetObjectParameterivARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetInfoLogARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetInfoLogARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t obj;
@@ -9479,7 +8736,7 @@ static void ecb_glGetInfoLogARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
  enif_free(infoLog);
 }
 
-static void ecb_glGetAttachedObjectsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetAttachedObjectsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t containerObj;
@@ -9502,7 +8759,7 @@ static void ecb_glGetAttachedObjectsARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
  enif_free(obj);
 }
 
-static void ecb_glGetUniformLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -9516,7 +8773,7 @@ static void ecb_glGetUniformLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetActiveUniformARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveUniformARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t programObj;
@@ -9540,7 +8797,7 @@ static void ecb_glGetActiveUniformARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  enif_free(name);
 }
 
-static void ecb_glGetUniformfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t programObj;
@@ -9558,7 +8815,7 @@ static void ecb_glGetUniformfvARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetUniformivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t programObj;
@@ -9576,7 +8833,7 @@ static void ecb_glGetUniformivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetShaderSourceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetShaderSourceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t obj;
@@ -9593,7 +8850,7 @@ static void ecb_glGetShaderSourceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  enif_free(source);
 }
 
-static void ecb_glBindAttribLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindAttribLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t programObj;
   GLuint index;
@@ -9604,7 +8861,7 @@ static void ecb_glBindAttribLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglBindAttribLocationARB((GLhandleARB) programObj,index,(GLchar *) name.data);
 }
 
-static void ecb_glGetActiveAttribARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveAttribARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t programObj;
@@ -9628,7 +8885,7 @@ static void ecb_glGetActiveAttribARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  enif_free(name);
 }
 
-static void ecb_glGetAttribLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetAttribLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -9642,7 +8899,7 @@ static void ecb_glGetAttribLocationARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glIsRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -9654,7 +8911,7 @@ static void ecb_glIsRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBindRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint renderbuffer;
@@ -9663,7 +8920,7 @@ static void ecb_glBindRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglBindRenderbuffer(target,renderbuffer);
 }
 
-static void ecb_glDeleteRenderbuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteRenderbuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int renderbuffers_free = 0;
@@ -9685,7 +8942,7 @@ static void ecb_glDeleteRenderbuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  if(renderbuffers_free) enif_free(renderbuffers);
 }
 
-static void ecb_glGenRenderbuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenRenderbuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -9705,7 +8962,7 @@ static void ecb_glGenRenderbuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
  enif_free(renderbuffers);
 }
 
-static void ecb_glRenderbufferStorage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRenderbufferStorage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum internalformat;
@@ -9718,7 +8975,7 @@ static void ecb_glRenderbufferStorage(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglRenderbufferStorage(target,internalformat,width,height);
 }
 
-static void ecb_glGetRenderbufferParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetRenderbufferParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9732,7 +8989,7 @@ static void ecb_glGetRenderbufferParameteriv(ErlNifEnv* env, ErlNifPid *self, ER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glIsFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -9744,7 +9001,7 @@ static void ecb_glIsFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBindFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint framebuffer;
@@ -9753,7 +9010,7 @@ static void ecb_glBindFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglBindFramebuffer(target,framebuffer);
 }
 
-static void ecb_glDeleteFramebuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteFramebuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int framebuffers_free = 0;
@@ -9775,7 +9032,7 @@ static void ecb_glDeleteFramebuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  if(framebuffers_free) enif_free(framebuffers);
 }
 
-static void ecb_glGenFramebuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenFramebuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -9795,7 +9052,7 @@ static void ecb_glGenFramebuffers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
  enif_free(framebuffers);
 }
 
-static void ecb_glCheckFramebufferStatus(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCheckFramebufferStatus(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum result;
   ERL_NIF_TERM reply;
@@ -9807,7 +9064,7 @@ static void ecb_glCheckFramebufferStatus(ErlNifEnv* env, ErlNifPid *self, ERL_NI
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glFramebufferTexture1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferTexture1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -9822,7 +9079,7 @@ static void ecb_glFramebufferTexture1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglFramebufferTexture1D(target,attachment,textarget,texture,level);
 }
 
-static void ecb_glFramebufferTexture2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferTexture2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -9837,7 +9094,7 @@ static void ecb_glFramebufferTexture2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglFramebufferTexture2D(target,attachment,textarget,texture,level);
 }
 
-static void ecb_glFramebufferTexture3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferTexture3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -9854,7 +9111,7 @@ static void ecb_glFramebufferTexture3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglFramebufferTexture3D(target,attachment,textarget,texture,level,zoffset);
 }
 
-static void ecb_glFramebufferRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -9867,7 +9124,7 @@ static void ecb_glFramebufferRenderbuffer(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglFramebufferRenderbuffer(target,attachment,renderbuffertarget,renderbuffer);
 }
 
-static void ecb_glGetFramebufferAttachmentParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetFramebufferAttachmentParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -9883,14 +9140,14 @@ static void ecb_glGetFramebufferAttachmentParameteriv(ErlNifEnv* env, ErlNifPid 
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGenerateMipmap(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenerateMipmap(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   if(!enif_get_uint(env, argv[0],  &target)) Badarg(5668,"target");
   weglGenerateMipmap(target);
 }
 
-static void ecb_glBlitFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBlitFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint srcX0;
   GLint srcY0;
@@ -9915,7 +9172,7 @@ static void ecb_glBlitFramebuffer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglBlitFramebuffer(srcX0,srcY0,srcX1,srcY1,dstX0,dstY0,dstX1,dstY1,mask,filter);
 }
 
-static void ecb_glRenderbufferStorageMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glRenderbufferStorageMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei samples;
@@ -9930,7 +9187,7 @@ static void ecb_glRenderbufferStorageMultisample(ErlNifEnv* env, ErlNifPid *self
   weglRenderbufferStorageMultisample(target,samples,internalformat,width,height);
 }
 
-static void ecb_glFramebufferTextureLayer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferTextureLayer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -9945,7 +9202,7 @@ static void ecb_glFramebufferTextureLayer(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglFramebufferTextureLayer(target,attachment,texture,level,layer);
 }
 
-static void ecb_glFramebufferTextureFaceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFramebufferTextureFaceARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLenum attachment;
@@ -9960,7 +9217,7 @@ static void ecb_glFramebufferTextureFaceARB(ErlNifEnv* env, ErlNifPid *self, ERL
   weglFramebufferTextureFaceARB(target,attachment,texture,level,face);
 }
 
-static void ecb_glFlushMappedBufferRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFlushMappedBufferRange(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLintptr offset;
@@ -9971,14 +9228,14 @@ static void ecb_glFlushMappedBufferRange(ErlNifEnv* env, ErlNifPid *self, ERL_NI
   weglFlushMappedBufferRange(target,offset,length);
 }
 
-static void ecb_glBindVertexArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindVertexArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint array;
   if(!enif_get_uint(env, argv[0],  &array)) Badarg(5674,"array");
   weglBindVertexArray(array);
 }
 
-static void ecb_glDeleteVertexArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteVertexArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int arrays_free = 0;
@@ -10000,7 +9257,7 @@ static void ecb_glDeleteVertexArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  if(arrays_free) enif_free(arrays);
 }
 
-static void ecb_glGenVertexArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenVertexArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -10020,7 +9277,7 @@ static void ecb_glGenVertexArrays(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
  enif_free(arrays);
 }
 
-static void ecb_glIsVertexArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsVertexArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -10032,7 +9289,7 @@ static void ecb_glIsVertexArray(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetUniformIndices(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformIndices(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -10065,7 +9322,7 @@ static void ecb_glGetUniformIndices(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  enif_free(uniformNames);
 }
 
-static void ecb_glGetActiveUniformsiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveUniformsiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -10104,7 +9361,7 @@ static void ecb_glGetActiveUniformsiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  if(uniformIndices_free) enif_free(uniformIndices);
 }
 
-static void ecb_glGetActiveUniformName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveUniformName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -10123,7 +9380,7 @@ static void ecb_glGetActiveUniformName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
  enif_free(uniformName);
 }
 
-static void ecb_glGetUniformBlockIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformBlockIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -10137,7 +9394,7 @@ static void ecb_glGetUniformBlockIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetActiveUniformBlockiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveUniformBlockiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint uniformBlockIndex;
@@ -10162,7 +9419,7 @@ static void ecb_glGetActiveUniformBlockiv(ErlNifEnv* env, ErlNifPid *self, ERL_N
                          EGL_ATOM_OK));
 }
 
-static void ecb_glGetActiveUniformBlockName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveUniformBlockName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -10181,7 +9438,7 @@ static void ecb_glGetActiveUniformBlockName(ErlNifEnv* env, ErlNifPid *self, ERL
  enif_free(uniformBlockName);
 }
 
-static void ecb_glUniformBlockBinding(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformBlockBinding(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint uniformBlockIndex;
@@ -10192,7 +9449,7 @@ static void ecb_glUniformBlockBinding(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglUniformBlockBinding(program,uniformBlockIndex,uniformBlockBinding);
 }
 
-static void ecb_glCopyBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCopyBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum readTarget;
   GLenum writeTarget;
@@ -10207,7 +9464,7 @@ static void ecb_glCopyBufferSubData(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglCopyBufferSubData(readTarget,writeTarget,readOffset,writeOffset,size);
 }
 
-static void ecb_glDrawElementsBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElementsBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLsizei count;
@@ -10227,7 +9484,7 @@ static void ecb_glDrawElementsBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NI
   weglDrawElementsBaseVertex(mode,count,type,indices_idx,basevertex);
 }
 
-static void ecb_glDrawRangeElementsBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawRangeElementsBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLuint start;
@@ -10251,7 +9508,7 @@ static void ecb_glDrawRangeElementsBaseVertex(ErlNifEnv* env, ErlNifPid *self, E
   weglDrawRangeElementsBaseVertex(mode,start,end,count,type,indices_idx,basevertex);
 }
 
-static void ecb_glDrawElementsInstancedBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElementsInstancedBaseVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLsizei count;
@@ -10273,14 +9530,14 @@ static void ecb_glDrawElementsInstancedBaseVertex(ErlNifEnv* env, ErlNifPid *sel
   weglDrawElementsInstancedBaseVertex(mode,count,type,indices_idx,primcount,basevertex);
 }
 
-static void ecb_glProvokingVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProvokingVertex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   if(!enif_get_uint(env, argv[0],  &mode)) Badarg(5692,"mode");
   weglProvokingVertex(mode);
 }
 
-static void ecb_glFenceSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glFenceSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsync result;
   ERL_NIF_TERM reply;
@@ -10294,7 +9551,7 @@ static void ecb_glFenceSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glIsSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -10306,14 +9563,14 @@ static void ecb_glIsSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDeleteSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t sync;
   if(!egl_get_ptr(env, argv[0], (void *) &sync)) Badarg(5695,"sync");
   weglDeleteSync((GLsync) sync);
 }
 
-static void ecb_glClientWaitSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClientWaitSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum result;
   ERL_NIF_TERM reply;
@@ -10329,7 +9586,7 @@ static void ecb_glClientWaitSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glWaitSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glWaitSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   uint64_t sync;
   GLbitfield flags;
@@ -10340,7 +9597,7 @@ static void ecb_glWaitSync(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
   weglWaitSync((GLsync) sync,flags,timeout);
 }
 
-static void ecb_glGetInteger64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetInteger64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum pname;
@@ -10356,7 +9613,7 @@ static void ecb_glGetInteger64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetSynciv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSynciv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   uint64_t sync;
@@ -10381,7 +9638,7 @@ static void ecb_glGetSynciv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
  enif_free(values);
 }
 
-static void ecb_glTexImage2DMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexImage2DMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei samples;
@@ -10398,7 +9655,7 @@ static void ecb_glTexImage2DMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglTexImage2DMultisample(target,samples,internalformat,width,height,fixedsamplelocations);
 }
 
-static void ecb_glTexImage3DMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexImage3DMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei samples;
@@ -10417,7 +9674,7 @@ static void ecb_glTexImage3DMultisample(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglTexImage3DMultisample(target,samples,internalformat,width,height,depth,fixedsamplelocations);
 }
 
-static void ecb_glGetMultisamplefv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetMultisamplefv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum pname;
@@ -10433,7 +9690,7 @@ static void ecb_glGetMultisamplefv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glSampleMaski(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSampleMaski(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLbitfield mask;
@@ -10442,7 +9699,7 @@ static void ecb_glSampleMaski(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglSampleMaski(index,mask);
 }
 
-static void ecb_glNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum type;
   ErlNifBinary name;
@@ -10453,14 +9710,14 @@ static void ecb_glNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglNamedStringARB(type,(GLint) name.size,(GLchar *) name.data,(GLint) string.size,(GLchar *) string.data);
 }
 
-static void ecb_glDeleteNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ErlNifBinary name;
   if(!enif_inspect_binary(env, argv[1], &name)) Badarg(5705,"name");
   weglDeleteNamedStringARB((GLint) name.size,(GLchar *) name.data);
 }
 
-static void ecb_glCompileShaderIncludeARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCompileShaderIncludeARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint shader;
   GLsizei count;
@@ -10480,7 +9737,7 @@ static void ecb_glCompileShaderIncludeARB(ErlNifEnv* env, ErlNifPid *self, ERL_N
  enif_free(path);
 }
 
-static void ecb_glIsNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -10492,7 +9749,7 @@ static void ecb_glIsNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   ErlNifBinary name;
@@ -10509,7 +9766,7 @@ static void ecb_glGetNamedStringARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  enif_free(string);
 }
 
-static void ecb_glGetNamedStringivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetNamedStringivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   ErlNifBinary name;
@@ -10523,7 +9780,7 @@ static void ecb_glGetNamedStringivARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBindFragDataLocationIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindFragDataLocationIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLuint colorNumber;
@@ -10536,7 +9793,7 @@ static void ecb_glBindFragDataLocationIndexed(ErlNifEnv* env, ErlNifPid *self, E
   weglBindFragDataLocationIndexed(program,colorNumber,index,(GLchar *) name.data);
 }
 
-static void ecb_glGetFragDataIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetFragDataIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -10550,7 +9807,7 @@ static void ecb_glGetFragDataIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGenSamplers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenSamplers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei count;
@@ -10570,7 +9827,7 @@ static void ecb_glGenSamplers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
  enif_free(samplers);
 }
 
-static void ecb_glDeleteSamplers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteSamplers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei count;
   int samplers_free = 0;
@@ -10592,7 +9849,7 @@ static void ecb_glDeleteSamplers(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
  if(samplers_free) enif_free(samplers);
 }
 
-static void ecb_glIsSampler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsSampler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -10604,7 +9861,7 @@ static void ecb_glIsSampler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glBindSampler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindSampler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint unit;
   GLuint sampler;
@@ -10613,7 +9870,7 @@ static void ecb_glBindSampler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglBindSampler(unit,sampler);
 }
 
-static void ecb_glSamplerParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSamplerParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint sampler;
   GLenum pname;
@@ -10624,7 +9881,7 @@ static void ecb_glSamplerParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglSamplerParameteri(sampler,pname,param);
 }
 
-static void ecb_glSamplerParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSamplerParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint sampler;
   GLenum pname;
@@ -10650,7 +9907,7 @@ static void ecb_glSamplerParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  if(param_free) enif_free(param);
 }
 
-static void ecb_glSamplerParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSamplerParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint sampler;
   GLenum pname;
@@ -10661,7 +9918,7 @@ static void ecb_glSamplerParameterf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglSamplerParameterf(sampler,pname,param);
 }
 
-static void ecb_glSamplerParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSamplerParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint sampler;
   GLenum pname;
@@ -10687,7 +9944,7 @@ static void ecb_glSamplerParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  if(param_free) enif_free(param);
 }
 
-static void ecb_glSamplerParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSamplerParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint sampler;
   GLenum pname;
@@ -10713,7 +9970,7 @@ static void ecb_glSamplerParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  if(param_free) enif_free(param);
 }
 
-static void ecb_glSamplerParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glSamplerParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint sampler;
   GLenum pname;
@@ -10739,7 +9996,7 @@ static void ecb_glSamplerParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
  if(param_free) enif_free(param);
 }
 
-static void ecb_glGetSamplerParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSamplerParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint sampler;
@@ -10757,7 +10014,7 @@ static void ecb_glGetSamplerParameteriv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetSamplerParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSamplerParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint sampler;
@@ -10775,7 +10032,7 @@ static void ecb_glGetSamplerParameterIiv(ErlNifEnv* env, ErlNifPid *self, ERL_NI
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetSamplerParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSamplerParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint sampler;
@@ -10793,7 +10050,7 @@ static void ecb_glGetSamplerParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetSamplerParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSamplerParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint sampler;
@@ -10811,7 +10068,7 @@ static void ecb_glGetSamplerParameterIuiv(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glQueryCounter(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glQueryCounter(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint id;
   GLenum target;
@@ -10820,7 +10077,7 @@ static void ecb_glQueryCounter(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglQueryCounter(id,target);
 }
 
-static void ecb_glGetQueryObjecti64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetQueryObjecti64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint id;
@@ -10834,7 +10091,7 @@ static void ecb_glGetQueryObjecti64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetQueryObjectui64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetQueryObjectui64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint id;
@@ -10848,7 +10105,7 @@ static void ecb_glGetQueryObjectui64v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDrawArraysIndirect(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawArraysIndirect(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   ErlNifBinary indirect;
@@ -10862,7 +10119,7 @@ static void ecb_glDrawArraysIndirect(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglDrawArraysIndirect(mode,indirect_idx);
 }
 
-static void ecb_glDrawElementsIndirect(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElementsIndirect(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLenum type;
@@ -10878,7 +10135,7 @@ static void ecb_glDrawElementsIndirect(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglDrawElementsIndirect(mode,type,indirect_idx);
 }
 
-static void ecb_glUniform1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLdouble x;
@@ -10887,7 +10144,7 @@ static void ecb_glUniform1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform1d(location,x);
 }
 
-static void ecb_glUniform2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLdouble x;
@@ -10898,7 +10155,7 @@ static void ecb_glUniform2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform2d(location,x,y);
 }
 
-static void ecb_glUniform3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLdouble x;
@@ -10911,7 +10168,7 @@ static void ecb_glUniform3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform3d(location,x,y,z);
 }
 
-static void ecb_glUniform4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLdouble x;
@@ -10926,7 +10183,7 @@ static void ecb_glUniform4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]
   weglUniform4d(location,x,y,z,w);
 }
 
-static void ecb_glUniform1dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform1dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -10950,7 +10207,7 @@ static void ecb_glUniform1dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
  if(value_free) enif_free(value);
 }
 
-static void ecb_glUniform2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -10977,7 +10234,7 @@ static void ecb_glUniform2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform2dv(location,count,value);
 }
 
-static void ecb_glUniform3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11005,7 +10262,7 @@ static void ecb_glUniform3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform3dv(location,count,value);
 }
 
-static void ecb_glUniform4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniform4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11034,7 +10291,7 @@ static void ecb_glUniform4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[
   weglUniform4dv(location,count,value);
 }
 
-static void ecb_glUniformMatrix2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11065,7 +10322,7 @@ static void ecb_glUniformMatrix2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUniformMatrix2dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11101,7 +10358,7 @@ static void ecb_glUniformMatrix3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUniformMatrix3dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11144,7 +10401,7 @@ static void ecb_glUniformMatrix4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUniformMatrix4dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix2x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix2x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11177,7 +10434,7 @@ static void ecb_glUniformMatrix2x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix2x3dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix2x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix2x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11212,7 +10469,7 @@ static void ecb_glUniformMatrix2x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix2x4dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix3x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix3x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11245,7 +10502,7 @@ static void ecb_glUniformMatrix3x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix3x2dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix3x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix3x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11284,7 +10541,7 @@ static void ecb_glUniformMatrix3x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix3x4dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix4x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix4x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11319,7 +10576,7 @@ static void ecb_glUniformMatrix4x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix4x2dv(location,count,transpose,value);
 }
 
-static void ecb_glUniformMatrix4x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformMatrix4x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint location;
   GLsizei count;
@@ -11358,7 +10615,7 @@ static void ecb_glUniformMatrix4x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglUniformMatrix4x3dv(location,count,transpose,value);
 }
 
-static void ecb_glGetUniformdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -11376,7 +10633,7 @@ static void ecb_glGetUniformdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetSubroutineUniformLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSubroutineUniformLocation(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLint result;
   ERL_NIF_TERM reply;
@@ -11392,7 +10649,7 @@ static void ecb_glGetSubroutineUniformLocation(ErlNifEnv* env, ErlNifPid *self, 
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetSubroutineIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetSubroutineIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -11408,7 +10665,7 @@ static void ecb_glGetSubroutineIndex(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetActiveSubroutineUniformName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveSubroutineUniformName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -11429,7 +10686,7 @@ static void ecb_glGetActiveSubroutineUniformName(ErlNifEnv* env, ErlNifPid *self
  enif_free(name);
 }
 
-static void ecb_glGetActiveSubroutineName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetActiveSubroutineName(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -11450,7 +10707,7 @@ static void ecb_glGetActiveSubroutineName(ErlNifEnv* env, ErlNifPid *self, ERL_N
  enif_free(name);
 }
 
-static void ecb_glUniformSubroutinesuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUniformSubroutinesuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum shadertype;
   GLsizei count;
@@ -11474,7 +10731,7 @@ static void ecb_glUniformSubroutinesuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
  if(indices_free) enif_free(indices);
 }
 
-static void ecb_glGetUniformSubroutineuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetUniformSubroutineuiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum shadertype;
@@ -11492,7 +10749,7 @@ static void ecb_glGetUniformSubroutineuiv(ErlNifEnv* env, ErlNifPid *self, ERL_N
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramStageiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramStageiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -11508,7 +10765,7 @@ static void ecb_glGetProgramStageiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glPatchParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPatchParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   GLint value;
@@ -11517,7 +10774,7 @@ static void ecb_glPatchParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglPatchParameteri(pname,value);
 }
 
-static void ecb_glPatchParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPatchParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum pname;
   int values_free = 0;
@@ -11541,7 +10798,7 @@ static void ecb_glPatchParameterfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
  if(values_free) enif_free(values);
 }
 
-static void ecb_glBindTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint id;
@@ -11550,7 +10807,7 @@ static void ecb_glBindTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglBindTransformFeedback(target,id);
 }
 
-static void ecb_glDeleteTransformFeedbacks(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteTransformFeedbacks(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int ids_free = 0;
@@ -11572,7 +10829,7 @@ static void ecb_glDeleteTransformFeedbacks(ErlNifEnv* env, ErlNifPid *self, ERL_
  if(ids_free) enif_free(ids);
 }
 
-static void ecb_glGenTransformFeedbacks(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenTransformFeedbacks(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -11592,7 +10849,7 @@ static void ecb_glGenTransformFeedbacks(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
  enif_free(ids);
 }
 
-static void ecb_glIsTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -11604,17 +10861,17 @@ static void ecb_glIsTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glPauseTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glPauseTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglPauseTransformFeedback();
 }
 
-static void ecb_glResumeTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glResumeTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglResumeTransformFeedback();
 }
 
-static void ecb_glDrawTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLuint id;
@@ -11623,7 +10880,7 @@ static void ecb_glDrawTransformFeedback(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglDrawTransformFeedback(mode,id);
 }
 
-static void ecb_glDrawTransformFeedbackStream(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawTransformFeedbackStream(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLuint id;
@@ -11634,7 +10891,7 @@ static void ecb_glDrawTransformFeedbackStream(ErlNifEnv* env, ErlNifPid *self, E
   weglDrawTransformFeedbackStream(mode,id,stream);
 }
 
-static void ecb_glBeginQueryIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBeginQueryIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -11645,7 +10902,7 @@ static void ecb_glBeginQueryIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglBeginQueryIndexed(target,index,id);
 }
 
-static void ecb_glEndQueryIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glEndQueryIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLuint index;
@@ -11654,7 +10911,7 @@ static void ecb_glEndQueryIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglEndQueryIndexed(target,index);
 }
 
-static void ecb_glGetQueryIndexediv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetQueryIndexediv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -11670,12 +10927,12 @@ static void ecb_glGetQueryIndexediv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glReleaseShaderCompiler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glReleaseShaderCompiler(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   weglReleaseShaderCompiler();
 }
 
-static void ecb_glShaderBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glShaderBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei count;
   int shaders_free = 0;
@@ -11701,7 +10958,7 @@ static void ecb_glShaderBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
  if(shaders_free) enif_free(shaders);
 }
 
-static void ecb_glGetShaderPrecisionFormat(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetShaderPrecisionFormat(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum shadertype;
@@ -11720,7 +10977,7 @@ static void ecb_glGetShaderPrecisionFormat(ErlNifEnv* env, ErlNifPid *self, ERL_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDepthRangef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthRangef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampf n;
   GLclampf f;
@@ -11729,14 +10986,14 @@ static void ecb_glDepthRangef(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
   weglDepthRangef(n,f);
 }
 
-static void ecb_glClearDepthf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glClearDepthf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampf d;
   if(!egl_get_float(env, argv[0],  &d)) Badarg(5775,"d");
   weglClearDepthf(d);
 }
 
-static void ecb_glGetProgramBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint program;
@@ -11755,7 +11012,7 @@ static void ecb_glGetProgramBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glProgramBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLenum binaryFormat;
@@ -11766,7 +11023,7 @@ static void ecb_glProgramBinary(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglProgramBinary(program,binaryFormat,(GLvoid *) binary.data,(GLsizei) binary.size);
 }
 
-static void ecb_glProgramParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLenum pname;
@@ -11777,7 +11034,7 @@ static void ecb_glProgramParameteri(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramParameteri(program,pname,value);
 }
 
-static void ecb_glUseProgramStages(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glUseProgramStages(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint pipeline;
   GLbitfield stages;
@@ -11788,7 +11045,7 @@ static void ecb_glUseProgramStages(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglUseProgramStages(pipeline,stages,program);
 }
 
-static void ecb_glActiveShaderProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glActiveShaderProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint pipeline;
   GLuint program;
@@ -11797,7 +11054,7 @@ static void ecb_glActiveShaderProgram(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
   weglActiveShaderProgram(pipeline,program);
 }
 
-static void ecb_glCreateShaderProgramv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glCreateShaderProgramv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -11822,14 +11079,14 @@ static void ecb_glCreateShaderProgramv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
  enif_free(strings);
 }
 
-static void ecb_glBindProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint pipeline;
   if(!enif_get_uint(env, argv[0],  &pipeline)) Badarg(5782,"pipeline");
   weglBindProgramPipeline(pipeline);
 }
 
-static void ecb_glDeleteProgramPipelines(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDeleteProgramPipelines(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei n;
   int pipelines_free = 0;
@@ -11851,7 +11108,7 @@ static void ecb_glDeleteProgramPipelines(ErlNifEnv* env, ErlNifPid *self, ERL_NI
  if(pipelines_free) enif_free(pipelines);
 }
 
-static void ecb_glGenProgramPipelines(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGenProgramPipelines(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLsizei n;
@@ -11871,7 +11128,7 @@ static void ecb_glGenProgramPipelines(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  enif_free(pipelines);
 }
 
-static void ecb_glIsProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glIsProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLboolean result;
   ERL_NIF_TERM reply;
@@ -11883,7 +11140,7 @@ static void ecb_glIsProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetProgramPipelineiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramPipelineiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint pipeline;
@@ -11897,7 +11154,7 @@ static void ecb_glGetProgramPipelineiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glProgramUniform1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -11908,7 +11165,7 @@ static void ecb_glProgramUniform1i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform1i(program,location,v0);
 }
 
-static void ecb_glProgramUniform1iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -11934,7 +11191,7 @@ static void ecb_glProgramUniform1iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(value_free) enif_free(value);
 }
 
-static void ecb_glProgramUniform1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -11945,7 +11202,7 @@ static void ecb_glProgramUniform1f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform1f(program,location,v0);
 }
 
-static void ecb_glProgramUniform1fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -11971,7 +11228,7 @@ static void ecb_glProgramUniform1fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(value_free) enif_free(value);
 }
 
-static void ecb_glProgramUniform1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -11982,7 +11239,7 @@ static void ecb_glProgramUniform1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform1d(program,location,v0);
 }
 
-static void ecb_glProgramUniform1dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12008,7 +11265,7 @@ static void ecb_glProgramUniform1dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
  if(value_free) enif_free(value);
 }
 
-static void ecb_glProgramUniform1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12019,7 +11276,7 @@ static void ecb_glProgramUniform1ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform1ui(program,location,v0);
 }
 
-static void ecb_glProgramUniform1uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform1uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12045,7 +11302,7 @@ static void ecb_glProgramUniform1uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
  if(value_free) enif_free(value);
 }
 
-static void ecb_glProgramUniform2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12058,7 +11315,7 @@ static void ecb_glProgramUniform2i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform2i(program,location,v0,v1);
 }
 
-static void ecb_glProgramUniform2iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12087,7 +11344,7 @@ static void ecb_glProgramUniform2iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform2iv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12100,7 +11357,7 @@ static void ecb_glProgramUniform2f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform2f(program,location,v0,v1);
 }
 
-static void ecb_glProgramUniform2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12129,7 +11386,7 @@ static void ecb_glProgramUniform2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform2fv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12142,7 +11399,7 @@ static void ecb_glProgramUniform2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform2d(program,location,v0,v1);
 }
 
-static void ecb_glProgramUniform2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12171,7 +11428,7 @@ static void ecb_glProgramUniform2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform2dv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12184,7 +11441,7 @@ static void ecb_glProgramUniform2ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform2ui(program,location,v0,v1);
 }
 
-static void ecb_glProgramUniform2uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform2uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12213,7 +11470,7 @@ static void ecb_glProgramUniform2uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglProgramUniform2uiv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12228,7 +11485,7 @@ static void ecb_glProgramUniform3i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform3i(program,location,v0,v1,v2);
 }
 
-static void ecb_glProgramUniform3iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12258,7 +11515,7 @@ static void ecb_glProgramUniform3iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform3iv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12273,7 +11530,7 @@ static void ecb_glProgramUniform3f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform3f(program,location,v0,v1,v2);
 }
 
-static void ecb_glProgramUniform3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12303,7 +11560,7 @@ static void ecb_glProgramUniform3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform3fv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12318,7 +11575,7 @@ static void ecb_glProgramUniform3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform3d(program,location,v0,v1,v2);
 }
 
-static void ecb_glProgramUniform3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12348,7 +11605,7 @@ static void ecb_glProgramUniform3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform3dv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12363,7 +11620,7 @@ static void ecb_glProgramUniform3ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform3ui(program,location,v0,v1,v2);
 }
 
-static void ecb_glProgramUniform3uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform3uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12393,7 +11650,7 @@ static void ecb_glProgramUniform3uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglProgramUniform3uiv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12410,7 +11667,7 @@ static void ecb_glProgramUniform4i(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform4i(program,location,v0,v1,v2,v3);
 }
 
-static void ecb_glProgramUniform4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12441,7 +11698,7 @@ static void ecb_glProgramUniform4iv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform4iv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12458,7 +11715,7 @@ static void ecb_glProgramUniform4f(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform4f(program,location,v0,v1,v2,v3);
 }
 
-static void ecb_glProgramUniform4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12489,7 +11746,7 @@ static void ecb_glProgramUniform4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform4fv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12506,7 +11763,7 @@ static void ecb_glProgramUniform4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglProgramUniform4d(program,location,v0,v1,v2,v3);
 }
 
-static void ecb_glProgramUniform4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12537,7 +11794,7 @@ static void ecb_glProgramUniform4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform4dv(program,location,count,value);
 }
 
-static void ecb_glProgramUniform4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12554,7 +11811,7 @@ static void ecb_glProgramUniform4ui(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglProgramUniform4ui(program,location,v0,v1,v2,v3);
 }
 
-static void ecb_glProgramUniform4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniform4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12585,7 +11842,7 @@ static void ecb_glProgramUniform4uiv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
   weglProgramUniform4uiv(program,location,count,value);
 }
 
-static void ecb_glProgramUniformMatrix2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12618,7 +11875,7 @@ static void ecb_glProgramUniformMatrix2fv(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglProgramUniformMatrix2fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12656,7 +11913,7 @@ static void ecb_glProgramUniformMatrix3fv(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglProgramUniformMatrix3fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12701,7 +11958,7 @@ static void ecb_glProgramUniformMatrix4fv(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglProgramUniformMatrix4fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12734,7 +11991,7 @@ static void ecb_glProgramUniformMatrix2dv(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglProgramUniformMatrix2dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12772,7 +12029,7 @@ static void ecb_glProgramUniformMatrix3dv(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglProgramUniformMatrix3dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12817,7 +12074,7 @@ static void ecb_glProgramUniformMatrix4dv(ErlNifEnv* env, ErlNifPid *self, ERL_N
   weglProgramUniformMatrix4dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix2x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix2x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12852,7 +12109,7 @@ static void ecb_glProgramUniformMatrix2x3fv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix2x3fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix3x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix3x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12887,7 +12144,7 @@ static void ecb_glProgramUniformMatrix3x2fv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix3x2fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix2x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix2x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12924,7 +12181,7 @@ static void ecb_glProgramUniformMatrix2x4fv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix2x4fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix4x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix4x2fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -12961,7 +12218,7 @@ static void ecb_glProgramUniformMatrix4x2fv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix4x2fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix3x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix3x4fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13002,7 +12259,7 @@ static void ecb_glProgramUniformMatrix3x4fv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix3x4fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix4x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix4x3fv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13043,7 +12300,7 @@ static void ecb_glProgramUniformMatrix4x3fv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix4x3fv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix2x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix2x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13078,7 +12335,7 @@ static void ecb_glProgramUniformMatrix2x3dv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix2x3dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix3x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix3x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13113,7 +12370,7 @@ static void ecb_glProgramUniformMatrix3x2dv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix3x2dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix2x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix2x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13150,7 +12407,7 @@ static void ecb_glProgramUniformMatrix2x4dv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix2x4dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix4x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix4x2dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13187,7 +12444,7 @@ static void ecb_glProgramUniformMatrix4x2dv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix4x2dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix3x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix3x4dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13228,7 +12485,7 @@ static void ecb_glProgramUniformMatrix3x4dv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix3x4dv(program,location,count,transpose,value);
 }
 
-static void ecb_glProgramUniformMatrix4x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glProgramUniformMatrix4x3dv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint program;
   GLint location;
@@ -13269,14 +12526,14 @@ static void ecb_glProgramUniformMatrix4x3dv(ErlNifEnv* env, ErlNifPid *self, ERL
   weglProgramUniformMatrix4x3dv(program,location,count,transpose,value);
 }
 
-static void ecb_glValidateProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glValidateProgramPipeline(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint pipeline;
   if(!enif_get_uint(env, argv[0],  &pipeline)) Badarg(5837,"pipeline");
   weglValidateProgramPipeline(pipeline);
 }
 
-static void ecb_glGetProgramPipelineInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetProgramPipelineInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint pipeline;
@@ -13293,7 +12550,7 @@ static void ecb_glGetProgramPipelineInfoLog(ErlNifEnv* env, ErlNifPid *self, ERL
  enif_free(infoLog);
 }
 
-static void ecb_glVertexAttribL1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribL1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -13302,7 +12559,7 @@ static void ecb_glVertexAttribL1d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribL1d(index,x);
 }
 
-static void ecb_glVertexAttribL2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribL2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -13313,7 +12570,7 @@ static void ecb_glVertexAttribL2d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribL2d(index,x,y);
 }
 
-static void ecb_glVertexAttribL3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribL3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -13326,7 +12583,7 @@ static void ecb_glVertexAttribL3d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribL3d(index,x,y,z);
 }
 
-static void ecb_glVertexAttribL4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribL4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLdouble x;
@@ -13341,7 +12598,7 @@ static void ecb_glVertexAttribL4d(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglVertexAttribL4d(index,x,y,z,w);
 }
 
-static void ecb_glVertexAttribLPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glVertexAttribLPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint size;
@@ -13361,7 +12618,7 @@ static void ecb_glVertexAttribLPointer(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_
   weglVertexAttribLPointer(index,size,type,stride,pointer_idx);
 }
 
-static void ecb_glGetVertexAttribLdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetVertexAttribLdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLuint index;
@@ -13379,7 +12636,7 @@ static void ecb_glGetVertexAttribLdv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glViewportArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glViewportArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint first;
   GLsizei count;
@@ -13408,7 +12665,7 @@ static void ecb_glViewportArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglViewportArrayv(first,count,v);
 }
 
-static void ecb_glViewportIndexedf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glViewportIndexedf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLfloat x;
@@ -13423,7 +12680,7 @@ static void ecb_glViewportIndexedf(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglViewportIndexedf(index,x,y,w,h);
 }
 
-static void ecb_glViewportIndexedfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glViewportIndexedfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLfloat v[4];
@@ -13443,7 +12700,7 @@ static void ecb_glViewportIndexedfv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglViewportIndexedfv(index,v);
 }
 
-static void ecb_glScissorArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glScissorArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint first;
   GLsizei count;
@@ -13472,7 +12729,7 @@ static void ecb_glScissorArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM ar
   weglScissorArrayv(first,count,v);
 }
 
-static void ecb_glScissorIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glScissorIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint left;
@@ -13487,7 +12744,7 @@ static void ecb_glScissorIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglScissorIndexed(index,left,bottom,width,height);
 }
 
-static void ecb_glScissorIndexedv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glScissorIndexedv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLint v[4];
@@ -13507,7 +12764,7 @@ static void ecb_glScissorIndexedv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM 
   weglScissorIndexedv(index,v);
 }
 
-static void ecb_glDepthRangeArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthRangeArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint first;
   GLsizei count;
@@ -13534,7 +12791,7 @@ static void ecb_glDepthRangeArrayv(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglDepthRangeArrayv(first,count,v);
 }
 
-static void ecb_glDepthRangeIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthRangeIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint index;
   GLclampd n;
@@ -13545,7 +12802,7 @@ static void ecb_glDepthRangeIndexed(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TER
   weglDepthRangeIndexed(index,n,f);
 }
 
-static void ecb_glGetFloati_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetFloati_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -13563,7 +12820,7 @@ static void ecb_glGetFloati_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glGetDoublei_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetDoublei_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -13581,7 +12838,7 @@ static void ecb_glGetDoublei_v(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDebugMessageControlARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDebugMessageControlARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum source;
   GLenum type;
@@ -13611,7 +12868,7 @@ static void ecb_glDebugMessageControlARB(ErlNifEnv* env, ErlNifPid *self, ERL_NI
  if(ids_free) enif_free(ids);
 }
 
-static void ecb_glDebugMessageInsertARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDebugMessageInsertARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum source;
   GLenum type;
@@ -13626,7 +12883,7 @@ static void ecb_glDebugMessageInsertARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
   weglDebugMessageInsertARB(source,type,id,severity,(GLsizei) buf.size,(GLchar *) buf.data);
 }
 
-static void ecb_glGetDebugMessageLogARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetDebugMessageLogARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint result;
   ERL_NIF_TERM reply;
@@ -13691,7 +12948,7 @@ static void ecb_glGetDebugMessageLogARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF
  enif_free(sources);
 }
 
-static void ecb_glGetGraphicsResetStatusARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetGraphicsResetStatusARB(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum result;
   ERL_NIF_TERM reply;
@@ -13701,7 +12958,7 @@ static void ecb_glGetGraphicsResetStatusARB(ErlNifEnv* env, ErlNifPid *self, ERL
    enif_make_tuple2(env, EGL_ATOM_REPLY, reply));
 }
 
-static void ecb_glDrawArraysInstancedBaseInstance(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawArraysInstancedBaseInstance(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLint first;
@@ -13716,7 +12973,7 @@ static void ecb_glDrawArraysInstancedBaseInstance(ErlNifEnv* env, ErlNifPid *sel
   weglDrawArraysInstancedBaseInstance(mode,first,count,primcount,baseinstance);
 }
 
-static void ecb_glDrawElementsInstancedBaseInstance(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElementsInstancedBaseInstance(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLsizei count;
@@ -13738,7 +12995,7 @@ static void ecb_glDrawElementsInstancedBaseInstance(ErlNifEnv* env, ErlNifPid *s
   weglDrawElementsInstancedBaseInstance(mode,count,type,indices_idx,primcount,baseinstance);
 }
 
-static void ecb_glDrawElementsInstancedBaseVertexBaseInstance(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawElementsInstancedBaseVertexBaseInstance(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLsizei count;
@@ -13762,7 +13019,7 @@ static void ecb_glDrawElementsInstancedBaseVertexBaseInstance(ErlNifEnv* env, Er
   weglDrawElementsInstancedBaseVertexBaseInstance(mode,count,type,indices_idx,primcount,basevertex,baseinstance);
 }
 
-static void ecb_glDrawTransformFeedbackInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawTransformFeedbackInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLuint id;
@@ -13773,7 +13030,7 @@ static void ecb_glDrawTransformFeedbackInstanced(ErlNifEnv* env, ErlNifPid *self
   weglDrawTransformFeedbackInstanced(mode,id,primcount);
 }
 
-static void ecb_glDrawTransformFeedbackStreamInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDrawTransformFeedbackStreamInstanced(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum mode;
   GLuint id;
@@ -13786,7 +13043,7 @@ static void ecb_glDrawTransformFeedbackStreamInstanced(ErlNifEnv* env, ErlNifPid
   weglDrawTransformFeedbackStreamInstanced(mode,id,stream,primcount);
 }
 
-static void ecb_glGetInternalformativ(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glGetInternalformativ(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   ERL_NIF_TERM reply;
   GLenum target;
@@ -13812,7 +13069,7 @@ static void ecb_glGetInternalformativ(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_T
  enif_free(params);
 }
 
-static void ecb_glBindImageTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glBindImageTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLuint unit;
   GLuint texture;
@@ -13831,14 +13088,14 @@ static void ecb_glBindImageTexture(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM
   weglBindImageTexture(unit,texture,level,layered,layer,access,format);
 }
 
-static void ecb_glMemoryBarrier(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glMemoryBarrier(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLbitfield barriers;
   if(!enif_get_uint(env, argv[0],  &barriers)) Badarg(5869,"barriers");
   weglMemoryBarrier(barriers);
 }
 
-static void ecb_glTexStorage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexStorage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei levels;
@@ -13851,7 +13108,7 @@ static void ecb_glTexStorage1D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglTexStorage1D(target,levels,internalformat,width);
 }
 
-static void ecb_glTexStorage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexStorage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei levels;
@@ -13866,7 +13123,7 @@ static void ecb_glTexStorage2D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglTexStorage2D(target,levels,internalformat,width,height);
 }
 
-static void ecb_glTexStorage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glTexStorage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLenum target;
   GLsizei levels;
@@ -13883,7 +13140,7 @@ static void ecb_glTexStorage3D(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM arg
   weglTexStorage3D(target,levels,internalformat,width,height,depth);
 }
 
-static void ecb_glDepthBoundsEXT(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glDepthBoundsEXT(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLclampd zmin;
   GLclampd zmax;
@@ -13892,7 +13149,7 @@ static void ecb_glDepthBoundsEXT(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM a
   weglDepthBoundsEXT(zmin,zmax);
 }
 
-static void ecb_glStencilClearTagEXT(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
+void ecb_glStencilClearTagEXT(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])
 {
   GLsizei stencilTagBits;
   GLuint stencilClearTag;
@@ -13903,24 +13160,24 @@ static void ecb_glStencilClearTagEXT(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TE
 
 
 
-static ErlNifFunc egl_funcs[] = 
+static ErlNifFunc egl_funcs[] =
 {
-  {"lookup_func", 1, egl_lookup_func}
+    {"lookup_func", 0, egl_lookup_func_func}
 };
 static int egl_init(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM arg)
 {
-  EGL_ATOM_OK = enif_make_atom(env, "ok");
-  EGL_ATOM_BADARG = enif_make_atom(env, "badarg");
-  EGL_ATOM_REPLY = enif_make_atom(env, "_egl_result_");
-  EGL_ATOM_ERROR = enif_make_atom(env, "_egl_error_");
+    EGL_ATOM_OK = enif_make_atom(env, "ok");
+    EGL_ATOM_BADARG = enif_make_atom(env, "badarg");
+    EGL_ATOM_REPLY = enif_make_atom(env, "_egl_result_");
+    EGL_ATOM_ERROR = enif_make_atom(env, "_egl_error_");
 
-  if(!egl_load_functions()) {
-    init_tess();
-    return 0;
-  } else return 1;
+    if(!egl_load_functions()) {
+        init_tess();
+        return 0;
+    } else return 1;
 }
 
- ERL_NIF_INIT(gl, egl_funcs, egl_init, NULL, NULL, NULL)
+ERL_NIF_INIT(gl, egl_funcs, egl_init, NULL, NULL, NULL)
 
- #include "gl_finit.h"
+#include "gl_finit.h"
 

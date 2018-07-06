@@ -66,8 +66,7 @@ void stop_native_gui(wxe_data *sd);
 
 
 void push_command(int op,char * buf,int len, wxe_data *);
-void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int,
-              void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int);
+void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int, int);
 void meta_command(int what, wxe_data *sd);
 
 void * wxe_ps_init();

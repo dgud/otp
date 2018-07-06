@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2017. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2018. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -258,7 +258,7 @@
   memoryBarrier/1,texStorage1D/4,texStorage2D/5,texStorage3D/6,depthBoundsEXT/2,
   stencilClearTagEXT/2]).
 
--export([get_interface/0, rec/1, lookup_func/1]).
+-export([get_interface/0, rec/1, lookup_func/0]).
 -define(nif_stub,nif_stub_error(?LINE)).
 %% @hidden
 nif_stub_error(Line) ->
@@ -280,17 +280,17 @@ get_interface() ->
     wxe_util.  %% temporary
 
 %% @hidden
-rec({Op,_}=TryAgain) ->
+rec(Op) ->
     receive
         {'_egl_result_', Res} -> Res;
         {'_egl_error_',  Op, Res} -> error({error,Res,Op});
         {'_egl_error_', Other, Res} ->
-                Err = io_lib:format("~p in op: ~p", [Res, Other]),
-               error_logger:error_report([{gl, error}, {message, lists:flatten(Err)}]),
-               rec(TryAgain)
+             Err = io_lib:format("~p in op: ~p", [Res, Other]),
+            error_logger:error_report([{gl, error}, {message, lists:flatten(Err)}]),
+            rec(Op)
     end.
 
-lookup_func(_) -> ?nif_stub.
+lookup_func() -> ?nif_stub.
 
 
 
@@ -303,8 +303,7 @@ lookup_func(_) -> ?nif_stub.
 -spec clearIndex(C) -> 'ok' when C :: float().
 clearIndex(C) ->
   IF = get_interface(),
-  OP = lookup_func(5037),
-  IF:queue_cmd(C,OP,1),
+  IF:queue_cmd(C,5037,1),
   ok.
 
 %% @doc glClearColor
@@ -313,8 +312,7 @@ clearIndex(C) ->
 -spec clearColor(Red, Green, Blue, Alpha) -> 'ok' when Red :: clamp(),Green :: clamp(),Blue :: clamp(),Alpha :: clamp().
 clearColor(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5038),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5038,1),
   ok.
 
 %% @doc glClear
@@ -323,8 +321,7 @@ clearColor(Red,Green,Blue,Alpha) ->
 -spec clear(Mask) -> 'ok' when Mask :: integer().
 clear(Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5039),
-  IF:queue_cmd(Mask,OP,1),
+  IF:queue_cmd(Mask,5039,1),
   ok.
 
 %% @doc glIndexMask
@@ -333,8 +330,7 @@ clear(Mask) ->
 -spec indexMask(Mask) -> 'ok' when Mask :: integer().
 indexMask(Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5040),
-  IF:queue_cmd(Mask,OP,1),
+  IF:queue_cmd(Mask,5040,1),
   ok.
 
 %% @doc glColorMask
@@ -343,8 +339,7 @@ indexMask(Mask) ->
 -spec colorMask(Red, Green, Blue, Alpha) -> 'ok' when Red :: 0|1,Green :: 0|1,Blue :: 0|1,Alpha :: 0|1.
 colorMask(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5041),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5041,1),
   ok.
 
 %% @doc glAlphaFunc
@@ -353,8 +348,7 @@ colorMask(Red,Green,Blue,Alpha) ->
 -spec alphaFunc(Func, Ref) -> 'ok' when Func :: enum(),Ref :: clamp().
 alphaFunc(Func,Ref) ->
   IF = get_interface(),
-  OP = lookup_func(5042),
-  IF:queue_cmd(Func,Ref,OP,1),
+  IF:queue_cmd(Func,Ref,5042,1),
   ok.
 
 %% @doc glBlendFunc
@@ -363,8 +357,7 @@ alphaFunc(Func,Ref) ->
 -spec blendFunc(Sfactor, Dfactor) -> 'ok' when Sfactor :: enum(),Dfactor :: enum().
 blendFunc(Sfactor,Dfactor) ->
   IF = get_interface(),
-  OP = lookup_func(5043),
-  IF:queue_cmd(Sfactor,Dfactor,OP,1),
+  IF:queue_cmd(Sfactor,Dfactor,5043,1),
   ok.
 
 %% @doc glLogicOp
@@ -373,8 +366,7 @@ blendFunc(Sfactor,Dfactor) ->
 -spec logicOp(Opcode) -> 'ok' when Opcode :: enum().
 logicOp(Opcode) ->
   IF = get_interface(),
-  OP = lookup_func(5044),
-  IF:queue_cmd(Opcode,OP,1),
+  IF:queue_cmd(Opcode,5044,1),
   ok.
 
 %% @doc glCullFace
@@ -383,8 +375,7 @@ logicOp(Opcode) ->
 -spec cullFace(Mode) -> 'ok' when Mode :: enum().
 cullFace(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5045),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5045,1),
   ok.
 
 %% @doc glFrontFace
@@ -393,8 +384,7 @@ cullFace(Mode) ->
 -spec frontFace(Mode) -> 'ok' when Mode :: enum().
 frontFace(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5046),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5046,1),
   ok.
 
 %% @doc glPointSize
@@ -403,8 +393,7 @@ frontFace(Mode) ->
 -spec pointSize(Size) -> 'ok' when Size :: float().
 pointSize(Size) ->
   IF = get_interface(),
-  OP = lookup_func(5047),
-  IF:queue_cmd(Size,OP,1),
+  IF:queue_cmd(Size,5047,1),
   ok.
 
 %% @doc glLineWidth
@@ -413,8 +402,7 @@ pointSize(Size) ->
 -spec lineWidth(Width) -> 'ok' when Width :: float().
 lineWidth(Width) ->
   IF = get_interface(),
-  OP = lookup_func(5048),
-  IF:queue_cmd(Width,OP,1),
+  IF:queue_cmd(Width,5048,1),
   ok.
 
 %% @doc glLineStipple
@@ -423,8 +411,7 @@ lineWidth(Width) ->
 -spec lineStipple(Factor, Pattern) -> 'ok' when Factor :: integer(),Pattern :: integer().
 lineStipple(Factor,Pattern) ->
   IF = get_interface(),
-  OP = lookup_func(5049),
-  IF:queue_cmd(Factor,Pattern,OP,1),
+  IF:queue_cmd(Factor,Pattern,5049,1),
   ok.
 
 %% @doc glPolygonMode
@@ -433,8 +420,7 @@ lineStipple(Factor,Pattern) ->
 -spec polygonMode(Face, Mode) -> 'ok' when Face :: enum(),Mode :: enum().
 polygonMode(Face,Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5050),
-  IF:queue_cmd(Face,Mode,OP,1),
+  IF:queue_cmd(Face,Mode,5050,1),
   ok.
 
 %% @doc glPolygonOffset
@@ -443,8 +429,7 @@ polygonMode(Face,Mode) ->
 -spec polygonOffset(Factor, Units) -> 'ok' when Factor :: float(),Units :: float().
 polygonOffset(Factor,Units) ->
   IF = get_interface(),
-  OP = lookup_func(5051),
-  IF:queue_cmd(Factor,Units,OP,1),
+  IF:queue_cmd(Factor,Units,5051,1),
   ok.
 
 %% @doc glPolygonStipple
@@ -453,8 +438,7 @@ polygonOffset(Factor,Units) ->
 -spec polygonStipple(Mask) -> 'ok' when Mask :: binary().
 polygonStipple(Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5052),
-  IF:queue_cmd(Mask,OP,1),
+  IF:queue_cmd(Mask,5052,1),
   ok.
 
 %% @doc glGetPolygonStipple
@@ -463,9 +447,8 @@ polygonStipple(Mask) ->
 -spec getPolygonStipple() -> binary().
 getPolygonStipple() ->
   IF = get_interface(),
-  OP = lookup_func(5053),
-  IF:queue_cmd(OP,0),
-  rec(OP).
+  IF:queue_cmd(5053,0),
+  rec(5009).
 
 %% @doc glEdgeFlag
 %%
@@ -473,8 +456,7 @@ getPolygonStipple() ->
 -spec edgeFlag(Flag) -> 'ok' when Flag :: 0|1.
 edgeFlag(Flag) ->
   IF = get_interface(),
-  OP = lookup_func(5054),
-  IF:queue_cmd(Flag,OP,1),
+  IF:queue_cmd(Flag,5054,1),
   ok.
 
 %% @equiv edgeFlag(Flag)
@@ -486,8 +468,7 @@ edgeFlagv({Flag}) ->  edgeFlag(Flag).
 -spec scissor(X, Y, Width, Height) -> 'ok' when X :: integer(),Y :: integer(),Width :: integer(),Height :: integer().
 scissor(X,Y,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5055),
-  IF:queue_cmd(X,Y,Width,Height,OP,1),
+  IF:queue_cmd(X,Y,Width,Height,5055,1),
   ok.
 
 %% @doc glClipPlane
@@ -496,8 +477,7 @@ scissor(X,Y,Width,Height) ->
 -spec clipPlane(Plane, Equation) -> 'ok' when Plane :: enum(),Equation :: {float(),float(),float(),float()}.
 clipPlane(Plane,Equation) ->
   IF = get_interface(),
-  OP = lookup_func(5056),
-  IF:queue_cmd(Plane,Equation,OP,1),
+  IF:queue_cmd(Plane,Equation,5056,1),
   ok.
 
 %% @doc glGetClipPlane
@@ -506,9 +486,8 @@ clipPlane(Plane,Equation) ->
 -spec getClipPlane(Plane) -> {float(),float(),float(),float()} when Plane :: enum().
 getClipPlane(Plane) ->
   IF = get_interface(),
-  OP = lookup_func(5057),
-  IF:queue_cmd(Plane,OP,0),
-  rec(OP).
+  IF:queue_cmd(Plane,5057,0),
+  rec(5009).
 
 %% @doc glDrawBuffer
 %%
@@ -516,8 +495,7 @@ getClipPlane(Plane) ->
 -spec drawBuffer(Mode) -> 'ok' when Mode :: enum().
 drawBuffer(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5058),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5058,1),
   ok.
 
 %% @doc glReadBuffer
@@ -526,8 +504,7 @@ drawBuffer(Mode) ->
 -spec readBuffer(Mode) -> 'ok' when Mode :: enum().
 readBuffer(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5059),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5059,1),
   ok.
 
 %% @doc glEnable
@@ -536,8 +513,7 @@ readBuffer(Mode) ->
 -spec enable(Cap) -> 'ok' when Cap :: enum().
 enable(Cap) ->
   IF = get_interface(),
-  OP = lookup_func(5060),
-  IF:queue_cmd(Cap,OP,1),
+  IF:queue_cmd(Cap,5060,1),
   ok.
 
 %% @doc glEnable
@@ -546,8 +522,7 @@ enable(Cap) ->
 -spec disable(Cap) -> 'ok' when Cap :: enum().
 disable(Cap) ->
   IF = get_interface(),
-  OP = lookup_func(5061),
-  IF:queue_cmd(Cap,OP,1),
+  IF:queue_cmd(Cap,5061,1),
   ok.
 
 %% @doc glIsEnabled
@@ -556,9 +531,8 @@ disable(Cap) ->
 -spec isEnabled(Cap) -> 0|1 when Cap :: enum().
 isEnabled(Cap) ->
   IF = get_interface(),
-  OP = lookup_func(5062),
-  IF:queue_cmd(Cap,OP,0),
-  rec(OP).
+  IF:queue_cmd(Cap,5062,0),
+  rec(5009).
 
 %% @doc glEnableClientState
 %%
@@ -566,8 +540,7 @@ isEnabled(Cap) ->
 -spec enableClientState(Cap) -> 'ok' when Cap :: enum().
 enableClientState(Cap) ->
   IF = get_interface(),
-  OP = lookup_func(5063),
-  IF:queue_cmd(Cap,OP,1),
+  IF:queue_cmd(Cap,5063,1),
   ok.
 
 %% @doc glEnableClientState
@@ -576,8 +549,7 @@ enableClientState(Cap) ->
 -spec disableClientState(Cap) -> 'ok' when Cap :: enum().
 disableClientState(Cap) ->
   IF = get_interface(),
-  OP = lookup_func(5064),
-  IF:queue_cmd(Cap,OP,1),
+  IF:queue_cmd(Cap,5064,1),
   ok.
 
 %% @doc glGet
@@ -586,9 +558,8 @@ disableClientState(Cap) ->
 -spec getBooleanv(Pname) -> [0|1] when Pname :: enum().
 getBooleanv(Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5065),
-  IF:queue_cmd(Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,5065,0),
+  rec(5009).
 
 %% @doc glGet
 %%
@@ -596,9 +567,8 @@ getBooleanv(Pname) ->
 -spec getDoublev(Pname) -> [float()] when Pname :: enum().
 getDoublev(Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5066),
-  IF:queue_cmd(Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,5066,0),
+  rec(5009).
 
 %% @doc glGet
 %%
@@ -606,9 +576,8 @@ getDoublev(Pname) ->
 -spec getFloatv(Pname) -> [float()] when Pname :: enum().
 getFloatv(Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5067),
-  IF:queue_cmd(Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,5067,0),
+  rec(5009).
 
 %% @doc glGet
 %%
@@ -616,9 +585,8 @@ getFloatv(Pname) ->
 -spec getIntegerv(Pname) -> [integer()] when Pname :: enum().
 getIntegerv(Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5068),
-  IF:queue_cmd(Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,5068,0),
+  rec(5009).
 
 %% @doc glPushAttrib
 %%
@@ -626,8 +594,7 @@ getIntegerv(Pname) ->
 -spec pushAttrib(Mask) -> 'ok' when Mask :: integer().
 pushAttrib(Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5069),
-  IF:queue_cmd(Mask,OP,1),
+  IF:queue_cmd(Mask,5069,1),
   ok.
 
 %% @doc glPushAttrib
@@ -636,8 +603,7 @@ pushAttrib(Mask) ->
 -spec popAttrib() -> 'ok'.
 popAttrib() ->
   IF = get_interface(),
-  OP = lookup_func(5070),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5070,1),
   ok.
 
 %% @doc glPushClientAttrib
@@ -646,8 +612,7 @@ popAttrib() ->
 -spec pushClientAttrib(Mask) -> 'ok' when Mask :: integer().
 pushClientAttrib(Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5071),
-  IF:queue_cmd(Mask,OP,1),
+  IF:queue_cmd(Mask,5071,1),
   ok.
 
 %% @doc glPushClientAttrib
@@ -656,8 +621,7 @@ pushClientAttrib(Mask) ->
 -spec popClientAttrib() -> 'ok'.
 popClientAttrib() ->
   IF = get_interface(),
-  OP = lookup_func(5072),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5072,1),
   ok.
 
 %% @doc glRenderMode
@@ -666,9 +630,8 @@ popClientAttrib() ->
 -spec renderMode(Mode) -> integer() when Mode :: enum().
 renderMode(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5073),
-  IF:queue_cmd(Mode,OP,0),
-  rec(OP).
+  IF:queue_cmd(Mode,5073,0),
+  rec(5009).
 
 %% @doc glGetError
 %%
@@ -676,9 +639,8 @@ renderMode(Mode) ->
 -spec getError() -> enum().
 getError() ->
   IF = get_interface(),
-  OP = lookup_func(5074),
-  IF:queue_cmd(OP,0),
-  rec(OP).
+  IF:queue_cmd(5074,0),
+  rec(5009).
 
 %% @doc glGetString
 %%
@@ -686,9 +648,8 @@ getError() ->
 -spec getString(Name) -> string() when Name :: enum().
 getString(Name) ->
   IF = get_interface(),
-  OP = lookup_func(5075),
-  IF:queue_cmd(Name,OP,0),
-  rec(OP).
+  IF:queue_cmd(Name,5075,0),
+  rec(5009).
 
 %% @doc glFinish
 %%
@@ -696,8 +657,7 @@ getString(Name) ->
 -spec finish() -> 'ok'.
 finish() ->
   IF = get_interface(),
-  OP = lookup_func(5076),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5076,1),
   ok.
 
 %% @doc glFlush
@@ -706,8 +666,7 @@ finish() ->
 -spec flush() -> 'ok'.
 flush() ->
   IF = get_interface(),
-  OP = lookup_func(5077),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5077,1),
   ok.
 
 %% @doc glHint
@@ -716,8 +675,7 @@ flush() ->
 -spec hint(Target, Mode) -> 'ok' when Target :: enum(),Mode :: enum().
 hint(Target,Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5078),
-  IF:queue_cmd(Target,Mode,OP,1),
+  IF:queue_cmd(Target,Mode,5078,1),
   ok.
 
 %% @doc glClearDepth
@@ -726,8 +684,7 @@ hint(Target,Mode) ->
 -spec clearDepth(Depth) -> 'ok' when Depth :: clamp().
 clearDepth(Depth) ->
   IF = get_interface(),
-  OP = lookup_func(5079),
-  IF:queue_cmd(Depth,OP,1),
+  IF:queue_cmd(Depth,5079,1),
   ok.
 
 %% @doc glDepthFunc
@@ -736,8 +693,7 @@ clearDepth(Depth) ->
 -spec depthFunc(Func) -> 'ok' when Func :: enum().
 depthFunc(Func) ->
   IF = get_interface(),
-  OP = lookup_func(5080),
-  IF:queue_cmd(Func,OP,1),
+  IF:queue_cmd(Func,5080,1),
   ok.
 
 %% @doc glDepthMask
@@ -746,8 +702,7 @@ depthFunc(Func) ->
 -spec depthMask(Flag) -> 'ok' when Flag :: 0|1.
 depthMask(Flag) ->
   IF = get_interface(),
-  OP = lookup_func(5081),
-  IF:queue_cmd(Flag,OP,1),
+  IF:queue_cmd(Flag,5081,1),
   ok.
 
 %% @doc glDepthRange
@@ -756,8 +711,7 @@ depthMask(Flag) ->
 -spec depthRange(Near_val, Far_val) -> 'ok' when Near_val :: clamp(),Far_val :: clamp().
 depthRange(Near_val,Far_val) ->
   IF = get_interface(),
-  OP = lookup_func(5082),
-  IF:queue_cmd(Near_val,Far_val,OP,1),
+  IF:queue_cmd(Near_val,Far_val,5082,1),
   ok.
 
 %% @doc glClearAccum
@@ -766,8 +720,7 @@ depthRange(Near_val,Far_val) ->
 -spec clearAccum(Red, Green, Blue, Alpha) -> 'ok' when Red :: float(),Green :: float(),Blue :: float(),Alpha :: float().
 clearAccum(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5083),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5083,1),
   ok.
 
 %% @doc glAccum
@@ -776,8 +729,7 @@ clearAccum(Red,Green,Blue,Alpha) ->
 -spec accum(Op, Value) -> 'ok' when Op :: enum(),Value :: float().
 accum(Op,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5084),
-  IF:queue_cmd(Op,Value,OP,1),
+  IF:queue_cmd(Op,Value,5084,1),
   ok.
 
 %% @doc glMatrixMode
@@ -786,8 +738,7 @@ accum(Op,Value) ->
 -spec matrixMode(Mode) -> 'ok' when Mode :: enum().
 matrixMode(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5085),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5085,1),
   ok.
 
 %% @doc glOrtho
@@ -796,8 +747,7 @@ matrixMode(Mode) ->
 -spec ortho(Left, Right, Bottom, Top, Near_val, Far_val) -> 'ok' when Left :: float(),Right :: float(),Bottom :: float(),Top :: float(),Near_val :: float(),Far_val :: float().
 ortho(Left,Right,Bottom,Top,Near_val,Far_val) ->
   IF = get_interface(),
-  OP = lookup_func(5086),
-  IF:queue_cmd(Left,Right,Bottom,Top,Near_val,Far_val,OP,1),
+  IF:queue_cmd(Left,Right,Bottom,Top,Near_val,Far_val,5086,1),
   ok.
 
 %% @doc glFrustum
@@ -806,8 +756,7 @@ ortho(Left,Right,Bottom,Top,Near_val,Far_val) ->
 -spec frustum(Left, Right, Bottom, Top, Near_val, Far_val) -> 'ok' when Left :: float(),Right :: float(),Bottom :: float(),Top :: float(),Near_val :: float(),Far_val :: float().
 frustum(Left,Right,Bottom,Top,Near_val,Far_val) ->
   IF = get_interface(),
-  OP = lookup_func(5087),
-  IF:queue_cmd(Left,Right,Bottom,Top,Near_val,Far_val,OP,1),
+  IF:queue_cmd(Left,Right,Bottom,Top,Near_val,Far_val,5087,1),
   ok.
 
 %% @doc glViewport
@@ -816,8 +765,7 @@ frustum(Left,Right,Bottom,Top,Near_val,Far_val) ->
 -spec viewport(X, Y, Width, Height) -> 'ok' when X :: integer(),Y :: integer(),Width :: integer(),Height :: integer().
 viewport(X,Y,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5088),
-  IF:queue_cmd(X,Y,Width,Height,OP,1),
+  IF:queue_cmd(X,Y,Width,Height,5088,1),
   ok.
 
 %% @doc glPushMatrix
@@ -826,8 +774,7 @@ viewport(X,Y,Width,Height) ->
 -spec pushMatrix() -> 'ok'.
 pushMatrix() ->
   IF = get_interface(),
-  OP = lookup_func(5089),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5089,1),
   ok.
 
 %% @doc glPushMatrix
@@ -836,8 +783,7 @@ pushMatrix() ->
 -spec popMatrix() -> 'ok'.
 popMatrix() ->
   IF = get_interface(),
-  OP = lookup_func(5090),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5090,1),
   ok.
 
 %% @doc glLoadIdentity
@@ -846,8 +792,7 @@ popMatrix() ->
 -spec loadIdentity() -> 'ok'.
 loadIdentity() ->
   IF = get_interface(),
-  OP = lookup_func(5091),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5091,1),
   ok.
 
 %% @doc glLoadMatrix
@@ -856,8 +801,7 @@ loadIdentity() ->
 -spec loadMatrixd(M) -> 'ok' when M :: matrix().
 loadMatrixd(M) ->
   IF = get_interface(),
-  OP = lookup_func(5092),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5092,1),
   ok.
 
 %% @doc glLoadMatrix
@@ -866,8 +810,7 @@ loadMatrixd(M) ->
 -spec loadMatrixf(M) -> 'ok' when M :: matrix().
 loadMatrixf(M) ->
   IF = get_interface(),
-  OP = lookup_func(5093),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5093,1),
   ok.
 
 %% @doc glMultMatrix
@@ -876,8 +819,7 @@ loadMatrixf(M) ->
 -spec multMatrixd(M) -> 'ok' when M :: matrix().
 multMatrixd(M) ->
   IF = get_interface(),
-  OP = lookup_func(5094),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5094,1),
   ok.
 
 %% @doc glMultMatrix
@@ -886,8 +828,7 @@ multMatrixd(M) ->
 -spec multMatrixf(M) -> 'ok' when M :: matrix().
 multMatrixf(M) ->
   IF = get_interface(),
-  OP = lookup_func(5095),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5095,1),
   ok.
 
 %% @doc glRotate
@@ -896,8 +837,7 @@ multMatrixf(M) ->
 -spec rotated(Angle, X, Y, Z) -> 'ok' when Angle :: float(),X :: float(),Y :: float(),Z :: float().
 rotated(Angle,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5096),
-  IF:queue_cmd(Angle,X,Y,Z,OP,1),
+  IF:queue_cmd(Angle,X,Y,Z,5096,1),
   ok.
 
 %% @doc glRotate
@@ -906,8 +846,7 @@ rotated(Angle,X,Y,Z) ->
 -spec rotatef(Angle, X, Y, Z) -> 'ok' when Angle :: float(),X :: float(),Y :: float(),Z :: float().
 rotatef(Angle,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5097),
-  IF:queue_cmd(Angle,X,Y,Z,OP,1),
+  IF:queue_cmd(Angle,X,Y,Z,5097,1),
   ok.
 
 %% @doc glScale
@@ -916,8 +855,7 @@ rotatef(Angle,X,Y,Z) ->
 -spec scaled(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 scaled(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5098),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5098,1),
   ok.
 
 %% @doc glScale
@@ -926,8 +864,7 @@ scaled(X,Y,Z) ->
 -spec scalef(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 scalef(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5099),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5099,1),
   ok.
 
 %% @doc glTranslate
@@ -936,8 +873,7 @@ scalef(X,Y,Z) ->
 -spec translated(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 translated(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5100),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5100,1),
   ok.
 
 %% @doc glTranslate
@@ -946,8 +882,7 @@ translated(X,Y,Z) ->
 -spec translatef(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 translatef(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5101),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5101,1),
   ok.
 
 %% @doc glIsList
@@ -956,9 +891,8 @@ translatef(X,Y,Z) ->
 -spec isList(List) -> 0|1 when List :: integer().
 isList(List) ->
   IF = get_interface(),
-  OP = lookup_func(5102),
-  IF:queue_cmd(List,OP,0),
-  rec(OP).
+  IF:queue_cmd(List,5102,0),
+  rec(5009).
 
 %% @doc glDeleteLists
 %%
@@ -966,8 +900,7 @@ isList(List) ->
 -spec deleteLists(List, Range) -> 'ok' when List :: integer(),Range :: integer().
 deleteLists(List,Range) ->
   IF = get_interface(),
-  OP = lookup_func(5103),
-  IF:queue_cmd(List,Range,OP,1),
+  IF:queue_cmd(List,Range,5103,1),
   ok.
 
 %% @doc glGenLists
@@ -976,9 +909,8 @@ deleteLists(List,Range) ->
 -spec genLists(Range) -> integer() when Range :: integer().
 genLists(Range) ->
   IF = get_interface(),
-  OP = lookup_func(5104),
-  IF:queue_cmd(Range,OP,0),
-  rec(OP).
+  IF:queue_cmd(Range,5104,0),
+  rec(5009).
 
 %% @doc glNewList
 %%
@@ -986,8 +918,7 @@ genLists(Range) ->
 -spec newList(List, Mode) -> 'ok' when List :: integer(),Mode :: enum().
 newList(List,Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5105),
-  IF:queue_cmd(List,Mode,OP,1),
+  IF:queue_cmd(List,Mode,5105,1),
   ok.
 
 %% @doc glBeginList
@@ -996,8 +927,7 @@ newList(List,Mode) ->
 -spec endList() -> 'ok'.
 endList() ->
   IF = get_interface(),
-  OP = lookup_func(5106),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5106,1),
   ok.
 
 %% @doc glCallList
@@ -1006,8 +936,7 @@ endList() ->
 -spec callList(List) -> 'ok' when List :: integer().
 callList(List) ->
   IF = get_interface(),
-  OP = lookup_func(5107),
-  IF:queue_cmd(List,OP,1),
+  IF:queue_cmd(List,5107,1),
   ok.
 
 %% @doc glCallLists
@@ -1016,9 +945,8 @@ callList(List) ->
 -spec callLists(Lists) -> 'ok' when Lists :: [integer()].
 callLists(Lists) ->
   IF = get_interface(),
-  OP = lookup_func(5108),
   N = length(Lists),
-  IF:queue_cmd(N,Lists,OP,1),
+  IF:queue_cmd(N,Lists,5108,1),
   ok.
 
 %% @doc glListBase
@@ -1027,8 +955,7 @@ callLists(Lists) ->
 -spec listBase(Base) -> 'ok' when Base :: integer().
 listBase(Base) ->
   IF = get_interface(),
-  OP = lookup_func(5109),
-  IF:queue_cmd(Base,OP,1),
+  IF:queue_cmd(Base,5109,1),
   ok.
 
 %% @doc glBegin
@@ -1037,8 +964,7 @@ listBase(Base) ->
 -spec 'begin'(Mode) -> 'ok' when Mode :: enum().
 'begin'(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5110),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5110,1),
   ok.
 
 %% @doc glBegin
@@ -1047,8 +973,7 @@ listBase(Base) ->
 -spec 'end'() -> 'ok'.
 'end'() ->
   IF = get_interface(),
-  OP = lookup_func(5111),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5111,1),
   ok.
 
 %% @doc glVertex
@@ -1057,8 +982,7 @@ listBase(Base) ->
 -spec vertex2d(X, Y) -> 'ok' when X :: float(),Y :: float().
 vertex2d(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5112),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5112,1),
   ok.
 
 %% @doc glVertex
@@ -1067,8 +991,7 @@ vertex2d(X,Y) ->
 -spec vertex2f(X, Y) -> 'ok' when X :: float(),Y :: float().
 vertex2f(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5113),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5113,1),
   ok.
 
 %% @doc glVertex
@@ -1077,8 +1000,7 @@ vertex2f(X,Y) ->
 -spec vertex2i(X, Y) -> 'ok' when X :: integer(),Y :: integer().
 vertex2i(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5114),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5114,1),
   ok.
 
 %% @doc glVertex
@@ -1087,8 +1009,7 @@ vertex2i(X,Y) ->
 -spec vertex2s(X, Y) -> 'ok' when X :: integer(),Y :: integer().
 vertex2s(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5115),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5115,1),
   ok.
 
 %% @doc glVertex
@@ -1097,8 +1018,7 @@ vertex2s(X,Y) ->
 -spec vertex3d(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 vertex3d(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5116),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5116,1),
   ok.
 
 %% @doc glVertex
@@ -1107,8 +1027,7 @@ vertex3d(X,Y,Z) ->
 -spec vertex3f(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 vertex3f(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5117),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5117,1),
   ok.
 
 %% @doc glVertex
@@ -1117,8 +1036,7 @@ vertex3f(X,Y,Z) ->
 -spec vertex3i(X, Y, Z) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer().
 vertex3i(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5118),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5118,1),
   ok.
 
 %% @doc glVertex
@@ -1127,8 +1045,7 @@ vertex3i(X,Y,Z) ->
 -spec vertex3s(X, Y, Z) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer().
 vertex3s(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5119),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5119,1),
   ok.
 
 %% @doc glVertex
@@ -1137,8 +1054,7 @@ vertex3s(X,Y,Z) ->
 -spec vertex4d(X, Y, Z, W) -> 'ok' when X :: float(),Y :: float(),Z :: float(),W :: float().
 vertex4d(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5120),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5120,1),
   ok.
 
 %% @doc glVertex
@@ -1147,8 +1063,7 @@ vertex4d(X,Y,Z,W) ->
 -spec vertex4f(X, Y, Z, W) -> 'ok' when X :: float(),Y :: float(),Z :: float(),W :: float().
 vertex4f(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5121),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5121,1),
   ok.
 
 %% @doc glVertex
@@ -1157,8 +1072,7 @@ vertex4f(X,Y,Z,W) ->
 -spec vertex4i(X, Y, Z, W) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 vertex4i(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5122),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5122,1),
   ok.
 
 %% @doc glVertex
@@ -1167,8 +1081,7 @@ vertex4i(X,Y,Z,W) ->
 -spec vertex4s(X, Y, Z, W) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 vertex4s(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5123),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5123,1),
   ok.
 
 %% @equiv vertex2d(X,Y)
@@ -1213,8 +1126,7 @@ vertex4sv({X,Y,Z,W}) ->  vertex4s(X,Y,Z,W).
 -spec normal3b(Nx, Ny, Nz) -> 'ok' when Nx :: integer(),Ny :: integer(),Nz :: integer().
 normal3b(Nx,Ny,Nz) ->
   IF = get_interface(),
-  OP = lookup_func(5124),
-  IF:queue_cmd(Nx,Ny,Nz,OP,1),
+  IF:queue_cmd(Nx,Ny,Nz,5124,1),
   ok.
 
 %% @doc glNormal
@@ -1223,8 +1135,7 @@ normal3b(Nx,Ny,Nz) ->
 -spec normal3d(Nx, Ny, Nz) -> 'ok' when Nx :: float(),Ny :: float(),Nz :: float().
 normal3d(Nx,Ny,Nz) ->
   IF = get_interface(),
-  OP = lookup_func(5125),
-  IF:queue_cmd(Nx,Ny,Nz,OP,1),
+  IF:queue_cmd(Nx,Ny,Nz,5125,1),
   ok.
 
 %% @doc glNormal
@@ -1233,8 +1144,7 @@ normal3d(Nx,Ny,Nz) ->
 -spec normal3f(Nx, Ny, Nz) -> 'ok' when Nx :: float(),Ny :: float(),Nz :: float().
 normal3f(Nx,Ny,Nz) ->
   IF = get_interface(),
-  OP = lookup_func(5126),
-  IF:queue_cmd(Nx,Ny,Nz,OP,1),
+  IF:queue_cmd(Nx,Ny,Nz,5126,1),
   ok.
 
 %% @doc glNormal
@@ -1243,8 +1153,7 @@ normal3f(Nx,Ny,Nz) ->
 -spec normal3i(Nx, Ny, Nz) -> 'ok' when Nx :: integer(),Ny :: integer(),Nz :: integer().
 normal3i(Nx,Ny,Nz) ->
   IF = get_interface(),
-  OP = lookup_func(5127),
-  IF:queue_cmd(Nx,Ny,Nz,OP,1),
+  IF:queue_cmd(Nx,Ny,Nz,5127,1),
   ok.
 
 %% @doc glNormal
@@ -1253,8 +1162,7 @@ normal3i(Nx,Ny,Nz) ->
 -spec normal3s(Nx, Ny, Nz) -> 'ok' when Nx :: integer(),Ny :: integer(),Nz :: integer().
 normal3s(Nx,Ny,Nz) ->
   IF = get_interface(),
-  OP = lookup_func(5128),
-  IF:queue_cmd(Nx,Ny,Nz,OP,1),
+  IF:queue_cmd(Nx,Ny,Nz,5128,1),
   ok.
 
 %% @equiv normal3b(Nx,Ny,Nz)
@@ -1278,8 +1186,7 @@ normal3sv({Nx,Ny,Nz}) ->  normal3s(Nx,Ny,Nz).
 -spec indexd(C) -> 'ok' when C :: float().
 indexd(C) ->
   IF = get_interface(),
-  OP = lookup_func(5129),
-  IF:queue_cmd(C,OP,1),
+  IF:queue_cmd(C,5129,1),
   ok.
 
 %% @doc glIndex
@@ -1288,8 +1195,7 @@ indexd(C) ->
 -spec indexf(C) -> 'ok' when C :: float().
 indexf(C) ->
   IF = get_interface(),
-  OP = lookup_func(5130),
-  IF:queue_cmd(C,OP,1),
+  IF:queue_cmd(C,5130,1),
   ok.
 
 %% @doc glIndex
@@ -1298,8 +1204,7 @@ indexf(C) ->
 -spec indexi(C) -> 'ok' when C :: integer().
 indexi(C) ->
   IF = get_interface(),
-  OP = lookup_func(5131),
-  IF:queue_cmd(C,OP,1),
+  IF:queue_cmd(C,5131,1),
   ok.
 
 %% @doc glIndex
@@ -1308,8 +1213,7 @@ indexi(C) ->
 -spec indexs(C) -> 'ok' when C :: integer().
 indexs(C) ->
   IF = get_interface(),
-  OP = lookup_func(5132),
-  IF:queue_cmd(C,OP,1),
+  IF:queue_cmd(C,5132,1),
   ok.
 
 %% @doc glIndex
@@ -1318,8 +1222,7 @@ indexs(C) ->
 -spec indexub(C) -> 'ok' when C :: integer().
 indexub(C) ->
   IF = get_interface(),
-  OP = lookup_func(5133),
-  IF:queue_cmd(C,OP,1),
+  IF:queue_cmd(C,5133,1),
   ok.
 
 %% @equiv indexd(C)
@@ -1343,8 +1246,7 @@ indexubv({C}) ->  indexub(C).
 -spec color3b(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 color3b(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5134),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5134,1),
   ok.
 
 %% @doc glColor
@@ -1353,8 +1255,7 @@ color3b(Red,Green,Blue) ->
 -spec color3d(Red, Green, Blue) -> 'ok' when Red :: float(),Green :: float(),Blue :: float().
 color3d(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5135),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5135,1),
   ok.
 
 %% @doc glColor
@@ -1363,8 +1264,7 @@ color3d(Red,Green,Blue) ->
 -spec color3f(Red, Green, Blue) -> 'ok' when Red :: float(),Green :: float(),Blue :: float().
 color3f(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5136),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5136,1),
   ok.
 
 %% @doc glColor
@@ -1373,8 +1273,7 @@ color3f(Red,Green,Blue) ->
 -spec color3i(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 color3i(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5137),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5137,1),
   ok.
 
 %% @doc glColor
@@ -1383,8 +1282,7 @@ color3i(Red,Green,Blue) ->
 -spec color3s(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 color3s(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5138),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5138,1),
   ok.
 
 %% @doc glColor
@@ -1393,8 +1291,7 @@ color3s(Red,Green,Blue) ->
 -spec color3ub(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 color3ub(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5139),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5139,1),
   ok.
 
 %% @doc glColor
@@ -1403,8 +1300,7 @@ color3ub(Red,Green,Blue) ->
 -spec color3ui(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 color3ui(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5140),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5140,1),
   ok.
 
 %% @doc glColor
@@ -1413,8 +1309,7 @@ color3ui(Red,Green,Blue) ->
 -spec color3us(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 color3us(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5141),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5141,1),
   ok.
 
 %% @doc glColor
@@ -1423,8 +1318,7 @@ color3us(Red,Green,Blue) ->
 -spec color4b(Red, Green, Blue, Alpha) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer(),Alpha :: integer().
 color4b(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5142),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5142,1),
   ok.
 
 %% @doc glColor
@@ -1433,8 +1327,7 @@ color4b(Red,Green,Blue,Alpha) ->
 -spec color4d(Red, Green, Blue, Alpha) -> 'ok' when Red :: float(),Green :: float(),Blue :: float(),Alpha :: float().
 color4d(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5143),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5143,1),
   ok.
 
 %% @doc glColor
@@ -1443,8 +1336,7 @@ color4d(Red,Green,Blue,Alpha) ->
 -spec color4f(Red, Green, Blue, Alpha) -> 'ok' when Red :: float(),Green :: float(),Blue :: float(),Alpha :: float().
 color4f(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5144),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5144,1),
   ok.
 
 %% @doc glColor
@@ -1453,8 +1345,7 @@ color4f(Red,Green,Blue,Alpha) ->
 -spec color4i(Red, Green, Blue, Alpha) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer(),Alpha :: integer().
 color4i(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5145),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5145,1),
   ok.
 
 %% @doc glColor
@@ -1463,8 +1354,7 @@ color4i(Red,Green,Blue,Alpha) ->
 -spec color4s(Red, Green, Blue, Alpha) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer(),Alpha :: integer().
 color4s(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5146),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5146,1),
   ok.
 
 %% @doc glColor
@@ -1473,8 +1363,7 @@ color4s(Red,Green,Blue,Alpha) ->
 -spec color4ub(Red, Green, Blue, Alpha) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer(),Alpha :: integer().
 color4ub(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5147),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5147,1),
   ok.
 
 %% @doc glColor
@@ -1483,8 +1372,7 @@ color4ub(Red,Green,Blue,Alpha) ->
 -spec color4ui(Red, Green, Blue, Alpha) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer(),Alpha :: integer().
 color4ui(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5148),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5148,1),
   ok.
 
 %% @doc glColor
@@ -1493,8 +1381,7 @@ color4ui(Red,Green,Blue,Alpha) ->
 -spec color4us(Red, Green, Blue, Alpha) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer(),Alpha :: integer().
 color4us(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5149),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5149,1),
   ok.
 
 %% @equiv color3b(Red,Green,Blue)
@@ -1551,8 +1438,7 @@ color4usv({Red,Green,Blue,Alpha}) ->  color4us(Red,Green,Blue,Alpha).
 -spec texCoord1d(S) -> 'ok' when S :: float().
 texCoord1d(S) ->
   IF = get_interface(),
-  OP = lookup_func(5150),
-  IF:queue_cmd(S,OP,1),
+  IF:queue_cmd(S,5150,1),
   ok.
 
 %% @doc glTexCoord
@@ -1561,8 +1447,7 @@ texCoord1d(S) ->
 -spec texCoord1f(S) -> 'ok' when S :: float().
 texCoord1f(S) ->
   IF = get_interface(),
-  OP = lookup_func(5151),
-  IF:queue_cmd(S,OP,1),
+  IF:queue_cmd(S,5151,1),
   ok.
 
 %% @doc glTexCoord
@@ -1571,8 +1456,7 @@ texCoord1f(S) ->
 -spec texCoord1i(S) -> 'ok' when S :: integer().
 texCoord1i(S) ->
   IF = get_interface(),
-  OP = lookup_func(5152),
-  IF:queue_cmd(S,OP,1),
+  IF:queue_cmd(S,5152,1),
   ok.
 
 %% @doc glTexCoord
@@ -1581,8 +1465,7 @@ texCoord1i(S) ->
 -spec texCoord1s(S) -> 'ok' when S :: integer().
 texCoord1s(S) ->
   IF = get_interface(),
-  OP = lookup_func(5153),
-  IF:queue_cmd(S,OP,1),
+  IF:queue_cmd(S,5153,1),
   ok.
 
 %% @doc glTexCoord
@@ -1591,8 +1474,7 @@ texCoord1s(S) ->
 -spec texCoord2d(S, T) -> 'ok' when S :: float(),T :: float().
 texCoord2d(S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5154),
-  IF:queue_cmd(S,T,OP,1),
+  IF:queue_cmd(S,T,5154,1),
   ok.
 
 %% @doc glTexCoord
@@ -1601,8 +1483,7 @@ texCoord2d(S,T) ->
 -spec texCoord2f(S, T) -> 'ok' when S :: float(),T :: float().
 texCoord2f(S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5155),
-  IF:queue_cmd(S,T,OP,1),
+  IF:queue_cmd(S,T,5155,1),
   ok.
 
 %% @doc glTexCoord
@@ -1611,8 +1492,7 @@ texCoord2f(S,T) ->
 -spec texCoord2i(S, T) -> 'ok' when S :: integer(),T :: integer().
 texCoord2i(S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5156),
-  IF:queue_cmd(S,T,OP,1),
+  IF:queue_cmd(S,T,5156,1),
   ok.
 
 %% @doc glTexCoord
@@ -1621,8 +1501,7 @@ texCoord2i(S,T) ->
 -spec texCoord2s(S, T) -> 'ok' when S :: integer(),T :: integer().
 texCoord2s(S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5157),
-  IF:queue_cmd(S,T,OP,1),
+  IF:queue_cmd(S,T,5157,1),
   ok.
 
 %% @doc glTexCoord
@@ -1631,8 +1510,7 @@ texCoord2s(S,T) ->
 -spec texCoord3d(S, T, R) -> 'ok' when S :: float(),T :: float(),R :: float().
 texCoord3d(S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5158),
-  IF:queue_cmd(S,T,R,OP,1),
+  IF:queue_cmd(S,T,R,5158,1),
   ok.
 
 %% @doc glTexCoord
@@ -1641,8 +1519,7 @@ texCoord3d(S,T,R) ->
 -spec texCoord3f(S, T, R) -> 'ok' when S :: float(),T :: float(),R :: float().
 texCoord3f(S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5159),
-  IF:queue_cmd(S,T,R,OP,1),
+  IF:queue_cmd(S,T,R,5159,1),
   ok.
 
 %% @doc glTexCoord
@@ -1651,8 +1528,7 @@ texCoord3f(S,T,R) ->
 -spec texCoord3i(S, T, R) -> 'ok' when S :: integer(),T :: integer(),R :: integer().
 texCoord3i(S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5160),
-  IF:queue_cmd(S,T,R,OP,1),
+  IF:queue_cmd(S,T,R,5160,1),
   ok.
 
 %% @doc glTexCoord
@@ -1661,8 +1537,7 @@ texCoord3i(S,T,R) ->
 -spec texCoord3s(S, T, R) -> 'ok' when S :: integer(),T :: integer(),R :: integer().
 texCoord3s(S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5161),
-  IF:queue_cmd(S,T,R,OP,1),
+  IF:queue_cmd(S,T,R,5161,1),
   ok.
 
 %% @doc glTexCoord
@@ -1671,8 +1546,7 @@ texCoord3s(S,T,R) ->
 -spec texCoord4d(S, T, R, Q) -> 'ok' when S :: float(),T :: float(),R :: float(),Q :: float().
 texCoord4d(S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5162),
-  IF:queue_cmd(S,T,R,Q,OP,1),
+  IF:queue_cmd(S,T,R,Q,5162,1),
   ok.
 
 %% @doc glTexCoord
@@ -1681,8 +1555,7 @@ texCoord4d(S,T,R,Q) ->
 -spec texCoord4f(S, T, R, Q) -> 'ok' when S :: float(),T :: float(),R :: float(),Q :: float().
 texCoord4f(S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5163),
-  IF:queue_cmd(S,T,R,Q,OP,1),
+  IF:queue_cmd(S,T,R,Q,5163,1),
   ok.
 
 %% @doc glTexCoord
@@ -1691,8 +1564,7 @@ texCoord4f(S,T,R,Q) ->
 -spec texCoord4i(S, T, R, Q) -> 'ok' when S :: integer(),T :: integer(),R :: integer(),Q :: integer().
 texCoord4i(S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5164),
-  IF:queue_cmd(S,T,R,Q,OP,1),
+  IF:queue_cmd(S,T,R,Q,5164,1),
   ok.
 
 %% @doc glTexCoord
@@ -1701,8 +1573,7 @@ texCoord4i(S,T,R,Q) ->
 -spec texCoord4s(S, T, R, Q) -> 'ok' when S :: integer(),T :: integer(),R :: integer(),Q :: integer().
 texCoord4s(S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5165),
-  IF:queue_cmd(S,T,R,Q,OP,1),
+  IF:queue_cmd(S,T,R,Q,5165,1),
   ok.
 
 %% @equiv texCoord1d(S)
@@ -1759,8 +1630,7 @@ texCoord4sv({S,T,R,Q}) ->  texCoord4s(S,T,R,Q).
 -spec rasterPos2d(X, Y) -> 'ok' when X :: float(),Y :: float().
 rasterPos2d(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5166),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5166,1),
   ok.
 
 %% @doc glRasterPos
@@ -1769,8 +1639,7 @@ rasterPos2d(X,Y) ->
 -spec rasterPos2f(X, Y) -> 'ok' when X :: float(),Y :: float().
 rasterPos2f(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5167),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5167,1),
   ok.
 
 %% @doc glRasterPos
@@ -1779,8 +1648,7 @@ rasterPos2f(X,Y) ->
 -spec rasterPos2i(X, Y) -> 'ok' when X :: integer(),Y :: integer().
 rasterPos2i(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5168),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5168,1),
   ok.
 
 %% @doc glRasterPos
@@ -1789,8 +1657,7 @@ rasterPos2i(X,Y) ->
 -spec rasterPos2s(X, Y) -> 'ok' when X :: integer(),Y :: integer().
 rasterPos2s(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5169),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5169,1),
   ok.
 
 %% @doc glRasterPos
@@ -1799,8 +1666,7 @@ rasterPos2s(X,Y) ->
 -spec rasterPos3d(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 rasterPos3d(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5170),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5170,1),
   ok.
 
 %% @doc glRasterPos
@@ -1809,8 +1675,7 @@ rasterPos3d(X,Y,Z) ->
 -spec rasterPos3f(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 rasterPos3f(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5171),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5171,1),
   ok.
 
 %% @doc glRasterPos
@@ -1819,8 +1684,7 @@ rasterPos3f(X,Y,Z) ->
 -spec rasterPos3i(X, Y, Z) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer().
 rasterPos3i(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5172),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5172,1),
   ok.
 
 %% @doc glRasterPos
@@ -1829,8 +1693,7 @@ rasterPos3i(X,Y,Z) ->
 -spec rasterPos3s(X, Y, Z) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer().
 rasterPos3s(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5173),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5173,1),
   ok.
 
 %% @doc glRasterPos
@@ -1839,8 +1702,7 @@ rasterPos3s(X,Y,Z) ->
 -spec rasterPos4d(X, Y, Z, W) -> 'ok' when X :: float(),Y :: float(),Z :: float(),W :: float().
 rasterPos4d(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5174),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5174,1),
   ok.
 
 %% @doc glRasterPos
@@ -1849,8 +1711,7 @@ rasterPos4d(X,Y,Z,W) ->
 -spec rasterPos4f(X, Y, Z, W) -> 'ok' when X :: float(),Y :: float(),Z :: float(),W :: float().
 rasterPos4f(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5175),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5175,1),
   ok.
 
 %% @doc glRasterPos
@@ -1859,8 +1720,7 @@ rasterPos4f(X,Y,Z,W) ->
 -spec rasterPos4i(X, Y, Z, W) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 rasterPos4i(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5176),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5176,1),
   ok.
 
 %% @doc glRasterPos
@@ -1869,8 +1729,7 @@ rasterPos4i(X,Y,Z,W) ->
 -spec rasterPos4s(X, Y, Z, W) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 rasterPos4s(X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5177),
-  IF:queue_cmd(X,Y,Z,W,OP,1),
+  IF:queue_cmd(X,Y,Z,W,5177,1),
   ok.
 
 %% @equiv rasterPos2d(X,Y)
@@ -1915,8 +1774,7 @@ rasterPos4sv({X,Y,Z,W}) ->  rasterPos4s(X,Y,Z,W).
 -spec rectd(X1, Y1, X2, Y2) -> 'ok' when X1 :: float(),Y1 :: float(),X2 :: float(),Y2 :: float().
 rectd(X1,Y1,X2,Y2) ->
   IF = get_interface(),
-  OP = lookup_func(5178),
-  IF:queue_cmd(X1,Y1,X2,Y2,OP,1),
+  IF:queue_cmd(X1,Y1,X2,Y2,5178,1),
   ok.
 
 %% @doc glRect
@@ -1925,8 +1783,7 @@ rectd(X1,Y1,X2,Y2) ->
 -spec rectf(X1, Y1, X2, Y2) -> 'ok' when X1 :: float(),Y1 :: float(),X2 :: float(),Y2 :: float().
 rectf(X1,Y1,X2,Y2) ->
   IF = get_interface(),
-  OP = lookup_func(5179),
-  IF:queue_cmd(X1,Y1,X2,Y2,OP,1),
+  IF:queue_cmd(X1,Y1,X2,Y2,5179,1),
   ok.
 
 %% @doc glRect
@@ -1935,8 +1792,7 @@ rectf(X1,Y1,X2,Y2) ->
 -spec recti(X1, Y1, X2, Y2) -> 'ok' when X1 :: integer(),Y1 :: integer(),X2 :: integer(),Y2 :: integer().
 recti(X1,Y1,X2,Y2) ->
   IF = get_interface(),
-  OP = lookup_func(5180),
-  IF:queue_cmd(X1,Y1,X2,Y2,OP,1),
+  IF:queue_cmd(X1,Y1,X2,Y2,5180,1),
   ok.
 
 %% @doc glRect
@@ -1945,8 +1801,7 @@ recti(X1,Y1,X2,Y2) ->
 -spec rects(X1, Y1, X2, Y2) -> 'ok' when X1 :: integer(),Y1 :: integer(),X2 :: integer(),Y2 :: integer().
 rects(X1,Y1,X2,Y2) ->
   IF = get_interface(),
-  OP = lookup_func(5181),
-  IF:queue_cmd(X1,Y1,X2,Y2,OP,1),
+  IF:queue_cmd(X1,Y1,X2,Y2,5181,1),
   ok.
 
 %% @doc glRect
@@ -1955,8 +1810,7 @@ rects(X1,Y1,X2,Y2) ->
 -spec rectdv(V1, V2) -> 'ok' when V1 :: {float(),float()},V2 :: {float(),float()}.
 rectdv(V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5182),
-  IF:queue_cmd(V1,V2,OP,1),
+  IF:queue_cmd(V1,V2,5182,1),
   ok.
 
 %% @doc glRect
@@ -1965,8 +1819,7 @@ rectdv(V1,V2) ->
 -spec rectfv(V1, V2) -> 'ok' when V1 :: {float(),float()},V2 :: {float(),float()}.
 rectfv(V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5183),
-  IF:queue_cmd(V1,V2,OP,1),
+  IF:queue_cmd(V1,V2,5183,1),
   ok.
 
 %% @doc glRect
@@ -1975,8 +1828,7 @@ rectfv(V1,V2) ->
 -spec rectiv(V1, V2) -> 'ok' when V1 :: {integer(),integer()},V2 :: {integer(),integer()}.
 rectiv(V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5184),
-  IF:queue_cmd(V1,V2,OP,1),
+  IF:queue_cmd(V1,V2,5184,1),
   ok.
 
 %% @doc glRect
@@ -1985,8 +1837,7 @@ rectiv(V1,V2) ->
 -spec rectsv(V1, V2) -> 'ok' when V1 :: {integer(),integer()},V2 :: {integer(),integer()}.
 rectsv(V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5185),
-  IF:queue_cmd(V1,V2,OP,1),
+  IF:queue_cmd(V1,V2,5185,1),
   ok.
 
 %% @doc glVertexPointer
@@ -1995,8 +1846,7 @@ rectsv(V1,V2) ->
 -spec vertexPointer(Size, Type, Stride, Ptr) -> 'ok' when Size :: integer(),Type :: enum(),Stride :: integer(),Ptr :: offset()|mem().
 vertexPointer(Size,Type,Stride,Ptr) ->
   IF = get_interface(),
-  OP = lookup_func(5186),
-  IF:queue_cmd(Size,Type,Stride,Ptr,OP,1),
+  IF:queue_cmd(Size,Type,Stride,Ptr,5186,1),
   ok.
 
 %% @doc glNormalPointer
@@ -2005,8 +1855,7 @@ vertexPointer(Size,Type,Stride,Ptr) ->
 -spec normalPointer(Type, Stride, Ptr) -> 'ok' when Type :: enum(),Stride :: integer(),Ptr :: offset()|mem().
 normalPointer(Type,Stride,Ptr) ->
   IF = get_interface(),
-  OP = lookup_func(5188),
-  IF:queue_cmd(Type,Stride,Ptr,OP,1),
+  IF:queue_cmd(Type,Stride,Ptr,5188,1),
   ok.
 
 %% @doc glColorPointer
@@ -2015,8 +1864,7 @@ normalPointer(Type,Stride,Ptr) ->
 -spec colorPointer(Size, Type, Stride, Ptr) -> 'ok' when Size :: integer(),Type :: enum(),Stride :: integer(),Ptr :: offset()|mem().
 colorPointer(Size,Type,Stride,Ptr) ->
   IF = get_interface(),
-  OP = lookup_func(5190),
-  IF:queue_cmd(Size,Type,Stride,Ptr,OP,1),
+  IF:queue_cmd(Size,Type,Stride,Ptr,5190,1),
   ok.
 
 %% @doc glIndexPointer
@@ -2025,8 +1873,7 @@ colorPointer(Size,Type,Stride,Ptr) ->
 -spec indexPointer(Type, Stride, Ptr) -> 'ok' when Type :: enum(),Stride :: integer(),Ptr :: offset()|mem().
 indexPointer(Type,Stride,Ptr) ->
   IF = get_interface(),
-  OP = lookup_func(5192),
-  IF:queue_cmd(Type,Stride,Ptr,OP,1),
+  IF:queue_cmd(Type,Stride,Ptr,5192,1),
   ok.
 
 %% @doc glTexCoordPointer
@@ -2035,8 +1882,7 @@ indexPointer(Type,Stride,Ptr) ->
 -spec texCoordPointer(Size, Type, Stride, Ptr) -> 'ok' when Size :: integer(),Type :: enum(),Stride :: integer(),Ptr :: offset()|mem().
 texCoordPointer(Size,Type,Stride,Ptr) ->
   IF = get_interface(),
-  OP = lookup_func(5194),
-  IF:queue_cmd(Size,Type,Stride,Ptr,OP,1),
+  IF:queue_cmd(Size,Type,Stride,Ptr,5194,1),
   ok.
 
 %% @doc glEdgeFlagPointer
@@ -2045,8 +1891,7 @@ texCoordPointer(Size,Type,Stride,Ptr) ->
 -spec edgeFlagPointer(Stride, Ptr) -> 'ok' when Stride :: integer(),Ptr :: offset()|mem().
 edgeFlagPointer(Stride,Ptr) ->
   IF = get_interface(),
-  OP = lookup_func(5196),
-  IF:queue_cmd(Stride,Ptr,OP,1),
+  IF:queue_cmd(Stride,Ptr,5196,1),
   ok.
 
 %% @doc glArrayElement
@@ -2055,8 +1900,7 @@ edgeFlagPointer(Stride,Ptr) ->
 -spec arrayElement(I) -> 'ok' when I :: integer().
 arrayElement(I) ->
   IF = get_interface(),
-  OP = lookup_func(5198),
-  IF:queue_cmd(I,OP,1),
+  IF:queue_cmd(I,5198,1),
   ok.
 
 %% @doc glDrawArrays
@@ -2065,8 +1909,7 @@ arrayElement(I) ->
 -spec drawArrays(Mode, First, Count) -> 'ok' when Mode :: enum(),First :: integer(),Count :: integer().
 drawArrays(Mode,First,Count) ->
   IF = get_interface(),
-  OP = lookup_func(5199),
-  IF:queue_cmd(Mode,First,Count,OP,1),
+  IF:queue_cmd(Mode,First,Count,5199,1),
   ok.
 
 %% @doc glDrawElements
@@ -2075,8 +1918,7 @@ drawArrays(Mode,First,Count) ->
 -spec drawElements(Mode, Count, Type, Indices) -> 'ok' when Mode :: enum(),Count :: integer(),Type :: enum(),Indices :: offset()|mem().
 drawElements(Mode,Count,Type,Indices) ->
   IF = get_interface(),
-  OP = lookup_func(5200),
-  IF:queue_cmd(Mode,Count,Type,Indices,OP,1),
+  IF:queue_cmd(Mode,Count,Type,Indices,5200,1),
   ok.
 
 %% @doc glInterleavedArrays
@@ -2085,8 +1927,7 @@ drawElements(Mode,Count,Type,Indices) ->
 -spec interleavedArrays(Format, Stride, Pointer) -> 'ok' when Format :: enum(),Stride :: integer(),Pointer :: offset()|mem().
 interleavedArrays(Format,Stride,Pointer) ->
   IF = get_interface(),
-  OP = lookup_func(5202),
-  IF:queue_cmd(Format,Stride,Pointer,OP,1),
+  IF:queue_cmd(Format,Stride,Pointer,5202,1),
   ok.
 
 %% @doc glShadeModel
@@ -2095,8 +1936,7 @@ interleavedArrays(Format,Stride,Pointer) ->
 -spec shadeModel(Mode) -> 'ok' when Mode :: enum().
 shadeModel(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5204),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5204,1),
   ok.
 
 %% @doc glLight
@@ -2105,8 +1945,7 @@ shadeModel(Mode) ->
 -spec lightf(Light, Pname, Param) -> 'ok' when Light :: enum(),Pname :: enum(),Param :: float().
 lightf(Light,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5205),
-  IF:queue_cmd(Light,Pname,Param,OP,1),
+  IF:queue_cmd(Light,Pname,Param,5205,1),
   ok.
 
 %% @doc glLight
@@ -2115,8 +1954,7 @@ lightf(Light,Pname,Param) ->
 -spec lighti(Light, Pname, Param) -> 'ok' when Light :: enum(),Pname :: enum(),Param :: integer().
 lighti(Light,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5206),
-  IF:queue_cmd(Light,Pname,Param,OP,1),
+  IF:queue_cmd(Light,Pname,Param,5206,1),
   ok.
 
 %% @doc glLight
@@ -2125,8 +1963,7 @@ lighti(Light,Pname,Param) ->
 -spec lightfv(Light, Pname, Params) -> 'ok' when Light :: enum(),Pname :: enum(),Params :: tuple().
 lightfv(Light,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5207),
-  IF:queue_cmd(Light,Pname,Params,OP,1),
+  IF:queue_cmd(Light,Pname,Params,5207,1),
   ok.
 
 %% @doc glLight
@@ -2135,8 +1972,7 @@ lightfv(Light,Pname,Params) ->
 -spec lightiv(Light, Pname, Params) -> 'ok' when Light :: enum(),Pname :: enum(),Params :: tuple().
 lightiv(Light,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5208),
-  IF:queue_cmd(Light,Pname,Params,OP,1),
+  IF:queue_cmd(Light,Pname,Params,5208,1),
   ok.
 
 %% @doc glGetLight
@@ -2145,9 +1981,8 @@ lightiv(Light,Pname,Params) ->
 -spec getLightfv(Light, Pname) -> {float(),float(),float(),float()} when Light :: enum(),Pname :: enum().
 getLightfv(Light,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5209),
-  IF:queue_cmd(Light,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Light,Pname,5209,0),
+  rec(5009).
 
 %% @doc glGetLight
 %%
@@ -2155,9 +1990,8 @@ getLightfv(Light,Pname) ->
 -spec getLightiv(Light, Pname) -> {integer(),integer(),integer(),integer()} when Light :: enum(),Pname :: enum().
 getLightiv(Light,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5210),
-  IF:queue_cmd(Light,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Light,Pname,5210,0),
+  rec(5009).
 
 %% @doc glLightModel
 %%
@@ -2165,8 +1999,7 @@ getLightiv(Light,Pname) ->
 -spec lightModelf(Pname, Param) -> 'ok' when Pname :: enum(),Param :: float().
 lightModelf(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5211),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5211,1),
   ok.
 
 %% @doc glLightModel
@@ -2175,8 +2008,7 @@ lightModelf(Pname,Param) ->
 -spec lightModeli(Pname, Param) -> 'ok' when Pname :: enum(),Param :: integer().
 lightModeli(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5212),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5212,1),
   ok.
 
 %% @doc glLightModel
@@ -2185,8 +2017,7 @@ lightModeli(Pname,Param) ->
 -spec lightModelfv(Pname, Params) -> 'ok' when Pname :: enum(),Params :: tuple().
 lightModelfv(Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5213),
-  IF:queue_cmd(Pname,Params,OP,1),
+  IF:queue_cmd(Pname,Params,5213,1),
   ok.
 
 %% @doc glLightModel
@@ -2195,8 +2026,7 @@ lightModelfv(Pname,Params) ->
 -spec lightModeliv(Pname, Params) -> 'ok' when Pname :: enum(),Params :: tuple().
 lightModeliv(Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5214),
-  IF:queue_cmd(Pname,Params,OP,1),
+  IF:queue_cmd(Pname,Params,5214,1),
   ok.
 
 %% @doc glMaterial
@@ -2205,8 +2035,7 @@ lightModeliv(Pname,Params) ->
 -spec materialf(Face, Pname, Param) -> 'ok' when Face :: enum(),Pname :: enum(),Param :: float().
 materialf(Face,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5215),
-  IF:queue_cmd(Face,Pname,Param,OP,1),
+  IF:queue_cmd(Face,Pname,Param,5215,1),
   ok.
 
 %% @doc glMaterial
@@ -2215,8 +2044,7 @@ materialf(Face,Pname,Param) ->
 -spec materiali(Face, Pname, Param) -> 'ok' when Face :: enum(),Pname :: enum(),Param :: integer().
 materiali(Face,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5216),
-  IF:queue_cmd(Face,Pname,Param,OP,1),
+  IF:queue_cmd(Face,Pname,Param,5216,1),
   ok.
 
 %% @doc glMaterial
@@ -2225,8 +2053,7 @@ materiali(Face,Pname,Param) ->
 -spec materialfv(Face, Pname, Params) -> 'ok' when Face :: enum(),Pname :: enum(),Params :: tuple().
 materialfv(Face,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5217),
-  IF:queue_cmd(Face,Pname,Params,OP,1),
+  IF:queue_cmd(Face,Pname,Params,5217,1),
   ok.
 
 %% @doc glMaterial
@@ -2235,8 +2062,7 @@ materialfv(Face,Pname,Params) ->
 -spec materialiv(Face, Pname, Params) -> 'ok' when Face :: enum(),Pname :: enum(),Params :: tuple().
 materialiv(Face,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5218),
-  IF:queue_cmd(Face,Pname,Params,OP,1),
+  IF:queue_cmd(Face,Pname,Params,5218,1),
   ok.
 
 %% @doc glGetMaterial
@@ -2245,9 +2071,8 @@ materialiv(Face,Pname,Params) ->
 -spec getMaterialfv(Face, Pname) -> {float(),float(),float(),float()} when Face :: enum(),Pname :: enum().
 getMaterialfv(Face,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5219),
-  IF:queue_cmd(Face,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Face,Pname,5219,0),
+  rec(5009).
 
 %% @doc glGetMaterial
 %%
@@ -2255,9 +2080,8 @@ getMaterialfv(Face,Pname) ->
 -spec getMaterialiv(Face, Pname) -> {integer(),integer(),integer(),integer()} when Face :: enum(),Pname :: enum().
 getMaterialiv(Face,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5220),
-  IF:queue_cmd(Face,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Face,Pname,5220,0),
+  rec(5009).
 
 %% @doc glColorMaterial
 %%
@@ -2265,8 +2089,7 @@ getMaterialiv(Face,Pname) ->
 -spec colorMaterial(Face, Mode) -> 'ok' when Face :: enum(),Mode :: enum().
 colorMaterial(Face,Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5221),
-  IF:queue_cmd(Face,Mode,OP,1),
+  IF:queue_cmd(Face,Mode,5221,1),
   ok.
 
 %% @doc glPixelZoom
@@ -2275,8 +2098,7 @@ colorMaterial(Face,Mode) ->
 -spec pixelZoom(Xfactor, Yfactor) -> 'ok' when Xfactor :: float(),Yfactor :: float().
 pixelZoom(Xfactor,Yfactor) ->
   IF = get_interface(),
-  OP = lookup_func(5222),
-  IF:queue_cmd(Xfactor,Yfactor,OP,1),
+  IF:queue_cmd(Xfactor,Yfactor,5222,1),
   ok.
 
 %% @doc glPixelStore
@@ -2285,8 +2107,7 @@ pixelZoom(Xfactor,Yfactor) ->
 -spec pixelStoref(Pname, Param) -> 'ok' when Pname :: enum(),Param :: float().
 pixelStoref(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5223),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5223,1),
   ok.
 
 %% @doc glPixelStore
@@ -2295,8 +2116,7 @@ pixelStoref(Pname,Param) ->
 -spec pixelStorei(Pname, Param) -> 'ok' when Pname :: enum(),Param :: integer().
 pixelStorei(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5224),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5224,1),
   ok.
 
 %% @doc glPixelTransfer
@@ -2305,8 +2125,7 @@ pixelStorei(Pname,Param) ->
 -spec pixelTransferf(Pname, Param) -> 'ok' when Pname :: enum(),Param :: float().
 pixelTransferf(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5225),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5225,1),
   ok.
 
 %% @doc glPixelTransfer
@@ -2315,8 +2134,7 @@ pixelTransferf(Pname,Param) ->
 -spec pixelTransferi(Pname, Param) -> 'ok' when Pname :: enum(),Param :: integer().
 pixelTransferi(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5226),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5226,1),
   ok.
 
 %% @doc glPixelMap
@@ -2325,8 +2143,7 @@ pixelTransferi(Pname,Param) ->
 -spec pixelMapfv(Map, Mapsize, Values) -> 'ok' when Map :: enum(),Mapsize :: integer(),Values :: binary().
 pixelMapfv(Map,Mapsize,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5227),
-  IF:queue_cmd(Map,Mapsize,Values,OP,1),
+  IF:queue_cmd(Map,Mapsize,Values,5227,1),
   ok.
 
 %% @doc glPixelMap
@@ -2335,8 +2152,7 @@ pixelMapfv(Map,Mapsize,Values) ->
 -spec pixelMapuiv(Map, Mapsize, Values) -> 'ok' when Map :: enum(),Mapsize :: integer(),Values :: binary().
 pixelMapuiv(Map,Mapsize,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5228),
-  IF:queue_cmd(Map,Mapsize,Values,OP,1),
+  IF:queue_cmd(Map,Mapsize,Values,5228,1),
   ok.
 
 %% @doc glPixelMap
@@ -2345,8 +2161,7 @@ pixelMapuiv(Map,Mapsize,Values) ->
 -spec pixelMapusv(Map, Mapsize, Values) -> 'ok' when Map :: enum(),Mapsize :: integer(),Values :: binary().
 pixelMapusv(Map,Mapsize,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5229),
-  IF:queue_cmd(Map,Mapsize,Values,OP,1),
+  IF:queue_cmd(Map,Mapsize,Values,5229,1),
   ok.
 
 %% @doc glGetPixelMap
@@ -2355,9 +2170,8 @@ pixelMapusv(Map,Mapsize,Values) ->
 -spec getPixelMapfv(Map, Values) -> 'ok' when Map :: enum(),Values :: mem().
 getPixelMapfv(Map,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5230),
-  IF:queue_cmd(Map,Values,OP,0),
-  rec(OP).
+  IF:queue_cmd(Map,Values,5230,0),
+  rec(5009).
 
 %% @doc glGetPixelMap
 %%
@@ -2365,9 +2179,8 @@ getPixelMapfv(Map,Values) ->
 -spec getPixelMapuiv(Map, Values) -> 'ok' when Map :: enum(),Values :: mem().
 getPixelMapuiv(Map,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5231),
-  IF:queue_cmd(Map,Values,OP,0),
-  rec(OP).
+  IF:queue_cmd(Map,Values,5231,0),
+  rec(5009).
 
 %% @doc glGetPixelMap
 %%
@@ -2375,9 +2188,8 @@ getPixelMapuiv(Map,Values) ->
 -spec getPixelMapusv(Map, Values) -> 'ok' when Map :: enum(),Values :: mem().
 getPixelMapusv(Map,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5232),
-  IF:queue_cmd(Map,Values,OP,0),
-  rec(OP).
+  IF:queue_cmd(Map,Values,5232,0),
+  rec(5009).
 
 %% @doc glBitmap
 %%
@@ -2385,8 +2197,7 @@ getPixelMapusv(Map,Values) ->
 -spec bitmap(Width, Height, Xorig, Yorig, Xmove, Ymove, Bitmap) -> 'ok' when Width :: integer(),Height :: integer(),Xorig :: float(),Yorig :: float(),Xmove :: float(),Ymove :: float(),Bitmap :: offset()|mem().
 bitmap(Width,Height,Xorig,Yorig,Xmove,Ymove,Bitmap) ->
   IF = get_interface(),
-  OP = lookup_func(5233),
-  IF:queue_cmd(Width,Height,Xorig,Yorig,Xmove,Ymove,Bitmap,OP,1),
+  IF:queue_cmd(Width,Height,Xorig,Yorig,Xmove,Ymove,Bitmap,5233,1),
   ok.
 
 %% @doc glReadPixels
@@ -2395,9 +2206,8 @@ bitmap(Width,Height,Xorig,Yorig,Xmove,Ymove,Bitmap) ->
 -spec readPixels(X, Y, Width, Height, Format, Type, Pixels) -> 'ok' when X :: integer(),Y :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Pixels :: mem().
 readPixels(X,Y,Width,Height,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5235),
-  IF:queue_cmd(X,Y,Width,Height,Format,Type,Pixels,OP,0),
-  rec(OP).
+  IF:queue_cmd(X,Y,Width,Height,Format,Type,Pixels,5235,0),
+  rec(5009).
 
 %% @doc glDrawPixels
 %%
@@ -2405,8 +2215,7 @@ readPixels(X,Y,Width,Height,Format,Type,Pixels) ->
 -spec drawPixels(Width, Height, Format, Type, Pixels) -> 'ok' when Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 drawPixels(Width,Height,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5236),
-  IF:queue_cmd(Width,Height,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Width,Height,Format,Type,Pixels,5236,1),
   ok.
 
 %% @doc glCopyPixels
@@ -2415,8 +2224,7 @@ drawPixels(Width,Height,Format,Type,Pixels) ->
 -spec copyPixels(X, Y, Width, Height, Type) -> 'ok' when X :: integer(),Y :: integer(),Width :: integer(),Height :: integer(),Type :: enum().
 copyPixels(X,Y,Width,Height,Type) ->
   IF = get_interface(),
-  OP = lookup_func(5238),
-  IF:queue_cmd(X,Y,Width,Height,Type,OP,1),
+  IF:queue_cmd(X,Y,Width,Height,Type,5238,1),
   ok.
 
 %% @doc glStencilFunc
@@ -2425,8 +2233,7 @@ copyPixels(X,Y,Width,Height,Type) ->
 -spec stencilFunc(Func, Ref, Mask) -> 'ok' when Func :: enum(),Ref :: integer(),Mask :: integer().
 stencilFunc(Func,Ref,Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5239),
-  IF:queue_cmd(Func,Ref,Mask,OP,1),
+  IF:queue_cmd(Func,Ref,Mask,5239,1),
   ok.
 
 %% @doc glStencilMask
@@ -2435,8 +2242,7 @@ stencilFunc(Func,Ref,Mask) ->
 -spec stencilMask(Mask) -> 'ok' when Mask :: integer().
 stencilMask(Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5240),
-  IF:queue_cmd(Mask,OP,1),
+  IF:queue_cmd(Mask,5240,1),
   ok.
 
 %% @doc glStencilOp
@@ -2445,8 +2251,7 @@ stencilMask(Mask) ->
 -spec stencilOp(Fail, Zfail, Zpass) -> 'ok' when Fail :: enum(),Zfail :: enum(),Zpass :: enum().
 stencilOp(Fail,Zfail,Zpass) ->
   IF = get_interface(),
-  OP = lookup_func(5241),
-  IF:queue_cmd(Fail,Zfail,Zpass,OP,1),
+  IF:queue_cmd(Fail,Zfail,Zpass,5241,1),
   ok.
 
 %% @doc glClearStencil
@@ -2455,8 +2260,7 @@ stencilOp(Fail,Zfail,Zpass) ->
 -spec clearStencil(S) -> 'ok' when S :: integer().
 clearStencil(S) ->
   IF = get_interface(),
-  OP = lookup_func(5242),
-  IF:queue_cmd(S,OP,1),
+  IF:queue_cmd(S,5242,1),
   ok.
 
 %% @doc glTexGen
@@ -2465,8 +2269,7 @@ clearStencil(S) ->
 -spec texGend(Coord, Pname, Param) -> 'ok' when Coord :: enum(),Pname :: enum(),Param :: float().
 texGend(Coord,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5243),
-  IF:queue_cmd(Coord,Pname,Param,OP,1),
+  IF:queue_cmd(Coord,Pname,Param,5243,1),
   ok.
 
 %% @doc glTexGen
@@ -2475,8 +2278,7 @@ texGend(Coord,Pname,Param) ->
 -spec texGenf(Coord, Pname, Param) -> 'ok' when Coord :: enum(),Pname :: enum(),Param :: float().
 texGenf(Coord,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5244),
-  IF:queue_cmd(Coord,Pname,Param,OP,1),
+  IF:queue_cmd(Coord,Pname,Param,5244,1),
   ok.
 
 %% @doc glTexGen
@@ -2485,8 +2287,7 @@ texGenf(Coord,Pname,Param) ->
 -spec texGeni(Coord, Pname, Param) -> 'ok' when Coord :: enum(),Pname :: enum(),Param :: integer().
 texGeni(Coord,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5245),
-  IF:queue_cmd(Coord,Pname,Param,OP,1),
+  IF:queue_cmd(Coord,Pname,Param,5245,1),
   ok.
 
 %% @doc glTexGen
@@ -2495,8 +2296,7 @@ texGeni(Coord,Pname,Param) ->
 -spec texGendv(Coord, Pname, Params) -> 'ok' when Coord :: enum(),Pname :: enum(),Params :: tuple().
 texGendv(Coord,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5246),
-  IF:queue_cmd(Coord,Pname,Params,OP,1),
+  IF:queue_cmd(Coord,Pname,Params,5246,1),
   ok.
 
 %% @doc glTexGen
@@ -2505,8 +2305,7 @@ texGendv(Coord,Pname,Params) ->
 -spec texGenfv(Coord, Pname, Params) -> 'ok' when Coord :: enum(),Pname :: enum(),Params :: tuple().
 texGenfv(Coord,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5247),
-  IF:queue_cmd(Coord,Pname,Params,OP,1),
+  IF:queue_cmd(Coord,Pname,Params,5247,1),
   ok.
 
 %% @doc glTexGen
@@ -2515,8 +2314,7 @@ texGenfv(Coord,Pname,Params) ->
 -spec texGeniv(Coord, Pname, Params) -> 'ok' when Coord :: enum(),Pname :: enum(),Params :: tuple().
 texGeniv(Coord,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5248),
-  IF:queue_cmd(Coord,Pname,Params,OP,1),
+  IF:queue_cmd(Coord,Pname,Params,5248,1),
   ok.
 
 %% @doc glGetTexGen
@@ -2525,9 +2323,8 @@ texGeniv(Coord,Pname,Params) ->
 -spec getTexGendv(Coord, Pname) -> {float(),float(),float(),float()} when Coord :: enum(),Pname :: enum().
 getTexGendv(Coord,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5249),
-  IF:queue_cmd(Coord,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Coord,Pname,5249,0),
+  rec(5009).
 
 %% @doc glGetTexGen
 %%
@@ -2535,9 +2332,8 @@ getTexGendv(Coord,Pname) ->
 -spec getTexGenfv(Coord, Pname) -> {float(),float(),float(),float()} when Coord :: enum(),Pname :: enum().
 getTexGenfv(Coord,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5250),
-  IF:queue_cmd(Coord,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Coord,Pname,5250,0),
+  rec(5009).
 
 %% @doc glGetTexGen
 %%
@@ -2545,9 +2341,8 @@ getTexGenfv(Coord,Pname) ->
 -spec getTexGeniv(Coord, Pname) -> {integer(),integer(),integer(),integer()} when Coord :: enum(),Pname :: enum().
 getTexGeniv(Coord,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5251),
-  IF:queue_cmd(Coord,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Coord,Pname,5251,0),
+  rec(5009).
 
 %% @doc glTexEnvf
 %%
@@ -2555,8 +2350,7 @@ getTexGeniv(Coord,Pname) ->
 -spec texEnvf(Target, Pname, Param) -> 'ok' when Target :: enum(),Pname :: enum(),Param :: float().
 texEnvf(Target,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5252),
-  IF:queue_cmd(Target,Pname,Param,OP,1),
+  IF:queue_cmd(Target,Pname,Param,5252,1),
   ok.
 
 %% @doc glTexEnvi
@@ -2565,8 +2359,7 @@ texEnvf(Target,Pname,Param) ->
 -spec texEnvi(Target, Pname, Param) -> 'ok' when Target :: enum(),Pname :: enum(),Param :: integer().
 texEnvi(Target,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5253),
-  IF:queue_cmd(Target,Pname,Param,OP,1),
+  IF:queue_cmd(Target,Pname,Param,5253,1),
   ok.
 
 %% @doc glTexEnv
@@ -2575,8 +2368,7 @@ texEnvi(Target,Pname,Param) ->
 -spec texEnvfv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 texEnvfv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5254),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5254,1),
   ok.
 
 %% @doc glTexEnv
@@ -2585,8 +2377,7 @@ texEnvfv(Target,Pname,Params) ->
 -spec texEnviv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 texEnviv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5255),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5255,1),
   ok.
 
 %% @doc glGetTexEnv
@@ -2595,9 +2386,8 @@ texEnviv(Target,Pname,Params) ->
 -spec getTexEnvfv(Target, Pname) -> {float(),float(),float(),float()} when Target :: enum(),Pname :: enum().
 getTexEnvfv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5256),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5256,0),
+  rec(5009).
 
 %% @doc glGetTexEnv
 %%
@@ -2605,9 +2395,8 @@ getTexEnvfv(Target,Pname) ->
 -spec getTexEnviv(Target, Pname) -> {integer(),integer(),integer(),integer()} when Target :: enum(),Pname :: enum().
 getTexEnviv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5257),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5257,0),
+  rec(5009).
 
 %% @doc glTexParameter
 %%
@@ -2615,8 +2404,7 @@ getTexEnviv(Target,Pname) ->
 -spec texParameterf(Target, Pname, Param) -> 'ok' when Target :: enum(),Pname :: enum(),Param :: float().
 texParameterf(Target,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5258),
-  IF:queue_cmd(Target,Pname,Param,OP,1),
+  IF:queue_cmd(Target,Pname,Param,5258,1),
   ok.
 
 %% @doc glTexParameter
@@ -2625,8 +2413,7 @@ texParameterf(Target,Pname,Param) ->
 -spec texParameteri(Target, Pname, Param) -> 'ok' when Target :: enum(),Pname :: enum(),Param :: integer().
 texParameteri(Target,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5259),
-  IF:queue_cmd(Target,Pname,Param,OP,1),
+  IF:queue_cmd(Target,Pname,Param,5259,1),
   ok.
 
 %% @doc glTexParameter
@@ -2635,8 +2422,7 @@ texParameteri(Target,Pname,Param) ->
 -spec texParameterfv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 texParameterfv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5260),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5260,1),
   ok.
 
 %% @doc glTexParameter
@@ -2645,8 +2431,7 @@ texParameterfv(Target,Pname,Params) ->
 -spec texParameteriv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 texParameteriv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5261),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5261,1),
   ok.
 
 %% @doc glGetTexParameter
@@ -2655,9 +2440,8 @@ texParameteriv(Target,Pname,Params) ->
 -spec getTexParameterfv(Target, Pname) -> {float(),float(),float(),float()} when Target :: enum(),Pname :: enum().
 getTexParameterfv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5262),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5262,0),
+  rec(5009).
 
 %% @doc glGetTexParameter
 %%
@@ -2665,9 +2449,8 @@ getTexParameterfv(Target,Pname) ->
 -spec getTexParameteriv(Target, Pname) -> {integer(),integer(),integer(),integer()} when Target :: enum(),Pname :: enum().
 getTexParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5263),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5263,0),
+  rec(5009).
 
 %% @doc glGetTexLevelParameter
 %%
@@ -2675,9 +2458,8 @@ getTexParameteriv(Target,Pname) ->
 -spec getTexLevelParameterfv(Target, Level, Pname) -> {float()} when Target :: enum(),Level :: integer(),Pname :: enum().
 getTexLevelParameterfv(Target,Level,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5264),
-  IF:queue_cmd(Target,Level,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Level,Pname,5264,0),
+  rec(5009).
 
 %% @doc glGetTexLevelParameter
 %%
@@ -2685,9 +2467,8 @@ getTexLevelParameterfv(Target,Level,Pname) ->
 -spec getTexLevelParameteriv(Target, Level, Pname) -> {integer()} when Target :: enum(),Level :: integer(),Pname :: enum().
 getTexLevelParameteriv(Target,Level,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5265),
-  IF:queue_cmd(Target,Level,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Level,Pname,5265,0),
+  rec(5009).
 
 %% @doc glTexImage1D
 %%
@@ -2695,8 +2476,7 @@ getTexLevelParameteriv(Target,Level,Pname) ->
 -spec texImage1D(Target, Level, InternalFormat, Width, Border, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),InternalFormat :: integer(),Width :: integer(),Border :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 texImage1D(Target,Level,InternalFormat,Width,Border,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5266),
-  IF:queue_cmd(Target,Level,InternalFormat,Width,Border,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Target,Level,InternalFormat,Width,Border,Format,Type,Pixels,5266,1),
   ok.
 
 %% @doc glTexImage2D
@@ -2705,8 +2485,7 @@ texImage1D(Target,Level,InternalFormat,Width,Border,Format,Type,Pixels) ->
 -spec texImage2D(Target, Level, InternalFormat, Width, Height, Border, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Border :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 texImage2D(Target,Level,InternalFormat,Width,Height,Border,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5268),
-  IF:queue_cmd(Target,Level,InternalFormat,Width,Height,Border,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Target,Level,InternalFormat,Width,Height,Border,Format,Type,Pixels,5268,1),
   ok.
 
 %% @doc glGetTexImage
@@ -2715,9 +2494,8 @@ texImage2D(Target,Level,InternalFormat,Width,Height,Border,Format,Type,Pixels) -
 -spec getTexImage(Target, Level, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),Format :: enum(),Type :: enum(),Pixels :: mem().
 getTexImage(Target,Level,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5270),
-  IF:queue_cmd(Target,Level,Format,Type,Pixels,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Level,Format,Type,Pixels,5270,0),
+  rec(5009).
 
 %% @doc glGenTextures
 %%
@@ -2725,9 +2503,8 @@ getTexImage(Target,Level,Format,Type,Pixels) ->
 -spec genTextures(N) -> [integer()] when N :: integer().
 genTextures(N) ->
   IF = get_interface(),
-  OP = lookup_func(5271),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5271,0),
+  rec(5009).
 
 %% @doc glDeleteTextures
 %%
@@ -2735,9 +2512,8 @@ genTextures(N) ->
 -spec deleteTextures(Textures) -> 'ok' when Textures :: [integer()].
 deleteTextures(Textures) ->
   IF = get_interface(),
-  OP = lookup_func(5272),
   N = length(Textures),
-  IF:queue_cmd(N,Textures,OP,1),
+  IF:queue_cmd(N,Textures,5272,1),
   ok.
 
 %% @doc glBindTexture
@@ -2746,8 +2522,7 @@ deleteTextures(Textures) ->
 -spec bindTexture(Target, Texture) -> 'ok' when Target :: enum(),Texture :: integer().
 bindTexture(Target,Texture) ->
   IF = get_interface(),
-  OP = lookup_func(5273),
-  IF:queue_cmd(Target,Texture,OP,1),
+  IF:queue_cmd(Target,Texture,5273,1),
   ok.
 
 %% @doc glPrioritizeTextures
@@ -2756,9 +2531,8 @@ bindTexture(Target,Texture) ->
 -spec prioritizeTextures(Textures, Priorities) -> 'ok' when Textures :: [integer()],Priorities :: [clamp()].
 prioritizeTextures(Textures,Priorities) ->
   IF = get_interface(),
-  OP = lookup_func(5274),
   N = length(Textures),
-  IF:queue_cmd(N,Textures,Priorities,OP,1),
+  IF:queue_cmd(N,Textures,Priorities,5274,1),
   ok.
 
 %% @doc glAreTexturesResident
@@ -2767,10 +2541,9 @@ prioritizeTextures(Textures,Priorities) ->
 -spec areTexturesResident(Textures) -> {0|1,Residences :: [0|1]} when Textures :: [integer()].
 areTexturesResident(Textures) ->
   IF = get_interface(),
-  OP = lookup_func(5275),
   N = length(Textures),
-  IF:queue_cmd(N,Textures,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,Textures,5275,0),
+  rec(5009).
 
 %% @doc glIsTexture
 %%
@@ -2778,9 +2551,8 @@ areTexturesResident(Textures) ->
 -spec isTexture(Texture) -> 0|1 when Texture :: integer().
 isTexture(Texture) ->
   IF = get_interface(),
-  OP = lookup_func(5276),
-  IF:queue_cmd(Texture,OP,0),
-  rec(OP).
+  IF:queue_cmd(Texture,5276,0),
+  rec(5009).
 
 %% @doc glTexSubImage
 %%
@@ -2788,8 +2560,7 @@ isTexture(Texture) ->
 -spec texSubImage1D(Target, Level, Xoffset, Width, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Width :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 texSubImage1D(Target,Level,Xoffset,Width,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5277),
-  IF:queue_cmd(Target,Level,Xoffset,Width,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Width,Format,Type,Pixels,5277,1),
   ok.
 
 %% @doc glTexSubImage
@@ -2798,8 +2569,7 @@ texSubImage1D(Target,Level,Xoffset,Width,Format,Type,Pixels) ->
 -spec texSubImage2D(Target, Level, Xoffset, Yoffset, Width, Height, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Yoffset :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 texSubImage2D(Target,Level,Xoffset,Yoffset,Width,Height,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5279),
-  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Width,Height,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Width,Height,Format,Type,Pixels,5279,1),
   ok.
 
 %% @doc glCopyTexImage1D
@@ -2808,8 +2578,7 @@ texSubImage2D(Target,Level,Xoffset,Yoffset,Width,Height,Format,Type,Pixels) ->
 -spec copyTexImage1D(Target, Level, Internalformat, X, Y, Width, Border) -> 'ok' when Target :: enum(),Level :: integer(),Internalformat :: enum(),X :: integer(),Y :: integer(),Width :: integer(),Border :: integer().
 copyTexImage1D(Target,Level,Internalformat,X,Y,Width,Border) ->
   IF = get_interface(),
-  OP = lookup_func(5281),
-  IF:queue_cmd(Target,Level,Internalformat,X,Y,Width,Border,OP,1),
+  IF:queue_cmd(Target,Level,Internalformat,X,Y,Width,Border,5281,1),
   ok.
 
 %% @doc glCopyTexImage2D
@@ -2818,8 +2587,7 @@ copyTexImage1D(Target,Level,Internalformat,X,Y,Width,Border) ->
 -spec copyTexImage2D(Target, Level, Internalformat, X, Y, Width, Height, Border) -> 'ok' when Target :: enum(),Level :: integer(),Internalformat :: enum(),X :: integer(),Y :: integer(),Width :: integer(),Height :: integer(),Border :: integer().
 copyTexImage2D(Target,Level,Internalformat,X,Y,Width,Height,Border) ->
   IF = get_interface(),
-  OP = lookup_func(5282),
-  IF:queue_cmd(Target,Level,Internalformat,X,Y,Width,Height,Border,OP,1),
+  IF:queue_cmd(Target,Level,Internalformat,X,Y,Width,Height,Border,5282,1),
   ok.
 
 %% @doc glCopyTexSubImage1D
@@ -2828,8 +2596,7 @@ copyTexImage2D(Target,Level,Internalformat,X,Y,Width,Height,Border) ->
 -spec copyTexSubImage1D(Target, Level, Xoffset, X, Y, Width) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),X :: integer(),Y :: integer(),Width :: integer().
 copyTexSubImage1D(Target,Level,Xoffset,X,Y,Width) ->
   IF = get_interface(),
-  OP = lookup_func(5283),
-  IF:queue_cmd(Target,Level,Xoffset,X,Y,Width,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,X,Y,Width,5283,1),
   ok.
 
 %% @doc glCopyTexSubImage2D
@@ -2838,8 +2605,7 @@ copyTexSubImage1D(Target,Level,Xoffset,X,Y,Width) ->
 -spec copyTexSubImage2D(Target, Level, Xoffset, Yoffset, X, Y, Width, Height) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Yoffset :: integer(),X :: integer(),Y :: integer(),Width :: integer(),Height :: integer().
 copyTexSubImage2D(Target,Level,Xoffset,Yoffset,X,Y,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5284),
-  IF:queue_cmd(Target,Level,Xoffset,Yoffset,X,Y,Width,Height,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Yoffset,X,Y,Width,Height,5284,1),
   ok.
 
 %% @doc glMap
@@ -2848,8 +2614,7 @@ copyTexSubImage2D(Target,Level,Xoffset,Yoffset,X,Y,Width,Height) ->
 -spec map1d(Target, U1, U2, Stride, Order, Points) -> 'ok' when Target :: enum(),U1 :: float(),U2 :: float(),Stride :: integer(),Order :: integer(),Points :: binary().
 map1d(Target,U1,U2,Stride,Order,Points) ->
   IF = get_interface(),
-  OP = lookup_func(5285),
-  IF:queue_cmd(Target,U1,U2,Stride,Order,Points,OP,1),
+  IF:queue_cmd(Target,U1,U2,Stride,Order,Points,5285,1),
   ok.
 
 %% @doc glMap
@@ -2858,8 +2623,7 @@ map1d(Target,U1,U2,Stride,Order,Points) ->
 -spec map1f(Target, U1, U2, Stride, Order, Points) -> 'ok' when Target :: enum(),U1 :: float(),U2 :: float(),Stride :: integer(),Order :: integer(),Points :: binary().
 map1f(Target,U1,U2,Stride,Order,Points) ->
   IF = get_interface(),
-  OP = lookup_func(5286),
-  IF:queue_cmd(Target,U1,U2,Stride,Order,Points,OP,1),
+  IF:queue_cmd(Target,U1,U2,Stride,Order,Points,5286,1),
   ok.
 
 %% @doc glMap
@@ -2868,8 +2632,7 @@ map1f(Target,U1,U2,Stride,Order,Points) ->
 -spec map2d(Target, U1, U2, Ustride, Uorder, V1, V2, Vstride, Vorder, Points) -> 'ok' when Target :: enum(),U1 :: float(),U2 :: float(),Ustride :: integer(),Uorder :: integer(),V1 :: float(),V2 :: float(),Vstride :: integer(),Vorder :: integer(),Points :: binary().
 map2d(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points) ->
   IF = get_interface(),
-  OP = lookup_func(5287),
-  IF:queue_cmd(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points,OP,1),
+  IF:queue_cmd(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points,5287,1),
   ok.
 
 %% @doc glMap
@@ -2878,8 +2641,7 @@ map2d(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points) ->
 -spec map2f(Target, U1, U2, Ustride, Uorder, V1, V2, Vstride, Vorder, Points) -> 'ok' when Target :: enum(),U1 :: float(),U2 :: float(),Ustride :: integer(),Uorder :: integer(),V1 :: float(),V2 :: float(),Vstride :: integer(),Vorder :: integer(),Points :: binary().
 map2f(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points) ->
   IF = get_interface(),
-  OP = lookup_func(5288),
-  IF:queue_cmd(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points,OP,1),
+  IF:queue_cmd(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points,5288,1),
   ok.
 
 %% @doc glGetMap
@@ -2888,9 +2650,8 @@ map2f(Target,U1,U2,Ustride,Uorder,V1,V2,Vstride,Vorder,Points) ->
 -spec getMapdv(Target, Query, V) -> 'ok' when Target :: enum(),Query :: enum(),V :: mem().
 getMapdv(Target,Query,V) ->
   IF = get_interface(),
-  OP = lookup_func(5289),
-  IF:queue_cmd(Target,Query,V,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Query,V,5289,0),
+  rec(5009).
 
 %% @doc glGetMap
 %%
@@ -2898,9 +2659,8 @@ getMapdv(Target,Query,V) ->
 -spec getMapfv(Target, Query, V) -> 'ok' when Target :: enum(),Query :: enum(),V :: mem().
 getMapfv(Target,Query,V) ->
   IF = get_interface(),
-  OP = lookup_func(5290),
-  IF:queue_cmd(Target,Query,V,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Query,V,5290,0),
+  rec(5009).
 
 %% @doc glGetMap
 %%
@@ -2908,9 +2668,8 @@ getMapfv(Target,Query,V) ->
 -spec getMapiv(Target, Query, V) -> 'ok' when Target :: enum(),Query :: enum(),V :: mem().
 getMapiv(Target,Query,V) ->
   IF = get_interface(),
-  OP = lookup_func(5291),
-  IF:queue_cmd(Target,Query,V,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Query,V,5291,0),
+  rec(5009).
 
 %% @doc glEvalCoord
 %%
@@ -2918,8 +2677,7 @@ getMapiv(Target,Query,V) ->
 -spec evalCoord1d(U) -> 'ok' when U :: float().
 evalCoord1d(U) ->
   IF = get_interface(),
-  OP = lookup_func(5292),
-  IF:queue_cmd(U,OP,1),
+  IF:queue_cmd(U,5292,1),
   ok.
 
 %% @doc glEvalCoord
@@ -2928,8 +2686,7 @@ evalCoord1d(U) ->
 -spec evalCoord1f(U) -> 'ok' when U :: float().
 evalCoord1f(U) ->
   IF = get_interface(),
-  OP = lookup_func(5293),
-  IF:queue_cmd(U,OP,1),
+  IF:queue_cmd(U,5293,1),
   ok.
 
 %% @equiv evalCoord1d(U)
@@ -2944,8 +2701,7 @@ evalCoord1fv({U}) ->  evalCoord1f(U).
 -spec evalCoord2d(U, V) -> 'ok' when U :: float(),V :: float().
 evalCoord2d(U,V) ->
   IF = get_interface(),
-  OP = lookup_func(5294),
-  IF:queue_cmd(U,V,OP,1),
+  IF:queue_cmd(U,V,5294,1),
   ok.
 
 %% @doc glEvalCoord
@@ -2954,8 +2710,7 @@ evalCoord2d(U,V) ->
 -spec evalCoord2f(U, V) -> 'ok' when U :: float(),V :: float().
 evalCoord2f(U,V) ->
   IF = get_interface(),
-  OP = lookup_func(5295),
-  IF:queue_cmd(U,V,OP,1),
+  IF:queue_cmd(U,V,5295,1),
   ok.
 
 %% @equiv evalCoord2d(U,V)
@@ -2970,8 +2725,7 @@ evalCoord2fv({U,V}) ->  evalCoord2f(U,V).
 -spec mapGrid1d(Un, U1, U2) -> 'ok' when Un :: integer(),U1 :: float(),U2 :: float().
 mapGrid1d(Un,U1,U2) ->
   IF = get_interface(),
-  OP = lookup_func(5296),
-  IF:queue_cmd(Un,U1,U2,OP,1),
+  IF:queue_cmd(Un,U1,U2,5296,1),
   ok.
 
 %% @doc glMapGrid
@@ -2980,8 +2734,7 @@ mapGrid1d(Un,U1,U2) ->
 -spec mapGrid1f(Un, U1, U2) -> 'ok' when Un :: integer(),U1 :: float(),U2 :: float().
 mapGrid1f(Un,U1,U2) ->
   IF = get_interface(),
-  OP = lookup_func(5297),
-  IF:queue_cmd(Un,U1,U2,OP,1),
+  IF:queue_cmd(Un,U1,U2,5297,1),
   ok.
 
 %% @doc glMapGrid
@@ -2990,8 +2743,7 @@ mapGrid1f(Un,U1,U2) ->
 -spec mapGrid2d(Un, U1, U2, Vn, V1, V2) -> 'ok' when Un :: integer(),U1 :: float(),U2 :: float(),Vn :: integer(),V1 :: float(),V2 :: float().
 mapGrid2d(Un,U1,U2,Vn,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5298),
-  IF:queue_cmd(Un,U1,U2,Vn,V1,V2,OP,1),
+  IF:queue_cmd(Un,U1,U2,Vn,V1,V2,5298,1),
   ok.
 
 %% @doc glMapGrid
@@ -3000,8 +2752,7 @@ mapGrid2d(Un,U1,U2,Vn,V1,V2) ->
 -spec mapGrid2f(Un, U1, U2, Vn, V1, V2) -> 'ok' when Un :: integer(),U1 :: float(),U2 :: float(),Vn :: integer(),V1 :: float(),V2 :: float().
 mapGrid2f(Un,U1,U2,Vn,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5299),
-  IF:queue_cmd(Un,U1,U2,Vn,V1,V2,OP,1),
+  IF:queue_cmd(Un,U1,U2,Vn,V1,V2,5299,1),
   ok.
 
 %% @doc glEvalPoint
@@ -3010,8 +2761,7 @@ mapGrid2f(Un,U1,U2,Vn,V1,V2) ->
 -spec evalPoint1(I) -> 'ok' when I :: integer().
 evalPoint1(I) ->
   IF = get_interface(),
-  OP = lookup_func(5300),
-  IF:queue_cmd(I,OP,1),
+  IF:queue_cmd(I,5300,1),
   ok.
 
 %% @doc glEvalPoint
@@ -3020,8 +2770,7 @@ evalPoint1(I) ->
 -spec evalPoint2(I, J) -> 'ok' when I :: integer(),J :: integer().
 evalPoint2(I,J) ->
   IF = get_interface(),
-  OP = lookup_func(5301),
-  IF:queue_cmd(I,J,OP,1),
+  IF:queue_cmd(I,J,5301,1),
   ok.
 
 %% @doc glEvalMesh
@@ -3030,8 +2779,7 @@ evalPoint2(I,J) ->
 -spec evalMesh1(Mode, I1, I2) -> 'ok' when Mode :: enum(),I1 :: integer(),I2 :: integer().
 evalMesh1(Mode,I1,I2) ->
   IF = get_interface(),
-  OP = lookup_func(5302),
-  IF:queue_cmd(Mode,I1,I2,OP,1),
+  IF:queue_cmd(Mode,I1,I2,5302,1),
   ok.
 
 %% @doc glEvalMesh
@@ -3040,8 +2788,7 @@ evalMesh1(Mode,I1,I2) ->
 -spec evalMesh2(Mode, I1, I2, J1, J2) -> 'ok' when Mode :: enum(),I1 :: integer(),I2 :: integer(),J1 :: integer(),J2 :: integer().
 evalMesh2(Mode,I1,I2,J1,J2) ->
   IF = get_interface(),
-  OP = lookup_func(5303),
-  IF:queue_cmd(Mode,I1,I2,J1,J2,OP,1),
+  IF:queue_cmd(Mode,I1,I2,J1,J2,5303,1),
   ok.
 
 %% @doc glFog
@@ -3050,8 +2797,7 @@ evalMesh2(Mode,I1,I2,J1,J2) ->
 -spec fogf(Pname, Param) -> 'ok' when Pname :: enum(),Param :: float().
 fogf(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5304),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5304,1),
   ok.
 
 %% @doc glFog
@@ -3060,8 +2806,7 @@ fogf(Pname,Param) ->
 -spec fogi(Pname, Param) -> 'ok' when Pname :: enum(),Param :: integer().
 fogi(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5305),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5305,1),
   ok.
 
 %% @doc glFog
@@ -3070,8 +2815,7 @@ fogi(Pname,Param) ->
 -spec fogfv(Pname, Params) -> 'ok' when Pname :: enum(),Params :: tuple().
 fogfv(Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5306),
-  IF:queue_cmd(Pname,Params,OP,1),
+  IF:queue_cmd(Pname,Params,5306,1),
   ok.
 
 %% @doc glFog
@@ -3080,8 +2824,7 @@ fogfv(Pname,Params) ->
 -spec fogiv(Pname, Params) -> 'ok' when Pname :: enum(),Params :: tuple().
 fogiv(Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5307),
-  IF:queue_cmd(Pname,Params,OP,1),
+  IF:queue_cmd(Pname,Params,5307,1),
   ok.
 
 %% @doc glFeedbackBuffer
@@ -3090,9 +2833,8 @@ fogiv(Pname,Params) ->
 -spec feedbackBuffer(Size, Type, Buffer) -> 'ok' when Size :: integer(),Type :: enum(),Buffer :: mem().
 feedbackBuffer(Size,Type,Buffer) ->
   IF = get_interface(),
-  OP = lookup_func(5308),
-  IF:queue_cmd(Size,Type,Buffer,OP,0),
-  rec(OP).
+  IF:queue_cmd(Size,Type,Buffer,5308,0),
+  rec(5009).
 
 %% @doc glPassThrough
 %%
@@ -3100,8 +2842,7 @@ feedbackBuffer(Size,Type,Buffer) ->
 -spec passThrough(Token) -> 'ok' when Token :: float().
 passThrough(Token) ->
   IF = get_interface(),
-  OP = lookup_func(5309),
-  IF:queue_cmd(Token,OP,1),
+  IF:queue_cmd(Token,5309,1),
   ok.
 
 %% @doc glSelectBuffer
@@ -3110,9 +2851,8 @@ passThrough(Token) ->
 -spec selectBuffer(Size, Buffer) -> 'ok' when Size :: integer(),Buffer :: mem().
 selectBuffer(Size,Buffer) ->
   IF = get_interface(),
-  OP = lookup_func(5310),
-  IF:queue_cmd(Size,Buffer,OP,0),
-  rec(OP).
+  IF:queue_cmd(Size,Buffer,5310,0),
+  rec(5009).
 
 %% @doc glInitNames
 %%
@@ -3120,8 +2860,7 @@ selectBuffer(Size,Buffer) ->
 -spec initNames() -> 'ok'.
 initNames() ->
   IF = get_interface(),
-  OP = lookup_func(5311),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5311,1),
   ok.
 
 %% @doc glLoadName
@@ -3130,8 +2869,7 @@ initNames() ->
 -spec loadName(Name) -> 'ok' when Name :: integer().
 loadName(Name) ->
   IF = get_interface(),
-  OP = lookup_func(5312),
-  IF:queue_cmd(Name,OP,1),
+  IF:queue_cmd(Name,5312,1),
   ok.
 
 %% @doc glPushName
@@ -3140,8 +2878,7 @@ loadName(Name) ->
 -spec pushName(Name) -> 'ok' when Name :: integer().
 pushName(Name) ->
   IF = get_interface(),
-  OP = lookup_func(5313),
-  IF:queue_cmd(Name,OP,1),
+  IF:queue_cmd(Name,5313,1),
   ok.
 
 %% @doc glPushName
@@ -3150,8 +2887,7 @@ pushName(Name) ->
 -spec popName() -> 'ok'.
 popName() ->
   IF = get_interface(),
-  OP = lookup_func(5314),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5314,1),
   ok.
 
 %% @doc glBlendColor
@@ -3160,8 +2896,7 @@ popName() ->
 -spec blendColor(Red, Green, Blue, Alpha) -> 'ok' when Red :: clamp(),Green :: clamp(),Blue :: clamp(),Alpha :: clamp().
 blendColor(Red,Green,Blue,Alpha) ->
   IF = get_interface(),
-  OP = lookup_func(5315),
-  IF:queue_cmd(Red,Green,Blue,Alpha,OP,1),
+  IF:queue_cmd(Red,Green,Blue,Alpha,5315,1),
   ok.
 
 %% @doc glBlendEquation
@@ -3170,8 +2905,7 @@ blendColor(Red,Green,Blue,Alpha) ->
 -spec blendEquation(Mode) -> 'ok' when Mode :: enum().
 blendEquation(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5316),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5316,1),
   ok.
 
 %% @doc glDrawRangeElements
@@ -3180,8 +2914,7 @@ blendEquation(Mode) ->
 -spec drawRangeElements(Mode, Start, End, Count, Type, Indices) -> 'ok' when Mode :: enum(),Start :: integer(),End :: integer(),Count :: integer(),Type :: enum(),Indices :: offset()|mem().
 drawRangeElements(Mode,Start,End,Count,Type,Indices) ->
   IF = get_interface(),
-  OP = lookup_func(5317),
-  IF:queue_cmd(Mode,Start,End,Count,Type,Indices,OP,1),
+  IF:queue_cmd(Mode,Start,End,Count,Type,Indices,5317,1),
   ok.
 
 %% @doc glTexImage3D
@@ -3190,8 +2923,7 @@ drawRangeElements(Mode,Start,End,Count,Type,Indices) ->
 -spec texImage3D(Target, Level, InternalFormat, Width, Height, Depth, Border, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Border :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 texImage3D(Target,Level,InternalFormat,Width,Height,Depth,Border,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5319),
-  IF:queue_cmd(Target,Level,InternalFormat,Width,Height,Depth,Border,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Target,Level,InternalFormat,Width,Height,Depth,Border,Format,Type,Pixels,5319,1),
   ok.
 
 %% @doc glTexSubImage
@@ -3200,8 +2932,7 @@ texImage3D(Target,Level,InternalFormat,Width,Height,Depth,Border,Format,Type,Pix
 -spec texSubImage3D(Target, Level, Xoffset, Yoffset, Zoffset, Width, Height, Depth, Format, Type, Pixels) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Yoffset :: integer(),Zoffset :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Format :: enum(),Type :: enum(),Pixels :: offset()|mem().
 texSubImage3D(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,Type,Pixels) ->
   IF = get_interface(),
-  OP = lookup_func(5321),
-  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,Type,Pixels,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,Type,Pixels,5321,1),
   ok.
 
 %% @doc glCopyTexSubImage3D
@@ -3210,8 +2941,7 @@ texSubImage3D(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,Typ
 -spec copyTexSubImage3D(Target, Level, Xoffset, Yoffset, Zoffset, X, Y, Width, Height) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Yoffset :: integer(),Zoffset :: integer(),X :: integer(),Y :: integer(),Width :: integer(),Height :: integer().
 copyTexSubImage3D(Target,Level,Xoffset,Yoffset,Zoffset,X,Y,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5323),
-  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Zoffset,X,Y,Width,Height,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Zoffset,X,Y,Width,Height,5323,1),
   ok.
 
 %% @doc glColorTable
@@ -3220,8 +2950,7 @@ copyTexSubImage3D(Target,Level,Xoffset,Yoffset,Zoffset,X,Y,Width,Height) ->
 -spec colorTable(Target, Internalformat, Width, Format, Type, Table) -> 'ok' when Target :: enum(),Internalformat :: enum(),Width :: integer(),Format :: enum(),Type :: enum(),Table :: offset()|mem().
 colorTable(Target,Internalformat,Width,Format,Type,Table) ->
   IF = get_interface(),
-  OP = lookup_func(5324),
-  IF:queue_cmd(Target,Internalformat,Width,Format,Type,Table,OP,1),
+  IF:queue_cmd(Target,Internalformat,Width,Format,Type,Table,5324,1),
   ok.
 
 %% @doc glColorTableParameter
@@ -3230,8 +2959,7 @@ colorTable(Target,Internalformat,Width,Format,Type,Table) ->
 -spec colorTableParameterfv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: {float(),float(),float(),float()}.
 colorTableParameterfv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5326),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5326,1),
   ok.
 
 %% @doc glColorTableParameter
@@ -3240,8 +2968,7 @@ colorTableParameterfv(Target,Pname,Params) ->
 -spec colorTableParameteriv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: {integer(),integer(),integer(),integer()}.
 colorTableParameteriv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5327),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5327,1),
   ok.
 
 %% @doc glCopyColorTable
@@ -3250,8 +2977,7 @@ colorTableParameteriv(Target,Pname,Params) ->
 -spec copyColorTable(Target, Internalformat, X, Y, Width) -> 'ok' when Target :: enum(),Internalformat :: enum(),X :: integer(),Y :: integer(),Width :: integer().
 copyColorTable(Target,Internalformat,X,Y,Width) ->
   IF = get_interface(),
-  OP = lookup_func(5328),
-  IF:queue_cmd(Target,Internalformat,X,Y,Width,OP,1),
+  IF:queue_cmd(Target,Internalformat,X,Y,Width,5328,1),
   ok.
 
 %% @doc glGetColorTable
@@ -3260,9 +2986,8 @@ copyColorTable(Target,Internalformat,X,Y,Width) ->
 -spec getColorTable(Target, Format, Type, Table) -> 'ok' when Target :: enum(),Format :: enum(),Type :: enum(),Table :: mem().
 getColorTable(Target,Format,Type,Table) ->
   IF = get_interface(),
-  OP = lookup_func(5329),
-  IF:queue_cmd(Target,Format,Type,Table,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Format,Type,Table,5329,0),
+  rec(5009).
 
 %% @doc glGetColorTableParameter
 %%
@@ -3270,9 +2995,8 @@ getColorTable(Target,Format,Type,Table) ->
 -spec getColorTableParameterfv(Target, Pname) -> {float(),float(),float(),float()} when Target :: enum(),Pname :: enum().
 getColorTableParameterfv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5330),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5330,0),
+  rec(5009).
 
 %% @doc glGetColorTableParameter
 %%
@@ -3280,9 +3004,8 @@ getColorTableParameterfv(Target,Pname) ->
 -spec getColorTableParameteriv(Target, Pname) -> {integer(),integer(),integer(),integer()} when Target :: enum(),Pname :: enum().
 getColorTableParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5331),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5331,0),
+  rec(5009).
 
 %% @doc glColorSubTable
 %%
@@ -3290,8 +3013,7 @@ getColorTableParameteriv(Target,Pname) ->
 -spec colorSubTable(Target, Start, Count, Format, Type, Data) -> 'ok' when Target :: enum(),Start :: integer(),Count :: integer(),Format :: enum(),Type :: enum(),Data :: offset()|mem().
 colorSubTable(Target,Start,Count,Format,Type,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5332),
-  IF:queue_cmd(Target,Start,Count,Format,Type,Data,OP,1),
+  IF:queue_cmd(Target,Start,Count,Format,Type,Data,5332,1),
   ok.
 
 %% @doc glCopyColorSubTable
@@ -3300,8 +3022,7 @@ colorSubTable(Target,Start,Count,Format,Type,Data) ->
 -spec copyColorSubTable(Target, Start, X, Y, Width) -> 'ok' when Target :: enum(),Start :: integer(),X :: integer(),Y :: integer(),Width :: integer().
 copyColorSubTable(Target,Start,X,Y,Width) ->
   IF = get_interface(),
-  OP = lookup_func(5334),
-  IF:queue_cmd(Target,Start,X,Y,Width,OP,1),
+  IF:queue_cmd(Target,Start,X,Y,Width,5334,1),
   ok.
 
 %% @doc glConvolutionFilter1D
@@ -3310,8 +3031,7 @@ copyColorSubTable(Target,Start,X,Y,Width) ->
 -spec convolutionFilter1D(Target, Internalformat, Width, Format, Type, Image) -> 'ok' when Target :: enum(),Internalformat :: enum(),Width :: integer(),Format :: enum(),Type :: enum(),Image :: offset()|mem().
 convolutionFilter1D(Target,Internalformat,Width,Format,Type,Image) ->
   IF = get_interface(),
-  OP = lookup_func(5335),
-  IF:queue_cmd(Target,Internalformat,Width,Format,Type,Image,OP,1),
+  IF:queue_cmd(Target,Internalformat,Width,Format,Type,Image,5335,1),
   ok.
 
 %% @doc glConvolutionFilter2D
@@ -3320,8 +3040,7 @@ convolutionFilter1D(Target,Internalformat,Width,Format,Type,Image) ->
 -spec convolutionFilter2D(Target, Internalformat, Width, Height, Format, Type, Image) -> 'ok' when Target :: enum(),Internalformat :: enum(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Image :: offset()|mem().
 convolutionFilter2D(Target,Internalformat,Width,Height,Format,Type,Image) ->
   IF = get_interface(),
-  OP = lookup_func(5337),
-  IF:queue_cmd(Target,Internalformat,Width,Height,Format,Type,Image,OP,1),
+  IF:queue_cmd(Target,Internalformat,Width,Height,Format,Type,Image,5337,1),
   ok.
 
 %% @doc glConvolutionParameter
@@ -3330,8 +3049,7 @@ convolutionFilter2D(Target,Internalformat,Width,Height,Format,Type,Image) ->
 -spec convolutionParameterf(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 convolutionParameterf(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5339),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5339,1),
   ok.
 
 %% @doc glConvolutionParameter
@@ -3340,8 +3058,7 @@ convolutionParameterf(Target,Pname,Params) ->
 -spec convolutionParameterfv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 convolutionParameterfv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5340),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5340,1),
   ok.
 
 %% @doc glConvolutionParameter
@@ -3350,8 +3067,7 @@ convolutionParameterfv(Target,Pname,Params) ->
 -spec convolutionParameteri(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 convolutionParameteri(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5341),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5341,1),
   ok.
 
 %% @doc glConvolutionParameter
@@ -3360,8 +3076,7 @@ convolutionParameteri(Target,Pname,Params) ->
 -spec convolutionParameteriv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 convolutionParameteriv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5342),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5342,1),
   ok.
 
 %% @doc glCopyConvolutionFilter1D
@@ -3370,8 +3085,7 @@ convolutionParameteriv(Target,Pname,Params) ->
 -spec copyConvolutionFilter1D(Target, Internalformat, X, Y, Width) -> 'ok' when Target :: enum(),Internalformat :: enum(),X :: integer(),Y :: integer(),Width :: integer().
 copyConvolutionFilter1D(Target,Internalformat,X,Y,Width) ->
   IF = get_interface(),
-  OP = lookup_func(5343),
-  IF:queue_cmd(Target,Internalformat,X,Y,Width,OP,1),
+  IF:queue_cmd(Target,Internalformat,X,Y,Width,5343,1),
   ok.
 
 %% @doc glCopyConvolutionFilter2D
@@ -3380,8 +3094,7 @@ copyConvolutionFilter1D(Target,Internalformat,X,Y,Width) ->
 -spec copyConvolutionFilter2D(Target, Internalformat, X, Y, Width, Height) -> 'ok' when Target :: enum(),Internalformat :: enum(),X :: integer(),Y :: integer(),Width :: integer(),Height :: integer().
 copyConvolutionFilter2D(Target,Internalformat,X,Y,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5344),
-  IF:queue_cmd(Target,Internalformat,X,Y,Width,Height,OP,1),
+  IF:queue_cmd(Target,Internalformat,X,Y,Width,Height,5344,1),
   ok.
 
 %% @doc glGetConvolutionFilter
@@ -3390,9 +3103,8 @@ copyConvolutionFilter2D(Target,Internalformat,X,Y,Width,Height) ->
 -spec getConvolutionFilter(Target, Format, Type, Image) -> 'ok' when Target :: enum(),Format :: enum(),Type :: enum(),Image :: mem().
 getConvolutionFilter(Target,Format,Type,Image) ->
   IF = get_interface(),
-  OP = lookup_func(5345),
-  IF:queue_cmd(Target,Format,Type,Image,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Format,Type,Image,5345,0),
+  rec(5009).
 
 %% @doc glGetConvolutionParameter
 %%
@@ -3400,9 +3112,8 @@ getConvolutionFilter(Target,Format,Type,Image) ->
 -spec getConvolutionParameterfv(Target, Pname) -> {float(),float(),float(),float()} when Target :: enum(),Pname :: enum().
 getConvolutionParameterfv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5346),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5346,0),
+  rec(5009).
 
 %% @doc glGetConvolutionParameter
 %%
@@ -3410,9 +3121,8 @@ getConvolutionParameterfv(Target,Pname) ->
 -spec getConvolutionParameteriv(Target, Pname) -> {integer(),integer(),integer(),integer()} when Target :: enum(),Pname :: enum().
 getConvolutionParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5347),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5347,0),
+  rec(5009).
 
 %% @doc glSeparableFilter2D
 %%
@@ -3420,8 +3130,7 @@ getConvolutionParameteriv(Target,Pname) ->
 -spec separableFilter2D(Target, Internalformat, Width, Height, Format, Type, Row, Column) -> 'ok' when Target :: enum(),Internalformat :: enum(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Row :: offset()|mem(),Column :: offset()|mem().
 separableFilter2D(Target,Internalformat,Width,Height,Format,Type,Row,Column) ->
   IF = get_interface(),
-  OP = lookup_func(5348),
-  IF:queue_cmd(Target,Internalformat,Width,Height,Format,Type,Row,Column,OP,1),
+  IF:queue_cmd(Target,Internalformat,Width,Height,Format,Type,Row,Column,5348,1),
   ok.
 
 %% @doc glGetHistogram
@@ -3430,9 +3139,8 @@ separableFilter2D(Target,Internalformat,Width,Height,Format,Type,Row,Column) ->
 -spec getHistogram(Target, Reset, Format, Type, Values) -> 'ok' when Target :: enum(),Reset :: 0|1,Format :: enum(),Type :: enum(),Values :: mem().
 getHistogram(Target,Reset,Format,Type,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5350),
-  IF:queue_cmd(Target,Reset,Format,Type,Values,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Reset,Format,Type,Values,5350,0),
+  rec(5009).
 
 %% @doc glGetHistogramParameter
 %%
@@ -3440,9 +3148,8 @@ getHistogram(Target,Reset,Format,Type,Values) ->
 -spec getHistogramParameterfv(Target, Pname) -> {float()} when Target :: enum(),Pname :: enum().
 getHistogramParameterfv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5351),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5351,0),
+  rec(5009).
 
 %% @doc glGetHistogramParameter
 %%
@@ -3450,9 +3157,8 @@ getHistogramParameterfv(Target,Pname) ->
 -spec getHistogramParameteriv(Target, Pname) -> {integer()} when Target :: enum(),Pname :: enum().
 getHistogramParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5352),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5352,0),
+  rec(5009).
 
 %% @doc glGetMinmax
 %%
@@ -3460,9 +3166,8 @@ getHistogramParameteriv(Target,Pname) ->
 -spec getMinmax(Target, Reset, Format, Types, Values) -> 'ok' when Target :: enum(),Reset :: 0|1,Format :: enum(),Types :: enum(),Values :: mem().
 getMinmax(Target,Reset,Format,Types,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5353),
-  IF:queue_cmd(Target,Reset,Format,Types,Values,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Reset,Format,Types,Values,5353,0),
+  rec(5009).
 
 %% @doc glGetMinmaxParameter
 %%
@@ -3470,9 +3175,8 @@ getMinmax(Target,Reset,Format,Types,Values) ->
 -spec getMinmaxParameterfv(Target, Pname) -> {float()} when Target :: enum(),Pname :: enum().
 getMinmaxParameterfv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5354),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5354,0),
+  rec(5009).
 
 %% @doc glGetMinmaxParameter
 %%
@@ -3480,9 +3184,8 @@ getMinmaxParameterfv(Target,Pname) ->
 -spec getMinmaxParameteriv(Target, Pname) -> {integer()} when Target :: enum(),Pname :: enum().
 getMinmaxParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5355),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5355,0),
+  rec(5009).
 
 %% @doc glHistogram
 %%
@@ -3490,8 +3193,7 @@ getMinmaxParameteriv(Target,Pname) ->
 -spec histogram(Target, Width, Internalformat, Sink) -> 'ok' when Target :: enum(),Width :: integer(),Internalformat :: enum(),Sink :: 0|1.
 histogram(Target,Width,Internalformat,Sink) ->
   IF = get_interface(),
-  OP = lookup_func(5356),
-  IF:queue_cmd(Target,Width,Internalformat,Sink,OP,1),
+  IF:queue_cmd(Target,Width,Internalformat,Sink,5356,1),
   ok.
 
 %% @doc glMinmax
@@ -3500,8 +3202,7 @@ histogram(Target,Width,Internalformat,Sink) ->
 -spec minmax(Target, Internalformat, Sink) -> 'ok' when Target :: enum(),Internalformat :: enum(),Sink :: 0|1.
 minmax(Target,Internalformat,Sink) ->
   IF = get_interface(),
-  OP = lookup_func(5357),
-  IF:queue_cmd(Target,Internalformat,Sink,OP,1),
+  IF:queue_cmd(Target,Internalformat,Sink,5357,1),
   ok.
 
 %% @doc glResetHistogram
@@ -3510,8 +3211,7 @@ minmax(Target,Internalformat,Sink) ->
 -spec resetHistogram(Target) -> 'ok' when Target :: enum().
 resetHistogram(Target) ->
   IF = get_interface(),
-  OP = lookup_func(5358),
-  IF:queue_cmd(Target,OP,1),
+  IF:queue_cmd(Target,5358,1),
   ok.
 
 %% @doc glResetMinmax
@@ -3520,8 +3220,7 @@ resetHistogram(Target) ->
 -spec resetMinmax(Target) -> 'ok' when Target :: enum().
 resetMinmax(Target) ->
   IF = get_interface(),
-  OP = lookup_func(5359),
-  IF:queue_cmd(Target,OP,1),
+  IF:queue_cmd(Target,5359,1),
   ok.
 
 %% @doc glActiveTexture
@@ -3530,8 +3229,7 @@ resetMinmax(Target) ->
 -spec activeTexture(Texture) -> 'ok' when Texture :: enum().
 activeTexture(Texture) ->
   IF = get_interface(),
-  OP = lookup_func(5360),
-  IF:queue_cmd(Texture,OP,1),
+  IF:queue_cmd(Texture,5360,1),
   ok.
 
 %% @doc glSampleCoverage
@@ -3540,8 +3238,7 @@ activeTexture(Texture) ->
 -spec sampleCoverage(Value, Invert) -> 'ok' when Value :: clamp(),Invert :: 0|1.
 sampleCoverage(Value,Invert) ->
   IF = get_interface(),
-  OP = lookup_func(5361),
-  IF:queue_cmd(Value,Invert,OP,1),
+  IF:queue_cmd(Value,Invert,5361,1),
   ok.
 
 %% @doc glCompressedTexImage3D
@@ -3550,8 +3247,7 @@ sampleCoverage(Value,Invert) ->
 -spec compressedTexImage3D(Target, Level, Internalformat, Width, Height, Depth, Border, ImageSize, Data) -> 'ok' when Target :: enum(),Level :: integer(),Internalformat :: enum(),Width :: integer(),Height :: integer(),Depth :: integer(),Border :: integer(),ImageSize :: integer(),Data :: offset()|mem().
 compressedTexImage3D(Target,Level,Internalformat,Width,Height,Depth,Border,ImageSize,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5362),
-  IF:queue_cmd(Target,Level,Internalformat,Width,Height,Depth,Border,ImageSize,Data,OP,1),
+  IF:queue_cmd(Target,Level,Internalformat,Width,Height,Depth,Border,ImageSize,Data,5362,1),
   ok.
 
 %% @doc glCompressedTexImage2D
@@ -3560,8 +3256,7 @@ compressedTexImage3D(Target,Level,Internalformat,Width,Height,Depth,Border,Image
 -spec compressedTexImage2D(Target, Level, Internalformat, Width, Height, Border, ImageSize, Data) -> 'ok' when Target :: enum(),Level :: integer(),Internalformat :: enum(),Width :: integer(),Height :: integer(),Border :: integer(),ImageSize :: integer(),Data :: offset()|mem().
 compressedTexImage2D(Target,Level,Internalformat,Width,Height,Border,ImageSize,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5364),
-  IF:queue_cmd(Target,Level,Internalformat,Width,Height,Border,ImageSize,Data,OP,1),
+  IF:queue_cmd(Target,Level,Internalformat,Width,Height,Border,ImageSize,Data,5364,1),
   ok.
 
 %% @doc glCompressedTexImage1D
@@ -3570,8 +3265,7 @@ compressedTexImage2D(Target,Level,Internalformat,Width,Height,Border,ImageSize,D
 -spec compressedTexImage1D(Target, Level, Internalformat, Width, Border, ImageSize, Data) -> 'ok' when Target :: enum(),Level :: integer(),Internalformat :: enum(),Width :: integer(),Border :: integer(),ImageSize :: integer(),Data :: offset()|mem().
 compressedTexImage1D(Target,Level,Internalformat,Width,Border,ImageSize,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5366),
-  IF:queue_cmd(Target,Level,Internalformat,Width,Border,ImageSize,Data,OP,1),
+  IF:queue_cmd(Target,Level,Internalformat,Width,Border,ImageSize,Data,5366,1),
   ok.
 
 %% @doc glCompressedTexSubImage3D
@@ -3580,8 +3274,7 @@ compressedTexImage1D(Target,Level,Internalformat,Width,Border,ImageSize,Data) ->
 -spec compressedTexSubImage3D(Target, Level, Xoffset, Yoffset, Zoffset, Width, Height, Depth, Format, ImageSize, Data) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Yoffset :: integer(),Zoffset :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Format :: enum(),ImageSize :: integer(),Data :: offset()|mem().
 compressedTexSubImage3D(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,ImageSize,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5368),
-  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,ImageSize,Data,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,Format,ImageSize,Data,5368,1),
   ok.
 
 %% @doc glCompressedTexSubImage2D
@@ -3590,8 +3283,7 @@ compressedTexSubImage3D(Target,Level,Xoffset,Yoffset,Zoffset,Width,Height,Depth,
 -spec compressedTexSubImage2D(Target, Level, Xoffset, Yoffset, Width, Height, Format, ImageSize, Data) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Yoffset :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),ImageSize :: integer(),Data :: offset()|mem().
 compressedTexSubImage2D(Target,Level,Xoffset,Yoffset,Width,Height,Format,ImageSize,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5370),
-  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Width,Height,Format,ImageSize,Data,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Yoffset,Width,Height,Format,ImageSize,Data,5370,1),
   ok.
 
 %% @doc glCompressedTexSubImage1D
@@ -3600,8 +3292,7 @@ compressedTexSubImage2D(Target,Level,Xoffset,Yoffset,Width,Height,Format,ImageSi
 -spec compressedTexSubImage1D(Target, Level, Xoffset, Width, Format, ImageSize, Data) -> 'ok' when Target :: enum(),Level :: integer(),Xoffset :: integer(),Width :: integer(),Format :: enum(),ImageSize :: integer(),Data :: offset()|mem().
 compressedTexSubImage1D(Target,Level,Xoffset,Width,Format,ImageSize,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5372),
-  IF:queue_cmd(Target,Level,Xoffset,Width,Format,ImageSize,Data,OP,1),
+  IF:queue_cmd(Target,Level,Xoffset,Width,Format,ImageSize,Data,5372,1),
   ok.
 
 %% @doc glGetCompressedTexImage
@@ -3610,9 +3301,8 @@ compressedTexSubImage1D(Target,Level,Xoffset,Width,Format,ImageSize,Data) ->
 -spec getCompressedTexImage(Target, Lod, Img) -> 'ok' when Target :: enum(),Lod :: integer(),Img :: mem().
 getCompressedTexImage(Target,Lod,Img) ->
   IF = get_interface(),
-  OP = lookup_func(5374),
-  IF:queue_cmd(Target,Lod,Img,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Lod,Img,5374,0),
+  rec(5009).
 
 %% @doc glClientActiveTexture
 %%
@@ -3620,8 +3310,7 @@ getCompressedTexImage(Target,Lod,Img) ->
 -spec clientActiveTexture(Texture) -> 'ok' when Texture :: enum().
 clientActiveTexture(Texture) ->
   IF = get_interface(),
-  OP = lookup_func(5375),
-  IF:queue_cmd(Texture,OP,1),
+  IF:queue_cmd(Texture,5375,1),
   ok.
 
 %% @doc glMultiTexCoord
@@ -3630,8 +3319,7 @@ clientActiveTexture(Texture) ->
 -spec multiTexCoord1d(Target, S) -> 'ok' when Target :: enum(),S :: float().
 multiTexCoord1d(Target,S) ->
   IF = get_interface(),
-  OP = lookup_func(5376),
-  IF:queue_cmd(Target,S,OP,1),
+  IF:queue_cmd(Target,S,5376,1),
   ok.
 
 %% @equiv multiTexCoord1d(Target,S)
@@ -3643,8 +3331,7 @@ multiTexCoord1dv(Target,{S}) ->  multiTexCoord1d(Target,S).
 -spec multiTexCoord1f(Target, S) -> 'ok' when Target :: enum(),S :: float().
 multiTexCoord1f(Target,S) ->
   IF = get_interface(),
-  OP = lookup_func(5377),
-  IF:queue_cmd(Target,S,OP,1),
+  IF:queue_cmd(Target,S,5377,1),
   ok.
 
 %% @equiv multiTexCoord1f(Target,S)
@@ -3656,8 +3343,7 @@ multiTexCoord1fv(Target,{S}) ->  multiTexCoord1f(Target,S).
 -spec multiTexCoord1i(Target, S) -> 'ok' when Target :: enum(),S :: integer().
 multiTexCoord1i(Target,S) ->
   IF = get_interface(),
-  OP = lookup_func(5378),
-  IF:queue_cmd(Target,S,OP,1),
+  IF:queue_cmd(Target,S,5378,1),
   ok.
 
 %% @equiv multiTexCoord1i(Target,S)
@@ -3669,8 +3355,7 @@ multiTexCoord1iv(Target,{S}) ->  multiTexCoord1i(Target,S).
 -spec multiTexCoord1s(Target, S) -> 'ok' when Target :: enum(),S :: integer().
 multiTexCoord1s(Target,S) ->
   IF = get_interface(),
-  OP = lookup_func(5379),
-  IF:queue_cmd(Target,S,OP,1),
+  IF:queue_cmd(Target,S,5379,1),
   ok.
 
 %% @equiv multiTexCoord1s(Target,S)
@@ -3682,8 +3367,7 @@ multiTexCoord1sv(Target,{S}) ->  multiTexCoord1s(Target,S).
 -spec multiTexCoord2d(Target, S, T) -> 'ok' when Target :: enum(),S :: float(),T :: float().
 multiTexCoord2d(Target,S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5380),
-  IF:queue_cmd(Target,S,T,OP,1),
+  IF:queue_cmd(Target,S,T,5380,1),
   ok.
 
 %% @equiv multiTexCoord2d(Target,S,T)
@@ -3695,8 +3379,7 @@ multiTexCoord2dv(Target,{S,T}) ->  multiTexCoord2d(Target,S,T).
 -spec multiTexCoord2f(Target, S, T) -> 'ok' when Target :: enum(),S :: float(),T :: float().
 multiTexCoord2f(Target,S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5381),
-  IF:queue_cmd(Target,S,T,OP,1),
+  IF:queue_cmd(Target,S,T,5381,1),
   ok.
 
 %% @equiv multiTexCoord2f(Target,S,T)
@@ -3708,8 +3391,7 @@ multiTexCoord2fv(Target,{S,T}) ->  multiTexCoord2f(Target,S,T).
 -spec multiTexCoord2i(Target, S, T) -> 'ok' when Target :: enum(),S :: integer(),T :: integer().
 multiTexCoord2i(Target,S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5382),
-  IF:queue_cmd(Target,S,T,OP,1),
+  IF:queue_cmd(Target,S,T,5382,1),
   ok.
 
 %% @equiv multiTexCoord2i(Target,S,T)
@@ -3721,8 +3403,7 @@ multiTexCoord2iv(Target,{S,T}) ->  multiTexCoord2i(Target,S,T).
 -spec multiTexCoord2s(Target, S, T) -> 'ok' when Target :: enum(),S :: integer(),T :: integer().
 multiTexCoord2s(Target,S,T) ->
   IF = get_interface(),
-  OP = lookup_func(5383),
-  IF:queue_cmd(Target,S,T,OP,1),
+  IF:queue_cmd(Target,S,T,5383,1),
   ok.
 
 %% @equiv multiTexCoord2s(Target,S,T)
@@ -3734,8 +3415,7 @@ multiTexCoord2sv(Target,{S,T}) ->  multiTexCoord2s(Target,S,T).
 -spec multiTexCoord3d(Target, S, T, R) -> 'ok' when Target :: enum(),S :: float(),T :: float(),R :: float().
 multiTexCoord3d(Target,S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5384),
-  IF:queue_cmd(Target,S,T,R,OP,1),
+  IF:queue_cmd(Target,S,T,R,5384,1),
   ok.
 
 %% @equiv multiTexCoord3d(Target,S,T,R)
@@ -3747,8 +3427,7 @@ multiTexCoord3dv(Target,{S,T,R}) ->  multiTexCoord3d(Target,S,T,R).
 -spec multiTexCoord3f(Target, S, T, R) -> 'ok' when Target :: enum(),S :: float(),T :: float(),R :: float().
 multiTexCoord3f(Target,S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5385),
-  IF:queue_cmd(Target,S,T,R,OP,1),
+  IF:queue_cmd(Target,S,T,R,5385,1),
   ok.
 
 %% @equiv multiTexCoord3f(Target,S,T,R)
@@ -3760,8 +3439,7 @@ multiTexCoord3fv(Target,{S,T,R}) ->  multiTexCoord3f(Target,S,T,R).
 -spec multiTexCoord3i(Target, S, T, R) -> 'ok' when Target :: enum(),S :: integer(),T :: integer(),R :: integer().
 multiTexCoord3i(Target,S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5386),
-  IF:queue_cmd(Target,S,T,R,OP,1),
+  IF:queue_cmd(Target,S,T,R,5386,1),
   ok.
 
 %% @equiv multiTexCoord3i(Target,S,T,R)
@@ -3773,8 +3451,7 @@ multiTexCoord3iv(Target,{S,T,R}) ->  multiTexCoord3i(Target,S,T,R).
 -spec multiTexCoord3s(Target, S, T, R) -> 'ok' when Target :: enum(),S :: integer(),T :: integer(),R :: integer().
 multiTexCoord3s(Target,S,T,R) ->
   IF = get_interface(),
-  OP = lookup_func(5387),
-  IF:queue_cmd(Target,S,T,R,OP,1),
+  IF:queue_cmd(Target,S,T,R,5387,1),
   ok.
 
 %% @equiv multiTexCoord3s(Target,S,T,R)
@@ -3786,8 +3463,7 @@ multiTexCoord3sv(Target,{S,T,R}) ->  multiTexCoord3s(Target,S,T,R).
 -spec multiTexCoord4d(Target, S, T, R, Q) -> 'ok' when Target :: enum(),S :: float(),T :: float(),R :: float(),Q :: float().
 multiTexCoord4d(Target,S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5388),
-  IF:queue_cmd(Target,S,T,R,Q,OP,1),
+  IF:queue_cmd(Target,S,T,R,Q,5388,1),
   ok.
 
 %% @equiv multiTexCoord4d(Target,S,T,R,Q)
@@ -3799,8 +3475,7 @@ multiTexCoord4dv(Target,{S,T,R,Q}) ->  multiTexCoord4d(Target,S,T,R,Q).
 -spec multiTexCoord4f(Target, S, T, R, Q) -> 'ok' when Target :: enum(),S :: float(),T :: float(),R :: float(),Q :: float().
 multiTexCoord4f(Target,S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5389),
-  IF:queue_cmd(Target,S,T,R,Q,OP,1),
+  IF:queue_cmd(Target,S,T,R,Q,5389,1),
   ok.
 
 %% @equiv multiTexCoord4f(Target,S,T,R,Q)
@@ -3812,8 +3487,7 @@ multiTexCoord4fv(Target,{S,T,R,Q}) ->  multiTexCoord4f(Target,S,T,R,Q).
 -spec multiTexCoord4i(Target, S, T, R, Q) -> 'ok' when Target :: enum(),S :: integer(),T :: integer(),R :: integer(),Q :: integer().
 multiTexCoord4i(Target,S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5390),
-  IF:queue_cmd(Target,S,T,R,Q,OP,1),
+  IF:queue_cmd(Target,S,T,R,Q,5390,1),
   ok.
 
 %% @equiv multiTexCoord4i(Target,S,T,R,Q)
@@ -3825,8 +3499,7 @@ multiTexCoord4iv(Target,{S,T,R,Q}) ->  multiTexCoord4i(Target,S,T,R,Q).
 -spec multiTexCoord4s(Target, S, T, R, Q) -> 'ok' when Target :: enum(),S :: integer(),T :: integer(),R :: integer(),Q :: integer().
 multiTexCoord4s(Target,S,T,R,Q) ->
   IF = get_interface(),
-  OP = lookup_func(5391),
-  IF:queue_cmd(Target,S,T,R,Q,OP,1),
+  IF:queue_cmd(Target,S,T,R,Q,5391,1),
   ok.
 
 %% @equiv multiTexCoord4s(Target,S,T,R,Q)
@@ -3838,8 +3511,7 @@ multiTexCoord4sv(Target,{S,T,R,Q}) ->  multiTexCoord4s(Target,S,T,R,Q).
 -spec loadTransposeMatrixf(M) -> 'ok' when M :: matrix().
 loadTransposeMatrixf(M) ->
   IF = get_interface(),
-  OP = lookup_func(5392),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5392,1),
   ok.
 
 %% @doc glLoadTransposeMatrix
@@ -3848,8 +3520,7 @@ loadTransposeMatrixf(M) ->
 -spec loadTransposeMatrixd(M) -> 'ok' when M :: matrix().
 loadTransposeMatrixd(M) ->
   IF = get_interface(),
-  OP = lookup_func(5393),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5393,1),
   ok.
 
 %% @doc glMultTransposeMatrix
@@ -3858,8 +3529,7 @@ loadTransposeMatrixd(M) ->
 -spec multTransposeMatrixf(M) -> 'ok' when M :: matrix().
 multTransposeMatrixf(M) ->
   IF = get_interface(),
-  OP = lookup_func(5394),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5394,1),
   ok.
 
 %% @doc glMultTransposeMatrix
@@ -3868,8 +3538,7 @@ multTransposeMatrixf(M) ->
 -spec multTransposeMatrixd(M) -> 'ok' when M :: matrix().
 multTransposeMatrixd(M) ->
   IF = get_interface(),
-  OP = lookup_func(5395),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5395,1),
   ok.
 
 %% @doc glBlendFuncSeparate
@@ -3878,8 +3547,7 @@ multTransposeMatrixd(M) ->
 -spec blendFuncSeparate(SfactorRGB, DfactorRGB, SfactorAlpha, DfactorAlpha) -> 'ok' when SfactorRGB :: enum(),DfactorRGB :: enum(),SfactorAlpha :: enum(),DfactorAlpha :: enum().
 blendFuncSeparate(SfactorRGB,DfactorRGB,SfactorAlpha,DfactorAlpha) ->
   IF = get_interface(),
-  OP = lookup_func(5396),
-  IF:queue_cmd(SfactorRGB,DfactorRGB,SfactorAlpha,DfactorAlpha,OP,1),
+  IF:queue_cmd(SfactorRGB,DfactorRGB,SfactorAlpha,DfactorAlpha,5396,1),
   ok.
 
 %% @doc glMultiDrawArrays
@@ -3888,8 +3556,7 @@ blendFuncSeparate(SfactorRGB,DfactorRGB,SfactorAlpha,DfactorAlpha) ->
 -spec multiDrawArrays(Mode, First, Count) -> 'ok' when Mode :: enum(),First :: [integer()]|mem(),Count :: [integer()]|mem().
 multiDrawArrays(Mode,First,Count) ->
   IF = get_interface(),
-  OP = lookup_func(5397),
-  IF:queue_cmd(Mode,First,Count,OP,1),
+  IF:queue_cmd(Mode,First,Count,5397,1),
   ok.
 
 %% @doc glPointParameter
@@ -3898,8 +3565,7 @@ multiDrawArrays(Mode,First,Count) ->
 -spec pointParameterf(Pname, Param) -> 'ok' when Pname :: enum(),Param :: float().
 pointParameterf(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5399),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5399,1),
   ok.
 
 %% @doc glPointParameter
@@ -3908,8 +3574,7 @@ pointParameterf(Pname,Param) ->
 -spec pointParameterfv(Pname, Params) -> 'ok' when Pname :: enum(),Params :: tuple().
 pointParameterfv(Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5400),
-  IF:queue_cmd(Pname,Params,OP,1),
+  IF:queue_cmd(Pname,Params,5400,1),
   ok.
 
 %% @doc glPointParameter
@@ -3918,8 +3583,7 @@ pointParameterfv(Pname,Params) ->
 -spec pointParameteri(Pname, Param) -> 'ok' when Pname :: enum(),Param :: integer().
 pointParameteri(Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5401),
-  IF:queue_cmd(Pname,Param,OP,1),
+  IF:queue_cmd(Pname,Param,5401,1),
   ok.
 
 %% @doc glPointParameter
@@ -3928,8 +3592,7 @@ pointParameteri(Pname,Param) ->
 -spec pointParameteriv(Pname, Params) -> 'ok' when Pname :: enum(),Params :: tuple().
 pointParameteriv(Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5402),
-  IF:queue_cmd(Pname,Params,OP,1),
+  IF:queue_cmd(Pname,Params,5402,1),
   ok.
 
 %% @doc glFogCoord
@@ -3938,8 +3601,7 @@ pointParameteriv(Pname,Params) ->
 -spec fogCoordf(Coord) -> 'ok' when Coord :: float().
 fogCoordf(Coord) ->
   IF = get_interface(),
-  OP = lookup_func(5403),
-  IF:queue_cmd(Coord,OP,1),
+  IF:queue_cmd(Coord,5403,1),
   ok.
 
 %% @equiv fogCoordf(Coord)
@@ -3951,8 +3613,7 @@ fogCoordfv({Coord}) ->  fogCoordf(Coord).
 -spec fogCoordd(Coord) -> 'ok' when Coord :: float().
 fogCoordd(Coord) ->
   IF = get_interface(),
-  OP = lookup_func(5404),
-  IF:queue_cmd(Coord,OP,1),
+  IF:queue_cmd(Coord,5404,1),
   ok.
 
 %% @equiv fogCoordd(Coord)
@@ -3964,8 +3625,7 @@ fogCoorddv({Coord}) ->  fogCoordd(Coord).
 -spec fogCoordPointer(Type, Stride, Pointer) -> 'ok' when Type :: enum(),Stride :: integer(),Pointer :: offset()|mem().
 fogCoordPointer(Type,Stride,Pointer) ->
   IF = get_interface(),
-  OP = lookup_func(5405),
-  IF:queue_cmd(Type,Stride,Pointer,OP,1),
+  IF:queue_cmd(Type,Stride,Pointer,5405,1),
   ok.
 
 %% @doc glSecondaryColor
@@ -3974,8 +3634,7 @@ fogCoordPointer(Type,Stride,Pointer) ->
 -spec secondaryColor3b(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 secondaryColor3b(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5407),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5407,1),
   ok.
 
 %% @equiv secondaryColor3b(Red,Green,Blue)
@@ -3987,8 +3646,7 @@ secondaryColor3bv({Red,Green,Blue}) ->  secondaryColor3b(Red,Green,Blue).
 -spec secondaryColor3d(Red, Green, Blue) -> 'ok' when Red :: float(),Green :: float(),Blue :: float().
 secondaryColor3d(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5408),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5408,1),
   ok.
 
 %% @equiv secondaryColor3d(Red,Green,Blue)
@@ -4000,8 +3658,7 @@ secondaryColor3dv({Red,Green,Blue}) ->  secondaryColor3d(Red,Green,Blue).
 -spec secondaryColor3f(Red, Green, Blue) -> 'ok' when Red :: float(),Green :: float(),Blue :: float().
 secondaryColor3f(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5409),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5409,1),
   ok.
 
 %% @equiv secondaryColor3f(Red,Green,Blue)
@@ -4013,8 +3670,7 @@ secondaryColor3fv({Red,Green,Blue}) ->  secondaryColor3f(Red,Green,Blue).
 -spec secondaryColor3i(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 secondaryColor3i(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5410),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5410,1),
   ok.
 
 %% @equiv secondaryColor3i(Red,Green,Blue)
@@ -4026,8 +3682,7 @@ secondaryColor3iv({Red,Green,Blue}) ->  secondaryColor3i(Red,Green,Blue).
 -spec secondaryColor3s(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 secondaryColor3s(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5411),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5411,1),
   ok.
 
 %% @equiv secondaryColor3s(Red,Green,Blue)
@@ -4039,8 +3694,7 @@ secondaryColor3sv({Red,Green,Blue}) ->  secondaryColor3s(Red,Green,Blue).
 -spec secondaryColor3ub(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 secondaryColor3ub(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5412),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5412,1),
   ok.
 
 %% @equiv secondaryColor3ub(Red,Green,Blue)
@@ -4052,8 +3706,7 @@ secondaryColor3ubv({Red,Green,Blue}) ->  secondaryColor3ub(Red,Green,Blue).
 -spec secondaryColor3ui(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 secondaryColor3ui(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5413),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5413,1),
   ok.
 
 %% @equiv secondaryColor3ui(Red,Green,Blue)
@@ -4065,8 +3718,7 @@ secondaryColor3uiv({Red,Green,Blue}) ->  secondaryColor3ui(Red,Green,Blue).
 -spec secondaryColor3us(Red, Green, Blue) -> 'ok' when Red :: integer(),Green :: integer(),Blue :: integer().
 secondaryColor3us(Red,Green,Blue) ->
   IF = get_interface(),
-  OP = lookup_func(5414),
-  IF:queue_cmd(Red,Green,Blue,OP,1),
+  IF:queue_cmd(Red,Green,Blue,5414,1),
   ok.
 
 %% @equiv secondaryColor3us(Red,Green,Blue)
@@ -4078,8 +3730,7 @@ secondaryColor3usv({Red,Green,Blue}) ->  secondaryColor3us(Red,Green,Blue).
 -spec secondaryColorPointer(Size, Type, Stride, Pointer) -> 'ok' when Size :: integer(),Type :: enum(),Stride :: integer(),Pointer :: offset()|mem().
 secondaryColorPointer(Size,Type,Stride,Pointer) ->
   IF = get_interface(),
-  OP = lookup_func(5415),
-  IF:queue_cmd(Size,Type,Stride,Pointer,OP,1),
+  IF:queue_cmd(Size,Type,Stride,Pointer,5415,1),
   ok.
 
 %% @doc glWindowPos
@@ -4088,8 +3739,7 @@ secondaryColorPointer(Size,Type,Stride,Pointer) ->
 -spec windowPos2d(X, Y) -> 'ok' when X :: float(),Y :: float().
 windowPos2d(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5417),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5417,1),
   ok.
 
 %% @equiv windowPos2d(X,Y)
@@ -4101,8 +3751,7 @@ windowPos2dv({X,Y}) ->  windowPos2d(X,Y).
 -spec windowPos2f(X, Y) -> 'ok' when X :: float(),Y :: float().
 windowPos2f(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5418),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5418,1),
   ok.
 
 %% @equiv windowPos2f(X,Y)
@@ -4114,8 +3763,7 @@ windowPos2fv({X,Y}) ->  windowPos2f(X,Y).
 -spec windowPos2i(X, Y) -> 'ok' when X :: integer(),Y :: integer().
 windowPos2i(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5419),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5419,1),
   ok.
 
 %% @equiv windowPos2i(X,Y)
@@ -4127,8 +3775,7 @@ windowPos2iv({X,Y}) ->  windowPos2i(X,Y).
 -spec windowPos2s(X, Y) -> 'ok' when X :: integer(),Y :: integer().
 windowPos2s(X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5420),
-  IF:queue_cmd(X,Y,OP,1),
+  IF:queue_cmd(X,Y,5420,1),
   ok.
 
 %% @equiv windowPos2s(X,Y)
@@ -4140,8 +3787,7 @@ windowPos2sv({X,Y}) ->  windowPos2s(X,Y).
 -spec windowPos3d(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 windowPos3d(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5421),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5421,1),
   ok.
 
 %% @equiv windowPos3d(X,Y,Z)
@@ -4153,8 +3799,7 @@ windowPos3dv({X,Y,Z}) ->  windowPos3d(X,Y,Z).
 -spec windowPos3f(X, Y, Z) -> 'ok' when X :: float(),Y :: float(),Z :: float().
 windowPos3f(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5422),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5422,1),
   ok.
 
 %% @equiv windowPos3f(X,Y,Z)
@@ -4166,8 +3811,7 @@ windowPos3fv({X,Y,Z}) ->  windowPos3f(X,Y,Z).
 -spec windowPos3i(X, Y, Z) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer().
 windowPos3i(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5423),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5423,1),
   ok.
 
 %% @equiv windowPos3i(X,Y,Z)
@@ -4179,8 +3823,7 @@ windowPos3iv({X,Y,Z}) ->  windowPos3i(X,Y,Z).
 -spec windowPos3s(X, Y, Z) -> 'ok' when X :: integer(),Y :: integer(),Z :: integer().
 windowPos3s(X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5424),
-  IF:queue_cmd(X,Y,Z,OP,1),
+  IF:queue_cmd(X,Y,Z,5424,1),
   ok.
 
 %% @equiv windowPos3s(X,Y,Z)
@@ -4192,9 +3835,8 @@ windowPos3sv({X,Y,Z}) ->  windowPos3s(X,Y,Z).
 -spec genQueries(N) -> [integer()] when N :: integer().
 genQueries(N) ->
   IF = get_interface(),
-  OP = lookup_func(5425),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5425,0),
+  rec(5009).
 
 %% @doc glDeleteQueries
 %%
@@ -4202,9 +3844,8 @@ genQueries(N) ->
 -spec deleteQueries(Ids) -> 'ok' when Ids :: [integer()].
 deleteQueries(Ids) ->
   IF = get_interface(),
-  OP = lookup_func(5426),
   N = length(Ids),
-  IF:queue_cmd(N,Ids,OP,1),
+  IF:queue_cmd(N,Ids,5426,1),
   ok.
 
 %% @doc glIsQuery
@@ -4213,9 +3854,8 @@ deleteQueries(Ids) ->
 -spec isQuery(Id) -> 0|1 when Id :: integer().
 isQuery(Id) ->
   IF = get_interface(),
-  OP = lookup_func(5427),
-  IF:queue_cmd(Id,OP,0),
-  rec(OP).
+  IF:queue_cmd(Id,5427,0),
+  rec(5009).
 
 %% @doc glBeginQuery
 %%
@@ -4223,8 +3863,7 @@ isQuery(Id) ->
 -spec beginQuery(Target, Id) -> 'ok' when Target :: enum(),Id :: integer().
 beginQuery(Target,Id) ->
   IF = get_interface(),
-  OP = lookup_func(5428),
-  IF:queue_cmd(Target,Id,OP,1),
+  IF:queue_cmd(Target,Id,5428,1),
   ok.
 
 %% @doc glBeginQuery
@@ -4233,8 +3872,7 @@ beginQuery(Target,Id) ->
 -spec endQuery(Target) -> 'ok' when Target :: enum().
 endQuery(Target) ->
   IF = get_interface(),
-  OP = lookup_func(5429),
-  IF:queue_cmd(Target,OP,1),
+  IF:queue_cmd(Target,5429,1),
   ok.
 
 %% @doc glGetQuery
@@ -4243,9 +3881,8 @@ endQuery(Target) ->
 -spec getQueryiv(Target, Pname) -> integer() when Target :: enum(),Pname :: enum().
 getQueryiv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5430),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5430,0),
+  rec(5009).
 
 %% @doc glGetQueryObject
 %%
@@ -4253,9 +3890,8 @@ getQueryiv(Target,Pname) ->
 -spec getQueryObjectiv(Id, Pname) -> integer() when Id :: integer(),Pname :: enum().
 getQueryObjectiv(Id,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5431),
-  IF:queue_cmd(Id,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Id,Pname,5431,0),
+  rec(5009).
 
 %% @doc glGetQueryObject
 %%
@@ -4263,9 +3899,8 @@ getQueryObjectiv(Id,Pname) ->
 -spec getQueryObjectuiv(Id, Pname) -> integer() when Id :: integer(),Pname :: enum().
 getQueryObjectuiv(Id,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5432),
-  IF:queue_cmd(Id,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Id,Pname,5432,0),
+  rec(5009).
 
 %% @doc glBindBuffer
 %%
@@ -4273,8 +3908,7 @@ getQueryObjectuiv(Id,Pname) ->
 -spec bindBuffer(Target, Buffer) -> 'ok' when Target :: enum(),Buffer :: integer().
 bindBuffer(Target,Buffer) ->
   IF = get_interface(),
-  OP = lookup_func(5433),
-  IF:queue_cmd(Target,Buffer,OP,1),
+  IF:queue_cmd(Target,Buffer,5433,1),
   ok.
 
 %% @doc glDeleteBuffers
@@ -4283,9 +3917,8 @@ bindBuffer(Target,Buffer) ->
 -spec deleteBuffers(Buffers) -> 'ok' when Buffers :: [integer()].
 deleteBuffers(Buffers) ->
   IF = get_interface(),
-  OP = lookup_func(5434),
   N = length(Buffers),
-  IF:queue_cmd(N,Buffers,OP,1),
+  IF:queue_cmd(N,Buffers,5434,1),
   ok.
 
 %% @doc glGenBuffers
@@ -4294,9 +3927,8 @@ deleteBuffers(Buffers) ->
 -spec genBuffers(N) -> [integer()] when N :: integer().
 genBuffers(N) ->
   IF = get_interface(),
-  OP = lookup_func(5435),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5435,0),
+  rec(5009).
 
 %% @doc glIsBuffer
 %%
@@ -4304,9 +3936,8 @@ genBuffers(N) ->
 -spec isBuffer(Buffer) -> 0|1 when Buffer :: integer().
 isBuffer(Buffer) ->
   IF = get_interface(),
-  OP = lookup_func(5436),
-  IF:queue_cmd(Buffer,OP,0),
-  rec(OP).
+  IF:queue_cmd(Buffer,5436,0),
+  rec(5009).
 
 %% @doc glBufferData
 %%
@@ -4314,8 +3945,7 @@ isBuffer(Buffer) ->
 -spec bufferData(Target, Size, Data, Usage) -> 'ok' when Target :: enum(),Size :: integer(),Data :: offset()|mem(),Usage :: enum().
 bufferData(Target,Size,Data,Usage) ->
   IF = get_interface(),
-  OP = lookup_func(5437),
-  IF:queue_cmd(Target,Size,Data,Usage,OP,1),
+  IF:queue_cmd(Target,Size,Data,Usage,5437,1),
   ok.
 
 %% @doc glBufferSubData
@@ -4324,8 +3954,7 @@ bufferData(Target,Size,Data,Usage) ->
 -spec bufferSubData(Target, Offset, Size, Data) -> 'ok' when Target :: enum(),Offset :: integer(),Size :: integer(),Data :: offset()|mem().
 bufferSubData(Target,Offset,Size,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5439),
-  IF:queue_cmd(Target,Offset,Size,Data,OP,1),
+  IF:queue_cmd(Target,Offset,Size,Data,5439,1),
   ok.
 
 %% @doc glGetBufferSubData
@@ -4334,9 +3963,8 @@ bufferSubData(Target,Offset,Size,Data) ->
 -spec getBufferSubData(Target, Offset, Size, Data) -> 'ok' when Target :: enum(),Offset :: integer(),Size :: integer(),Data :: mem().
 getBufferSubData(Target,Offset,Size,Data) ->
   IF = get_interface(),
-  OP = lookup_func(5441),
-  IF:queue_cmd(Target,Offset,Size,Data,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Offset,Size,Data,5441,0),
+  rec(5009).
 
 %% @doc glGetBufferParameteriv
 %%
@@ -4344,9 +3972,8 @@ getBufferSubData(Target,Offset,Size,Data) ->
 -spec getBufferParameteriv(Target, Pname) -> integer() when Target :: enum(),Pname :: enum().
 getBufferParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5442),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5442,0),
+  rec(5009).
 
 %% @doc glBlendEquationSeparate
 %%
@@ -4354,8 +3981,7 @@ getBufferParameteriv(Target,Pname) ->
 -spec blendEquationSeparate(ModeRGB, ModeAlpha) -> 'ok' when ModeRGB :: enum(),ModeAlpha :: enum().
 blendEquationSeparate(ModeRGB,ModeAlpha) ->
   IF = get_interface(),
-  OP = lookup_func(5443),
-  IF:queue_cmd(ModeRGB,ModeAlpha,OP,1),
+  IF:queue_cmd(ModeRGB,ModeAlpha,5443,1),
   ok.
 
 %% @doc glDrawBuffers
@@ -4364,9 +3990,8 @@ blendEquationSeparate(ModeRGB,ModeAlpha) ->
 -spec drawBuffers(Bufs) -> 'ok' when Bufs :: [enum()].
 drawBuffers(Bufs) ->
   IF = get_interface(),
-  OP = lookup_func(5444),
   N = length(Bufs),
-  IF:queue_cmd(N,Bufs,OP,1),
+  IF:queue_cmd(N,Bufs,5444,1),
   ok.
 
 %% @doc glStencilOpSeparate
@@ -4375,8 +4000,7 @@ drawBuffers(Bufs) ->
 -spec stencilOpSeparate(Face, Sfail, Dpfail, Dppass) -> 'ok' when Face :: enum(),Sfail :: enum(),Dpfail :: enum(),Dppass :: enum().
 stencilOpSeparate(Face,Sfail,Dpfail,Dppass) ->
   IF = get_interface(),
-  OP = lookup_func(5445),
-  IF:queue_cmd(Face,Sfail,Dpfail,Dppass,OP,1),
+  IF:queue_cmd(Face,Sfail,Dpfail,Dppass,5445,1),
   ok.
 
 %% @doc glStencilFuncSeparate
@@ -4385,8 +4009,7 @@ stencilOpSeparate(Face,Sfail,Dpfail,Dppass) ->
 -spec stencilFuncSeparate(Face, Func, Ref, Mask) -> 'ok' when Face :: enum(),Func :: enum(),Ref :: integer(),Mask :: integer().
 stencilFuncSeparate(Face,Func,Ref,Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5446),
-  IF:queue_cmd(Face,Func,Ref,Mask,OP,1),
+  IF:queue_cmd(Face,Func,Ref,Mask,5446,1),
   ok.
 
 %% @doc glStencilMaskSeparate
@@ -4395,8 +4018,7 @@ stencilFuncSeparate(Face,Func,Ref,Mask) ->
 -spec stencilMaskSeparate(Face, Mask) -> 'ok' when Face :: enum(),Mask :: integer().
 stencilMaskSeparate(Face,Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5447),
-  IF:queue_cmd(Face,Mask,OP,1),
+  IF:queue_cmd(Face,Mask,5447,1),
   ok.
 
 %% @doc glAttachShader
@@ -4405,8 +4027,7 @@ stencilMaskSeparate(Face,Mask) ->
 -spec attachShader(Program, Shader) -> 'ok' when Program :: integer(),Shader :: integer().
 attachShader(Program,Shader) ->
   IF = get_interface(),
-  OP = lookup_func(5448),
-  IF:queue_cmd(Program,Shader,OP,1),
+  IF:queue_cmd(Program,Shader,5448,1),
   ok.
 
 %% @doc glBindAttribLocation
@@ -4415,9 +4036,8 @@ attachShader(Program,Shader) ->
 -spec bindAttribLocation(Program, Index, Name) -> 'ok' when Program :: integer(),Index :: integer(),Name :: string().
 bindAttribLocation(Program,Index,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5449),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,Index,NameBin,OP,1),
+  IF:queue_cmd(Program,Index,NameBin,5449,1),
   ok.
 
 %% @doc glCompileShader
@@ -4426,8 +4046,7 @@ bindAttribLocation(Program,Index,Name) ->
 -spec compileShader(Shader) -> 'ok' when Shader :: integer().
 compileShader(Shader) ->
   IF = get_interface(),
-  OP = lookup_func(5450),
-  IF:queue_cmd(Shader,OP,1),
+  IF:queue_cmd(Shader,5450,1),
   ok.
 
 %% @doc glCreateProgram
@@ -4436,9 +4055,8 @@ compileShader(Shader) ->
 -spec createProgram() -> integer().
 createProgram() ->
   IF = get_interface(),
-  OP = lookup_func(5451),
-  IF:queue_cmd(OP,0),
-  rec(OP).
+  IF:queue_cmd(5451,0),
+  rec(5009).
 
 %% @doc glCreateShader
 %%
@@ -4446,9 +4064,8 @@ createProgram() ->
 -spec createShader(Type) -> integer() when Type :: enum().
 createShader(Type) ->
   IF = get_interface(),
-  OP = lookup_func(5452),
-  IF:queue_cmd(Type,OP,0),
-  rec(OP).
+  IF:queue_cmd(Type,5452,0),
+  rec(5009).
 
 %% @doc glDeleteProgram
 %%
@@ -4456,8 +4073,7 @@ createShader(Type) ->
 -spec deleteProgram(Program) -> 'ok' when Program :: integer().
 deleteProgram(Program) ->
   IF = get_interface(),
-  OP = lookup_func(5453),
-  IF:queue_cmd(Program,OP,1),
+  IF:queue_cmd(Program,5453,1),
   ok.
 
 %% @doc glDeleteShader
@@ -4466,8 +4082,7 @@ deleteProgram(Program) ->
 -spec deleteShader(Shader) -> 'ok' when Shader :: integer().
 deleteShader(Shader) ->
   IF = get_interface(),
-  OP = lookup_func(5454),
-  IF:queue_cmd(Shader,OP,1),
+  IF:queue_cmd(Shader,5454,1),
   ok.
 
 %% @doc glDetachShader
@@ -4476,8 +4091,7 @@ deleteShader(Shader) ->
 -spec detachShader(Program, Shader) -> 'ok' when Program :: integer(),Shader :: integer().
 detachShader(Program,Shader) ->
   IF = get_interface(),
-  OP = lookup_func(5455),
-  IF:queue_cmd(Program,Shader,OP,1),
+  IF:queue_cmd(Program,Shader,5455,1),
   ok.
 
 %% @doc glEnableVertexAttribArray
@@ -4486,8 +4100,7 @@ detachShader(Program,Shader) ->
 -spec disableVertexAttribArray(Index) -> 'ok' when Index :: integer().
 disableVertexAttribArray(Index) ->
   IF = get_interface(),
-  OP = lookup_func(5456),
-  IF:queue_cmd(Index,OP,1),
+  IF:queue_cmd(Index,5456,1),
   ok.
 
 %% @doc glEnableVertexAttribArray
@@ -4496,8 +4109,7 @@ disableVertexAttribArray(Index) ->
 -spec enableVertexAttribArray(Index) -> 'ok' when Index :: integer().
 enableVertexAttribArray(Index) ->
   IF = get_interface(),
-  OP = lookup_func(5457),
-  IF:queue_cmd(Index,OP,1),
+  IF:queue_cmd(Index,5457,1),
   ok.
 
 %% @doc glGetActiveAttrib
@@ -4506,9 +4118,8 @@ enableVertexAttribArray(Index) ->
 -spec getActiveAttrib(Program, Index, BufSize) -> {Size :: integer(),Type :: enum(),Name :: string()} when Program :: integer(),Index :: integer(),BufSize :: integer().
 getActiveAttrib(Program,Index,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5458),
-  IF:queue_cmd(Program,Index,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Index,BufSize,5458,0),
+  rec(5009).
 
 %% @doc glGetActiveUniform
 %%
@@ -4516,9 +4127,8 @@ getActiveAttrib(Program,Index,BufSize) ->
 -spec getActiveUniform(Program, Index, BufSize) -> {Size :: integer(),Type :: enum(),Name :: string()} when Program :: integer(),Index :: integer(),BufSize :: integer().
 getActiveUniform(Program,Index,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5459),
-  IF:queue_cmd(Program,Index,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Index,BufSize,5459,0),
+  rec(5009).
 
 %% @doc glGetAttachedShaders
 %%
@@ -4526,9 +4136,8 @@ getActiveUniform(Program,Index,BufSize) ->
 -spec getAttachedShaders(Program, MaxCount) -> [integer()] when Program :: integer(),MaxCount :: integer().
 getAttachedShaders(Program,MaxCount) ->
   IF = get_interface(),
-  OP = lookup_func(5460),
-  IF:queue_cmd(Program,MaxCount,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,MaxCount,5460,0),
+  rec(5009).
 
 %% @doc glGetAttribLocation
 %%
@@ -4536,10 +4145,9 @@ getAttachedShaders(Program,MaxCount) ->
 -spec getAttribLocation(Program, Name) -> integer() when Program :: integer(),Name :: string().
 getAttribLocation(Program,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5461),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,NameBin,5461,0),
+  rec(5009).
 
 %% @doc glGetProgram
 %%
@@ -4547,9 +4155,8 @@ getAttribLocation(Program,Name) ->
 -spec getProgramiv(Program, Pname) -> integer() when Program :: integer(),Pname :: enum().
 getProgramiv(Program,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5462),
-  IF:queue_cmd(Program,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Pname,5462,0),
+  rec(5009).
 
 %% @doc glGetProgramInfoLog
 %%
@@ -4557,9 +4164,8 @@ getProgramiv(Program,Pname) ->
 -spec getProgramInfoLog(Program, BufSize) -> string() when Program :: integer(),BufSize :: integer().
 getProgramInfoLog(Program,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5463),
-  IF:queue_cmd(Program,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,BufSize,5463,0),
+  rec(5009).
 
 %% @doc glGetShader
 %%
@@ -4567,9 +4173,8 @@ getProgramInfoLog(Program,BufSize) ->
 -spec getShaderiv(Shader, Pname) -> integer() when Shader :: integer(),Pname :: enum().
 getShaderiv(Shader,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5464),
-  IF:queue_cmd(Shader,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Shader,Pname,5464,0),
+  rec(5009).
 
 %% @doc glGetShaderInfoLog
 %%
@@ -4577,9 +4182,8 @@ getShaderiv(Shader,Pname) ->
 -spec getShaderInfoLog(Shader, BufSize) -> string() when Shader :: integer(),BufSize :: integer().
 getShaderInfoLog(Shader,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5465),
-  IF:queue_cmd(Shader,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Shader,BufSize,5465,0),
+  rec(5009).
 
 %% @doc glGetShaderSource
 %%
@@ -4587,9 +4191,8 @@ getShaderInfoLog(Shader,BufSize) ->
 -spec getShaderSource(Shader, BufSize) -> string() when Shader :: integer(),BufSize :: integer().
 getShaderSource(Shader,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5466),
-  IF:queue_cmd(Shader,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Shader,BufSize,5466,0),
+  rec(5009).
 
 %% @doc glGetUniformLocation
 %%
@@ -4597,10 +4200,9 @@ getShaderSource(Shader,BufSize) ->
 -spec getUniformLocation(Program, Name) -> integer() when Program :: integer(),Name :: string().
 getUniformLocation(Program,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5467),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,NameBin,5467,0),
+  rec(5009).
 
 %% @doc glGetUniform
 %%
@@ -4608,9 +4210,8 @@ getUniformLocation(Program,Name) ->
 -spec getUniformfv(Program, Location) -> matrix() when Program :: integer(),Location :: integer().
 getUniformfv(Program,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5468),
-  IF:queue_cmd(Program,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Location,5468,0),
+  rec(5009).
 
 %% @doc glGetUniform
 %%
@@ -4618,9 +4219,8 @@ getUniformfv(Program,Location) ->
 -spec getUniformiv(Program, Location) -> {integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer()} when Program :: integer(),Location :: integer().
 getUniformiv(Program,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5469),
-  IF:queue_cmd(Program,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Location,5469,0),
+  rec(5009).
 
 %% @doc glGetVertexAttrib
 %%
@@ -4628,9 +4228,8 @@ getUniformiv(Program,Location) ->
 -spec getVertexAttribdv(Index, Pname) -> {float(),float(),float(),float()} when Index :: integer(),Pname :: enum().
 getVertexAttribdv(Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5470),
-  IF:queue_cmd(Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Index,Pname,5470,0),
+  rec(5009).
 
 %% @doc glGetVertexAttrib
 %%
@@ -4638,9 +4237,8 @@ getVertexAttribdv(Index,Pname) ->
 -spec getVertexAttribfv(Index, Pname) -> {float(),float(),float(),float()} when Index :: integer(),Pname :: enum().
 getVertexAttribfv(Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5471),
-  IF:queue_cmd(Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Index,Pname,5471,0),
+  rec(5009).
 
 %% @doc glGetVertexAttrib
 %%
@@ -4648,9 +4246,8 @@ getVertexAttribfv(Index,Pname) ->
 -spec getVertexAttribiv(Index, Pname) -> {integer(),integer(),integer(),integer()} when Index :: integer(),Pname :: enum().
 getVertexAttribiv(Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5472),
-  IF:queue_cmd(Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Index,Pname,5472,0),
+  rec(5009).
 
 %% @doc glIsProgram
 %%
@@ -4658,9 +4255,8 @@ getVertexAttribiv(Index,Pname) ->
 -spec isProgram(Program) -> 0|1 when Program :: integer().
 isProgram(Program) ->
   IF = get_interface(),
-  OP = lookup_func(5473),
-  IF:queue_cmd(Program,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,5473,0),
+  rec(5009).
 
 %% @doc glIsShader
 %%
@@ -4668,9 +4264,8 @@ isProgram(Program) ->
 -spec isShader(Shader) -> 0|1 when Shader :: integer().
 isShader(Shader) ->
   IF = get_interface(),
-  OP = lookup_func(5474),
-  IF:queue_cmd(Shader,OP,0),
-  rec(OP).
+  IF:queue_cmd(Shader,5474,0),
+  rec(5009).
 
 %% @doc glLinkProgram
 %%
@@ -4678,8 +4273,7 @@ isShader(Shader) ->
 -spec linkProgram(Program) -> 'ok' when Program :: integer().
 linkProgram(Program) ->
   IF = get_interface(),
-  OP = lookup_func(5475),
-  IF:queue_cmd(Program,OP,1),
+  IF:queue_cmd(Program,5475,1),
   ok.
 
 %% @doc glShaderSource
@@ -4688,10 +4282,9 @@ linkProgram(Program) ->
 -spec shaderSource(Shader, String) -> 'ok' when Shader :: integer(),String :: iolist().
 shaderSource(Shader,String) ->
   IF = get_interface(),
-  OP = lookup_func(5476),
   StringTemp = unicode:characters_to_binary([[Str|[0]] || Str <- String ]),
   Count = length(String),
-  IF:queue_cmd(Shader,Count,StringTemp,OP,1),
+  IF:queue_cmd(Shader,Count,StringTemp,5476,1),
   ok.
 
 %% @doc glUseProgram
@@ -4700,8 +4293,7 @@ shaderSource(Shader,String) ->
 -spec useProgram(Program) -> 'ok' when Program :: integer().
 useProgram(Program) ->
   IF = get_interface(),
-  OP = lookup_func(5477),
-  IF:queue_cmd(Program,OP,1),
+  IF:queue_cmd(Program,5477,1),
   ok.
 
 %% @doc glUniform
@@ -4710,8 +4302,7 @@ useProgram(Program) ->
 -spec uniform1f(Location, V0) -> 'ok' when Location :: integer(),V0 :: float().
 uniform1f(Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5478),
-  IF:queue_cmd(Location,V0,OP,1),
+  IF:queue_cmd(Location,V0,5478,1),
   ok.
 
 %% @doc glUniform
@@ -4720,8 +4311,7 @@ uniform1f(Location,V0) ->
 -spec uniform2f(Location, V0, V1) -> 'ok' when Location :: integer(),V0 :: float(),V1 :: float().
 uniform2f(Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5479),
-  IF:queue_cmd(Location,V0,V1,OP,1),
+  IF:queue_cmd(Location,V0,V1,5479,1),
   ok.
 
 %% @doc glUniform
@@ -4730,8 +4320,7 @@ uniform2f(Location,V0,V1) ->
 -spec uniform3f(Location, V0, V1, V2) -> 'ok' when Location :: integer(),V0 :: float(),V1 :: float(),V2 :: float().
 uniform3f(Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5480),
-  IF:queue_cmd(Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Location,V0,V1,V2,5480,1),
   ok.
 
 %% @doc glUniform
@@ -4740,8 +4329,7 @@ uniform3f(Location,V0,V1,V2) ->
 -spec uniform4f(Location, V0, V1, V2, V3) -> 'ok' when Location :: integer(),V0 :: float(),V1 :: float(),V2 :: float(),V3 :: float().
 uniform4f(Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5481),
-  IF:queue_cmd(Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Location,V0,V1,V2,V3,5481,1),
   ok.
 
 %% @doc glUniform
@@ -4750,8 +4338,7 @@ uniform4f(Location,V0,V1,V2,V3) ->
 -spec uniform1i(Location, V0) -> 'ok' when Location :: integer(),V0 :: integer().
 uniform1i(Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5482),
-  IF:queue_cmd(Location,V0,OP,1),
+  IF:queue_cmd(Location,V0,5482,1),
   ok.
 
 %% @doc glUniform
@@ -4760,8 +4347,7 @@ uniform1i(Location,V0) ->
 -spec uniform2i(Location, V0, V1) -> 'ok' when Location :: integer(),V0 :: integer(),V1 :: integer().
 uniform2i(Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5483),
-  IF:queue_cmd(Location,V0,V1,OP,1),
+  IF:queue_cmd(Location,V0,V1,5483,1),
   ok.
 
 %% @doc glUniform
@@ -4770,8 +4356,7 @@ uniform2i(Location,V0,V1) ->
 -spec uniform3i(Location, V0, V1, V2) -> 'ok' when Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer().
 uniform3i(Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5484),
-  IF:queue_cmd(Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Location,V0,V1,V2,5484,1),
   ok.
 
 %% @doc glUniform
@@ -4780,8 +4365,7 @@ uniform3i(Location,V0,V1,V2) ->
 -spec uniform4i(Location, V0, V1, V2, V3) -> 'ok' when Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer(),V3 :: integer().
 uniform4i(Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5485),
-  IF:queue_cmd(Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Location,V0,V1,V2,V3,5485,1),
   ok.
 
 %% @doc glUniform
@@ -4790,9 +4374,8 @@ uniform4i(Location,V0,V1,V2,V3) ->
 -spec uniform1fv(Location, Value) -> 'ok' when Location :: integer(),Value :: [float()].
 uniform1fv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5486),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5486,1),
   ok.
 
 %% @doc glUniform
@@ -4801,9 +4384,8 @@ uniform1fv(Location,Value) ->
 -spec uniform2fv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{float(),float()}].
 uniform2fv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5487),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5487,1),
   ok.
 
 %% @doc glUniform
@@ -4812,9 +4394,8 @@ uniform2fv(Location,Value) ->
 -spec uniform3fv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{float(),float(),float()}].
 uniform3fv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5488),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5488,1),
   ok.
 
 %% @doc glUniform
@@ -4823,9 +4404,8 @@ uniform3fv(Location,Value) ->
 -spec uniform4fv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{float(),float(),float(),float()}].
 uniform4fv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5489),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5489,1),
   ok.
 
 %% @doc glUniform
@@ -4834,9 +4414,8 @@ uniform4fv(Location,Value) ->
 -spec uniform1iv(Location, Value) -> 'ok' when Location :: integer(),Value :: [integer()].
 uniform1iv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5490),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5490,1),
   ok.
 
 %% @doc glUniform
@@ -4845,9 +4424,8 @@ uniform1iv(Location,Value) ->
 -spec uniform2iv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{integer(),integer()}].
 uniform2iv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5491),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5491,1),
   ok.
 
 %% @doc glUniform
@@ -4856,9 +4434,8 @@ uniform2iv(Location,Value) ->
 -spec uniform3iv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{integer(),integer(),integer()}].
 uniform3iv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5492),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5492,1),
   ok.
 
 %% @doc glUniform
@@ -4867,9 +4444,8 @@ uniform3iv(Location,Value) ->
 -spec uniform4iv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{integer(),integer(),integer(),integer()}].
 uniform4iv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5493),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5493,1),
   ok.
 
 %% @doc glUniform
@@ -4878,9 +4454,8 @@ uniform4iv(Location,Value) ->
 -spec uniformMatrix2fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float()}].
 uniformMatrix2fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5494),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5494,1),
   ok.
 
 %% @doc glUniform
@@ -4889,9 +4464,8 @@ uniformMatrix2fv(Location,Transpose,Value) ->
 -spec uniformMatrix3fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix3fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5495),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5495,1),
   ok.
 
 %% @doc glUniform
@@ -4900,9 +4474,8 @@ uniformMatrix3fv(Location,Transpose,Value) ->
 -spec uniformMatrix4fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix4fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5496),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5496,1),
   ok.
 
 %% @doc glValidateProgram
@@ -4911,8 +4484,7 @@ uniformMatrix4fv(Location,Transpose,Value) ->
 -spec validateProgram(Program) -> 'ok' when Program :: integer().
 validateProgram(Program) ->
   IF = get_interface(),
-  OP = lookup_func(5497),
-  IF:queue_cmd(Program,OP,1),
+  IF:queue_cmd(Program,5497,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -4921,8 +4493,7 @@ validateProgram(Program) ->
 -spec vertexAttrib1d(Index, X) -> 'ok' when Index :: integer(),X :: float().
 vertexAttrib1d(Index,X) ->
   IF = get_interface(),
-  OP = lookup_func(5498),
-  IF:queue_cmd(Index,X,OP,1),
+  IF:queue_cmd(Index,X,5498,1),
   ok.
 
 %% @equiv vertexAttrib1d(Index,X)
@@ -4934,8 +4505,7 @@ vertexAttrib1dv(Index,{X}) ->  vertexAttrib1d(Index,X).
 -spec vertexAttrib1f(Index, X) -> 'ok' when Index :: integer(),X :: float().
 vertexAttrib1f(Index,X) ->
   IF = get_interface(),
-  OP = lookup_func(5499),
-  IF:queue_cmd(Index,X,OP,1),
+  IF:queue_cmd(Index,X,5499,1),
   ok.
 
 %% @equiv vertexAttrib1f(Index,X)
@@ -4947,8 +4517,7 @@ vertexAttrib1fv(Index,{X}) ->  vertexAttrib1f(Index,X).
 -spec vertexAttrib1s(Index, X) -> 'ok' when Index :: integer(),X :: integer().
 vertexAttrib1s(Index,X) ->
   IF = get_interface(),
-  OP = lookup_func(5500),
-  IF:queue_cmd(Index,X,OP,1),
+  IF:queue_cmd(Index,X,5500,1),
   ok.
 
 %% @equiv vertexAttrib1s(Index,X)
@@ -4960,8 +4529,7 @@ vertexAttrib1sv(Index,{X}) ->  vertexAttrib1s(Index,X).
 -spec vertexAttrib2d(Index, X, Y) -> 'ok' when Index :: integer(),X :: float(),Y :: float().
 vertexAttrib2d(Index,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5501),
-  IF:queue_cmd(Index,X,Y,OP,1),
+  IF:queue_cmd(Index,X,Y,5501,1),
   ok.
 
 %% @equiv vertexAttrib2d(Index,X,Y)
@@ -4973,8 +4541,7 @@ vertexAttrib2dv(Index,{X,Y}) ->  vertexAttrib2d(Index,X,Y).
 -spec vertexAttrib2f(Index, X, Y) -> 'ok' when Index :: integer(),X :: float(),Y :: float().
 vertexAttrib2f(Index,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5502),
-  IF:queue_cmd(Index,X,Y,OP,1),
+  IF:queue_cmd(Index,X,Y,5502,1),
   ok.
 
 %% @equiv vertexAttrib2f(Index,X,Y)
@@ -4986,8 +4553,7 @@ vertexAttrib2fv(Index,{X,Y}) ->  vertexAttrib2f(Index,X,Y).
 -spec vertexAttrib2s(Index, X, Y) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer().
 vertexAttrib2s(Index,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5503),
-  IF:queue_cmd(Index,X,Y,OP,1),
+  IF:queue_cmd(Index,X,Y,5503,1),
   ok.
 
 %% @equiv vertexAttrib2s(Index,X,Y)
@@ -4999,8 +4565,7 @@ vertexAttrib2sv(Index,{X,Y}) ->  vertexAttrib2s(Index,X,Y).
 -spec vertexAttrib3d(Index, X, Y, Z) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),Z :: float().
 vertexAttrib3d(Index,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5504),
-  IF:queue_cmd(Index,X,Y,Z,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,5504,1),
   ok.
 
 %% @equiv vertexAttrib3d(Index,X,Y,Z)
@@ -5012,8 +4577,7 @@ vertexAttrib3dv(Index,{X,Y,Z}) ->  vertexAttrib3d(Index,X,Y,Z).
 -spec vertexAttrib3f(Index, X, Y, Z) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),Z :: float().
 vertexAttrib3f(Index,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5505),
-  IF:queue_cmd(Index,X,Y,Z,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,5505,1),
   ok.
 
 %% @equiv vertexAttrib3f(Index,X,Y,Z)
@@ -5025,8 +4589,7 @@ vertexAttrib3fv(Index,{X,Y,Z}) ->  vertexAttrib3f(Index,X,Y,Z).
 -spec vertexAttrib3s(Index, X, Y, Z) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer().
 vertexAttrib3s(Index,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5506),
-  IF:queue_cmd(Index,X,Y,Z,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,5506,1),
   ok.
 
 %% @equiv vertexAttrib3s(Index,X,Y,Z)
@@ -5038,8 +4601,7 @@ vertexAttrib3sv(Index,{X,Y,Z}) ->  vertexAttrib3s(Index,X,Y,Z).
 -spec vertexAttrib4Nbv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4Nbv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5507),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5507,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5048,8 +4610,7 @@ vertexAttrib4Nbv(Index,V) ->
 -spec vertexAttrib4Niv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4Niv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5508),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5508,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5058,8 +4619,7 @@ vertexAttrib4Niv(Index,V) ->
 -spec vertexAttrib4Nsv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4Nsv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5509),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5509,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5068,8 +4628,7 @@ vertexAttrib4Nsv(Index,V) ->
 -spec vertexAttrib4Nub(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 vertexAttrib4Nub(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5510),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5510,1),
   ok.
 
 %% @equiv vertexAttrib4Nub(Index,X,Y,Z,W)
@@ -5081,8 +4640,7 @@ vertexAttrib4Nubv(Index,{X,Y,Z,W}) ->  vertexAttrib4Nub(Index,X,Y,Z,W).
 -spec vertexAttrib4Nuiv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4Nuiv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5511),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5511,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5091,8 +4649,7 @@ vertexAttrib4Nuiv(Index,V) ->
 -spec vertexAttrib4Nusv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4Nusv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5512),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5512,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5101,8 +4658,7 @@ vertexAttrib4Nusv(Index,V) ->
 -spec vertexAttrib4bv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4bv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5513),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5513,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5111,8 +4667,7 @@ vertexAttrib4bv(Index,V) ->
 -spec vertexAttrib4d(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 vertexAttrib4d(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5514),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5514,1),
   ok.
 
 %% @equiv vertexAttrib4d(Index,X,Y,Z,W)
@@ -5124,8 +4679,7 @@ vertexAttrib4dv(Index,{X,Y,Z,W}) ->  vertexAttrib4d(Index,X,Y,Z,W).
 -spec vertexAttrib4f(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 vertexAttrib4f(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5515),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5515,1),
   ok.
 
 %% @equiv vertexAttrib4f(Index,X,Y,Z,W)
@@ -5137,8 +4691,7 @@ vertexAttrib4fv(Index,{X,Y,Z,W}) ->  vertexAttrib4f(Index,X,Y,Z,W).
 -spec vertexAttrib4iv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4iv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5516),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5516,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5147,8 +4700,7 @@ vertexAttrib4iv(Index,V) ->
 -spec vertexAttrib4s(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 vertexAttrib4s(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5517),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5517,1),
   ok.
 
 %% @equiv vertexAttrib4s(Index,X,Y,Z,W)
@@ -5160,8 +4712,7 @@ vertexAttrib4sv(Index,{X,Y,Z,W}) ->  vertexAttrib4s(Index,X,Y,Z,W).
 -spec vertexAttrib4ubv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4ubv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5518),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5518,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5170,8 +4721,7 @@ vertexAttrib4ubv(Index,V) ->
 -spec vertexAttrib4uiv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4uiv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5519),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5519,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5180,8 +4730,7 @@ vertexAttrib4uiv(Index,V) ->
 -spec vertexAttrib4usv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttrib4usv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5520),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5520,1),
   ok.
 
 %% @doc glVertexAttribPointer
@@ -5190,8 +4739,7 @@ vertexAttrib4usv(Index,V) ->
 -spec vertexAttribPointer(Index, Size, Type, Normalized, Stride, Pointer) -> 'ok' when Index :: integer(),Size :: integer(),Type :: enum(),Normalized :: 0|1,Stride :: integer(),Pointer :: offset()|mem().
 vertexAttribPointer(Index,Size,Type,Normalized,Stride,Pointer) ->
   IF = get_interface(),
-  OP = lookup_func(5521),
-  IF:queue_cmd(Index,Size,Type,Normalized,Stride,Pointer,OP,1),
+  IF:queue_cmd(Index,Size,Type,Normalized,Stride,Pointer,5521,1),
   ok.
 
 %% @doc glUniform
@@ -5200,9 +4748,8 @@ vertexAttribPointer(Index,Size,Type,Normalized,Stride,Pointer) ->
 -spec uniformMatrix2x3fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 uniformMatrix2x3fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5523),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5523,1),
   ok.
 
 %% @doc glUniform
@@ -5211,9 +4758,8 @@ uniformMatrix2x3fv(Location,Transpose,Value) ->
 -spec uniformMatrix3x2fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 uniformMatrix3x2fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5524),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5524,1),
   ok.
 
 %% @doc glUniform
@@ -5222,9 +4768,8 @@ uniformMatrix3x2fv(Location,Transpose,Value) ->
 -spec uniformMatrix2x4fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix2x4fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5525),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5525,1),
   ok.
 
 %% @doc glUniform
@@ -5233,9 +4778,8 @@ uniformMatrix2x4fv(Location,Transpose,Value) ->
 -spec uniformMatrix4x2fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix4x2fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5526),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5526,1),
   ok.
 
 %% @doc glUniform
@@ -5244,9 +4788,8 @@ uniformMatrix4x2fv(Location,Transpose,Value) ->
 -spec uniformMatrix3x4fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix3x4fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5527),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5527,1),
   ok.
 
 %% @doc glUniform
@@ -5255,9 +4798,8 @@ uniformMatrix3x4fv(Location,Transpose,Value) ->
 -spec uniformMatrix4x3fv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix4x3fv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5528),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5528,1),
   ok.
 
 %% @doc glColorMaski
@@ -5266,8 +4808,7 @@ uniformMatrix4x3fv(Location,Transpose,Value) ->
 -spec colorMaski(Index, R, G, B, A) -> 'ok' when Index :: integer(),R :: 0|1,G :: 0|1,B :: 0|1,A :: 0|1.
 colorMaski(Index,R,G,B,A) ->
   IF = get_interface(),
-  OP = lookup_func(5529),
-  IF:queue_cmd(Index,R,G,B,A,OP,1),
+  IF:queue_cmd(Index,R,G,B,A,5529,1),
   ok.
 
 %% @doc glGet
@@ -5276,9 +4817,8 @@ colorMaski(Index,R,G,B,A) ->
 -spec getBooleani_v(Target, Index) -> [0|1] when Target :: enum(),Index :: integer().
 getBooleani_v(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5530),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5530,0),
+  rec(5009).
 
 %% @doc glGet
 %%
@@ -5286,9 +4826,8 @@ getBooleani_v(Target,Index) ->
 -spec getIntegeri_v(Target, Index) -> [integer()] when Target :: enum(),Index :: integer().
 getIntegeri_v(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5531),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5531,0),
+  rec(5009).
 
 %% @doc glEnable
 %%
@@ -5296,8 +4835,7 @@ getIntegeri_v(Target,Index) ->
 -spec enablei(Target, Index) -> 'ok' when Target :: enum(),Index :: integer().
 enablei(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5532),
-  IF:queue_cmd(Target,Index,OP,1),
+  IF:queue_cmd(Target,Index,5532,1),
   ok.
 
 %% @doc glEnablei
@@ -5306,8 +4844,7 @@ enablei(Target,Index) ->
 -spec disablei(Target, Index) -> 'ok' when Target :: enum(),Index :: integer().
 disablei(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5533),
-  IF:queue_cmd(Target,Index,OP,1),
+  IF:queue_cmd(Target,Index,5533,1),
   ok.
 
 %% @doc glIsEnabledi
@@ -5316,9 +4853,8 @@ disablei(Target,Index) ->
 -spec isEnabledi(Target, Index) -> 0|1 when Target :: enum(),Index :: integer().
 isEnabledi(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5534),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5534,0),
+  rec(5009).
 
 %% @doc glBeginTransformFeedback
 %%
@@ -5326,8 +4862,7 @@ isEnabledi(Target,Index) ->
 -spec beginTransformFeedback(PrimitiveMode) -> 'ok' when PrimitiveMode :: enum().
 beginTransformFeedback(PrimitiveMode) ->
   IF = get_interface(),
-  OP = lookup_func(5535),
-  IF:queue_cmd(PrimitiveMode,OP,1),
+  IF:queue_cmd(PrimitiveMode,5535,1),
   ok.
 
 %% @doc glBeginTransformFeedback
@@ -5336,8 +4871,7 @@ beginTransformFeedback(PrimitiveMode) ->
 -spec endTransformFeedback() -> 'ok'.
 endTransformFeedback() ->
   IF = get_interface(),
-  OP = lookup_func(5536),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5536,1),
   ok.
 
 %% @doc glBindBufferRange
@@ -5346,8 +4880,7 @@ endTransformFeedback() ->
 -spec bindBufferRange(Target, Index, Buffer, Offset, Size) -> 'ok' when Target :: enum(),Index :: integer(),Buffer :: integer(),Offset :: integer(),Size :: integer().
 bindBufferRange(Target,Index,Buffer,Offset,Size) ->
   IF = get_interface(),
-  OP = lookup_func(5537),
-  IF:queue_cmd(Target,Index,Buffer,Offset,Size,OP,1),
+  IF:queue_cmd(Target,Index,Buffer,Offset,Size,5537,1),
   ok.
 
 %% @doc glBindBufferBase
@@ -5356,8 +4889,7 @@ bindBufferRange(Target,Index,Buffer,Offset,Size) ->
 -spec bindBufferBase(Target, Index, Buffer) -> 'ok' when Target :: enum(),Index :: integer(),Buffer :: integer().
 bindBufferBase(Target,Index,Buffer) ->
   IF = get_interface(),
-  OP = lookup_func(5538),
-  IF:queue_cmd(Target,Index,Buffer,OP,1),
+  IF:queue_cmd(Target,Index,Buffer,5538,1),
   ok.
 
 %% @doc glTransformFeedbackVaryings
@@ -5366,10 +4898,9 @@ bindBufferBase(Target,Index,Buffer) ->
 -spec transformFeedbackVaryings(Program, Varyings, BufferMode) -> 'ok' when Program :: integer(),Varyings :: iolist(),BufferMode :: enum().
 transformFeedbackVaryings(Program,Varyings,BufferMode) ->
   IF = get_interface(),
-  OP = lookup_func(5539),
   VaryingsTemp = unicode:characters_to_binary([[Str|[0]] || Str <- Varyings ]),
   Count = length(Varyings),
-  IF:queue_cmd(Program,Count,VaryingsTemp,BufferMode,OP,1),
+  IF:queue_cmd(Program,Count,VaryingsTemp,BufferMode,5539,1),
   ok.
 
 %% @doc glGetTransformFeedbackVarying
@@ -5378,9 +4909,8 @@ transformFeedbackVaryings(Program,Varyings,BufferMode) ->
 -spec getTransformFeedbackVarying(Program, Index, BufSize) -> {Size :: integer(),Type :: enum(),Name :: string()} when Program :: integer(),Index :: integer(),BufSize :: integer().
 getTransformFeedbackVarying(Program,Index,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5540),
-  IF:queue_cmd(Program,Index,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Index,BufSize,5540,0),
+  rec(5009).
 
 %% @doc glClampColor
 %%
@@ -5388,8 +4918,7 @@ getTransformFeedbackVarying(Program,Index,BufSize) ->
 -spec clampColor(Target, Clamp) -> 'ok' when Target :: enum(),Clamp :: enum().
 clampColor(Target,Clamp) ->
   IF = get_interface(),
-  OP = lookup_func(5541),
-  IF:queue_cmd(Target,Clamp,OP,1),
+  IF:queue_cmd(Target,Clamp,5541,1),
   ok.
 
 %% @doc glBeginConditionalRender
@@ -5398,8 +4927,7 @@ clampColor(Target,Clamp) ->
 -spec beginConditionalRender(Id, Mode) -> 'ok' when Id :: integer(),Mode :: enum().
 beginConditionalRender(Id,Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5542),
-  IF:queue_cmd(Id,Mode,OP,1),
+  IF:queue_cmd(Id,Mode,5542,1),
   ok.
 
 %% @doc glBeginConditionalRender
@@ -5408,8 +4936,7 @@ beginConditionalRender(Id,Mode) ->
 -spec endConditionalRender() -> 'ok'.
 endConditionalRender() ->
   IF = get_interface(),
-  OP = lookup_func(5543),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5543,1),
   ok.
 
 %% @doc glVertexAttribIPointer
@@ -5418,8 +4945,7 @@ endConditionalRender() ->
 -spec vertexAttribIPointer(Index, Size, Type, Stride, Pointer) -> 'ok' when Index :: integer(),Size :: integer(),Type :: enum(),Stride :: integer(),Pointer :: offset()|mem().
 vertexAttribIPointer(Index,Size,Type,Stride,Pointer) ->
   IF = get_interface(),
-  OP = lookup_func(5544),
-  IF:queue_cmd(Index,Size,Type,Stride,Pointer,OP,1),
+  IF:queue_cmd(Index,Size,Type,Stride,Pointer,5544,1),
   ok.
 
 %% @doc glGetVertexAttrib
@@ -5428,9 +4954,8 @@ vertexAttribIPointer(Index,Size,Type,Stride,Pointer) ->
 -spec getVertexAttribIiv(Index, Pname) -> {integer(),integer(),integer(),integer()} when Index :: integer(),Pname :: enum().
 getVertexAttribIiv(Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5546),
-  IF:queue_cmd(Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Index,Pname,5546,0),
+  rec(5009).
 
 %% @doc glGetVertexAttribI
 %%
@@ -5438,9 +4963,8 @@ getVertexAttribIiv(Index,Pname) ->
 -spec getVertexAttribIuiv(Index, Pname) -> {integer(),integer(),integer(),integer()} when Index :: integer(),Pname :: enum().
 getVertexAttribIuiv(Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5547),
-  IF:queue_cmd(Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Index,Pname,5547,0),
+  rec(5009).
 
 %% @doc glVertexAttrib
 %%
@@ -5448,8 +4972,7 @@ getVertexAttribIuiv(Index,Pname) ->
 -spec vertexAttribI1i(Index, X) -> 'ok' when Index :: integer(),X :: integer().
 vertexAttribI1i(Index,X) ->
   IF = get_interface(),
-  OP = lookup_func(5548),
-  IF:queue_cmd(Index,X,OP,1),
+  IF:queue_cmd(Index,X,5548,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5458,8 +4981,7 @@ vertexAttribI1i(Index,X) ->
 -spec vertexAttribI2i(Index, X, Y) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer().
 vertexAttribI2i(Index,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5549),
-  IF:queue_cmd(Index,X,Y,OP,1),
+  IF:queue_cmd(Index,X,Y,5549,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5468,8 +4990,7 @@ vertexAttribI2i(Index,X,Y) ->
 -spec vertexAttribI3i(Index, X, Y, Z) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer().
 vertexAttribI3i(Index,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5550),
-  IF:queue_cmd(Index,X,Y,Z,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,5550,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5478,8 +4999,7 @@ vertexAttribI3i(Index,X,Y,Z) ->
 -spec vertexAttribI4i(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 vertexAttribI4i(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5551),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5551,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5488,8 +5008,7 @@ vertexAttribI4i(Index,X,Y,Z,W) ->
 -spec vertexAttribI1ui(Index, X) -> 'ok' when Index :: integer(),X :: integer().
 vertexAttribI1ui(Index,X) ->
   IF = get_interface(),
-  OP = lookup_func(5552),
-  IF:queue_cmd(Index,X,OP,1),
+  IF:queue_cmd(Index,X,5552,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5498,8 +5017,7 @@ vertexAttribI1ui(Index,X) ->
 -spec vertexAttribI2ui(Index, X, Y) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer().
 vertexAttribI2ui(Index,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5553),
-  IF:queue_cmd(Index,X,Y,OP,1),
+  IF:queue_cmd(Index,X,Y,5553,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5508,8 +5026,7 @@ vertexAttribI2ui(Index,X,Y) ->
 -spec vertexAttribI3ui(Index, X, Y, Z) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer().
 vertexAttribI3ui(Index,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5554),
-  IF:queue_cmd(Index,X,Y,Z,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,5554,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5518,8 +5035,7 @@ vertexAttribI3ui(Index,X,Y,Z) ->
 -spec vertexAttribI4ui(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: integer(),Y :: integer(),Z :: integer(),W :: integer().
 vertexAttribI4ui(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5555),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5555,1),
   ok.
 
 %% @equiv vertexAttribI1i(Index,X)
@@ -5552,8 +5068,7 @@ vertexAttribI4uiv(Index,{X,Y,Z,W}) ->  vertexAttribI4ui(Index,X,Y,Z,W).
 -spec vertexAttribI4bv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttribI4bv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5556),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5556,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5562,8 +5077,7 @@ vertexAttribI4bv(Index,V) ->
 -spec vertexAttribI4sv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttribI4sv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5557),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5557,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5572,8 +5086,7 @@ vertexAttribI4sv(Index,V) ->
 -spec vertexAttribI4ubv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttribI4ubv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5558),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5558,1),
   ok.
 
 %% @doc glVertexAttrib
@@ -5582,8 +5095,7 @@ vertexAttribI4ubv(Index,V) ->
 -spec vertexAttribI4usv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 vertexAttribI4usv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5559),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5559,1),
   ok.
 
 %% @doc glGetUniform
@@ -5592,9 +5104,8 @@ vertexAttribI4usv(Index,V) ->
 -spec getUniformuiv(Program, Location) -> {integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer()} when Program :: integer(),Location :: integer().
 getUniformuiv(Program,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5560),
-  IF:queue_cmd(Program,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Location,5560,0),
+  rec(5009).
 
 %% @doc glBindFragDataLocation
 %%
@@ -5602,9 +5113,8 @@ getUniformuiv(Program,Location) ->
 -spec bindFragDataLocation(Program, Color, Name) -> 'ok' when Program :: integer(),Color :: integer(),Name :: string().
 bindFragDataLocation(Program,Color,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5561),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,Color,NameBin,OP,1),
+  IF:queue_cmd(Program,Color,NameBin,5561,1),
   ok.
 
 %% @doc glGetFragDataLocation
@@ -5613,10 +5123,9 @@ bindFragDataLocation(Program,Color,Name) ->
 -spec getFragDataLocation(Program, Name) -> integer() when Program :: integer(),Name :: string().
 getFragDataLocation(Program,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5562),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,NameBin,5562,0),
+  rec(5009).
 
 %% @doc glUniform
 %%
@@ -5624,8 +5133,7 @@ getFragDataLocation(Program,Name) ->
 -spec uniform1ui(Location, V0) -> 'ok' when Location :: integer(),V0 :: integer().
 uniform1ui(Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5563),
-  IF:queue_cmd(Location,V0,OP,1),
+  IF:queue_cmd(Location,V0,5563,1),
   ok.
 
 %% @doc glUniform
@@ -5634,8 +5142,7 @@ uniform1ui(Location,V0) ->
 -spec uniform2ui(Location, V0, V1) -> 'ok' when Location :: integer(),V0 :: integer(),V1 :: integer().
 uniform2ui(Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5564),
-  IF:queue_cmd(Location,V0,V1,OP,1),
+  IF:queue_cmd(Location,V0,V1,5564,1),
   ok.
 
 %% @doc glUniform
@@ -5644,8 +5151,7 @@ uniform2ui(Location,V0,V1) ->
 -spec uniform3ui(Location, V0, V1, V2) -> 'ok' when Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer().
 uniform3ui(Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5565),
-  IF:queue_cmd(Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Location,V0,V1,V2,5565,1),
   ok.
 
 %% @doc glUniform
@@ -5654,8 +5160,7 @@ uniform3ui(Location,V0,V1,V2) ->
 -spec uniform4ui(Location, V0, V1, V2, V3) -> 'ok' when Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer(),V3 :: integer().
 uniform4ui(Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5566),
-  IF:queue_cmd(Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Location,V0,V1,V2,V3,5566,1),
   ok.
 
 %% @doc glUniform
@@ -5664,9 +5169,8 @@ uniform4ui(Location,V0,V1,V2,V3) ->
 -spec uniform1uiv(Location, Value) -> 'ok' when Location :: integer(),Value :: [integer()].
 uniform1uiv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5567),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5567,1),
   ok.
 
 %% @doc glUniform
@@ -5675,9 +5179,8 @@ uniform1uiv(Location,Value) ->
 -spec uniform2uiv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{integer(),integer()}].
 uniform2uiv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5568),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5568,1),
   ok.
 
 %% @doc glUniform
@@ -5686,9 +5189,8 @@ uniform2uiv(Location,Value) ->
 -spec uniform3uiv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{integer(),integer(),integer()}].
 uniform3uiv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5569),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5569,1),
   ok.
 
 %% @doc glUniform
@@ -5697,9 +5199,8 @@ uniform3uiv(Location,Value) ->
 -spec uniform4uiv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{integer(),integer(),integer(),integer()}].
 uniform4uiv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5570),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5570,1),
   ok.
 
 %% @doc glTexParameter
@@ -5708,8 +5209,7 @@ uniform4uiv(Location,Value) ->
 -spec texParameterIiv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 texParameterIiv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5571),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5571,1),
   ok.
 
 %% @doc glTexParameterI
@@ -5718,8 +5218,7 @@ texParameterIiv(Target,Pname,Params) ->
 -spec texParameterIuiv(Target, Pname, Params) -> 'ok' when Target :: enum(),Pname :: enum(),Params :: tuple().
 texParameterIuiv(Target,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5572),
-  IF:queue_cmd(Target,Pname,Params,OP,1),
+  IF:queue_cmd(Target,Pname,Params,5572,1),
   ok.
 
 %% @doc glGetTexParameter
@@ -5728,9 +5227,8 @@ texParameterIuiv(Target,Pname,Params) ->
 -spec getTexParameterIiv(Target, Pname) -> {integer(),integer(),integer(),integer()} when Target :: enum(),Pname :: enum().
 getTexParameterIiv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5573),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5573,0),
+  rec(5009).
 
 %% @doc glGetTexParameterI
 %%
@@ -5738,9 +5236,8 @@ getTexParameterIiv(Target,Pname) ->
 -spec getTexParameterIuiv(Target, Pname) -> {integer(),integer(),integer(),integer()} when Target :: enum(),Pname :: enum().
 getTexParameterIuiv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5574),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5574,0),
+  rec(5009).
 
 %% @doc glClearBuffer
 %%
@@ -5748,8 +5245,7 @@ getTexParameterIuiv(Target,Pname) ->
 -spec clearBufferiv(Buffer, Drawbuffer, Value) -> 'ok' when Buffer :: enum(),Drawbuffer :: integer(),Value :: tuple().
 clearBufferiv(Buffer,Drawbuffer,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5575),
-  IF:queue_cmd(Buffer,Drawbuffer,Value,OP,1),
+  IF:queue_cmd(Buffer,Drawbuffer,Value,5575,1),
   ok.
 
 %% @doc glClearBuffer
@@ -5758,8 +5254,7 @@ clearBufferiv(Buffer,Drawbuffer,Value) ->
 -spec clearBufferuiv(Buffer, Drawbuffer, Value) -> 'ok' when Buffer :: enum(),Drawbuffer :: integer(),Value :: tuple().
 clearBufferuiv(Buffer,Drawbuffer,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5576),
-  IF:queue_cmd(Buffer,Drawbuffer,Value,OP,1),
+  IF:queue_cmd(Buffer,Drawbuffer,Value,5576,1),
   ok.
 
 %% @doc glClearBuffer
@@ -5768,8 +5263,7 @@ clearBufferuiv(Buffer,Drawbuffer,Value) ->
 -spec clearBufferfv(Buffer, Drawbuffer, Value) -> 'ok' when Buffer :: enum(),Drawbuffer :: integer(),Value :: tuple().
 clearBufferfv(Buffer,Drawbuffer,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5577),
-  IF:queue_cmd(Buffer,Drawbuffer,Value,OP,1),
+  IF:queue_cmd(Buffer,Drawbuffer,Value,5577,1),
   ok.
 
 %% @doc glClearBufferfi
@@ -5778,8 +5272,7 @@ clearBufferfv(Buffer,Drawbuffer,Value) ->
 -spec clearBufferfi(Buffer, Drawbuffer, Depth, Stencil) -> 'ok' when Buffer :: enum(),Drawbuffer :: integer(),Depth :: float(),Stencil :: integer().
 clearBufferfi(Buffer,Drawbuffer,Depth,Stencil) ->
   IF = get_interface(),
-  OP = lookup_func(5578),
-  IF:queue_cmd(Buffer,Drawbuffer,Depth,Stencil,OP,1),
+  IF:queue_cmd(Buffer,Drawbuffer,Depth,Stencil,5578,1),
   ok.
 
 %% @doc glGetString
@@ -5788,9 +5281,8 @@ clearBufferfi(Buffer,Drawbuffer,Depth,Stencil) ->
 -spec getStringi(Name, Index) -> string() when Name :: enum(),Index :: integer().
 getStringi(Name,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5579),
-  IF:queue_cmd(Name,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Name,Index,5579,0),
+  rec(5009).
 
 %% @doc glDrawArraysInstance
 %%
@@ -5798,8 +5290,7 @@ getStringi(Name,Index) ->
 -spec drawArraysInstanced(Mode, First, Count, Primcount) -> 'ok' when Mode :: enum(),First :: integer(),Count :: integer(),Primcount :: integer().
 drawArraysInstanced(Mode,First,Count,Primcount) ->
   IF = get_interface(),
-  OP = lookup_func(5580),
-  IF:queue_cmd(Mode,First,Count,Primcount,OP,1),
+  IF:queue_cmd(Mode,First,Count,Primcount,5580,1),
   ok.
 
 %% @doc glDrawElementsInstance
@@ -5808,8 +5299,7 @@ drawArraysInstanced(Mode,First,Count,Primcount) ->
 -spec drawElementsInstanced(Mode, Count, Type, Indices, Primcount) -> 'ok' when Mode :: enum(),Count :: integer(),Type :: enum(),Indices :: offset()|mem(),Primcount :: integer().
 drawElementsInstanced(Mode,Count,Type,Indices,Primcount) ->
   IF = get_interface(),
-  OP = lookup_func(5581),
-  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,OP,1),
+  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,5581,1),
   ok.
 
 %% @doc glTexBuffer
@@ -5818,8 +5308,7 @@ drawElementsInstanced(Mode,Count,Type,Indices,Primcount) ->
 -spec texBuffer(Target, Internalformat, Buffer) -> 'ok' when Target :: enum(),Internalformat :: enum(),Buffer :: integer().
 texBuffer(Target,Internalformat,Buffer) ->
   IF = get_interface(),
-  OP = lookup_func(5583),
-  IF:queue_cmd(Target,Internalformat,Buffer,OP,1),
+  IF:queue_cmd(Target,Internalformat,Buffer,5583,1),
   ok.
 
 %% @doc glPrimitiveRestartIndex
@@ -5828,8 +5317,7 @@ texBuffer(Target,Internalformat,Buffer) ->
 -spec primitiveRestartIndex(Index) -> 'ok' when Index :: integer().
 primitiveRestartIndex(Index) ->
   IF = get_interface(),
-  OP = lookup_func(5584),
-  IF:queue_cmd(Index,OP,1),
+  IF:queue_cmd(Index,5584,1),
   ok.
 
 %% @doc glGet
@@ -5838,9 +5326,8 @@ primitiveRestartIndex(Index) ->
 -spec getInteger64i_v(Target, Index) -> [integer()] when Target :: enum(),Index :: integer().
 getInteger64i_v(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5585),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5585,0),
+  rec(5009).
 
 %% @doc glGetBufferParameteri64v
 %%
@@ -5848,9 +5335,8 @@ getInteger64i_v(Target,Index) ->
 -spec getBufferParameteri64v(Target, Pname) -> [integer()] when Target :: enum(),Pname :: enum().
 getBufferParameteri64v(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5586),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5586,0),
+  rec(5009).
 
 %% @doc glFramebufferTexture
 %%
@@ -5858,8 +5344,7 @@ getBufferParameteri64v(Target,Pname) ->
 -spec framebufferTexture(Target, Attachment, Texture, Level) -> 'ok' when Target :: enum(),Attachment :: enum(),Texture :: integer(),Level :: integer().
 framebufferTexture(Target,Attachment,Texture,Level) ->
   IF = get_interface(),
-  OP = lookup_func(5587),
-  IF:queue_cmd(Target,Attachment,Texture,Level,OP,1),
+  IF:queue_cmd(Target,Attachment,Texture,Level,5587,1),
   ok.
 
 %% @doc glVertexAttribDivisor
@@ -5868,8 +5353,7 @@ framebufferTexture(Target,Attachment,Texture,Level) ->
 -spec vertexAttribDivisor(Index, Divisor) -> 'ok' when Index :: integer(),Divisor :: integer().
 vertexAttribDivisor(Index,Divisor) ->
   IF = get_interface(),
-  OP = lookup_func(5588),
-  IF:queue_cmd(Index,Divisor,OP,1),
+  IF:queue_cmd(Index,Divisor,5588,1),
   ok.
 
 %% @doc glMinSampleShading
@@ -5878,8 +5362,7 @@ vertexAttribDivisor(Index,Divisor) ->
 -spec minSampleShading(Value) -> 'ok' when Value :: clamp().
 minSampleShading(Value) ->
   IF = get_interface(),
-  OP = lookup_func(5589),
-  IF:queue_cmd(Value,OP,1),
+  IF:queue_cmd(Value,5589,1),
   ok.
 
 %% @doc glBlendEquation
@@ -5888,8 +5371,7 @@ minSampleShading(Value) ->
 -spec blendEquationi(Buf, Mode) -> 'ok' when Buf :: integer(),Mode :: enum().
 blendEquationi(Buf,Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5590),
-  IF:queue_cmd(Buf,Mode,OP,1),
+  IF:queue_cmd(Buf,Mode,5590,1),
   ok.
 
 %% @doc glBlendEquationSeparate
@@ -5898,8 +5380,7 @@ blendEquationi(Buf,Mode) ->
 -spec blendEquationSeparatei(Buf, ModeRGB, ModeAlpha) -> 'ok' when Buf :: integer(),ModeRGB :: enum(),ModeAlpha :: enum().
 blendEquationSeparatei(Buf,ModeRGB,ModeAlpha) ->
   IF = get_interface(),
-  OP = lookup_func(5591),
-  IF:queue_cmd(Buf,ModeRGB,ModeAlpha,OP,1),
+  IF:queue_cmd(Buf,ModeRGB,ModeAlpha,5591,1),
   ok.
 
 %% @doc glBlendFunci
@@ -5908,8 +5389,7 @@ blendEquationSeparatei(Buf,ModeRGB,ModeAlpha) ->
 -spec blendFunci(Buf, Src, Dst) -> 'ok' when Buf :: integer(),Src :: enum(),Dst :: enum().
 blendFunci(Buf,Src,Dst) ->
   IF = get_interface(),
-  OP = lookup_func(5592),
-  IF:queue_cmd(Buf,Src,Dst,OP,1),
+  IF:queue_cmd(Buf,Src,Dst,5592,1),
   ok.
 
 %% @doc glBlendFuncSeparate
@@ -5918,8 +5398,7 @@ blendFunci(Buf,Src,Dst) ->
 -spec blendFuncSeparatei(Buf, SrcRGB, DstRGB, SrcAlpha, DstAlpha) -> 'ok' when Buf :: integer(),SrcRGB :: enum(),DstRGB :: enum(),SrcAlpha :: enum(),DstAlpha :: enum().
 blendFuncSeparatei(Buf,SrcRGB,DstRGB,SrcAlpha,DstAlpha) ->
   IF = get_interface(),
-  OP = lookup_func(5593),
-  IF:queue_cmd(Buf,SrcRGB,DstRGB,SrcAlpha,DstAlpha,OP,1),
+  IF:queue_cmd(Buf,SrcRGB,DstRGB,SrcAlpha,DstAlpha,5593,1),
   ok.
 
 %% @doc glLoadTransposeMatrixARB
@@ -5928,8 +5407,7 @@ blendFuncSeparatei(Buf,SrcRGB,DstRGB,SrcAlpha,DstAlpha) ->
 -spec loadTransposeMatrixfARB(M) -> 'ok' when M :: matrix().
 loadTransposeMatrixfARB(M) ->
   IF = get_interface(),
-  OP = lookup_func(5594),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5594,1),
   ok.
 
 %% @doc glLoadTransposeMatrixARB
@@ -5938,8 +5416,7 @@ loadTransposeMatrixfARB(M) ->
 -spec loadTransposeMatrixdARB(M) -> 'ok' when M :: matrix().
 loadTransposeMatrixdARB(M) ->
   IF = get_interface(),
-  OP = lookup_func(5595),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5595,1),
   ok.
 
 %% @doc glMultTransposeMatrixARB
@@ -5948,8 +5425,7 @@ loadTransposeMatrixdARB(M) ->
 -spec multTransposeMatrixfARB(M) -> 'ok' when M :: matrix().
 multTransposeMatrixfARB(M) ->
   IF = get_interface(),
-  OP = lookup_func(5596),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5596,1),
   ok.
 
 %% @doc glMultTransposeMatrixARB
@@ -5958,8 +5434,7 @@ multTransposeMatrixfARB(M) ->
 -spec multTransposeMatrixdARB(M) -> 'ok' when M :: matrix().
 multTransposeMatrixdARB(M) ->
   IF = get_interface(),
-  OP = lookup_func(5597),
-  IF:queue_cmd(M,OP,1),
+  IF:queue_cmd(M,5597,1),
   ok.
 
 %% @doc glWeightARB
@@ -5968,9 +5443,8 @@ multTransposeMatrixdARB(M) ->
 -spec weightbvARB(Weights) -> 'ok' when Weights :: [integer()].
 weightbvARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5598),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5598,1),
   ok.
 
 %% @doc glWeightARB
@@ -5979,9 +5453,8 @@ weightbvARB(Weights) ->
 -spec weightsvARB(Weights) -> 'ok' when Weights :: [integer()].
 weightsvARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5599),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5599,1),
   ok.
 
 %% @doc glWeightARB
@@ -5990,9 +5463,8 @@ weightsvARB(Weights) ->
 -spec weightivARB(Weights) -> 'ok' when Weights :: [integer()].
 weightivARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5600),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5600,1),
   ok.
 
 %% @doc glWeightARB
@@ -6001,9 +5473,8 @@ weightivARB(Weights) ->
 -spec weightfvARB(Weights) -> 'ok' when Weights :: [float()].
 weightfvARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5601),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5601,1),
   ok.
 
 %% @doc glWeightARB
@@ -6012,9 +5483,8 @@ weightfvARB(Weights) ->
 -spec weightdvARB(Weights) -> 'ok' when Weights :: [float()].
 weightdvARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5602),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5602,1),
   ok.
 
 %% @doc glWeightARB
@@ -6023,9 +5493,8 @@ weightdvARB(Weights) ->
 -spec weightubvARB(Weights) -> 'ok' when Weights :: [integer()].
 weightubvARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5603),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5603,1),
   ok.
 
 %% @doc glWeightARB
@@ -6034,9 +5503,8 @@ weightubvARB(Weights) ->
 -spec weightusvARB(Weights) -> 'ok' when Weights :: [integer()].
 weightusvARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5604),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5604,1),
   ok.
 
 %% @doc glWeightARB
@@ -6045,9 +5513,8 @@ weightusvARB(Weights) ->
 -spec weightuivARB(Weights) -> 'ok' when Weights :: [integer()].
 weightuivARB(Weights) ->
   IF = get_interface(),
-  OP = lookup_func(5605),
   Size = length(Weights),
-  IF:queue_cmd(Size,Weights,OP,1),
+  IF:queue_cmd(Size,Weights,5605,1),
   ok.
 
 %% @doc glVertexBlenARB
@@ -6056,8 +5523,7 @@ weightuivARB(Weights) ->
 -spec vertexBlendARB(Count) -> 'ok' when Count :: integer().
 vertexBlendARB(Count) ->
   IF = get_interface(),
-  OP = lookup_func(5606),
-  IF:queue_cmd(Count,OP,1),
+  IF:queue_cmd(Count,5606,1),
   ok.
 
 %% @doc glCurrentPaletteMatrixARB
@@ -6066,8 +5532,7 @@ vertexBlendARB(Count) ->
 -spec currentPaletteMatrixARB(Index) -> 'ok' when Index :: integer().
 currentPaletteMatrixARB(Index) ->
   IF = get_interface(),
-  OP = lookup_func(5607),
-  IF:queue_cmd(Index,OP,1),
+  IF:queue_cmd(Index,5607,1),
   ok.
 
 %% @doc glMatrixIndexARB
@@ -6076,9 +5541,8 @@ currentPaletteMatrixARB(Index) ->
 -spec matrixIndexubvARB(Indices) -> 'ok' when Indices :: [integer()].
 matrixIndexubvARB(Indices) ->
   IF = get_interface(),
-  OP = lookup_func(5608),
   Size = length(Indices),
-  IF:queue_cmd(Size,Indices,OP,1),
+  IF:queue_cmd(Size,Indices,5608,1),
   ok.
 
 %% @doc glMatrixIndexARB
@@ -6087,9 +5551,8 @@ matrixIndexubvARB(Indices) ->
 -spec matrixIndexusvARB(Indices) -> 'ok' when Indices :: [integer()].
 matrixIndexusvARB(Indices) ->
   IF = get_interface(),
-  OP = lookup_func(5609),
   Size = length(Indices),
-  IF:queue_cmd(Size,Indices,OP,1),
+  IF:queue_cmd(Size,Indices,5609,1),
   ok.
 
 %% @doc glMatrixIndexARB
@@ -6098,9 +5561,8 @@ matrixIndexusvARB(Indices) ->
 -spec matrixIndexuivARB(Indices) -> 'ok' when Indices :: [integer()].
 matrixIndexuivARB(Indices) ->
   IF = get_interface(),
-  OP = lookup_func(5610),
   Size = length(Indices),
-  IF:queue_cmd(Size,Indices,OP,1),
+  IF:queue_cmd(Size,Indices,5610,1),
   ok.
 
 %% @doc glProgramStringARB
@@ -6109,9 +5571,8 @@ matrixIndexuivARB(Indices) ->
 -spec programStringARB(Target, Format, String) -> 'ok' when Target :: enum(),Format :: enum(),String :: string().
 programStringARB(Target,Format,String) ->
   IF = get_interface(),
-  OP = lookup_func(5611),
   StringBin = unicode:characters_to_binary([String|[0]]),
-  IF:queue_cmd(Target,Format,StringBin,OP,1),
+  IF:queue_cmd(Target,Format,StringBin,5611,1),
   ok.
 
 %% @doc glBindProgramARB
@@ -6120,8 +5581,7 @@ programStringARB(Target,Format,String) ->
 -spec bindProgramARB(Target, Program) -> 'ok' when Target :: enum(),Program :: integer().
 bindProgramARB(Target,Program) ->
   IF = get_interface(),
-  OP = lookup_func(5612),
-  IF:queue_cmd(Target,Program,OP,1),
+  IF:queue_cmd(Target,Program,5612,1),
   ok.
 
 %% @doc glDeleteProgramsARB
@@ -6130,9 +5590,8 @@ bindProgramARB(Target,Program) ->
 -spec deleteProgramsARB(Programs) -> 'ok' when Programs :: [integer()].
 deleteProgramsARB(Programs) ->
   IF = get_interface(),
-  OP = lookup_func(5613),
   N = length(Programs),
-  IF:queue_cmd(N,Programs,OP,1),
+  IF:queue_cmd(N,Programs,5613,1),
   ok.
 
 %% @doc glGenProgramsARB
@@ -6141,9 +5600,8 @@ deleteProgramsARB(Programs) ->
 -spec genProgramsARB(N) -> [integer()] when N :: integer().
 genProgramsARB(N) ->
   IF = get_interface(),
-  OP = lookup_func(5614),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5614,0),
+  rec(5009).
 
 %% @doc glProgramEnvParameterARB
 %%
@@ -6151,8 +5609,7 @@ genProgramsARB(N) ->
 -spec programEnvParameter4dARB(Target, Index, X, Y, Z, W) -> 'ok' when Target :: enum(),Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 programEnvParameter4dARB(Target,Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5615),
-  IF:queue_cmd(Target,Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Target,Index,X,Y,Z,W,5615,1),
   ok.
 
 %% @doc glProgramEnvParameterARB
@@ -6161,8 +5618,7 @@ programEnvParameter4dARB(Target,Index,X,Y,Z,W) ->
 -spec programEnvParameter4dvARB(Target, Index, Params) -> 'ok' when Target :: enum(),Index :: integer(),Params :: {float(),float(),float(),float()}.
 programEnvParameter4dvARB(Target,Index,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5616),
-  IF:queue_cmd(Target,Index,Params,OP,1),
+  IF:queue_cmd(Target,Index,Params,5616,1),
   ok.
 
 %% @doc glProgramEnvParameterARB
@@ -6171,8 +5627,7 @@ programEnvParameter4dvARB(Target,Index,Params) ->
 -spec programEnvParameter4fARB(Target, Index, X, Y, Z, W) -> 'ok' when Target :: enum(),Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 programEnvParameter4fARB(Target,Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5617),
-  IF:queue_cmd(Target,Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Target,Index,X,Y,Z,W,5617,1),
   ok.
 
 %% @doc glProgramEnvParameterARB
@@ -6181,8 +5636,7 @@ programEnvParameter4fARB(Target,Index,X,Y,Z,W) ->
 -spec programEnvParameter4fvARB(Target, Index, Params) -> 'ok' when Target :: enum(),Index :: integer(),Params :: {float(),float(),float(),float()}.
 programEnvParameter4fvARB(Target,Index,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5618),
-  IF:queue_cmd(Target,Index,Params,OP,1),
+  IF:queue_cmd(Target,Index,Params,5618,1),
   ok.
 
 %% @doc glProgramLocalParameterARB
@@ -6191,8 +5645,7 @@ programEnvParameter4fvARB(Target,Index,Params) ->
 -spec programLocalParameter4dARB(Target, Index, X, Y, Z, W) -> 'ok' when Target :: enum(),Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 programLocalParameter4dARB(Target,Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5619),
-  IF:queue_cmd(Target,Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Target,Index,X,Y,Z,W,5619,1),
   ok.
 
 %% @doc glProgramLocalParameterARB
@@ -6201,8 +5654,7 @@ programLocalParameter4dARB(Target,Index,X,Y,Z,W) ->
 -spec programLocalParameter4dvARB(Target, Index, Params) -> 'ok' when Target :: enum(),Index :: integer(),Params :: {float(),float(),float(),float()}.
 programLocalParameter4dvARB(Target,Index,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5620),
-  IF:queue_cmd(Target,Index,Params,OP,1),
+  IF:queue_cmd(Target,Index,Params,5620,1),
   ok.
 
 %% @doc glProgramLocalParameterARB
@@ -6211,8 +5663,7 @@ programLocalParameter4dvARB(Target,Index,Params) ->
 -spec programLocalParameter4fARB(Target, Index, X, Y, Z, W) -> 'ok' when Target :: enum(),Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 programLocalParameter4fARB(Target,Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5621),
-  IF:queue_cmd(Target,Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Target,Index,X,Y,Z,W,5621,1),
   ok.
 
 %% @doc glProgramLocalParameterARB
@@ -6221,8 +5672,7 @@ programLocalParameter4fARB(Target,Index,X,Y,Z,W) ->
 -spec programLocalParameter4fvARB(Target, Index, Params) -> 'ok' when Target :: enum(),Index :: integer(),Params :: {float(),float(),float(),float()}.
 programLocalParameter4fvARB(Target,Index,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5622),
-  IF:queue_cmd(Target,Index,Params,OP,1),
+  IF:queue_cmd(Target,Index,Params,5622,1),
   ok.
 
 %% @doc glGetProgramEnvParameterARB
@@ -6231,9 +5681,8 @@ programLocalParameter4fvARB(Target,Index,Params) ->
 -spec getProgramEnvParameterdvARB(Target, Index) -> {float(),float(),float(),float()} when Target :: enum(),Index :: integer().
 getProgramEnvParameterdvARB(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5623),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5623,0),
+  rec(5009).
 
 %% @doc glGetProgramEnvParameterARB
 %%
@@ -6241,9 +5690,8 @@ getProgramEnvParameterdvARB(Target,Index) ->
 -spec getProgramEnvParameterfvARB(Target, Index) -> {float(),float(),float(),float()} when Target :: enum(),Index :: integer().
 getProgramEnvParameterfvARB(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5624),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5624,0),
+  rec(5009).
 
 %% @doc glGetProgramLocalParameterARB
 %%
@@ -6251,9 +5699,8 @@ getProgramEnvParameterfvARB(Target,Index) ->
 -spec getProgramLocalParameterdvARB(Target, Index) -> {float(),float(),float(),float()} when Target :: enum(),Index :: integer().
 getProgramLocalParameterdvARB(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5625),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5625,0),
+  rec(5009).
 
 %% @doc glGetProgramLocalParameterARB
 %%
@@ -6261,9 +5708,8 @@ getProgramLocalParameterdvARB(Target,Index) ->
 -spec getProgramLocalParameterfvARB(Target, Index) -> {float(),float(),float(),float()} when Target :: enum(),Index :: integer().
 getProgramLocalParameterfvARB(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5626),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5626,0),
+  rec(5009).
 
 %% @doc glGetProgramStringARB
 %%
@@ -6271,9 +5717,8 @@ getProgramLocalParameterfvARB(Target,Index) ->
 -spec getProgramStringARB(Target, Pname, String) -> 'ok' when Target :: enum(),Pname :: enum(),String :: mem().
 getProgramStringARB(Target,Pname,String) ->
   IF = get_interface(),
-  OP = lookup_func(5627),
-  IF:queue_cmd(Target,Pname,String,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,String,5627,0),
+  rec(5009).
 
 %% @doc glGetBufferParameterARB
 %%
@@ -6281,9 +5726,8 @@ getProgramStringARB(Target,Pname,String) ->
 -spec getBufferParameterivARB(Target, Pname) -> [integer()] when Target :: enum(),Pname :: enum().
 getBufferParameterivARB(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5628),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5628,0),
+  rec(5009).
 
 %% @doc glDeleteObjectARB
 %%
@@ -6291,8 +5735,7 @@ getBufferParameterivARB(Target,Pname) ->
 -spec deleteObjectARB(Obj) -> 'ok' when Obj :: integer().
 deleteObjectARB(Obj) ->
   IF = get_interface(),
-  OP = lookup_func(5629),
-  IF:queue_cmd(Obj,OP,1),
+  IF:queue_cmd(Obj,5629,1),
   ok.
 
 %% @doc glGetHandleARB
@@ -6301,9 +5744,8 @@ deleteObjectARB(Obj) ->
 -spec getHandleARB(Pname) -> integer() when Pname :: enum().
 getHandleARB(Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5630),
-  IF:queue_cmd(Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,5630,0),
+  rec(5009).
 
 %% @doc glDetachObjectARB
 %%
@@ -6311,8 +5753,7 @@ getHandleARB(Pname) ->
 -spec detachObjectARB(ContainerObj, AttachedObj) -> 'ok' when ContainerObj :: integer(),AttachedObj :: integer().
 detachObjectARB(ContainerObj,AttachedObj) ->
   IF = get_interface(),
-  OP = lookup_func(5631),
-  IF:queue_cmd(ContainerObj,AttachedObj,OP,1),
+  IF:queue_cmd(ContainerObj,AttachedObj,5631,1),
   ok.
 
 %% @doc glCreateShaderObjectARB
@@ -6321,9 +5762,8 @@ detachObjectARB(ContainerObj,AttachedObj) ->
 -spec createShaderObjectARB(ShaderType) -> integer() when ShaderType :: enum().
 createShaderObjectARB(ShaderType) ->
   IF = get_interface(),
-  OP = lookup_func(5632),
-  IF:queue_cmd(ShaderType,OP,0),
-  rec(OP).
+  IF:queue_cmd(ShaderType,5632,0),
+  rec(5009).
 
 %% @doc glShaderSourceARB
 %%
@@ -6331,10 +5771,9 @@ createShaderObjectARB(ShaderType) ->
 -spec shaderSourceARB(ShaderObj, String) -> 'ok' when ShaderObj :: integer(),String :: iolist().
 shaderSourceARB(ShaderObj,String) ->
   IF = get_interface(),
-  OP = lookup_func(5633),
   StringTemp = unicode:characters_to_binary([[Str|[0]] || Str <- String ]),
   Count = length(String),
-  IF:queue_cmd(ShaderObj,Count,StringTemp,OP,1),
+  IF:queue_cmd(ShaderObj,Count,StringTemp,5633,1),
   ok.
 
 %% @doc glCompileShaderARB
@@ -6343,8 +5782,7 @@ shaderSourceARB(ShaderObj,String) ->
 -spec compileShaderARB(ShaderObj) -> 'ok' when ShaderObj :: integer().
 compileShaderARB(ShaderObj) ->
   IF = get_interface(),
-  OP = lookup_func(5634),
-  IF:queue_cmd(ShaderObj,OP,1),
+  IF:queue_cmd(ShaderObj,5634,1),
   ok.
 
 %% @doc glCreateProgramObjectARB
@@ -6353,9 +5791,8 @@ compileShaderARB(ShaderObj) ->
 -spec createProgramObjectARB() -> integer().
 createProgramObjectARB() ->
   IF = get_interface(),
-  OP = lookup_func(5635),
-  IF:queue_cmd(OP,0),
-  rec(OP).
+  IF:queue_cmd(5635,0),
+  rec(5009).
 
 %% @doc glAttachObjectARB
 %%
@@ -6363,8 +5800,7 @@ createProgramObjectARB() ->
 -spec attachObjectARB(ContainerObj, Obj) -> 'ok' when ContainerObj :: integer(),Obj :: integer().
 attachObjectARB(ContainerObj,Obj) ->
   IF = get_interface(),
-  OP = lookup_func(5636),
-  IF:queue_cmd(ContainerObj,Obj,OP,1),
+  IF:queue_cmd(ContainerObj,Obj,5636,1),
   ok.
 
 %% @doc glLinkProgramARB
@@ -6373,8 +5809,7 @@ attachObjectARB(ContainerObj,Obj) ->
 -spec linkProgramARB(ProgramObj) -> 'ok' when ProgramObj :: integer().
 linkProgramARB(ProgramObj) ->
   IF = get_interface(),
-  OP = lookup_func(5637),
-  IF:queue_cmd(ProgramObj,OP,1),
+  IF:queue_cmd(ProgramObj,5637,1),
   ok.
 
 %% @doc glUseProgramObjectARB
@@ -6383,8 +5818,7 @@ linkProgramARB(ProgramObj) ->
 -spec useProgramObjectARB(ProgramObj) -> 'ok' when ProgramObj :: integer().
 useProgramObjectARB(ProgramObj) ->
   IF = get_interface(),
-  OP = lookup_func(5638),
-  IF:queue_cmd(ProgramObj,OP,1),
+  IF:queue_cmd(ProgramObj,5638,1),
   ok.
 
 %% @doc glValidateProgramARB
@@ -6393,8 +5827,7 @@ useProgramObjectARB(ProgramObj) ->
 -spec validateProgramARB(ProgramObj) -> 'ok' when ProgramObj :: integer().
 validateProgramARB(ProgramObj) ->
   IF = get_interface(),
-  OP = lookup_func(5639),
-  IF:queue_cmd(ProgramObj,OP,1),
+  IF:queue_cmd(ProgramObj,5639,1),
   ok.
 
 %% @doc glGetObjectParameterARB
@@ -6403,9 +5836,8 @@ validateProgramARB(ProgramObj) ->
 -spec getObjectParameterfvARB(Obj, Pname) -> float() when Obj :: integer(),Pname :: enum().
 getObjectParameterfvARB(Obj,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5640),
-  IF:queue_cmd(Obj,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Obj,Pname,5640,0),
+  rec(5009).
 
 %% @doc glGetObjectParameterARB
 %%
@@ -6413,9 +5845,8 @@ getObjectParameterfvARB(Obj,Pname) ->
 -spec getObjectParameterivARB(Obj, Pname) -> integer() when Obj :: integer(),Pname :: enum().
 getObjectParameterivARB(Obj,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5641),
-  IF:queue_cmd(Obj,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Obj,Pname,5641,0),
+  rec(5009).
 
 %% @doc glGetInfoLogARB
 %%
@@ -6423,9 +5854,8 @@ getObjectParameterivARB(Obj,Pname) ->
 -spec getInfoLogARB(Obj, MaxLength) -> string() when Obj :: integer(),MaxLength :: integer().
 getInfoLogARB(Obj,MaxLength) ->
   IF = get_interface(),
-  OP = lookup_func(5642),
-  IF:queue_cmd(Obj,MaxLength,OP,0),
-  rec(OP).
+  IF:queue_cmd(Obj,MaxLength,5642,0),
+  rec(5009).
 
 %% @doc glGetAttachedObjectsARB
 %%
@@ -6433,9 +5863,8 @@ getInfoLogARB(Obj,MaxLength) ->
 -spec getAttachedObjectsARB(ContainerObj, MaxCount) -> [integer()] when ContainerObj :: integer(),MaxCount :: integer().
 getAttachedObjectsARB(ContainerObj,MaxCount) ->
   IF = get_interface(),
-  OP = lookup_func(5643),
-  IF:queue_cmd(ContainerObj,MaxCount,OP,0),
-  rec(OP).
+  IF:queue_cmd(ContainerObj,MaxCount,5643,0),
+  rec(5009).
 
 %% @doc glGetUniformLocationARB
 %%
@@ -6443,10 +5872,9 @@ getAttachedObjectsARB(ContainerObj,MaxCount) ->
 -spec getUniformLocationARB(ProgramObj, Name) -> integer() when ProgramObj :: integer(),Name :: string().
 getUniformLocationARB(ProgramObj,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5644),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(ProgramObj,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(ProgramObj,NameBin,5644,0),
+  rec(5009).
 
 %% @doc glGetActiveUniformARB
 %%
@@ -6454,9 +5882,8 @@ getUniformLocationARB(ProgramObj,Name) ->
 -spec getActiveUniformARB(ProgramObj, Index, MaxLength) -> {Size :: integer(),Type :: enum(),Name :: string()} when ProgramObj :: integer(),Index :: integer(),MaxLength :: integer().
 getActiveUniformARB(ProgramObj,Index,MaxLength) ->
   IF = get_interface(),
-  OP = lookup_func(5645),
-  IF:queue_cmd(ProgramObj,Index,MaxLength,OP,0),
-  rec(OP).
+  IF:queue_cmd(ProgramObj,Index,MaxLength,5645,0),
+  rec(5009).
 
 %% @doc glGetUniformARB
 %%
@@ -6464,9 +5891,8 @@ getActiveUniformARB(ProgramObj,Index,MaxLength) ->
 -spec getUniformfvARB(ProgramObj, Location) -> matrix() when ProgramObj :: integer(),Location :: integer().
 getUniformfvARB(ProgramObj,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5646),
-  IF:queue_cmd(ProgramObj,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(ProgramObj,Location,5646,0),
+  rec(5009).
 
 %% @doc glGetUniformARB
 %%
@@ -6474,9 +5900,8 @@ getUniformfvARB(ProgramObj,Location) ->
 -spec getUniformivARB(ProgramObj, Location) -> {integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer()} when ProgramObj :: integer(),Location :: integer().
 getUniformivARB(ProgramObj,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5647),
-  IF:queue_cmd(ProgramObj,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(ProgramObj,Location,5647,0),
+  rec(5009).
 
 %% @doc glGetShaderSourceARB
 %%
@@ -6484,9 +5909,8 @@ getUniformivARB(ProgramObj,Location) ->
 -spec getShaderSourceARB(Obj, MaxLength) -> string() when Obj :: integer(),MaxLength :: integer().
 getShaderSourceARB(Obj,MaxLength) ->
   IF = get_interface(),
-  OP = lookup_func(5648),
-  IF:queue_cmd(Obj,MaxLength,OP,0),
-  rec(OP).
+  IF:queue_cmd(Obj,MaxLength,5648,0),
+  rec(5009).
 
 %% @doc glBindAttribLocationARB
 %%
@@ -6494,9 +5918,8 @@ getShaderSourceARB(Obj,MaxLength) ->
 -spec bindAttribLocationARB(ProgramObj, Index, Name) -> 'ok' when ProgramObj :: integer(),Index :: integer(),Name :: string().
 bindAttribLocationARB(ProgramObj,Index,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5649),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(ProgramObj,Index,NameBin,OP,1),
+  IF:queue_cmd(ProgramObj,Index,NameBin,5649,1),
   ok.
 
 %% @doc glGetActiveAttribARB
@@ -6505,9 +5928,8 @@ bindAttribLocationARB(ProgramObj,Index,Name) ->
 -spec getActiveAttribARB(ProgramObj, Index, MaxLength) -> {Size :: integer(),Type :: enum(),Name :: string()} when ProgramObj :: integer(),Index :: integer(),MaxLength :: integer().
 getActiveAttribARB(ProgramObj,Index,MaxLength) ->
   IF = get_interface(),
-  OP = lookup_func(5650),
-  IF:queue_cmd(ProgramObj,Index,MaxLength,OP,0),
-  rec(OP).
+  IF:queue_cmd(ProgramObj,Index,MaxLength,5650,0),
+  rec(5009).
 
 %% @doc glGetAttribLocationARB
 %%
@@ -6515,10 +5937,9 @@ getActiveAttribARB(ProgramObj,Index,MaxLength) ->
 -spec getAttribLocationARB(ProgramObj, Name) -> integer() when ProgramObj :: integer(),Name :: string().
 getAttribLocationARB(ProgramObj,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5651),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(ProgramObj,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(ProgramObj,NameBin,5651,0),
+  rec(5009).
 
 %% @doc glIsRenderbuffer
 %%
@@ -6526,9 +5947,8 @@ getAttribLocationARB(ProgramObj,Name) ->
 -spec isRenderbuffer(Renderbuffer) -> 0|1 when Renderbuffer :: integer().
 isRenderbuffer(Renderbuffer) ->
   IF = get_interface(),
-  OP = lookup_func(5652),
-  IF:queue_cmd(Renderbuffer,OP,0),
-  rec(OP).
+  IF:queue_cmd(Renderbuffer,5652,0),
+  rec(5009).
 
 %% @doc glBindRenderbuffer
 %%
@@ -6536,8 +5956,7 @@ isRenderbuffer(Renderbuffer) ->
 -spec bindRenderbuffer(Target, Renderbuffer) -> 'ok' when Target :: enum(),Renderbuffer :: integer().
 bindRenderbuffer(Target,Renderbuffer) ->
   IF = get_interface(),
-  OP = lookup_func(5653),
-  IF:queue_cmd(Target,Renderbuffer,OP,1),
+  IF:queue_cmd(Target,Renderbuffer,5653,1),
   ok.
 
 %% @doc glDeleteRenderbuffers
@@ -6546,9 +5965,8 @@ bindRenderbuffer(Target,Renderbuffer) ->
 -spec deleteRenderbuffers(Renderbuffers) -> 'ok' when Renderbuffers :: [integer()].
 deleteRenderbuffers(Renderbuffers) ->
   IF = get_interface(),
-  OP = lookup_func(5654),
   N = length(Renderbuffers),
-  IF:queue_cmd(N,Renderbuffers,OP,1),
+  IF:queue_cmd(N,Renderbuffers,5654,1),
   ok.
 
 %% @doc glGenRenderbuffers
@@ -6557,9 +5975,8 @@ deleteRenderbuffers(Renderbuffers) ->
 -spec genRenderbuffers(N) -> [integer()] when N :: integer().
 genRenderbuffers(N) ->
   IF = get_interface(),
-  OP = lookup_func(5655),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5655,0),
+  rec(5009).
 
 %% @doc glRenderbufferStorage
 %%
@@ -6567,8 +5984,7 @@ genRenderbuffers(N) ->
 -spec renderbufferStorage(Target, Internalformat, Width, Height) -> 'ok' when Target :: enum(),Internalformat :: enum(),Width :: integer(),Height :: integer().
 renderbufferStorage(Target,Internalformat,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5656),
-  IF:queue_cmd(Target,Internalformat,Width,Height,OP,1),
+  IF:queue_cmd(Target,Internalformat,Width,Height,5656,1),
   ok.
 
 %% @doc glGetRenderbufferParameter
@@ -6577,9 +5993,8 @@ renderbufferStorage(Target,Internalformat,Width,Height) ->
 -spec getRenderbufferParameteriv(Target, Pname) -> integer() when Target :: enum(),Pname :: enum().
 getRenderbufferParameteriv(Target,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5657),
-  IF:queue_cmd(Target,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Pname,5657,0),
+  rec(5009).
 
 %% @doc glIsFramebuffer
 %%
@@ -6587,9 +6002,8 @@ getRenderbufferParameteriv(Target,Pname) ->
 -spec isFramebuffer(Framebuffer) -> 0|1 when Framebuffer :: integer().
 isFramebuffer(Framebuffer) ->
   IF = get_interface(),
-  OP = lookup_func(5658),
-  IF:queue_cmd(Framebuffer,OP,0),
-  rec(OP).
+  IF:queue_cmd(Framebuffer,5658,0),
+  rec(5009).
 
 %% @doc glBindFramebuffer
 %%
@@ -6597,8 +6011,7 @@ isFramebuffer(Framebuffer) ->
 -spec bindFramebuffer(Target, Framebuffer) -> 'ok' when Target :: enum(),Framebuffer :: integer().
 bindFramebuffer(Target,Framebuffer) ->
   IF = get_interface(),
-  OP = lookup_func(5659),
-  IF:queue_cmd(Target,Framebuffer,OP,1),
+  IF:queue_cmd(Target,Framebuffer,5659,1),
   ok.
 
 %% @doc glDeleteFramebuffers
@@ -6607,9 +6020,8 @@ bindFramebuffer(Target,Framebuffer) ->
 -spec deleteFramebuffers(Framebuffers) -> 'ok' when Framebuffers :: [integer()].
 deleteFramebuffers(Framebuffers) ->
   IF = get_interface(),
-  OP = lookup_func(5660),
   N = length(Framebuffers),
-  IF:queue_cmd(N,Framebuffers,OP,1),
+  IF:queue_cmd(N,Framebuffers,5660,1),
   ok.
 
 %% @doc glGenFramebuffers
@@ -6618,9 +6030,8 @@ deleteFramebuffers(Framebuffers) ->
 -spec genFramebuffers(N) -> [integer()] when N :: integer().
 genFramebuffers(N) ->
   IF = get_interface(),
-  OP = lookup_func(5661),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5661,0),
+  rec(5009).
 
 %% @doc glCheckFramebufferStatus
 %%
@@ -6628,9 +6039,8 @@ genFramebuffers(N) ->
 -spec checkFramebufferStatus(Target) -> enum() when Target :: enum().
 checkFramebufferStatus(Target) ->
   IF = get_interface(),
-  OP = lookup_func(5662),
-  IF:queue_cmd(Target,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,5662,0),
+  rec(5009).
 
 %% @doc glFramebufferTexture
 %%
@@ -6638,8 +6048,7 @@ checkFramebufferStatus(Target) ->
 -spec framebufferTexture1D(Target, Attachment, Textarget, Texture, Level) -> 'ok' when Target :: enum(),Attachment :: enum(),Textarget :: enum(),Texture :: integer(),Level :: integer().
 framebufferTexture1D(Target,Attachment,Textarget,Texture,Level) ->
   IF = get_interface(),
-  OP = lookup_func(5663),
-  IF:queue_cmd(Target,Attachment,Textarget,Texture,Level,OP,1),
+  IF:queue_cmd(Target,Attachment,Textarget,Texture,Level,5663,1),
   ok.
 
 %% @doc glFramebufferTexture
@@ -6648,8 +6057,7 @@ framebufferTexture1D(Target,Attachment,Textarget,Texture,Level) ->
 -spec framebufferTexture2D(Target, Attachment, Textarget, Texture, Level) -> 'ok' when Target :: enum(),Attachment :: enum(),Textarget :: enum(),Texture :: integer(),Level :: integer().
 framebufferTexture2D(Target,Attachment,Textarget,Texture,Level) ->
   IF = get_interface(),
-  OP = lookup_func(5664),
-  IF:queue_cmd(Target,Attachment,Textarget,Texture,Level,OP,1),
+  IF:queue_cmd(Target,Attachment,Textarget,Texture,Level,5664,1),
   ok.
 
 %% @doc glFramebufferTexture
@@ -6658,8 +6066,7 @@ framebufferTexture2D(Target,Attachment,Textarget,Texture,Level) ->
 -spec framebufferTexture3D(Target, Attachment, Textarget, Texture, Level, Zoffset) -> 'ok' when Target :: enum(),Attachment :: enum(),Textarget :: enum(),Texture :: integer(),Level :: integer(),Zoffset :: integer().
 framebufferTexture3D(Target,Attachment,Textarget,Texture,Level,Zoffset) ->
   IF = get_interface(),
-  OP = lookup_func(5665),
-  IF:queue_cmd(Target,Attachment,Textarget,Texture,Level,Zoffset,OP,1),
+  IF:queue_cmd(Target,Attachment,Textarget,Texture,Level,Zoffset,5665,1),
   ok.
 
 %% @doc glFramebufferRenderbuffer
@@ -6668,8 +6075,7 @@ framebufferTexture3D(Target,Attachment,Textarget,Texture,Level,Zoffset) ->
 -spec framebufferRenderbuffer(Target, Attachment, Renderbuffertarget, Renderbuffer) -> 'ok' when Target :: enum(),Attachment :: enum(),Renderbuffertarget :: enum(),Renderbuffer :: integer().
 framebufferRenderbuffer(Target,Attachment,Renderbuffertarget,Renderbuffer) ->
   IF = get_interface(),
-  OP = lookup_func(5666),
-  IF:queue_cmd(Target,Attachment,Renderbuffertarget,Renderbuffer,OP,1),
+  IF:queue_cmd(Target,Attachment,Renderbuffertarget,Renderbuffer,5666,1),
   ok.
 
 %% @doc glGetFramebufferAttachmentParameter
@@ -6678,9 +6084,8 @@ framebufferRenderbuffer(Target,Attachment,Renderbuffertarget,Renderbuffer) ->
 -spec getFramebufferAttachmentParameteriv(Target, Attachment, Pname) -> integer() when Target :: enum(),Attachment :: enum(),Pname :: enum().
 getFramebufferAttachmentParameteriv(Target,Attachment,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5667),
-  IF:queue_cmd(Target,Attachment,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Attachment,Pname,5667,0),
+  rec(5009).
 
 %% @doc glGenerateMipmap
 %%
@@ -6688,8 +6093,7 @@ getFramebufferAttachmentParameteriv(Target,Attachment,Pname) ->
 -spec generateMipmap(Target) -> 'ok' when Target :: enum().
 generateMipmap(Target) ->
   IF = get_interface(),
-  OP = lookup_func(5668),
-  IF:queue_cmd(Target,OP,1),
+  IF:queue_cmd(Target,5668,1),
   ok.
 
 %% @doc glBlitFramebuffer
@@ -6698,8 +6102,7 @@ generateMipmap(Target) ->
 -spec blitFramebuffer(SrcX0, SrcY0, SrcX1, SrcY1, DstX0, DstY0, DstX1, DstY1, Mask, Filter) -> 'ok' when SrcX0 :: integer(),SrcY0 :: integer(),SrcX1 :: integer(),SrcY1 :: integer(),DstX0 :: integer(),DstY0 :: integer(),DstX1 :: integer(),DstY1 :: integer(),Mask :: integer(),Filter :: enum().
 blitFramebuffer(SrcX0,SrcY0,SrcX1,SrcY1,DstX0,DstY0,DstX1,DstY1,Mask,Filter) ->
   IF = get_interface(),
-  OP = lookup_func(5669),
-  IF:queue_cmd(SrcX0,SrcY0,SrcX1,SrcY1,DstX0,DstY0,DstX1,DstY1,Mask,Filter,OP,1),
+  IF:queue_cmd(SrcX0,SrcY0,SrcX1,SrcY1,DstX0,DstY0,DstX1,DstY1,Mask,Filter,5669,1),
   ok.
 
 %% @doc glRenderbufferStorageMultisample
@@ -6708,8 +6111,7 @@ blitFramebuffer(SrcX0,SrcY0,SrcX1,SrcY1,DstX0,DstY0,DstX1,DstY1,Mask,Filter) ->
 -spec renderbufferStorageMultisample(Target, Samples, Internalformat, Width, Height) -> 'ok' when Target :: enum(),Samples :: integer(),Internalformat :: enum(),Width :: integer(),Height :: integer().
 renderbufferStorageMultisample(Target,Samples,Internalformat,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5670),
-  IF:queue_cmd(Target,Samples,Internalformat,Width,Height,OP,1),
+  IF:queue_cmd(Target,Samples,Internalformat,Width,Height,5670,1),
   ok.
 
 %% @doc glFramebufferTexture
@@ -6718,8 +6120,7 @@ renderbufferStorageMultisample(Target,Samples,Internalformat,Width,Height) ->
 -spec framebufferTextureLayer(Target, Attachment, Texture, Level, Layer) -> 'ok' when Target :: enum(),Attachment :: enum(),Texture :: integer(),Level :: integer(),Layer :: integer().
 framebufferTextureLayer(Target,Attachment,Texture,Level,Layer) ->
   IF = get_interface(),
-  OP = lookup_func(5671),
-  IF:queue_cmd(Target,Attachment,Texture,Level,Layer,OP,1),
+  IF:queue_cmd(Target,Attachment,Texture,Level,Layer,5671,1),
   ok.
 
 %% @doc glFramebufferTexture
@@ -6728,8 +6129,7 @@ framebufferTextureLayer(Target,Attachment,Texture,Level,Layer) ->
 -spec framebufferTextureFaceARB(Target, Attachment, Texture, Level, Face) -> 'ok' when Target :: enum(),Attachment :: enum(),Texture :: integer(),Level :: integer(),Face :: enum().
 framebufferTextureFaceARB(Target,Attachment,Texture,Level,Face) ->
   IF = get_interface(),
-  OP = lookup_func(5672),
-  IF:queue_cmd(Target,Attachment,Texture,Level,Face,OP,1),
+  IF:queue_cmd(Target,Attachment,Texture,Level,Face,5672,1),
   ok.
 
 %% @doc glFlushMappedBufferRange
@@ -6738,8 +6138,7 @@ framebufferTextureFaceARB(Target,Attachment,Texture,Level,Face) ->
 -spec flushMappedBufferRange(Target, Offset, Length) -> 'ok' when Target :: enum(),Offset :: integer(),Length :: integer().
 flushMappedBufferRange(Target,Offset,Length) ->
   IF = get_interface(),
-  OP = lookup_func(5673),
-  IF:queue_cmd(Target,Offset,Length,OP,1),
+  IF:queue_cmd(Target,Offset,Length,5673,1),
   ok.
 
 %% @doc glBindVertexArray
@@ -6748,8 +6147,7 @@ flushMappedBufferRange(Target,Offset,Length) ->
 -spec bindVertexArray(Array) -> 'ok' when Array :: integer().
 bindVertexArray(Array) ->
   IF = get_interface(),
-  OP = lookup_func(5674),
-  IF:queue_cmd(Array,OP,1),
+  IF:queue_cmd(Array,5674,1),
   ok.
 
 %% @doc glDeleteVertexArrays
@@ -6758,9 +6156,8 @@ bindVertexArray(Array) ->
 -spec deleteVertexArrays(Arrays) -> 'ok' when Arrays :: [integer()].
 deleteVertexArrays(Arrays) ->
   IF = get_interface(),
-  OP = lookup_func(5675),
   N = length(Arrays),
-  IF:queue_cmd(N,Arrays,OP,1),
+  IF:queue_cmd(N,Arrays,5675,1),
   ok.
 
 %% @doc glGenVertexArrays
@@ -6769,9 +6166,8 @@ deleteVertexArrays(Arrays) ->
 -spec genVertexArrays(N) -> [integer()] when N :: integer().
 genVertexArrays(N) ->
   IF = get_interface(),
-  OP = lookup_func(5676),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5676,0),
+  rec(5009).
 
 %% @doc glIsVertexArray
 %%
@@ -6779,9 +6175,8 @@ genVertexArrays(N) ->
 -spec isVertexArray(Array) -> 0|1 when Array :: integer().
 isVertexArray(Array) ->
   IF = get_interface(),
-  OP = lookup_func(5677),
-  IF:queue_cmd(Array,OP,0),
-  rec(OP).
+  IF:queue_cmd(Array,5677,0),
+  rec(5009).
 
 %% @doc glGetUniformIndices
 %%
@@ -6789,11 +6184,10 @@ isVertexArray(Array) ->
 -spec getUniformIndices(Program, UniformNames) -> [integer()] when Program :: integer(),UniformNames :: iolist().
 getUniformIndices(Program,UniformNames) ->
   IF = get_interface(),
-  OP = lookup_func(5678),
   UniformNamesTemp = unicode:characters_to_binary([[Str|[0]] || Str <- UniformNames ]),
   UniformCount = length(UniformNames),
-  IF:queue_cmd(Program,UniformCount,UniformNamesTemp,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,UniformCount,UniformNamesTemp,5678,0),
+  rec(5009).
 
 %% @doc glGetActiveUniforms
 %%
@@ -6801,10 +6195,9 @@ getUniformIndices(Program,UniformNames) ->
 -spec getActiveUniformsiv(Program, UniformIndices, Pname) -> [integer()] when Program :: integer(),UniformIndices :: [integer()],Pname :: enum().
 getActiveUniformsiv(Program,UniformIndices,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5679),
   UniformCount = length(UniformIndices),
-  IF:queue_cmd(Program,UniformCount,UniformIndices,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,UniformCount,UniformIndices,Pname,5679,0),
+  rec(5009).
 
 %% @doc glGetActiveUniformName
 %%
@@ -6812,9 +6205,8 @@ getActiveUniformsiv(Program,UniformIndices,Pname) ->
 -spec getActiveUniformName(Program, UniformIndex, BufSize) -> string() when Program :: integer(),UniformIndex :: integer(),BufSize :: integer().
 getActiveUniformName(Program,UniformIndex,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5680),
-  IF:queue_cmd(Program,UniformIndex,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,UniformIndex,BufSize,5680,0),
+  rec(5009).
 
 %% @doc glGetUniformBlockIndex
 %%
@@ -6822,10 +6214,9 @@ getActiveUniformName(Program,UniformIndex,BufSize) ->
 -spec getUniformBlockIndex(Program, UniformBlockName) -> integer() when Program :: integer(),UniformBlockName :: string().
 getUniformBlockIndex(Program,UniformBlockName) ->
   IF = get_interface(),
-  OP = lookup_func(5681),
   UniformBlockNameBin = unicode:characters_to_binary([UniformBlockName|[0]]),
-  IF:queue_cmd(Program,UniformBlockNameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,UniformBlockNameBin,5681,0),
+  rec(5009).
 
 %% @doc glGetActiveUniformBlock
 %%
@@ -6833,9 +6224,8 @@ getUniformBlockIndex(Program,UniformBlockName) ->
 -spec getActiveUniformBlockiv(Program, UniformBlockIndex, Pname, Params) -> 'ok' when Program :: integer(),UniformBlockIndex :: integer(),Pname :: enum(),Params :: mem().
 getActiveUniformBlockiv(Program,UniformBlockIndex,Pname,Params) ->
   IF = get_interface(),
-  OP = lookup_func(5682),
-  IF:queue_cmd(Program,UniformBlockIndex,Pname,Params,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,UniformBlockIndex,Pname,Params,5682,0),
+  rec(5009).
 
 %% @doc glGetActiveUniformBlockName
 %%
@@ -6843,9 +6233,8 @@ getActiveUniformBlockiv(Program,UniformBlockIndex,Pname,Params) ->
 -spec getActiveUniformBlockName(Program, UniformBlockIndex, BufSize) -> string() when Program :: integer(),UniformBlockIndex :: integer(),BufSize :: integer().
 getActiveUniformBlockName(Program,UniformBlockIndex,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5683),
-  IF:queue_cmd(Program,UniformBlockIndex,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,UniformBlockIndex,BufSize,5683,0),
+  rec(5009).
 
 %% @doc glUniformBlockBinding
 %%
@@ -6853,8 +6242,7 @@ getActiveUniformBlockName(Program,UniformBlockIndex,BufSize) ->
 -spec uniformBlockBinding(Program, UniformBlockIndex, UniformBlockBinding) -> 'ok' when Program :: integer(),UniformBlockIndex :: integer(),UniformBlockBinding :: integer().
 uniformBlockBinding(Program,UniformBlockIndex,UniformBlockBinding) ->
   IF = get_interface(),
-  OP = lookup_func(5684),
-  IF:queue_cmd(Program,UniformBlockIndex,UniformBlockBinding,OP,1),
+  IF:queue_cmd(Program,UniformBlockIndex,UniformBlockBinding,5684,1),
   ok.
 
 %% @doc glCopyBufferSubData
@@ -6863,8 +6251,7 @@ uniformBlockBinding(Program,UniformBlockIndex,UniformBlockBinding) ->
 -spec copyBufferSubData(ReadTarget, WriteTarget, ReadOffset, WriteOffset, Size) -> 'ok' when ReadTarget :: enum(),WriteTarget :: enum(),ReadOffset :: integer(),WriteOffset :: integer(),Size :: integer().
 copyBufferSubData(ReadTarget,WriteTarget,ReadOffset,WriteOffset,Size) ->
   IF = get_interface(),
-  OP = lookup_func(5685),
-  IF:queue_cmd(ReadTarget,WriteTarget,ReadOffset,WriteOffset,Size,OP,1),
+  IF:queue_cmd(ReadTarget,WriteTarget,ReadOffset,WriteOffset,Size,5685,1),
   ok.
 
 %% @doc glDrawElementsBaseVertex
@@ -6873,8 +6260,7 @@ copyBufferSubData(ReadTarget,WriteTarget,ReadOffset,WriteOffset,Size) ->
 -spec drawElementsBaseVertex(Mode, Count, Type, Indices, Basevertex) -> 'ok' when Mode :: enum(),Count :: integer(),Type :: enum(),Indices :: offset()|mem(),Basevertex :: integer().
 drawElementsBaseVertex(Mode,Count,Type,Indices,Basevertex) ->
   IF = get_interface(),
-  OP = lookup_func(5686),
-  IF:queue_cmd(Mode,Count,Type,Indices,Basevertex,OP,1),
+  IF:queue_cmd(Mode,Count,Type,Indices,Basevertex,5686,1),
   ok.
 
 %% @doc glDrawRangeElementsBaseVertex
@@ -6883,8 +6269,7 @@ drawElementsBaseVertex(Mode,Count,Type,Indices,Basevertex) ->
 -spec drawRangeElementsBaseVertex(Mode, Start, End, Count, Type, Indices, Basevertex) -> 'ok' when Mode :: enum(),Start :: integer(),End :: integer(),Count :: integer(),Type :: enum(),Indices :: offset()|mem(),Basevertex :: integer().
 drawRangeElementsBaseVertex(Mode,Start,End,Count,Type,Indices,Basevertex) ->
   IF = get_interface(),
-  OP = lookup_func(5688),
-  IF:queue_cmd(Mode,Start,End,Count,Type,Indices,Basevertex,OP,1),
+  IF:queue_cmd(Mode,Start,End,Count,Type,Indices,Basevertex,5688,1),
   ok.
 
 %% @doc glDrawElementsInstancedBaseVertex
@@ -6893,8 +6278,7 @@ drawRangeElementsBaseVertex(Mode,Start,End,Count,Type,Indices,Basevertex) ->
 -spec drawElementsInstancedBaseVertex(Mode, Count, Type, Indices, Primcount, Basevertex) -> 'ok' when Mode :: enum(),Count :: integer(),Type :: enum(),Indices :: offset()|mem(),Primcount :: integer(),Basevertex :: integer().
 drawElementsInstancedBaseVertex(Mode,Count,Type,Indices,Primcount,Basevertex) ->
   IF = get_interface(),
-  OP = lookup_func(5690),
-  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,Basevertex,OP,1),
+  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,Basevertex,5690,1),
   ok.
 
 %% @doc glProvokingVertex
@@ -6903,8 +6287,7 @@ drawElementsInstancedBaseVertex(Mode,Count,Type,Indices,Primcount,Basevertex) ->
 -spec provokingVertex(Mode) -> 'ok' when Mode :: enum().
 provokingVertex(Mode) ->
   IF = get_interface(),
-  OP = lookup_func(5692),
-  IF:queue_cmd(Mode,OP,1),
+  IF:queue_cmd(Mode,5692,1),
   ok.
 
 %% @doc glFenceSync
@@ -6913,9 +6296,8 @@ provokingVertex(Mode) ->
 -spec fenceSync(Condition, Flags) -> integer() when Condition :: enum(),Flags :: integer().
 fenceSync(Condition,Flags) ->
   IF = get_interface(),
-  OP = lookup_func(5693),
-  IF:queue_cmd(Condition,Flags,OP,0),
-  rec(OP).
+  IF:queue_cmd(Condition,Flags,5693,0),
+  rec(5009).
 
 %% @doc glIsSync
 %%
@@ -6923,9 +6305,8 @@ fenceSync(Condition,Flags) ->
 -spec isSync(Sync) -> 0|1 when Sync :: integer().
 isSync(Sync) ->
   IF = get_interface(),
-  OP = lookup_func(5694),
-  IF:queue_cmd(Sync,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sync,5694,0),
+  rec(5009).
 
 %% @doc glDeleteSync
 %%
@@ -6933,8 +6314,7 @@ isSync(Sync) ->
 -spec deleteSync(Sync) -> 'ok' when Sync :: integer().
 deleteSync(Sync) ->
   IF = get_interface(),
-  OP = lookup_func(5695),
-  IF:queue_cmd(Sync,OP,1),
+  IF:queue_cmd(Sync,5695,1),
   ok.
 
 %% @doc glClientWaitSync
@@ -6943,9 +6323,8 @@ deleteSync(Sync) ->
 -spec clientWaitSync(Sync, Flags, Timeout) -> enum() when Sync :: integer(),Flags :: integer(),Timeout :: integer().
 clientWaitSync(Sync,Flags,Timeout) ->
   IF = get_interface(),
-  OP = lookup_func(5696),
-  IF:queue_cmd(Sync,Flags,Timeout,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sync,Flags,Timeout,5696,0),
+  rec(5009).
 
 %% @doc glWaitSync
 %%
@@ -6953,8 +6332,7 @@ clientWaitSync(Sync,Flags,Timeout) ->
 -spec waitSync(Sync, Flags, Timeout) -> 'ok' when Sync :: integer(),Flags :: integer(),Timeout :: integer().
 waitSync(Sync,Flags,Timeout) ->
   IF = get_interface(),
-  OP = lookup_func(5697),
-  IF:queue_cmd(Sync,Flags,Timeout,OP,1),
+  IF:queue_cmd(Sync,Flags,Timeout,5697,1),
   ok.
 
 %% @doc glGet
@@ -6963,9 +6341,8 @@ waitSync(Sync,Flags,Timeout) ->
 -spec getInteger64v(Pname) -> [integer()] when Pname :: enum().
 getInteger64v(Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5698),
-  IF:queue_cmd(Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,5698,0),
+  rec(5009).
 
 %% @doc glGetSync
 %%
@@ -6973,9 +6350,8 @@ getInteger64v(Pname) ->
 -spec getSynciv(Sync, Pname, BufSize) -> [integer()] when Sync :: integer(),Pname :: enum(),BufSize :: integer().
 getSynciv(Sync,Pname,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5699),
-  IF:queue_cmd(Sync,Pname,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sync,Pname,BufSize,5699,0),
+  rec(5009).
 
 %% @doc glTexImage2DMultisample
 %%
@@ -6983,8 +6359,7 @@ getSynciv(Sync,Pname,BufSize) ->
 -spec texImage2DMultisample(Target, Samples, Internalformat, Width, Height, Fixedsamplelocations) -> 'ok' when Target :: enum(),Samples :: integer(),Internalformat :: integer(),Width :: integer(),Height :: integer(),Fixedsamplelocations :: 0|1.
 texImage2DMultisample(Target,Samples,Internalformat,Width,Height,Fixedsamplelocations) ->
   IF = get_interface(),
-  OP = lookup_func(5700),
-  IF:queue_cmd(Target,Samples,Internalformat,Width,Height,Fixedsamplelocations,OP,1),
+  IF:queue_cmd(Target,Samples,Internalformat,Width,Height,Fixedsamplelocations,5700,1),
   ok.
 
 %% @doc glTexImage3DMultisample
@@ -6993,8 +6368,7 @@ texImage2DMultisample(Target,Samples,Internalformat,Width,Height,Fixedsampleloca
 -spec texImage3DMultisample(Target, Samples, Internalformat, Width, Height, Depth, Fixedsamplelocations) -> 'ok' when Target :: enum(),Samples :: integer(),Internalformat :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Fixedsamplelocations :: 0|1.
 texImage3DMultisample(Target,Samples,Internalformat,Width,Height,Depth,Fixedsamplelocations) ->
   IF = get_interface(),
-  OP = lookup_func(5701),
-  IF:queue_cmd(Target,Samples,Internalformat,Width,Height,Depth,Fixedsamplelocations,OP,1),
+  IF:queue_cmd(Target,Samples,Internalformat,Width,Height,Depth,Fixedsamplelocations,5701,1),
   ok.
 
 %% @doc glGetMultisample
@@ -7003,9 +6377,8 @@ texImage3DMultisample(Target,Samples,Internalformat,Width,Height,Depth,Fixedsamp
 -spec getMultisamplefv(Pname, Index) -> {float(),float()} when Pname :: enum(),Index :: integer().
 getMultisamplefv(Pname,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5702),
-  IF:queue_cmd(Pname,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pname,Index,5702,0),
+  rec(5009).
 
 %% @doc glSampleMaski
 %%
@@ -7013,8 +6386,7 @@ getMultisamplefv(Pname,Index) ->
 -spec sampleMaski(Index, Mask) -> 'ok' when Index :: integer(),Mask :: integer().
 sampleMaski(Index,Mask) ->
   IF = get_interface(),
-  OP = lookup_func(5703),
-  IF:queue_cmd(Index,Mask,OP,1),
+  IF:queue_cmd(Index,Mask,5703,1),
   ok.
 
 %% @doc glNamedStringARB
@@ -7023,10 +6395,9 @@ sampleMaski(Index,Mask) ->
 -spec namedStringARB(Type, Name, String) -> 'ok' when Type :: enum(),Name :: string(),String :: string().
 namedStringARB(Type,Name,String) ->
   IF = get_interface(),
-  OP = lookup_func(5704),
   NameBin = unicode:characters_to_binary([Name|[0]]),
   StringBin = unicode:characters_to_binary([String|[0]]),
-  IF:queue_cmd(Type,NameBin,StringBin,OP,1),
+  IF:queue_cmd(Type,NameBin,StringBin,5704,1),
   ok.
 
 %% @doc glDeleteNamedStringARB
@@ -7035,9 +6406,8 @@ namedStringARB(Type,Name,String) ->
 -spec deleteNamedStringARB(Name) -> 'ok' when Name :: string().
 deleteNamedStringARB(Name) ->
   IF = get_interface(),
-  OP = lookup_func(5705),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(NameBin,OP,1),
+  IF:queue_cmd(NameBin,5705,1),
   ok.
 
 %% @doc glCompileShaderIncludeARB
@@ -7046,10 +6416,9 @@ deleteNamedStringARB(Name) ->
 -spec compileShaderIncludeARB(Shader, Path) -> 'ok' when Shader :: integer(),Path :: iolist().
 compileShaderIncludeARB(Shader,Path) ->
   IF = get_interface(),
-  OP = lookup_func(5706),
   PathTemp = unicode:characters_to_binary([[Str|[0]] || Str <- Path ]),
   Count = length(Path),
-  IF:queue_cmd(Shader,Count,PathTemp,OP,1),
+  IF:queue_cmd(Shader,Count,PathTemp,5706,1),
   ok.
 
 %% @doc glIsNamedStringARB
@@ -7058,10 +6427,9 @@ compileShaderIncludeARB(Shader,Path) ->
 -spec isNamedStringARB(Name) -> 0|1 when Name :: string().
 isNamedStringARB(Name) ->
   IF = get_interface(),
-  OP = lookup_func(5707),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(NameBin,5707,0),
+  rec(5009).
 
 %% @doc glGetNamedStringARB
 %%
@@ -7069,10 +6437,9 @@ isNamedStringARB(Name) ->
 -spec getNamedStringARB(Name, BufSize) -> string() when Name :: string(),BufSize :: integer().
 getNamedStringARB(Name,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5708),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(NameBin,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(NameBin,BufSize,5708,0),
+  rec(5009).
 
 %% @doc glGetNamedStringARB
 %%
@@ -7080,10 +6447,9 @@ getNamedStringARB(Name,BufSize) ->
 -spec getNamedStringivARB(Name, Pname) -> integer() when Name :: string(),Pname :: enum().
 getNamedStringivARB(Name,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5709),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(NameBin,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(NameBin,Pname,5709,0),
+  rec(5009).
 
 %% @doc glBindFragDataLocationIndexe
 %%
@@ -7091,9 +6457,8 @@ getNamedStringivARB(Name,Pname) ->
 -spec bindFragDataLocationIndexed(Program, ColorNumber, Index, Name) -> 'ok' when Program :: integer(),ColorNumber :: integer(),Index :: integer(),Name :: string().
 bindFragDataLocationIndexed(Program,ColorNumber,Index,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5710),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,ColorNumber,Index,NameBin,OP,1),
+  IF:queue_cmd(Program,ColorNumber,Index,NameBin,5710,1),
   ok.
 
 %% @doc glGetFragDataIndex
@@ -7102,10 +6467,9 @@ bindFragDataLocationIndexed(Program,ColorNumber,Index,Name) ->
 -spec getFragDataIndex(Program, Name) -> integer() when Program :: integer(),Name :: string().
 getFragDataIndex(Program,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5711),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,NameBin,5711,0),
+  rec(5009).
 
 %% @doc glGenSamplers
 %%
@@ -7113,9 +6477,8 @@ getFragDataIndex(Program,Name) ->
 -spec genSamplers(Count) -> [integer()] when Count :: integer().
 genSamplers(Count) ->
   IF = get_interface(),
-  OP = lookup_func(5712),
-  IF:queue_cmd(Count,OP,0),
-  rec(OP).
+  IF:queue_cmd(Count,5712,0),
+  rec(5009).
 
 %% @doc glDeleteSamplers
 %%
@@ -7123,9 +6486,8 @@ genSamplers(Count) ->
 -spec deleteSamplers(Samplers) -> 'ok' when Samplers :: [integer()].
 deleteSamplers(Samplers) ->
   IF = get_interface(),
-  OP = lookup_func(5713),
   Count = length(Samplers),
-  IF:queue_cmd(Count,Samplers,OP,1),
+  IF:queue_cmd(Count,Samplers,5713,1),
   ok.
 
 %% @doc glIsSampler
@@ -7134,9 +6496,8 @@ deleteSamplers(Samplers) ->
 -spec isSampler(Sampler) -> 0|1 when Sampler :: integer().
 isSampler(Sampler) ->
   IF = get_interface(),
-  OP = lookup_func(5714),
-  IF:queue_cmd(Sampler,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sampler,5714,0),
+  rec(5009).
 
 %% @doc glBindSampler
 %%
@@ -7144,8 +6505,7 @@ isSampler(Sampler) ->
 -spec bindSampler(Unit, Sampler) -> 'ok' when Unit :: integer(),Sampler :: integer().
 bindSampler(Unit,Sampler) ->
   IF = get_interface(),
-  OP = lookup_func(5715),
-  IF:queue_cmd(Unit,Sampler,OP,1),
+  IF:queue_cmd(Unit,Sampler,5715,1),
   ok.
 
 %% @doc glSamplerParameter
@@ -7154,8 +6514,7 @@ bindSampler(Unit,Sampler) ->
 -spec samplerParameteri(Sampler, Pname, Param) -> 'ok' when Sampler :: integer(),Pname :: enum(),Param :: integer().
 samplerParameteri(Sampler,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5716),
-  IF:queue_cmd(Sampler,Pname,Param,OP,1),
+  IF:queue_cmd(Sampler,Pname,Param,5716,1),
   ok.
 
 %% @doc glSamplerParameter
@@ -7164,8 +6523,7 @@ samplerParameteri(Sampler,Pname,Param) ->
 -spec samplerParameteriv(Sampler, Pname, Param) -> 'ok' when Sampler :: integer(),Pname :: enum(),Param :: [integer()].
 samplerParameteriv(Sampler,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5717),
-  IF:queue_cmd(Sampler,Pname,Param,OP,1),
+  IF:queue_cmd(Sampler,Pname,Param,5717,1),
   ok.
 
 %% @doc glSamplerParameter
@@ -7174,8 +6532,7 @@ samplerParameteriv(Sampler,Pname,Param) ->
 -spec samplerParameterf(Sampler, Pname, Param) -> 'ok' when Sampler :: integer(),Pname :: enum(),Param :: float().
 samplerParameterf(Sampler,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5718),
-  IF:queue_cmd(Sampler,Pname,Param,OP,1),
+  IF:queue_cmd(Sampler,Pname,Param,5718,1),
   ok.
 
 %% @doc glSamplerParameter
@@ -7184,8 +6541,7 @@ samplerParameterf(Sampler,Pname,Param) ->
 -spec samplerParameterfv(Sampler, Pname, Param) -> 'ok' when Sampler :: integer(),Pname :: enum(),Param :: [float()].
 samplerParameterfv(Sampler,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5719),
-  IF:queue_cmd(Sampler,Pname,Param,OP,1),
+  IF:queue_cmd(Sampler,Pname,Param,5719,1),
   ok.
 
 %% @doc glSamplerParameter
@@ -7194,8 +6550,7 @@ samplerParameterfv(Sampler,Pname,Param) ->
 -spec samplerParameterIiv(Sampler, Pname, Param) -> 'ok' when Sampler :: integer(),Pname :: enum(),Param :: [integer()].
 samplerParameterIiv(Sampler,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5720),
-  IF:queue_cmd(Sampler,Pname,Param,OP,1),
+  IF:queue_cmd(Sampler,Pname,Param,5720,1),
   ok.
 
 %% @doc glSamplerParameterI
@@ -7204,8 +6559,7 @@ samplerParameterIiv(Sampler,Pname,Param) ->
 -spec samplerParameterIuiv(Sampler, Pname, Param) -> 'ok' when Sampler :: integer(),Pname :: enum(),Param :: [integer()].
 samplerParameterIuiv(Sampler,Pname,Param) ->
   IF = get_interface(),
-  OP = lookup_func(5721),
-  IF:queue_cmd(Sampler,Pname,Param,OP,1),
+  IF:queue_cmd(Sampler,Pname,Param,5721,1),
   ok.
 
 %% @doc glGetSamplerParameter
@@ -7214,9 +6568,8 @@ samplerParameterIuiv(Sampler,Pname,Param) ->
 -spec getSamplerParameteriv(Sampler, Pname) -> [integer()] when Sampler :: integer(),Pname :: enum().
 getSamplerParameteriv(Sampler,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5722),
-  IF:queue_cmd(Sampler,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sampler,Pname,5722,0),
+  rec(5009).
 
 %% @doc glGetSamplerParameter
 %%
@@ -7224,9 +6577,8 @@ getSamplerParameteriv(Sampler,Pname) ->
 -spec getSamplerParameterIiv(Sampler, Pname) -> [integer()] when Sampler :: integer(),Pname :: enum().
 getSamplerParameterIiv(Sampler,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5723),
-  IF:queue_cmd(Sampler,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sampler,Pname,5723,0),
+  rec(5009).
 
 %% @doc glGetSamplerParameter
 %%
@@ -7234,9 +6586,8 @@ getSamplerParameterIiv(Sampler,Pname) ->
 -spec getSamplerParameterfv(Sampler, Pname) -> [float()] when Sampler :: integer(),Pname :: enum().
 getSamplerParameterfv(Sampler,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5724),
-  IF:queue_cmd(Sampler,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sampler,Pname,5724,0),
+  rec(5009).
 
 %% @doc glGetSamplerParameterI
 %%
@@ -7244,9 +6595,8 @@ getSamplerParameterfv(Sampler,Pname) ->
 -spec getSamplerParameterIuiv(Sampler, Pname) -> [integer()] when Sampler :: integer(),Pname :: enum().
 getSamplerParameterIuiv(Sampler,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5725),
-  IF:queue_cmd(Sampler,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Sampler,Pname,5725,0),
+  rec(5009).
 
 %% @doc glQueryCounter
 %%
@@ -7254,8 +6604,7 @@ getSamplerParameterIuiv(Sampler,Pname) ->
 -spec queryCounter(Id, Target) -> 'ok' when Id :: integer(),Target :: enum().
 queryCounter(Id,Target) ->
   IF = get_interface(),
-  OP = lookup_func(5726),
-  IF:queue_cmd(Id,Target,OP,1),
+  IF:queue_cmd(Id,Target,5726,1),
   ok.
 
 %% @doc glGetQueryObjecti64v
@@ -7264,9 +6613,8 @@ queryCounter(Id,Target) ->
 -spec getQueryObjecti64v(Id, Pname) -> integer() when Id :: integer(),Pname :: enum().
 getQueryObjecti64v(Id,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5727),
-  IF:queue_cmd(Id,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Id,Pname,5727,0),
+  rec(5009).
 
 %% @doc glGetQueryObjectui64v
 %%
@@ -7274,9 +6622,8 @@ getQueryObjecti64v(Id,Pname) ->
 -spec getQueryObjectui64v(Id, Pname) -> integer() when Id :: integer(),Pname :: enum().
 getQueryObjectui64v(Id,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5728),
-  IF:queue_cmd(Id,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Id,Pname,5728,0),
+  rec(5009).
 
 %% @doc glDrawArraysIndirect
 %%
@@ -7284,8 +6631,7 @@ getQueryObjectui64v(Id,Pname) ->
 -spec drawArraysIndirect(Mode, Indirect) -> 'ok' when Mode :: enum(),Indirect :: offset()|mem().
 drawArraysIndirect(Mode,Indirect) ->
   IF = get_interface(),
-  OP = lookup_func(5729),
-  IF:queue_cmd(Mode,Indirect,OP,1),
+  IF:queue_cmd(Mode,Indirect,5729,1),
   ok.
 
 %% @doc glDrawElementsIndirect
@@ -7294,8 +6640,7 @@ drawArraysIndirect(Mode,Indirect) ->
 -spec drawElementsIndirect(Mode, Type, Indirect) -> 'ok' when Mode :: enum(),Type :: enum(),Indirect :: offset()|mem().
 drawElementsIndirect(Mode,Type,Indirect) ->
   IF = get_interface(),
-  OP = lookup_func(5731),
-  IF:queue_cmd(Mode,Type,Indirect,OP,1),
+  IF:queue_cmd(Mode,Type,Indirect,5731,1),
   ok.
 
 %% @doc glUniform
@@ -7304,8 +6649,7 @@ drawElementsIndirect(Mode,Type,Indirect) ->
 -spec uniform1d(Location, X) -> 'ok' when Location :: integer(),X :: float().
 uniform1d(Location,X) ->
   IF = get_interface(),
-  OP = lookup_func(5733),
-  IF:queue_cmd(Location,X,OP,1),
+  IF:queue_cmd(Location,X,5733,1),
   ok.
 
 %% @doc glUniform
@@ -7314,8 +6658,7 @@ uniform1d(Location,X) ->
 -spec uniform2d(Location, X, Y) -> 'ok' when Location :: integer(),X :: float(),Y :: float().
 uniform2d(Location,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5734),
-  IF:queue_cmd(Location,X,Y,OP,1),
+  IF:queue_cmd(Location,X,Y,5734,1),
   ok.
 
 %% @doc glUniform
@@ -7324,8 +6667,7 @@ uniform2d(Location,X,Y) ->
 -spec uniform3d(Location, X, Y, Z) -> 'ok' when Location :: integer(),X :: float(),Y :: float(),Z :: float().
 uniform3d(Location,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5735),
-  IF:queue_cmd(Location,X,Y,Z,OP,1),
+  IF:queue_cmd(Location,X,Y,Z,5735,1),
   ok.
 
 %% @doc glUniform
@@ -7334,8 +6676,7 @@ uniform3d(Location,X,Y,Z) ->
 -spec uniform4d(Location, X, Y, Z, W) -> 'ok' when Location :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 uniform4d(Location,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5736),
-  IF:queue_cmd(Location,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Location,X,Y,Z,W,5736,1),
   ok.
 
 %% @doc glUniform
@@ -7344,9 +6685,8 @@ uniform4d(Location,X,Y,Z,W) ->
 -spec uniform1dv(Location, Value) -> 'ok' when Location :: integer(),Value :: [float()].
 uniform1dv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5737),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5737,1),
   ok.
 
 %% @doc glUniform
@@ -7355,9 +6695,8 @@ uniform1dv(Location,Value) ->
 -spec uniform2dv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{float(),float()}].
 uniform2dv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5738),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5738,1),
   ok.
 
 %% @doc glUniform
@@ -7366,9 +6705,8 @@ uniform2dv(Location,Value) ->
 -spec uniform3dv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{float(),float(),float()}].
 uniform3dv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5739),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5739,1),
   ok.
 
 %% @doc glUniform
@@ -7377,9 +6715,8 @@ uniform3dv(Location,Value) ->
 -spec uniform4dv(Location, Value) -> 'ok' when Location :: integer(),Value :: [{float(),float(),float(),float()}].
 uniform4dv(Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5740),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Value,OP,1),
+  IF:queue_cmd(Location,Count,Value,5740,1),
   ok.
 
 %% @doc glUniform
@@ -7388,9 +6725,8 @@ uniform4dv(Location,Value) ->
 -spec uniformMatrix2dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float()}].
 uniformMatrix2dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5741),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5741,1),
   ok.
 
 %% @doc glUniform
@@ -7399,9 +6735,8 @@ uniformMatrix2dv(Location,Transpose,Value) ->
 -spec uniformMatrix3dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix3dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5742),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5742,1),
   ok.
 
 %% @doc glUniform
@@ -7410,9 +6745,8 @@ uniformMatrix3dv(Location,Transpose,Value) ->
 -spec uniformMatrix4dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix4dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5743),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5743,1),
   ok.
 
 %% @doc glUniform
@@ -7421,9 +6755,8 @@ uniformMatrix4dv(Location,Transpose,Value) ->
 -spec uniformMatrix2x3dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 uniformMatrix2x3dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5744),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5744,1),
   ok.
 
 %% @doc glUniform
@@ -7432,9 +6765,8 @@ uniformMatrix2x3dv(Location,Transpose,Value) ->
 -spec uniformMatrix2x4dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix2x4dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5745),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5745,1),
   ok.
 
 %% @doc glUniform
@@ -7443,9 +6775,8 @@ uniformMatrix2x4dv(Location,Transpose,Value) ->
 -spec uniformMatrix3x2dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 uniformMatrix3x2dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5746),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5746,1),
   ok.
 
 %% @doc glUniform
@@ -7454,9 +6785,8 @@ uniformMatrix3x2dv(Location,Transpose,Value) ->
 -spec uniformMatrix3x4dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix3x4dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5747),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5747,1),
   ok.
 
 %% @doc glUniform
@@ -7465,9 +6795,8 @@ uniformMatrix3x4dv(Location,Transpose,Value) ->
 -spec uniformMatrix4x2dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix4x2dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5748),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5748,1),
   ok.
 
 %% @doc glUniform
@@ -7476,9 +6805,8 @@ uniformMatrix4x2dv(Location,Transpose,Value) ->
 -spec uniformMatrix4x3dv(Location, Transpose, Value) -> 'ok' when Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 uniformMatrix4x3dv(Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5749),
   Count = length(Value),
-  IF:queue_cmd(Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Location,Count,Transpose,Value,5749,1),
   ok.
 
 %% @doc glGetUniform
@@ -7487,9 +6815,8 @@ uniformMatrix4x3dv(Location,Transpose,Value) ->
 -spec getUniformdv(Program, Location) -> matrix() when Program :: integer(),Location :: integer().
 getUniformdv(Program,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5750),
-  IF:queue_cmd(Program,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Location,5750,0),
+  rec(5009).
 
 %% @doc glGetSubroutineUniformLocation
 %%
@@ -7497,10 +6824,9 @@ getUniformdv(Program,Location) ->
 -spec getSubroutineUniformLocation(Program, Shadertype, Name) -> integer() when Program :: integer(),Shadertype :: enum(),Name :: string().
 getSubroutineUniformLocation(Program,Shadertype,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5751),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,Shadertype,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Shadertype,NameBin,5751,0),
+  rec(5009).
 
 %% @doc glGetSubroutineIndex
 %%
@@ -7508,10 +6834,9 @@ getSubroutineUniformLocation(Program,Shadertype,Name) ->
 -spec getSubroutineIndex(Program, Shadertype, Name) -> integer() when Program :: integer(),Shadertype :: enum(),Name :: string().
 getSubroutineIndex(Program,Shadertype,Name) ->
   IF = get_interface(),
-  OP = lookup_func(5752),
   NameBin = unicode:characters_to_binary([Name|[0]]),
-  IF:queue_cmd(Program,Shadertype,NameBin,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Shadertype,NameBin,5752,0),
+  rec(5009).
 
 %% @doc glGetActiveSubroutineUniformName
 %%
@@ -7519,9 +6844,8 @@ getSubroutineIndex(Program,Shadertype,Name) ->
 -spec getActiveSubroutineUniformName(Program, Shadertype, Index, Bufsize) -> string() when Program :: integer(),Shadertype :: enum(),Index :: integer(),Bufsize :: integer().
 getActiveSubroutineUniformName(Program,Shadertype,Index,Bufsize) ->
   IF = get_interface(),
-  OP = lookup_func(5753),
-  IF:queue_cmd(Program,Shadertype,Index,Bufsize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Shadertype,Index,Bufsize,5753,0),
+  rec(5009).
 
 %% @doc glGetActiveSubroutineName
 %%
@@ -7529,9 +6853,8 @@ getActiveSubroutineUniformName(Program,Shadertype,Index,Bufsize) ->
 -spec getActiveSubroutineName(Program, Shadertype, Index, Bufsize) -> string() when Program :: integer(),Shadertype :: enum(),Index :: integer(),Bufsize :: integer().
 getActiveSubroutineName(Program,Shadertype,Index,Bufsize) ->
   IF = get_interface(),
-  OP = lookup_func(5754),
-  IF:queue_cmd(Program,Shadertype,Index,Bufsize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Shadertype,Index,Bufsize,5754,0),
+  rec(5009).
 
 %% @doc glUniformSubroutines
 %%
@@ -7539,9 +6862,8 @@ getActiveSubroutineName(Program,Shadertype,Index,Bufsize) ->
 -spec uniformSubroutinesuiv(Shadertype, Indices) -> 'ok' when Shadertype :: enum(),Indices :: [integer()].
 uniformSubroutinesuiv(Shadertype,Indices) ->
   IF = get_interface(),
-  OP = lookup_func(5755),
   Count = length(Indices),
-  IF:queue_cmd(Shadertype,Count,Indices,OP,1),
+  IF:queue_cmd(Shadertype,Count,Indices,5755,1),
   ok.
 
 %% @doc glGetUniformSubroutine
@@ -7550,9 +6872,8 @@ uniformSubroutinesuiv(Shadertype,Indices) ->
 -spec getUniformSubroutineuiv(Shadertype, Location) -> {integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer(),integer()} when Shadertype :: enum(),Location :: integer().
 getUniformSubroutineuiv(Shadertype,Location) ->
   IF = get_interface(),
-  OP = lookup_func(5756),
-  IF:queue_cmd(Shadertype,Location,OP,0),
-  rec(OP).
+  IF:queue_cmd(Shadertype,Location,5756,0),
+  rec(5009).
 
 %% @doc glGetProgramStage
 %%
@@ -7560,9 +6881,8 @@ getUniformSubroutineuiv(Shadertype,Location) ->
 -spec getProgramStageiv(Program, Shadertype, Pname) -> integer() when Program :: integer(),Shadertype :: enum(),Pname :: enum().
 getProgramStageiv(Program,Shadertype,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5757),
-  IF:queue_cmd(Program,Shadertype,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,Shadertype,Pname,5757,0),
+  rec(5009).
 
 %% @doc glPatchParameter
 %%
@@ -7570,8 +6890,7 @@ getProgramStageiv(Program,Shadertype,Pname) ->
 -spec patchParameteri(Pname, Value) -> 'ok' when Pname :: enum(),Value :: integer().
 patchParameteri(Pname,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5758),
-  IF:queue_cmd(Pname,Value,OP,1),
+  IF:queue_cmd(Pname,Value,5758,1),
   ok.
 
 %% @doc glPatchParameter
@@ -7580,8 +6899,7 @@ patchParameteri(Pname,Value) ->
 -spec patchParameterfv(Pname, Values) -> 'ok' when Pname :: enum(),Values :: [float()].
 patchParameterfv(Pname,Values) ->
   IF = get_interface(),
-  OP = lookup_func(5759),
-  IF:queue_cmd(Pname,Values,OP,1),
+  IF:queue_cmd(Pname,Values,5759,1),
   ok.
 
 %% @doc glBindTransformFeedback
@@ -7590,8 +6908,7 @@ patchParameterfv(Pname,Values) ->
 -spec bindTransformFeedback(Target, Id) -> 'ok' when Target :: enum(),Id :: integer().
 bindTransformFeedback(Target,Id) ->
   IF = get_interface(),
-  OP = lookup_func(5760),
-  IF:queue_cmd(Target,Id,OP,1),
+  IF:queue_cmd(Target,Id,5760,1),
   ok.
 
 %% @doc glDeleteTransformFeedbacks
@@ -7600,9 +6917,8 @@ bindTransformFeedback(Target,Id) ->
 -spec deleteTransformFeedbacks(Ids) -> 'ok' when Ids :: [integer()].
 deleteTransformFeedbacks(Ids) ->
   IF = get_interface(),
-  OP = lookup_func(5761),
   N = length(Ids),
-  IF:queue_cmd(N,Ids,OP,1),
+  IF:queue_cmd(N,Ids,5761,1),
   ok.
 
 %% @doc glGenTransformFeedbacks
@@ -7611,9 +6927,8 @@ deleteTransformFeedbacks(Ids) ->
 -spec genTransformFeedbacks(N) -> [integer()] when N :: integer().
 genTransformFeedbacks(N) ->
   IF = get_interface(),
-  OP = lookup_func(5762),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5762,0),
+  rec(5009).
 
 %% @doc glIsTransformFeedback
 %%
@@ -7621,9 +6936,8 @@ genTransformFeedbacks(N) ->
 -spec isTransformFeedback(Id) -> 0|1 when Id :: integer().
 isTransformFeedback(Id) ->
   IF = get_interface(),
-  OP = lookup_func(5763),
-  IF:queue_cmd(Id,OP,0),
-  rec(OP).
+  IF:queue_cmd(Id,5763,0),
+  rec(5009).
 
 %% @doc glPauseTransformFeedback
 %%
@@ -7631,8 +6945,7 @@ isTransformFeedback(Id) ->
 -spec pauseTransformFeedback() -> 'ok'.
 pauseTransformFeedback() ->
   IF = get_interface(),
-  OP = lookup_func(5764),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5764,1),
   ok.
 
 %% @doc glResumeTransformFeedback
@@ -7641,8 +6954,7 @@ pauseTransformFeedback() ->
 -spec resumeTransformFeedback() -> 'ok'.
 resumeTransformFeedback() ->
   IF = get_interface(),
-  OP = lookup_func(5765),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5765,1),
   ok.
 
 %% @doc glDrawTransformFeedback
@@ -7651,8 +6963,7 @@ resumeTransformFeedback() ->
 -spec drawTransformFeedback(Mode, Id) -> 'ok' when Mode :: enum(),Id :: integer().
 drawTransformFeedback(Mode,Id) ->
   IF = get_interface(),
-  OP = lookup_func(5766),
-  IF:queue_cmd(Mode,Id,OP,1),
+  IF:queue_cmd(Mode,Id,5766,1),
   ok.
 
 %% @doc glDrawTransformFeedbackStream
@@ -7661,8 +6972,7 @@ drawTransformFeedback(Mode,Id) ->
 -spec drawTransformFeedbackStream(Mode, Id, Stream) -> 'ok' when Mode :: enum(),Id :: integer(),Stream :: integer().
 drawTransformFeedbackStream(Mode,Id,Stream) ->
   IF = get_interface(),
-  OP = lookup_func(5767),
-  IF:queue_cmd(Mode,Id,Stream,OP,1),
+  IF:queue_cmd(Mode,Id,Stream,5767,1),
   ok.
 
 %% @doc glBeginQueryIndexe
@@ -7671,8 +6981,7 @@ drawTransformFeedbackStream(Mode,Id,Stream) ->
 -spec beginQueryIndexed(Target, Index, Id) -> 'ok' when Target :: enum(),Index :: integer(),Id :: integer().
 beginQueryIndexed(Target,Index,Id) ->
   IF = get_interface(),
-  OP = lookup_func(5768),
-  IF:queue_cmd(Target,Index,Id,OP,1),
+  IF:queue_cmd(Target,Index,Id,5768,1),
   ok.
 
 %% @doc glBeginQueryIndexed
@@ -7681,8 +6990,7 @@ beginQueryIndexed(Target,Index,Id) ->
 -spec endQueryIndexed(Target, Index) -> 'ok' when Target :: enum(),Index :: integer().
 endQueryIndexed(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5769),
-  IF:queue_cmd(Target,Index,OP,1),
+  IF:queue_cmd(Target,Index,5769,1),
   ok.
 
 %% @doc glGetQueryIndexed
@@ -7691,9 +6999,8 @@ endQueryIndexed(Target,Index) ->
 -spec getQueryIndexediv(Target, Index, Pname) -> integer() when Target :: enum(),Index :: integer(),Pname :: enum().
 getQueryIndexediv(Target,Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5770),
-  IF:queue_cmd(Target,Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,Pname,5770,0),
+  rec(5009).
 
 %% @doc glReleaseShaderCompiler
 %%
@@ -7701,8 +7008,7 @@ getQueryIndexediv(Target,Index,Pname) ->
 -spec releaseShaderCompiler() -> 'ok'.
 releaseShaderCompiler() ->
   IF = get_interface(),
-  OP = lookup_func(5771),
-  IF:queue_cmd(OP,1),
+  IF:queue_cmd(5771,1),
   ok.
 
 %% @doc glShaderBinary
@@ -7711,9 +7017,8 @@ releaseShaderCompiler() ->
 -spec shaderBinary(Shaders, Binaryformat, Binary) -> 'ok' when Shaders :: [integer()],Binaryformat :: enum(),Binary :: binary().
 shaderBinary(Shaders,Binaryformat,Binary) ->
   IF = get_interface(),
-  OP = lookup_func(5772),
   Count = length(Shaders),
-  IF:queue_cmd(Count,Shaders,Binaryformat,Binary,OP,1),
+  IF:queue_cmd(Count,Shaders,Binaryformat,Binary,5772,1),
   ok.
 
 %% @doc glGetShaderPrecisionFormat
@@ -7722,9 +7027,8 @@ shaderBinary(Shaders,Binaryformat,Binary) ->
 -spec getShaderPrecisionFormat(Shadertype, Precisiontype) -> {Range :: {integer(),integer()},Precision :: integer()} when Shadertype :: enum(),Precisiontype :: enum().
 getShaderPrecisionFormat(Shadertype,Precisiontype) ->
   IF = get_interface(),
-  OP = lookup_func(5773),
-  IF:queue_cmd(Shadertype,Precisiontype,OP,0),
-  rec(OP).
+  IF:queue_cmd(Shadertype,Precisiontype,5773,0),
+  rec(5009).
 
 %% @doc glDepthRange
 %%
@@ -7732,8 +7036,7 @@ getShaderPrecisionFormat(Shadertype,Precisiontype) ->
 -spec depthRangef(N, F) -> 'ok' when N :: clamp(),F :: clamp().
 depthRangef(N,F) ->
   IF = get_interface(),
-  OP = lookup_func(5774),
-  IF:queue_cmd(N,F,OP,1),
+  IF:queue_cmd(N,F,5774,1),
   ok.
 
 %% @doc glClearDepthf
@@ -7742,8 +7045,7 @@ depthRangef(N,F) ->
 -spec clearDepthf(D) -> 'ok' when D :: clamp().
 clearDepthf(D) ->
   IF = get_interface(),
-  OP = lookup_func(5775),
-  IF:queue_cmd(D,OP,1),
+  IF:queue_cmd(D,5775,1),
   ok.
 
 %% @doc glGetProgramBinary
@@ -7752,9 +7054,8 @@ clearDepthf(D) ->
 -spec getProgramBinary(Program, BufSize) -> {BinaryFormat :: enum(),Binary :: binary()} when Program :: integer(),BufSize :: integer().
 getProgramBinary(Program,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5776),
-  IF:queue_cmd(Program,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Program,BufSize,5776,0),
+  rec(5009).
 
 %% @doc glProgramBinary
 %%
@@ -7762,8 +7063,7 @@ getProgramBinary(Program,BufSize) ->
 -spec programBinary(Program, BinaryFormat, Binary) -> 'ok' when Program :: integer(),BinaryFormat :: enum(),Binary :: binary().
 programBinary(Program,BinaryFormat,Binary) ->
   IF = get_interface(),
-  OP = lookup_func(5777),
-  IF:queue_cmd(Program,BinaryFormat,Binary,OP,1),
+  IF:queue_cmd(Program,BinaryFormat,Binary,5777,1),
   ok.
 
 %% @doc glProgramParameter
@@ -7772,8 +7072,7 @@ programBinary(Program,BinaryFormat,Binary) ->
 -spec programParameteri(Program, Pname, Value) -> 'ok' when Program :: integer(),Pname :: enum(),Value :: integer().
 programParameteri(Program,Pname,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5778),
-  IF:queue_cmd(Program,Pname,Value,OP,1),
+  IF:queue_cmd(Program,Pname,Value,5778,1),
   ok.
 
 %% @doc glUseProgramStages
@@ -7782,8 +7081,7 @@ programParameteri(Program,Pname,Value) ->
 -spec useProgramStages(Pipeline, Stages, Program) -> 'ok' when Pipeline :: integer(),Stages :: integer(),Program :: integer().
 useProgramStages(Pipeline,Stages,Program) ->
   IF = get_interface(),
-  OP = lookup_func(5779),
-  IF:queue_cmd(Pipeline,Stages,Program,OP,1),
+  IF:queue_cmd(Pipeline,Stages,Program,5779,1),
   ok.
 
 %% @doc glActiveShaderProgram
@@ -7792,8 +7090,7 @@ useProgramStages(Pipeline,Stages,Program) ->
 -spec activeShaderProgram(Pipeline, Program) -> 'ok' when Pipeline :: integer(),Program :: integer().
 activeShaderProgram(Pipeline,Program) ->
   IF = get_interface(),
-  OP = lookup_func(5780),
-  IF:queue_cmd(Pipeline,Program,OP,1),
+  IF:queue_cmd(Pipeline,Program,5780,1),
   ok.
 
 %% @doc glCreateShaderProgramv
@@ -7802,11 +7099,10 @@ activeShaderProgram(Pipeline,Program) ->
 -spec createShaderProgramv(Type, Strings) -> integer() when Type :: enum(),Strings :: iolist().
 createShaderProgramv(Type,Strings) ->
   IF = get_interface(),
-  OP = lookup_func(5781),
   StringsTemp = unicode:characters_to_binary([[Str|[0]] || Str <- Strings ]),
   Count = length(Strings),
-  IF:queue_cmd(Type,Count,StringsTemp,OP,0),
-  rec(OP).
+  IF:queue_cmd(Type,Count,StringsTemp,5781,0),
+  rec(5009).
 
 %% @doc glBindProgramPipeline
 %%
@@ -7814,8 +7110,7 @@ createShaderProgramv(Type,Strings) ->
 -spec bindProgramPipeline(Pipeline) -> 'ok' when Pipeline :: integer().
 bindProgramPipeline(Pipeline) ->
   IF = get_interface(),
-  OP = lookup_func(5782),
-  IF:queue_cmd(Pipeline,OP,1),
+  IF:queue_cmd(Pipeline,5782,1),
   ok.
 
 %% @doc glDeleteProgramPipelines
@@ -7824,9 +7119,8 @@ bindProgramPipeline(Pipeline) ->
 -spec deleteProgramPipelines(Pipelines) -> 'ok' when Pipelines :: [integer()].
 deleteProgramPipelines(Pipelines) ->
   IF = get_interface(),
-  OP = lookup_func(5783),
   N = length(Pipelines),
-  IF:queue_cmd(N,Pipelines,OP,1),
+  IF:queue_cmd(N,Pipelines,5783,1),
   ok.
 
 %% @doc glGenProgramPipelines
@@ -7835,9 +7129,8 @@ deleteProgramPipelines(Pipelines) ->
 -spec genProgramPipelines(N) -> [integer()] when N :: integer().
 genProgramPipelines(N) ->
   IF = get_interface(),
-  OP = lookup_func(5784),
-  IF:queue_cmd(N,OP,0),
-  rec(OP).
+  IF:queue_cmd(N,5784,0),
+  rec(5009).
 
 %% @doc glIsProgramPipeline
 %%
@@ -7845,9 +7138,8 @@ genProgramPipelines(N) ->
 -spec isProgramPipeline(Pipeline) -> 0|1 when Pipeline :: integer().
 isProgramPipeline(Pipeline) ->
   IF = get_interface(),
-  OP = lookup_func(5785),
-  IF:queue_cmd(Pipeline,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pipeline,5785,0),
+  rec(5009).
 
 %% @doc glGetProgramPipeline
 %%
@@ -7855,9 +7147,8 @@ isProgramPipeline(Pipeline) ->
 -spec getProgramPipelineiv(Pipeline, Pname) -> integer() when Pipeline :: integer(),Pname :: enum().
 getProgramPipelineiv(Pipeline,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5786),
-  IF:queue_cmd(Pipeline,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pipeline,Pname,5786,0),
+  rec(5009).
 
 %% @doc glProgramUniform
 %%
@@ -7865,8 +7156,7 @@ getProgramPipelineiv(Pipeline,Pname) ->
 -spec programUniform1i(Program, Location, V0) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer().
 programUniform1i(Program,Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5787),
-  IF:queue_cmd(Program,Location,V0,OP,1),
+  IF:queue_cmd(Program,Location,V0,5787,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7875,9 +7165,8 @@ programUniform1i(Program,Location,V0) ->
 -spec programUniform1iv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [integer()].
 programUniform1iv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5788),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5788,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7886,8 +7175,7 @@ programUniform1iv(Program,Location,Value) ->
 -spec programUniform1f(Program, Location, V0) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float().
 programUniform1f(Program,Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5789),
-  IF:queue_cmd(Program,Location,V0,OP,1),
+  IF:queue_cmd(Program,Location,V0,5789,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7896,9 +7184,8 @@ programUniform1f(Program,Location,V0) ->
 -spec programUniform1fv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [float()].
 programUniform1fv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5790),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5790,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7907,8 +7194,7 @@ programUniform1fv(Program,Location,Value) ->
 -spec programUniform1d(Program, Location, V0) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float().
 programUniform1d(Program,Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5791),
-  IF:queue_cmd(Program,Location,V0,OP,1),
+  IF:queue_cmd(Program,Location,V0,5791,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7917,9 +7203,8 @@ programUniform1d(Program,Location,V0) ->
 -spec programUniform1dv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [float()].
 programUniform1dv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5792),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5792,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7928,8 +7213,7 @@ programUniform1dv(Program,Location,Value) ->
 -spec programUniform1ui(Program, Location, V0) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer().
 programUniform1ui(Program,Location,V0) ->
   IF = get_interface(),
-  OP = lookup_func(5793),
-  IF:queue_cmd(Program,Location,V0,OP,1),
+  IF:queue_cmd(Program,Location,V0,5793,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7938,9 +7222,8 @@ programUniform1ui(Program,Location,V0) ->
 -spec programUniform1uiv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [integer()].
 programUniform1uiv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5794),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5794,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7949,8 +7232,7 @@ programUniform1uiv(Program,Location,Value) ->
 -spec programUniform2i(Program, Location, V0, V1) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer(),V1 :: integer().
 programUniform2i(Program,Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5795),
-  IF:queue_cmd(Program,Location,V0,V1,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,5795,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7959,9 +7241,8 @@ programUniform2i(Program,Location,V0,V1) ->
 -spec programUniform2iv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{integer(),integer()}].
 programUniform2iv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5796),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5796,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7970,8 +7251,7 @@ programUniform2iv(Program,Location,Value) ->
 -spec programUniform2f(Program, Location, V0, V1) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float(),V1 :: float().
 programUniform2f(Program,Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5797),
-  IF:queue_cmd(Program,Location,V0,V1,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,5797,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7980,9 +7260,8 @@ programUniform2f(Program,Location,V0,V1) ->
 -spec programUniform2fv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{float(),float()}].
 programUniform2fv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5798),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5798,1),
   ok.
 
 %% @doc glProgramUniform
@@ -7991,8 +7270,7 @@ programUniform2fv(Program,Location,Value) ->
 -spec programUniform2d(Program, Location, V0, V1) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float(),V1 :: float().
 programUniform2d(Program,Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5799),
-  IF:queue_cmd(Program,Location,V0,V1,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,5799,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8001,9 +7279,8 @@ programUniform2d(Program,Location,V0,V1) ->
 -spec programUniform2dv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{float(),float()}].
 programUniform2dv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5800),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5800,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8012,8 +7289,7 @@ programUniform2dv(Program,Location,Value) ->
 -spec programUniform2ui(Program, Location, V0, V1) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer(),V1 :: integer().
 programUniform2ui(Program,Location,V0,V1) ->
   IF = get_interface(),
-  OP = lookup_func(5801),
-  IF:queue_cmd(Program,Location,V0,V1,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,5801,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8022,9 +7298,8 @@ programUniform2ui(Program,Location,V0,V1) ->
 -spec programUniform2uiv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{integer(),integer()}].
 programUniform2uiv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5802),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5802,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8033,8 +7308,7 @@ programUniform2uiv(Program,Location,Value) ->
 -spec programUniform3i(Program, Location, V0, V1, V2) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer().
 programUniform3i(Program,Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5803),
-  IF:queue_cmd(Program,Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,5803,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8043,9 +7317,8 @@ programUniform3i(Program,Location,V0,V1,V2) ->
 -spec programUniform3iv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{integer(),integer(),integer()}].
 programUniform3iv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5804),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5804,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8054,8 +7327,7 @@ programUniform3iv(Program,Location,Value) ->
 -spec programUniform3f(Program, Location, V0, V1, V2) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float(),V1 :: float(),V2 :: float().
 programUniform3f(Program,Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5805),
-  IF:queue_cmd(Program,Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,5805,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8064,9 +7336,8 @@ programUniform3f(Program,Location,V0,V1,V2) ->
 -spec programUniform3fv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{float(),float(),float()}].
 programUniform3fv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5806),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5806,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8075,8 +7346,7 @@ programUniform3fv(Program,Location,Value) ->
 -spec programUniform3d(Program, Location, V0, V1, V2) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float(),V1 :: float(),V2 :: float().
 programUniform3d(Program,Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5807),
-  IF:queue_cmd(Program,Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,5807,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8085,9 +7355,8 @@ programUniform3d(Program,Location,V0,V1,V2) ->
 -spec programUniform3dv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{float(),float(),float()}].
 programUniform3dv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5808),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5808,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8096,8 +7365,7 @@ programUniform3dv(Program,Location,Value) ->
 -spec programUniform3ui(Program, Location, V0, V1, V2) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer().
 programUniform3ui(Program,Location,V0,V1,V2) ->
   IF = get_interface(),
-  OP = lookup_func(5809),
-  IF:queue_cmd(Program,Location,V0,V1,V2,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,5809,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8106,9 +7374,8 @@ programUniform3ui(Program,Location,V0,V1,V2) ->
 -spec programUniform3uiv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{integer(),integer(),integer()}].
 programUniform3uiv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5810),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5810,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8117,8 +7384,7 @@ programUniform3uiv(Program,Location,Value) ->
 -spec programUniform4i(Program, Location, V0, V1, V2, V3) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer(),V3 :: integer().
 programUniform4i(Program,Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5811),
-  IF:queue_cmd(Program,Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,V3,5811,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8127,9 +7393,8 @@ programUniform4i(Program,Location,V0,V1,V2,V3) ->
 -spec programUniform4iv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{integer(),integer(),integer(),integer()}].
 programUniform4iv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5812),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5812,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8138,8 +7403,7 @@ programUniform4iv(Program,Location,Value) ->
 -spec programUniform4f(Program, Location, V0, V1, V2, V3) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float(),V1 :: float(),V2 :: float(),V3 :: float().
 programUniform4f(Program,Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5813),
-  IF:queue_cmd(Program,Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,V3,5813,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8148,9 +7412,8 @@ programUniform4f(Program,Location,V0,V1,V2,V3) ->
 -spec programUniform4fv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{float(),float(),float(),float()}].
 programUniform4fv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5814),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5814,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8159,8 +7422,7 @@ programUniform4fv(Program,Location,Value) ->
 -spec programUniform4d(Program, Location, V0, V1, V2, V3) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: float(),V1 :: float(),V2 :: float(),V3 :: float().
 programUniform4d(Program,Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5815),
-  IF:queue_cmd(Program,Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,V3,5815,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8169,9 +7431,8 @@ programUniform4d(Program,Location,V0,V1,V2,V3) ->
 -spec programUniform4dv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{float(),float(),float(),float()}].
 programUniform4dv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5816),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5816,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8180,8 +7441,7 @@ programUniform4dv(Program,Location,Value) ->
 -spec programUniform4ui(Program, Location, V0, V1, V2, V3) -> 'ok' when Program :: integer(),Location :: integer(),V0 :: integer(),V1 :: integer(),V2 :: integer(),V3 :: integer().
 programUniform4ui(Program,Location,V0,V1,V2,V3) ->
   IF = get_interface(),
-  OP = lookup_func(5817),
-  IF:queue_cmd(Program,Location,V0,V1,V2,V3,OP,1),
+  IF:queue_cmd(Program,Location,V0,V1,V2,V3,5817,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8190,9 +7450,8 @@ programUniform4ui(Program,Location,V0,V1,V2,V3) ->
 -spec programUniform4uiv(Program, Location, Value) -> 'ok' when Program :: integer(),Location :: integer(),Value :: [{integer(),integer(),integer(),integer()}].
 programUniform4uiv(Program,Location,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5818),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Value,5818,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8201,9 +7460,8 @@ programUniform4uiv(Program,Location,Value) ->
 -spec programUniformMatrix2fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float()}].
 programUniformMatrix2fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5819),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5819,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8212,9 +7470,8 @@ programUniformMatrix2fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix3fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix3fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5820),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5820,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8223,9 +7480,8 @@ programUniformMatrix3fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix4fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix4fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5821),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5821,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8234,9 +7490,8 @@ programUniformMatrix4fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix2dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float()}].
 programUniformMatrix2dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5822),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5822,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8245,9 +7500,8 @@ programUniformMatrix2dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix3dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix3dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5823),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5823,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8256,9 +7510,8 @@ programUniformMatrix3dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix4dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix4dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5824),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5824,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8267,9 +7520,8 @@ programUniformMatrix4dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix2x3fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 programUniformMatrix2x3fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5825),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5825,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8278,9 +7530,8 @@ programUniformMatrix2x3fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix3x2fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 programUniformMatrix3x2fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5826),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5826,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8289,9 +7540,8 @@ programUniformMatrix3x2fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix2x4fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix2x4fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5827),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5827,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8300,9 +7550,8 @@ programUniformMatrix2x4fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix4x2fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix4x2fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5828),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5828,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8311,9 +7560,8 @@ programUniformMatrix4x2fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix3x4fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix3x4fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5829),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5829,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8322,9 +7570,8 @@ programUniformMatrix3x4fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix4x3fv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix4x3fv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5830),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5830,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8333,9 +7580,8 @@ programUniformMatrix4x3fv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix2x3dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 programUniformMatrix2x3dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5831),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5831,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8344,9 +7590,8 @@ programUniformMatrix2x3dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix3x2dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float()}].
 programUniformMatrix3x2dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5832),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5832,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8355,9 +7600,8 @@ programUniformMatrix3x2dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix2x4dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix2x4dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5833),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5833,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8366,9 +7610,8 @@ programUniformMatrix2x4dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix4x2dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix4x2dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5834),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5834,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8377,9 +7620,8 @@ programUniformMatrix4x2dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix3x4dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix3x4dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5835),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5835,1),
   ok.
 
 %% @doc glProgramUniform
@@ -8388,9 +7630,8 @@ programUniformMatrix3x4dv(Program,Location,Transpose,Value) ->
 -spec programUniformMatrix4x3dv(Program, Location, Transpose, Value) -> 'ok' when Program :: integer(),Location :: integer(),Transpose :: 0|1,Value :: [{float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float(),float()}].
 programUniformMatrix4x3dv(Program,Location,Transpose,Value) ->
   IF = get_interface(),
-  OP = lookup_func(5836),
   Count = length(Value),
-  IF:queue_cmd(Program,Location,Count,Transpose,Value,OP,1),
+  IF:queue_cmd(Program,Location,Count,Transpose,Value,5836,1),
   ok.
 
 %% @doc glValidateProgramPipeline
@@ -8399,8 +7640,7 @@ programUniformMatrix4x3dv(Program,Location,Transpose,Value) ->
 -spec validateProgramPipeline(Pipeline) -> 'ok' when Pipeline :: integer().
 validateProgramPipeline(Pipeline) ->
   IF = get_interface(),
-  OP = lookup_func(5837),
-  IF:queue_cmd(Pipeline,OP,1),
+  IF:queue_cmd(Pipeline,5837,1),
   ok.
 
 %% @doc glGetProgramPipelineInfoLog
@@ -8409,9 +7649,8 @@ validateProgramPipeline(Pipeline) ->
 -spec getProgramPipelineInfoLog(Pipeline, BufSize) -> string() when Pipeline :: integer(),BufSize :: integer().
 getProgramPipelineInfoLog(Pipeline,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5838),
-  IF:queue_cmd(Pipeline,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Pipeline,BufSize,5838,0),
+  rec(5009).
 
 %% @doc glVertexAttribL
 %%
@@ -8419,8 +7658,7 @@ getProgramPipelineInfoLog(Pipeline,BufSize) ->
 -spec vertexAttribL1d(Index, X) -> 'ok' when Index :: integer(),X :: float().
 vertexAttribL1d(Index,X) ->
   IF = get_interface(),
-  OP = lookup_func(5839),
-  IF:queue_cmd(Index,X,OP,1),
+  IF:queue_cmd(Index,X,5839,1),
   ok.
 
 %% @doc glVertexAttribL
@@ -8429,8 +7667,7 @@ vertexAttribL1d(Index,X) ->
 -spec vertexAttribL2d(Index, X, Y) -> 'ok' when Index :: integer(),X :: float(),Y :: float().
 vertexAttribL2d(Index,X,Y) ->
   IF = get_interface(),
-  OP = lookup_func(5840),
-  IF:queue_cmd(Index,X,Y,OP,1),
+  IF:queue_cmd(Index,X,Y,5840,1),
   ok.
 
 %% @doc glVertexAttribL
@@ -8439,8 +7676,7 @@ vertexAttribL2d(Index,X,Y) ->
 -spec vertexAttribL3d(Index, X, Y, Z) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),Z :: float().
 vertexAttribL3d(Index,X,Y,Z) ->
   IF = get_interface(),
-  OP = lookup_func(5841),
-  IF:queue_cmd(Index,X,Y,Z,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,5841,1),
   ok.
 
 %% @doc glVertexAttribL
@@ -8449,8 +7685,7 @@ vertexAttribL3d(Index,X,Y,Z) ->
 -spec vertexAttribL4d(Index, X, Y, Z, W) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),Z :: float(),W :: float().
 vertexAttribL4d(Index,X,Y,Z,W) ->
   IF = get_interface(),
-  OP = lookup_func(5842),
-  IF:queue_cmd(Index,X,Y,Z,W,OP,1),
+  IF:queue_cmd(Index,X,Y,Z,W,5842,1),
   ok.
 
 %% @equiv vertexAttribL1d(Index,X)
@@ -8471,8 +7706,7 @@ vertexAttribL4dv(Index,{X,Y,Z,W}) ->  vertexAttribL4d(Index,X,Y,Z,W).
 -spec vertexAttribLPointer(Index, Size, Type, Stride, Pointer) -> 'ok' when Index :: integer(),Size :: integer(),Type :: enum(),Stride :: integer(),Pointer :: offset()|mem().
 vertexAttribLPointer(Index,Size,Type,Stride,Pointer) ->
   IF = get_interface(),
-  OP = lookup_func(5843),
-  IF:queue_cmd(Index,Size,Type,Stride,Pointer,OP,1),
+  IF:queue_cmd(Index,Size,Type,Stride,Pointer,5843,1),
   ok.
 
 %% @doc glGetVertexAttribL
@@ -8481,9 +7715,8 @@ vertexAttribLPointer(Index,Size,Type,Stride,Pointer) ->
 -spec getVertexAttribLdv(Index, Pname) -> {float(),float(),float(),float()} when Index :: integer(),Pname :: enum().
 getVertexAttribLdv(Index,Pname) ->
   IF = get_interface(),
-  OP = lookup_func(5845),
-  IF:queue_cmd(Index,Pname,OP,0),
-  rec(OP).
+  IF:queue_cmd(Index,Pname,5845,0),
+  rec(5009).
 
 %% @doc glViewportArrayv
 %%
@@ -8491,9 +7724,8 @@ getVertexAttribLdv(Index,Pname) ->
 -spec viewportArrayv(First, V) -> 'ok' when First :: integer(),V :: [{float(),float(),float(),float()}].
 viewportArrayv(First,V) ->
   IF = get_interface(),
-  OP = lookup_func(5846),
   Count = length(V),
-  IF:queue_cmd(First,Count,V,OP,1),
+  IF:queue_cmd(First,Count,V,5846,1),
   ok.
 
 %% @doc glViewportIndexed
@@ -8502,8 +7734,7 @@ viewportArrayv(First,V) ->
 -spec viewportIndexedf(Index, X, Y, W, H) -> 'ok' when Index :: integer(),X :: float(),Y :: float(),W :: float(),H :: float().
 viewportIndexedf(Index,X,Y,W,H) ->
   IF = get_interface(),
-  OP = lookup_func(5847),
-  IF:queue_cmd(Index,X,Y,W,H,OP,1),
+  IF:queue_cmd(Index,X,Y,W,H,5847,1),
   ok.
 
 %% @doc glViewportIndexed
@@ -8512,8 +7743,7 @@ viewportIndexedf(Index,X,Y,W,H) ->
 -spec viewportIndexedfv(Index, V) -> 'ok' when Index :: integer(),V :: {float(),float(),float(),float()}.
 viewportIndexedfv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5848),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5848,1),
   ok.
 
 %% @doc glScissorArrayv
@@ -8522,9 +7752,8 @@ viewportIndexedfv(Index,V) ->
 -spec scissorArrayv(First, V) -> 'ok' when First :: integer(),V :: [{integer(),integer(),integer(),integer()}].
 scissorArrayv(First,V) ->
   IF = get_interface(),
-  OP = lookup_func(5849),
   Count = length(V),
-  IF:queue_cmd(First,Count,V,OP,1),
+  IF:queue_cmd(First,Count,V,5849,1),
   ok.
 
 %% @doc glScissorIndexe
@@ -8533,8 +7762,7 @@ scissorArrayv(First,V) ->
 -spec scissorIndexed(Index, Left, Bottom, Width, Height) -> 'ok' when Index :: integer(),Left :: integer(),Bottom :: integer(),Width :: integer(),Height :: integer().
 scissorIndexed(Index,Left,Bottom,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5850),
-  IF:queue_cmd(Index,Left,Bottom,Width,Height,OP,1),
+  IF:queue_cmd(Index,Left,Bottom,Width,Height,5850,1),
   ok.
 
 %% @doc glScissorIndexe
@@ -8543,8 +7771,7 @@ scissorIndexed(Index,Left,Bottom,Width,Height) ->
 -spec scissorIndexedv(Index, V) -> 'ok' when Index :: integer(),V :: {integer(),integer(),integer(),integer()}.
 scissorIndexedv(Index,V) ->
   IF = get_interface(),
-  OP = lookup_func(5851),
-  IF:queue_cmd(Index,V,OP,1),
+  IF:queue_cmd(Index,V,5851,1),
   ok.
 
 %% @doc glDepthRangeArrayv
@@ -8553,9 +7780,8 @@ scissorIndexedv(Index,V) ->
 -spec depthRangeArrayv(First, V) -> 'ok' when First :: integer(),V :: [{clamp(),clamp()}].
 depthRangeArrayv(First,V) ->
   IF = get_interface(),
-  OP = lookup_func(5852),
   Count = length(V),
-  IF:queue_cmd(First,Count,V,OP,1),
+  IF:queue_cmd(First,Count,V,5852,1),
   ok.
 
 %% @doc glDepthRangeIndexe
@@ -8564,8 +7790,7 @@ depthRangeArrayv(First,V) ->
 -spec depthRangeIndexed(Index, N, F) -> 'ok' when Index :: integer(),N :: clamp(),F :: clamp().
 depthRangeIndexed(Index,N,F) ->
   IF = get_interface(),
-  OP = lookup_func(5853),
-  IF:queue_cmd(Index,N,F,OP,1),
+  IF:queue_cmd(Index,N,F,5853,1),
   ok.
 
 %% @doc glGet
@@ -8574,9 +7799,8 @@ depthRangeIndexed(Index,N,F) ->
 -spec getFloati_v(Target, Index) -> [float()] when Target :: enum(),Index :: integer().
 getFloati_v(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5854),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5854,0),
+  rec(5009).
 
 %% @doc glGet
 %%
@@ -8584,9 +7808,8 @@ getFloati_v(Target,Index) ->
 -spec getDoublei_v(Target, Index) -> [float()] when Target :: enum(),Index :: integer().
 getDoublei_v(Target,Index) ->
   IF = get_interface(),
-  OP = lookup_func(5855),
-  IF:queue_cmd(Target,Index,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Index,5855,0),
+  rec(5009).
 
 %% @doc glDebugMessageControlARB
 %%
@@ -8594,9 +7817,8 @@ getDoublei_v(Target,Index) ->
 -spec debugMessageControlARB(Source, Type, Severity, Ids, Enabled) -> 'ok' when Source :: enum(),Type :: enum(),Severity :: enum(),Ids :: [integer()],Enabled :: 0|1.
 debugMessageControlARB(Source,Type,Severity,Ids,Enabled) ->
   IF = get_interface(),
-  OP = lookup_func(5856),
   Count = length(Ids),
-  IF:queue_cmd(Source,Type,Severity,Count,Ids,Enabled,OP,1),
+  IF:queue_cmd(Source,Type,Severity,Count,Ids,Enabled,5856,1),
   ok.
 
 %% @doc glDebugMessageInsertARB
@@ -8605,9 +7827,8 @@ debugMessageControlARB(Source,Type,Severity,Ids,Enabled) ->
 -spec debugMessageInsertARB(Source, Type, Id, Severity, Buf) -> 'ok' when Source :: enum(),Type :: enum(),Id :: integer(),Severity :: enum(),Buf :: string().
 debugMessageInsertARB(Source,Type,Id,Severity,Buf) ->
   IF = get_interface(),
-  OP = lookup_func(5857),
   BufBin = unicode:characters_to_binary([Buf|[0]]),
-  IF:queue_cmd(Source,Type,Id,Severity,BufBin,OP,1),
+  IF:queue_cmd(Source,Type,Id,Severity,BufBin,5857,1),
   ok.
 
 %% @doc glGetDebugMessageLogARB
@@ -8616,9 +7837,8 @@ debugMessageInsertARB(Source,Type,Id,Severity,Buf) ->
 -spec getDebugMessageLogARB(Count, Bufsize) -> {integer(),Sources :: [enum()],Types :: [enum()],Ids :: [integer()],Severities :: [enum()],MessageLog :: string()} when Count :: integer(),Bufsize :: integer().
 getDebugMessageLogARB(Count,Bufsize) ->
   IF = get_interface(),
-  OP = lookup_func(5858),
-  IF:queue_cmd(Count,Bufsize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Count,Bufsize,5858,0),
+  rec(5009).
 
 %% @doc glGetGraphicsResetStatusARB
 %%
@@ -8626,9 +7846,8 @@ getDebugMessageLogARB(Count,Bufsize) ->
 -spec getGraphicsResetStatusARB() -> enum().
 getGraphicsResetStatusARB() ->
   IF = get_interface(),
-  OP = lookup_func(5859),
-  IF:queue_cmd(OP,0),
-  rec(OP).
+  IF:queue_cmd(5859,0),
+  rec(5009).
 
 %% @doc glDrawArraysInstancedBaseInstance
 %%
@@ -8636,8 +7855,7 @@ getGraphicsResetStatusARB() ->
 -spec drawArraysInstancedBaseInstance(Mode, First, Count, Primcount, Baseinstance) -> 'ok' when Mode :: enum(),First :: integer(),Count :: integer(),Primcount :: integer(),Baseinstance :: integer().
 drawArraysInstancedBaseInstance(Mode,First,Count,Primcount,Baseinstance) ->
   IF = get_interface(),
-  OP = lookup_func(5860),
-  IF:queue_cmd(Mode,First,Count,Primcount,Baseinstance,OP,1),
+  IF:queue_cmd(Mode,First,Count,Primcount,Baseinstance,5860,1),
   ok.
 
 %% @doc glDrawElementsInstancedBaseInstance
@@ -8646,8 +7864,7 @@ drawArraysInstancedBaseInstance(Mode,First,Count,Primcount,Baseinstance) ->
 -spec drawElementsInstancedBaseInstance(Mode, Count, Type, Indices, Primcount, Baseinstance) -> 'ok' when Mode :: enum(),Count :: integer(),Type :: enum(),Indices :: offset()|mem(),Primcount :: integer(),Baseinstance :: integer().
 drawElementsInstancedBaseInstance(Mode,Count,Type,Indices,Primcount,Baseinstance) ->
   IF = get_interface(),
-  OP = lookup_func(5861),
-  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,Baseinstance,OP,1),
+  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,Baseinstance,5861,1),
   ok.
 
 %% @doc glDrawElementsInstancedBaseVertexBaseInstance
@@ -8656,8 +7873,7 @@ drawElementsInstancedBaseInstance(Mode,Count,Type,Indices,Primcount,Baseinstance
 -spec drawElementsInstancedBaseVertexBaseInstance(Mode, Count, Type, Indices, Primcount, Basevertex, Baseinstance) -> 'ok' when Mode :: enum(),Count :: integer(),Type :: enum(),Indices :: offset()|mem(),Primcount :: integer(),Basevertex :: integer(),Baseinstance :: integer().
 drawElementsInstancedBaseVertexBaseInstance(Mode,Count,Type,Indices,Primcount,Basevertex,Baseinstance) ->
   IF = get_interface(),
-  OP = lookup_func(5863),
-  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,Basevertex,Baseinstance,OP,1),
+  IF:queue_cmd(Mode,Count,Type,Indices,Primcount,Basevertex,Baseinstance,5863,1),
   ok.
 
 %% @doc glDrawTransformFeedbackInstance
@@ -8666,8 +7882,7 @@ drawElementsInstancedBaseVertexBaseInstance(Mode,Count,Type,Indices,Primcount,Ba
 -spec drawTransformFeedbackInstanced(Mode, Id, Primcount) -> 'ok' when Mode :: enum(),Id :: integer(),Primcount :: integer().
 drawTransformFeedbackInstanced(Mode,Id,Primcount) ->
   IF = get_interface(),
-  OP = lookup_func(5865),
-  IF:queue_cmd(Mode,Id,Primcount,OP,1),
+  IF:queue_cmd(Mode,Id,Primcount,5865,1),
   ok.
 
 %% @doc glDrawTransformFeedbackStreamInstance
@@ -8676,8 +7891,7 @@ drawTransformFeedbackInstanced(Mode,Id,Primcount) ->
 -spec drawTransformFeedbackStreamInstanced(Mode, Id, Stream, Primcount) -> 'ok' when Mode :: enum(),Id :: integer(),Stream :: integer(),Primcount :: integer().
 drawTransformFeedbackStreamInstanced(Mode,Id,Stream,Primcount) ->
   IF = get_interface(),
-  OP = lookup_func(5866),
-  IF:queue_cmd(Mode,Id,Stream,Primcount,OP,1),
+  IF:queue_cmd(Mode,Id,Stream,Primcount,5866,1),
   ok.
 
 %% @doc glGetInternalformat
@@ -8686,9 +7900,8 @@ drawTransformFeedbackStreamInstanced(Mode,Id,Stream,Primcount) ->
 -spec getInternalformativ(Target, Internalformat, Pname, BufSize) -> [integer()] when Target :: enum(),Internalformat :: enum(),Pname :: enum(),BufSize :: integer().
 getInternalformativ(Target,Internalformat,Pname,BufSize) ->
   IF = get_interface(),
-  OP = lookup_func(5867),
-  IF:queue_cmd(Target,Internalformat,Pname,BufSize,OP,0),
-  rec(OP).
+  IF:queue_cmd(Target,Internalformat,Pname,BufSize,5867,0),
+  rec(5009).
 
 %% @doc glBindImageTexture
 %%
@@ -8696,8 +7909,7 @@ getInternalformativ(Target,Internalformat,Pname,BufSize) ->
 -spec bindImageTexture(Unit, Texture, Level, Layered, Layer, Access, Format) -> 'ok' when Unit :: integer(),Texture :: integer(),Level :: integer(),Layered :: 0|1,Layer :: integer(),Access :: enum(),Format :: enum().
 bindImageTexture(Unit,Texture,Level,Layered,Layer,Access,Format) ->
   IF = get_interface(),
-  OP = lookup_func(5868),
-  IF:queue_cmd(Unit,Texture,Level,Layered,Layer,Access,Format,OP,1),
+  IF:queue_cmd(Unit,Texture,Level,Layered,Layer,Access,Format,5868,1),
   ok.
 
 %% @doc glMemoryBarrier
@@ -8706,8 +7918,7 @@ bindImageTexture(Unit,Texture,Level,Layered,Layer,Access,Format) ->
 -spec memoryBarrier(Barriers) -> 'ok' when Barriers :: integer().
 memoryBarrier(Barriers) ->
   IF = get_interface(),
-  OP = lookup_func(5869),
-  IF:queue_cmd(Barriers,OP,1),
+  IF:queue_cmd(Barriers,5869,1),
   ok.
 
 %% @doc glTexStorage1D
@@ -8716,8 +7927,7 @@ memoryBarrier(Barriers) ->
 -spec texStorage1D(Target, Levels, Internalformat, Width) -> 'ok' when Target :: enum(),Levels :: integer(),Internalformat :: enum(),Width :: integer().
 texStorage1D(Target,Levels,Internalformat,Width) ->
   IF = get_interface(),
-  OP = lookup_func(5870),
-  IF:queue_cmd(Target,Levels,Internalformat,Width,OP,1),
+  IF:queue_cmd(Target,Levels,Internalformat,Width,5870,1),
   ok.
 
 %% @doc glTexStorage2D
@@ -8726,8 +7936,7 @@ texStorage1D(Target,Levels,Internalformat,Width) ->
 -spec texStorage2D(Target, Levels, Internalformat, Width, Height) -> 'ok' when Target :: enum(),Levels :: integer(),Internalformat :: enum(),Width :: integer(),Height :: integer().
 texStorage2D(Target,Levels,Internalformat,Width,Height) ->
   IF = get_interface(),
-  OP = lookup_func(5871),
-  IF:queue_cmd(Target,Levels,Internalformat,Width,Height,OP,1),
+  IF:queue_cmd(Target,Levels,Internalformat,Width,Height,5871,1),
   ok.
 
 %% @doc glTexStorage3D
@@ -8736,8 +7945,7 @@ texStorage2D(Target,Levels,Internalformat,Width,Height) ->
 -spec texStorage3D(Target, Levels, Internalformat, Width, Height, Depth) -> 'ok' when Target :: enum(),Levels :: integer(),Internalformat :: enum(),Width :: integer(),Height :: integer(),Depth :: integer().
 texStorage3D(Target,Levels,Internalformat,Width,Height,Depth) ->
   IF = get_interface(),
-  OP = lookup_func(5872),
-  IF:queue_cmd(Target,Levels,Internalformat,Width,Height,Depth,OP,1),
+  IF:queue_cmd(Target,Levels,Internalformat,Width,Height,Depth,5872,1),
   ok.
 
 %% @doc glDepthBoundsEXT
@@ -8746,8 +7954,7 @@ texStorage3D(Target,Levels,Internalformat,Width,Height,Depth) ->
 -spec depthBoundsEXT(Zmin, Zmax) -> 'ok' when Zmin :: clamp(),Zmax :: clamp().
 depthBoundsEXT(Zmin,Zmax) ->
   IF = get_interface(),
-  OP = lookup_func(5873),
-  IF:queue_cmd(Zmin,Zmax,OP,1),
+  IF:queue_cmd(Zmin,Zmax,5873,1),
   ok.
 
 %% @doc glStencilClearTagEXT
@@ -8756,7 +7963,6 @@ depthBoundsEXT(Zmin,Zmax) ->
 -spec stencilClearTagEXT(StencilTagBits, StencilClearTag) -> 'ok' when StencilTagBits :: integer(),StencilClearTag :: integer().
 stencilClearTagEXT(StencilTagBits,StencilClearTag) ->
   IF = get_interface(),
-  OP = lookup_func(5874),
-  IF:queue_cmd(StencilTagBits,StencilClearTag,OP,1),
+  IF:queue_cmd(StencilTagBits,StencilClearTag,5874,1),
   ok.
 

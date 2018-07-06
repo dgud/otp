@@ -36,12 +36,14 @@
 int erl_gl_initiated = FALSE;
 ErlDrvTermData gl_active = 0;
 wxeGLC glc;
+typedef void * (*WXE_GL_LOOKUP) (int);
+WXE_GL_LOOKUP wxe_gl_lookup_func = NULL;
+typedef void * (*WXE_GL_FUNC) (ErlNifEnv*, ErlNifPid*, const ERL_NIF_TERM argv[]);
 
-void wxe_initOpenGL(wxeReturn *rt, char *bp) {
-  rt->addAtom((char *) "ok");
-  rt->add(wxString::FromAscii("already initilized"));
-  rt->addTupleCount(2);
-  rt->send();
+extern "C" {
+void wxe_initOpenGL(void * fptr) {
+  wxe_gl_lookup_func = (WXE_GL_LOOKUP) fptr;
+}
 }
 
 void setActiveGL(ErlDrvTermData caller, wxGLCanvas *canvas)
@@ -64,8 +66,9 @@ void deleteActiveGL(wxGLCanvas *canvas)
 }
 
 void gl_dispatch(wxeCommand *event){
+  WXE_GL_FUNC fptr;
   //fprintf(stderr, "caller %p gl_active %p\r\n", event->pid, gl_active);
-  if(gl_active) {
+  if(gl_active && wxe_gl_lookup_func) {
   // if(caller != gl_active) {
   //   wxGLCanvas * current = glc[caller];
   //   if(current) {
@@ -83,8 +86,16 @@ void gl_dispatch(wxeCommand *event){
     enif_clear_env(event->env);
     return ;
   }
+  if((fptr = (WXE_GL_FUNC) wxe_gl_lookup_func(event->op))) {
+    fptr(event->env, &event->pid, event->args);
+  } else {
+    enif_send(NULL, &event->pid, event->env,
+              enif_make_tuple3(event->env,
+                               enif_make_atom(event->env, "_egl_error_"),
+                               enif_make_int(event->env, event->op),
+                               enif_make_atom(event->env, "undef")));
+  }
   event->op = -1;
-  event->fptr(event->env, &event->pid, event->args);
   enif_clear_env(event->env);
 }
 

@@ -85,10 +85,12 @@ init_opengl() ->
     case get(wx_init_opengl) of
         true -> {ok, "already  initialized"};
         _ ->
-            GLLib = wxe_util:wxgl_dl(),
-            Res = wxe_util:call(?WXE_INIT_OPENGL, <<(list_to_binary(GLLib))/binary, 0:8>>),
-            element(1, Res) =:= ok andalso put(wx_init_opengl, true),
-            Res
+            %% GLLib = wxe_util:wxgl_dl(),
+            %% Res = wxe_util:call(?WXE_INIT_OPENGL, <<(list_to_binary(GLLib))/binary, 0:8>>),
+            %% element(1, Res) =:= ok andalso put(wx_init_opengl, true),
+            %% Res
+            Opaque = gl:lookup_func(),
+            {ok, wxe_util:init_opengl(Opaque)}
     end.
 
 %%--------------------------------------------------------------------

@@ -46,7 +46,7 @@ GENERATED_H = gen/wxe_macros.h
 GL_H = egl_impl.h gen/gl_finit.h gen/gl_fdefs.h
 
 HAVE_OPENGL = true
-OPENGL_F = gl_nif egl_impl
+OPENGL_F = gl_nif glu_nif egl_impl
 
 include $(ERL_TOP)/make/target.mk
 include $(ERL_TOP)/make/output.mk

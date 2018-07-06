@@ -152,8 +152,7 @@ int wxeFifo::Add(int fc, char * cbuf,int buflen, wxe_data *sd)
   return m_n;
 }
 
-int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
-                 void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int cast)
+int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, int cast)
 {
   int i;
   unsigned int pos;
@@ -176,7 +175,6 @@ int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
   enif_self(env, &curr->pid);
   for(i=0; i<argc; i++)
     curr->args[i] = enif_make_copy(curr->env, argv[i]);
-  curr->fptr = fptr;
 
   if(cast && m_n < 30) return 1; // And not batch end!!
   return 0;
@@ -210,7 +208,6 @@ void wxeFifo::Append(wxeCommand *orig)
 
   if(orig->len > 64 || curr->op > OPENGL_START) {
     curr->pid = orig->pid;
-    curr->fptr = orig->fptr;
     for(int i=0; i < 16; i++)
       curr->args[i] = orig->args[i];
   }

@@ -58,7 +58,6 @@ class wxeCommand
     char             c_buf[64];  // 64b covers 90% of usage
     ErlNifEnv *env;
     ERL_NIF_TERM args[16];
-    void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *);
     ErlNifPid pid;
 };
 
@@ -68,8 +67,7 @@ class wxeFifo {
     virtual ~wxeFifo();
 
     int Add(int fc, char * cbuf,int buflen, wxe_data *);
-    int Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int,
-            void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int);
+    int Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int, int);
     void Append(wxeCommand *Other);
 
     wxeCommand * Get();

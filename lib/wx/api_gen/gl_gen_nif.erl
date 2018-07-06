@@ -43,6 +43,16 @@ gen(GLFuncs, GLUFuncs) ->
     gen_init(GLFuncs, GLUFuncs),
 
     %% Marshal funcs
+    open_write("../c_src/gen/glu_nif.c"),
+    c_copyright(),
+    w("/***** This file is generated do not edit ****/~n~n", []),
+    w("#include <stdio.h>~n", []),
+    w("#include <string.h>~n", []),
+    w("#include \"../egl_impl.h\"~n", []),
+    w("#include \"gl_fdefs.h\"~n~n", []),
+    [funcs(F) || F <- GLUFuncs],
+    close(),
+
     open_write("../c_src/gen/gl_nif.c"),
     c_copyright(),
     w("/***** This file is generated do not edit ****/~n~n", []),
@@ -52,28 +62,27 @@ gen(GLFuncs, GLUFuncs) ->
     w("#include \"gl_fdefs.h\"~n~n", []),
     w("extern gl_fns_t gl_fns[];~n~n", []),
 
-    [funcs(F) || F <- GLUFuncs],
     [funcs(F) || F <- GLFuncs],
 
     w("\n\n", []),
-    w("static ErlNifFunc egl_funcs[] = \n{\n", []),
-    w("  {\"lookup_func\", 1, egl_lookup_func}\n",[]),
+    w("static ErlNifFunc egl_funcs[] =\n{\n", []),
+    w("    {\"lookup_func\", 0, egl_lookup_func_func}\n",[]),
     w("};\n",[]),
 
     w("static int egl_init(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM arg)\n"
       "{\n"
-      "  EGL_ATOM_OK = enif_make_atom(env, \"ok\");\n"
-      "  EGL_ATOM_BADARG = enif_make_atom(env, \"badarg\");\n"
-      "  EGL_ATOM_REPLY = enif_make_atom(env, \"_egl_result_\");\n"
-      "  EGL_ATOM_ERROR = enif_make_atom(env, \"_egl_error_\");\n\n"
+      "    EGL_ATOM_OK = enif_make_atom(env, \"ok\");\n"
+      "    EGL_ATOM_BADARG = enif_make_atom(env, \"badarg\");\n"
+      "    EGL_ATOM_REPLY = enif_make_atom(env, \"_egl_result_\");\n"
+      "    EGL_ATOM_ERROR = enif_make_atom(env, \"_egl_error_\");\n\n"
 
-      "  if(!egl_load_functions()) {\n"
-      "    init_tess();\n"
-      "    return 0;\n"
-      "  } else return 1;\n"
+      "    if(!egl_load_functions()) {\n"
+      "        init_tess();\n"
+      "        return 0;\n"
+      "    } else return 1;\n"
       "}\n\n", []),
-    w(" ERL_NIF_INIT(gl, egl_funcs, egl_init, NULL, NULL, NULL)\n\n",[]),
-    w(" #include \"gl_finit.h\"\n\n",[]),
+    w("ERL_NIF_INIT(gl, egl_funcs, egl_init, NULL, NULL, NULL)\n\n",[]),
+    w("#include \"gl_finit.h\"\n\n",[]),
     close().
 funcs([F1|_Fs]) when is_list(F1) ->
     put(current_func,F1),
@@ -135,7 +144,7 @@ cast_to_type(_T) -> "".
 
 apply_func(F=#func{where=erl}) -> F;
 apply_func(F=#func{name=Name,id=_Id,type=Type,params=As0}) ->
-    w("static void ecb_~s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])\n{\n", [Name]),
+    w("void ecb_~s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[])\n{\n", [Name]),
     Res = count_out(Type,As0),
     if Res > 0, Type =/= void ->
             w("  ~s result;\n",[result_type(Type)]),
@@ -649,8 +658,8 @@ fdef(#func{where=erl}) -> ok;
 fdef(#func{name=Name,type=T,params=As,alt=_Alt}) ->
     w("typedef ~s (APIENTRY * WXE~s)(~s);~n",
       [fdef_type(T), uppercase_all(Name), fdef_types(As)]),
-    w("WXE_EXTERN WXE~s we~s;~n", [uppercase_all(Name), Name]).
-%% w("WXE_EXTERN static void ecb_~s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]);\n",[Name]).
+    w("WXE_EXTERN WXE~s we~s;~n", [uppercase_all(Name), Name]),
+    w("void ecb_~s(ErlNifEnv* env, ErlNifPid *self, ERL_NIF_TERM argv[]);\n",[Name]).
 
 fdef_type(void) -> "void";
 fdef_type(#type{name=T, mod=Mod, single=true, ref=undefined}) ->

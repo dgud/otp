@@ -35,7 +35,9 @@
 
 -export([queue_cmd/1,queue_cmd/2,queue_cmd/3,queue_cmd/4,queue_cmd/5,
          queue_cmd/6,queue_cmd/7,queue_cmd/8,queue_cmd/9,queue_cmd/10,
-         queue_cmd/11,queue_cmd/12,queue_cmd/13,queue_cmd/14,queue_cmd/15]).
+         queue_cmd/11,queue_cmd/12,queue_cmd/13,queue_cmd/14,queue_cmd/15,
+         init_opengl/1
+        ]).
 
 -export([wxgl_dl/0, priv_dir/2, opt_error_log/3, init_nif/1]).
 
@@ -99,6 +101,8 @@ queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?M
 queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
 queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
 queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+
+init_opengl(_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
 
 rec(Op) ->
     receive

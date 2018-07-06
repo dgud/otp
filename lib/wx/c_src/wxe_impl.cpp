@@ -82,11 +82,10 @@ void push_command(int op,char * buf,int len, wxe_data *sd)
   }
 }
 
-void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op,
-              void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int cast)
+void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, int cast)
 {
   erl_drv_mutex_lock(wxe_batch_locker_m);
-  int wait = wxe_queue->Add(env, argc, argv, op, fptr, cast);
+  int wait = wxe_queue->Add(env, argc, argv, op, cast);
 
   if(wxe_needs_signal) {
     // wx-thread is waiting on batch end in cond_wait

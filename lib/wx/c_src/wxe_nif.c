@@ -21,7 +21,9 @@
 #include <stdlib.h>
 #include "wxe_driver.h"
 
-void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, void (*fptr) (ErlNifEnv *, ErlNifPid *, ERL_NIF_TERM *), int cast);
+extern void wxe_initOpenGL(void * fptr);
+
+void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, int cast);
 
 int get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp)
 {
@@ -32,18 +34,24 @@ int get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp)
     } else return 0;
 }
 
-static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-    int op, fi_a, cast;
-    const ERL_NIF_TERM *fi_t;
-    void * fptr;
-    if(!(enif_get_tuple(env, argv[argc-2], &fi_a, &fi_t) && fi_a == 2))
-        return enif_make_badarg(env);
-    if(!enif_get_int(env, fi_t[0], &op) || !get_ptr(env, fi_t[1], &fptr))
+static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    int op, cast;
+    if(!(enif_get_int(env, argv[argc-2], &op)))
         return enif_make_badarg(env);
     if(!enif_get_int(env, argv[argc-1], &cast))
         return enif_make_badarg(env);
-    push_nif(env, argc-2, argv, op, fptr, cast);
+    push_nif(env, argc-2, argv, op, cast);
     return enif_make_int(env, op);
+}
+
+static ERL_NIF_TERM wx_init_opengl(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    void * fptr;
+    if(!get_ptr(env, argv[0], &fptr))
+        return enif_make_badarg(env);
+    wxe_initOpenGL(fptr);
+    return enif_make_atom(env, "ok");
 }
 
 static ErlNifFunc nif_funcs[] =
@@ -61,7 +69,8 @@ static ErlNifFunc nif_funcs[] =
     {"queue_cmd",11, wx_setup_cmd},
     {"queue_cmd",12, wx_setup_cmd},
     {"queue_cmd",13, wx_setup_cmd},
-    {"queue_cmd",14, wx_setup_cmd}
+    {"queue_cmd",14, wx_setup_cmd},
+    {"init_opengl", 1, wx_init_opengl}
 };
 
 ERL_NIF_INIT(wxe_util,nif_funcs,NULL,NULL,NULL,NULL)

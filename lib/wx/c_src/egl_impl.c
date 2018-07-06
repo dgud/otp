@@ -88,7 +88,7 @@ int egl_load_functions() {
     /* Load GLU functions */
     DLName = (DL_CHAR *) OPENGLU_LIB;
     LIBhandle = dlopen(DLName, RTLD_LAZY);
-    // fprintf(stderr, "Loading GLU: %s\r\n", (const char*)DLName);
+    fprintf(stderr, "Loading GLU: %s\r\n", (const char*)DLName);
     func = NULL;
 
     if(LIBhandle) {
@@ -114,7 +114,7 @@ int egl_load_functions() {
             }
         }
         // dlclose(LIBhandle);
-        // fprintf(stderr, "GLU library is loaded\r\n");
+        fprintf(stderr, "GLU library is loaded\r\n");
     } else {
         for(i=0; i < GLE_GL_FUNC_START; i++) {
             gl_fns[i].nif_cb = NULL;
@@ -153,7 +153,7 @@ int egl_load_functions() {
             }
         }
         // dlclose(LIBhandle);
-        // fprintf(stderr, "OPENGL library is loaded\r\n");
+        fprintf(stderr, "OPENGL library is loaded\r\n");
     } else {
         for(i=0; i <= (GLE_GL_FUNC_LAST-GLE_LIB_START); i++) {
             gl_fns[i].nif_cb = NULL;
@@ -226,21 +226,15 @@ void egl_badarg(ErlNifEnv* env, ErlNifPid *self, int op, char * argc) {
 }
 
 
-ERL_NIF_TERM egl_lookup_func(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+void * egl_lookup_func(int op)
 {
-    int op;
-    if(enif_get_int(env, argv[0],  &op)) {
-        if(gl_fns[op-GLE_LIB_START].nif_cb) {
-            return enif_make_tuple2(env,
-                                    enif_make_int(env, op),
-                                    enif_make_uint64(env, (uint64_t) gl_fns[op-GLE_LIB_START].nif_cb));
-        } else {
-            return enif_raise_exception(env, enif_make_atom(env, "not_available"));
-        }
-    }
-    return enif_make_badarg(env);
+    return gl_fns[op-GLE_LIB_START].nif_cb;
 }
 
+ERL_NIF_TERM egl_lookup_func_func(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    return enif_make_uint64(env, (uint64_t) egl_lookup_func);
+}
 
 /* *******************************************************************************
  * GLU Tesselation special

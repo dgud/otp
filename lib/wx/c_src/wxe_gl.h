@@ -22,13 +22,16 @@
 #define _WXE_GL_H
 
 #include "egl_impl.h"
-#include "wxe_return.h"
 
 void activateGL(ErlDrvTermData caller);
 void setActiveGL(ErlDrvTermData caller, wxGLCanvas *canvas);
 void deleteActiveGL(wxGLCanvas *canvas);
-void wxe_initOpenGL(wxeReturn *, char*);
 void gl_dispatch(wxeCommand *);
+extern "C" {
+    void wxe_initOpenGL(void * fptr);
+}
+
+
 
 WX_DECLARE_HASH_MAP(ErlDrvTermData, wxGLCanvas*, wxIntegerHash, wxIntegerEqual, wxeGLC);
 extern wxeGLC glc;

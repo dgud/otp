@@ -171,5 +171,5 @@ int egl_get_ushort(ErlNifEnv* env, ERL_NIF_TERM term, GLushort* dp);
 int egl_get_byte(ErlNifEnv* env, ERL_NIF_TERM term, GLbyte* dp);
 int egl_get_ubyte(ErlNifEnv* env, ERL_NIF_TERM term, GLubyte* dp);
 int egl_get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp);
-ERL_NIF_TERM egl_lookup_func(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+ERL_NIF_TERM egl_lookup_func_func(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
 void egl_badarg(ErlNifEnv* env, ErlNifPid *self, int op, char * argc);

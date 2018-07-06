@@ -87,7 +87,7 @@ gl_api(Fs, GluNifs) ->
 
     w("-on_load(init_nif/0).~n",[]),
     w("~n-export([~s]).~n~n", [args(fun(EF) -> EF end, ",", ExportList, 60)]),
-    w("-export([get_interface/0, rec/1, lookup_func/1]).\n",[]),
+    w("-export([get_interface/0, rec/1, lookup_func/0]).\n",[]),
     w("-define(nif_stub,nif_stub_error(?LINE)).~n", []),
     w("%% @hidden~n", []),
     w("nif_stub_error(Line) ->~n"
@@ -107,16 +107,16 @@ gl_api(Fs, GluNifs) ->
     w("get_interface() ->~n", []),
     w("    wxe_util.  %% temporary~n~n", []),
     w("%% @hidden~n", []),
-    w("rec({Op,_}=TryAgain) ->~n", []),
+    w("rec(Op) ->~n", []),
     w("    receive~n", []),
     w("        {'_egl_result_', Res} -> Res;~n", []),
     w("        {'_egl_error_',  Op, Res} -> error({error,Res,Op});~n", []),
     w("        {'_egl_error_', Other, Res} ->~n ", []),
-    w("               Err = io_lib:format(\"~~p in op: ~~p\", [Res, Other]),~n", []),
-    w("               error_logger:error_report([{gl, error}, {message, lists:flatten(Err)}]),~n", []),
-    w("               rec(TryAgain)~n", []),
+    w("            Err = io_lib:format(\"~~p in op: ~~p\", [Res, Other]),~n", []),
+    w("            error_logger:error_report([{gl, error}, {message, lists:flatten(Err)}]),~n", []),
+    w("            rec(Op)~n", []),
     w("    end.~n~n", []),
-    w("lookup_func(_) -> ?nif_stub.\n\n",[]),
+    w("lookup_func() -> ?nif_stub.\n\n",[]),
     w("~n", []),
     w("~n", []),
 
@@ -143,7 +143,7 @@ glu_api(Fs) ->
     Exp = fun(F) -> gen_export(F) end,
     ExportList = ["tesselate/2" | lists:map(Exp,Fs)],
     w("~n-export([~s]).~n~n", [args(fun(EF) -> EF end, ",", ExportList, 60)]),
-    w("-import(gl, [get_interface/0, rec/1, lookup_func/1]).\n", []),
+    w("-import(gl, [get_interface/0, rec/1]).\n", []),
     w("~n%% API~n~n", []),
 
     w("%% @doc General purpose polygon triangulation.~n",[]),
@@ -158,9 +158,8 @@ glu_api(Fs) ->
     w("                  Triangles :: [integer()], VertexPos :: binary().~n", []),
     w("tesselate(Normal, Vs) ->~n",[]),
     w("  IF = get_interface(),\n"
-      "  OP = lookup_func(5009),\n"
-      "  IF:queue_cmd(Normal,Vs,OP,0),~n"
-      "  rec(OP).~n~n", []),
+      "  IF:queue_cmd(Normal,Vs,5009,0),~n"
+      "  rec(5009).~n~n", []),
 
     Nifs = [gen_funcs(F) || F <- Fs],
     close(),
@@ -402,14 +401,17 @@ gen_func(_F=#func{id=Id, name=Name,type=T,params=As}) ->
     Args = args(fun func_arg/1, ",", As),
     w("~s(~s) ->~n", [erl_func_name(Name), Args]),
     w("  IF = get_interface(),~n",[]),
-    w("  OP = lookup_func(~w),~n",[Id]),
-    PreAs = pre_marshal(As) ++ [#arg{name="OP"}],
-    NifAs  = args(fun func_arg/1, ",", PreAs),
+    PreAs = pre_marshal(As),
+    NifAs0  = args(fun func_arg/1, ",", PreAs),
+    NifAs = case NifAs0 of
+                [] -> "";
+                Str -> [Str, $,]
+            end,
     case have_return_vals(T,As) of
         false ->
-            w("  IF:queue_cmd(~s,1),~n  ok.~n~n", [NifAs]);
+            w("  IF:queue_cmd(~s~w,1),~n  ok.~n~n", [NifAs,Id]);
         true ->
-            w("  IF:queue_cmd(~s,0),~n  rec(OP).~n~n", [NifAs])
+            w("  IF:queue_cmd(~s~w,0),~n  rec(5009).~n~n", [NifAs,Id])
     end,
     ok.
 
