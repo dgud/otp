@@ -399,7 +399,8 @@ gen_func(#func{name=Name,alt={vector,VecPos,Vec}}) ->
     ignore;
 gen_func(_F=#func{id=Id, name=Name,type=T,params=As}) ->
     Args = args(fun func_arg/1, ",", As),
-    w("~s(~s) ->~n", [erl_func_name(Name), Args]),
+    Guards = guards(As),
+    w("~s(~s) ~s ->~n", [erl_func_name(Name), Args, Guards]),
     w("  IF = get_interface(),~n",[]),
     PreAs = pre_marshal(As),
     NifAs0  = args(fun func_arg/1, ",", PreAs),
@@ -414,6 +415,55 @@ gen_func(_F=#func{id=Id, name=Name,type=T,params=As}) ->
             w("  IF:queue_cmd(~s~w,0),~n  rec(5009).~n~n", [NifAs,Id])
     end,
     ok.
+
+guards(As) ->
+    Gs = args(fun guard_arg/1, ",", As),
+    case Gs of
+        [] -> [];
+        String -> ["when ", String]
+    end.
+
+guard_arg(#arg{in=In,where=W,name=Name,type=T})
+  when In =/= false, W =/= c ->
+    guard(T, erl_arg_name(Name));
+guard_arg(_) -> skip.
+
+guard(T=#type{single=true}, Name) ->
+    guard_type(T, Name);
+guard(T=#type{single=undefined}, Name) ->
+    guard_type(T, Name);
+guard(_T=#type{single={tuple,undefined}}, Name) ->
+    "is_tuple(" ++ Name ++ ")";
+guard(#type{base=float, single={tuple,16}}, Name) ->
+    "tuple_size(" ++ Name ++ ") =:= 16";
+guard(_T=#type{single={tuple,Sz}}, Name) ->
+    io_lib:format("tuple_size(~s) =:= ~w", [Name, Sz]);
+guard(#type{base=guard_int, single=list}, Name) ->
+    io_lib:format("is_list(~s) orelse is_tuple(~s) orelse is_binary(~s)", [Name,Name,Name]);
+guard(#type{single=list}, Name) ->
+    "is_list(" ++ Name ++ ")";
+guard(_T=#type{single={list, _Max}}, Name) ->
+    "is_list(" ++ Name ++ ")";
+%%    "[" ++ doc_arg_type3(T) ++ "]";
+guard(_T=#type{single={list,_,_}}, Name) ->
+    "is_list(" ++ Name ++ ")";
+guard(_T=#type{single={tuple_list,_Sz}}, Name) ->
+    "is_list(" ++ Name ++ ")".
+%%    "[{" ++ args(fun doc_arg_type3/1, ",", lists:duplicate(Sz,T)) ++ "}]".
+
+guard_type(#type{name="GLenum"}, Name) ->  "is_integer(" ++ Name ++ ")";
+guard_type(#type{name="GLclamp"++_}, Name) ->  "is_float(" ++ Name ++ ")";
+guard_type(#type{base=int}, Name) ->       "is_integer(" ++ Name ++ ")";
+guard_type(#type{base=float}, Name) ->     "is_float(" ++ Name ++ ")";
+guard_type(#type{base=guard_int}, Name) ->
+    io_lib:format("is_integer(~s) orelse is_tuple(~s) orelse is_binary(~s)", [Name,Name,Name]);
+guard_type(#type{base=string}, Name) ->    "is_list(" ++ Name ++ ")";
+guard_type(#type{base=bool}, Name) ->
+    io_lib:format("(0 =:= ~s) orelse (1 =:= ~s)", [Name,Name]);
+guard_type(#type{base=binary}, Name) ->    "is_binary(" ++ Name ++ ")";
+guard_type(#type{base=memory}, Name) ->
+    io_lib:format("is_tuple(~s) orelse is_binary(~s)", [Name,Name]).
+
 
 func_arg(#arg{in=In,where=W,name=Name})
   when In =/= false, W =/= c ->

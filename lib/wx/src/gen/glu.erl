@@ -69,7 +69,7 @@ tesselate(Normal, Vs) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec build1DMipmapLevels(Target, InternalFormat, Width, Format, Type, Level, Base, Max, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Format :: enum(),Type :: enum(),Level :: integer(),Base :: integer(),Max :: integer(),Data :: binary().
-build1DMipmapLevels(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data) ->
+build1DMipmapLevels(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Format),is_integer(Type),is_integer(Level),is_integer(Base),is_integer(Max),is_binary(Data) ->
   IF = get_interface(),
   IF:queue_cmd(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data,5010,0),
   rec(5009).
@@ -78,7 +78,7 @@ build1DMipmapLevels(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data)
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec build1DMipmaps(Target, InternalFormat, Width, Format, Type, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Format :: enum(),Type :: enum(),Data :: binary().
-build1DMipmaps(Target,InternalFormat,Width,Format,Type,Data) ->
+build1DMipmaps(Target,InternalFormat,Width,Format,Type,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Format),is_integer(Type),is_binary(Data) ->
   IF = get_interface(),
   IF:queue_cmd(Target,InternalFormat,Width,Format,Type,Data,5011,0),
   rec(5009).
@@ -87,7 +87,7 @@ build1DMipmaps(Target,InternalFormat,Width,Format,Type,Data) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec build2DMipmapLevels(Target, InternalFormat, Width, Height, Format, Type, Level, Base, Max, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Level :: integer(),Base :: integer(),Max :: integer(),Data :: binary().
-build2DMipmapLevels(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Max,Data) ->
+build2DMipmapLevels(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Max,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Format),is_integer(Type),is_integer(Level),is_integer(Base),is_integer(Max),is_binary(Data) ->
   IF = get_interface(),
   IF:queue_cmd(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Max,Data,5012,0),
   rec(5009).
@@ -96,7 +96,7 @@ build2DMipmapLevels(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Ma
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec build2DMipmaps(Target, InternalFormat, Width, Height, Format, Type, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Data :: binary().
-build2DMipmaps(Target,InternalFormat,Width,Height,Format,Type,Data) ->
+build2DMipmaps(Target,InternalFormat,Width,Height,Format,Type,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Format),is_integer(Type),is_binary(Data) ->
   IF = get_interface(),
   IF:queue_cmd(Target,InternalFormat,Width,Height,Format,Type,Data,5013,0),
   rec(5009).
@@ -105,7 +105,7 @@ build2DMipmaps(Target,InternalFormat,Width,Height,Format,Type,Data) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec build3DMipmapLevels(Target, InternalFormat, Width, Height, Depth, Format, Type, Level, Base, Max, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Format :: enum(),Type :: enum(),Level :: integer(),Base :: integer(),Max :: integer(),Data :: binary().
-build3DMipmapLevels(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,Base,Max,Data) ->
+build3DMipmapLevels(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,Base,Max,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Depth),is_integer(Format),is_integer(Type),is_integer(Level),is_integer(Base),is_integer(Max),is_binary(Data) ->
   IF = get_interface(),
   IF:queue_cmd(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,Base,Max,Data,5014,0),
   rec(5009).
@@ -114,7 +114,7 @@ build3DMipmapLevels(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,B
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec build3DMipmaps(Target, InternalFormat, Width, Height, Depth, Format, Type, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Format :: enum(),Type :: enum(),Data :: binary().
-build3DMipmaps(Target,InternalFormat,Width,Height,Depth,Format,Type,Data) ->
+build3DMipmaps(Target,InternalFormat,Width,Height,Depth,Format,Type,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Depth),is_integer(Format),is_integer(Type),is_binary(Data) ->
   IF = get_interface(),
   IF:queue_cmd(Target,InternalFormat,Width,Height,Depth,Format,Type,Data,5015,0),
   rec(5009).
@@ -123,7 +123,7 @@ build3DMipmaps(Target,InternalFormat,Width,Height,Depth,Format,Type,Data) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec checkExtension(ExtName, ExtString) -> 0|1 when ExtName :: string(),ExtString :: string().
-checkExtension(ExtName,ExtString) ->
+checkExtension(ExtName,ExtString) when is_list(ExtName),is_list(ExtString) ->
   IF = get_interface(),
   ExtNameBin = unicode:characters_to_binary([ExtName|[0]]),
   ExtStringBin = unicode:characters_to_binary([ExtString|[0]]),
@@ -134,7 +134,7 @@ checkExtension(ExtName,ExtString) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec cylinder(Quad, Base, Top, Height, Slices, Stacks) -> 'ok' when Quad :: integer(),Base :: float(),Top :: float(),Height :: float(),Slices :: integer(),Stacks :: integer().
-cylinder(Quad,Base,Top,Height,Slices,Stacks) ->
+cylinder(Quad,Base,Top,Height,Slices,Stacks) when is_integer(Quad),is_float(Base),is_float(Top),is_float(Height),is_integer(Slices),is_integer(Stacks) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Base,Top,Height,Slices,Stacks,5017,1),
   ok.
@@ -143,7 +143,7 @@ cylinder(Quad,Base,Top,Height,Slices,Stacks) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec deleteQuadric(Quad) -> 'ok' when Quad :: integer().
-deleteQuadric(Quad) ->
+deleteQuadric(Quad) when is_integer(Quad) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,5018,1),
   ok.
@@ -152,7 +152,7 @@ deleteQuadric(Quad) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec disk(Quad, Inner, Outer, Slices, Loops) -> 'ok' when Quad :: integer(),Inner :: float(),Outer :: float(),Slices :: integer(),Loops :: integer().
-disk(Quad,Inner,Outer,Slices,Loops) ->
+disk(Quad,Inner,Outer,Slices,Loops) when is_integer(Quad),is_float(Inner),is_float(Outer),is_integer(Slices),is_integer(Loops) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Inner,Outer,Slices,Loops,5019,1),
   ok.
@@ -161,7 +161,7 @@ disk(Quad,Inner,Outer,Slices,Loops) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec errorString(Error) -> string() when Error :: enum().
-errorString(Error) ->
+errorString(Error) when is_integer(Error) ->
   IF = get_interface(),
   IF:queue_cmd(Error,5020,0),
   rec(5009).
@@ -170,7 +170,7 @@ errorString(Error) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec getString(Name) -> string() when Name :: enum().
-getString(Name) ->
+getString(Name) when is_integer(Name) ->
   IF = get_interface(),
   IF:queue_cmd(Name,5021,0),
   rec(5009).
@@ -179,7 +179,7 @@ getString(Name) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec lookAt(EyeX, EyeY, EyeZ, CenterX, CenterY, CenterZ, UpX, UpY, UpZ) -> 'ok' when EyeX :: float(),EyeY :: float(),EyeZ :: float(),CenterX :: float(),CenterY :: float(),CenterZ :: float(),UpX :: float(),UpY :: float(),UpZ :: float().
-lookAt(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ) ->
+lookAt(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ) when is_float(EyeX),is_float(EyeY),is_float(EyeZ),is_float(CenterX),is_float(CenterY),is_float(CenterZ),is_float(UpX),is_float(UpY),is_float(UpZ) ->
   IF = get_interface(),
   IF:queue_cmd(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ,5022,1),
   ok.
@@ -188,7 +188,7 @@ lookAt(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec newQuadric() -> integer().
-newQuadric() ->
+newQuadric()  ->
   IF = get_interface(),
   IF:queue_cmd(5023,0),
   rec(5009).
@@ -197,7 +197,7 @@ newQuadric() ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec ortho2D(Left, Right, Bottom, Top) -> 'ok' when Left :: float(),Right :: float(),Bottom :: float(),Top :: float().
-ortho2D(Left,Right,Bottom,Top) ->
+ortho2D(Left,Right,Bottom,Top) when is_float(Left),is_float(Right),is_float(Bottom),is_float(Top) ->
   IF = get_interface(),
   IF:queue_cmd(Left,Right,Bottom,Top,5024,1),
   ok.
@@ -206,7 +206,7 @@ ortho2D(Left,Right,Bottom,Top) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec partialDisk(Quad, Inner, Outer, Slices, Loops, Start, Sweep) -> 'ok' when Quad :: integer(),Inner :: float(),Outer :: float(),Slices :: integer(),Loops :: integer(),Start :: float(),Sweep :: float().
-partialDisk(Quad,Inner,Outer,Slices,Loops,Start,Sweep) ->
+partialDisk(Quad,Inner,Outer,Slices,Loops,Start,Sweep) when is_integer(Quad),is_float(Inner),is_float(Outer),is_integer(Slices),is_integer(Loops),is_float(Start),is_float(Sweep) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Inner,Outer,Slices,Loops,Start,Sweep,5025,1),
   ok.
@@ -215,7 +215,7 @@ partialDisk(Quad,Inner,Outer,Slices,Loops,Start,Sweep) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec perspective(Fovy, Aspect, ZNear, ZFar) -> 'ok' when Fovy :: float(),Aspect :: float(),ZNear :: float(),ZFar :: float().
-perspective(Fovy,Aspect,ZNear,ZFar) ->
+perspective(Fovy,Aspect,ZNear,ZFar) when is_float(Fovy),is_float(Aspect),is_float(ZNear),is_float(ZFar) ->
   IF = get_interface(),
   IF:queue_cmd(Fovy,Aspect,ZNear,ZFar,5026,1),
   ok.
@@ -224,7 +224,7 @@ perspective(Fovy,Aspect,ZNear,ZFar) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec pickMatrix(X, Y, DelX, DelY, Viewport) -> 'ok' when X :: float(),Y :: float(),DelX :: float(),DelY :: float(),Viewport :: {integer(),integer(),integer(),integer()}.
-pickMatrix(X,Y,DelX,DelY,Viewport) ->
+pickMatrix(X,Y,DelX,DelY,Viewport) when is_float(X),is_float(Y),is_float(DelX),is_float(DelY),tuple_size(Viewport) =:= 4 ->
   IF = get_interface(),
   IF:queue_cmd(X,Y,DelX,DelY,Viewport,5027,1),
   ok.
@@ -233,7 +233,7 @@ pickMatrix(X,Y,DelX,DelY,Viewport) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec project(ObjX, ObjY, ObjZ, Model, Proj, View) -> {integer(),WinX :: float(),WinY :: float(),WinZ :: float()} when ObjX :: float(),ObjY :: float(),ObjZ :: float(),Model :: matrix(),Proj :: matrix(),View :: {integer(),integer(),integer(),integer()}.
-project(ObjX,ObjY,ObjZ,Model,Proj,View) ->
+project(ObjX,ObjY,ObjZ,Model,Proj,View) when is_float(ObjX),is_float(ObjY),is_float(ObjZ),tuple_size(Model) =:= 16,tuple_size(Proj) =:= 16,tuple_size(View) =:= 4 ->
   IF = get_interface(),
   IF:queue_cmd(ObjX,ObjY,ObjZ,Model,Proj,View,5028,0),
   rec(5009).
@@ -242,7 +242,7 @@ project(ObjX,ObjY,ObjZ,Model,Proj,View) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec quadricDrawStyle(Quad, Draw) -> 'ok' when Quad :: integer(),Draw :: enum().
-quadricDrawStyle(Quad,Draw) ->
+quadricDrawStyle(Quad,Draw) when is_integer(Quad),is_integer(Draw) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Draw,5029,1),
   ok.
@@ -251,7 +251,7 @@ quadricDrawStyle(Quad,Draw) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec quadricNormals(Quad, Normal) -> 'ok' when Quad :: integer(),Normal :: enum().
-quadricNormals(Quad,Normal) ->
+quadricNormals(Quad,Normal) when is_integer(Quad),is_integer(Normal) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Normal,5030,1),
   ok.
@@ -260,7 +260,7 @@ quadricNormals(Quad,Normal) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec quadricOrientation(Quad, Orientation) -> 'ok' when Quad :: integer(),Orientation :: enum().
-quadricOrientation(Quad,Orientation) ->
+quadricOrientation(Quad,Orientation) when is_integer(Quad),is_integer(Orientation) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Orientation,5031,1),
   ok.
@@ -269,7 +269,7 @@ quadricOrientation(Quad,Orientation) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec quadricTexture(Quad, Texture) -> 'ok' when Quad :: integer(),Texture :: 0|1.
-quadricTexture(Quad,Texture) ->
+quadricTexture(Quad,Texture) when is_integer(Quad),(0 =:= Texture) orelse (1 =:= Texture) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Texture,5032,1),
   ok.
@@ -278,7 +278,7 @@ quadricTexture(Quad,Texture) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec scaleImage(Format, WIn, HIn, TypeIn, DataIn, WOut, HOut, TypeOut, DataOut) -> integer() when Format :: enum(),WIn :: integer(),HIn :: integer(),TypeIn :: enum(),DataIn :: binary(),WOut :: integer(),HOut :: integer(),TypeOut :: enum(),DataOut :: mem().
-scaleImage(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut) ->
+scaleImage(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut) when is_integer(Format),is_integer(WIn),is_integer(HIn),is_integer(TypeIn),is_binary(DataIn),is_integer(WOut),is_integer(HOut),is_integer(TypeOut),is_tuple(DataOut) orelse is_binary(DataOut) ->
   IF = get_interface(),
   IF:queue_cmd(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut,5033,0),
   rec(5009).
@@ -287,7 +287,7 @@ scaleImage(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec sphere(Quad, Radius, Slices, Stacks) -> 'ok' when Quad :: integer(),Radius :: float(),Slices :: integer(),Stacks :: integer().
-sphere(Quad,Radius,Slices,Stacks) ->
+sphere(Quad,Radius,Slices,Stacks) when is_integer(Quad),is_float(Radius),is_integer(Slices),is_integer(Stacks) ->
   IF = get_interface(),
   IF:queue_cmd(Quad,Radius,Slices,Stacks,5034,1),
   ok.
@@ -296,7 +296,7 @@ sphere(Quad,Radius,Slices,Stacks) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec unProject(WinX, WinY, WinZ, Model, Proj, View) -> {integer(),ObjX :: float(),ObjY :: float(),ObjZ :: float()} when WinX :: float(),WinY :: float(),WinZ :: float(),Model :: matrix(),Proj :: matrix(),View :: {integer(),integer(),integer(),integer()}.
-unProject(WinX,WinY,WinZ,Model,Proj,View) ->
+unProject(WinX,WinY,WinZ,Model,Proj,View) when is_float(WinX),is_float(WinY),is_float(WinZ),tuple_size(Model) =:= 16,tuple_size(Proj) =:= 16,tuple_size(View) =:= 4 ->
   IF = get_interface(),
   IF:queue_cmd(WinX,WinY,WinZ,Model,Proj,View,5035,0),
   rec(5009).
@@ -305,7 +305,7 @@ unProject(WinX,WinY,WinZ,Model,Proj,View) ->
 %%
 %% See <a href="https://www.khronos.org/registry/OpenGL-Refpages/">external</a> documentation.
 -spec unProject4(WinX, WinY, WinZ, ClipW, Model, Proj, View, NearVal, FarVal) -> {integer(),ObjX :: float(),ObjY :: float(),ObjZ :: float(),ObjW :: float()} when WinX :: float(),WinY :: float(),WinZ :: float(),ClipW :: float(),Model :: matrix(),Proj :: matrix(),View :: {integer(),integer(),integer(),integer()},NearVal :: float(),FarVal :: float().
-unProject4(WinX,WinY,WinZ,ClipW,Model,Proj,View,NearVal,FarVal) ->
+unProject4(WinX,WinY,WinZ,ClipW,Model,Proj,View,NearVal,FarVal) when is_float(WinX),is_float(WinY),is_float(WinZ),is_float(ClipW),tuple_size(Model) =:= 16,tuple_size(Proj) =:= 16,tuple_size(View) =:= 4,is_float(NearVal),is_float(FarVal) ->
   IF = get_interface(),
   IF:queue_cmd(WinX,WinY,WinZ,ClipW,Model,Proj,View,NearVal,FarVal,5036,0),
   rec(5009).

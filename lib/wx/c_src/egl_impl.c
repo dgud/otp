@@ -219,8 +219,12 @@ int egl_get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp)
 }
 
 void egl_badarg(ErlNifEnv* env, ErlNifPid *self, int op, char * argc) {
+    const char * func;
+    func = gl_fns[op-GLE_LIB_START].name;
     enif_send(NULL, self, env,
-              enif_make_tuple3(env, EGL_ATOM_ERROR, enif_make_int(env, op),
+              enif_make_tuple3(env, EGL_ATOM_ERROR,
+                               enif_make_tuple2(env, enif_make_int(env, op),
+                                                enif_make_string(env, func, ERL_NIF_LATIN1)),
                                enif_make_tuple2(env, EGL_ATOM_BADARG,
                                                 enif_make_string(env, argc, ERL_NIF_LATIN1))));
 }
