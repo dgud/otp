@@ -31,7 +31,7 @@
 
 %%-compile(export_all).
 -export([gen/1]).
--export([parents/1, get_unique_names/0, get_unique_name/1,
+-export([parents/1, get_unique_names/0, get_unique_name/1, erl_option_name/1,
 	 event_type_name/1, event_rec_name/1, filter_attrs/1]).
 
 

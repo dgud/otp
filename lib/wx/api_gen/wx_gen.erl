@@ -64,7 +64,7 @@ gen_code() ->
     parse_enums([File || {{include, File},_} <- get()]),
     Defs = translate_enums(Defs2),
     wx_gen_erl:gen(Defs),
-    wx_gen_cpp:gen(Defs),
+    wx_gen_nif:gen(Defs),
     ok.
 
 gen_xml() ->

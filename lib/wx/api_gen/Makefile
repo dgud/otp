@@ -28,7 +28,7 @@ GL_DIR = /usr/include/GL
 
 ERL_COMPILE_FLAGS=+debug_info +warn_unused_vars
 
-COMPILER = gen_util wx_gen wx_gen_erl wx_gen_cpp
+COMPILER = gen_util wx_gen wx_gen_erl wx_gen_cpp wx_gen_nif
 COMPILER_T = $(COMPILER:%=$(EBIN)/%.beam)
 
 GL_COMP = gl_gen gl_gen_erl gl_gen_nif gl_scan_doc
