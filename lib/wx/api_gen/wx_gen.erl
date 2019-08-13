@@ -43,13 +43,14 @@ xml()  ->  safe(fun gen_xml/0,true).
 devcode() -> erase(),safe(fun gen_code/0,false).
 
 safe(What, QuitOnErr) ->
-    try 
+    try
 	What(),
 	io:format("Completed successfully~n~n", []),
 	QuitOnErr andalso gen_util:halt(0)
     catch Err:Reason:Stacktrace ->
 	    io:format("Error in ~p ~p~n", [get(current_class),get(current_func)]),
-	    erlang:display({Err,Reason,Stacktrace}),
+	    %%erlang:display({Err,Reason,Stacktrace}),
+            io:format("~p:~p:~n ~p~n~n",[Err,Reason,Stacktrace]),
 	    catch gen_util:close(),
 	    QuitOnErr andalso gen_util:halt(1)
     end.
