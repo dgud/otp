@@ -31,12 +31,12 @@
  * CallbackData *
  * ****************************************************************************/
 
-wxeEvtListener::wxeEvtListener(ErlDrvTermData caller, int req, char *req_type,
+wxeEvtListener::wxeEvtListener(ErlNifPid caller, int req, char *req_type,
 			       int funcb, int skip_ev, wxeErlTerm * userData,
-			       ErlDrvTermData from_port)
+			       wxeMemEnv *menv)
   : wxEvtHandler()
 {
-  port=from_port;
+  memenv=menv;
   listener = caller;
   obj = req;
   fun_id = funcb;
@@ -54,13 +54,12 @@ wxeEvtListener::~wxeEvtListener() {
   it = ((WxeApp *)wxTheApp)->ptr2ref.find(this);
   if(it != ((WxeApp *)wxTheApp)->ptr2ref.end()) {
     wxeRefData *refd = it->second;
-    wxeReturn rt = wxeReturn(WXE_DRV_PORT, refd->memenv->owner, false);
-    rt.addAtom("wx_delete_cb");
-    rt.addInt(fun_id);
-    rt.addRef(refd->ref, "wxeEvtListener");
-    rt.addRef(obj, class_name);
-    rt.addTupleCount(4);
-    rt.send();
+    wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);
+    rt.send(enif_make_tuple4(rt.env,
+                             rt.make_atom("wx_delete_cb"),
+                             rt.make_int(fun_id),
+                             rt.make_ref(refd->ref, "wxeEvtListener"),
+                             rt.make_ref(obj, class_name)));
   }
   ((WxeApp *)wxTheApp)->clearPtr(this);
 }
@@ -68,47 +67,48 @@ wxeEvtListener::~wxeEvtListener() {
 void wxeEvtListener::forward(wxEvent& event)
 {
 #ifdef DEBUG
-  if(!sendevent(&event, port))
+  if(!sendevent(&event, memenv))
     fprintf(stderr, "Couldn't send event!\r\n");
 #else
-sendevent(&event, port);
+  sendevent(&event, memenv);
 #endif
 }
 
 /* *****************************************************************/
 /* Special Class impls */
 
-#define INVOKE_CALLBACK_INIT(port, callback, class_str)		        \
+#define INVOKE_CALLBACK_INIT(memenv, callback, class_str, args)		\
   {									\
-    wxeMemEnv * memenv =  ((WxeApp *) wxTheApp)->getMemEnv(port);	\
-    wxeReturn rt = wxeReturn(WXE_DRV_PORT, memenv->owner, false);	\
-    rt.addInt(callback);						\
-    rt.addRef(((WxeApp *) wxTheApp)->getRef((void *)this, memenv), class_str);
+    wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);	\
+    ERL_NIF_TERM cb_term = enif_make_tuple4(rt.env,                     \
+      rt.make_atom("_wx_invoke_cb_"),                                   \
+      rt.make_int(callback),                                            \
+      enif_make_list(rt.env, 1+(args),                                  \
+         rt.make_ref(((WxeApp *) wxTheApp)->getRef((void *)this, memenv), class_str)
 
-#define INVOKE_CALLBACK_END(port, args)					\
-  rt.endList(1 + (args));						\
-  rt.addAtom("_wx_invoke_cb_");						\
-  rt.addTupleCount(3);							\
-  rt.send();								\
-  handle_event_callback(WXE_DRV_PORT_HANDLE, memenv->owner); 			\
+#define INVOKE_CALLBACK_END(memenv)  				        \
+         ),                                                             \
+     rt.make_atom("undefined"));                                        \
+   rt.send(cb_term);							\
+   handle_event_callback(memenv, memenv->owner);                        \
  }
 
-#define INVOKE_CALLBACK(port, callback, class_str)	\
-  INVOKE_CALLBACK_INIT(port, callback, class_str);	\
-  INVOKE_CALLBACK_END(port, 0)
+#define INVOKE_CALLBACK(memenv, callback, class_str)	\
+  INVOKE_CALLBACK_INIT(memenv, callback, class_str, 0)	\
+  INVOKE_CALLBACK_END(memenv)
 
 /* *****************************************************************/
 /* Printing special */
 
 wxEPrintout::~wxEPrintout() {
-  clear_cb(port, onPrintPage);
-  clear_cb(port, onPreparePrinting);
-  clear_cb(port, onBeginPrinting);
-  clear_cb(port, onEndPrinting);
-  clear_cb(port, onBeginDocument);
-  clear_cb(port, onEndDocument);
-  clear_cb(port, hasPage);
-  clear_cb(port, getPageInfo);
+  clear_cb(memenv, onPrintPage);
+  clear_cb(memenv, onPreparePrinting);
+  clear_cb(memenv, onBeginPrinting);
+  clear_cb(memenv, onEndPrinting);
+  clear_cb(memenv, onBeginDocument);
+  clear_cb(memenv, onEndDocument);
+  clear_cb(memenv, hasPage);
+  clear_cb(memenv, getPageInfo);
 
   ((WxeApp *)wxTheApp)->clearPtr(this);
 }
@@ -116,15 +116,15 @@ wxEPrintout::~wxEPrintout() {
 bool wxEPrintout::OnBeginDocument(int startPage, int endPage)
 {
   if(onBeginDocument) {
-    INVOKE_CALLBACK_INIT(port, onBeginDocument, "wxPrintout");
-    rt.addInt(startPage);
-    rt.addInt(endPage);
-    INVOKE_CALLBACK_END(port, 2);
-    if(((WxeApp *) wxTheApp)->cb_buff) {
-      int res = * (int*) ((WxeApp *) wxTheApp)->cb_buff;
-      driver_free(((WxeApp *) wxTheApp)->cb_buff);
-      ((WxeApp *) wxTheApp)->cb_buff = NULL;
-      return res;
+    INVOKE_CALLBACK_INIT(memenv, onBeginDocument, "wxPrintout",2)
+    ,rt.make_int(startPage)
+    ,rt.make_int(endPage)
+    INVOKE_CALLBACK_END(memenv);
+    wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+    int ret_value;
+    if(cb && enif_get_int(cb->env, cb->args[0], &ret_value)) {
+      cb->Delete();
+      return ret_value;
     }
   }
   return wxPrintout::OnBeginDocument(startPage,endPage);
@@ -133,7 +133,7 @@ bool wxEPrintout::OnBeginDocument(int startPage, int endPage)
 void wxEPrintout::OnEndDocument()
 {
   if(onEndDocument) {
-    INVOKE_CALLBACK(port, onEndDocument, "wxPrintout");
+    INVOKE_CALLBACK(memenv, onEndDocument, "wxPrintout");
   } else {
     wxPrintout::OnEndDocument();
   }
@@ -143,7 +143,7 @@ void wxEPrintout::OnBeginPrinting()
 {
 
   if(onBeginPrinting) {
-    INVOKE_CALLBACK(port, onBeginPrinting, "wxPrintout");
+    INVOKE_CALLBACK(memenv, onBeginPrinting, "wxPrintout");
   } else {
     wxPrintout::OnBeginPrinting();
   }
@@ -153,7 +153,7 @@ void wxEPrintout::OnEndPrinting()
 {
 
   if(onEndPrinting) {
-    INVOKE_CALLBACK(port, onEndPrinting, "wxPrintout");
+    INVOKE_CALLBACK(memenv, onEndPrinting, "wxPrintout");
   } else {
     wxPrintout::OnEndPrinting();
   }
@@ -163,7 +163,7 @@ void wxEPrintout::OnPreparePrinting()
 {
 
   if(onPreparePrinting) {
-    INVOKE_CALLBACK(port, onPreparePrinting, "wxPrintout");
+    INVOKE_CALLBACK(memenv, onPreparePrinting, "wxPrintout");
   } else {
     wxPrintout::OnPreparePrinting();
   }
@@ -173,14 +173,14 @@ bool wxEPrintout::HasPage(int page)
 {
 
   if(hasPage) {
-    INVOKE_CALLBACK_INIT(port, hasPage, "wxPrintout");
-    rt.addInt(page);
-    INVOKE_CALLBACK_END(port, 1);
-    if(((WxeApp *) wxTheApp)->cb_buff) {
-      int res = * (int*) ((WxeApp *) wxTheApp)->cb_buff;
-      driver_free(((WxeApp *) wxTheApp)->cb_buff);
-      ((WxeApp *) wxTheApp)->cb_buff = NULL;
-      return res;
+    INVOKE_CALLBACK_INIT(memenv, hasPage, "wxPrintout",1)
+    ,rt.make_int(page)
+    INVOKE_CALLBACK_END(memenv);
+    wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+    int ret_value;
+    if(cb && enif_get_int(cb->env, cb->args[0], &ret_value)) {
+      cb->Delete();
+      return ret_value;
     }
   }
   return wxPrintout::HasPage(page);
@@ -188,14 +188,14 @@ bool wxEPrintout::HasPage(int page)
 
 bool wxEPrintout::OnPrintPage(int page)
 {
-  INVOKE_CALLBACK_INIT(port, onPrintPage, "wxPrintout");
-  rt.addInt(page);
-  INVOKE_CALLBACK_END(port, 1);
-  if(((WxeApp *) wxTheApp)->cb_buff) {
-    int res = * (int*) ((WxeApp *) wxTheApp)->cb_buff;
-    driver_free(((WxeApp *) wxTheApp)->cb_buff);
-    ((WxeApp *) wxTheApp)->cb_buff = NULL;
-    return res;
+  INVOKE_CALLBACK_INIT(memenv, onPrintPage, "wxPrintout",1)
+  ,rt.make_int(page)
+  INVOKE_CALLBACK_END(memenv);
+  wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+  int ret_value;
+  if(cb && enif_get_int(cb->env, cb->args[0], &ret_value)) {
+    cb->Delete();
+    return ret_value;
   }
   return FALSE;
 }
@@ -203,15 +203,15 @@ bool wxEPrintout::OnPrintPage(int page)
 void wxEPrintout::GetPageInfo(int *minPage, int *maxPage, int *pageFrom, int *pageTo)
 {
   if(getPageInfo) {
-    INVOKE_CALLBACK(port, getPageInfo, "wxPrintout");
-    if(((WxeApp *) wxTheApp)->cb_buff) {
-      char * bp = ((WxeApp *) wxTheApp)->cb_buff;
-      *minPage  = *(int *) bp; bp += 4;
-      *maxPage  = *(int *) bp; bp += 4;
-      *pageFrom = *(int *) bp; bp += 4;
-      *pageTo   = *(int *) bp; bp += 4;
-      driver_free(((WxeApp *) wxTheApp)->cb_buff);
-      ((WxeApp *) wxTheApp)->cb_buff = NULL;
+    INVOKE_CALLBACK(memenv, getPageInfo, "wxPrintout");
+    wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+    if(cb
+       && enif_get_int(cb->env, cb->args[0], minPage)
+       && enif_get_int(cb->env, cb->args[0], maxPage)
+       && enif_get_int(cb->env, cb->args[0], pageFrom)
+       && enif_get_int(cb->env, cb->args[0], pageTo)
+       ) {
+      cb->Delete();
     }
   }
   wxPrintout::GetPageInfo(minPage, maxPage, pageFrom, pageTo);
@@ -222,15 +222,15 @@ void wxEPrintout::GetPageInfo(int *minPage, int *maxPage, int *pageFrom, int *pa
 
 wxString EwxListCtrl::OnGetItemText(long item, long col) const {
   if(onGetItemText) {
-    INVOKE_CALLBACK_INIT(port, onGetItemText, "wxListCtrl");
-    rt.addInt(item);
-    rt.addInt(col);
-    INVOKE_CALLBACK_END(port, 2);
-    if(((WxeApp *) wxTheApp)->cb_buff) {
-      char * bp = ((WxeApp *) wxTheApp)->cb_buff;
-      wxString str = wxString(bp, wxConvUTF8);
-      driver_free(((WxeApp *) wxTheApp)->cb_buff);
-      ((WxeApp *) wxTheApp)->cb_buff = NULL;
+    INVOKE_CALLBACK_INIT(memenv, onGetItemText, "wxListCtrl", 2)
+    ,rt.make_int(item)
+    ,rt.make_int(col)
+    INVOKE_CALLBACK_END(memenv);
+    wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+    ErlNifBinary bin;
+    if(cb && enif_inspect_binary(cb->env, cb->args[0], &bin)) {
+      wxString str = wxString(bin.data, wxConvUTF8);
+      cb->Delete();
       return str;
     }
   }
@@ -239,15 +239,13 @@ wxString EwxListCtrl::OnGetItemText(long item, long col) const {
 
 wxListItemAttr* EwxListCtrl::OnGetItemAttr(long item) const {
   if(onGetItemAttr) {
-    INVOKE_CALLBACK_INIT(port, onGetItemAttr, "wxListCtrl");
-    rt.addInt(item);
-    INVOKE_CALLBACK_END(port, 1);
-    char * bp = ((WxeApp *) wxTheApp)->cb_buff;
-    wxeMemEnv * memenv =  ((WxeApp *) wxTheApp)->getMemEnv(port);
-    if(bp) {
-      wxListItemAttr * result = (wxListItemAttr *)((WxeApp *) wxTheApp)->getPtr(bp, memenv);
-      driver_free(((WxeApp *) wxTheApp)->cb_buff);
-      ((WxeApp *) wxTheApp)->cb_buff = NULL;
+    INVOKE_CALLBACK_INIT(memenv, onGetItemAttr, "wxListCtrl",1)
+    ,rt.make_int(item)
+    INVOKE_CALLBACK_END(memenv);
+    wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+    if(cb) {
+      wxListItemAttr * result = (wxListItemAttr *) memenv->getPtr(cb->env, cb->args[0]);
+      cb->Delete();
       return result;
     }
   }
@@ -260,24 +258,24 @@ int EwxListCtrl::OnGetItemImage(long item) const {
 
 int EwxListCtrl::OnGetItemColumnImage(long item, long col) const {
   if(onGetItemColumnImage) {
-    INVOKE_CALLBACK_INIT(port, onGetItemColumnImage, "wxListCtrl");
-    rt.addInt(item);
-    rt.addInt(col);
-    INVOKE_CALLBACK_END(port, 2);
-    if(((WxeApp *) wxTheApp)->cb_buff) {
-      int res = * (int*) ((WxeApp *) wxTheApp)->cb_buff;
-      driver_free(((WxeApp *) wxTheApp)->cb_buff);
-      ((WxeApp *) wxTheApp)->cb_buff = NULL;
-      return res;
+    INVOKE_CALLBACK_INIT(memenv, onGetItemColumnImage, "wxListCtrl",2)
+    ,rt.make_int(item)
+    ,rt.make_int(col)
+    INVOKE_CALLBACK_END(memenv);
+    wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+    int ret_value;
+    if(cb && enif_get_int(cb->env, cb->args[0], &ret_value)) {
+      cb->Delete();
+      return ret_value;
     }
   }
   return -1;
 }
 
 EwxListCtrl::~EwxListCtrl() {
-  clear_cb(port, onGetItemText);
-  clear_cb(port, onGetItemAttr);
-  clear_cb(port, onGetItemColumnImage);
+  clear_cb(memenv, onGetItemText);
+  clear_cb(memenv, onGetItemAttr);
+  clear_cb(memenv, onGetItemColumnImage);
   ((WxeApp *)wxTheApp)->clearPtr(this);
 }
 
@@ -287,38 +285,41 @@ EwxListCtrl::~EwxListCtrl() {
 
 int wxCALLBACK wxEListCtrlCompare(wxeIntPtr item1, wxeIntPtr item2, wxeIntPtr callbackInfoPtr)
 {
-  callbackInfo * cb = (callbackInfo *)callbackInfoPtr;
-  wxeMemEnv * memenv =  ((WxeApp *) wxTheApp)->getMemEnv(cb->port);
-  wxeReturn rt = wxeReturn(WXE_DRV_PORT, memenv->owner, false);
-  rt.addInt(cb->callbackID);
-  rt.addInt(item1);
-  rt.addInt(item2);
-  rt.endList(2);
-  rt.addAtom("_wx_invoke_cb_");
-  rt.addTupleCount(3);
-  rt.send();
-  handle_event_callback(WXE_DRV_PORT_HANDLE, memenv->owner);
+  callbackInfo * cbi = (callbackInfo *)callbackInfoPtr;
+  wxeMemEnv *memenv = cbi->memenv;
+  wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);
+  ERL_NIF_TERM cb_msg =
+    enif_make_tuple4(rt.env,
+                     rt.make_atom("_wx_invoke_cb_"),
+                     rt.make_int(cbi->callbackID),
+                     enif_make_list2(rt.env,
+                                     rt.make_int(item1),
+                                     rt.make_int(item2)),
+                     rt.make_atom("undefined"));
+  rt.send(cb_msg);
+  handle_event_callback(memenv, memenv->owner);
 
-  if(((WxeApp *) wxTheApp)->cb_buff) {
-    int res = * (int*) ((WxeApp *) wxTheApp)->cb_buff;
-    driver_free(((WxeApp *) wxTheApp)->cb_buff);
-    ((WxeApp *) wxTheApp)->cb_buff = NULL;
-    return res;
+  wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
+  int ret_value;
+  if(cb && enif_get_int(cb->env, cb->args[0], &ret_value)) {
+    cb->Delete();
+    return ret_value;
   }
+
   return 0;
 }
 
 
 // tools
 
-void clear_cb(ErlDrvTermData port, int callback)
+void clear_cb(wxeMemEnv *memenv, int callback)
 {
   if(callback > 0) {
-    wxeMemEnv * memenv =  ((WxeApp *) wxTheApp)->getMemEnv(port);
-    wxeReturn rt = wxeReturn(WXE_DRV_PORT, memenv->owner, false);
-    rt.addAtom("wx_delete_cb");
-    rt.addInt(callback);
-    rt.addTupleCount(2);
-    rt.send();
+    wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);
+    ERL_NIF_TERM cb_msg =
+      enif_make_tuple2(rt.env,
+                       rt.make_atom("wx_delete_cb"),
+                       rt.make_int(callback));
+    rt.send(cb_msg);
   }
 }

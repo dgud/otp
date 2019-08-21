@@ -21,10 +21,9 @@
 #ifndef _WXE_GL_H
 #define _WXE_GL_H
 
-#include "egl_impl.h"
+// #include "egl_impl.h"
 
-void activateGL(ErlDrvTermData caller);
-void setActiveGL(ErlDrvTermData caller, wxGLCanvas *canvas);
+void setActiveGL(wxeMemEnv *memenv, ErlNifPid caller, wxGLCanvas *canvas);
 void deleteActiveGL(wxGLCanvas *canvas);
 void gl_dispatch(wxeCommand *);
 extern "C" {
@@ -33,7 +32,7 @@ extern "C" {
 
 
 
-WX_DECLARE_HASH_MAP(ErlDrvTermData, wxGLCanvas*, wxIntegerHash, wxIntegerEqual, wxeGLC);
+WX_DECLARE_HASH_MAP(ErlNifUInt64, wxGLCanvas*, wxIntegerHash, wxIntegerEqual, wxeGLC);
 extern wxeGLC glc;
 
 #endif

@@ -398,7 +398,7 @@ class EwxListCtrl : public wxListCtrl {
  int onGetItemText;
  int onGetItemAttr;
  int onGetItemColumnImage;
- ErlDrvTermData port;
+ wxeMemEnv *memenv;
 
  private:
  virtual wxString OnGetItemText(long item, long col) const;

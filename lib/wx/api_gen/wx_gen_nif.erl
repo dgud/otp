@@ -43,7 +43,7 @@ gen(Defs) ->
     gen_derived_dest(Defs),
     close(),
 
-    open_write("../c_src/gen/wxe_nif.cpp"),
+    open_write("../c_src/gen/wxe_wrapper.cpp"),
     c_copyright(),
     Res = gen_funcs(Defs),
     close(),
@@ -349,6 +349,8 @@ gen_method(CName, M=#method{name=N,params=[Ps],method_type=destructor,id=MethodI
     M;
 gen_method(CName,  M=#method{name=N,params=Ps0,type=T,method_type=MT,id=MethodId, opts=FOpts}) ->
     put(current_func, N),
+    put(current_func_id, MethodId),
+
     put(bin_count,-1),
     ?WTC("gen_method"),
     Endif1 = gen_if(deprecated, FOpts),
@@ -473,15 +475,15 @@ decode_options([], _) -> ok;
 decode_options(Opts, Argc) ->
     w("  ERL_NIF_TERM lstHead, lstTail;~n", []),
     w("  lstTail = argv[~w];~n",[Argc]),
-    w("  if(!enif_is_list(env, lstTail)) Badarg(\"Options\");~n", []),
+    w("  if(!enif_is_list(env, lstTail)) ~s;~n", [badarg("Options")]),
     w("  ERL_NIF_TERM tpl[2];~n", []),
     w("  int tpl_sz;~n", []),
     w("  while(!enif_is_empty_list(env, lstTail)) {~n", []),
-    w("    if(!enif_get_list_cell(env, lstTail, lstHead, &lstTail)) Badarg(\"Options\");~n",[]),
-    w("    if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(\"Options\");~n",
-      []),
+    w("    if(!enif_get_list_cell(env, lstTail, lstHead, &lstTail)) ~s;~n",[badarg("Options")]),
+    w("    if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) ~s;~n",
+      [badarg("Options")]),
     lists:map(fun decode_opt/1, Opts),
-    w("       Badarg(\"Options\");~n",[]),
+    w("       ~s;~n",[badarg("Options")]),
     w("  };~n", []).
 
 decode_opt(#param{name=Name,type=Type}) ->
@@ -518,35 +520,39 @@ decode_arg(P = #param{name=Name,type=Type},N) ->
 wa(_Str, _Arg, opt) -> ok;
 wa(Str, Args, arg) -> w(Str, Args).
 
+badarg(Arg) ->
+    Id = get(current_func_id),
+    io_lib:format("Badarg(~w,~s)",[Id, Arg]).
+
 decode_arg(N,#type{name=Class,base={class,_},single=true}, Arg,Argc) ->
     wa("  ~s *~s;~n",[Class, N], Arg),
-    w("  if(!wxe_get_ptr(memenv, env, ~s, (void **) &~s)) Badarg(~s);~n", [Argc, N, N]);
+    w("  if(!wxe_get_ptr(memenv, env, ~s, (void **) &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,{merged,_,#type{name=Class,base={class,_},single=true},_,_,_,_},Arg,Argc) ->
     wa("  ~s *~s;~n",[Class, N], Arg),
-    w("  if(!wxe_get_ptr(env, ~s, (void **) &~s)) Badarg(~s);~n", [Argc, N, N]);
+    w("  if(!wxe_get_ptr(env, ~s, (void **) &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,#type{base=long,single=true},Arg,Argc) ->
     wa("  long ~s;~n",[N], Arg),
-    w("  if(!enif_get_long(env, ~s, &~s)) Badarg(~s);~n", [Argc, N, N]);
+    w("  if(!enif_get_long(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,#type{base=int,single=true,mod=Mod0,ref=_Ref},Arg,Argc) ->
     case lists:member(unsigned, Mod0) of
         true ->
             wa("  unsigned int ~s;~n",[N], Arg),
-            w("  if(!enif_get_uint(env, ~s, &~s)) Badarg(~s);~n", [Argc, N, N]);
+            w("  if(!enif_get_uint(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
         false ->
             wa("  int ~s;~n",[N], Arg),
-            w("  if(!enif_get_int(env, ~s, &~s)) Badarg(~s);~n", [Argc, N, N])
+            w("  if(!enif_get_int(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)])
     end;
 decode_arg(N,#type{base=float,single=true}, Arg, Argc) ->
     wa("  float ~s;~n",[N], Arg),
-    w("  if(!wxe_get_float(env, ~s, &~s)) Badarg(~s);~n", [Argc, N, N]);
+    w("  if(!wxe_get_float(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,#type{base=double,single=true},Arg,Argc) ->
     wa("  double ~s;~n",[N], Arg),
-    w("  if(!enif_get_double(env, ~s, &~s)) Badarg(~s);~n", [Argc, N, N]);
+    w("  if(!enif_get_double(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,#type{base=bool,single=true},_Arg,Argc) ->
     w("  ~s = enif_is_identical(env, ~s, WXE_ATOM_TRUE);~n", [N, Argc]);
 decode_arg(N,#type{base={enum,_Type},single=true},Arg,Argc) ->
     wa("  int ~s;~n",[N], Arg),
-    w("  if(!enif_get_int(env, ~s, &~s)) Badarg(~s);~n", [Argc, N, N]);
+    w("  if(!enif_get_int(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
 %% decode_arg(N,#type{base={comp,"wxDateTime",List},single=true,name=Type,ref=Ref},Arg,Argc) ->
 %%     Decl = fun({int,Spec}) ->
 %% 		   w(" int * ~s~s = (int *) bp; bp += 4;~n", [N,Spec])
@@ -568,14 +574,14 @@ decode_arg(N,#type{base={comp,_,List},single=true,name=Type,ref=Ref},Arg,Argc) -
     Len = length(List),
     w("  ERL_NIF_TERM ~s_t[~w];~n", [N, Len]),
     w("  int ~s_sz;~n", [N]),
-    w("  if(!enif_get_tuple(env, ~s, &~s_sz, &~s_t)) Badarg(~s);~n", [Argc,N,N,N]),
+    w("  if(!enif_get_tuple(env, ~s, &~s_sz, &~s_t)) ~s;~n", [Argc,N,N,badarg(N)]),
     Decl = fun({int,Spec}, Idx) ->
                    w("  int ~s~s;~n", [N,Spec]),
-                   w("  if(!enif_get_int(env, ~s_t[~w], &~s~s)) Badarg(~s);~n", [N,Idx,N,Spec,N]),
+                   w("  if(!enif_get_int(env, ~s_t[~w], &~s~s)) ~s;~n", [N,Idx,N,Spec,badarg(N)]),
                    Idx+1;
               ({double, Spec}, Idx) ->
                    w("  double ~s~s;~n", [N,Spec]),
-                   w("  if(!enif_get_double(env, ~s_t[~w], &~s~s)) Badarg(~s);~n", [N,Idx,N,Spec,N]),
+                   w("  if(!enif_get_double(env, ~s_t[~w], &~s~s)) ~s;~n", [N,Idx,N,Spec,badarg(N)]),
                    Idx+1
 	   end,
     _ = lists:foldl(Decl,0,List),
@@ -591,12 +597,12 @@ decode_arg(N,#type{base={comp,_,List},single=true,name=Type,ref=Ref},Arg,Argc) -
 
 decode_arg(N,#type{name="wxTreeItemId",single=true},arg,Argc) ->
     w("  ErlNifUInt64 ~s_tmp;~n",[N]),
-    w("  if(!enif_get_uint64(env, ~s, &~s_tmp)) Badarg(\"~s\");~n", [Argc,N,N]),
+    w("  if(!enif_get_uint64(env, ~s, &~s_tmp)) ~s;~n", [Argc,N,badarg(N)]),
     w("  wxTreeItemId ~s = wxTreeItemId((void *) (wxUint64) ~s_tmp);~n",[N,N]);
 
 decode_arg(N,#type{name="wxTreeItemIdValue",single=true},arg,Argc) ->
     w("  ErlNifUInt64 ~s_tmp;~n",[N]),
-    w("  if(!enif_get_uint64(env, ~s, &~s_tmp)) Badarg(\"~s\");~n", [Argc,N,N]),
+    w("  if(!enif_get_uint64(env, ~s, &~s_tmp)) ~s;~n", [Argc,N,badarg(N)]),
     w("  wxTreeItemIdValue ~s = (wxTreeItemIdValue) ~s_tmp;~n",[N, N]);
 
 %% decode_arg(N,#type{name="wxChar", single=S},Arg,A0)
@@ -608,14 +614,14 @@ decode_arg(N,#type{name="wxTreeItemIdValue",single=true},arg,Argc) ->
 decode_arg(N,#type{base=string, name="wxFileName"}, Arg,Argc)  ->
     w("  ErlNifBinary ~s_bin;~n",[N]),
     w("  wxString ~sStr;~n",[N]),
-    w("  if(!enif_inspect_binary(env, ~s, ~s_bin)) Badarg(~s);~n",[Argc, N, N]),
+    w("  if(!enif_inspect_binary(env, ~s, ~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
     w("  ~sStr = wxString(~s_bin.data, wxConvUTF8, ~s_bin.size);~n", [N, N, N]),
     wa("  wxFileName", [], Arg),
     w("  ~s = wxFileName(~sStr);~n",[N,N]);
 decode_arg(N,#type{base=string},Arg,Argc)  ->
     w("  ErlNifBinary ~s_bin;~n",[N]),
     wa("  wxString ~s;~n",[N], Arg),
-    w("  if(enif_inspect_binary(env, ~s, ~s_bin)) Badarg(~s)~n",[Argc, N, N]),
+    w("  if(enif_inspect_binary(env, ~s, ~s_bin)) ~s~n",[Argc, N, badarg(N)]),
     w("  ~s = wxString(~s_bin.data, wxConvUTF8, ~s_bin.size);~n", [N, N, N]);
     %% wa(" wxString", []," ~s = wxString(bp, wxConvUTF8);~n", [N],Arg),
 
@@ -625,8 +631,8 @@ decode_arg(N,#type{name="wxArrayString"},Arg,Argc) ->
     wa("  wxArrayString ~s;~n", [N], Arg),
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
-    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) Badarg(\"~s\");~n",[N,N,N,N]),
-    w("    if(!enif_inspect_binary(env, ~s, ~s_bin)) Badarg(\"~s\");~n",[Argc, N, N]),
+    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
+    w("    if(!enif_inspect_binary(env, ~s, ~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
     w("    ~s.Add(wxString((~s_bin.data, wxConvUTF8, ~s_bin.size));~n", [N,N,N]),
     w("  };~n",[]);
 
@@ -674,7 +680,7 @@ decode_arg(N,#type{name=Type,base=binary,mod=Mod0},Arg,Argc) ->
     Mod = mods(Mod0),
     wa("  ~s~s * ~s;~n",[Mod,Type,N], Arg),
     w("  ErlNifBinary ~s_bin;~n",[N]),
-    w("  if(!enif_inspect_binary(env, ~s, ~s_bin)) Badarg(\"~s\");~n",[Argc, N, N]),
+    w("  if(!enif_inspect_binary(env, ~s, ~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
     w("  ~s = (~s~s*) ~s_bin.data;~n", [N,Mod,Type,N]);
 
 decode_arg(N,#type{name=Type,base={term,_},mod=Mod0},Arg,Argc) ->
@@ -687,13 +693,13 @@ decode_arg(N,#type{single=array,base=int},Arg,Argc)  ->
     w("  int * ~s_ptr;~n",[N]),
     wa("  unsigned ~sLen;~n",[N], Arg),
     w("  ERL_NIF_TERM ~sHead, ~sTail;~n", [N,N]),
-    w("  if(!enif_get_list_length(env, ~s, &~sLen)) Badarg(\"~s\");~n", [Argc,N,N]),
+    w("  if(!enif_get_list_length(env, ~s, &~sLen)) ~s;~n", [Argc,N,badarg(N)]),
     w("  ~s = enif_malloc(sizeof(int)*~sLen);~n",[N,N]),
     w("  ~s_ptr = ~s;~n",[N,N]),
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
-    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) Badarg(\"~s\");~n",[N,N,N,N]),
-    w("    if(!enif_get_int(env, ~sHead, ~s_ptr++) Badarg(\"~s\");~n", [N,N,N]),
+    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
+    w("    if(!enif_get_int(env, ~sHead, ~s_ptr++) ~s;~n", [N,N,badarg(N)]),
     w("  };~n",[]),
     store_free(N);
 
@@ -703,20 +709,20 @@ decode_arg(N,#type{single=array, name="wxPoint"++_=Class,
     w("  ~s * ~s, ~s_ptr;~n",[Class, N, N]),
     w("  unsigned ~sLen;~n",[N]),
     w("  ERL_NIF_TERM ~sHead, ~sTail;~n", [N,N]),
-    w("  if(!enif_get_list_length(env, ~s, &~sLen)) Badarg(\"~s\");~n", [Argc,N,N]),
+    w("  if(!enif_get_list_length(env, ~s, &~sLen)) ~s;~n", [Argc,N,badarg(N)]),
     w("  ~s = (~s *) enif_malloc(sizeof(~s)*~sLen);~n",[N,Class,Class,N]),
     w("  ~s_ptr = ~s;~n",[N,N]),
     w("  ~w x, y;~n",[Type]),
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
-    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) Badarg(\"~s\");~n",[N,N,N,N]),
+    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
     case Class of
         "wxPoint" ->
-            w("    if(!enif_get_int(env, ~sHead, x) Badarg(\"~s\");~n", [N,N]),
-            w("    if(!enif_get_int(env, ~sHead, y) Badarg(\"~s\");~n", [N,N]);
+            w("    if(!enif_get_int(env, ~sHead, x) ~s;~n", [N,badarg(N)]),
+            w("    if(!enif_get_int(env, ~sHead, y) ~s;~n", [N,badarg(N)]);
         "wxPoint2DDouble" ->
-            w("    if(!enif_get_double(env, ~sHead, x) Badarg(\"~s\");~n", [N,N]),
-            w("    if(!enif_get_double(env, ~sHead, y) Badarg(\"~s\");~n", [N,N])
+            w("    if(!enif_get_double(env, ~sHead, x) ~s;~n", [N,badarg(N)]),
+            w("    if(!enif_get_double(env, ~sHead, y) ~s;~n", [N,badarg(N)])
     end,
     w("    ~s_ptr++ = ~s(x,y);~n", [Class, N]),
     w("  };~n",[]),
@@ -726,13 +732,13 @@ decode_arg(N,#type{by_val=true,single=array,base={class,Class}},arg,Argc) ->
     w("  ~s * ~s, ~s_ptr;~n",[Class, N, N]),
     w("  unsigned ~sLen;~n",[N]),
     w("  ERL_NIF_TERM ~sHead, ~sTail;~n", [N,N]),
-    w("  if(!enif_get_list_length(env, ~s, &~sLen)) Badarg(\"~s\");~n", [Argc,N,N]),
+    w("  if(!enif_get_list_length(env, ~s, &~sLen)) ~s;~n", [Argc,N,badarg(N)]),
     w("  ~s = (~s *) enif_malloc(sizeof(~s)*~sLen);~n",[N,Class,Class,N]),
     w("  ~s_ptr = ~s;~n",[N,N]),
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
-    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) Badarg(\"~s\");~n",[N,N,N,N]),
-    w("    if(!wxe_get_ptr(memenv, env, ~s, (void **) &~s_ptr)) Badarg(~s);~n", [Argc, N, N]),
+    w("    if(!enif_get_list_cell(env, ~sTail, ~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
+    w("    if(!wxe_get_ptr(memenv, env, ~s, (void **) &~s_ptr)) ~s;~n", [Argc, N, badarg(N)]),
     w("    ~s_ptr++;~n", [N]),
     w("  };~n",[]),
     store_free(N);
@@ -1202,8 +1208,8 @@ gen_macros() ->
     w("#endif~n", []),
     w("~n~n", []),
 
-    [w("#define ~s_~s ~p~n", [Class,Name,Id]) ||
-	{Class,Name,_,Id} <- wx_gen_erl:get_unique_names()],
+    %% [w("#define ~s_~s ~p~n", [Class,Name,Id]) ||
+    %%     {Class,Name,_,Id} <- wx_gen_erl:get_unique_names()],
     w("~n~n").
 
 build_events() ->

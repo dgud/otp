@@ -34,7 +34,7 @@
  * ****************************************************************************/
 
 int erl_gl_initiated = FALSE;
-ErlDrvTermData gl_active = 0;
+ErlNifUInt64 gl_active = 0;
 wxeGLC glc;
 typedef void * (*WXE_GL_LOOKUP) (int);
 WXE_GL_LOOKUP wxe_gl_lookup_func = NULL;
@@ -46,10 +46,16 @@ void wxe_initOpenGL(void * fptr) {
 }
 }
 
-void setActiveGL(ErlDrvTermData caller, wxGLCanvas *canvas)
+ErlNifUInt64 wxe_make_hash(ErlNifEnv *env, ErlNifPid *pid)
 {
-  gl_active = caller;
-  glc[caller] = canvas;
+  ERL_NIF_TERM term = enif_make_pid(env, pid);
+  return enif_hash(ERL_NIF_INTERNAL_HASH, term, 786234121);
+}
+
+void setActiveGL(wxeMemEnv *memenv, ErlNifPid caller, wxGLCanvas *canvas)
+{
+  gl_active = wxe_make_hash(memenv->tmp_env, &caller);
+  glc[gl_active] = canvas;
   //fprintf(stderr, "set caller %p => %p\r\n", caller, canvas);
   canvas->SetCurrent();
 }
@@ -65,7 +71,7 @@ void deleteActiveGL(wxGLCanvas *canvas)
   }
 }
 
-void gl_dispatch(wxeCommand *event){
+void gl_dispatch(wxeCommand *event) {
   WXE_GL_FUNC fptr;
   //fprintf(stderr, "caller %p gl_active %p\r\n", event->pid, gl_active);
   if(gl_active && wxe_gl_lookup_func) {

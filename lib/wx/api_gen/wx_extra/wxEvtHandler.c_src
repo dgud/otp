@@ -1,4 +1,4 @@
-
+/*
 case 100: { // wxEvtHandler::Connect
   wxEvtHandler *This = (wxEvtHandler *) getPtr(bp, memenv); bp += 4;
   int * winid  = (int *) bp; bp += 4;
@@ -58,3 +58,4 @@ case 101: { // wxEvtHandler::Disconnect
   }
   break;
 }
+*/

@@ -36,10 +36,10 @@
 -export([queue_cmd/1,queue_cmd/2,queue_cmd/3,queue_cmd/4,queue_cmd/5,
          queue_cmd/6,queue_cmd/7,queue_cmd/8,queue_cmd/9,queue_cmd/10,
          queue_cmd/11,queue_cmd/12,queue_cmd/13,queue_cmd/14,queue_cmd/15,
-         init_opengl/1
+         debug_ping/0, init_opengl/1
         ]).
 
--export([wxgl_dl/0, priv_dir/2, opt_error_log/3, init_nif/1]).
+-export([priv_dir/2, opt_error_log/3, init_nif/1]).
 
 -include("wxe.hrl").
 
@@ -103,6 +103,8 @@ queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,modul
 queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
 
 init_opengl(_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+
+debug_ping() -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
 
 rec(Op) ->
     receive
@@ -249,19 +251,6 @@ check_previous() ->
 	    erlang:error({Error, MF})    
     after 0 -> ok
     end.
-
-%% Get gl dynamic library
-
-wxgl_dl() ->
-    DynLib0 = "erl_gl",
-    PrivDir = priv_dir(DynLib0, false),
-    DynLib = case os:type() of
-		 {win32,_} ->
-		     DynLib0 ++ ".dll";
-		 _ ->
-		     DynLib0 ++ ".so"
-	     end,
-    filename:join(PrivDir, DynLib).
 
 priv_dir(Driver0, Silent) ->
     {file, Path} = code:is_loaded(?MODULE),

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * %CopyrightEnd% 
+ * %CopyrightEnd%
 */
 
 /***** This file is generated do not edit ****/
@@ -325,596 +325,641 @@ void initEventTable()
   }
 }
 
-int getRef(void* ptr, wxeMemEnv* memenv)
+bool sendevent(wxEvent *event, wxeMemEnv *memenv)
 {
+  int send_res ;
+  char * evClass = NULL;
+  wxMBConvUTF32 UTFconverter;
+  wxeEtype *Etype = etmap[event->GetEventType()];
+  wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;
   WxeApp * app = (WxeApp *) wxTheApp;
-  return app->getRef(ptr,memenv);
-}
+  if(!memenv) return 0;
 
-bool sendevent(wxEvent *event, ErlDrvTermData port)
-{
- int send_res ;
- char * evClass = NULL;
- wxMBConvUTF32 UTFconverter;
- wxeEtype *Etype = etmap[event->GetEventType()];
- wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;
- WxeApp * app = (WxeApp *) wxTheApp;
- wxeMemEnv *memenv = app->getMemEnv(port);
- if(!memenv) return 0;
+  wxeReturn rt = wxeReturn(memenv->tmp_env, cb->listener);
 
- wxeReturn rt = wxeReturn(port, cb->listener);
-
- rt.addAtom((char*)"wx");
- rt.addInt((int) event->GetId());
- rt.addRef(cb->obj, cb->class_name);
- rt.addExt2Term(cb->user_data);
- switch(Etype->cID) {
-case 165: {// wxCommandEvent
- wxCommandEvent * ev = (wxCommandEvent *) event;
+  ERL_NIF_TERM ev_term;
+  switch(Etype->cID) {
+  case 165: {// wxCommandEvent
+    wxCommandEvent * ev = (wxCommandEvent *) event;
     evClass = (char*)"wxCommandEvent";
-    rt.addAtom((char*)"wxCommand");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetString());
- rt.addInt(ev->GetInt());
- rt.addInt(ev->GetExtraLong());
-    rt.addTupleCount(5);
-  break;
-}
-case 166: {// wxScrollEvent or wxSpinEvent
-  if(event->IsKindOf(CLASSINFO(wxScrollEvent))) {
- wxScrollEvent * ev = (wxScrollEvent *) event;
-    evClass = (char*)"wxScrollEvent";
-    rt.addAtom((char*)"wxScroll");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetInt());
- rt.addInt(ev->GetExtraLong());
-    rt.addTupleCount(4);
-  } else {
-    Etype = etmap[event->GetEventType() + wxEVT_USER_FIRST];
- wxSpinEvent * ev = (wxSpinEvent *) event;
-    evClass = (char*)"wxSpinEvent";
-    rt.addAtom((char*)"wxSpin");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetInt());
-    rt.addTupleCount(3);
+    ev_term = enif_make_tuple5(rt.env,
+                               rt.make_atom((char*)"wxCommand"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetString()),
+                               rt.make_int(ev->GetInt()),
+                               rt.make_int(ev->GetExtraLong())
+                               );
+    break;
   }
-  break;
-}
-case 167: {// wxScrollWinEvent
- wxScrollWinEvent * ev = (wxScrollWinEvent *) event;
+  case 166: {// wxScrollEvent or wxSpinEvent
+    if(event->IsKindOf(CLASSINFO(wxScrollEvent))) {
+      wxScrollEvent * ev = (wxScrollEvent *) event;
+      evClass = (char*)"wxScrollEvent";
+      ev_term = enif_make_tuple4(rt.env,
+                                 rt.make_atom((char*)"wxScroll"),
+                                 rt.make_atom(Etype->eName),
+                                 rt.make_int(ev->GetInt()),
+                                 rt.make_int(ev->GetExtraLong())
+                                 );
+    } else {
+      Etype = etmap[event->GetEventType() + wxEVT_USER_FIRST];
+      wxSpinEvent * ev = (wxSpinEvent *) event;
+      evClass = (char*)"wxSpinEvent";
+      ev_term = enif_make_tuple3(rt.env,
+                                 rt.make_atom((char*)"wxSpin"),
+                                 rt.make_atom(Etype->eName),
+                                 rt.make_int(ev->GetInt())
+                                 );
+    }
+    break;
+  }
+  case 167: {// wxScrollWinEvent
+    wxScrollWinEvent * ev = (wxScrollWinEvent *) event;
     evClass = (char*)"wxScrollWinEvent";
-    rt.addAtom((char*)"wxScrollWin");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetPosition());
- rt.addInt(ev->GetOrientation());
-    rt.addTupleCount(4);
-  break;
-}
-case 168: {// wxMouseEvent
- wxMouseEvent * ev = (wxMouseEvent *) event;
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxScrollWin"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetPosition()),
+                               rt.make_int(ev->GetOrientation())
+                               );
+    break;
+  }
+  case 168: {// wxMouseEvent
+    wxMouseEvent * ev = (wxMouseEvent *) event;
     evClass = (char*)"wxMouseEvent";
-    rt.addAtom((char*)"wxMouse");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->m_x);
- rt.addInt(ev->m_y);
- rt.addBool(ev->m_leftDown);
- rt.addBool(ev->m_middleDown);
- rt.addBool(ev->m_rightDown);
- rt.addBool(ev->m_controlDown);
- rt.addBool(ev->m_shiftDown);
- rt.addBool(ev->m_altDown);
+    ev_term = enif_make_tuple(rt.env, 14,
+                              rt.make_atom((char*)"wxMouse"),
+                              rt.make_atom(Etype->eName),
+                              rt.make_int(ev->m_x),
+                              rt.make_int(ev->m_y),
+                              rt.make_bool(ev->m_leftDown),
+                              rt.make_bool(ev->m_middleDown),
+                              rt.make_bool(ev->m_rightDown),
+                              rt.make_bool(ev->m_controlDown),
+                              rt.make_bool(ev->m_shiftDown),
+                              rt.make_bool(ev->m_altDown),
 #if wxCHECK_VERSION(2,9,0) && defined(_MACOSX)
- rt.addBool(ev->m_rawControlDown);
+                              rt.make_bool(ev->m_rawControlDown),
 #else
- rt.addBool(ev->m_metaDown);
+                              rt.make_bool(ev->m_metaDown),
 #endif
- rt.addInt(ev->m_wheelRotation);
- rt.addInt(ev->m_wheelDelta);
- rt.addInt(ev->m_linesPerAction);
-    rt.addTupleCount(14);
-  break;
-}
-case 169: {// wxSetCursorEvent
- wxSetCursorEvent * ev = (wxSetCursorEvent *) event;
- wxCursor * GetCursor = new wxCursor(ev->GetCursor());
- app->newPtr((void *) GetCursor,3, memenv);
+                              rt.make_int(ev->m_wheelRotation),
+                              rt.make_int(ev->m_wheelDelta),
+                              rt.make_int(ev->m_linesPerAction)
+                              );
+    break;
+  }
+  case 169: {// wxSetCursorEvent
+    wxSetCursorEvent * ev = (wxSetCursorEvent *) event;
+    wxCursor * GetCursor = new wxCursor(ev->GetCursor());
+    app->newPtr((void *) GetCursor,3, memenv);
     evClass = (char*)"wxSetCursorEvent";
-    rt.addAtom((char*)"wxSetCursor");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetX());
- rt.addInt(ev->GetY());
- rt.addRef(getRef((void *)GetCursor,memenv), "wxCursor");
-    rt.addTupleCount(5);
-  break;
-}
-case 170: {// wxKeyEvent
- wxKeyEvent * ev = (wxKeyEvent *) event;
+    ev_term = enif_make_tuple5(rt.env,
+                               rt.make_atom((char*)"wxSetCursor"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetX()),
+                               rt.make_int(ev->GetY()),
+                               rt.make_ref(app->getRef((void *)GetCursor, memenv), "wxCursor")
+                               );
+    break;
+  }
+  case 170: {// wxKeyEvent
+    wxKeyEvent * ev = (wxKeyEvent *) event;
     evClass = (char*)"wxKeyEvent";
-    rt.addAtom((char*)"wxKey");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->m_x);
- rt.addInt(ev->m_y);
- rt.addInt(ev->m_keyCode);
- rt.addBool(ev->m_controlDown);
- rt.addBool(ev->m_shiftDown);
- rt.addBool(ev->m_altDown);
+    ev_term = enif_make_tuple(rt.env,13,
+                              rt.make_atom((char*)"wxKey"),
+                              rt.make_atom(Etype->eName),
+                              rt.make_int(ev->m_x),
+                              rt.make_int(ev->m_y),
+                              rt.make_int(ev->m_keyCode),
+                              rt.make_bool(ev->m_controlDown),
+                              rt.make_bool(ev->m_shiftDown),
+                              rt.make_bool(ev->m_altDown),
 #if wxCHECK_VERSION(2,9,0) && defined(_MACOSX)
- rt.addBool(ev->m_rawControlDown);
+                              rt.make_bool(ev->m_rawControlDown),
 #else
- rt.addBool(ev->m_metaDown);
+                              rt.make_bool(ev->m_metaDown),
 #endif
 #if !wxCHECK_VERSION(2,9,0)
- rt.addBool(ev->m_scanCode);
+                              rt.make_bool(ev->m_scanCode),
 #else
- rt.addBool(false);
+                              rt.make_bool(false),
 #endif
- rt.addInt(ev->m_uniChar);
- rt.addUint(ev->m_rawCode);
- rt.addUint(ev->m_rawFlags);
-    rt.addTupleCount(13);
-  break;
-}
-case 171: {// wxSizeEvent
- wxSizeEvent * ev = (wxSizeEvent *) event;
+                              rt.make_int(ev->m_uniChar),
+                              rt.make_uint(ev->m_rawCode),
+                              rt.make_uint(ev->m_rawFlags)
+                              );
+    break;
+  }
+  case 171: {// wxSizeEvent
+    wxSizeEvent * ev = (wxSizeEvent *) event;
     evClass = (char*)"wxSizeEvent";
-    rt.addAtom((char*)"wxSize");
-    rt.addAtom(Etype->eName);
- rt.add(ev->m_size);
- rt.add(ev->m_rect);
-    rt.addTupleCount(4);
-  break;
-}
-case 172: {// wxMoveEvent
- wxMoveEvent * ev = (wxMoveEvent *) event;
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxSize"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->m_size),
+                               rt.make(ev->m_rect)
+                               );
+    break;
+  }
+  case 172: {// wxMoveEvent
+    wxMoveEvent * ev = (wxMoveEvent *) event;
     evClass = (char*)"wxMoveEvent";
-    rt.addAtom((char*)"wxMove");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetPosition());
- rt.add(ev->GetRect());
-    rt.addTupleCount(4);
-  break;
-}
-case 173: {// wxPaintEvent
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxMove"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetPosition()),
+                               rt.make(ev->GetRect())
+                               );
+    break;
+  }
+  case 173: {// wxPaintEvent
     evClass = (char*)"wxPaintEvent";
-    rt.addAtom((char*)"wxPaint");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 174: {// wxEraseEvent
- wxEraseEvent * ev = (wxEraseEvent *) event;
- wxDC * GetDC = ev->GetDC();
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxPaint"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 174: {// wxEraseEvent
+    wxEraseEvent * ev = (wxEraseEvent *) event;
+    wxDC * GetDC = ev->GetDC();
     evClass = (char*)"wxEraseEvent";
-    rt.addAtom((char*)"wxErase");
-    rt.addAtom(Etype->eName);
- rt.addRef(getRef((void *)GetDC,memenv), "wxDC");
-    rt.addTupleCount(3);
-  break;
-}
-case 175: {// wxFocusEvent
- wxFocusEvent * ev = (wxFocusEvent *) event;
- wxWindow * GetWindow = ev->GetWindow();
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxErase"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_ref(app->getRef((void *)GetDC, memenv), "wxDC")
+                               );
+    break;
+  }
+  case 175: {// wxFocusEvent
+    wxFocusEvent * ev = (wxFocusEvent *) event;
+    wxWindow * GetWindow = ev->GetWindow();
     evClass = (char*)"wxFocusEvent";
-    rt.addAtom((char*)"wxFocus");
-    rt.addAtom(Etype->eName);
- rt.addRef(getRef((void *)GetWindow,memenv), "wxWindow");
-    rt.addTupleCount(3);
-  break;
-}
-case 176: {// wxChildFocusEvent
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxFocus"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_ref(app->getRef((void *)GetWindow,memenv), "wxWindow")
+                               );
+    break;
+  }
+  case 176: {// wxChildFocusEvent
     evClass = (char*)"wxChildFocusEvent";
-    rt.addAtom((char*)"wxChildFocus");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 177: {// wxMenuEvent
- wxMenuEvent * ev = (wxMenuEvent *) event;
- wxMenu * GetMenu = ev->GetMenu();
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxChildFocus"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 177: {// wxMenuEvent
+    wxMenuEvent * ev = (wxMenuEvent *) event;
+    wxMenu * GetMenu = ev->GetMenu();
     evClass = (char*)"wxMenuEvent";
-    rt.addAtom((char*)"wxMenu");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetMenuId());
- rt.addRef(getRef((void *)GetMenu,memenv), "wxMenu");
-    rt.addTupleCount(4);
-  break;
-}
-case 178: {// wxCloseEvent
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxMenu"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetMenuId()),
+                               rt.make_ref(app->getRef((void *)GetMenu,memenv), "wxMenu"));
+    break;
+  }
+  case 178: {// wxCloseEvent
     evClass = (char*)"wxCloseEvent";
-    rt.addAtom((char*)"wxClose");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 179: {// wxShowEvent
- wxShowEvent * ev = (wxShowEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxClose"),
+                               rt.make_atom(Etype->eName));
+    break;
+  }
+  case 179: {// wxShowEvent
+    wxShowEvent * ev = (wxShowEvent *) event;
     evClass = (char*)"wxShowEvent";
-    rt.addAtom((char*)"wxShow");
-    rt.addAtom(Etype->eName);
- rt.addBool(ev->GetShow());
-    rt.addTupleCount(3);
-  break;
-}
-case 180: {// wxIconizeEvent
- wxIconizeEvent * ev = (wxIconizeEvent *) event;
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxShow"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_bool(ev->GetShow())
+                               );
+    break;
+  }
+  case 180: {// wxIconizeEvent
+    wxIconizeEvent * ev = (wxIconizeEvent *) event;
     evClass = (char*)"wxIconizeEvent";
-    rt.addAtom((char*)"wxIconize");
-    rt.addAtom(Etype->eName);
- rt.addBool(ev->Iconized());
-    rt.addTupleCount(3);
-  break;
-}
-case 181: {// wxMaximizeEvent
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxIconize"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_bool(ev->Iconized()));
+    break;
+  }
+  case 181: {// wxMaximizeEvent
     evClass = (char*)"wxMaximizeEvent";
-    rt.addAtom((char*)"wxMaximize");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 182: {// wxJoystickEvent
- wxJoystickEvent * ev = (wxJoystickEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxMaximize"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 182: {// wxJoystickEvent
+    wxJoystickEvent * ev = (wxJoystickEvent *) event;
     evClass = (char*)"wxJoystickEvent";
-    rt.addAtom((char*)"wxJoystick");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetPosition());
- rt.addInt(ev->GetZPosition());
- rt.addInt(ev->GetButtonChange());
- rt.addInt(ev->GetButtonState());
- rt.addInt(ev->GetJoystick());
-    rt.addTupleCount(7);
-  break;
-}
-case 183: {// wxUpdateUIEvent
+    ev_term = enif_make_tuple7(rt.env,
+                               rt.make_atom((char*)"wxJoystick"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetPosition()),
+                               rt.make_int(ev->GetZPosition()),
+                               rt.make_int(ev->GetButtonChange()),
+                               rt.make_int(ev->GetButtonState()),
+                               rt.make_int(ev->GetJoystick())
+                               );
+    break;
+  }
+  case 183: {// wxUpdateUIEvent
     evClass = (char*)"wxUpdateUIEvent";
-    rt.addAtom((char*)"wxUpdateUI");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 184: {// wxSysColourChangedEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxUpdateUI"),
+                               rt.make_atom(Etype->eName));
+    break;
+  }
+  case 184: {// wxSysColourChangedEvent
     evClass = (char*)"wxSysColourChangedEvent";
-    rt.addAtom((char*)"wxSysColourChanged");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 185: {// wxMouseCaptureChangedEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxSysColourChanged"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 185: {// wxMouseCaptureChangedEvent
     evClass = (char*)"wxMouseCaptureChangedEvent";
-    rt.addAtom((char*)"wxMouseCaptureChanged");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 186: {// wxDisplayChangedEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxMouseCaptureChanged"),
+                               rt.make_atom(Etype->eName));
+    break;
+  }
+  case 186: {// wxDisplayChangedEvent
     evClass = (char*)"wxDisplayChangedEvent";
-    rt.addAtom((char*)"wxDisplayChanged");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 187: {// wxPaletteChangedEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxDisplayChanged"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 187: {// wxPaletteChangedEvent
     evClass = (char*)"wxPaletteChangedEvent";
-    rt.addAtom((char*)"wxPaletteChanged");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 188: {// wxQueryNewPaletteEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxPaletteChanged"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 188: {// wxQueryNewPaletteEvent
     evClass = (char*)"wxQueryNewPaletteEvent";
-    rt.addAtom((char*)"wxQueryNewPalette");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 189: {// wxNavigationKeyEvent
- wxNavigationKeyEvent * ev = (wxNavigationKeyEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxQueryNewPalette"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 189: {// wxNavigationKeyEvent
+    wxNavigationKeyEvent * ev = (wxNavigationKeyEvent *) event;
     evClass = (char*)"wxNavigationKeyEvent";
-    rt.addAtom((char*)"wxNavigationKey");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->m_flags);
- rt.addRef(getRef((void *)ev->m_focus,memenv), "wxWindow");
-    rt.addTupleCount(4);
-  break;
-}
-case 190: {// wxWindowCreateEvent
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxNavigationKey"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->m_flags),
+                               rt.make_ref(app->getRef((void *)ev->m_focus,memenv), "wxWindow")
+                               );
+    break;
+  }
+  case 190: {// wxWindowCreateEvent
     evClass = (char*)"wxWindowCreateEvent";
-    rt.addAtom((char*)"wxWindowCreate");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 191: {// wxWindowDestroyEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxWindowCreate"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 191: {// wxWindowDestroyEvent
     evClass = (char*)"wxWindowDestroyEvent";
-    rt.addAtom((char*)"wxWindowDestroy");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 192: {// wxHelpEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxWindowDestroy"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 192: {// wxHelpEvent
     evClass = (char*)"wxHelpEvent";
-    rt.addAtom((char*)"wxHelp");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 193: {// wxContextMenuEvent
- wxContextMenuEvent * ev = (wxContextMenuEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxHelp"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 193: {// wxContextMenuEvent
+    wxContextMenuEvent * ev = (wxContextMenuEvent *) event;
     evClass = (char*)"wxContextMenuEvent";
-    rt.addAtom((char*)"wxContextMenu");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetPosition());
-    rt.addTupleCount(3);
-  break;
-}
-case 194: {// wxIdleEvent
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxContextMenu"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetPosition())
+                               );
+    break;
+  }
+  case 194: {// wxIdleEvent
     evClass = (char*)"wxIdleEvent";
-    rt.addAtom((char*)"wxIdle");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 195: {// wxGridEvent
- wxGridEvent * ev = (wxGridEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxIdle"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 195: {// wxGridEvent
+    wxGridEvent * ev = (wxGridEvent *) event;
     evClass = (char*)"wxGridEvent";
-    rt.addAtom((char*)"wxGrid");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetRow());
- rt.addInt(ev->GetCol());
- rt.addInt(ev->GetPosition().x);
- rt.addInt(ev->GetPosition().y);
- rt.addBool(ev->Selecting());
- rt.addBool(ev->ControlDown());
- rt.addBool(ev->MetaDown());
- rt.addBool(ev->ShiftDown());
- rt.addBool(ev->AltDown());
-    rt.addTupleCount(11);
-  break;
-}
-case 197: {// wxSashEvent
- wxSashEvent * ev = (wxSashEvent *) event;
+    ev_term = enif_make_tuple(rt.env,11,
+                              rt.make_atom((char*)"wxGrid"),
+                              rt.make_atom(Etype->eName),
+                              rt.make_int(ev->GetRow()),
+                              rt.make_int(ev->GetCol()),
+                              rt.make_int(ev->GetPosition().x),
+                              rt.make_int(ev->GetPosition().y),
+                              rt.make_bool(ev->Selecting()),
+                              rt.make_bool(ev->ControlDown()),
+                              rt.make_bool(ev->MetaDown()),
+                              rt.make_bool(ev->ShiftDown()),
+                              rt.make_bool(ev->AltDown()));
+    break;
+  }
+  case 197: {// wxSashEvent
+    wxSashEvent * ev = (wxSashEvent *) event;
     evClass = (char*)"wxSashEvent";
-    rt.addAtom((char*)"wxSash");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetEdge());
- rt.add(ev->GetDragRect());
- rt.addInt(ev->GetDragStatus());
-    rt.addTupleCount(5);
-  break;
-}
-case 198: {// wxListEvent
- wxListEvent * ev = (wxListEvent *) event;
+    ev_term = enif_make_tuple5(rt.env,
+                               rt.make_atom((char*)"wxSash"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetEdge()),
+                               rt.make(ev->GetDragRect()),
+                               rt.make_int(ev->GetDragStatus())
+                               );
+    break;
+  }
+  case 198: {// wxListEvent
+    wxListEvent * ev = (wxListEvent *) event;
     evClass = (char*)"wxListEvent";
-    rt.addAtom((char*)"wxList");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetKeyCode());
- rt.addInt(ev->m_oldItemIndex);
- rt.addInt(ev->GetIndex());
- rt.addInt(ev->m_col);
- rt.add(ev->GetPoint());
-    rt.addTupleCount(7);
-  break;
-}
-case 199: {// wxDateEvent
- wxDateEvent * ev = (wxDateEvent *) event;
+    ev_term = enif_make_tuple7(rt.env,
+                               rt.make_atom((char*)"wxList"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetKeyCode()),
+                               rt.make_int(ev->m_oldItemIndex),
+                               rt.make_int(ev->GetIndex()),
+                               rt.make_int(ev->m_col),
+                               rt.make(ev->GetPoint())
+                               );
+    break;
+  }
+  case 199: {// wxDateEvent
+    wxDateEvent * ev = (wxDateEvent *) event;
     evClass = (char*)"wxDateEvent";
-    rt.addAtom((char*)"wxDate");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetDate());
-    rt.addTupleCount(3);
-  break;
-}
-case 200: {// wxCalendarEvent
- wxCalendarEvent * ev = (wxCalendarEvent *) event;
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxDate"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetDate())
+                               );
+    break;
+  }
+  case 200: {// wxCalendarEvent
+    wxCalendarEvent * ev = (wxCalendarEvent *) event;
     evClass = (char*)"wxCalendarEvent";
-    rt.addAtom((char*)"wxCalendar");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetWeekDay());
- rt.add(ev->GetDate());
-    rt.addTupleCount(4);
-  break;
-}
-case 201: {// wxFileDirPickerEvent
- wxFileDirPickerEvent * ev = (wxFileDirPickerEvent *) event;
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxCalendar"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetWeekDay()),
+                               rt.make(ev->GetDate())
+                               );
+    break;
+  }
+  case 201: {// wxFileDirPickerEvent
+    wxFileDirPickerEvent * ev = (wxFileDirPickerEvent *) event;
     evClass = (char*)"wxFileDirPickerEvent";
-    rt.addAtom((char*)"wxFileDirPicker");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetPath());
-    rt.addTupleCount(3);
-  break;
-}
-case 202: {// wxColourPickerEvent
- wxColourPickerEvent * ev = (wxColourPickerEvent *) event;
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxFileDirPicker"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetPath())
+                               );
+    break;
+  }
+  case 202: {// wxColourPickerEvent
+    wxColourPickerEvent * ev = (wxColourPickerEvent *) event;
     evClass = (char*)"wxColourPickerEvent";
-    rt.addAtom((char*)"wxColourPicker");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetColour());
-    rt.addTupleCount(3);
-  break;
-}
-case 203: {// wxFontPickerEvent
- wxFontPickerEvent * ev = (wxFontPickerEvent *) event;
- wxFont * GetFont = new wxFont(ev->GetFont());
- app->newPtr((void *) GetFont,3, memenv);
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxColourPicker"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetColour())
+                               );
+    break;
+  }
+  case 203: {// wxFontPickerEvent
+    wxFontPickerEvent * ev = (wxFontPickerEvent *) event;
+    wxFont * GetFont = new wxFont(ev->GetFont());
+    app->newPtr((void *) GetFont,3, memenv);
     evClass = (char*)"wxFontPickerEvent";
-    rt.addAtom((char*)"wxFontPicker");
-    rt.addAtom(Etype->eName);
- rt.addRef(getRef((void *)GetFont,memenv), "wxFont");
-    rt.addTupleCount(3);
-  break;
-}
-case 204: {// wxStyledTextEvent
- wxStyledTextEvent * ev = (wxStyledTextEvent *) event;
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxFontPicker"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_ref(app->getRef((void *)GetFont,memenv), "wxFont")
+                               );
+    break;
+  }
+  case 204: {// wxStyledTextEvent
+    wxStyledTextEvent * ev = (wxStyledTextEvent *) event;
     evClass = (char*)"wxStyledTextEvent";
-    rt.addAtom((char*)"wxStyledText");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetPosition());
- rt.addInt(ev->GetKey());
- rt.addInt(ev->GetModifiers());
- rt.addInt(ev->GetModificationType());
- rt.add(ev->GetText());
- rt.addInt(ev->GetLength());
- rt.addInt(ev->GetLinesAdded());
- rt.addInt(ev->GetLine());
- rt.addInt(ev->GetFoldLevelNow());
- rt.addInt(ev->GetFoldLevelPrev());
- rt.addInt(ev->GetMargin());
- rt.addInt(ev->GetMessage());
- rt.addInt(ev->GetWParam());
- rt.addInt(ev->GetLParam());
- rt.addInt(ev->GetListType());
- rt.addInt(ev->GetX());
- rt.addInt(ev->GetY());
- rt.add(ev->GetDragText());
- rt.addBool(ev->GetDragAllowMove());
- rt.addInt(ev->GetDragResult());
-    rt.addTupleCount(22);
-  break;
-}
-case 210: {// wxTreeEvent
- wxTreeEvent * ev = (wxTreeEvent *) event;
+    ev_term = enif_make_tuple(rt.env,22,
+                              rt.make_atom((char*)"wxStyledText"),
+                              rt.make_atom(Etype->eName),
+                              rt.make_int(ev->GetPosition()),
+                              rt.make_int(ev->GetKey()),
+                              rt.make_int(ev->GetModifiers()),
+                              rt.make_int(ev->GetModificationType()),
+                              rt.make(ev->GetText()),
+                              rt.make_int(ev->GetLength()),
+                              rt.make_int(ev->GetLinesAdded()),
+                              rt.make_int(ev->GetLine()),
+                              rt.make_int(ev->GetFoldLevelNow()),
+                              rt.make_int(ev->GetFoldLevelPrev()),
+                              rt.make_int(ev->GetMargin()),
+                              rt.make_int(ev->GetMessage()),
+                              rt.make_int(ev->GetWParam()),
+                              rt.make_int(ev->GetLParam()),
+                              rt.make_int(ev->GetListType()),
+                              rt.make_int(ev->GetX()),
+                              rt.make_int(ev->GetY()),
+                              rt.make(ev->GetDragText()),
+                              rt.make_bool(ev->GetDragAllowMove()),
+                              rt.make_int(ev->GetDragResult())
+                              );
+    break;
+  }
+  case 210: {// wxTreeEvent
+    wxTreeEvent * ev = (wxTreeEvent *) event;
     evClass = (char*)"wxTreeEvent";
-    rt.addAtom((char*)"wxTree");
-    rt.addAtom(Etype->eName);
- rt.add((wxUIntPtr *) ev->GetItem().m_pItem);
- rt.add((wxUIntPtr *) ev->GetOldItem().m_pItem);
- rt.add(ev->GetPoint());
-    rt.addTupleCount(5);
-  break;
-}
-case 211: {// wxNotebookEvent
- wxNotebookEvent * ev = (wxNotebookEvent *) event;
+    ev_term = enif_make_tuple5(rt.env,
+                               rt.make_atom((char*)"wxTree"),
+                               rt.make_atom(Etype->eName),
+                               rt.make((wxUIntPtr *) ev->GetItem().m_pItem),
+                               rt.make((wxUIntPtr *) ev->GetOldItem().m_pItem),
+                               rt.make(ev->GetPoint())
+                               );
+    break;
+  }
+  case 211: {// wxNotebookEvent
+    wxNotebookEvent * ev = (wxNotebookEvent *) event;
     evClass = (char*)"wxNotebookEvent";
-    rt.addAtom((char*)"wxNotebook");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetSelection());
- rt.addInt(ev->GetOldSelection());
-    rt.addTupleCount(4);
-  break;
-}
-case 217: {// wxClipboardTextEvent
+    ev_term = enif_make_tuple4(rt.env,
+                               rt.make_atom((char*)"wxNotebook"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetSelection()),
+                               rt.make_int(ev->GetOldSelection())
+                               );
+    break;
+  }
+  case 217: {// wxClipboardTextEvent
     evClass = (char*)"wxClipboardTextEvent";
-    rt.addAtom((char*)"wxClipboardText");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 218: {// wxSpinEvent
- wxSpinEvent * ev = (wxSpinEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxClipboardText"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 218: {// wxSpinEvent
+    wxSpinEvent * ev = (wxSpinEvent *) event;
     evClass = (char*)"wxSpinEvent";
-    rt.addAtom((char*)"wxSpin");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetInt());
-    rt.addTupleCount(3);
-  break;
-}
-case 220: {// wxSplitterEvent
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxSpin"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetInt())
+                               );
+    break;
+  }
+  case 220: {// wxSplitterEvent
     evClass = (char*)"wxSplitterEvent";
-    rt.addAtom((char*)"wxSplitter");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 222: {// wxHtmlLinkEvent
- wxHtmlLinkEvent * ev = (wxHtmlLinkEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxSplitter"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 222: {// wxHtmlLinkEvent
+    wxHtmlLinkEvent * ev = (wxHtmlLinkEvent *) event;
     evClass = (char*)"wxHtmlLinkEvent";
-    rt.addAtom((char*)"wxHtmlLink");
-    rt.addAtom(Etype->eName);
- rt.add(ev->GetLinkInfo());
-    rt.addTupleCount(3);
-  break;
-}
-case 225: {// wxAuiNotebookEvent
- wxAuiNotebookEvent * ev = (wxAuiNotebookEvent *) event;
- wxAuiNotebook * GetDragSource = ev->GetDragSource();
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxHtmlLink"),
+                               rt.make_atom(Etype->eName),
+                               rt.make(ev->GetLinkInfo())
+                               );
+    break;
+  }
+  case 225: {// wxAuiNotebookEvent
+    wxAuiNotebookEvent * ev = (wxAuiNotebookEvent *) event;
+    wxAuiNotebook * GetDragSource = ev->GetDragSource();
     evClass = (char*)"wxAuiNotebookEvent";
-    rt.addAtom((char*)"wxAuiNotebook");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->GetOldSelection());
- rt.addInt(ev->GetSelection());
- rt.addRef(getRef((void *)GetDragSource,memenv), "wxAuiNotebook");
-    rt.addTupleCount(5);
-  break;
-}
-case 226: {// wxAuiManagerEvent
- wxAuiManagerEvent * ev = (wxAuiManagerEvent *) event;
- wxAuiManager * GetManager = ev->GetManager();
- wxAuiPaneInfo * GetPane = ev->GetPane();
- wxDC * GetDC = ev->GetDC();
+    ev_term = enif_make_tuple5(rt.env,
+                               rt.make_atom((char*)"wxAuiNotebook"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->GetOldSelection()),
+                               rt.make_int(ev->GetSelection()),
+                               rt.make_ref(app->getRef((void *)GetDragSource,memenv), "wxAuiNotebook")
+                               );
+    break;
+  }
+  case 226: {// wxAuiManagerEvent
+    wxAuiManagerEvent * ev = (wxAuiManagerEvent *) event;
+    wxAuiManager * GetManager = ev->GetManager();
+    wxAuiPaneInfo * GetPane = ev->GetPane();
+    wxDC * GetDC = ev->GetDC();
     evClass = (char*)"wxAuiManagerEvent";
-    rt.addAtom((char*)"wxAuiManager");
-    rt.addAtom(Etype->eName);
- rt.addRef(getRef((void *)GetManager,memenv), "wxAuiManager");
- rt.addRef(getRef((void *)GetPane,memenv), "wxAuiPaneInfo");
- rt.addInt(ev->GetButton());
- rt.addBool(ev->veto_flag);
- rt.addBool(ev->canveto_flag);
- rt.addRef(getRef((void *)GetDC,memenv), "wxDC");
-    rt.addTupleCount(8);
-  break;
-}
-case 229: {// wxTaskBarIconEvent
+    ev_term = enif_make_tuple8(rt.env,
+                               rt.make_atom((char*)"wxAuiManager"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_ref(app->getRef((void *)GetManager,memenv), "wxAuiManager"),
+                               rt.make_ref(app->getRef((void *)GetPane,memenv), "wxAuiPaneInfo"),
+                               rt.make_int(ev->GetButton()),
+                               rt.make_bool(ev->veto_flag),
+                               rt.make_bool(ev->canveto_flag),
+                               rt.make_ref(app->getRef((void *)GetDC,memenv), "wxDC")
+                               );
+    break;
+  }
+  case 229: {// wxTaskBarIconEvent
     evClass = (char*)"wxTaskBarIconEvent";
-    rt.addAtom((char*)"wxTaskBarIcon");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 230: {// wxInitDialogEvent
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxTaskBarIcon"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 230: {// wxInitDialogEvent
     evClass = (char*)"wxInitDialogEvent";
-    rt.addAtom((char*)"wxInitDialog");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 232: {// wxActivateEvent
- wxActivateEvent * ev = (wxActivateEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxInitDialog"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 232: {// wxActivateEvent
+    wxActivateEvent * ev = (wxActivateEvent *) event;
     evClass = (char*)"wxActivateEvent";
-    rt.addAtom((char*)"wxActivate");
-    rt.addAtom(Etype->eName);
- rt.addBool(ev->GetActive());
-    rt.addTupleCount(3);
-  break;
-}
-case 235: {// wxMouseCaptureLostEvent
+    ev_term = enif_make_tuple3(rt.env,
+                               rt.make_atom((char*)"wxActivate"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_bool(ev->GetActive())
+                               );
+    break;
+  }
+  case 235: {// wxMouseCaptureLostEvent
     evClass = (char*)"wxMouseCaptureLostEvent";
-    rt.addAtom((char*)"wxMouseCaptureLost");
-    rt.addAtom(Etype->eName);
-    rt.addTupleCount(2);
-  break;
-}
-case 238: {// wxDropFilesEvent
- wxDropFilesEvent * ev = (wxDropFilesEvent *) event;
+    ev_term = enif_make_tuple2(rt.env,
+                               rt.make_atom((char*)"wxMouseCaptureLost"),
+                               rt.make_atom(Etype->eName)
+                               );
+    break;
+  }
+  case 238: {// wxDropFilesEvent
+    wxDropFilesEvent * ev = (wxDropFilesEvent *) event;
     evClass = (char*)"wxDropFilesEvent";
-    rt.addAtom((char*)"wxDropFiles");
-    rt.addAtom(Etype->eName);
- rt.addInt(ev->m_noFiles);
- rt.add(ev->m_pos);
- wxArrayString tmpArrayStr(ev->m_noFiles, ev->m_files);
- rt.add(tmpArrayStr);
-    rt.addTupleCount(5);
-  break;
-}
- }
+    wxArrayString tmpArrayStr(ev->m_noFiles, ev->m_files);
+    ev_term = enif_make_tuple5(rt.env,
+                               rt.make_atom((char*)"wxDropFiles"),
+                               rt.make_atom(Etype->eName),
+                               rt.make_int(ev->m_noFiles),
+                               rt.make(ev->m_pos),
+                               rt.make(tmpArrayStr)
+                               );
+    break;
+  }
+  }
+  ERL_NIF_TERM wx_ev =
+    enif_make_tuple5(rt.env,
+                     rt.make_atom((char*)"wx"),
+                     rt.make_int((int) event->GetId()),
+                     rt.make_ref(cb->obj, cb->class_name),
+                     rt.make_ext2term(cb->user_data),
+                     ev_term);
 
- rt.addTupleCount(5);
- if(cb->fun_id) {
-   rt.addRef(getRef((void *)event,memenv), evClass);
-   rt.addTupleCount(2);
-   rt.addInt(cb->fun_id);
-   rt.addAtom("_wx_invoke_cb_");
-   rt.addTupleCount(3);
-   pre_callback();
-   send_res =  rt.send();
-   if(send_res) handle_event_callback(WXE_DRV_PORT_HANDLE, cb->listener);
-   app->clearPtr((void *) event);
- } else {
-   send_res =  rt.send();
-   if(cb->skip) event->Skip();
-   if(app->recurse_level < 1 && (Etype->cID == 171 || Etype->cID == 172)) {
-     app->recurse_level++;
-     app->dispatch_cmds();
-     app->recurse_level--;
-   }
- };
- return send_res;
- }
+  if(cb->fun_id) {
+    ERL_NIF_TERM wx_cb =
+      enif_make_tuple4(rt.env,
+                       rt.make_atom("_wx_invoke_cb_"),
+                       rt.make_int(cb->fun_id),
+                       wx_ev,
+                       rt.make_ref(app->getRef((void *)event,memenv), evClass)
+                       );
+    pre_callback();
+    send_res =  rt.send(wx_cb);
+    if(send_res) handle_event_callback(memenv, cb->listener);
+    app->clearPtr((void *) event);
+  } else {
+    send_res =  rt.send(wx_ev);
+    if(cb->skip) event->Skip();
+    if(app->recurse_level < 1 && (Etype->cID == 171 || Etype->cID == 172)) {
+      app->recurse_level++;
+      app->dispatch_cmds();
+      app->recurse_level--;
+    }
+  };
+  return send_res;
+}

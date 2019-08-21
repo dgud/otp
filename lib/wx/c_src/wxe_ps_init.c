@@ -19,7 +19,6 @@
  */
 
 #include <stdio.h>
-#include "wxe_driver.h"
 
 /* Platform specific initialisation stuff */ 
 #ifdef _MACOSX

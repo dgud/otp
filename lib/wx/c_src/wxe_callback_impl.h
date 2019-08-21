@@ -22,7 +22,7 @@
 #define	_WXE_CALLBACK_IMPL_H
 
 void pre_callback();
-void handle_event_callback(ErlDrvPort port, ErlDrvTermData process);
+void handle_event_callback(wxeMemEnv *memenv, ErlNifPid process);
 
 #if wxCHECK_VERSION(2,9,0)
     #define wxeIntPtr wxIntPtr
@@ -35,18 +35,17 @@ void handle_event_callback(ErlDrvPort port, ErlDrvTermData process);
 class wxeEvtListener : public wxEvtHandler
 {
 public:
-   wxeEvtListener(ErlDrvTermData caller, int req, char *req_type,
-		  int funcb, int skip_ev, wxeErlTerm * userData,
-		  ErlDrvTermData Thisport);
+   wxeEvtListener(ErlNifPid caller, int req, char *req_type,
+		  int funcb, int skip_ev, wxeErlTerm * userData, wxeMemEnv *menv);
    ~wxeEvtListener();
    void forward(wxEvent& event);
-   ErlDrvTermData port;
-   ErlDrvTermData listener;
+   ErlNifPid    listener;
    int          fun_id;
    int          obj;
    char         class_name[40];
    int          skip;
    wxeErlTerm * user_data;
+   wxeMemEnv  * memenv;
 };
 
 class wxEPrintout : public wxPrintout
@@ -55,12 +54,11 @@ class wxEPrintout : public wxPrintout
  wxEPrintout(wxString Title, int onPrintP, int onPrepareP,
 	     int onBeginP, int onEndP,
 	     int onBeginD, int onEndD,
-	     int hasP, int getPageI, ErlDrvTermData Port) :
+	     int hasP, int getPageI) :
     wxPrintout(Title),
 	onPrintPage(onPrintP), onPreparePrinting(onPrepareP),
 	onBeginPrinting(onBeginP), onEndPrinting(onEndP),
-	onBeginDocument(onBeginD), onEndDocument(onEndD), hasPage(hasP), getPageInfo(getPageI),
-	port(Port)
+	onBeginDocument(onBeginD), onEndDocument(onEndD), hasPage(hasP), getPageInfo(getPageI)
 	{ } ;
 
     ~wxEPrintout();
@@ -85,14 +83,14 @@ class wxEPrintout : public wxPrintout
     int hasPage;
     int getPageInfo;
 
-    ErlDrvTermData port;
+    wxeMemEnv  * memenv;
 };
 
-void clear_cb(ErlDrvTermData port, int callback);
+void clear_cb(wxeMemEnv *, int callback);
 
 // Implementation of wxListCtrlCompare
 struct callbackInfo {
-    ErlDrvTermData port;
+    wxeMemEnv * memenv;
     int callbackID;
 };
 

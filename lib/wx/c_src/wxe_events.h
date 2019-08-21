@@ -21,9 +21,9 @@
 #ifndef __WXE_EVENT_H__
 #define __WXE_EVENT_H__
 
-#include "wxe_driver.h"
+// #include "wxe_nif.h"
 
-bool sendevent(wxEvent * event, ErlDrvTermData port);
+bool sendevent(wxEvent * event, wxeMemEnv *env);
 
 class wxeEtype 
 {

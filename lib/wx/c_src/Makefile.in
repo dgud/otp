@@ -35,12 +35,12 @@ SO_EXT    = @SO_EXT@
 OBJC_CC=@OBJC_CC@
 OBJC_CFLAGS=@OBJC_CFLAGS@
 
-GENERAL     = wxe_driver wxe_nif wxe_ps_init wxe_main wxe_impl \
+GENERAL     = wxe_nif wxe_ps_init wxe_main wxe_impl \
 		wxe_helpers wxe_callback_impl wxe_return wxe_gl
 GENERAL_H   = wxe_callback_impl.h  wxe_driver.h  wxe_events.h  wxe_gl.h \
 		wxe_helpers.h  wxe_impl.h  wxe_memory.h  wxe_return.h
 
-GENERATED_F = wxe_funcs wxe_events wxe_init
+GENERATED_F = wxe_wrapper wxe_events wxe_init
 GENERATED_H = gen/wxe_macros.h
 
 GL_H = egl_impl.h gen/gl_finit.h gen/gl_fdefs.h

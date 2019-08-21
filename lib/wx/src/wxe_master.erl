@@ -85,10 +85,6 @@ init_opengl() ->
     case get(wx_init_opengl) of
         true -> {ok, "already  initialized"};
         _ ->
-            %% GLLib = wxe_util:wxgl_dl(),
-            %% Res = wxe_util:call(?WXE_INIT_OPENGL, <<(list_to_binary(GLLib))/binary, 0:8>>),
-            %% element(1, Res) =:= ok andalso put(wx_init_opengl, true),
-            %% Res
             Opaque = gl:lookup_func(),
             {ok, wxe_util:init_opengl(Opaque)}
     end.
@@ -111,45 +107,34 @@ fetch_msgs() ->
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
 init([SilentStart]) ->
-    DriverName = ?DRIVER,
-    PrivDir = wxe_util:priv_dir(?DRIVER, SilentStart),
-    erlang:group_leader(whereis(init), self()),
     case catch erlang:system_info(smp_support) of
 	true -> ok;
 	_ ->
-	    wxe_util:opt_error_log(SilentStart,
-                                   "WX ERROR: SMP emulator required"
-                                   " (start with erl -smp)",
-                                   []),
-	    erlang:error(not_smp)
-    end,
-
-    case erl_ddll:load_driver(PrivDir,DriverName) of
-	ok -> ok;
-	{error, What} ->
-	    wxe_util:opt_error_log(SilentStart,
-                                   "WX Failed loading ~p@~p ~n",
-                                   [DriverName,PrivDir]),
-	    Str = erl_ddll:format_error(What),
-	    erlang:error({load_driver,Str})
+	    wxe_util:opt_error_log(SilentStart, "WX ERROR: SMP emulator required", []),
+	    erlang:error({error, not_smp})
     end,
     process_flag(trap_exit, true),
-    DriverWithArgs = DriverName ++ " " ++ code:priv_dir(wx),
-
+    case wxe_util:init_nif(SilentStart) of
+        ok -> ok;
+        {error, {Reason, String}} = Err ->
+            wxe_util:opt_error_log(SilentStart,
+                                   "WX ERROR: Could not load library: ~p~n~s",
+                                   [Reason, String]),
+            erlang:error(Err)
+    end,
     try
-	Port = open_port({spawn, DriverWithArgs},[binary]),
 	wx_debug_info = ets:new(wx_debug_info, [named_table]),
 	wx_non_consts = ets:new(wx_non_consts, [named_table]),
 	true = ets:insert(wx_debug_info, wxdebug_table()),
-	spawn_link(fun() -> debug_ping(Port) end),
+	spawn_link(fun() -> debug_ping() end),
 	receive
 	    {wx_consts, List} ->
 		true = ets:insert(wx_non_consts, List)
 	end,
         wxe_util:init_nif(SilentStart),
-	{ok, #state{cb_port=Port, driver=DriverName, users=gb_sets:empty()}}
-    catch _:Err ->
-	    error({Err, "Could not initiate graphics"})
+	{ok, #state{}}
+    catch _:Error ->
+	    error({error, {Error, "Could not initiate graphics"}})
     end.
 
 %%--------------------------------------------------------------------
@@ -225,8 +210,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %%%%%%%%%%%% INTERNAL %%%%%%%%%%%%%%%%%%%%%%%%
 
-debug_ping(Port) ->
-    timer:sleep(1*333),    
-    _R = (catch erlang:port_call(Port, 0, [])),
-%%    io:format("Erlang ping ~p ~n", [_R]),
-    debug_ping(Port).
+debug_ping() ->
+    timer:sleep(1*333),
+    wxe_util:debug_ping(),
+    debug_ping().
