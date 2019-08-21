@@ -36,7 +36,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 
--record(state, {port,cb_port,users,cleaners=[],cb,cb_cnt}).
+-record(state, {env,users,cleaners=[],cb,cb_cnt}).
 -record(user,  {events=[]}).
 %%-record(event, {object, callback, cb_handler}).
 
@@ -58,8 +58,8 @@ start(SilentStart) ->
 	undefined ->
 	    case gen_server:start(?MODULE, [SilentStart], []) of
 		{ok, Pid}  ->
-		    {ok, Port} = gen_server:call(Pid, get_port, infinity),
-		    wx:set_env(Env = #wx_env{port=Port,sv=Pid}),
+		    {ok, Ref} = gen_server:call(Pid, get_env, infinity),
+		    wx:set_env(Env = #wx_env{ref=Ref,sv=Pid}),
 		    Env;
 		{error, {Reason, _Stack}} ->
 		    erlang:error(Reason)
@@ -90,10 +90,9 @@ set_debug(Pid, Level) ->
 %%====================================================================
 
 init([SilentStart]) ->
-    {Port,CBPort} = wxe_master:init_port(SilentStart),
-    put(?WXE_IDENTIFIER, #wx_env{port=Port,sv=self()}),
-    {ok,#state{port=Port, cb_port=CBPort,
-	       users=gb_trees:empty(), cb=gb_trees:empty(), cb_cnt=1}}.
+    Env = wxe_master:init_env(SilentStart),
+    put(?WXE_IDENTIFIER, #wx_env{ref=Env,sv=self()}),
+    {ok,#state{env=Env, users=gb_trees:empty(), cb=gb_trees:empty(), cb_cnt=1}}.
 
 %% Register process
 handle_call(register_me, {From,_}, State=#state{users=Users}) ->
@@ -106,8 +105,8 @@ handle_call(register_me, {From,_}, State=#state{users=Users}) ->
 	    {reply, ok, State#state{users=New}}
     end;
 %% Port request
-handle_call(get_port, _, State=#state{port=Port}) ->
-    {reply, {ok,Port}, State};
+handle_call(get_env, _, State=#state{env=Env}) ->
+    {reply, {ok,Env}, State};
 
 %% Connect callback
 handle_call({connect_cb,Obj,Msg},{From,_},State) ->

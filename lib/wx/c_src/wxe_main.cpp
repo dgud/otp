@@ -33,7 +33,7 @@ int wxe_status = WXE_NOT_INITIATED;
 
 ErlNifMutex * wxe_batch_locker_m;
 ErlNifCond  * wxe_batch_locker_c;
-ErlNifPid * init_caller;
+ErlNifPid init_caller;
 
 #ifdef __DARWIN__
 extern "C" {
@@ -60,11 +60,11 @@ int start_native_gui(ErlNifEnv *env)
 
   wxe_batch_locker_m = enif_mutex_create((char *)"wxe_batch_locker_m");
   wxe_batch_locker_c = enif_cond_create((char *)"wxe_batch_locker_c");
-  init_caller = enif_self(env, init_caller);
+  enif_self(env, &init_caller);
 
 #ifdef __DARWIN__
   res = erl_drv_steal_main_thread((char *)"wxwidgets",
-				  &wxe_thread,wxe_main_loop,(void *) sd->pdl,NULL);
+				  &wxe_thread,wxe_main_loop,(void *) NULL,NULL);
 #else
   ErlNifThreadOpts *opts = enif_thread_opts_create((char *)"wx thread");
   opts->suggested_stack_size = 8192;
@@ -108,7 +108,7 @@ void stop_native_gui(ErlNifEnv* env)
  *  wxWidgets Thread
  * ************************************************************/
 
-void *wxe_main_loop(void)
+void *wxe_main_loop(void * _unused)
 {
   int result;
   int  argc = 1;

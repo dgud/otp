@@ -20,6 +20,9 @@
 
 #include <erl_nif.h>
 
+extern int wxe_debug;
+extern ErlNifResourceType* wxeMemEnvRt;
+
 extern ERL_NIF_TERM WXE_ATOM_ok;
 extern ERL_NIF_TERM WXE_ATOM_reply;
 extern ERL_NIF_TERM WXE_ATOM_error;
@@ -36,11 +39,11 @@ extern ERL_NIF_TERM WXE_ATOM_false;
 #define WXE_ERROR        -1
 
 
-/* wxe_nif functions */
+/* wxe_impl.cpp functions */
 
 void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, void * memenv);
 void meta_command(ErlNifEnv* env, int op, void * memenv);
-
+ERL_NIF_TERM newMemEnv(ErlNifEnv* env);
 
 /* wxe_main functions */
 

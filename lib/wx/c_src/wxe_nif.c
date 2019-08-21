@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include "wxe_nif.h"
 
-extern int wxe_debug;
-
 ERL_NIF_TERM WXE_ATOM_ok;
 ERL_NIF_TERM WXE_ATOM_reply;
 ERL_NIF_TERM WXE_ATOM_error;
@@ -31,10 +29,9 @@ ERL_NIF_TERM WXE_ATOM_wx_ref;
 ERL_NIF_TERM WXE_ATOM_true;
 ERL_NIF_TERM WXE_ATOM_false;
 
-static ErlNifResourceType* wxeMemEnvRt = NULL;
+ErlNifResourceType* wxeMemEnvRt = NULL;
 extern void wxe_initOpenGL(void * fptr);
 
-ERL_NIF_TERM newMemEnv(ErlNifEnv* env);
 // void destroyMemEnv(wxeMemEnv *memenv);
 
 int get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp)
@@ -50,12 +47,12 @@ static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM ar
 {
     int op;
     void *ptr;
-    if(!enif_get_int(env, argv[argc-2], &op))
+    if(!enif_get_int(env, argv[argc-1], &op))
         return enif_make_badarg(env);
-    if(!enif_get_resource(env, argv[argc-1], wxeMemEnvRt, &ptr))
+    if(argc < 2 || !enif_get_resource(env, argv[argc-2], wxeMemEnvRt, &ptr))
         ptr = NULL;
     push_nif(env, argc-2, argv, op, ptr);
-    return enif_make_int(env, op);
+    return WXE_ATOM_ok;
 }
 
 static ERL_NIF_TERM wx_init_opengl(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])

@@ -19,7 +19,7 @@
 %%%-------------------------------------------------------------------
 %%% File    : wxe_server.erl
 %%% Author  : Dan Gudmundsson <dgud@erix.ericsson.se>
-%%% Description : 
+%%% Description :
 %%%
 %%% Created : 17 Jan 2007 by Dan Gudmundsson <dgud@erix.ericsson.se>
 %%%-------------------------------------------------------------------
@@ -29,7 +29,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start/1, init_port/1, init_opengl/0, fetch_msgs/0]).
+-export([start/1, init_env/1, init_opengl/0, fetch_msgs/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -60,7 +60,7 @@ start(SilentStart) ->
 %% Function: init_port(SilentStart) -> {UserPort,CallBackPort} | error(Error)
 %% Description: Creates the port
 %%--------------------------------------------------------------------
-init_port(SilentStart) ->
+init_env(SilentStart) ->
     case whereis(?MODULE) of
 	undefined ->
 	    case start(SilentStart) of
@@ -72,10 +72,8 @@ init_port(SilentStart) ->
 	Pid ->
 	    Pid
     end,
-    {Driver, CBport} = gen_server:call(?MODULE, init_port, infinity),
-    Port = open_port({spawn,Driver},[binary]),
-    receive wx_port_initiated -> ok end,
-    {Port, CBport}.
+    gen_server:call(?MODULE, init_env, infinity),  %% sync
+    wxe_util:make_env().
 
 
 %%--------------------------------------------------------------------
@@ -131,7 +129,6 @@ init([SilentStart]) ->
 	    {wx_consts, List} ->
 		true = ets:insert(wx_non_consts, List)
 	end,
-        wxe_util:init_nif(SilentStart),
 	{ok, #state{}}
     catch _:Error ->
 	    error({error, {Error, "Could not initiate graphics"}})
@@ -146,8 +143,8 @@ init([SilentStart]) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
-handle_call(init_port, From, State=#state{driver=Driver,cb_port=CBPort, users=Users}) ->
-    {reply, {Driver,CBPort}, State#state{users=gb_sets:add(From,Users)}};
+handle_call(init_env, _From, State) ->
+    {reply, ok, State};
 handle_call(fetch_msgs, _From, State=#state{msgs=Msgs}) ->
     {reply, lists:reverse(Msgs), State#state{msgs=[]}};
 handle_call(_Request, _From, State) ->

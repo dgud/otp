@@ -29,19 +29,23 @@
 -export([call/2,cast/2,construct/2,
 	 destroy/2, register_pid/1,
 	 connect_cb/2,disconnect_cb/2,
-	 send_bin/1, get_cbId/1,
+	 %send_bin/1,
+         get_cbId/1,
 	 get_const/1,colour_bin/1,datetime_bin/1,
 	 to_bool/1,from_bool/1]).
 
 -export([queue_cmd/1,queue_cmd/2,queue_cmd/3,queue_cmd/4,queue_cmd/5,
          queue_cmd/6,queue_cmd/7,queue_cmd/8,queue_cmd/9,queue_cmd/10,
          queue_cmd/11,queue_cmd/12,queue_cmd/13,queue_cmd/14,queue_cmd/15,
-         debug_ping/0, init_opengl/1
+         make_env/0, debug_ping/0, init_opengl/1
         ]).
 
 -export([priv_dir/2, opt_error_log/3, init_nif/1]).
 
 -include("wxe.hrl").
+
+-define(NIF_ERROR, erlang:nif_error({nif_not_loaded,{?MODULE,?FUNCTION_NAME,?FUNCTION_ARITY},
+                                     {line,?LINE}})).
 
 init_nif(Silent) ->
     Dir = priv_dir("wxe_driver", Silent),
@@ -68,43 +72,43 @@ get_const(Id) ->
     Data.
 
 cast(Op,Args) ->
-    #wx_env{port=Port,debug=Dbg} = wx:get_env(),
-    _ = erlang:port_control(Port,Op,Args),
+    #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
+    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
     case Dbg > 0 of
-	true ->  debug_cast(Dbg band 15, Op,Args,Port);
+	true ->  debug_cast(Dbg band 15, Op,Args,Ref);
 	false -> ok
     end,
     ok.
 
 call(Op, Args) ->
-    #wx_env{port=Port,debug=Dbg} = wx:get_env(),
+    #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
     case Dbg > 0 of
-	false ->	    
-	    _ = erlang:port_control(Port,Op,Args),
+	false ->
+            apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
 	    rec(Op);
 	true ->
-	    debug_call(Dbg band 15, Op, Args, Port)
+	    debug_call(Dbg band 15, Op, Args, Ref)
     end.
 
-queue_cmd(_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+init_opengl(_) -> ?NIF_ERROR.
+debug_ping() -> queue_cmd(?WXE_DEBUG_PING).
+make_env() -> ?NIF_ERROR.
 
-init_opengl(_) -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
-
-debug_ping() -> erlang:nif_error({nif_not_loaded,module,?MODULE,line,?LINE}).
+queue_cmd(_) -> ?NIF_ERROR.
+queue_cmd(_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
+queue_cmd(_,_,_,_,_,_,_,_,_,_,_,_,_,_,_) -> ?NIF_ERROR.
 
 rec(Op) ->
     receive
@@ -122,24 +126,24 @@ rec(Op) ->
 construct(Op, Args) ->
     call(Op,Args).
 
-destroy(Op, #wx_ref{ref=Ref}) -> 
+destroy(Op, #wx_ref{ref=Ref}) ->
     cast(Op,<<Ref:32/?UI>>).
 
 register_pid(#wx_ref{ref=Ref}) ->
     call(?WXE_REGISTER_OBJECT, <<Ref:32/?UI>>).
-   
-send_bin(Bin) when is_binary(Bin) ->    
-    #wx_env{port=Port,debug=Dbg} = wx:get_env(),
-    case Dbg > 0 of
-	false ->	    
-	    erlang:port_command(Port, Bin);
-	true ->
-	    io:format("WX binary ~p(~p) ~n",[self(), Port]),
-	    erlang:port_command(Port, Bin)
-    end.
+
+%% send_bin(Bin) when is_binary(Bin) ->    
+%%     #wx_env{port=Port,debug=Dbg} = wx:get_env(),
+%%     case Dbg > 0 of
+%% 	false ->	    
+%% 	    erlang:port_command(Port, Bin);
+%% 	true ->
+%% 	    io:format("WX binary ~p(~p) ~n",[self(), Port]),
+%% 	    erlang:port_command(Port, Bin)
+%%     end.
 
 get_cbId(Fun) ->
-    gen_server:call((wx:get_env())#wx_env.sv,{register_cb, Fun}, infinity).   
+    gen_server:call((wx:get_env())#wx_env.sv,{register_cb, Fun}, infinity).
 
 connect_cb(Object,EvData0 = #evh{cb=Callback}) ->
     Server = (wx:get_env())#wx_env.sv,
@@ -196,7 +200,7 @@ debug_cast(_, _Op, _Args, _Port) ->
     check_previous(),
     ok.
 
-debug_call(1, Op, Args, Port) ->
+debug_call(1, Op, Args, Ref) ->
     check_previous(),
     case ets:lookup(wx_debug_info,Op) of
 	[{_,{M,F,_}}] ->
@@ -204,40 +208,40 @@ debug_call(1, Op, Args, Port) ->
 	[] ->
 	    io:format("WX ~p: unknown(~p) -> ",[self(),Op])
     end,
-    _ = erlang:port_control(Port,Op,Args),    
+    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
     debug_rec(1);
-debug_call(2, Op, Args, Port) ->
+debug_call(2, Op, Args, Ref) ->
     check_previous(),
     case ets:lookup(wx_debug_info,Op) of
 	[{_,{M,F,_}}] ->
 	    io:format("WX ~p(~p): ~s:~s(~p) (~p) -> ",
-		      [self(), Port, M, F, Op, Args]);
-	[] -> 
+		      [self(), Ref, M, F, Op, Args]);
+	[] ->
 	    io:format("WX ~p(~p): unknown(~p) (~p) -> ",
-		      [self(), Port, Op, Args])
+		      [self(), Ref, Op, Args])
     end,
-    _ = erlang:port_control(Port,Op,Args),
+    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
     debug_rec(2);
-debug_call(_, Op, Args, Port) ->
+debug_call(_, Op, Args, Ref) ->
     check_previous(),
-    _ = erlang:port_control(Port,Op,Args),
+    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
     rec(Op).
 
 debug_rec(1) ->
-    receive 
-	{'_wxe_result_', Res} -> 
+    receive
+	{'_wxe_result_', Res} ->
 	    io:format("complete ~n", []),
 	    Res;
-	{'_wxe_error_', Op2, Error} -> 
+	{'_wxe_error_', Op2, Error} ->
 	    [{_,MF2}] = ets:lookup(wx_debug_info,Op2),
 	    erlang:error({Error, MF2})
     end;
 debug_rec(2) ->
-    receive 
-	{'_wxe_result_', Res} -> 
+    receive
+	{'_wxe_result_', Res} ->
 	    io:format("~p ~n", [Res]),
 	    Res;
-	{'_wxe_error_', Op, Error} -> 
+	{'_wxe_error_', Op, Error} ->
 	    io:format("Error ~p ~n", [Error]),
 	    [{_,MF}] = ets:lookup(wx_debug_info,Op),
 	    erlang:error({Error, MF})
