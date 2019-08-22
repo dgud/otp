@@ -97,6 +97,6 @@ public:
   wxeCommand * cb_return;
 };
 
-#define Badarg(Op, Argc) {wxe_badarg(env,self,Op,Argc); return;}
+#define Badarg(Op, Argc) {wxe_badarg(Argc); return;}
 
 #endif  //_WXE_IMPL_H
