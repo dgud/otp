@@ -77,7 +77,7 @@ public:
 
   int  newPtr(void * ptr, int type, wxeMemEnv *memenv);
   int  getRef(void * ptr, wxeMemEnv *memenv, int type = 0);
-  void * getPtr(char * bp, wxeMemEnv *memenv);
+  // void * getPtr(char * bp, wxeMemEnv *memenv);
   void clearPtr(void *ptr);
   wxeRefData * getRefData(void *ptr);
   void registerPid(char *ptr, ErlNifPid pid, wxeMemEnv *memenv);

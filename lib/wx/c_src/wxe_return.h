@@ -61,6 +61,8 @@ public:
     ERL_NIF_TERM make_ext2term(wxeErlTerm * term);
     ERL_NIF_TERM make_ext2term(wxETreeItemData * term);
 
+    ERL_NIF_TERM make_list_strings(size_t size, wxString* atomName);
+
     ERL_NIF_TERM make_bool(int val);
     ERL_NIF_TERM make_int(int val);
     ERL_NIF_TERM make_uint(unsigned int val);

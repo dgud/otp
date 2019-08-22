@@ -22,12 +22,14 @@
 #include "wxe_nif.h"
 
 ERL_NIF_TERM WXE_ATOM_ok;
-ERL_NIF_TERM WXE_ATOM_reply;
-ERL_NIF_TERM WXE_ATOM_error;
+ERL_NIF_TERM WXE_ATOM_undefined;
 ERL_NIF_TERM WXE_ATOM_badarg;
-ERL_NIF_TERM WXE_ATOM_wx_ref;
 ERL_NIF_TERM WXE_ATOM_true;
 ERL_NIF_TERM WXE_ATOM_false;
+
+ERL_NIF_TERM WXE_ATOM_reply;
+ERL_NIF_TERM WXE_ATOM_error;
+ERL_NIF_TERM WXE_ATOM_wx_ref;
 
 ErlNifResourceType* wxeMemEnvRt = NULL;
 extern void wxe_initOpenGL(void * fptr);
@@ -128,11 +130,13 @@ static ErlNifFunc nif_funcs[] =
 void wxe_init_atoms(ErlNifEnv *env) {
     WXE_ATOM_ok = enif_make_atom(env, "ok");
     WXE_ATOM_badarg = enif_make_atom(env, "badarg");
-    WXE_ATOM_reply = enif_make_atom(env, "_wx_result_");
-    WXE_ATOM_error = enif_make_atom(env, "_wx_error_");
-    WXE_ATOM_wx_ref = enif_make_atom(env, "wx_ref");
+    WXE_ATOM_undefined = enif_make_atom(env, "undefined");
     WXE_ATOM_true = enif_make_atom(env, "true");
     WXE_ATOM_false = enif_make_atom(env, "false");
+
+    WXE_ATOM_wx_ref = enif_make_atom(env, "wx_ref");
+    WXE_ATOM_reply = enif_make_atom(env, "_wx_result_");
+    WXE_ATOM_error = enif_make_atom(env, "_wx_error_");
 }
 
 

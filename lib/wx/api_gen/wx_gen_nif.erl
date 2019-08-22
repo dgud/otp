@@ -970,22 +970,22 @@ build_return_vals(Type,Ps0) ->
 	    w(" rt.ensureFloatCount(~p);~n",[NofFloats]);
 	false -> ignore
     end,
-    build_ret_types(Type,Ps),
+    build_ret_types(Type,Ps,2),
     if
 	OutTupSz > 1 -> w(" rt.addTupleCount(~p);~n",[OutTupSz]);
 	true -> ignore
     end,
     Ps.
 
-build_ret_types(void,Ps) ->
+build_ret_types(void,Ps,Indent) ->
     Calc = fun(#param{name=N,in=In,type=T}, Free) ->
 		   case build_ret(N, {arg, In}, T) of
 		       ok -> Free;
 		       Other -> [Other|Free]
 		   end
 	   end,
-    lists:foldl(Calc, [], Ps);
-build_ret_types(Type,Ps) ->
+    fold_arg(Calc, [], Ps, Indent);
+build_ret_types(Type,Ps, Indent) ->
     Free = case build_ret("Result", {ret, out}, Type) of
 	       ok -> [];
 	       FreeStr -> [FreeStr]
@@ -996,105 +996,120 @@ build_ret_types(Type,Ps) ->
 		       FreeMe -> [FreeMe|FreeAcc]
 		   end
 	   end,
-    lists:foldl(Calc, Free, Ps).
+    fold_arg(Calc, Free, Ps,Indent).
+
+
+fold_arg(_, Acc, [], _) ->
+    Acc;
+fold_arg(Fun, Acc0, List, Indent) ->
+    w("~*c", [Indent,$\s]),
+    fold_arg_1(Fun, Acc0, List, Indent).
+
+fold_arg_1(Fun, Acc, [Last], _) ->
+    Fun(Last, Acc);
+fold_arg_1(Fun, Acc0, [H|T], Indent) ->
+    Acc = Fun(H, Acc0),
+    w(",~n~*c", [Indent,$\s]),
+    fold_arg_1(Fun, Acc, T, Indent).
 
 build_ret(Name,_,#type{base={class,Class},single=true}) ->
 %%    w(" rt.addRef(getRef((void *)~s,memenv), \"~s\");~n",[Name,Class]);
     case Class of
         "wxGraphicsContext" ->
-            w(" rt.addRef(getRef((void *)~s,memenv,8), \"~s\");~n",[Name,Class]);
+            w("rt.make_ref(app->getRef((void *)~s,memenv,8), \"~s\")~n",[Name,Class]);
         _ ->
-            w(" rt.addRef(getRef((void *)~s,memenv), \"~s\");~n",[Name,Class])
+            w("rt.make_ref(app->getRef((void *)~s,memenv), \"~s\")",[Name,Class])
     end;
 build_ret(Name,_,#type{name="wxTreeItemId",single=true}) ->
-    w(" rt.add((wxUIntPtr *) ~s.m_pItem);~n",[Name]);
+    w("rt.make((wxUIntPtr *) ~s.m_pItem)",[Name]);
 build_ret(Name,_,#type{name="wxTreeItemIdValue",single=true}) ->
-    w(" rt.add((wxUIntPtr *) ~s);~n",[Name]);
+    w("rt.make((wxUIntPtr *) ~s)",[Name]);
 build_ret(Name,_,#type{base={term,_},single=true}) ->
-    w(" rt.addExt2Term(~s);~n", [Name]);
+    w("rt.make_ext2term(~s)", [Name]);
 build_ret(Name,_,#type{base={binary,Size},single=true}) ->
-    w(" if(~s) {~n", [Name]),
-    w("    rt.addBinary(~s, ~s);~n", [Name,Size]),
-    w(" } else {rt.addAtom(\"null\");};~n");
+    w(" if(~s) {", [Name]),
+    w("    rt.make_binary(~s, ~s)", [Name,Size]),
+    w(" } else {rt.make_atom(\"null\");};");
 build_ret(Name,_,#type{name="wxUIntPtr", ref={pointer,1}, single=true}) ->
-    w(" rt.add(~s);~n", [Name]);
+    w("rt.make(~s)", [Name]);
 build_ret(Name,_,#type{base={enum,_Type},single=true}) ->
-    w(" rt.addInt(~s);~n",[Name]);
+    w("rt.make_int(~s)",[Name]);
 build_ret(Name,_,#type{base={comp,_,{record, _}},single=true}) ->
-    w(" rt.add(~s);~n", [Name]);
+    w("rt.make(~s)", [Name]);
 build_ret(Name,{ret,_},#type{base={comp,_,_},single=true, by_val=true}) ->
-    w(" rt.add(~s);~n",[Name]);
+    w("rt.make(~s)",[Name]);
 build_ret(Name,{ret,_},#type{base={comp,_,_},single=true, ref=reference}) ->
-    w(" rt.add((*~s));~n",[Name]);
+    w("rt.make((*~s))",[Name]);
 build_ret(Name,_,#type{base={comp,_,_},single=true}) ->
-    w(" rt.add(~s);~n",[Name]);
+    w("rt.make(~s)",[Name]);
 build_ret(Name = "ev->m_scanCode",_,#type{base=bool,single=true,by_val=true}) ->
     %% Hardcoded workaround for 2.9 and later
     w("#if !wxCHECK_VERSION(2,9,0)~n", []),
-    w(" rt.addBool(~s);~n",[Name]),
-    w("#else~n rt.addBool(false);~n",[]),
+    w(" rt.make_bool(~s)~n",[Name]),
+    w("#else~n rt.make_bool(false)~n",[]),
     w("#endif~n",[]);
 build_ret(Name = "ev->m_metaDown",_,#type{base=bool,single=true,by_val=true}) ->
     %% Hardcoded workaround for MAC on 2.9 and later
     w("#if wxCHECK_VERSION(2,9,0) && defined(_MACOSX)~n", []),
-    w(" rt.addBool(ev->m_rawControlDown);~n",[]),
-    w("#else~n rt.addBool(~s);~n",[Name]),
+    w(" rt.make_bool(ev->m_rawControlDown)~n",[]),
+    w("#else~n rt.make_bool(~s)~n",[Name]),
     w("#endif~n",[]);
 
 build_ret(Name,_,#type{base=bool,single=true,by_val=true}) ->
-    w(" rt.addBool(~s);~n",[Name]);
+    w("rt.make_bool(~s)",[Name]);
 build_ret(Name,{arg, both},#type{base=int,single=true,mod=M}) ->
     case lists:member(unsigned, M) of
-	true ->  w(" rt.addUint(*~s);~n",[Name]);
-	false -> w(" rt.addInt(*~s);~n",[Name])
+	true ->  w("rt.make_uint(*~s)",[Name]);
+	false -> w("rt.make_int(*~s)",[Name])
     end;
 build_ret(Name,_,#type{base=int,single=true,mod=M}) ->
     case lists:member(unsigned, M) of
-	true ->  w(" rt.addUint(~s);~n",[Name]);
-	false -> w(" rt.addInt(~s);~n",[Name])
+	true ->  w("rt.make_uint(~s)",[Name]);
+	false -> w("rt.make_int(~s)",[Name])
     end;
 build_ret(Name,_,#type{name="wxArrayInt"}) ->
-    w(" rt.add(~s);~n", [Name]);
+    w("rt.make(~s)", [Name]);
 build_ret(Name,_,#type{name="wxArrayDouble"}) ->
-    w(" rt.add(~s);~n", [Name]);
+    w("rt.make(~s)", [Name]);
 build_ret(Name,_,#type{base={comp,_,_},single=array}) ->
     w(" for(unsigned int i=0; i < ~s.GetCount(); i++) {~n", [Name]),
-    w("  rt.add(~s[i]);~n }~n",[Name]),
-    w(" rt.endList(~s.GetCount());~n",[Name]);
+    w("  rt.make(~s[i])~n }~n",[Name]),
+    w(" rt.endList(~s.GetCount())~n",[Name]);
 build_ret(Name,_,#type{base={class,Class},single=array}) ->
     w(" for(unsigned int i=0; i < ~s.GetCount(); i++) {~n", [Name]),
-    w("  rt.addRef(getRef((void *) &~s.Item(i), memenv), \"~s\");~n }~n",[Name, Class]),
-    w(" rt.endList(~s.GetCount());~n",[Name]);
+    w("  rt.make_ref(getRef((void *) &~s.Item(i), memenv), \"~s\")~n }~n",[Name, Class]),
+    w(" rt.endList(~s.GetCount())~n",[Name]);
 build_ret(Name,_,#type{name=List,single=list,base={class,Class}}) ->
     w(" int i=0;~n"),
     w(" for(~s::const_iterator it = ~s.begin(); it != ~s.end(); ++it) {~n",
       [List, Name, Name]),
     w("   ~s * ~sTmp = *it;~n", [Class,Name]),
-    w("   rt.addRef(getRef((void *)~sTmp,memenv), \"~s\"); i++;}~n",[Name,Class]),
-    w(" rt.endList(~s.GetCount());~n",[Name]);
+    w("   rt.make_ref(getRef((void *)~sTmp,memenv), \"~s\"); i++;}~n",[Name,Class]),
+    w(" rt.endList(~s.GetCount())~n",[Name]);
 
 build_ret(Name,_,#type{name="wxArrayTreeItemIds"}) ->
     w(" for(unsigned int i=0; i < ~s.GetCount(); i++) {~n", [Name]),
-    w("    rt.add((wxUIntPtr *)~s[i].m_pItem);}~n",[Name]),
-    w(" rt.endList(~s.GetCount());~n",[Name]);
+    w("    rt.make((wxUIntPtr *)~s[i].m_pItem);}~n",[Name]),
+    w(" rt.endList(~s.GetCount())~n",[Name]);
 
 build_ret(Name,_,#type{base=float,single=true}) ->
-    w(" rt.addFloat(~s);~n",[Name]);
+    w("rt.make_float(~s)",[Name]);
 build_ret(Name,_,#type{base=double,single=true}) ->
-    w(" rt.addFloat(~s);~n",[Name]);
+    w("rt.make_float(~s)",[Name]);
 build_ret(Name,_,#type{name="wxeLocaleC"}) ->
-    w(" rt.add(wxeLocaleC2String(~s));~n",[Name]);
+    w("rt.make(wxeLocaleC2String(~s))",[Name]);
 build_ret(Name,_,#type{base=string,single=true}) ->
-    w(" rt.add(~s);~n",[Name]);
+    w("rt.make(~s)",[Name]);
 build_ret(Name,_,#type{name="wxArrayString", single=array}) ->
-    w(" rt.add(~s);~n", [Name]);
+    w("rt.make(~s)", [Name]);
 build_ret(Name,_,#type{name="wxString", single={list,Variable}}) ->
     Obj = case Name of
               "ev->" ++ _ -> "ev";
               _ -> "This"
           end,
-    w(" wxArrayString tmpArrayStr(~s->~s, ~s);~n", [Obj,Variable,Name]),
-    w(" rt.add(tmpArrayStr);~n", []);
+    %% w(" wxArrayString tmpArrayStr(~s->~s, ~s)~n", [Obj,Variable,Name]),
+    %% w("rt.make(tmpArrayStr)", []);
+    w("rt.make_list_strings(~s->~s, ~s)~n", [Obj,Variable,Name]);
 build_ret(Name,In,T) ->
     ?error({nyi, Name,In, T}).
 
@@ -1109,46 +1124,40 @@ build_enums() ->
     w("#include \"../wxe_impl.h\"~n"),
     w("#include \"wxe_macros.h\"~n"),
     w("#include \"../wxe_return.h\"~n"),
-    w("void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlDrvTermData caller) {~n"),
+    w("void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller) {~n"),
     NotConsts = [NC || NC = #const{is_const=false} <- gb_trees:values(Tree)],
     Size = length(NotConsts),
     GVars = get(gvars),
     GSize = length(GVars),
-    w("  wxeReturn rt = wxeReturn(WXE_DRV_PORT, caller);~n"),
-    w(" rt.addAtom((char*)\"wx_consts\");~n"),
+    w("  wxeReturn rt = wxeReturn(memenv->tmp_env, caller);~n"),
+    w("  ERL_NIF_TERM consts[] = {\n"),
     [build_enum(NConst) || NConst <- lists:keysort(#const.val, NotConsts)],
-    _Cnt = foldl(fun(Gvar, I) -> build_gvar(Gvar,I) end, 0, lists:sort(GVars)),
-    w(" rt.endList(~p);~n", [Size+GSize]),
-    w(" rt.addTupleCount(2);~n"),
-    w("  rt.send();~n"),
+    lists:foreach(fun build_gvar/1, lists:sort(GVars)),
+    w("  };~n"),
+    w("  ERL_NIF_TERM msg = enif_make_tuple2(rt.env,~n"
+      "    rt.make_atom(\"wx_consts\"), "
+      " enif_make_list_from_array(rt.env, consts, ~w));~n",[Size+GSize]),
+    w("  rt.send(msg);~n"),
     w("}~n"),
     ok.
 
 build_enum(#const{name=Name}) ->
-    w(" rt.addAtom(\"~s\"); rt.addInt(~s);~n", [Name, Name]),
-    w(" rt.addTupleCount(2);~n").
+    w("    enif_make_tuple2(rt.env, rt.make_atom(\"~s\"), rt.make_int(~s)),~n", [Name, Name]).
 
-build_gvar({Name, "wxColour", _Id}, Cnt) ->
-    w("   rt.addAtom(\"~s\"); rt.add(*(~s));~n",[Name,Name]),
-    w("   rt.addTupleCount(2);~n"),
-    Cnt;
-build_gvar({Name, {address,Class}, _Id}, Cnt) ->
-    w("   rt.addAtom(\"~s\"); rt.addRef(getRef((void *)&~s,memenv), \"~s\");~n",[Name,Name,Class]),
-    w("   rt.addTupleCount(2);~n"),
-    Cnt+1;
-build_gvar({Name, {test_if,Test}, _Id}, Cnt) ->
+build_gvar({Name, "wxColour", _Id}) ->
+    w("    enif_make_tuple2(rt.env, rt.make_atom(\"~s\"), rt.make(*(~s))),~n", [Name, Name]);
+build_gvar({Name, {address,Class}, _Id}) ->
+    w("    enif_make_tuple2(rt.env, rt.make_atom(\"~s\"),"
+      "rt.make_ref(getRef((void *)&~s,memenv), \"~s\")),~n",[Name,Name,Class]);
+build_gvar({Name, {test_if,Test}, _Id}) ->
     w("#if ~s~n", [Test]),
-    w(" rt.addAtom(\"~s\"); rt.addInt(~s);~n", [Name, Name]),
-    w(" rt.addTupleCount(2);~n"),
+    w("    enif_make_tuple2(rt.env, rt.make_atom(\"~s\"), rt.make_int(~s)),~n", [Name, Name]),
     w("#else~n", []),
-    w(" rt.addAtom(\"~s\"); rt.addAtom(\"undefined\");~n", [Name]),
-    w(" rt.addTupleCount(2);~n"),
-    w("#endif~n", []),
-    Cnt+1;
-build_gvar({Name, Class, _Id}, Cnt) ->
-    w("   rt.addAtom(\"~s\"); rt.addRef(getRef((void *)~s,memenv),\"~s\");~n",[Name,Name,Class]),
-    w("   rt.addTupleCount(2);~n"),
-    Cnt+1.
+    w("    enif_make_tuple2(rt.env, rt.make_atom(\"~s\"), WXE_ATOM_undefined),~n", [Name]),
+    w("#endif~n", []);
+build_gvar({Name, Class, _Id}) ->
+    w("    enif_make_tuple2(rt.env, rt.make_atom(\"~s\"),"
+      "rt.make_ref(getRef((void *)~s,memenv), \"~s\")),~n",[Name,Name,Class]).
 
 gen_macros() ->
     w("#include <wx/caret.h>~n"),   %% Arrg wxw forgot?? some files
@@ -1206,11 +1215,11 @@ gen_macros() ->
     w("#ifndef wxICON_DEFAULT_BITMAP_TYPE~n",[]),
     w("  #define wxICON_DEFAULT_BITMAP_TYPE wxBITMAP_TYPE_ICO_RESOURCE~n",[]),
     w("#endif~n", []),
-    w("~n~n", []),
 
     %% [w("#define ~s_~s ~p~n", [Class,Name,Id]) ||
     %%     {Class,Name,_,Id} <- wx_gen_erl:get_unique_names()],
-    w("~n~n").
+    %% w("~n~n").
+    ok.
 
 build_events() ->
     open_write("../c_src/gen/wxe_events.cpp"),
@@ -1297,83 +1306,94 @@ find_id(OtherClass) ->
 
 encode_events(Evs) ->
     ?WTC("encode_events"),
-    w("int getRef(void* ptr, wxeMemEnv* memenv)~n"
-      "{~n"
+    %% w("~nint getRef(void* ptr, wxeMemEnv* memenv)~n"
+    %%   "{~n"
+    %%   "  WxeApp * app = (WxeApp *) wxTheApp;~n"
+    %%   "  return app->getRef(ptr,memenv);~n"
+    %%   "}~n~n"),
+    w("bool sendevent(wxEvent *event, wxeMemEnv *memenv)~n{~n"
+      "  int send_res ;~n"
+      "  char * evClass = NULL;~n"
+      "  wxMBConvUTF32 UTFconverter;~n"
+      "  wxeEtype *Etype = etmap[event->GetEventType()];~n"
+      "  wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;~n"
       "  WxeApp * app = (WxeApp *) wxTheApp;~n"
-      "  return app->getRef(ptr,memenv);~n"
-      "}~n~n"),
-    w("bool sendevent(wxEvent *event, ErlDrvTermData port)~n{~n"
-      " int send_res ;~n"
-      " char * evClass = NULL;~n"
-      " wxMBConvUTF32 UTFconverter;~n"
-      " wxeEtype *Etype = etmap[event->GetEventType()];~n"
-      " wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;~n"
-      " WxeApp * app = (WxeApp *) wxTheApp;~n"
-      " wxeMemEnv *memenv = app->getMemEnv(port);~n"
-      " if(!memenv) return 0;~n~n"
-      " wxeReturn rt = wxeReturn(port, cb->listener);~n"),
-
-    w("~n rt.addAtom((char*)\"wx\");~n"
-      " rt.addInt((int) event->GetId());~n"
-      " rt.addRef(cb->obj, cb->class_name);~n"
-      " rt.addExt2Term(cb->user_data);~n"),
-
-    w(" switch(Etype->cID) {~n"),
+      "  if(!memenv) return 0;~n~n"
+      "  wxeReturn rt = wxeReturn(memenv->tmp_env, cb->listener);~n"),
+    w("  ERL_NIF_TERM ev_term;~n"),
+    w("  switch(Etype->cID) {~n"),
     lists:foreach(fun(Ev) -> encode_event(Ev) end, Evs),
-    w(" }~n~n"),
+    w("  }~n~n"),
 
-    w(" rt.addTupleCount(5);~n"),
-    w(" if(cb->fun_id) {~n"),
-    w("   rt.addRef(getRef((void *)event,memenv), evClass);~n"),
-    w("   rt.addTupleCount(2);~n"),
-    w("   rt.addInt(cb->fun_id);~n"),
-    w("   rt.addAtom(\"_wx_invoke_cb_\");~n"),
-    w("   rt.addTupleCount(3);~n"),
-    w("   pre_callback();~n"),
-    w("   send_res =  rt.send();~n"),
-    w("   if(send_res) handle_event_callback(WXE_DRV_PORT_HANDLE, cb->listener);~n"),
-    w("   app->clearPtr((void *) event);~n"),
-    w(" } else {~n"),
-    w("   send_res =  rt.send();~n"),
-    w("   if(cb->skip) event->Skip();~n"),
+    w("  ERL_NIF_TERM wx_ev =\n"
+      "    enif_make_tuple5(rt.env,\n"
+      "                     rt.make_atom((char*)\"wx\"),\n"
+      "                     rt.make_int((int) event->GetId()),\n"
+      "                     rt.make_ref(cb->obj, cb->class_name),\n"
+      "                     rt.make_ext2term(cb->user_data),\n"
+      "                     ev_term);\n\n"),
+
+    w("  if(cb->fun_id) {\n"
+      "    ERL_NIF_TERM wx_cb =\n"
+      "      enif_make_tuple4(rt.env,\n"
+      "                       rt.make_atom(\"_wx_invoke_cb_\"),\n"
+      "                       rt.make_int(cb->fun_id),\n"
+      "                       wx_ev,\n"
+      "                       rt.make_ref(app->getRef((void *)event,memenv), evClass)\n"
+      "                       );\n"
+      "    pre_callback();\n"
+      "    send_res =  rt.send(wx_cb);\n"
+      "    if(send_res) handle_event_callback(memenv, cb->listener);\n"
+      "    app->clearPtr((void *) event);\n"
+      "  } else {\n"
+      "    send_res =  rt.send(wx_ev);\n"
+      "    if(cb->skip) event->Skip();\n"),
     #class{id=SizeId} = lists:keyfind("wxSizeEvent", #class.name, Evs),
     #class{id=MoveId} = lists:keyfind("wxMoveEvent", #class.name, Evs),
-    w("   if(app->recurse_level < 1 && (Etype->cID == ~w || Etype->cID == ~w)) {~n",
+    w("    if(app->recurse_level < 1 && (Etype->cID == ~w || Etype->cID == ~w)) {~n",
       [SizeId, MoveId]),
-    w("     app->recurse_level++;~n"),
-    w("     app->dispatch_cmds();~n"),
-    w("     app->recurse_level--;~n"),
-    w("   }~n"),
-    w(" };~n"),
-    w(" return send_res;~n"),
-    w(" }~n").
+    w("      app->recurse_level++;~n"),
+    w("      app->dispatch_cmds();~n"),
+    w("      app->recurse_level--;~n"),
+    w("    }~n"),
+    w("  };~n"),
+    w("  return send_res;~n"),
+    w("}~n").
 
 encode_event(C = #class{name=Class, id=Id, options=Opts}) ->
     ?WTC("encode_event"),
     case proplists:get_value("mixed_event", Opts) of
 	undefined ->
-	    w("case ~p: {// ~s~n", [Id,Class]),
+	    w("  case ~p: {// ~s~n", [Id,Class]),
 	    encode_event2(C),
 	    ok;
 	Mixed ->
-	    w("case ~p: {// ~s or ~s~n", [Id,Class,Mixed]),
-	    w("  if(event->IsKindOf(CLASSINFO(~s))) {~n",[Class]),
+	    w("  case ~p: {// ~s or ~s~n", [Id,Class,Mixed]),
+	    w("    if(event->IsKindOf(CLASSINFO(~s))) {~n",[Class]),
 	    encode_event2(C),
-	    w("  } else {~n",[]),
-	    w("    Etype = etmap[event->GetEventType() + wxEVT_USER_FIRST];~n",[]),
+	    w("    } else {~n",[]),
+	    w("      Etype = etmap[event->GetEventType() + wxEVT_USER_FIRST];~n",[]),
 	    encode_event2(get({class,atom_to_list(Mixed)})),
 	    w("  }~n",[]),
 	    ok
     end,
-    w("  break;~n}~n").
+    w("    break;~n  }~n").
 
 encode_event2(Class = #class{name=Name}) ->
     Attrs = build_event_attrs(Class),
+    TupleSz = length(Attrs) + 2,
     w("    evClass = (char*)\"~s\";~n",[Name]),
-    w("    rt.addAtom((char*)\"~s\");~n", [wx_gen_erl:event_rec_name(Name)]),
-    w("    rt.addAtom(Etype->eName);~n"),
-    build_ret_types(void, Attrs),
-    w("    rt.addTupleCount(~p);~n",[length(Attrs) + 2]).
+    case TupleSz < 8 of
+        true  -> w("    ev_term = enif_make_tuple~w(rt.env,~n",[TupleSz]);
+        false -> w("    ev_term = enif_make_tuple(rt.env,~w,~n",[TupleSz])
+    end,
+    w("        rt.make_atom((char*)\"~s\"),~n", [wx_gen_erl:event_rec_name(Name)]),
+    case TupleSz == 2 of
+        true  -> w("        rt.make_atom(Etype->eName)~n");
+        false -> w("        rt.make_atom(Etype->eName),~n"),
+                 build_ret_types(void, Attrs, 8)
+    end,
+    w(");~n").
 
 build_event_attrs(ClassRec = #class{name=Class}) ->
     Attrs0 = wx_gen_erl:filter_attrs(ClassRec),
@@ -1389,17 +1409,17 @@ build_event_attrs(ClassRec = #class{name=Class}) ->
 %% 	    w(" ~s ev = dynamic_cast<~s&>(event);~n",[Class,Class]),
 %% 	    Attrs;
 	{Attrs,_} ->
-	    w(" ~s * ev = (~s *) event;~n",[Class,Class]),
+	    w("    ~s * ev = (~s *) event;~n",[Class,Class]),
 	    FixClass =
 		fun(P=#param{name=N,acc=Acc,type=#type{single=Single,by_val=ByVal,
 						       base={class,C}}})
 		   when Acc =/= undefined ->
 			Var = var_name(N),
 			if Single, ByVal ->
-				w(" ~s * ~s = new ~s(~s);~n", [C,Var,C,N]),
-				w(" app->newPtr((void *) ~s,3, memenv);~n", [Var]);
+				w("    ~s * ~s = new ~s(~s);~n", [C,Var,C,N]),
+				w("    app->newPtr((void *) ~s,3, memenv);~n", [Var]);
 			   true ->
-				w(" ~s * ~s = ~s;~n", [C,Var,N])
+				w("     ~s * ~s = ~s;~n", [C,Var,N])
 			end,
 			P#param{name=Var};
 		   (P) -> P

@@ -263,7 +263,7 @@ c_copyright() ->
     w(" * See the License for the specific language governing permissions and~n",[]),
     w(" * limitations under the License.~n",[]),
     w(" *~n",[]),
-    w(" * %CopyrightEnd% ~n",[]),
+    w(" * %CopyrightEnd%~n",[]),
     w("*/~n",[]).
 
 start_year("wxAuiManagerEvent") -> 2009;

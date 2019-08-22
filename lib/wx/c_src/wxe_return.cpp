@@ -161,6 +161,13 @@ ERL_NIF_TERM  wxeReturn::make(wxArrayString val) {
 }
 
 INLINE
+ERL_NIF_TERM wxeReturn::make_list_strings(size_t size, wxString* strings)
+{
+  wxArrayString tmpArrayStr(size, strings);
+  return make(tmpArrayStr);
+}
+
+INLINE
 ERL_NIF_TERM  wxeReturn::make(wxArrayInt val) {
     unsigned int len = val.GetCount();
     ERL_NIF_TERM head, tail;

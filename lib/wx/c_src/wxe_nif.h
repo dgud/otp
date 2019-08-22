@@ -24,12 +24,14 @@ extern int wxe_debug;
 extern ErlNifResourceType* wxeMemEnvRt;
 
 extern ERL_NIF_TERM WXE_ATOM_ok;
-extern ERL_NIF_TERM WXE_ATOM_reply;
-extern ERL_NIF_TERM WXE_ATOM_error;
 extern ERL_NIF_TERM WXE_ATOM_badarg;
-extern ERL_NIF_TERM WXE_ATOM_wx_ref;
+extern ERL_NIF_TERM WXE_ATOM_undefined;
 extern ERL_NIF_TERM WXE_ATOM_true;
 extern ERL_NIF_TERM WXE_ATOM_false;
+
+extern ERL_NIF_TERM WXE_ATOM_wx_ref;
+extern ERL_NIF_TERM WXE_ATOM_reply;
+extern ERL_NIF_TERM WXE_ATOM_error;
 
 
 #define WXE_NOT_INITIATED 0

@@ -708,18 +708,18 @@ void WxeApp::clearPtr(void * ptr) {
   }
 }
 
-void * WxeApp::getPtr(char * bp, wxeMemEnv *memenv) {
-  int index = *(int *) bp;
-  if(!memenv) {
-    throw wxe_badarg(index);
-  }
-  void * temp = memenv->ref2ptr[index];
-  if((index < memenv->next) && ((index == 0) || (temp != (void *)NULL)))
-    return temp;
-  else {
-    throw wxe_badarg(index);
-  }
-}
+// void * WxeApp::getPtr(char * bp, wxeMemEnv *memenv) {
+//   int index = *(int *) bp;
+//   if(!memenv) {
+//     throw wxe_badarg(index);
+//   }
+//   void * temp = memenv->ref2ptr[index];
+//   if((index < memenv->next) && ((index == 0) || (temp != (void *)NULL)))
+//     return temp;
+//   else {
+//     throw wxe_badarg(index);
+//   }
+// }
 
 void WxeApp::registerPid(char * bp, ErlNifPid pid, wxeMemEnv * memenv) {
   int index = *(int *) bp;
