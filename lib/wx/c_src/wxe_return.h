@@ -50,7 +50,6 @@ public:
 	       bool                _isResult=false);
 
     ~wxeReturn();
-
     //    void add(ErlDrvTermData type, ErlDrvTermData data);
 
     ERL_NIF_TERM make_ref(const unsigned int ref, ERL_NIF_TERM className);
@@ -62,10 +61,12 @@ public:
     ERL_NIF_TERM make_ext2term(wxETreeItemData * term);
 
     ERL_NIF_TERM make_list_strings(size_t size, wxString* atomName);
+    ERL_NIF_TERM make_list_objs(const wxList& wx_list, WxeApp *app, const char *cname);
 
     ERL_NIF_TERM make_bool(int val);
     ERL_NIF_TERM make_int(int val);
     ERL_NIF_TERM make_uint(unsigned int val);
+    ERL_NIF_TERM make_double(double val);
 
     ERL_NIF_TERM make(const wxString s);
     ERL_NIF_TERM make(const wxString* s);

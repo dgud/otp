@@ -102,8 +102,6 @@ case 101: { // wxEvtHandler::Disconnect
 void wxWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxWindow * Result = new EwxWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -325,12 +323,12 @@ void wxWindow_ClientToScreen_2(WxeApp *app, wxeCommand& cmd)
   int y;
   if(!enif_get_int(env, argv[2], &y)) Badarg(116,"y");
   if(!This) throw wxe_badarg(0);
-  This->ClientToScreen(x,y);
+  This->ClientToScreen(&x,&y);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
-  rt.make_int(*x),
-  rt.make_int(*y));
-  rt:send(msg);
+  rt.make_int(x),
+  rt.make_int(y));
+  rt.send(msg);
 
 }
 
@@ -375,7 +373,7 @@ void wxWindow_Close(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(118,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(118,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "force"))) {
-  force = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  force = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(118,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -485,7 +483,8 @@ void wxWindow_DragAcceptFiles(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxWindow *This;
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
-  accept = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool accept;
+  accept = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->DragAcceptFiles(accept);
 
@@ -510,7 +509,7 @@ void wxWindow_Enable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(127,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(127,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(127,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -524,8 +523,6 @@ void wxWindow_Enable(WxeApp *app, wxeCommand& cmd)
 void wxWindow_FindFocus(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxWindow * Result = (wxWindow*)wxWindow::FindFocus();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
@@ -559,7 +556,7 @@ void wxWindow_FindWindow_1_1(WxeApp *app, wxeCommand& cmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(130,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(130,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxWindow * Result = (wxWindow*)This->FindWindow(name);
@@ -603,7 +600,7 @@ void wxWindow_FindWindowByName(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(132,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(132,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -631,7 +628,7 @@ void wxWindow_FindWindowByLabel(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[0], label_bin)) Badarg(133,"label")
+  if(enif_inspect_binary(env, argv[0], &label_bin)) Badarg(133,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -768,8 +765,6 @@ void wxWindow_GetCaret(WxeApp *app, wxeCommand& cmd)
 void wxWindow_GetCapture(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxWindow * Result = (wxWindow*)wxWindow::GetCapture();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
@@ -817,12 +812,7 @@ void wxWindow_GetChildren(WxeApp *app, wxeCommand& cmd)
   if(!This) throw wxe_badarg(0);
   const wxWindowList Result = This->GetChildren();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
-  rt.send( int i=0;
- for(wxWindowList::const_iterator it = Result.begin(); it != Result.end(); ++it) {
-   wxWindow * ResultTmp = *it;
-   rt.make_ref(getRef((void *)ResultTmp,memenv), "wxWindow"); i++;}
- rt.endList(Result.GetCount())
-);
+  rt.send(rt.make_list_objs(Result, app, "wxWindow"));
 
 }
 
@@ -1237,7 +1227,7 @@ void wxWindow_GetTextExtent(WxeApp *app, wxeCommand& cmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], string_bin)) Badarg(178,"string")
+  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(178,"string")
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -1258,7 +1248,7 @@ void wxWindow_GetTextExtent(WxeApp *app, wxeCommand& cmd)
   rt.make_int(y),
   rt.make_int(descent),
   rt.make_int(externalLeading));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -1666,7 +1656,7 @@ void wxWindow_MakeModal(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(205,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(205,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "modal"))) {
-  modal = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  modal = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(205,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -1844,7 +1834,7 @@ void wxWindow_PopEventHandler(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(213,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(213,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "deleteHandler"))) {
-  deleteHandler = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  deleteHandler = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(213,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -1944,7 +1934,7 @@ void wxWindow_Refresh(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(217,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(217,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "eraseBackground"))) {
-  eraseBackground = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  eraseBackground = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "rect"))) {
   const ERL_NIF_TERM *rect_t;
   int rect_sz;
@@ -1961,7 +1951,7 @@ void wxWindow_Refresh(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(217,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  This->Refresh(eraseBackground,rect);
+  This->Refresh(eraseBackground,&rect);
 
 }
 
@@ -1995,7 +1985,7 @@ void wxWindow_RefreshRect(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(218,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(218,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "eraseBackground"))) {
-  eraseBackground = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  eraseBackground = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(218,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -2064,7 +2054,7 @@ void wxWindow_ScreenToClient_2(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -2162,7 +2152,7 @@ void wxWindow_ScrollWindow(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(228,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  This->ScrollWindow(dx,dy,rect);
+  This->ScrollWindow(dx,dy,&rect);
 
 }
 
@@ -2189,7 +2179,8 @@ void wxWindow_SetAutoLayout(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxWindow *This;
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
-  autoLayout = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool autoLayout;
+  autoLayout = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetAutoLayout(autoLayout);
 
@@ -2566,7 +2557,7 @@ void wxWindow_SetHelpText(WxeApp *app, wxeCommand& cmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(250,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(250,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetHelpText(text);
@@ -2598,7 +2589,7 @@ void wxWindow_SetLabel(WxeApp *app, wxeCommand& cmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], label_bin)) Badarg(253,"label")
+  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(253,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(label);
@@ -2615,7 +2606,7 @@ void wxWindow_SetName(WxeApp *app, wxeCommand& cmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(254,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(254,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetName(name);
@@ -2663,7 +2654,7 @@ void wxWindow_SetScrollbar(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(256,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(256,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "refresh"))) {
-  refresh = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  refresh = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(256,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -2693,7 +2684,7 @@ void wxWindow_SetScrollPos(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(257,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(257,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "refresh"))) {
-  refresh = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  refresh = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(257,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -2921,7 +2912,7 @@ void wxWindow_SetSizer(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(264,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(264,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "deleteOld"))) {
-  deleteOld = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  deleteOld = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(264,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -2949,7 +2940,7 @@ void wxWindow_SetSizerAndFit(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(265,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(265,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "deleteOld"))) {
-  deleteOld = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  deleteOld = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(265,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -2965,7 +2956,8 @@ void wxWindow_SetThemeEnabled(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxWindow *This;
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
-  enableTheme = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool enableTheme;
+  enableTheme = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetThemeEnabled(enableTheme);
 
@@ -2981,7 +2973,7 @@ void wxWindow_SetToolTip_1_0(WxeApp *app, wxeCommand& cmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary tip_bin;
   wxString tip;
-  if(enif_inspect_binary(env, argv[1], tip_bin)) Badarg(267,"tip")
+  if(enif_inspect_binary(env, argv[1], &tip_bin)) Badarg(267,"tip")
   tip = wxString(tip_bin.data, wxConvUTF8, tip_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetToolTip(tip);
@@ -3193,7 +3185,7 @@ void wxWindow_Show(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(277,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(277,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(277,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -3379,7 +3371,8 @@ void wxWindow_SetDoubleBuffered(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxWindow *This;
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
-  on = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool on;
+  on = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetDoubleBuffered(on);
 
@@ -3398,7 +3391,7 @@ void wxWindow_GetContentScaleFactor(WxeApp *app, wxeCommand& cmd)
   if(!This) throw wxe_badarg(0);
   double Result = This->GetContentScaleFactor();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
-  rt.send(rt.make_float(Result));
+  rt.send(rt.make_double(Result));
 
 }
 
@@ -3481,7 +3474,7 @@ void wxTopLevelWindow_Iconize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(294,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(294,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "iconize"))) {
-  iconize = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  iconize = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(294,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -3552,7 +3545,7 @@ void wxTopLevelWindow_Maximize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(298,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(298,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "maximize"))) {
-  maximize = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  maximize = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(298,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -3695,7 +3688,7 @@ void wxTopLevelWindow_SetTitle(WxeApp *app, wxeCommand& cmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[1], title_bin)) Badarg(306,"title")
+  if(enif_inspect_binary(env, argv[1], &title_bin)) Badarg(306,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetTitle(title);
@@ -3711,7 +3704,8 @@ void wxTopLevelWindow_ShowFullScreen(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxTopLevelWindow *This;
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
   if(!enif_is_list(env, lstTail)) Badarg(307,"Options");
@@ -3746,7 +3740,7 @@ void wxFrame_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(309,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(309,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(309,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -3789,8 +3783,6 @@ void wxFrame_new_4(WxeApp *app, wxeCommand& cmd)
 void wxFrame_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFrame * Result = new EwxFrame();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -3815,7 +3807,7 @@ void wxFrame_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(313,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(313,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(313,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -4080,7 +4072,7 @@ void wxFrame_SetStatusText(WxeApp *app, wxeCommand& cmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(326,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(326,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -4117,7 +4109,7 @@ void wxFrame_SetStatusWidths(WxeApp *app, wxeCommand& cmd)
   widths_fieldTail = argv[1];
   while(!enif_is_empty_list(env, widths_fieldTail)) {
     if(!enif_get_list_cell(env, widths_fieldTail, &widths_fieldHead, &widths_fieldTail)) Badarg(327,"widths_field");
-    if(!enif_get_int(env, widths_fieldHead, widths_field_ptr++) Badarg(327,"widths_field");
+    if(!enif_get_int(env, widths_fieldHead, widths_field_ptr++)) Badarg(327,"widths_field");
   };
   if(!This) throw wxe_badarg(0);
   This->SetStatusWidths(*widths_fieldLen,widths_field);
@@ -4144,8 +4136,6 @@ void wxFrame_SetToolBar(WxeApp *app, wxeCommand& cmd)
 void wxMiniFrame_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMiniFrame * Result = new EwxMiniFrame();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -4168,7 +4158,7 @@ void wxMiniFrame_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(330,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(330,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(330,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -4224,7 +4214,7 @@ void wxMiniFrame_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(331,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(331,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(331,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -4267,8 +4257,6 @@ void wxMiniFrame_Create(WxeApp *app, wxeCommand& cmd)
 void wxSplashScreen_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSplashScreen * Result = new EwxSplashScreen();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -4366,8 +4354,6 @@ void wxSplashScreen_GetTimeout(WxeApp *app, wxeCommand& cmd)
 void wxPanel_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPanel * Result = new EwxPanel();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -4492,8 +4478,6 @@ void wxPanel_SetFocusIgnoringChildren(WxeApp *app, wxeCommand& cmd)
 void wxScrolledWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxScrolledWindow * Result = new EwxScrolledWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -4572,7 +4556,7 @@ void wxScrolledWindow_CalcScrolledPosition_4(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(xx),
   rt.make_int(yy));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -4619,7 +4603,7 @@ void wxScrolledWindow_CalcUnscrolledPosition_4(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(xx),
   rt.make_int(yy));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -4654,8 +4638,10 @@ void wxScrolledWindow_EnableScrolling(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxScrolledWindow *This;
   This = (wxScrolledWindow *) memenv->getPtr(env, argv[0]);
-  x_scrolling = enif_is_identical(argv[1], WXE_ATOM_TRUE);
-  y_scrolling = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool x_scrolling;
+  x_scrolling = enif_is_identical(argv[1], WXE_ATOM_true);
+  bool y_scrolling;
+  y_scrolling = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableScrolling(x_scrolling,y_scrolling);
 
@@ -4677,7 +4663,7 @@ void wxScrolledWindow_GetScrollPixelsPerUnit(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(pixelsPerUnitX),
   rt.make_int(pixelsPerUnitY));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -4697,7 +4683,7 @@ void wxScrolledWindow_GetViewStart(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -4780,7 +4766,7 @@ void wxScrolledWindow_SetScrollbars(WxeApp *app, wxeCommand& cmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "yPos"))) {
   if(!enif_get_int(env, tpl[1], &yPos)) Badarg(357,"yPos");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "noRefresh"))) {
-  noRefresh = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  noRefresh = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(357,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -4824,8 +4810,6 @@ void wxScrolledWindow_SetTargetWindow(WxeApp *app, wxeCommand& cmd)
 void wxSashWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSashWindow * Result = new EwxSashWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -5031,7 +5015,8 @@ void wxSashWindow_SetSashVisible(WxeApp *app, wxeCommand& cmd)
   This = (wxSashWindow *) memenv->getPtr(env, argv[0]);
   int edge;
   if(!enif_get_int(env, argv[1], &edge)) Badarg(372,"edge"); // enum
-  sash = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool sash;
+  sash = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetSashVisible(edge,sash);
 
@@ -5041,8 +5026,6 @@ void wxSashWindow_SetSashVisible(WxeApp *app, wxeCommand& cmd)
 void wxSashLayoutWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSashLayoutWindow * Result = new EwxSashLayoutWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -5239,8 +5222,6 @@ void wxSashLayoutWindow_SetOrientation(WxeApp *app, wxeCommand& cmd)
 void wxGrid_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGrid * Result = new EwxGrid();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -5357,7 +5338,7 @@ void wxGrid_AppendCols(WxeApp *app, wxeCommand& cmd)
     if(enif_is_identical(tpl[0], enif_make_atom(env, "numCols"))) {
   if(!enif_get_int(env, tpl[1], &numCols)) Badarg(386,"numCols");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "updateLabels"))) {
-  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(386,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5388,7 +5369,7 @@ void wxGrid_AppendRows(WxeApp *app, wxeCommand& cmd)
     if(enif_is_identical(tpl[0], enif_make_atom(env, "numRows"))) {
   if(!enif_get_int(env, tpl[1], &numRows)) Badarg(387,"numRows");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "updateLabels"))) {
-  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(387,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5431,7 +5412,7 @@ void wxGrid_AutoSizeColumn(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(389,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(389,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "setAsMin"))) {
-  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(389,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5457,7 +5438,7 @@ void wxGrid_AutoSizeColumns(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(390,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(390,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "setAsMin"))) {
-  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(390,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5485,7 +5466,7 @@ void wxGrid_AutoSizeRow(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(391,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(391,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "setAsMin"))) {
-  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(391,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5511,7 +5492,7 @@ void wxGrid_AutoSizeRows(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(392,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(392,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "setAsMin"))) {
-  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  setAsMin = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(392,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5747,7 +5728,7 @@ void wxGrid_DeleteCols(WxeApp *app, wxeCommand& cmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "numCols"))) {
   if(!enif_get_int(env, tpl[1], &numCols)) Badarg(404,"numCols");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "updateLabels"))) {
-  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(404,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5781,7 +5762,7 @@ void wxGrid_DeleteRows(WxeApp *app, wxeCommand& cmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "numRows"))) {
   if(!enif_get_int(env, tpl[1], &numRows)) Badarg(405,"numRows");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "updateLabels"))) {
-  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(405,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5861,7 +5842,7 @@ void wxGrid_EnableCellEditControl(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(410,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(410,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(410,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5887,7 +5868,7 @@ void wxGrid_EnableDragColSize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(411,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(411,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(411,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5913,7 +5894,7 @@ void wxGrid_EnableDragGridSize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(412,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(412,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(412,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5939,7 +5920,7 @@ void wxGrid_EnableDragRowSize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(413,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(413,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(413,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -5955,7 +5936,8 @@ void wxGrid_EnableEditing(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  edit = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool edit;
+  edit = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableEditing(edit);
 
@@ -5979,7 +5961,7 @@ void wxGrid_EnableGridLines(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(415,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(415,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(415,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -6061,7 +6043,7 @@ void wxGrid_GetCellAlignment(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -6218,7 +6200,7 @@ void wxGrid_GetColLabelAlignment(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -6285,7 +6267,7 @@ void wxGrid_GetDefaultCellAlignment(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -6431,7 +6413,7 @@ void wxGrid_GetDefaultEditorForType(WxeApp *app, wxeCommand& cmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[1], typeName_bin)) Badarg(441,"typeName")
+  if(enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(441,"typeName")
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   if(!This) throw wxe_badarg(0);
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetDefaultEditorForType(typeName);
@@ -6484,7 +6466,7 @@ void wxGrid_GetDefaultRendererForType(WxeApp *app, wxeCommand& cmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[1], typeName_bin)) Badarg(444,"typeName")
+  if(enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(444,"typeName")
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   if(!This) throw wxe_badarg(0);
   wxGridCellRenderer * Result = (wxGridCellRenderer*)This->GetDefaultRendererForType(typeName);
@@ -6708,7 +6690,7 @@ void wxGrid_GetRowLabelAlignment(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -7020,7 +7002,7 @@ void wxGrid_InsertCols(WxeApp *app, wxeCommand& cmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "numCols"))) {
   if(!enif_get_int(env, tpl[1], &numCols)) Badarg(477,"numCols");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "updateLabels"))) {
-  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(477,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7054,7 +7036,7 @@ void wxGrid_InsertRows(WxeApp *app, wxeCommand& cmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "numRows"))) {
   if(!enif_get_int(env, tpl[1], &numRows)) Badarg(478,"numRows");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "updateLabels"))) {
-  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  updateLabels = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(478,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7207,7 +7189,7 @@ void wxGrid_IsVisible_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(486,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(486,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "wholeCellVisible"))) {
-  wholeCellVisible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  wholeCellVisible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(486,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7243,7 +7225,7 @@ void wxGrid_IsVisible_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(487,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(487,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "wholeCellVisible"))) {
-  wholeCellVisible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  wholeCellVisible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(487,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7299,7 +7281,8 @@ void wxGrid_MoveCursorDown(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorDown(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7315,7 +7298,8 @@ void wxGrid_MoveCursorLeft(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorLeft(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7331,7 +7315,8 @@ void wxGrid_MoveCursorRight(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorRight(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7347,7 +7332,8 @@ void wxGrid_MoveCursorUp(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorUp(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7363,7 +7349,8 @@ void wxGrid_MoveCursorDownBlock(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorDownBlock(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7379,7 +7366,8 @@ void wxGrid_MoveCursorLeftBlock(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorLeftBlock(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7395,7 +7383,8 @@ void wxGrid_MoveCursorRightBlock(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorRightBlock(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7411,7 +7400,8 @@ void wxGrid_MoveCursorUpBlock(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGrid *This;
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
-  expandSelection = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool expandSelection;
+  expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->MoveCursorUpBlock(expandSelection);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -7459,7 +7449,7 @@ void wxGrid_RegisterDataType(WxeApp *app, wxeCommand& cmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[1], typeName_bin)) Badarg(500,"typeName")
+  if(enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(500,"typeName")
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   wxGridCellRenderer *renderer;
   renderer = (wxGridCellRenderer *) memenv->getPtr(env, argv[2]);
@@ -7522,7 +7512,7 @@ void wxGrid_SelectBlock_5(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(503,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(503,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "addToSelected"))) {
-  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(503,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7564,7 +7554,7 @@ void wxGrid_SelectBlock_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(504,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(504,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "addToSelected"))) {
-  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(504,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7592,7 +7582,7 @@ void wxGrid_SelectCol(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(505,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(505,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "addToSelected"))) {
-  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(505,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7620,7 +7610,7 @@ void wxGrid_SelectRow(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(506,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(506,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "addToSelected"))) {
-  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  addToSelected = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(506,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -7920,7 +7910,7 @@ void wxGrid_SetCellValue_3_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(519,"col");
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[3], s_bin)) Badarg(519,"s")
+  if(enif_inspect_binary(env, argv[3], &s_bin)) Badarg(519,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetCellValue(row,col,s);
@@ -7945,7 +7935,7 @@ void wxGrid_SetCellValue_2(WxeApp *app, wxeCommand& cmd)
   wxGridCellCoords coords = wxGridCellCoords(coordsR,coordsC);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[2], s_bin)) Badarg(520,"s")
+  if(enif_inspect_binary(env, argv[2], &s_bin)) Badarg(520,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetCellValue(coords,s);
@@ -7962,7 +7952,7 @@ void wxGrid_SetCellValue_3_1(WxeApp *app, wxeCommand& cmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[1], val_bin)) Badarg(521,"val")
+  if(enif_inspect_binary(env, argv[1], &val_bin)) Badarg(521,"val")
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   int row;
   if(!enif_get_int(env, argv[2], &row)) Badarg(521,"row");
@@ -8063,7 +8053,7 @@ void wxGrid_SetColFormatCustom(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(526,"col");
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[2], typeName_bin)) Badarg(526,"typeName")
+  if(enif_inspect_binary(env, argv[2], &typeName_bin)) Badarg(526,"typeName")
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetColFormatCustom(col,typeName);
@@ -8114,7 +8104,7 @@ void wxGrid_SetColLabelValue(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(529,"col");
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[2], val_bin)) Badarg(529,"val")
+  if(enif_inspect_binary(env, argv[2], &val_bin)) Badarg(529,"val")
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetColLabelValue(col,val);
@@ -8302,7 +8292,7 @@ void wxGrid_SetDefaultColSize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(539,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(539,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "resizeExistingCols"))) {
-  resizeExistingCols = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  resizeExistingCols = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(539,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -8330,7 +8320,7 @@ void wxGrid_SetDefaultRowSize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(540,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(540,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "resizeExistingRows"))) {
-  resizeExistingRows = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  resizeExistingRows = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(540,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -8484,7 +8474,7 @@ void wxGrid_SetReadOnly(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(547,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(547,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "isReadOnly"))) {
-  isReadOnly = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  isReadOnly = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(547,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -8553,7 +8543,7 @@ void wxGrid_SetRowLabelValue(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &row)) Badarg(551,"row");
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[2], val_bin)) Badarg(551,"val")
+  if(enif_inspect_binary(env, argv[2], &val_bin)) Badarg(551,"val")
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetRowLabelValue(row,val);
@@ -8737,7 +8727,7 @@ void wxGrid_XToCol(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(561,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(561,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "clipToMinMax"))) {
-  clipToMinMax = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  clipToMinMax = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(561,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -8828,7 +8818,8 @@ void wxGridCellRenderer_Draw(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[5], &row)) Badarg(565,"row");
   int col;
   if(!enif_get_int(env, argv[6], &col)) Badarg(565,"col");
-  isSelected = enif_is_identical(argv[7], WXE_ATOM_TRUE);
+  bool isSelected;
+  isSelected = enif_is_identical(argv[7], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Draw(*grid,*attr,*dc,rect,row,col,isSelected);
 
@@ -8927,7 +8918,8 @@ void wxGridCellEditor_Show(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxGridCellEditor *This;
   This = (wxGridCellEditor *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
   if(!enif_is_list(env, lstTail)) Badarg(570,"Options");
@@ -9075,8 +9067,6 @@ void wxGridCellEditor_HandleReturn(WxeApp *app, wxeCommand& cmd)
 void wxGridCellBoolRenderer_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGridCellBoolRenderer * Result = new wxGridCellBoolRenderer();
   app->newPtr((void *) Result, 24, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -9100,8 +9090,6 @@ void wxGridCellBoolRenderer_destroy(WxeApp *app, wxeCommand& cmd)
 void wxGridCellBoolEditor_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGridCellBoolEditor * Result = new wxGridCellBoolEditor();
   app->newPtr((void *) Result, 25, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -9117,7 +9105,7 @@ void wxGridCellBoolEditor_IsTrueValue(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[0], value_bin)) Badarg(581,"value")
+  if(enif_inspect_binary(env, argv[0], &value_bin)) Badarg(581,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   bool Result = wxGridCellBoolEditor::IsTrueValue(value);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -9143,11 +9131,11 @@ void wxGridCellBoolEditor_UseStringValues(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(582,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "valueTrue"))) {
   ErlNifBinary valueTrue_bin;
-  if(enif_inspect_binary(env, tpl[1], valueTrue_bin)) Badarg(582,"valueTrue")
+  if(enif_inspect_binary(env, tpl[1], &valueTrue_bin)) Badarg(582,"valueTrue")
   valueTrue = wxString(valueTrue_bin.data, wxConvUTF8, valueTrue_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "valueFalse"))) {
   ErlNifBinary valueFalse_bin;
-  if(enif_inspect_binary(env, tpl[1], valueFalse_bin)) Badarg(582,"valueFalse")
+  if(enif_inspect_binary(env, tpl[1], &valueFalse_bin)) Badarg(582,"valueFalse")
   valueFalse = wxString(valueFalse_bin.data, wxConvUTF8, valueFalse_bin.size);
     } else        Badarg(582,"Options");
   };
@@ -9236,7 +9224,7 @@ void wxGridCellFloatRenderer_SetParameters(WxeApp *app, wxeCommand& cmd)
   This = (wxGridCellFloatRenderer *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], params_bin)) Badarg(587,"params")
+  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(587,"params")
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetParameters(params);
@@ -9324,7 +9312,7 @@ void wxGridCellFloatEditor_SetParameters(WxeApp *app, wxeCommand& cmd)
   This = (wxGridCellFloatEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], params_bin)) Badarg(592,"params")
+  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(592,"params")
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetParameters(params);
@@ -9347,8 +9335,6 @@ void wxGridCellFloatEditor_destroy(WxeApp *app, wxeCommand& cmd)
 void wxGridCellStringRenderer_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGridCellStringRenderer * Result = new wxGridCellStringRenderer();
   app->newPtr((void *) Result, 28, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -9372,8 +9358,6 @@ void wxGridCellStringRenderer_destroy(WxeApp *app, wxeCommand& cmd)
 void wxGridCellTextEditor_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGridCellTextEditor * Result = new wxGridCellTextEditor();
   app->newPtr((void *) Result, 29, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -9391,7 +9375,7 @@ void wxGridCellTextEditor_SetParameters(WxeApp *app, wxeCommand& cmd)
   This = (wxGridCellTextEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], params_bin)) Badarg(597,"params")
+  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(597,"params")
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetParameters(params);
@@ -9423,7 +9407,7 @@ void wxGridCellChoiceEditor_new(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[0];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(600,"choices");
-    if(!enif_inspect_binary(env, argv[0], choices_bin)) Badarg(600,"choices");
+    if(!enif_inspect_binary(env, argv[0], &choices_bin)) Badarg(600,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -9435,7 +9419,7 @@ void wxGridCellChoiceEditor_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(600,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(600,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "allowOthers"))) {
-  allowOthers = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  allowOthers = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(600,"Options");
   };
   wxGridCellChoiceEditor * Result = new wxGridCellChoiceEditor(choices,allowOthers);
@@ -9455,7 +9439,7 @@ void wxGridCellChoiceEditor_SetParameters(WxeApp *app, wxeCommand& cmd)
   This = (wxGridCellChoiceEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], params_bin)) Badarg(601,"params")
+  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(601,"params")
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetParameters(params);
@@ -9478,8 +9462,6 @@ void wxGridCellChoiceEditor_destroy(WxeApp *app, wxeCommand& cmd)
 void wxGridCellNumberRenderer_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGridCellNumberRenderer * Result = new wxGridCellNumberRenderer();
   app->newPtr((void *) Result, 31, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -9553,7 +9535,7 @@ void wxGridCellNumberEditor_SetParameters(WxeApp *app, wxeCommand& cmd)
   This = (wxGridCellNumberEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], params_bin)) Badarg(607,"params")
+  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(607,"params")
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetParameters(params);
@@ -9672,7 +9654,7 @@ void wxGridCellAttr_SetReadOnly(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(613,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(613,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "isReadOnly"))) {
-  isReadOnly = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  isReadOnly = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(613,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -9861,7 +9843,7 @@ void wxGridCellAttr_GetAlignment(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(hAlign),
   rt.make_int(vAlign));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -9985,7 +9967,7 @@ void wxDC_Blit(WxeApp *app, wxeCommand& cmd)
     if(enif_is_identical(tpl[0], enif_make_atom(env, "rop"))) {
   if(!enif_get_int(env, tpl[1], &rop)) Badarg(630,"rop"); // enum
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "useMask"))) {
-  useMask = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  useMask = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "srcPtMask"))) {
   const ERL_NIF_TERM *srcPtMask_t;
   int srcPtMask_sz;
@@ -10216,7 +10198,7 @@ void wxDC_DrawBitmap(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(641,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(641,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "useMask"))) {
-  useMask = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  useMask = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(641,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -10394,7 +10376,7 @@ void wxDC_DrawLabel(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(649,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(649,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   const ERL_NIF_TERM *rect_t;
   int rect_sz;
@@ -10632,7 +10614,7 @@ void wxDC_DrawRotatedText(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(659,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(659,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   const ERL_NIF_TERM *pt_t;
   int pt_sz;
@@ -10717,7 +10699,7 @@ void wxDC_DrawText(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(663,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(663,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   const ERL_NIF_TERM *pt_t;
   int pt_sz;
@@ -10901,7 +10883,7 @@ void wxDC_GetClippingBox(WxeApp *app, wxeCommand& cmd)
   rt.make_int(y),
   rt.make_int(w),
   rt.make_int(h));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -10979,7 +10961,7 @@ void wxDC_GetMultiLineTextExtent_4(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], string_bin)) Badarg(678,"string")
+  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(678,"string")
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -10999,7 +10981,7 @@ void wxDC_GetMultiLineTextExtent_4(WxeApp *app, wxeCommand& cmd)
   rt.make_int(width),
   rt.make_int(height),
   rt.make_int(heightLine));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -11013,7 +10995,7 @@ void wxDC_GetMultiLineTextExtent_1(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], string_bin)) Badarg(679,"string")
+  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(679,"string")
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   if(!This) throw wxe_badarg(0);
   wxSize Result = This->GetMultiLineTextExtent(string);
@@ -11033,14 +11015,14 @@ void wxDC_GetPartialTextExtents(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(680,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(680,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
-  bool Result = This->GetPartialTextExtents(text,widths);
+  bool Result = This->GetPartialTextExtents(text,&widths);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_bool(Result)  rt.make(widths));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -11081,7 +11063,7 @@ void wxDC_GetPixel(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_bool(Result)  rt.make(col));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -11160,7 +11142,7 @@ void wxDC_GetTextExtent_4(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], string_bin)) Badarg(689,"string")
+  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(689,"string")
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -11181,7 +11163,7 @@ void wxDC_GetTextExtent_4(WxeApp *app, wxeCommand& cmd)
   rt.make_int(y),
   rt.make_int(descent),
   rt.make_int(externalLeading));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -11195,7 +11177,7 @@ void wxDC_GetTextExtent_1(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], string_bin)) Badarg(690,"string")
+  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(690,"string")
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   if(!This) throw wxe_badarg(0);
   wxSize Result = This->GetTextExtent(string);
@@ -11233,9 +11215,9 @@ void wxDC_GetUserScale(WxeApp *app, wxeCommand& cmd)
   This->GetUserScale(&x,&y);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
-  rt.make_float(x),
-  rt.make_float(y));
-  rt:send(msg);
+  rt.make_double(x),
+  rt.make_double(y));
+  rt.send(msg);
 
 }
 
@@ -11571,8 +11553,10 @@ void wxDC_SetAxisOrientation(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxDC *This;
   This = (wxDC *) memenv->getPtr(env, argv[0]);
-  xLeftRight = enif_is_identical(argv[1], WXE_ATOM_TRUE);
-  yBottomUp = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool xLeftRight;
+  xLeftRight = enif_is_identical(argv[1], WXE_ATOM_true);
+  bool yBottomUp;
+  yBottomUp = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetAxisOrientation(xLeftRight,yBottomUp);
 
@@ -11876,7 +11860,7 @@ void wxDC_StartDoc(WxeApp *app, wxeCommand& cmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(725,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(725,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->StartDoc(message);
@@ -11906,7 +11890,8 @@ void wxMirrorDC_new(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxDC *dc;
   dc = (wxDC *) memenv->getPtr(env, argv[0]);
-  mirror = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool mirror;
+  mirror = enif_is_identical(argv[1], WXE_ATOM_true);
   wxMirrorDC * Result = new EwxMirrorDC(*dc,mirror);
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -11918,8 +11903,6 @@ void wxMirrorDC_new(WxeApp *app, wxeCommand& cmd)
 void wxScreenDC_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxScreenDC * Result = new EwxScreenDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -11932,8 +11915,6 @@ void wxScreenDC_new(WxeApp *app, wxeCommand& cmd)
 void wxPostScriptDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPostScriptDC * Result = new EwxPostScriptDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -11975,8 +11956,6 @@ void wxPostScriptDC_SetResolution(WxeApp *app, wxeCommand& cmd)
 void wxPostScriptDC_GetResolution(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxPostScriptDC::GetResolution();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -11990,8 +11969,6 @@ void wxPostScriptDC_GetResolution(WxeApp *app, wxeCommand& cmd)
 void wxWindowDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxWindowDC * Result = new EwxWindowDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -12020,8 +11997,6 @@ void wxWindowDC_new_1(WxeApp *app, wxeCommand& cmd)
 void wxClientDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxClientDC * Result = new EwxClientDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -12050,8 +12025,6 @@ void wxClientDC_new_1(WxeApp *app, wxeCommand& cmd)
 void wxPaintDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPaintDC * Result = new EwxPaintDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -12108,8 +12081,6 @@ void wxMemoryDC_new_1_1(WxeApp *app, wxeCommand& cmd)
 void wxMemoryDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMemoryDC * Result = new EwxMemoryDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -12151,8 +12122,6 @@ void wxMemoryDC_SelectObjectAsSource(WxeApp *app, wxeCommand& cmd)
 void wxBufferedDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxBufferedDC * Result = new EwxBufferedDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -12416,8 +12385,6 @@ void wxGraphicsContext_Create_1_0(WxeApp *app, wxeCommand& cmd)
 void wxGraphicsContext_Create_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGraphicsContext * Result = (wxGraphicsContext*)wxGraphicsContext::Create();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
@@ -12806,7 +12773,7 @@ void wxGraphicsContext_DrawLines(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(782,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  This->DrawLines(*pointsLen,points,fillStyle);
+  This->DrawLines(*pointsLen,&points,fillStyle);
   enif_free(points);
 
 }
@@ -12893,7 +12860,7 @@ void wxGraphicsContext_DrawText_3(WxeApp *app, wxeCommand& cmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(786,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(786,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(786,"x");
@@ -12914,7 +12881,7 @@ void wxGraphicsContext_DrawText_4_0(WxeApp *app, wxeCommand& cmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(787,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(787,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(787,"x");
@@ -12937,7 +12904,7 @@ void wxGraphicsContext_DrawText_4_1(WxeApp *app, wxeCommand& cmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(788,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(788,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(788,"x");
@@ -12960,7 +12927,7 @@ void wxGraphicsContext_DrawText_5(WxeApp *app, wxeCommand& cmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(789,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(789,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(789,"x");
@@ -13029,10 +12996,10 @@ void wxGraphicsContext_GetPartialTextExtents(WxeApp *app, wxeCommand& cmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(792,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(792,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
-  This->GetPartialTextExtents(text,widths);
+  This->GetPartialTextExtents(text,&widths);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(  rt.make(widths));
 
@@ -13052,17 +13019,17 @@ void wxGraphicsContext_GetTextExtent(WxeApp *app, wxeCommand& cmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(793,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(793,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->GetTextExtent(text,&width,&height,&descent,&externalLeading);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
-  rt.make_float(width),
-  rt.make_float(height),
-  rt.make_float(descent),
-  rt.make_float(externalLeading));
-  rt:send(msg);
+  rt.make_double(width),
+  rt.make_double(height),
+  rt.make_double(descent),
+  rt.make_double(externalLeading));
+  rt.send(msg);
 
 }
 
@@ -13304,7 +13271,7 @@ void wxGraphicsContext_StrokeLines(WxeApp *app, wxeCommand& cmd)
     wxPoint2DDouble_ptr++ = points(x,y);
   };
   if(!This) throw wxe_badarg(0);
-  This->StrokeLines(*pointsLen,points);
+  This->StrokeLines(*pointsLen,&points);
   enif_free(points);
 
 }
@@ -13344,13 +13311,13 @@ void wxGraphicsMatrix_Get(WxeApp *app, wxeCommand& cmd)
   This->Get(&a,&b,&c,&d,&tx,&ty);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple6(rt.env,
-  rt.make_float(a),
-  rt.make_float(b),
-  rt.make_float(c),
-  rt.make_float(d),
-  rt.make_float(tx),
-  rt.make_float(ty));
-  rt:send(msg);
+  rt.make_double(a),
+  rt.make_double(b),
+  rt.make_double(c),
+  rt.make_double(d),
+  rt.make_double(tx),
+  rt.make_double(ty));
+  rt.send(msg);
 
 }
 
@@ -13503,9 +13470,9 @@ void wxGraphicsMatrix_TransformPoint(WxeApp *app, wxeCommand& cmd)
   This->TransformPoint(&x,&y);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
-  rt.make_float(x),
-  rt.make_float(y));
-  rt:send(msg);
+  rt.make_double(x),
+  rt.make_double(y));
+  rt.send(msg);
 
 }
 
@@ -13523,9 +13490,9 @@ void wxGraphicsMatrix_TransformDistance(WxeApp *app, wxeCommand& cmd)
   This->TransformDistance(&dx,&dy);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
-  rt.make_float(dx),
-  rt.make_float(dy));
-  rt:send(msg);
+  rt.make_double(dx),
+  rt.make_double(dy));
+  rt.send(msg);
 
 }
 
@@ -13587,7 +13554,8 @@ void wxGraphicsPath_AddArc_6(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_double(env, argv[4], &startAngle)) Badarg(824,"startAngle");
   double endAngle;
   if(!enif_get_double(env, argv[5], &endAngle)) Badarg(824,"endAngle");
-  clockwise = enif_is_identical(argv[6], WXE_ATOM_TRUE);
+  bool clockwise;
+  clockwise = enif_is_identical(argv[6], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AddArc(x,y,r,startAngle,endAngle,clockwise);
 
@@ -13615,7 +13583,8 @@ void wxGraphicsPath_AddArc_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_double(env, argv[3], &startAngle)) Badarg(825,"startAngle");
   double endAngle;
   if(!enif_get_double(env, argv[4], &endAngle)) Badarg(825,"endAngle");
-  clockwise = enif_is_identical(argv[5], WXE_ATOM_TRUE);
+  bool clockwise;
+  clockwise = enif_is_identical(argv[5], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AddArc(c,r,startAngle,endAngle,clockwise);
 
@@ -13996,8 +13965,6 @@ void wxGraphicsPath_Transform(WxeApp *app, wxeCommand& cmd)
 void wxGraphicsRenderer_GetDefaultRenderer(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGraphicsRenderer * Result = (wxGraphicsRenderer*)wxGraphicsRenderer::GetDefaultRenderer();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsRenderer"));
@@ -14317,8 +14284,6 @@ void wxMenuBar_new_1(WxeApp *app, wxeCommand& cmd)
 void wxMenuBar_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMenuBar * Result = new EwxMenuBar();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -14338,7 +14303,7 @@ void wxMenuBar_Append(WxeApp *app, wxeCommand& cmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[1]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(861,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(861,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->Append(menu,title);
@@ -14357,7 +14322,8 @@ void wxMenuBar_Check(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   int itemid;
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(862,"itemid");
-  check = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool check;
+  check = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Check(itemid,check);
 
@@ -14373,7 +14339,8 @@ void wxMenuBar_Enable_2(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   int itemid;
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(863,"itemid");
-  enable = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool enable;
+  enable = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Enable(itemid,enable);
 
@@ -14397,7 +14364,7 @@ void wxMenuBar_Enable_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(864,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(864,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(864,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -14417,7 +14384,8 @@ void wxMenuBar_EnableTop(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   int pos;
   if(!enif_get_int(env, argv[1], &pos)) Badarg(865,"pos");
-  flag = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableTop(pos,flag);
 
@@ -14433,7 +14401,7 @@ void wxMenuBar_FindMenu(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[1], title_bin)) Badarg(866,"title")
+  if(enif_inspect_binary(env, argv[1], &title_bin)) Badarg(866,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->FindMenu(title);
@@ -14452,11 +14420,11 @@ void wxMenuBar_FindMenuItem(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary menuString_bin;
   wxString menuString;
-  if(enif_inspect_binary(env, argv[1], menuString_bin)) Badarg(867,"menuString")
+  if(enif_inspect_binary(env, argv[1], &menuString_bin)) Badarg(867,"menuString")
   menuString = wxString(menuString_bin.data, wxConvUTF8, menuString_bin.size);
   ErlNifBinary itemString_bin;
   wxString itemString;
-  if(enif_inspect_binary(env, argv[2], itemString_bin)) Badarg(867,"itemString")
+  if(enif_inspect_binary(env, argv[2], &itemString_bin)) Badarg(867,"itemString")
   itemString = wxString(itemString_bin.data, wxConvUTF8, itemString_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->FindMenuItem(menuString,itemString);
@@ -14595,7 +14563,7 @@ void wxMenuBar_Insert(WxeApp *app, wxeCommand& cmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[2]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(875,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(875,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->Insert(pos,menu,title);
@@ -14684,7 +14652,7 @@ void wxMenuBar_Replace(WxeApp *app, wxeCommand& cmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[2]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(880,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(880,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg(0);
   wxMenu * Result = (wxMenu*)This->Replace(pos,menu,title);
@@ -14705,7 +14673,7 @@ void wxMenuBar_SetHelpString(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(881,"itemid");
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], helpString_bin)) Badarg(881,"helpString")
+  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(881,"helpString")
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetHelpString(itemid,helpString);
@@ -14724,7 +14692,7 @@ void wxMenuBar_SetLabel_2(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(882,"itemid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(882,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(882,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(itemid,label);
@@ -14741,7 +14709,7 @@ void wxMenuBar_SetLabel_1(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], s_bin)) Badarg(883,"s")
+  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(883,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(s);
@@ -14760,7 +14728,7 @@ void wxMenuBar_SetLabelTop(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(884,"pos");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(884,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(884,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabelTop(pos,label);
@@ -14792,7 +14760,7 @@ void wxControl_SetLabel(WxeApp *app, wxeCommand& cmd)
   This = (wxControl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], label_bin)) Badarg(886,"label")
+  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(886,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(label);
@@ -14809,7 +14777,7 @@ void wxControlWithItems_Append_1(WxeApp *app, wxeCommand& cmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], item_bin)) Badarg(887,"item")
+  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(887,"item")
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->Append(item);
@@ -14828,12 +14796,12 @@ void wxControlWithItems_Append_2(WxeApp *app, wxeCommand& cmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], item_bin)) Badarg(888,"item")
+  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(888,"item")
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   wxeErlTerm * clientData;
   clientData = new wxeErlTerm(argv[2]);
   if(!This) throw wxe_badarg(0);
-  int Result = This->Append(item,clientData);
+  int Result = This->Append(item,&clientData);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
 
@@ -14853,7 +14821,7 @@ void wxControlWithItems_appendStrings_1(WxeApp *app, wxeCommand& cmd)
   stringsTail = argv[1];
   while(!enif_is_empty_list(env, stringsTail)) {
     if(!enif_get_list_cell(env, stringsTail, &stringsHead, &stringsTail)) Badarg(889,"strings");
-    if(!enif_inspect_binary(env, argv[1], strings_bin)) Badarg(889,"strings");
+    if(!enif_inspect_binary(env, argv[1], &strings_bin)) Badarg(889,"strings");
     strings.Add(wxString((strings_bin.data, wxConvUTF8, strings_bin.size));
   };
   if(!This) throw wxe_badarg(0);
@@ -14900,7 +14868,7 @@ void wxControlWithItems_FindString(WxeApp *app, wxeCommand& cmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], s_bin)) Badarg(892,"s")
+  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(892,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -14911,7 +14879,7 @@ void wxControlWithItems_FindString(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(892,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(892,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bCase"))) {
-  bCase = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bCase = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(892,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -14951,7 +14919,7 @@ void wxControlWithItems_setClientData(WxeApp *app, wxeCommand& cmd)
   wxeErlTerm * clientData;
   clientData = new wxeErlTerm(argv[2]);
   if(!This) throw wxe_badarg(0);
-  This->SetClientObject(n,clientData);
+  This->SetClientObject(n,&clientData);
 
 }
 
@@ -15027,7 +14995,7 @@ void wxControlWithItems_Insert_2(WxeApp *app, wxeCommand& cmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], item_bin)) Badarg(899,"item")
+  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(899,"item")
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   unsigned int pos;
   if(!enif_get_uint(env, argv[2], &pos)) Badarg(899,"pos");
@@ -15048,14 +15016,14 @@ void wxControlWithItems_Insert_3(WxeApp *app, wxeCommand& cmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], item_bin)) Badarg(900,"item")
+  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(900,"item")
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   unsigned int pos;
   if(!enif_get_uint(env, argv[2], &pos)) Badarg(900,"pos");
   wxeErlTerm * clientData;
   clientData = new wxeErlTerm(argv[3]);
   if(!This) throw wxe_badarg(0);
-  int Result = This->Insert(item,pos,clientData);
+  int Result = This->Insert(item,pos,&clientData);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
 
@@ -15118,7 +15086,7 @@ void wxControlWithItems_SetString(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(904,"n");
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[2], s_bin)) Badarg(904,"s")
+  if(enif_inspect_binary(env, argv[2], &s_bin)) Badarg(904,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetString(n,s);
@@ -15135,7 +15103,7 @@ void wxControlWithItems_SetStringSelection(WxeApp *app, wxeCommand& cmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], s_bin)) Badarg(905,"s")
+  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(905,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetStringSelection(s);
@@ -15153,7 +15121,7 @@ void wxMenu_new_2(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[0], title_bin)) Badarg(908,"title")
+  if(enif_inspect_binary(env, argv[0], &title_bin)) Badarg(908,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -15214,7 +15182,7 @@ void wxMenu_Append_3(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(912,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(912,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(912,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -15226,7 +15194,7 @@ void wxMenu_Append_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(912,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(912,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(912,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(912,"kind"); // enum
@@ -15268,13 +15236,14 @@ void wxMenu_Append_4_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(914,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(914,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(914,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ErlNifBinary help_bin;
   wxString help;
-  if(enif_inspect_binary(env, argv[3], help_bin)) Badarg(914,"help")
+  if(enif_inspect_binary(env, argv[3], &help_bin)) Badarg(914,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
-  isCheckable = enif_is_identical(argv[4], WXE_ATOM_TRUE);
+  bool isCheckable;
+  isCheckable = enif_is_identical(argv[4], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Append(itemid,text,help,isCheckable);
 
@@ -15293,7 +15262,7 @@ void wxMenu_Append_4_1(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(915,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(915,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(915,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxMenu *submenu;
   submenu = (wxMenu *) memenv->getPtr(env, argv[3]);
@@ -15307,7 +15276,7 @@ void wxMenu_Append_4_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(915,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(915,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(915,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(915,"Options");
   };
@@ -15331,7 +15300,7 @@ void wxMenu_AppendCheckItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(916,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(916,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(916,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -15343,7 +15312,7 @@ void wxMenu_AppendCheckItem(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(916,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(916,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(916,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(916,"Options");
   };
@@ -15367,7 +15336,7 @@ void wxMenu_AppendRadioItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(917,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(917,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(917,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -15379,7 +15348,7 @@ void wxMenu_AppendRadioItem(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(917,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(917,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(917,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(917,"Options");
   };
@@ -15428,7 +15397,8 @@ void wxMenu_Check(WxeApp *app, wxeCommand& cmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   int itemid;
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(920,"itemid");
-  check = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool check;
+  check = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Check(itemid,check);
 
@@ -15512,7 +15482,8 @@ void wxMenu_Enable(WxeApp *app, wxeCommand& cmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   int itemid;
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(925,"itemid");
-  enable = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool enable;
+  enable = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Enable(itemid,enable);
 
@@ -15528,7 +15499,7 @@ void wxMenu_FindItem_1(WxeApp *app, wxeCommand& cmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], item_bin)) Badarg(926,"item")
+  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(926,"item")
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->FindItem(item);
@@ -15632,12 +15603,7 @@ void wxMenu_GetMenuItems(WxeApp *app, wxeCommand& cmd)
   if(!This) throw wxe_badarg(0);
   const wxMenuItemList Result = This->GetMenuItems();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
-  rt.send( int i=0;
- for(wxMenuItemList::const_iterator it = Result.begin(); it != Result.end(); ++it) {
-   wxMenuItem * ResultTmp = *it;
-   rt.make_ref(getRef((void *)ResultTmp,memenv), "wxMenuItem"); i++;}
- rt.endList(Result.GetCount())
-);
+  rt.send(rt.make_list_objs(Result, app, "wxMenuItem"));
 
 }
 
@@ -15700,11 +15666,11 @@ void wxMenu_Insert_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(936,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], text_bin)) Badarg(936,"text")
+  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(936,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(936,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(936,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(936,"kind"); // enum
@@ -15732,7 +15698,7 @@ void wxMenu_Insert_5_1(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(937,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(937,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(937,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxMenu *submenu;
   submenu = (wxMenu *) memenv->getPtr(env, argv[4]);
@@ -15746,7 +15712,7 @@ void wxMenu_Insert_5_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(937,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(937,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(937,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(937,"Options");
   };
@@ -15771,13 +15737,14 @@ void wxMenu_Insert_5_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(938,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(938,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(938,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ErlNifBinary help_bin;
   wxString help;
-  if(enif_inspect_binary(env, argv[4], help_bin)) Badarg(938,"help")
+  if(enif_inspect_binary(env, argv[4], &help_bin)) Badarg(938,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
-  isCheckable = enif_is_identical(argv[5], WXE_ATOM_TRUE);
+  bool isCheckable;
+  isCheckable = enif_is_identical(argv[5], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Insert(pos,itemid,text,help,isCheckable);
 
@@ -15798,7 +15765,7 @@ void wxMenu_InsertCheckItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(939,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(939,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(939,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -15810,7 +15777,7 @@ void wxMenu_InsertCheckItem(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(939,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(939,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(939,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(939,"Options");
   };
@@ -15836,7 +15803,7 @@ void wxMenu_InsertRadioItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(940,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(940,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(940,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -15848,7 +15815,7 @@ void wxMenu_InsertRadioItem(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(940,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(940,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(940,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(940,"Options");
   };
@@ -15950,11 +15917,11 @@ void wxMenu_Prepend_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(945,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], text_bin)) Badarg(945,"text")
+  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(945,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(945,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(945,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(945,"kind"); // enum
@@ -15980,7 +15947,7 @@ void wxMenu_Prepend_4_1(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(946,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(946,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(946,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxMenu *submenu;
   submenu = (wxMenu *) memenv->getPtr(env, argv[3]);
@@ -15994,7 +15961,7 @@ void wxMenu_Prepend_4_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(946,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(946,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(946,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(946,"Options");
   };
@@ -16017,13 +15984,14 @@ void wxMenu_Prepend_4_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(947,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(947,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(947,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ErlNifBinary help_bin;
   wxString help;
-  if(enif_inspect_binary(env, argv[3], help_bin)) Badarg(947,"help")
+  if(enif_inspect_binary(env, argv[3], &help_bin)) Badarg(947,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
-  isCheckable = enif_is_identical(argv[4], WXE_ATOM_TRUE);
+  bool isCheckable;
+  isCheckable = enif_is_identical(argv[4], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Prepend(itemid,text,help,isCheckable);
 
@@ -16042,7 +16010,7 @@ void wxMenu_PrependCheckItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(948,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(948,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(948,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -16054,7 +16022,7 @@ void wxMenu_PrependCheckItem(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(948,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(948,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(948,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(948,"Options");
   };
@@ -16078,7 +16046,7 @@ void wxMenu_PrependRadioItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(949,"itemid");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(949,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(949,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -16090,7 +16058,7 @@ void wxMenu_PrependRadioItem(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(949,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(949,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(949,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(949,"Options");
   };
@@ -16162,7 +16130,7 @@ void wxMenu_SetHelpString(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(953,"itemid");
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], helpString_bin)) Badarg(953,"helpString")
+  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(953,"helpString")
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetHelpString(itemid,helpString);
@@ -16181,7 +16149,7 @@ void wxMenu_SetLabel(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(954,"itemid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(954,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(954,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(itemid,label);
@@ -16198,7 +16166,7 @@ void wxMenu_SetTitle(WxeApp *app, wxeCommand& cmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[1], title_bin)) Badarg(955,"title")
+  if(enif_inspect_binary(env, argv[1], &title_bin)) Badarg(955,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetTitle(title);
@@ -16230,11 +16198,11 @@ void wxMenuItem_new(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(956,"id");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], text_bin)) Badarg(956,"text")
+  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(956,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], help_bin)) Badarg(956,"help")
+  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(956,"help")
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(956,"kind"); // enum
@@ -16266,7 +16234,7 @@ void wxMenuItem_Check(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(959,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(959,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "check"))) {
-  check = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  check = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(959,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -16292,7 +16260,7 @@ void wxMenuItem_Enable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(960,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(960,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(960,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -16383,7 +16351,7 @@ void wxMenuItem_GetLabelFromText(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[0], text_bin)) Badarg(966,"text")
+  if(enif_inspect_binary(env, argv[0], &text_bin)) Badarg(966,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxString Result = wxMenuItem::GetLabelFromText(text);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -16536,7 +16504,7 @@ void wxMenuItem_SetHelp(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(976,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(976,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetHelp(str);
@@ -16583,7 +16551,7 @@ void wxMenuItem_SetText(WxeApp *app, wxeCommand& cmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(979,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(979,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetText(str);
@@ -16638,7 +16606,7 @@ void wxToolBar_AddTool_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(982,"toolid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(982,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(982,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16656,11 +16624,11 @@ void wxToolBar_AddTool_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(982,"kind"); // enum
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(982,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(982,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelp_bin)) Badarg(982,"longHelp")
+  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(982,"longHelp")
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "data"))) {
     } else        Badarg(982,"Options");
@@ -16686,7 +16654,7 @@ void wxToolBar_AddTool_4_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(983,"toolid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(983,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(983,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16700,7 +16668,7 @@ void wxToolBar_AddTool_4_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(983,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(983,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(983,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(983,"kind"); // enum
@@ -16757,15 +16725,15 @@ void wxToolBar_AddTool_4_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(985,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(985,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "toggle"))) {
-  toggle = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  toggle = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "clientData"))) {
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelpString"))) {
   ErlNifBinary shortHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelpString_bin)) Badarg(985,"shortHelpString")
+  if(enif_inspect_binary(env, tpl[1], &shortHelpString_bin)) Badarg(985,"shortHelpString")
   shortHelpString = wxString(shortHelpString_bin.data, wxConvUTF8, shortHelpString_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelpString"))) {
   ErlNifBinary longHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelpString_bin)) Badarg(985,"longHelpString")
+  if(enif_inspect_binary(env, tpl[1], &longHelpString_bin)) Badarg(985,"longHelpString")
   longHelpString = wxString(longHelpString_bin.data, wxConvUTF8, longHelpString_bin.size);
     } else        Badarg(985,"Options");
   };
@@ -16800,11 +16768,11 @@ void wxToolBar_AddTool_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(986,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelpString"))) {
   ErlNifBinary shortHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelpString_bin)) Badarg(986,"shortHelpString")
+  if(enif_inspect_binary(env, tpl[1], &shortHelpString_bin)) Badarg(986,"shortHelpString")
   shortHelpString = wxString(shortHelpString_bin.data, wxConvUTF8, shortHelpString_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelpString"))) {
   ErlNifBinary longHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelpString_bin)) Badarg(986,"longHelpString")
+  if(enif_inspect_binary(env, tpl[1], &longHelpString_bin)) Badarg(986,"longHelpString")
   longHelpString = wxString(longHelpString_bin.data, wxConvUTF8, longHelpString_bin.size);
     } else        Badarg(986,"Options");
   };
@@ -16833,7 +16801,8 @@ void wxToolBar_AddTool_6(WxeApp *app, wxeCommand& cmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[2]);
   wxBitmap *bmpDisabled;
   bmpDisabled = (wxBitmap *) memenv->getPtr(env, argv[3]);
-  toggle = enif_is_identical(argv[4], WXE_ATOM_TRUE);
+  bool toggle;
+  toggle = enif_is_identical(argv[4], WXE_ATOM_true);
   int xPos;
   if(!enif_get_int(env, argv[5], &xPos)) Badarg(987,"xPos");
   ERL_NIF_TERM lstHead, lstTail;
@@ -16849,11 +16818,11 @@ void wxToolBar_AddTool_6(WxeApp *app, wxeCommand& cmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "clientData"))) {
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(987,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(987,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelp_bin)) Badarg(987,"longHelp")
+  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(987,"longHelp")
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else        Badarg(987,"Options");
   };
@@ -16880,7 +16849,7 @@ void wxToolBar_AddCheckTool(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(988,"toolid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(988,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(988,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16895,11 +16864,11 @@ void wxToolBar_AddCheckTool(WxeApp *app, wxeCommand& cmd)
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bmpDisabled"))) {
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(988,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(988,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelp_bin)) Badarg(988,"longHelp")
+  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(988,"longHelp")
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "data"))) {
     } else        Badarg(988,"Options");
@@ -16927,7 +16896,7 @@ void wxToolBar_AddRadioTool(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(989,"toolid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(989,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(989,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16942,11 +16911,11 @@ void wxToolBar_AddRadioTool(WxeApp *app, wxeCommand& cmd)
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bmpDisabled"))) {
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(989,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(989,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelp_bin)) Badarg(989,"longHelp")
+  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(989,"longHelp")
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "data"))) {
     } else        Badarg(989,"Options");
@@ -17038,7 +17007,8 @@ void wxToolBar_EnableTool(WxeApp *app, wxeCommand& cmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   int toolid;
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(994,"toolid");
-  enable = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool enable;
+  enable = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableTool(toolid,enable);
 
@@ -17312,7 +17282,7 @@ void wxToolBar_InsertTool_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &toolid)) Badarg(1010,"toolid");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(1010,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1010,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[4]);
@@ -17329,11 +17299,11 @@ void wxToolBar_InsertTool_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &kind)) Badarg(1010,"kind"); // enum
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(1010,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(1010,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelp_bin)) Badarg(1010,"longHelp")
+  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(1010,"longHelp")
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "clientData"))) {
     } else        Badarg(1010,"Options");
@@ -17393,15 +17363,15 @@ void wxToolBar_InsertTool_4(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1012,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bmpDisabled"))) {
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "toggle"))) {
-  toggle = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  toggle = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "clientData"))) {
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], shortHelp_bin)) Badarg(1012,"shortHelp")
+  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(1012,"shortHelp")
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], longHelp_bin)) Badarg(1012,"longHelp")
+  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(1012,"longHelp")
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else        Badarg(1012,"Options");
   };
@@ -17494,7 +17464,7 @@ void wxToolBar_SetToolLongHelp(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1017,"toolid");
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], helpString_bin)) Badarg(1017,"helpString")
+  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(1017,"helpString")
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetToolLongHelp(toolid,helpString);
@@ -17528,7 +17498,7 @@ void wxToolBar_SetToolShortHelp(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1019,"id");
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], helpString_bin)) Badarg(1019,"helpString")
+  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(1019,"helpString")
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetToolShortHelp(id,helpString);
@@ -17560,7 +17530,8 @@ void wxToolBar_ToggleTool(WxeApp *app, wxeCommand& cmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   int toolid;
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1021,"toolid");
-  toggle = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool toggle;
+  toggle = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->ToggleTool(toolid,toggle);
 
@@ -17570,8 +17541,6 @@ void wxToolBar_ToggleTool(WxeApp *app, wxeCommand& cmd)
 void wxStatusBar_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStatusBar * Result = new EwxStatusBar();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -17659,7 +17628,7 @@ void wxStatusBar_GetFieldRect(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_bool(Result)  rt.make(rect));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -17743,7 +17712,7 @@ void wxStatusBar_PushStatusText(WxeApp *app, wxeCommand& cmd)
   This = (wxStatusBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(1032,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1032,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -17791,12 +17760,12 @@ void wxStatusBar_SetFieldsCount(WxeApp *app, wxeCommand& cmd)
   widthsTail = tpl[1];
   while(!enif_is_empty_list(env, widthsTail)) {
     if(!enif_get_list_cell(env, widthsTail, &widthsHead, &widthsTail)) Badarg(1033,"widths");
-    if(!enif_get_int(env, widthsHead, widths_ptr++) Badarg(1033,"widths");
+    if(!enif_get_int(env, widthsHead, widths_ptr++)) Badarg(1033,"widths");
   };
     } else        Badarg(1033,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  This->SetFieldsCount(number,widths);
+  This->SetFieldsCount(number,&widths);
   enif_free(widths);
 
 }
@@ -17827,7 +17796,7 @@ void wxStatusBar_SetStatusText(WxeApp *app, wxeCommand& cmd)
   This = (wxStatusBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(1035,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1035,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -17864,7 +17833,7 @@ void wxStatusBar_SetStatusWidths(WxeApp *app, wxeCommand& cmd)
   widths_fieldTail = argv[1];
   while(!enif_is_empty_list(env, widths_fieldTail)) {
     if(!enif_get_list_cell(env, widths_fieldTail, &widths_fieldHead, &widths_fieldTail)) Badarg(1036,"widths_field");
-    if(!enif_get_int(env, widths_fieldHead, widths_field_ptr++) Badarg(1036,"widths_field");
+    if(!enif_get_int(env, widths_fieldHead, widths_field_ptr++)) Badarg(1036,"widths_field");
   };
   if(!This) throw wxe_badarg(0);
   This->SetStatusWidths(*widths_fieldLen,widths_field);
@@ -17890,7 +17859,7 @@ void wxStatusBar_SetStatusStyles(WxeApp *app, wxeCommand& cmd)
   stylesTail = argv[1];
   while(!enif_is_empty_list(env, stylesTail)) {
     if(!enif_get_list_cell(env, stylesTail, &stylesHead, &stylesTail)) Badarg(1037,"styles");
-    if(!enif_get_int(env, stylesHead, styles_ptr++) Badarg(1037,"styles");
+    if(!enif_get_int(env, stylesHead, styles_ptr++)) Badarg(1037,"styles");
   };
   if(!This) throw wxe_badarg(0);
   This->SetStatusStyles(*stylesLen,styles);
@@ -17902,8 +17871,6 @@ void wxStatusBar_SetStatusStyles(WxeApp *app, wxeCommand& cmd)
 void wxBitmap_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxBitmap * Result = new EwxBitmap();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -17950,7 +17917,7 @@ void wxBitmap_new_4(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   const char * bits;
   ErlNifBinary bits_bin;
-  if(!enif_inspect_binary(env, argv[0], bits_bin)) Badarg(1040,"bits");
+  if(!enif_inspect_binary(env, argv[0], &bits_bin)) Badarg(1040,"bits");
   bits = (const char*) bits_bin.data;
   int width;
   if(!enif_get_int(env, argv[1], &width)) Badarg(1040,"width");
@@ -17984,7 +17951,7 @@ void wxBitmap_new_2_0(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[0], filename_bin)) Badarg(1041,"filename")
+  if(enif_inspect_binary(env, argv[0], &filename_bin)) Badarg(1041,"filename")
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -18210,7 +18177,7 @@ void wxBitmap_LoadFile(WxeApp *app, wxeCommand& cmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1053,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1053,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -18257,7 +18224,7 @@ void wxBitmap_SaveFile(WxeApp *app, wxeCommand& cmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1055,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1055,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int type;
   if(!enif_get_int(env, argv[2], &type)) Badarg(1055,"type"); // enum
@@ -18358,8 +18325,6 @@ void wxBitmap_SetWidth(WxeApp *app, wxeCommand& cmd)
 void wxIcon_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxIcon * Result = new EwxIcon();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -18378,7 +18343,7 @@ void wxIcon_new_2(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[0], filename_bin)) Badarg(1062,"filename")
+  if(enif_inspect_binary(env, argv[0], &filename_bin)) Badarg(1062,"filename")
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -18437,8 +18402,6 @@ void wxIcon_CopyFromBitmap(WxeApp *app, wxeCommand& cmd)
 void wxIconBundle_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxIconBundle * Result = new wxIconBundle();
   app->newPtr((void *) Result, 61, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -18454,7 +18417,7 @@ void wxIconBundle_new_2(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary file_bin;
   wxString file;
-  if(enif_inspect_binary(env, argv[0], file_bin)) Badarg(1067,"file")
+  if(enif_inspect_binary(env, argv[0], &file_bin)) Badarg(1067,"file")
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
   int type;
   if(!enif_get_int(env, argv[1], &type)) Badarg(1067,"type");
@@ -18516,7 +18479,7 @@ void wxIconBundle_AddIcon_2(WxeApp *app, wxeCommand& cmd)
   This = (wxIconBundle *) memenv->getPtr(env, argv[0]);
   ErlNifBinary file_bin;
   wxString file;
-  if(enif_inspect_binary(env, argv[1], file_bin)) Badarg(1071,"file")
+  if(enif_inspect_binary(env, argv[1], &file_bin)) Badarg(1071,"file")
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
   int type;
   if(!enif_get_int(env, argv[2], &type)) Badarg(1071,"type");
@@ -18595,8 +18558,6 @@ void wxIconBundle_GetIcon_1_0(WxeApp *app, wxeCommand& cmd)
 void wxCursor_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxCursor * Result = new EwxCursor();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -18645,7 +18606,7 @@ void wxCursor_new_4(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   const char * bits;
   ErlNifBinary bits_bin;
-  if(!enif_inspect_binary(env, argv[0], bits_bin)) Badarg(1078,"bits");
+  if(!enif_inspect_binary(env, argv[0], &bits_bin)) Badarg(1078,"bits");
   bits = (const char*) bits_bin.data;
   int width;
   if(!enif_get_int(env, argv[1], &width)) Badarg(1078,"width");
@@ -18692,8 +18653,6 @@ void wxCursor_Ok(WxeApp *app, wxeCommand& cmd)
 void wxMask_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMask * Result = new EwxMask();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -18829,8 +18788,6 @@ void wxMask_Create_1(WxeApp *app, wxeCommand& cmd)
 void wxImage_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxImage * Result = new EwxImage();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -18858,7 +18815,7 @@ void wxImage_new_3_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1090,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1090,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "clear"))) {
-  clear = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  clear = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1090,"Options");
   };
   wxImage * Result = new EwxImage(width,height,clear);
@@ -18881,7 +18838,7 @@ void wxImage_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &height)) Badarg(1091,"height");
   unsigned char * data;
   ErlNifBinary data_bin;
-  if(!enif_inspect_binary(env, argv[2], data_bin)) Badarg(1091,"data");
+  if(!enif_inspect_binary(env, argv[2], &data_bin)) Badarg(1091,"data");
   data = (unsigned char*) data_bin.data;
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -18892,11 +18849,11 @@ void wxImage_new_4(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1091,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1091,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1091,"Options");
   };
  if(!static_data) {data = (unsigned char *) malloc(Ecmd.bin[0].size);memcpy(data,Ecmd.bin[0].base,Ecmd.bin[0].size);};
-  wxImage * Result = new EwxImage(width,height,data,static_data);
+  wxImage * Result = new EwxImage(width,height,&data,static_data);
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
@@ -18916,11 +18873,11 @@ void wxImage_new_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &height)) Badarg(1092,"height");
   unsigned char * data;
   ErlNifBinary data_bin;
-  if(!enif_inspect_binary(env, argv[2], data_bin)) Badarg(1092,"data");
+  if(!enif_inspect_binary(env, argv[2], &data_bin)) Badarg(1092,"data");
   data = (unsigned char*) data_bin.data;
   unsigned char * alpha;
   ErlNifBinary alpha_bin;
-  if(!enif_inspect_binary(env, argv[3], alpha_bin)) Badarg(1092,"alpha");
+  if(!enif_inspect_binary(env, argv[3], &alpha_bin)) Badarg(1092,"alpha");
   alpha = (unsigned char*) alpha_bin.data;
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -18931,11 +18888,11 @@ void wxImage_new_5(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1092,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1092,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1092,"Options");
   };
  if(!static_data) { data = (unsigned char *) malloc(Ecmd.bin[0].size); alpha = (unsigned char *) malloc(Ecmd.bin[1].size); memcpy(data,Ecmd.bin[0].base,Ecmd.bin[0].size); memcpy(alpha,Ecmd.bin[1].base,Ecmd.bin[1].size);};
-  wxImage * Result = new EwxImage(width,height,data,alpha,static_data);
+  wxImage * Result = new EwxImage(width,height,&data,&alpha,static_data);
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
@@ -18952,7 +18909,7 @@ void wxImage_new_2(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(1093,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1093,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -18984,11 +18941,11 @@ void wxImage_new_3_1(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(1094,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1094,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary mimetype_bin;
   wxString mimetype;
-  if(enif_inspect_binary(env, argv[1], mimetype_bin)) Badarg(1094,"mimetype")
+  if(enif_inspect_binary(env, argv[1], &mimetype_bin)) Badarg(1094,"mimetype")
   mimetype = wxString(mimetype_bin.data, wxConvUTF8, mimetype_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -19180,7 +19137,7 @@ void wxImage_Create_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1102,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1102,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "clear"))) {
-  clear = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  clear = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1102,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -19205,7 +19162,7 @@ void wxImage_Create_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &height)) Badarg(1103,"height");
   unsigned char * data;
   ErlNifBinary data_bin;
-  if(!enif_inspect_binary(env, argv[3], data_bin)) Badarg(1103,"data");
+  if(!enif_inspect_binary(env, argv[3], &data_bin)) Badarg(1103,"data");
   data = (unsigned char*) data_bin.data;
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -19216,12 +19173,12 @@ void wxImage_Create_4(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1103,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1103,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1103,"Options");
   };
  if(!static_data) {data = (unsigned char *) malloc(Ecmd.bin[0].size);memcpy(data,Ecmd.bin[0].base,Ecmd.bin[0].size);};
   if(!This) throw wxe_badarg(0);
-  bool Result = This->Create(width,height,data,static_data);
+  bool Result = This->Create(width,height,&data,static_data);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
 
@@ -19242,11 +19199,11 @@ void wxImage_Create_5(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &height)) Badarg(1104,"height");
   unsigned char * data;
   ErlNifBinary data_bin;
-  if(!enif_inspect_binary(env, argv[3], data_bin)) Badarg(1104,"data");
+  if(!enif_inspect_binary(env, argv[3], &data_bin)) Badarg(1104,"data");
   data = (unsigned char*) data_bin.data;
   unsigned char * alpha;
   ErlNifBinary alpha_bin;
-  if(!enif_inspect_binary(env, argv[4], alpha_bin)) Badarg(1104,"alpha");
+  if(!enif_inspect_binary(env, argv[4], &alpha_bin)) Badarg(1104,"alpha");
   alpha = (unsigned char*) alpha_bin.data;
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[5];
@@ -19257,12 +19214,12 @@ void wxImage_Create_5(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1104,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1104,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1104,"Options");
   };
  if(!static_data) { data =  (unsigned char *) malloc(Ecmd.bin[0].size); alpha = (unsigned char *) malloc(Ecmd.bin[1].size); memcpy(data,Ecmd.bin[0].base,Ecmd.bin[0].size); memcpy(alpha,Ecmd.bin[1].base,Ecmd.bin[1].size);};
   if(!This) throw wxe_badarg(0);
-  bool Result = This->Create(width,height,data,alpha,static_data);
+  bool Result = This->Create(width,height,&data,&alpha,static_data);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
 
@@ -19318,7 +19275,7 @@ void wxImage_FindFirstUnusedColour(WxeApp *app, wxeCommand& cmd)
 rt.make_bool(Result)  rt.make_uint(r),
   rt.make_uint(g),
   rt.make_uint(b));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -19326,8 +19283,6 @@ rt.make_bool(Result)  rt.make_uint(r),
 void wxImage_GetImageExtWildcard(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxString Result = wxImage::GetImageExtWildcard();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -19430,7 +19385,7 @@ void wxImage_GetImageCount(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(1113,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1113,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -19528,7 +19483,7 @@ void wxImage_GetOrFindMaskColour(WxeApp *app, wxeCommand& cmd)
 rt.make_bool(Result)  rt.make_uint(r),
   rt.make_uint(g),
   rt.make_uint(b));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -19648,7 +19603,7 @@ void wxImage_GetOption(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1125,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1125,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxString Result = This->GetOption(name);
@@ -19667,7 +19622,7 @@ void wxImage_GetOptionInt(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1126,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1126,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->GetOptionInt(name);
@@ -19686,7 +19641,7 @@ void wxImage_HasOption(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1127,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1127,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->HasOption(name);
@@ -19712,8 +19667,6 @@ void wxImage_InitAlpha(WxeApp *app, wxeCommand& cmd)
 void wxImage_InitStandardHandlers(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxImage::InitStandardHandlers();
 
 }
@@ -19762,7 +19715,7 @@ void wxImage_LoadFile_2(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1131,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1131,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -19796,11 +19749,11 @@ void wxImage_LoadFile_3(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1132,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1132,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary mimetype_bin;
   wxString mimetype;
-  if(enif_inspect_binary(env, argv[2], mimetype_bin)) Badarg(1132,"mimetype")
+  if(enif_inspect_binary(env, argv[2], &mimetype_bin)) Badarg(1132,"mimetype")
   mimetype = wxString(mimetype_bin.data, wxConvUTF8, mimetype_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -19844,7 +19797,7 @@ void wxImage_RemoveHandler(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(1134,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1134,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   bool Result = wxImage::RemoveHandler(name);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -19870,7 +19823,7 @@ void wxImage_Mirror(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1135,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1135,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "horizontally"))) {
-  horizontally = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  horizontally = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1135,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -20016,7 +19969,7 @@ void wxImage_Rotate(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1139,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1139,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "interpolating"))) {
-  interpolating = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  interpolating = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "offset_after_rotation"))) {
   const ERL_NIF_TERM *offset_after_rotation_t;
   int offset_after_rotation_sz;
@@ -20029,7 +19982,7 @@ void wxImage_Rotate(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(1139,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  wxImage * Result = new EwxImage(This->Rotate(angle,centre_of_rotation,interpolating,offset_after_rotation)); app->newPtr((void *) Result,3, memenv);;
+  wxImage * Result = new EwxImage(This->Rotate(angle,centre_of_rotation,interpolating,&offset_after_rotation)); app->newPtr((void *) Result,3, memenv);;
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
@@ -20068,7 +20021,7 @@ void wxImage_Rotate90(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1141,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1141,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "clockwise"))) {
-  clockwise = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  clockwise = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1141,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -20088,7 +20041,7 @@ void wxImage_SaveFile_1(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1142,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1142,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SaveFile(name);
@@ -20107,7 +20060,7 @@ void wxImage_SaveFile_2_0(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1143,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1143,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int type;
   if(!enif_get_int(env, argv[2], &type)) Badarg(1143,"type");
@@ -20128,11 +20081,11 @@ void wxImage_SaveFile_2_1(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1144,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1144,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary mimetype_bin;
   wxString mimetype;
-  if(enif_inspect_binary(env, argv[2], mimetype_bin)) Badarg(1144,"mimetype")
+  if(enif_inspect_binary(env, argv[2], &mimetype_bin)) Badarg(1144,"mimetype")
   mimetype = wxString(mimetype_bin.data, wxConvUTF8, mimetype_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SaveFile(name,mimetype);
@@ -20253,7 +20206,7 @@ void wxImage_SetAlpha_2(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   unsigned char * alpha;
   ErlNifBinary alpha_bin;
-  if(!enif_inspect_binary(env, argv[1], alpha_bin)) Badarg(1148,"alpha");
+  if(!enif_inspect_binary(env, argv[1], &alpha_bin)) Badarg(1148,"alpha");
   alpha = (unsigned char*) alpha_bin.data;
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -20264,12 +20217,12 @@ void wxImage_SetAlpha_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1148,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1148,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1148,"Options");
   };
  if(!static_data) {alpha = (unsigned char *) malloc(Ecmd.bin[0].size);memcpy(alpha,Ecmd.bin[0].base,Ecmd.bin[0].size);};
   if(!This) throw wxe_badarg(0);
-  This->SetAlpha(alpha,static_data);
+  This->SetAlpha(&alpha,static_data);
 
 }
 
@@ -20284,7 +20237,7 @@ void wxImage_SetData_2(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   unsigned char * data;
   ErlNifBinary data_bin;
-  if(!enif_inspect_binary(env, argv[1], data_bin)) Badarg(1149,"data");
+  if(!enif_inspect_binary(env, argv[1], &data_bin)) Badarg(1149,"data");
   data = (unsigned char*) data_bin.data;
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -20295,12 +20248,12 @@ void wxImage_SetData_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1149,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1149,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1149,"Options");
   };
  if(!static_data) {data = (unsigned char *) malloc(Ecmd.bin[0].size);memcpy(data,Ecmd.bin[0].base,Ecmd.bin[0].size);};
   if(!This) throw wxe_badarg(0);
-  This->SetData(data,static_data);
+  This->SetData(&data,static_data);
 
 }
 
@@ -20315,7 +20268,7 @@ void wxImage_SetData_4(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   unsigned char * data;
   ErlNifBinary data_bin;
-  if(!enif_inspect_binary(env, argv[1], data_bin)) Badarg(1150,"data");
+  if(!enif_inspect_binary(env, argv[1], &data_bin)) Badarg(1150,"data");
   data = (unsigned char*) data_bin.data;
   int new_width;
   if(!enif_get_int(env, argv[2], &new_width)) Badarg(1150,"new_width");
@@ -20330,12 +20283,12 @@ void wxImage_SetData_4(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1150,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1150,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "static_data"))) {
-  static_data = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  static_data = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1150,"Options");
   };
  if(!static_data) {data = (unsigned char *) malloc(Ecmd.bin[0].size);memcpy(data,Ecmd.bin[0].base,Ecmd.bin[0].size);};
   if(!This) throw wxe_badarg(0);
-  This->SetData(data,new_width,new_height,static_data);
+  This->SetData(&data,new_width,new_height,static_data);
 
 }
 
@@ -20357,7 +20310,7 @@ void wxImage_SetMask(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1151,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1151,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "mask"))) {
-  mask = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  mask = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1151,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -20417,11 +20370,11 @@ void wxImage_SetOption_2_1(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1154,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1154,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[2], value_bin)) Badarg(1154,"value")
+  if(enif_inspect_binary(env, argv[2], &value_bin)) Badarg(1154,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetOption(name,value);
@@ -20438,7 +20391,7 @@ void wxImage_SetOption_2_0(WxeApp *app, wxeCommand& cmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(1155,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1155,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int value;
   if(!enif_get_int(env, argv[2], &value)) Badarg(1155,"value");
@@ -20520,8 +20473,6 @@ void wxImage_SetRGB_4(WxeApp *app, wxeCommand& cmd)
 void wxBrush_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxBrush * Result = new EwxBrush();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -20735,8 +20686,6 @@ void wxBrush_SetStyle(WxeApp *app, wxeCommand& cmd)
 void wxPen_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPen * Result = new EwxPen();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -20983,8 +20932,6 @@ void wxPen_SetWidth(WxeApp *app, wxeCommand& cmd)
 void wxRegion_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxRegion * Result = new EwxRegion();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -21604,8 +21551,6 @@ void wxRegion_Xor_1_0(WxeApp *app, wxeCommand& cmd)
 void wxAcceleratorTable_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxAcceleratorTable * Result = new EwxAcceleratorTable();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -21625,7 +21570,7 @@ void wxAcceleratorTable_new_2(WxeApp *app, wxeCommand& cmd)
   unsigned entriesLen;
   ERL_NIF_TERM entriesHead, entriesTail;
   if(!enif_get_list_length(env, argv[1], &entriesLen)) Badarg(1222,"entries");
-  entries = (wxAcceleratorEntry *) enif_malloc(sizeof(wxAcceleratorEntry)*entriesLen);
+  entries = (wxAcceleratorEntry *) enif_alloc(sizeof(wxAcceleratorEntry)*entriesLen);
   entries_ptr = entries;
   entriesTail = argv[1];
   while(!enif_is_empty_list(env, entriesTail)) {
@@ -21897,8 +21842,6 @@ void wxCaret_Create_2(WxeApp *app, wxeCommand& cmd)
 void wxCaret_GetBlinkTime(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxCaret::GetBlinkTime();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -22099,7 +22042,7 @@ void wxCaret_Show(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1256,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1256,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1256,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -22337,7 +22280,7 @@ void wxSizer_Clear(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1265,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1265,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "delete_windows"))) {
-  delete_windows = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  delete_windows = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1265,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -22438,12 +22381,7 @@ void wxSizer_GetChildren(WxeApp *app, wxeCommand& cmd)
   if(!This) throw wxe_badarg(0);
   wxSizerItemList Result = This->GetChildren();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
-  rt.send( int i=0;
- for(wxSizerItemList::const_iterator it = Result.begin(); it != Result.end(); ++it) {
-   wxSizerItem * ResultTmp = *it;
-   rt.make_ref(getRef((void *)ResultTmp,memenv), "wxSizerItem"); i++;}
- rt.endList(Result.GetCount())
-);
+  rt.send(rt.make_list_objs(Result, app, "wxSizerItem"));
 
 }
 
@@ -22466,7 +22404,7 @@ void wxSizer_GetItem_2_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1272,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1272,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1272,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -22496,7 +22434,7 @@ void wxSizer_GetItem_2_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1273,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1273,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1273,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -22588,7 +22526,7 @@ void wxSizer_Hide_2_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1278,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1278,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1278,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -22617,7 +22555,7 @@ void wxSizer_Hide_2_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1279,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1279,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1279,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -23218,7 +23156,7 @@ void wxSizer_Replace_3_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1304,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1304,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1304,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -23250,7 +23188,7 @@ void wxSizer_Replace_3_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1305,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1305,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1305,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -23524,9 +23462,9 @@ void wxSizer_Show_2_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1318,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1318,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1318,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -23557,9 +23495,9 @@ void wxSizer_Show_2_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1319,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1319,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursive"))) {
-  recursive = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursive = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1319,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -23589,7 +23527,7 @@ void wxSizer_Show_2_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1320,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1320,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1320,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -23607,7 +23545,8 @@ void wxSizer_Show_1(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxSizer *This;
   This = (wxSizer *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Show(show);
 
@@ -23933,8 +23872,6 @@ void wxSizerItem_new_3(WxeApp *app, wxeCommand& cmd)
 void wxSizerItem_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSizerItem * Result = new EwxSizerItem();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -24069,7 +24006,7 @@ void wxSizerItem_GetRatio(WxeApp *app, wxeCommand& cmd)
   if(!This) throw wxe_badarg(0);
   float Result = This->GetRatio();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
-  rt.send(rt.make_float(Result));
+  rt.send(rt.make_double(Result));
 
 }
 
@@ -24481,7 +24418,8 @@ void wxSizerItem_Show(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxSizerItem *This;
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Show(show);
 
@@ -24555,7 +24493,7 @@ void wxStaticBoxSizer_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1379,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "label"))) {
   ErlNifBinary label_bin;
-  if(enif_inspect_binary(env, tpl[1], label_bin)) Badarg(1379,"label")
+  if(enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1379,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
     } else        Badarg(1379,"Options");
   };
@@ -25778,8 +25716,6 @@ void wxGridBagSizer_SetItemSpan_2_0(WxeApp *app, wxeCommand& cmd)
 void wxStdDialogButtonSizer_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStdDialogButtonSizer * Result = new EwxStdDialogButtonSizer();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -25864,8 +25800,6 @@ void wxStdDialogButtonSizer_SetNegativeButton(WxeApp *app, wxeCommand& cmd)
 void wxFont_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFont * Result = new EwxFont();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -25881,7 +25815,7 @@ void wxFont_new_1(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary fontname_bin;
   wxString fontname;
-  if(enif_inspect_binary(env, argv[0], fontname_bin)) Badarg(1445,"fontname")
+  if(enif_inspect_binary(env, argv[0], &fontname_bin)) Badarg(1445,"fontname")
   fontname = wxString(fontname_bin.data, wxConvUTF8, fontname_bin.size);
   wxFont * Result = new EwxFont(fontname);
   app->newPtr((void *) Result, 1, memenv);
@@ -25916,10 +25850,10 @@ void wxFont_new_5(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1446,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1446,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "underlined"))) {
-  underlined = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  underlined = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "face"))) {
   ErlNifBinary face_bin;
-  if(enif_inspect_binary(env, tpl[1], face_bin)) Badarg(1446,"face")
+  if(enif_inspect_binary(env, tpl[1], &face_bin)) Badarg(1446,"face")
   face = wxString(face_bin.data, wxConvUTF8, face_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "encoding"))) {
   if(!enif_get_int(env, tpl[1], &encoding)) Badarg(1446,"encoding"); // enum
@@ -25951,8 +25885,6 @@ void wxFont_IsFixedWidth(WxeApp *app, wxeCommand& cmd)
 void wxFont_GetDefaultEncoding(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxFont::GetDefaultEncoding();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -26116,7 +26048,7 @@ void wxFont_SetFaceName(WxeApp *app, wxeCommand& cmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   ErlNifBinary faceName_bin;
   wxString faceName;
-  if(enif_inspect_binary(env, argv[1], faceName_bin)) Badarg(1461,"faceName")
+  if(enif_inspect_binary(env, argv[1], &faceName_bin)) Badarg(1461,"faceName")
   faceName = wxString(faceName_bin.data, wxConvUTF8, faceName_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetFaceName(faceName);
@@ -26178,7 +26110,8 @@ void wxFont_SetUnderlined(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxFont *This;
   This = (wxFont *) memenv->getPtr(env, argv[0]);
-  underlined = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool underlined;
+  underlined = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetUnderlined(underlined);
 
@@ -26205,7 +26138,8 @@ void wxToolTip_Enable(WxeApp *app, wxeCommand& cmd)
   wxeMemEnv *memenv = cmd.memenv;
   ErlNifEnv *env = cmd.env;
   ERL_NIF_TERM * argv = cmd.args;
-  flag = enif_is_identical(argv[0], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[0], WXE_ATOM_true);
   wxToolTip::Enable(flag);
 
 }
@@ -26230,7 +26164,7 @@ void wxToolTip_new(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary tip_bin;
   wxString tip;
-  if(enif_inspect_binary(env, argv[0], tip_bin)) Badarg(1469,"tip")
+  if(enif_inspect_binary(env, argv[0], &tip_bin)) Badarg(1469,"tip")
   tip = wxString(tip_bin.data, wxConvUTF8, tip_bin.size);
   wxToolTip * Result = new EwxToolTip(tip);
   app->newPtr((void *) Result, 1, memenv);
@@ -26249,7 +26183,7 @@ void wxToolTip_SetTip(WxeApp *app, wxeCommand& cmd)
   This = (wxToolTip *) memenv->getPtr(env, argv[0]);
   ErlNifBinary tip_bin;
   wxString tip;
-  if(enif_inspect_binary(env, argv[1], tip_bin)) Badarg(1470,"tip")
+  if(enif_inspect_binary(env, argv[1], &tip_bin)) Badarg(1470,"tip")
   tip = wxString(tip_bin.data, wxConvUTF8, tip_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetTip(tip);
@@ -26311,7 +26245,7 @@ void wxButton_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1475,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "label"))) {
   ErlNifBinary label_bin;
-  if(enif_inspect_binary(env, tpl[1], label_bin)) Badarg(1475,"label")
+  if(enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1475,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -26347,8 +26281,6 @@ void wxButton_new_3(WxeApp *app, wxeCommand& cmd)
 void wxButton_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxButton * Result = new EwxButton();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -26383,7 +26315,7 @@ void wxButton_Create(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1478,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "label"))) {
   ErlNifBinary label_bin;
-  if(enif_inspect_binary(env, tpl[1], label_bin)) Badarg(1478,"label")
+  if(enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1478,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -26419,8 +26351,6 @@ void wxButton_Create(WxeApp *app, wxeCommand& cmd)
 void wxButton_GetDefaultSize(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSize Result = wxButton::GetDefaultSize();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -26450,7 +26380,7 @@ void wxButton_SetLabel(WxeApp *app, wxeCommand& cmd)
   This = (wxButton *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], label_bin)) Badarg(1481,"label")
+  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(1481,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(label);
@@ -26515,8 +26445,6 @@ void wxBitmapButton_new_4(WxeApp *app, wxeCommand& cmd)
 void wxBitmapButton_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxBitmapButton * Result = new EwxBitmapButton();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -26704,8 +26632,6 @@ void wxBitmapButton_SetBitmapSelected(WxeApp *app, wxeCommand& cmd)
 void wxToggleButton_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxToggleButton * Result = new EwxToggleButton();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -26729,7 +26655,7 @@ void wxToggleButton_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1500,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(1500,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1500,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -26787,7 +26713,7 @@ void wxToggleButton_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1501,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(1501,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1501,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -26850,7 +26776,8 @@ void wxToggleButton_SetValue(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxToggleButton *This;
   This = (wxToggleButton *) memenv->getPtr(env, argv[0]);
-  state = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool state;
+  state = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetValue(state);
 
@@ -26860,8 +26787,6 @@ void wxToggleButton_SetValue(WxeApp *app, wxeCommand& cmd)
 void wxCalendarCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxCalendarCtrl * Result = new EwxCalendarCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -27072,7 +26997,7 @@ void wxCalendarCtrl_EnableYearChange(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1511,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1511,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1511,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -27099,7 +27024,7 @@ void wxCalendarCtrl_EnableMonthChange(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1512,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1512,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1512,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -27125,7 +27050,7 @@ void wxCalendarCtrl_EnableHolidayDisplay(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1513,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1513,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "display"))) {
-  display = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  display = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1513,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -27422,7 +27347,7 @@ void wxCalendarCtrl_HitTest(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
 rt.make_int(Result)  rt.make(date),
   rt.make_int(wd));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -27430,8 +27355,6 @@ rt.make_int(Result)  rt.make(date),
 void wxCalendarDateAttr_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxCalendarDateAttr * Result = new wxCalendarDateAttr();
   app->newPtr((void *) Result, 88, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -27659,7 +27582,8 @@ void wxCalendarDateAttr_SetHoliday(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxCalendarDateAttr *This;
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
-  holiday = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool holiday;
+  holiday = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetHoliday(holiday);
 
@@ -27858,7 +27782,7 @@ void wxCheckBox_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1550,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(1550,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1550,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -27902,8 +27826,6 @@ void wxCheckBox_new_4(WxeApp *app, wxeCommand& cmd)
 void wxCheckBox_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxCheckBox * Result = new EwxCheckBox();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -27929,7 +27851,7 @@ void wxCheckBox_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1552,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(1552,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1552,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -28052,7 +27974,8 @@ void wxCheckBox_SetValue(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxCheckBox *This;
   This = (wxCheckBox *) memenv->getPtr(env, argv[0]);
-  state = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool state;
+  state = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetValue(state);
 
@@ -28077,8 +28000,6 @@ void wxCheckBox_Set3StateValue(WxeApp *app, wxeCommand& cmd)
 void wxCheckListBox_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxCheckListBox * Result = new EwxCheckListBox();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -28133,7 +28054,7 @@ void wxCheckListBox_new_3(WxeApp *app, wxeCommand& cmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1563,"choices");
-    if(!enif_inspect_binary(env, tpl[1], choices_bin)) Badarg(1563,"choices");
+    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1563,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -28168,7 +28089,7 @@ void wxCheckListBox_Check(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1564,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1564,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "check"))) {
-  check = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  check = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1564,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -28240,7 +28161,7 @@ void wxChoice_new_3(WxeApp *app, wxeCommand& cmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1569,"choices");
-    if(!enif_inspect_binary(env, tpl[1], choices_bin)) Badarg(1569,"choices");
+    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1569,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -28259,8 +28180,6 @@ void wxChoice_new_3(WxeApp *app, wxeCommand& cmd)
 void wxChoice_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxChoice * Result = new EwxChoice();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -28304,7 +28223,7 @@ void wxChoice_Create(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[5];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1574,"choices");
-    if(!enif_inspect_binary(env, argv[5], choices_bin)) Badarg(1574,"choices");
+    if(!enif_inspect_binary(env, argv[5], &choices_bin)) Badarg(1574,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -28387,8 +28306,6 @@ void wxChoice_SetColumns(WxeApp *app, wxeCommand& cmd)
 void wxComboBox_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxComboBox * Result = new EwxComboBox();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -28422,7 +28339,7 @@ void wxComboBox_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1580,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(1580,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1580,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -28448,7 +28365,7 @@ void wxComboBox_new_3(WxeApp *app, wxeCommand& cmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1580,"choices");
-    if(!enif_inspect_binary(env, tpl[1], choices_bin)) Badarg(1580,"choices");
+    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1580,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -28479,7 +28396,7 @@ void wxComboBox_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1583,"id");
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[3], value_bin)) Badarg(1583,"value")
+  if(enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1583,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -28503,7 +28420,7 @@ void wxComboBox_Create(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[6];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1583,"choices");
-    if(!enif_inspect_binary(env, argv[6], choices_bin)) Badarg(1583,"choices");
+    if(!enif_inspect_binary(env, argv[6], &choices_bin)) Badarg(1583,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -28712,7 +28629,7 @@ void wxComboBox_Replace(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &to)) Badarg(1596,"to");
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[3], value_bin)) Badarg(1596,"value")
+  if(enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1596,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->Replace(from,to,value);
@@ -28806,7 +28723,7 @@ void wxComboBox_SetValue(WxeApp *app, wxeCommand& cmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], value_bin)) Badarg(1602,"value")
+  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1602,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetValue(value);
@@ -28830,8 +28747,6 @@ void wxComboBox_Undo(WxeApp *app, wxeCommand& cmd)
 void wxGauge_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGauge * Result = new EwxGauge();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -29041,8 +28956,6 @@ void wxGauge_Pulse(WxeApp *app, wxeCommand& cmd)
 void wxGenericDirCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGenericDirCtrl * Result = new EwxGenericDirCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -29077,7 +28990,7 @@ void wxGenericDirCtrl_new_2(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(1615,"id");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "dir"))) {
   ErlNifBinary dir_bin;
-  if(enif_inspect_binary(env, tpl[1], dir_bin)) Badarg(1615,"dir")
+  if(enif_inspect_binary(env, tpl[1], &dir_bin)) Badarg(1615,"dir")
   dir = wxString(dir_bin.data, wxConvUTF8, dir_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -29101,7 +29014,7 @@ void wxGenericDirCtrl_new_2(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &style)) Badarg(1615,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "filter"))) {
   ErlNifBinary filter_bin;
-  if(enif_inspect_binary(env, tpl[1], filter_bin)) Badarg(1615,"filter")
+  if(enif_inspect_binary(env, tpl[1], &filter_bin)) Badarg(1615,"filter")
   filter = wxString(filter_bin.data, wxConvUTF8, filter_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultFilter"))) {
   if(!enif_get_int(env, tpl[1], &defaultFilter)) Badarg(1615,"defaultFilter");
@@ -29143,7 +29056,7 @@ void wxGenericDirCtrl_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(1617,"id");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "dir"))) {
   ErlNifBinary dir_bin;
-  if(enif_inspect_binary(env, tpl[1], dir_bin)) Badarg(1617,"dir")
+  if(enif_inspect_binary(env, tpl[1], &dir_bin)) Badarg(1617,"dir")
   dir = wxString(dir_bin.data, wxConvUTF8, dir_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -29167,7 +29080,7 @@ void wxGenericDirCtrl_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &style)) Badarg(1617,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "filter"))) {
   ErlNifBinary filter_bin;
-  if(enif_inspect_binary(env, tpl[1], filter_bin)) Badarg(1617,"filter")
+  if(enif_inspect_binary(env, tpl[1], &filter_bin)) Badarg(1617,"filter")
   filter = wxString(filter_bin.data, wxConvUTF8, filter_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultFilter"))) {
   if(!enif_get_int(env, tpl[1], &defaultFilter)) Badarg(1617,"defaultFilter");
@@ -29216,7 +29129,7 @@ void wxGenericDirCtrl_ExpandPath(WxeApp *app, wxeCommand& cmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], path_bin)) Badarg(1620,"path")
+  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1620,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->ExpandPath(path);
@@ -29353,7 +29266,7 @@ void wxGenericDirCtrl_SetDefaultPath(WxeApp *app, wxeCommand& cmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], path_bin)) Badarg(1629,"path")
+  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1629,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetDefaultPath(path);
@@ -29370,7 +29283,7 @@ void wxGenericDirCtrl_SetFilter(WxeApp *app, wxeCommand& cmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filter_bin;
   wxString filter;
-  if(enif_inspect_binary(env, argv[1], filter_bin)) Badarg(1630,"filter")
+  if(enif_inspect_binary(env, argv[1], &filter_bin)) Badarg(1630,"filter")
   filter = wxString(filter_bin.data, wxConvUTF8, filter_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetFilter(filter);
@@ -29402,7 +29315,7 @@ void wxGenericDirCtrl_SetPath(WxeApp *app, wxeCommand& cmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], path_bin)) Badarg(1632,"path")
+  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1632,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetPath(path);
@@ -29424,7 +29337,7 @@ void wxStaticBox_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1634,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(1634,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1634,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -29467,8 +29380,6 @@ void wxStaticBox_new_4(WxeApp *app, wxeCommand& cmd)
 void wxStaticBox_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStaticBox * Result = new EwxStaticBox();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -29493,7 +29404,7 @@ void wxStaticBox_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1636,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(1636,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1636,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -29587,8 +29498,6 @@ void wxStaticLine_new_2(WxeApp *app, wxeCommand& cmd)
 void wxStaticLine_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStaticLine * Result = new EwxStaticLine();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -29668,8 +29577,6 @@ void wxStaticLine_IsVertical(WxeApp *app, wxeCommand& cmd)
 void wxStaticLine_GetDefaultSize(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxStaticLine::GetDefaultSize();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -29723,7 +29630,7 @@ void wxListBox_new_3(WxeApp *app, wxeCommand& cmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1647,"choices");
-    if(!enif_inspect_binary(env, tpl[1], choices_bin)) Badarg(1647,"choices");
+    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1647,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -29742,8 +29649,6 @@ void wxListBox_new_3(WxeApp *app, wxeCommand& cmd)
 void wxListBox_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxListBox * Result = new EwxListBox();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -29787,7 +29692,7 @@ void wxListBox_Create(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[5];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1652,"choices");
-    if(!enif_inspect_binary(env, argv[5], choices_bin)) Badarg(1652,"choices");
+    if(!enif_inspect_binary(env, argv[5], &choices_bin)) Badarg(1652,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -29835,11 +29740,11 @@ void wxListBox_GetSelections(WxeApp *app, wxeCommand& cmd)
   wxListBox *This;
   This = (wxListBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg(0);
-  int Result = This->GetSelections(aSelections);
+  int Result = This->GetSelections(&aSelections);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)  rt.make(aSelections));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -29857,7 +29762,7 @@ void wxListBox_InsertItems(WxeApp *app, wxeCommand& cmd)
   itemsTail = argv[1];
   while(!enif_is_empty_list(env, itemsTail)) {
     if(!enif_get_list_cell(env, itemsTail, &itemsHead, &itemsTail)) Badarg(1655,"items");
-    if(!enif_inspect_binary(env, argv[1], items_bin)) Badarg(1655,"items");
+    if(!enif_inspect_binary(env, argv[1], &items_bin)) Badarg(1655,"items");
     items.Add(wxString((items_bin.data, wxConvUTF8, items_bin.size));
   };
   unsigned int pos;
@@ -29898,7 +29803,7 @@ void wxListBox_Set(WxeApp *app, wxeCommand& cmd)
   itemsTail = argv[1];
   while(!enif_is_empty_list(env, itemsTail)) {
     if(!enif_get_list_cell(env, itemsTail, &itemsHead, &itemsTail)) Badarg(1657,"items");
-    if(!enif_inspect_binary(env, argv[1], items_bin)) Badarg(1657,"items");
+    if(!enif_inspect_binary(env, argv[1], &items_bin)) Badarg(1657,"items");
     items.Add(wxString((items_bin.data, wxConvUTF8, items_bin.size));
   };
   if(!This) throw wxe_badarg(0);
@@ -29954,7 +29859,7 @@ void wxListBox_SetFirstItem_1_1(WxeApp *app, wxeCommand& cmd)
   This = (wxListBox *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], s_bin)) Badarg(1660,"s")
+  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(1660,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetFirstItem(s);
@@ -30228,7 +30133,7 @@ void wxListCtrl_FindItem_3_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &start)) Badarg(1672,"start");
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[2], str_bin)) Badarg(1672,"str")
+  if(enif_inspect_binary(env, argv[2], &str_bin)) Badarg(1672,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -30239,7 +30144,7 @@ void wxListCtrl_FindItem_3_0(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1672,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1672,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "partial"))) {
-  partial = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  partial = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1672,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -30473,7 +30378,7 @@ void wxListCtrl_GetItemPosition(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_bool(Result)  rt.make(pos));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -30506,7 +30411,7 @@ void wxListCtrl_GetItemRect(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_bool(Result)  rt.make(rect));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -30695,7 +30600,7 @@ void wxListCtrl_HitTest(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
 rt.make_int(Result)  rt.make_int(flags),
   rt.make_int(pSubItem));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -30732,7 +30637,7 @@ void wxListCtrl_InsertColumn_3(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(1698,"col");
   ErlNifBinary heading_bin;
   wxString heading;
-  if(enif_inspect_binary(env, argv[2], heading_bin)) Badarg(1698,"heading")
+  if(enif_inspect_binary(env, argv[2], &heading_bin)) Badarg(1698,"heading")
   heading = wxString(heading_bin.data, wxConvUTF8, heading_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -30784,7 +30689,7 @@ void wxListCtrl_InsertItem_2_1(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1700,"index");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(1700,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1700,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   long Result = This->InsertItem(index,label);
@@ -30824,7 +30729,7 @@ void wxListCtrl_InsertItem_3(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1702,"index");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(1702,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1702,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   int imageIndex;
   if(!enif_get_int(env, argv[3], &imageIndex)) Badarg(1702,"imageIndex");
@@ -31000,7 +30905,7 @@ void wxListCtrl_SetItem_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(1711,"col");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(1711,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1711,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -31210,7 +31115,7 @@ void wxListCtrl_SetItemText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &item)) Badarg(1720,"item");
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[2], str_bin)) Badarg(1720,"str")
+  if(enif_inspect_binary(env, argv[2], &str_bin)) Badarg(1720,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetItemText(item,str);
@@ -31264,7 +31169,7 @@ void wxListCtrl_SetSingleStyle(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1722,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1722,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "add"))) {
-  add = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  add = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1722,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -31449,7 +31354,7 @@ void wxListView_Select(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1733,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1733,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "on"))) {
-  on = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  on = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1733,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -31478,8 +31383,6 @@ void wxListView_SetColumnImage(WxeApp *app, wxeCommand& cmd)
 void wxListItem_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxListItem * Result = new EwxListItem();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -31835,7 +31738,7 @@ void wxListItem_SetText(WxeApp *app, wxeCommand& cmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(1759,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1759,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetText(text);
@@ -31886,8 +31789,6 @@ void wxListItem_SetWidth(WxeApp *app, wxeCommand& cmd)
 void wxListItemAttr_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxListItemAttr * Result = new wxListItemAttr();
   app->newPtr((void *) Result, 101, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -32105,8 +32006,6 @@ void wxListItemAttr_destroy(WxeApp *app, wxeCommand& cmd)
 void wxImageList_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxImageList * Result = new EwxImageList();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -32135,7 +32034,7 @@ void wxImageList_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1775,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1775,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "mask"))) {
-  mask = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  mask = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "initialCount"))) {
   if(!enif_get_int(env, tpl[1], &initialCount)) Badarg(1775,"initialCount");
     } else        Badarg(1775,"Options");
@@ -32235,7 +32134,7 @@ void wxImageList_Create(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1779,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1779,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "mask"))) {
-  mask = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  mask = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "initialCount"))) {
   if(!enif_get_int(env, tpl[1], &initialCount)) Badarg(1779,"initialCount");
     } else        Badarg(1779,"Options");
@@ -32276,7 +32175,7 @@ void wxImageList_Draw(WxeApp *app, wxeCommand& cmd)
     if(enif_is_identical(tpl[0], enif_make_atom(env, "flags"))) {
   if(!enif_get_int(env, tpl[1], &flags)) Badarg(1781,"flags");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "solidBackground"))) {
-  solidBackground = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  solidBackground = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1781,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -32353,7 +32252,7 @@ void wxImageList_GetSize(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
 rt.make_bool(Result)  rt.make_int(width),
   rt.make_int(height));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -32433,8 +32332,6 @@ void wxImageList_Replace_3(WxeApp *app, wxeCommand& cmd)
 void wxTextAttr_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxTextAttr * Result = new wxTextAttr();
   app->newPtr((void *) Result, 103, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -32835,7 +32732,7 @@ void wxTextAttr_SetTabs(WxeApp *app, wxeCommand& cmd)
   tabsTail = argv[1];
   while(!enif_is_empty_list(env, tabsTail)) {
     if(!enif_get_list_cell(env, tabsTail, &tabsHead, &tabsTail)) Badarg(1812,"tabs");
-    if(!enif_get_int(env, tabsHead, tabs_ptr++) Badarg(1812,"tabs");
+    if(!enif_get_int(env, tabsHead, tabs_ptr++)) Badarg(1812,"tabs");
   };
   if(!This) throw wxe_badarg(0);
   This->SetTabs(tabs);
@@ -32905,7 +32802,7 @@ void wxTextCtrl_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1816,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(1816,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1816,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -32941,8 +32838,6 @@ void wxTextCtrl_new_3(WxeApp *app, wxeCommand& cmd)
 void wxTextCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxTextCtrl * Result = new EwxTextCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -32960,7 +32855,7 @@ void wxTextCtrl_AppendText(WxeApp *app, wxeCommand& cmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(1820,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1820,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AppendText(text);
@@ -33095,7 +32990,7 @@ void wxTextCtrl_Create(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1828,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(1828,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1828,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -33163,7 +33058,7 @@ void wxTextCtrl_ChangeValue(WxeApp *app, wxeCommand& cmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], value_bin)) Badarg(1831,"value")
+  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1831,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->ChangeValue(value);
@@ -33316,7 +33211,7 @@ void wxTextCtrl_GetSelection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(from),
   rt.make_int(to));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -33440,7 +33335,7 @@ void wxTextCtrl_LoadFile(WxeApp *app, wxeCommand& cmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary file_bin;
   wxString file;
-  if(enif_inspect_binary(env, argv[1], file_bin)) Badarg(1848,"file")
+  if(enif_inspect_binary(env, argv[1], &file_bin)) Badarg(1848,"file")
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -33505,7 +33400,7 @@ void wxTextCtrl_PositionToXY(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
 rt.make_bool(Result)  rt.make_int(x),
   rt.make_int(y));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -33553,7 +33448,7 @@ void wxTextCtrl_Replace(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &to)) Badarg(1854,"to");
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[3], value_bin)) Badarg(1854,"value")
+  if(enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1854,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->Replace(from,to,value);
@@ -33580,7 +33475,7 @@ void wxTextCtrl_SaveFile(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1855,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "file"))) {
   ErlNifBinary file_bin;
-  if(enif_inspect_binary(env, tpl[1], file_bin)) Badarg(1855,"file")
+  if(enif_inspect_binary(env, tpl[1], &file_bin)) Badarg(1855,"file")
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "fileType"))) {
   if(!enif_get_int(env, tpl[1], &fileType)) Badarg(1855,"fileType");
@@ -33618,7 +33513,8 @@ void wxTextCtrl_SetEditable(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxTextCtrl *This;
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
-  editable = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool editable;
+  editable = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetEditable(editable);
 
@@ -33715,7 +33611,7 @@ void wxTextCtrl_SetValue(WxeApp *app, wxeCommand& cmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], value_bin)) Badarg(1864,"value")
+  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1864,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetValue(value);
@@ -33760,7 +33656,7 @@ void wxTextCtrl_WriteText(WxeApp *app, wxeCommand& cmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(1867,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1867,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->WriteText(text);
@@ -33790,8 +33686,6 @@ void wxTextCtrl_XYToPosition(WxeApp *app, wxeCommand& cmd)
 void wxNotebook_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxNotebook * Result = new EwxNotebook();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -33863,7 +33757,7 @@ void wxNotebook_AddPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(1874,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1874,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -33874,7 +33768,7 @@ void wxNotebook_AddPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1874,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1874,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1874,"imageId");
     } else        Badarg(1874,"Options");
@@ -33904,7 +33798,7 @@ void wxNotebook_AdvanceSelection(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1875,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1875,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "forward"))) {
-  forward = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  forward = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1875,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -34191,7 +34085,7 @@ void wxNotebook_HitTest(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)  rt.make_int(flags));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -34211,7 +34105,7 @@ void wxNotebook_InsertPage(WxeApp *app, wxeCommand& cmd)
   win = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[3], strText_bin)) Badarg(1894,"strText")
+  if(enif_inspect_binary(env, argv[3], &strText_bin)) Badarg(1894,"strText")
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -34222,7 +34116,7 @@ void wxNotebook_InsertPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1894,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1894,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1894,"imageId");
     } else        Badarg(1894,"Options");
@@ -34322,7 +34216,7 @@ void wxNotebook_SetPageText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1899,"nPage");
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], strText_bin)) Badarg(1899,"strText")
+  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1899,"strText")
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPageText(nPage,strText);
@@ -34369,8 +34263,6 @@ void wxNotebook_ChangeSelection(WxeApp *app, wxeCommand& cmd)
 void wxChoicebook_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxChoicebook * Result = new EwxChoicebook();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -34442,7 +34334,7 @@ void wxChoicebook_AddPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(1904,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1904,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -34453,7 +34345,7 @@ void wxChoicebook_AddPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1904,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1904,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1904,"imageId");
     } else        Badarg(1904,"Options");
@@ -34483,7 +34375,7 @@ void wxChoicebook_AdvanceSelection(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1905,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1905,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "forward"))) {
-  forward = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  forward = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1905,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -34740,7 +34632,7 @@ void wxChoicebook_HitTest(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)  rt.make_int(flags));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -34760,7 +34652,7 @@ void wxChoicebook_InsertPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(1920,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1920,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -34771,7 +34663,7 @@ void wxChoicebook_InsertPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1920,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1920,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1920,"imageId");
     } else        Badarg(1920,"Options");
@@ -34850,7 +34742,7 @@ void wxChoicebook_SetPageText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1924,"n");
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], strText_bin)) Badarg(1924,"strText")
+  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1924,"strText")
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPageText(n,strText);
@@ -34897,8 +34789,6 @@ void wxChoicebook_ChangeSelection(WxeApp *app, wxeCommand& cmd)
 void wxToolbook_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxToolbook * Result = new EwxToolbook();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -34970,7 +34860,7 @@ void wxToolbook_AddPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(1930,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1930,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -34981,7 +34871,7 @@ void wxToolbook_AddPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1930,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1930,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1930,"imageId");
     } else        Badarg(1930,"Options");
@@ -35011,7 +34901,7 @@ void wxToolbook_AdvanceSelection(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1931,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1931,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "forward"))) {
-  forward = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  forward = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1931,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -35268,7 +35158,7 @@ void wxToolbook_HitTest(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)  rt.make_int(flags));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -35288,7 +35178,7 @@ void wxToolbook_InsertPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(1947,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1947,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -35299,7 +35189,7 @@ void wxToolbook_InsertPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1947,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1947,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1947,"imageId");
     } else        Badarg(1947,"Options");
@@ -35378,7 +35268,7 @@ void wxToolbook_SetPageText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1951,"n");
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], strText_bin)) Badarg(1951,"strText")
+  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1951,"strText")
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPageText(n,strText);
@@ -35425,8 +35315,6 @@ void wxToolbook_ChangeSelection(WxeApp *app, wxeCommand& cmd)
 void wxListbook_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxListbook * Result = new EwxListbook();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -35498,7 +35386,7 @@ void wxListbook_AddPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(1957,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1957,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -35509,7 +35397,7 @@ void wxListbook_AddPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1957,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1957,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1957,"imageId");
     } else        Badarg(1957,"Options");
@@ -35539,7 +35427,7 @@ void wxListbook_AdvanceSelection(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1958,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1958,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "forward"))) {
-  forward = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  forward = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1958,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -35796,7 +35684,7 @@ void wxListbook_HitTest(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)  rt.make_int(flags));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -35816,7 +35704,7 @@ void wxListbook_InsertPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(1974,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1974,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -35827,7 +35715,7 @@ void wxListbook_InsertPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1974,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1974,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1974,"imageId");
     } else        Badarg(1974,"Options");
@@ -35906,7 +35794,7 @@ void wxListbook_SetPageText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1978,"n");
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], strText_bin)) Badarg(1978,"strText")
+  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1978,"strText")
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPageText(n,strText);
@@ -35953,8 +35841,6 @@ void wxListbook_ChangeSelection(WxeApp *app, wxeCommand& cmd)
 void wxTreebook_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxTreebook * Result = new EwxTreebook();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -36026,7 +35912,7 @@ void wxTreebook_AddPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(1984,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1984,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -36037,7 +35923,7 @@ void wxTreebook_AddPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1984,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1984,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(1984,"imageId");
     } else        Badarg(1984,"Options");
@@ -36067,7 +35953,7 @@ void wxTreebook_AdvanceSelection(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1985,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1985,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "forward"))) {
-  forward = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  forward = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1985,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -36322,7 +36208,7 @@ void wxTreebook_ExpandNode(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1999,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1999,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "expand"))) {
-  expand = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  expand = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(1999,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -36371,7 +36257,7 @@ void wxTreebook_HitTest(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)  rt.make_int(flags));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -36391,7 +36277,7 @@ void wxTreebook_InsertPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(2003,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2003,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -36402,7 +36288,7 @@ void wxTreebook_InsertPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2003,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2003,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(2003,"imageId");
     } else        Badarg(2003,"Options");
@@ -36430,7 +36316,7 @@ void wxTreebook_InsertSubPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(2004,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2004,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -36441,7 +36327,7 @@ void wxTreebook_InsertSubPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2004,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2004,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bSelect"))) {
-  bSelect = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bSelect = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "imageId"))) {
   if(!enif_get_int(env, tpl[1], &imageId)) Badarg(2004,"imageId");
     } else        Badarg(2004,"Options");
@@ -36520,7 +36406,7 @@ void wxTreebook_SetPageText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(2008,"n");
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], strText_bin)) Badarg(2008,"strText")
+  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(2008,"strText")
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPageText(n,strText);
@@ -36620,8 +36506,6 @@ void wxTreeCtrl_new_2(WxeApp *app, wxeCommand& cmd)
 void wxTreeCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxTreeCtrl * Result = new EwxTreeCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -36642,7 +36526,7 @@ void wxTreeCtrl_AddRoot(WxeApp *app, wxeCommand& cmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(2018,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2018,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -36661,7 +36545,7 @@ void wxTreeCtrl_AddRoot(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(2018,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  wxTreeItemId Result = This->AddRoot(text,image,selectedImage,data);
+  wxTreeItemId Result = This->AddRoot(text,image,selectedImage,&data);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make((wxUIntPtr *) Result.m_pItem));
 
@@ -36683,7 +36567,7 @@ void wxTreeCtrl_AppendItem(WxeApp *app, wxeCommand& cmd)
   wxTreeItemId parent = wxTreeItemId((void *) (wxUint64) parent_tmp);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(2019,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2019,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -36702,7 +36586,7 @@ void wxTreeCtrl_AppendItem(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(2019,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  wxTreeItemId Result = This->AppendItem(parent,text,image,selectedImage,data);
+  wxTreeItemId Result = This->AppendItem(parent,text,image,selectedImage,&data);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make((wxUIntPtr *) Result.m_pItem));
 
@@ -36942,7 +36826,7 @@ void wxTreeCtrl_GetBoundingRect(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2031,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2031,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "textOnly"))) {
-  textOnly = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  textOnly = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2031,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -36950,7 +36834,7 @@ void wxTreeCtrl_GetBoundingRect(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_bool(Result)  rt.make(rect));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -36975,7 +36859,7 @@ void wxTreeCtrl_GetChildrenCount(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2033,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2033,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "recursively"))) {
-  recursively = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  recursively = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2033,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -37032,7 +36916,7 @@ void wxTreeCtrl_GetFirstChild(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make((wxUIntPtr *) Result.m_pItem)  rt.make((wxUIntPtr *) cookie));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -37051,11 +36935,11 @@ void wxTreeCtrl_GetNextChild(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_uint64(env, argv[2], &cookie_tmp)) Badarg(2037,"cookie");
   wxTreeItemIdValue cookie = (wxTreeItemIdValue) cookie_tmp;
   if(!This) throw wxe_badarg(0);
-  wxTreeItemId Result = This->GetNextChild(item,cookie);
+  wxTreeItemId Result = This->GetNextChild(item,&cookie);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make((wxUIntPtr *) Result.m_pItem)  rt.make((wxUIntPtr *) cookie));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -37391,14 +37275,14 @@ void wxTreeCtrl_GetSelections(WxeApp *app, wxeCommand& cmd)
   wxTreeCtrl *This;
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg(0);
-  size_t Result = This->GetSelections(val);
+  size_t Result = This->GetSelections(&val);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make_int(Result)   for(unsigned int i=0; i < val.GetCount(); i++) {
     rt.make((wxUIntPtr *)val[i].m_pItem);}
  rt.endList(val.GetCount())
 );
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -37439,7 +37323,7 @@ void wxTreeCtrl_HitTest(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make((wxUIntPtr *) Result.m_pItem)  rt.make_int(flags));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -37461,7 +37345,7 @@ void wxTreeCtrl_InsertItem(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &pos)) Badarg(2060,"pos");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(2060,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2060,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -37480,7 +37364,7 @@ void wxTreeCtrl_InsertItem(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(2060,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  wxTreeItemId Result = This->InsertItem(parent,pos,text,image,selImage,data);
+  wxTreeItemId Result = This->InsertItem(parent,pos,text,image,selImage,&data);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make((wxUIntPtr *) Result.m_pItem));
 
@@ -37599,7 +37483,7 @@ void wxTreeCtrl_PrependItem(WxeApp *app, wxeCommand& cmd)
   wxTreeItemId parent = wxTreeItemId((void *) (wxUint64) parent_tmp);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(2067,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2067,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -37618,7 +37502,7 @@ void wxTreeCtrl_PrependItem(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(2067,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  wxTreeItemId Result = This->PrependItem(parent,text,image,selectedImage,data);
+  wxTreeItemId Result = This->PrependItem(parent,text,image,selectedImage,&data);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make((wxUIntPtr *) Result.m_pItem));
 
@@ -37677,7 +37561,7 @@ void wxTreeCtrl_SelectItem_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2070,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2070,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "select"))) {
-  select = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  select = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2070,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -37764,7 +37648,7 @@ void wxTreeCtrl_SetItemBold(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2074,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2074,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "bold"))) {
-  bold = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  bold = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2074,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -37786,7 +37670,7 @@ void wxTreeCtrl_SetItemData(WxeApp *app, wxeCommand& cmd)
   wxETreeItemData * data;
   data = new wxETreeItemData(argv[2]);
   if(!This) throw wxe_badarg(0);
-  This->SetItemData(item,data);
+  This->SetItemData(item,&data);
 
 }
 
@@ -37811,7 +37695,7 @@ void wxTreeCtrl_SetItemDropHighlight(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2076,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2076,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "highlight"))) {
-  highlight = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  highlight = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2076,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -37858,7 +37742,7 @@ void wxTreeCtrl_SetItemHasChildren(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2078,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2078,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "has"))) {
-  has = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  has = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2078,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -37928,7 +37812,7 @@ void wxTreeCtrl_SetItemText(WxeApp *app, wxeCommand& cmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(2081,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2081,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetItemText(item,text);
@@ -38087,8 +37971,6 @@ void wxTreeCtrl_UnselectItem(WxeApp *app, wxeCommand& cmd)
 void wxScrollBar_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxScrollBar * Result = new EwxScrollBar();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -38303,7 +38185,7 @@ void wxScrollBar_SetScrollbar(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2100,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2100,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "refresh"))) {
-  refresh = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  refresh = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2100,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -38366,8 +38248,6 @@ void wxSpinButton_new_2(WxeApp *app, wxeCommand& cmd)
 void wxSpinButton_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSpinButton * Result = new EwxSpinButton();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -38509,8 +38389,6 @@ void wxSpinButton_SetValue(WxeApp *app, wxeCommand& cmd)
 void wxSpinCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSpinCtrl * Result = new EwxSpinCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -38546,7 +38424,7 @@ void wxSpinCtrl_new_2(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(2112,"id");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(2112,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2112,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -38613,7 +38491,7 @@ void wxSpinCtrl_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(2114,"id");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(2114,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2114,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -38660,7 +38538,7 @@ void wxSpinCtrl_SetValue_1_1(WxeApp *app, wxeCommand& cmd)
   This = (wxSpinCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(2117,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2117,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetValue(text);
@@ -38765,8 +38643,6 @@ void wxSpinCtrl_GetMax(WxeApp *app, wxeCommand& cmd)
 void wxStaticText_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStaticText * Result = new EwxStaticText();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -38789,7 +38665,7 @@ void wxStaticText_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2130,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(2130,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(2130,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -38845,7 +38721,7 @@ void wxStaticText_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2131,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(2131,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(2131,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -38909,7 +38785,7 @@ void wxStaticText_SetLabel(WxeApp *app, wxeCommand& cmd)
   This = (wxStaticText *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], label_bin)) Badarg(2133,"label")
+  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(2133,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLabel(label);
@@ -38935,8 +38811,6 @@ void wxStaticText_Wrap(WxeApp *app, wxeCommand& cmd)
 void wxStaticBitmap_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStaticBitmap * Result = new EwxStaticBitmap();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -39095,7 +38969,7 @@ void wxRadioBox_new(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2142,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(2142,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2142,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -39119,7 +38993,7 @@ void wxRadioBox_new(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[5];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2142,"choices");
-    if(!enif_inspect_binary(env, argv[5], choices_bin)) Badarg(2142,"choices");
+    if(!enif_inspect_binary(env, argv[5], &choices_bin)) Badarg(2142,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -39161,7 +39035,7 @@ void wxRadioBox_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2145,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(2145,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2145,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -39185,7 +39059,7 @@ void wxRadioBox_Create(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[6];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2145,"choices");
-    if(!enif_inspect_binary(env, argv[6], choices_bin)) Badarg(2145,"choices");
+    if(!enif_inspect_binary(env, argv[6], &choices_bin)) Badarg(2145,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -39230,7 +39104,7 @@ void wxRadioBox_Enable_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2146,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2146,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2146,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -39258,7 +39132,7 @@ void wxRadioBox_Enable_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2147,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2147,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "enable"))) {
-  enable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  enable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2147,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -39335,7 +39209,7 @@ void wxRadioBox_Show_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2151,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2151,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2151,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -39363,7 +39237,7 @@ void wxRadioBox_Show_1(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2152,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2152,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2152,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -39506,7 +39380,7 @@ void wxRadioBox_SetItemHelpText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(2161,"n");
   ErlNifBinary helpText_bin;
   wxString helpText;
-  if(enif_inspect_binary(env, argv[2], helpText_bin)) Badarg(2161,"helpText")
+  if(enif_inspect_binary(env, argv[2], &helpText_bin)) Badarg(2161,"helpText")
   helpText = wxString(helpText_bin.data, wxConvUTF8, helpText_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetItemHelpText(n,helpText);
@@ -39525,7 +39399,7 @@ void wxRadioBox_SetItemToolTip(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_uint(env, argv[1], &item)) Badarg(2162,"item");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(2162,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2162,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetItemToolTip(item,text);
@@ -39536,8 +39410,6 @@ void wxRadioBox_SetItemToolTip(WxeApp *app, wxeCommand& cmd)
 void wxRadioButton_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxRadioButton * Result = new EwxRadioButton();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -39561,7 +39433,7 @@ void wxRadioButton_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2164,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], label_bin)) Badarg(2164,"label")
+  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(2164,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -39619,7 +39491,7 @@ void wxRadioButton_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2165,"id");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], label_bin)) Badarg(2165,"label")
+  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(2165,"label")
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -39682,7 +39554,8 @@ void wxRadioButton_SetValue(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxRadioButton *This;
   This = (wxRadioButton *) memenv->getPtr(env, argv[0]);
-  val = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool val;
+  val = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetValue(val);
 
@@ -39750,8 +39623,6 @@ void wxSlider_new_6(WxeApp *app, wxeCommand& cmd)
 void wxSlider_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSlider * Result = new EwxSlider();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -40001,7 +39872,7 @@ void wxDialog_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2186,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(2186,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2186,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -40044,8 +39915,6 @@ void wxDialog_new_4(WxeApp *app, wxeCommand& cmd)
 void wxDialog_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxDialog * Result = new EwxDialog();
   app->newPtr((void *) Result, 2, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -40070,7 +39939,7 @@ void wxDialog_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2190,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(2190,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2190,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -40251,7 +40120,7 @@ void wxDialog_Show(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2199,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2199,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2199,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -40280,8 +40149,6 @@ void wxDialog_ShowModal(WxeApp *app, wxeCommand& cmd)
 void wxColourDialog_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxColourDialog * Result = new EwxColourDialog();
   app->newPtr((void *) Result, 2, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -40364,8 +40231,6 @@ void wxColourDialog_GetColourData(WxeApp *app, wxeCommand& cmd)
 void wxColourData_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxColourData * Result = new EwxColourData();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -40443,7 +40308,8 @@ void wxColourData_SetChooseFull(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxColourData *This;
   This = (wxColourData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetChooseFull(flag);
 
@@ -40505,8 +40371,6 @@ void wxColourData_SetCustomColour(WxeApp *app, wxeCommand& cmd)
 void wxPalette_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPalette * Result = new EwxPalette();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -40522,17 +40386,17 @@ void wxPalette_new_4(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   const unsigned char * red;
   ErlNifBinary red_bin;
-  if(!enif_inspect_binary(env, argv[0], red_bin)) Badarg(2217,"red");
+  if(!enif_inspect_binary(env, argv[0], &red_bin)) Badarg(2217,"red");
   red = (const unsigned char*) red_bin.data;
   const unsigned char * green;
   ErlNifBinary green_bin;
-  if(!enif_inspect_binary(env, argv[1], green_bin)) Badarg(2217,"green");
+  if(!enif_inspect_binary(env, argv[1], &green_bin)) Badarg(2217,"green");
   green = (const unsigned char*) green_bin.data;
   const unsigned char * blue;
   ErlNifBinary blue_bin;
-  if(!enif_inspect_binary(env, argv[2], blue_bin)) Badarg(2217,"blue");
+  if(!enif_inspect_binary(env, argv[2], &blue_bin)) Badarg(2217,"blue");
   blue = (const unsigned char*) blue_bin.data;
-  wxPalette * Result = new EwxPalette(Ecmd.bin[0].size,red,green,blue);
+  wxPalette * Result = new EwxPalette(Ecmd.bin[0].size,&red,&green,&blue);
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxPalette"));
@@ -40549,18 +40413,18 @@ void wxPalette_Create(WxeApp *app, wxeCommand& cmd)
   This = (wxPalette *) memenv->getPtr(env, argv[0]);
   const unsigned char * red;
   ErlNifBinary red_bin;
-  if(!enif_inspect_binary(env, argv[1], red_bin)) Badarg(2220,"red");
+  if(!enif_inspect_binary(env, argv[1], &red_bin)) Badarg(2220,"red");
   red = (const unsigned char*) red_bin.data;
   const unsigned char * green;
   ErlNifBinary green_bin;
-  if(!enif_inspect_binary(env, argv[2], green_bin)) Badarg(2220,"green");
+  if(!enif_inspect_binary(env, argv[2], &green_bin)) Badarg(2220,"green");
   green = (const unsigned char*) green_bin.data;
   const unsigned char * blue;
   ErlNifBinary blue_bin;
-  if(!enif_inspect_binary(env, argv[3], blue_bin)) Badarg(2220,"blue");
+  if(!enif_inspect_binary(env, argv[3], &blue_bin)) Badarg(2220,"blue");
   blue = (const unsigned char*) blue_bin.data;
   if(!This) throw wxe_badarg(0);
-  bool Result = This->Create(Ecmd.bin[0].size,red,green,blue);
+  bool Result = This->Create(Ecmd.bin[0].size,&red,&green,&blue);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
 
@@ -40622,7 +40486,7 @@ void wxPalette_GetRGB(WxeApp *app, wxeCommand& cmd)
 rt.make_bool(Result)  rt.make_uint(red),
   rt.make_uint(green),
   rt.make_uint(blue));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -40664,11 +40528,11 @@ void wxDirDialog_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2228,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "title"))) {
   ErlNifBinary title_bin;
-  if(enif_inspect_binary(env, tpl[1], title_bin)) Badarg(2228,"title")
+  if(enif_inspect_binary(env, tpl[1], &title_bin)) Badarg(2228,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultPath"))) {
   ErlNifBinary defaultPath_bin;
-  if(enif_inspect_binary(env, tpl[1], defaultPath_bin)) Badarg(2228,"defaultPath")
+  if(enif_inspect_binary(env, tpl[1], &defaultPath_bin)) Badarg(2228,"defaultPath")
   defaultPath = wxString(defaultPath_bin.data, wxConvUTF8, defaultPath_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2228,"style");
@@ -40739,7 +40603,7 @@ void wxDirDialog_SetMessage(WxeApp *app, wxeCommand& cmd)
   This = (wxDirDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2232,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2232,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetMessage(message);
@@ -40756,7 +40620,7 @@ void wxDirDialog_SetPath(WxeApp *app, wxeCommand& cmd)
   This = (wxDirDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], path_bin)) Badarg(2233,"path")
+  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(2233,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetPath(path);
@@ -40788,19 +40652,19 @@ void wxFileDialog_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2237,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], message_bin)) Badarg(2237,"message")
+  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2237,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultDir"))) {
   ErlNifBinary defaultDir_bin;
-  if(enif_inspect_binary(env, tpl[1], defaultDir_bin)) Badarg(2237,"defaultDir")
+  if(enif_inspect_binary(env, tpl[1], &defaultDir_bin)) Badarg(2237,"defaultDir")
   defaultDir = wxString(defaultDir_bin.data, wxConvUTF8, defaultDir_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultFile"))) {
   ErlNifBinary defaultFile_bin;
-  if(enif_inspect_binary(env, tpl[1], defaultFile_bin)) Badarg(2237,"defaultFile")
+  if(enif_inspect_binary(env, tpl[1], &defaultFile_bin)) Badarg(2237,"defaultFile")
   defaultFile = wxString(defaultFile_bin.data, wxConvUTF8, defaultFile_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "wildCard"))) {
   ErlNifBinary wildCard_bin;
-  if(enif_inspect_binary(env, tpl[1], wildCard_bin)) Badarg(2237,"wildCard")
+  if(enif_inspect_binary(env, tpl[1], &wildCard_bin)) Badarg(2237,"wildCard")
   wildCard = wxString(wildCard_bin.data, wxConvUTF8, wildCard_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2237,"style");
@@ -40871,7 +40735,7 @@ void wxFileDialog_GetFilenames(WxeApp *app, wxeCommand& cmd)
   wxFileDialog *This;
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg(0);
-  This->GetFilenames(files);
+  This->GetFilenames(&files);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(  rt.make(files));
 
@@ -40932,7 +40796,7 @@ void wxFileDialog_GetPaths(WxeApp *app, wxeCommand& cmd)
   wxFileDialog *This;
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg(0);
-  This->GetPaths(paths);
+  This->GetPaths(&paths);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(  rt.make(paths));
 
@@ -40963,7 +40827,7 @@ void wxFileDialog_SetDirectory(WxeApp *app, wxeCommand& cmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary dir_bin;
   wxString dir;
-  if(enif_inspect_binary(env, argv[1], dir_bin)) Badarg(2247,"dir")
+  if(enif_inspect_binary(env, argv[1], &dir_bin)) Badarg(2247,"dir")
   dir = wxString(dir_bin.data, wxConvUTF8, dir_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetDirectory(dir);
@@ -40980,7 +40844,7 @@ void wxFileDialog_SetFilename(WxeApp *app, wxeCommand& cmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2248,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2248,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetFilename(name);
@@ -41012,7 +40876,7 @@ void wxFileDialog_SetMessage(WxeApp *app, wxeCommand& cmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2250,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2250,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetMessage(message);
@@ -41029,7 +40893,7 @@ void wxFileDialog_SetPath(WxeApp *app, wxeCommand& cmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], path_bin)) Badarg(2251,"path")
+  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(2251,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetPath(path);
@@ -41046,7 +40910,7 @@ void wxFileDialog_SetWildcard(WxeApp *app, wxeCommand& cmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary wildCard_bin;
   wxString wildCard;
-  if(enif_inspect_binary(env, argv[1], wildCard_bin)) Badarg(2252,"wildCard")
+  if(enif_inspect_binary(env, argv[1], &wildCard_bin)) Badarg(2252,"wildCard")
   wildCard = wxString(wildCard_bin.data, wxConvUTF8, wildCard_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetWildcard(wildCard);
@@ -41206,7 +41070,7 @@ void wxPickerBase_SetPickerCtrlGrowable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2262,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2262,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "grow"))) {
-  grow = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  grow = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2262,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -41232,7 +41096,7 @@ void wxPickerBase_SetTextCtrlGrowable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2263,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2263,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "grow"))) {
-  grow = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  grow = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2263,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -41259,8 +41123,6 @@ void wxPickerBase_IsPickerCtrlGrowable(WxeApp *app, wxeCommand& cmd)
 void wxFilePickerCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFilePickerCtrl * Result = new EwxFilePickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -41295,15 +41157,15 @@ void wxFilePickerCtrl_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2266,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], path_bin)) Badarg(2266,"path")
+  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2266,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], message_bin)) Badarg(2266,"message")
+  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2266,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "wildcard"))) {
   ErlNifBinary wildcard_bin;
-  if(enif_inspect_binary(env, tpl[1], wildcard_bin)) Badarg(2266,"wildcard")
+  if(enif_inspect_binary(env, tpl[1], &wildcard_bin)) Badarg(2266,"wildcard")
   wildcard = wxString(wildcard_bin.data, wxConvUTF8, wildcard_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41364,15 +41226,15 @@ void wxFilePickerCtrl_Create(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2267,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], path_bin)) Badarg(2267,"path")
+  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2267,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], message_bin)) Badarg(2267,"message")
+  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2267,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "wildcard"))) {
   ErlNifBinary wildcard_bin;
-  if(enif_inspect_binary(env, tpl[1], wildcard_bin)) Badarg(2267,"wildcard")
+  if(enif_inspect_binary(env, tpl[1], &wildcard_bin)) Badarg(2267,"wildcard")
   wildcard = wxString(wildcard_bin.data, wxConvUTF8, wildcard_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41429,7 +41291,7 @@ void wxFilePickerCtrl_SetPath(WxeApp *app, wxeCommand& cmd)
   This = (wxFilePickerCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(2269,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2269,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetPath(str);
@@ -41440,8 +41302,6 @@ void wxFilePickerCtrl_SetPath(WxeApp *app, wxeCommand& cmd)
 void wxDirPickerCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxDirPickerCtrl * Result = new EwxDirPickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -41475,11 +41335,11 @@ void wxDirPickerCtrl_new_3(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2272,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], path_bin)) Badarg(2272,"path")
+  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2272,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], message_bin)) Badarg(2272,"message")
+  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2272,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41539,11 +41399,11 @@ void wxDirPickerCtrl_Create(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2273,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], path_bin)) Badarg(2273,"path")
+  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2273,"path")
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], message_bin)) Badarg(2273,"message")
+  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2273,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41600,7 +41460,7 @@ void wxDirPickerCtrl_SetPath(WxeApp *app, wxeCommand& cmd)
   This = (wxDirPickerCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(2275,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2275,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetPath(str);
@@ -41611,8 +41471,6 @@ void wxDirPickerCtrl_SetPath(WxeApp *app, wxeCommand& cmd)
 void wxColourPickerCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxColourPickerCtrl * Result = new EwxColourPickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -41804,7 +41662,7 @@ void wxColourPickerCtrl_SetColour_1_0(WxeApp *app, wxeCommand& cmd)
   This = (wxColourPickerCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(2282,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2282,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetColour(text);
@@ -41817,8 +41675,6 @@ void wxColourPickerCtrl_SetColour_1_0(WxeApp *app, wxeCommand& cmd)
 void wxDatePickerCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxDatePickerCtrl * Result = new EwxDatePickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42036,8 +41892,6 @@ void wxDatePickerCtrl_SetValue(WxeApp *app, wxeCommand& cmd)
 void wxFontPickerCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFontPickerCtrl * Result = new EwxFontPickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42219,8 +42073,6 @@ void wxFontPickerCtrl_SetMaxPointSize(WxeApp *app, wxeCommand& cmd)
 void wxFindReplaceDialog_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFindReplaceDialog * Result = new EwxFindReplaceDialog();
   app->newPtr((void *) Result, 2, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42241,7 +42093,7 @@ void wxFindReplaceDialog_new_4(WxeApp *app, wxeCommand& cmd)
   data = (wxFindReplaceData *) memenv->getPtr(env, argv[1]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(2302,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2302,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -42277,7 +42129,7 @@ void wxFindReplaceDialog_Create(WxeApp *app, wxeCommand& cmd)
   data = (wxFindReplaceData *) memenv->getPtr(env, argv[2]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(2304,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2304,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -42317,8 +42169,6 @@ void wxFindReplaceDialog_GetData(WxeApp *app, wxeCommand& cmd)
 void wxFindReplaceData_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFindReplaceData * Result = new EwxFindReplaceData();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42411,7 +42261,7 @@ void wxFindReplaceData_SetFindString(WxeApp *app, wxeCommand& cmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(2312,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2312,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetFindString(str);
@@ -42428,7 +42278,7 @@ void wxFindReplaceData_SetReplaceString(WxeApp *app, wxeCommand& cmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], str_bin)) Badarg(2313,"str")
+  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2313,"str")
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetReplaceString(str);
@@ -42439,8 +42289,6 @@ void wxFindReplaceData_SetReplaceString(WxeApp *app, wxeCommand& cmd)
 void wxMultiChoiceDialog_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMultiChoiceDialog * Result = new EwxMultiChoiceDialog();
   app->newPtr((void *) Result, 2, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42460,11 +42308,11 @@ void wxMultiChoiceDialog_new_5(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2317,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2317,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[2], caption_bin)) Badarg(2317,"caption")
+  if(enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2317,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM choicesHead, choicesTail;
   ErlNifBinary choices_bin;
@@ -42472,7 +42320,7 @@ void wxMultiChoiceDialog_new_5(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[3];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2317,"choices");
-    if(!enif_inspect_binary(env, argv[3], choices_bin)) Badarg(2317,"choices");
+    if(!enif_inspect_binary(env, argv[3], &choices_bin)) Badarg(2317,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -42536,7 +42384,7 @@ void wxMultiChoiceDialog_SetSelections(WxeApp *app, wxeCommand& cmd)
   selectionsTail = argv[1];
   while(!enif_is_empty_list(env, selectionsTail)) {
     if(!enif_get_list_cell(env, selectionsTail, &selectionsHead, &selectionsTail)) Badarg(2319,"selections");
-    if(!enif_get_int(env, selectionsHead, selections_ptr++) Badarg(2319,"selections");
+    if(!enif_get_int(env, selectionsHead, selections_ptr++)) Badarg(2319,"selections");
   };
   if(!This) throw wxe_badarg(0);
   This->SetSelections(selections);
@@ -42548,8 +42396,6 @@ void wxMultiChoiceDialog_SetSelections(WxeApp *app, wxeCommand& cmd)
 void wxSingleChoiceDialog_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSingleChoiceDialog * Result = new EwxSingleChoiceDialog();
   app->newPtr((void *) Result, 2, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42570,11 +42416,11 @@ void wxSingleChoiceDialog_new_5(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2323,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2323,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[2], caption_bin)) Badarg(2323,"caption")
+  if(enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2323,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM choicesHead, choicesTail;
   ErlNifBinary choices_bin;
@@ -42582,7 +42428,7 @@ void wxSingleChoiceDialog_new_5(WxeApp *app, wxeCommand& cmd)
   choicesTail = argv[3];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2323,"choices");
-    if(!enif_inspect_binary(env, argv[3], choices_bin)) Badarg(2323,"choices");
+    if(!enif_inspect_binary(env, argv[3], &choices_bin)) Badarg(2323,"choices");
     choices.Add(wxString((choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -42672,7 +42518,7 @@ void wxTextEntryDialog_new(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2328,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2328,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -42684,11 +42530,11 @@ void wxTextEntryDialog_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2328,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], caption_bin)) Badarg(2328,"caption")
+  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2328,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(2328,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2328,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2328,"style");
@@ -42735,7 +42581,7 @@ void wxTextEntryDialog_SetValue(WxeApp *app, wxeCommand& cmd)
   This = (wxTextEntryDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[1], val_bin)) Badarg(2330,"val")
+  if(enif_inspect_binary(env, argv[1], &val_bin)) Badarg(2330,"val")
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetValue(val);
@@ -42756,7 +42602,7 @@ void wxPasswordEntryDialog_new(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2332,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2332,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -42768,11 +42614,11 @@ void wxPasswordEntryDialog_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2332,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], caption_bin)) Badarg(2332,"caption")
+  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2332,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], value_bin)) Badarg(2332,"value")
+  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2332,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2332,"style");
@@ -42798,8 +42644,6 @@ void wxPasswordEntryDialog_new(WxeApp *app, wxeCommand& cmd)
 void wxFontData_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFontData * Result = new EwxFontData();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -42830,7 +42674,8 @@ void wxFontData_EnableEffects(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxFontData *This;
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableEffects(flag);
 
@@ -42934,7 +42779,8 @@ void wxFontData_SetAllowSymbols(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxFontData *This;
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetAllowSymbols(flag);
 
@@ -43020,7 +42866,8 @@ void wxFontData_SetShowHelp(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxFontData *This;
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetShowHelp(flag);
 
@@ -43030,8 +42877,6 @@ void wxFontData_SetShowHelp(WxeApp *app, wxeCommand& cmd)
 void wxFontDialog_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFontDialog * Result = new EwxFontDialog();
   app->newPtr((void *) Result, 2, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -43101,11 +42946,11 @@ void wxProgressDialog_new(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[0], title_bin)) Badarg(2361,"title")
+  if(enif_inspect_binary(env, argv[0], &title_bin)) Badarg(2361,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2361,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2361,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -43163,7 +43008,7 @@ void wxProgressDialog_Update_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2364,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "newmsg"))) {
   ErlNifBinary newmsg_bin;
-  if(enif_inspect_binary(env, tpl[1], newmsg_bin)) Badarg(2364,"newmsg")
+  if(enif_inspect_binary(env, tpl[1], &newmsg_bin)) Badarg(2364,"newmsg")
   newmsg = wxString(newmsg_bin.data, wxConvUTF8, newmsg_bin.size);
     } else        Badarg(2364,"Options");
   };
@@ -43200,7 +43045,7 @@ void wxMessageDialog_new(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], message_bin)) Badarg(2366,"message")
+  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2366,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -43212,7 +43057,7 @@ void wxMessageDialog_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2366,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], caption_bin)) Badarg(2366,"caption")
+  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2366,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2366,"style");
@@ -43295,8 +43140,6 @@ void wxPageSetupDialog_ShowModal(WxeApp *app, wxeCommand& cmd)
 void wxPageSetupDialogData_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData * Result = new EwxPageSetupDialogData();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -43341,7 +43184,8 @@ void wxPageSetupDialogData_EnableHelp(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableHelp(flag);
 
@@ -43355,7 +43199,8 @@ void wxPageSetupDialogData_EnableMargins(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableMargins(flag);
 
@@ -43369,7 +43214,8 @@ void wxPageSetupDialogData_EnableOrientation(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableOrientation(flag);
 
@@ -43383,7 +43229,8 @@ void wxPageSetupDialogData_EnablePaper(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnablePaper(flag);
 
@@ -43397,7 +43244,8 @@ void wxPageSetupDialogData_EnablePrinter(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnablePrinter(flag);
 
@@ -43636,7 +43484,8 @@ void wxPageSetupDialogData_SetDefaultInfo(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetDefaultInfo(flag);
 
@@ -43650,7 +43499,8 @@ void wxPageSetupDialogData_SetDefaultMinMargins(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPageSetupDialogData *This;
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetDefaultMinMargins(flag);
 
@@ -43884,8 +43734,6 @@ void wxPrintDialog_GetPrintDC(WxeApp *app, wxeCommand& cmd)
 void wxPrintDialogData_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData * Result = new EwxPrintDialogData();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -43930,7 +43778,8 @@ void wxPrintDialogData_EnableHelp(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableHelp(flag);
 
@@ -43944,7 +43793,8 @@ void wxPrintDialogData_EnablePageNumbers(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnablePageNumbers(flag);
 
@@ -43958,7 +43808,8 @@ void wxPrintDialogData_EnablePrintToFile(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnablePrintToFile(flag);
 
@@ -43972,7 +43823,8 @@ void wxPrintDialogData_EnableSelection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->EnableSelection(flag);
 
@@ -44151,7 +44003,8 @@ void wxPrintDialogData_SetCollate(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetCollate(flag);
 
@@ -44240,7 +44093,8 @@ void wxPrintDialogData_SetPrintToFile(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetPrintToFile(flag);
 
@@ -44254,7 +44108,8 @@ void wxPrintDialogData_SetSelection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintDialogData *This;
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetSelection(flag);
 
@@ -44279,8 +44134,6 @@ void wxPrintDialogData_SetToPage(WxeApp *app, wxeCommand& cmd)
 void wxPrintData_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPrintData * Result = new EwxPrintData();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -44476,7 +44329,8 @@ void wxPrintData_SetCollate(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintData *This;
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
-  flag = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetCollate(flag);
 
@@ -44490,7 +44344,8 @@ void wxPrintData_SetColour(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintData *This;
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
-  colour = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool colour;
+  colour = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetColour(colour);
 
@@ -44566,7 +44421,7 @@ void wxPrintData_SetPrinterName(WxeApp *app, wxeCommand& cmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2460,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2460,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetPrinterName(name);
@@ -44783,7 +44638,8 @@ void wxPrintPreview_Print(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxPrintPreview *This;
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
-  interactive = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool interactive;
+  interactive = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   bool Result = This->Print(interactive);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -44909,7 +44765,7 @@ void wxPreviewFrame_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2484,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "title"))) {
   ErlNifBinary title_bin;
-  if(enif_inspect_binary(env, tpl[1], title_bin)) Badarg(2484,"title")
+  if(enif_inspect_binary(env, tpl[1], &title_bin)) Badarg(2484,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -45167,8 +45023,6 @@ void wxPrinter_GetAbort(WxeApp *app, wxeCommand& cmd)
 void wxPrinter_GetLastError(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxPrinter::GetLastError();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -45212,7 +45066,7 @@ void wxPrinter_Print(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2502,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2502,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "prompt"))) {
-  prompt = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  prompt = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2502,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -45253,7 +45107,7 @@ void wxPrinter_ReportError(WxeApp *app, wxeCommand& cmd)
   printout = (wxPrintout *) memenv->getPtr(env, argv[2]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[3], message_bin)) Badarg(2504,"message")
+  if(enif_inspect_binary(env, argv[3], &message_bin)) Badarg(2504,"message")
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg(0);
   This->ReportError(parent,printout,message);
@@ -45297,7 +45151,7 @@ void wxXmlResource_new_1(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &flags)) Badarg(2507,"flags");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "domain"))) {
   ErlNifBinary domain_bin;
-  if(enif_inspect_binary(env, tpl[1], domain_bin)) Badarg(2507,"domain")
+  if(enif_inspect_binary(env, tpl[1], &domain_bin)) Badarg(2507,"domain")
   domain = wxString(domain_bin.data, wxConvUTF8, domain_bin.size);
     } else        Badarg(2507,"Options");
   };
@@ -45318,7 +45172,7 @@ void wxXmlResource_new_2(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary filemask_bin;
   wxString filemask;
-  if(enif_inspect_binary(env, argv[0], filemask_bin)) Badarg(2508,"filemask")
+  if(enif_inspect_binary(env, argv[0], &filemask_bin)) Badarg(2508,"filemask")
   filemask = wxString(filemask_bin.data, wxConvUTF8, filemask_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -45332,7 +45186,7 @@ void wxXmlResource_new_2(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &flags)) Badarg(2508,"flags");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "domain"))) {
   ErlNifBinary domain_bin;
-  if(enif_inspect_binary(env, tpl[1], domain_bin)) Badarg(2508,"domain")
+  if(enif_inspect_binary(env, tpl[1], &domain_bin)) Badarg(2508,"domain")
   domain = wxString(domain_bin.data, wxConvUTF8, domain_bin.size);
     } else        Badarg(2508,"Options");
   };
@@ -45354,7 +45208,7 @@ void wxXmlResource_AttachUnknownControl(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2510,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2510,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   wxWindow *control;
   control = (wxWindow *) memenv->getPtr(env, argv[2]);
@@ -45416,8 +45270,6 @@ void wxXmlResource_CompareVersion(WxeApp *app, wxeCommand& cmd)
 void wxXmlResource_Get(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxXmlResource * Result = (wxXmlResource*)wxXmlResource::Get();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxXmlResource"));
@@ -45471,7 +45323,7 @@ void wxXmlResource_GetXRCID(WxeApp *app, wxeCommand& cmd)
   str_idTail = argv[0];
   while(!enif_is_empty_list(env, str_idTail)) {
     if(!enif_get_list_cell(env, str_idTail, &str_idHead, &str_idTail)) Badarg(2516,"str_id");
-    if(!enif_get_int(env, str_idHead, str_id_ptr++) Badarg(2516,"str_id");
+    if(!enif_get_int(env, str_idHead, str_id_ptr++)) Badarg(2516,"str_id");
   };
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -45515,7 +45367,7 @@ void wxXmlResource_Load(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filemask_bin;
   wxString filemask;
-  if(enif_inspect_binary(env, argv[1], filemask_bin)) Badarg(2518,"filemask")
+  if(enif_inspect_binary(env, argv[1], &filemask_bin)) Badarg(2518,"filemask")
   filemask = wxString(filemask_bin.data, wxConvUTF8, filemask_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->Load(filemask);
@@ -45534,7 +45386,7 @@ void wxXmlResource_LoadBitmap(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2519,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2519,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxBitmap * Result = new EwxBitmap(This->LoadBitmap(name)); app->newPtr((void *) Result,3, memenv);;
@@ -45555,7 +45407,7 @@ void wxXmlResource_LoadDialog_2(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], name_bin)) Badarg(2520,"name")
+  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2520,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxDialog * Result = (wxDialog*)This->LoadDialog(parent,name);
@@ -45578,7 +45430,7 @@ void wxXmlResource_LoadDialog_3(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[3], name_bin)) Badarg(2521,"name")
+  if(enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2521,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->LoadDialog(dlg,parent,name);
@@ -45599,7 +45451,7 @@ void wxXmlResource_LoadFrame_2(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], name_bin)) Badarg(2522,"name")
+  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2522,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxFrame * Result = (wxFrame*)This->LoadFrame(parent,name);
@@ -45622,7 +45474,7 @@ void wxXmlResource_LoadFrame_3(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[3], name_bin)) Badarg(2523,"name")
+  if(enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2523,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->LoadFrame(frame,parent,name);
@@ -45641,7 +45493,7 @@ void wxXmlResource_LoadIcon(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2524,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2524,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxIcon * Result = new EwxIcon(This->LoadIcon(name)); app->newPtr((void *) Result,3, memenv);;
@@ -45660,7 +45512,7 @@ void wxXmlResource_LoadMenu(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2525,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2525,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxMenu * Result = (wxMenu*)This->LoadMenu(name);
@@ -45681,7 +45533,7 @@ void wxXmlResource_LoadMenuBar_2(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], name_bin)) Badarg(2526,"name")
+  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2526,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxMenuBar * Result = (wxMenuBar*)This->LoadMenuBar(parent,name);
@@ -45700,7 +45552,7 @@ void wxXmlResource_LoadMenuBar_1(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2527,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2527,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxMenuBar * Result = (wxMenuBar*)This->LoadMenuBar(name);
@@ -45721,7 +45573,7 @@ void wxXmlResource_LoadPanel_2(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], name_bin)) Badarg(2528,"name")
+  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2528,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxPanel * Result = (wxPanel*)This->LoadPanel(parent,name);
@@ -45744,7 +45596,7 @@ void wxXmlResource_LoadPanel_3(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[3], name_bin)) Badarg(2529,"name")
+  if(enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2529,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->LoadPanel(panel,parent,name);
@@ -45765,7 +45617,7 @@ void wxXmlResource_LoadToolBar(WxeApp *app, wxeCommand& cmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], name_bin)) Badarg(2530,"name")
+  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2530,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxToolBar * Result = (wxToolBar*)This->LoadToolBar(parent,name);
@@ -45813,7 +45665,7 @@ void wxXmlResource_Unload(WxeApp *app, wxeCommand& cmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], filename_bin)) Badarg(2533,"filename")
+  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(2533,"filename")
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->Unload(filename);
@@ -45842,7 +45694,7 @@ void wxHtmlEasyPrinting_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2535,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], name_bin)) Badarg(2535,"name")
+  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2535,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "parentWindow"))) {
     } else        Badarg(2535,"Options");
@@ -45894,7 +45746,7 @@ void wxHtmlEasyPrinting_PreviewFile(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmlfile_bin;
   wxString htmlfile;
-  if(enif_inspect_binary(env, argv[1], htmlfile_bin)) Badarg(2539,"htmlfile")
+  if(enif_inspect_binary(env, argv[1], &htmlfile_bin)) Badarg(2539,"htmlfile")
   htmlfile = wxString(htmlfile_bin.data, wxConvUTF8, htmlfile_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->PreviewFile(htmlfile);
@@ -45914,7 +45766,7 @@ void wxHtmlEasyPrinting_PreviewText(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmltext_bin;
   wxString htmltext;
-  if(enif_inspect_binary(env, argv[1], htmltext_bin)) Badarg(2540,"htmltext")
+  if(enif_inspect_binary(env, argv[1], &htmltext_bin)) Badarg(2540,"htmltext")
   htmltext = wxString(htmltext_bin.data, wxConvUTF8, htmltext_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -45926,7 +45778,7 @@ void wxHtmlEasyPrinting_PreviewText(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2540,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "basepath"))) {
   ErlNifBinary basepath_bin;
-  if(enif_inspect_binary(env, tpl[1], basepath_bin)) Badarg(2540,"basepath")
+  if(enif_inspect_binary(env, tpl[1], &basepath_bin)) Badarg(2540,"basepath")
   basepath = wxString(basepath_bin.data, wxConvUTF8, basepath_bin.size);
     } else        Badarg(2540,"Options");
   };
@@ -45947,7 +45799,7 @@ void wxHtmlEasyPrinting_PrintFile(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmlfile_bin;
   wxString htmlfile;
-  if(enif_inspect_binary(env, argv[1], htmlfile_bin)) Badarg(2541,"htmlfile")
+  if(enif_inspect_binary(env, argv[1], &htmlfile_bin)) Badarg(2541,"htmlfile")
   htmlfile = wxString(htmlfile_bin.data, wxConvUTF8, htmlfile_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->PrintFile(htmlfile);
@@ -45967,7 +45819,7 @@ void wxHtmlEasyPrinting_PrintText(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmltext_bin;
   wxString htmltext;
-  if(enif_inspect_binary(env, argv[1], htmltext_bin)) Badarg(2542,"htmltext")
+  if(enif_inspect_binary(env, argv[1], &htmltext_bin)) Badarg(2542,"htmltext")
   htmltext = wxString(htmltext_bin.data, wxConvUTF8, htmltext_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -45979,7 +45831,7 @@ void wxHtmlEasyPrinting_PrintText(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2542,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "basepath"))) {
   ErlNifBinary basepath_bin;
-  if(enif_inspect_binary(env, tpl[1], basepath_bin)) Badarg(2542,"basepath")
+  if(enif_inspect_binary(env, tpl[1], &basepath_bin)) Badarg(2542,"basepath")
   basepath = wxString(basepath_bin.data, wxConvUTF8, basepath_bin.size);
     } else        Badarg(2542,"Options");
   };
@@ -46015,11 +45867,11 @@ void wxHtmlEasyPrinting_SetFonts(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary normal_face_bin;
   wxString normal_face;
-  if(enif_inspect_binary(env, argv[1], normal_face_bin)) Badarg(2544,"normal_face")
+  if(enif_inspect_binary(env, argv[1], &normal_face_bin)) Badarg(2544,"normal_face")
   normal_face = wxString(normal_face_bin.data, wxConvUTF8, normal_face_bin.size);
   ErlNifBinary fixed_face_bin;
   wxString fixed_face;
-  if(enif_inspect_binary(env, argv[2], fixed_face_bin)) Badarg(2544,"fixed_face")
+  if(enif_inspect_binary(env, argv[2], &fixed_face_bin)) Badarg(2544,"fixed_face")
   fixed_face = wxString(fixed_face_bin.data, wxConvUTF8, fixed_face_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -46038,12 +45890,12 @@ void wxHtmlEasyPrinting_SetFonts(WxeApp *app, wxeCommand& cmd)
   sizesTail = tpl[1];
   while(!enif_is_empty_list(env, sizesTail)) {
     if(!enif_get_list_cell(env, sizesTail, &sizesHead, &sizesTail)) Badarg(2544,"sizes");
-    if(!enif_get_int(env, sizesHead, sizes_ptr++) Badarg(2544,"sizes");
+    if(!enif_get_int(env, sizesHead, sizes_ptr++)) Badarg(2544,"sizes");
   };
     } else        Badarg(2544,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  This->SetFonts(normal_face,fixed_face,sizes);
+  This->SetFonts(normal_face,fixed_face,&sizes);
   enif_free(sizes);
 
 }
@@ -46059,7 +45911,7 @@ void wxHtmlEasyPrinting_SetHeader(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary header_bin;
   wxString header;
-  if(enif_inspect_binary(env, argv[1], header_bin)) Badarg(2545,"header")
+  if(enif_inspect_binary(env, argv[1], &header_bin)) Badarg(2545,"header")
   header = wxString(header_bin.data, wxConvUTF8, header_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -46089,7 +45941,7 @@ void wxHtmlEasyPrinting_SetFooter(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary footer_bin;
   wxString footer;
-  if(enif_inspect_binary(env, argv[1], footer_bin)) Badarg(2546,"footer")
+  if(enif_inspect_binary(env, argv[1], &footer_bin)) Badarg(2546,"footer")
   footer = wxString(footer_bin.data, wxConvUTF8, footer_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -46156,7 +46008,7 @@ void wxGLCanvas_new_2(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2548,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], name_bin)) Badarg(2548,"name")
+  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2548,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "attribList"))) {
   int * attribList_ptr;
@@ -46167,12 +46019,12 @@ void wxGLCanvas_new_2(WxeApp *app, wxeCommand& cmd)
   attribListTail = tpl[1];
   while(!enif_is_empty_list(env, attribListTail)) {
     if(!enif_get_list_cell(env, attribListTail, &attribListHead, &attribListTail)) Badarg(2548,"attribList");
-    if(!enif_get_int(env, attribListHead, attribList_ptr++) Badarg(2548,"attribList");
+    if(!enif_get_int(env, attribListHead, attribList_ptr++)) Badarg(2548,"attribList");
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "palette"))) {
     } else        Badarg(2548,"Options");
   };
-  wxGLCanvas * Result = new EwxGLCanvas(parent,id,pos,size,style,name,attribList,*palette);
+  wxGLCanvas * Result = new EwxGLCanvas(parent,id,pos,size,style,name,&attribList,*palette);
   app->newPtr((void *) Result, 0, memenv);
   enif_free(attribList);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -46229,7 +46081,7 @@ void wxGLCanvas_new_3_1(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2549,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], name_bin)) Badarg(2549,"name")
+  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2549,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "attribList"))) {
   int * attribList_ptr;
@@ -46240,12 +46092,12 @@ void wxGLCanvas_new_3_1(WxeApp *app, wxeCommand& cmd)
   attribListTail = tpl[1];
   while(!enif_is_empty_list(env, attribListTail)) {
     if(!enif_get_list_cell(env, attribListTail, &attribListHead, &attribListTail)) Badarg(2549,"attribList");
-    if(!enif_get_int(env, attribListHead, attribList_ptr++) Badarg(2549,"attribList");
+    if(!enif_get_int(env, attribListHead, attribList_ptr++)) Badarg(2549,"attribList");
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "palette"))) {
     } else        Badarg(2549,"Options");
   };
-  wxGLCanvas * Result = new EwxGLCanvas(parent,shared,id,pos,size,style,name,attribList,*palette);
+  wxGLCanvas * Result = new EwxGLCanvas(parent,shared,id,pos,size,style,name,&attribList,*palette);
   app->newPtr((void *) Result, 0, memenv);
   enif_free(attribList);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -46303,7 +46155,7 @@ void wxGLCanvas_new_3_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &style)) Badarg(2550,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], name_bin)) Badarg(2550,"name")
+  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2550,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "attribList"))) {
   int * attribList_ptr;
@@ -46314,12 +46166,12 @@ void wxGLCanvas_new_3_0(WxeApp *app, wxeCommand& cmd)
   attribListTail = tpl[1];
   while(!enif_is_empty_list(env, attribListTail)) {
     if(!enif_get_list_cell(env, attribListTail, &attribListHead, &attribListTail)) Badarg(2550,"attribList");
-    if(!enif_get_int(env, attribListHead, attribList_ptr++) Badarg(2550,"attribList");
+    if(!enif_get_int(env, attribListHead, attribList_ptr++)) Badarg(2550,"attribList");
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "palette"))) {
     } else        Badarg(2550,"Options");
   };
-  wxGLCanvas * Result = new EwxGLCanvas(parent,shared,id,pos,size,style,name,attribList,*palette);
+  wxGLCanvas * Result = new EwxGLCanvas(parent,shared,id,pos,size,style,name,&attribList,*palette);
   app->newPtr((void *) Result, 0, memenv);
   enif_free(attribList);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -46468,7 +46320,7 @@ void wxAuiManager_AddPane_2_0(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, tpl[1], &direction)) Badarg(2560,"direction");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], caption_bin)) Badarg(2560,"caption")
+  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2560,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else        Badarg(2560,"Options");
   };
@@ -46508,7 +46360,7 @@ void wxAuiManager_GetAllPanes(WxeApp *app, wxeCommand& cmd)
   wxAuiPaneInfoArray Result = This->GetAllPanes();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send( for(unsigned int i=0; i < Result.GetCount(); i++) {
-  rt.make_ref(getRef((void *) &Result.Item(i), memenv), "wxAuiPaneInfo")
+  rt.make_ref(app->getRef((void *) &Result.Item(i), memenv), "wxAuiPaneInfo")
  }
  rt.endList(Result.GetCount())
 );
@@ -46544,9 +46396,9 @@ void wxAuiManager_GetDockSizeConstraint(WxeApp *app, wxeCommand& cmd)
   This->GetDockSizeConstraint(&width_pct,&height_pct);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
-  rt.make_float(width_pct),
-  rt.make_float(height_pct));
-  rt:send(msg);
+  rt.make_double(width_pct),
+  rt.make_double(height_pct));
+  rt.send(msg);
 
 }
 
@@ -46621,7 +46473,7 @@ void wxAuiManager_GetPane_1_0(WxeApp *app, wxeCommand& cmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], name_bin)) Badarg(2569,"name")
+  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2569,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg(0);
   wxAuiPaneInfo * Result = &This->GetPane(name);
@@ -46685,7 +46537,7 @@ void wxAuiManager_LoadPaneInfo(WxeApp *app, wxeCommand& cmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   ErlNifBinary pane_part_bin;
   wxString pane_part;
-  if(enif_inspect_binary(env, argv[1], pane_part_bin)) Badarg(2572,"pane_part")
+  if(enif_inspect_binary(env, argv[1], &pane_part_bin)) Badarg(2572,"pane_part")
   pane_part = wxString(pane_part_bin.data, wxConvUTF8, pane_part_bin.size);
   wxAuiPaneInfo *pane;
   pane = (wxAuiPaneInfo *) memenv->getPtr(env, argv[2]);
@@ -46705,7 +46557,7 @@ void wxAuiManager_LoadPerspective(WxeApp *app, wxeCommand& cmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   ErlNifBinary perspective_bin;
   wxString perspective;
-  if(enif_inspect_binary(env, argv[1], perspective_bin)) Badarg(2573,"perspective")
+  if(enif_inspect_binary(env, argv[1], &perspective_bin)) Badarg(2573,"perspective")
   perspective = wxString(perspective_bin.data, wxConvUTF8, perspective_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -46716,7 +46568,7 @@ void wxAuiManager_LoadPerspective(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2573,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2573,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "update"))) {
-  update = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  update = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2573,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -46877,8 +46729,6 @@ void wxAuiManager_Update(WxeApp *app, wxeCommand& cmd)
 void wxAuiPaneInfo_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxAuiPaneInfo * Result = new wxAuiPaneInfo();
   app->newPtr((void *) Result, 155, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -46988,7 +46838,7 @@ void wxAuiPaneInfo_BottomDockable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2589,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2589,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2589,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47008,7 +46858,7 @@ void wxAuiPaneInfo_Caption(WxeApp *app, wxeCommand& cmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   ErlNifBinary c_bin;
   wxString c;
-  if(enif_inspect_binary(env, argv[1], c_bin)) Badarg(2590,"c")
+  if(enif_inspect_binary(env, argv[1], &c_bin)) Badarg(2590,"c")
   c = wxString(c_bin.data, wxConvUTF8, c_bin.size);
   if(!This) throw wxe_badarg(0);
   wxAuiPaneInfo * Result = &This->Caption(c);
@@ -47035,7 +46885,7 @@ void wxAuiPaneInfo_CaptionVisible(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2591,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2591,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2591,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47093,7 +46943,7 @@ void wxAuiPaneInfo_CloseButton(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2594,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2594,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2594,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47136,7 +46986,7 @@ void wxAuiPaneInfo_DestroyOnClose(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2596,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2596,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2596,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47196,7 +47046,7 @@ void wxAuiPaneInfo_Dockable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2599,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2599,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2599,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47254,7 +47104,7 @@ void wxAuiPaneInfo_Floatable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2602,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2602,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2602,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47366,7 +47216,7 @@ void wxAuiPaneInfo_Gripper(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2607,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2607,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2607,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47394,7 +47244,7 @@ void wxAuiPaneInfo_GripperTop(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2608,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2608,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "attop"))) {
-  attop = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  attop = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2608,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47801,7 +47651,7 @@ void wxAuiPaneInfo_LeftDockable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2634,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2634,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2634,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47871,7 +47721,7 @@ void wxAuiPaneInfo_MaximizeButton(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2637,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2637,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2637,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47941,7 +47791,7 @@ void wxAuiPaneInfo_MinimizeButton(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2640,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2640,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2640,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47969,7 +47819,7 @@ void wxAuiPaneInfo_Movable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2641,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2641,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2641,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -47989,7 +47839,7 @@ void wxAuiPaneInfo_Name(WxeApp *app, wxeCommand& cmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   ErlNifBinary n_bin;
   wxString n;
-  if(enif_inspect_binary(env, argv[1], n_bin)) Badarg(2642,"n")
+  if(enif_inspect_binary(env, argv[1], &n_bin)) Badarg(2642,"n")
   n = wxString(n_bin.data, wxConvUTF8, n_bin.size);
   if(!This) throw wxe_badarg(0);
   wxAuiPaneInfo * Result = &This->Name(n);
@@ -48016,7 +47866,7 @@ void wxAuiPaneInfo_PaneBorder(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2643,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2643,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2643,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -48044,7 +47894,7 @@ void wxAuiPaneInfo_PinButton(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2644,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2644,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "visible"))) {
-  visible = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  visible = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2644,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -48089,7 +47939,7 @@ void wxAuiPaneInfo_Resizable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2646,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2646,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "resizable"))) {
-  resizable = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  resizable = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2646,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -48132,7 +47982,7 @@ void wxAuiPaneInfo_RightDockable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2648,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2648,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2648,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -48184,7 +48034,8 @@ void wxAuiPaneInfo_SetFlag(WxeApp *app, wxeCommand& cmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   unsigned int flag;
   if(!enif_get_uint(env, argv[1], &flag)) Badarg(2651,"flag");
-  option_state = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool option_state;
+  option_state = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   wxAuiPaneInfo * Result = &This->SetFlag(flag,option_state);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -48210,7 +48061,7 @@ void wxAuiPaneInfo_Show(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2652,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2652,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "show"))) {
-  show = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  show = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2652,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -48268,7 +48119,7 @@ void wxAuiPaneInfo_TopDockable(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2655,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2655,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  b = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  b = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2655,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -48461,8 +48312,6 @@ void wxAuiPaneInfo_GetFloatingSize(WxeApp *app, wxeCommand& cmd)
 void wxAuiNotebook_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxAuiNotebook * Result = new EwxAuiNotebook();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -48535,7 +48384,7 @@ void wxAuiNotebook_AddPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[2], caption_bin)) Badarg(2667,"caption")
+  if(enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2667,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -48546,7 +48395,7 @@ void wxAuiNotebook_AddPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2667,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2667,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "select"))) {
-  select = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  select = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "bitmap"))) {
     } else        Badarg(2667,"Options");
   };
@@ -48756,7 +48605,7 @@ void wxAuiNotebook_InsertPage(WxeApp *app, wxeCommand& cmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[3], caption_bin)) Badarg(2677,"caption")
+  if(enif_inspect_binary(env, argv[3], &caption_bin)) Badarg(2677,"caption")
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -48767,7 +48616,7 @@ void wxAuiNotebook_InsertPage(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2677,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2677,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "select"))) {
-  select = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  select = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "bitmap"))) {
     } else        Badarg(2677,"Options");
   };
@@ -48858,7 +48707,7 @@ void wxAuiNotebook_SetPageText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &page)) Badarg(2682,"page");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(2682,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2682,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPageText(page,text);
@@ -49156,8 +49005,6 @@ void wxAuiDockArt_SetMetric(WxeApp *app, wxeCommand& cmd)
 void wxAuiSimpleTabArt_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxAuiSimpleTabArt * Result = new wxAuiSimpleTabArt();
   app->newPtr((void *) Result, 159, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -49182,8 +49029,6 @@ void wxAuiSimpleTabArt_destroy(WxeApp *app, wxeCommand& cmd)
 void wxMDIParentFrame_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMDIParentFrame * Result = new EwxMDIParentFrame();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -49206,7 +49051,7 @@ void wxMDIParentFrame_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2702,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(2702,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2702,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -49314,7 +49159,7 @@ void wxMDIParentFrame_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2708,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(2708,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2708,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -49413,8 +49258,6 @@ void wxMDIParentFrame_Tile(WxeApp *app, wxeCommand& cmd)
 void wxMDIChildFrame_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMDIChildFrame * Result = new EwxMDIChildFrame();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -49437,7 +49280,7 @@ void wxMDIChildFrame_new_4(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2713,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], title_bin)) Badarg(2713,"title")
+  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2713,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -49506,7 +49349,7 @@ void wxMDIChildFrame_Create(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2716,"id");
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], title_bin)) Badarg(2716,"title")
+  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2716,"title")
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -49563,7 +49406,7 @@ void wxMDIChildFrame_Maximize(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2717,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2717,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "maximize"))) {
-  maximize = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  maximize = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2717,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -49588,8 +49431,6 @@ void wxMDIChildFrame_Restore(WxeApp *app, wxeCommand& cmd)
 void wxMDIClientWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMDIClientWindow * Result = new EwxMDIClientWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -49661,8 +49502,6 @@ void wxMDIClientWindow_CreateClient(WxeApp *app, wxeCommand& cmd)
 void wxLayoutAlgorithm_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxLayoutAlgorithm * Result = new EwxLayoutAlgorithm();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -49734,7 +49573,7 @@ void wxLayoutAlgorithm_LayoutMDIFrame(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(2725,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  bool Result = This->LayoutMDIFrame(frame,rect);
+  bool Result = This->LayoutMDIFrame(frame,&rect);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
 
@@ -49877,7 +49716,7 @@ void wxEvent_Skip(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2734,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2734,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "skip"))) {
-  skip = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  skip = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2734,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -50030,7 +49869,7 @@ void wxCommandEvent_SetString(WxeApp *app, wxeCommand& cmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], s_bin)) Badarg(2744,"s")
+  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(2744,"s")
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetString(s);
@@ -51108,7 +50947,8 @@ void wxCloseEvent_SetCanVeto(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxCloseEvent *This;
   This = (wxCloseEvent *) memenv->getPtr(env, argv[0]);
-  canVeto = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool canVeto;
+  canVeto = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetCanVeto(canVeto);
 
@@ -51122,7 +50962,8 @@ void wxCloseEvent_SetLoggingOff(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxCloseEvent *This;
   This = (wxCloseEvent *) memenv->getPtr(env, argv[0]);
-  logOff = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool logOff;
+  logOff = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetLoggingOff(logOff);
 
@@ -51146,7 +50987,7 @@ void wxCloseEvent_Veto(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2819,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2819,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "veto"))) {
-  veto = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  veto = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2819,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -51162,7 +51003,8 @@ void wxShowEvent_SetShow(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxShowEvent *This;
   This = (wxShowEvent *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetShow(show);
 
@@ -51424,7 +51266,8 @@ void wxUpdateUIEvent_Check(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxUpdateUIEvent *This;
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
-  check = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool check;
+  check = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Check(check);
 
@@ -51438,7 +51281,8 @@ void wxUpdateUIEvent_Enable(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxUpdateUIEvent *This;
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
-  enable = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool enable;
+  enable = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Enable(enable);
 
@@ -51452,7 +51296,8 @@ void wxUpdateUIEvent_Show(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxUpdateUIEvent *This;
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->Show(show);
 
@@ -51582,8 +51427,6 @@ void wxUpdateUIEvent_GetText(WxeApp *app, wxeCommand& cmd)
 void wxUpdateUIEvent_GetMode(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxUpdateUIEvent::GetMode();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -51594,8 +51437,6 @@ void wxUpdateUIEvent_GetMode(WxeApp *app, wxeCommand& cmd)
 void wxUpdateUIEvent_GetUpdateInterval(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   long Result = wxUpdateUIEvent::GetUpdateInterval();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -51606,8 +51447,6 @@ void wxUpdateUIEvent_GetUpdateInterval(WxeApp *app, wxeCommand& cmd)
 void wxUpdateUIEvent_ResetUpdateTime(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxUpdateUIEvent::ResetUpdateTime();
 
 }
@@ -51634,7 +51473,7 @@ void wxUpdateUIEvent_SetText(WxeApp *app, wxeCommand& cmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(2850,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2850,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetText(text);
@@ -51706,7 +51545,8 @@ void wxQueryNewPaletteEvent_SetPaletteRealized(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxQueryNewPaletteEvent *This;
   This = (wxQueryNewPaletteEvent *) memenv->getPtr(env, argv[0]);
-  realized = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool realized;
+  realized = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetPaletteRealized(realized);
 
@@ -51750,7 +51590,8 @@ void wxNavigationKeyEvent_SetDirection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxNavigationKeyEvent *This;
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
-  bForward = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool bForward;
+  bForward = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetDirection(bForward);
 
@@ -51779,7 +51620,8 @@ void wxNavigationKeyEvent_SetWindowChange(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxNavigationKeyEvent *This;
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
-  bIs = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool bIs;
+  bIs = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetWindowChange(bIs);
 
@@ -51808,7 +51650,8 @@ void wxNavigationKeyEvent_SetFromTab(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxNavigationKeyEvent *This;
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
-  bIs = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool bIs;
+  bIs = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetFromTab(bIs);
 
@@ -51966,8 +51809,6 @@ void wxIdleEvent_CanSend(WxeApp *app, wxeCommand& cmd)
 void wxIdleEvent_GetMode(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxIdleEvent::GetMode();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -51992,7 +51833,7 @@ void wxIdleEvent_RequestMore(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(2873,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2873,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "needMore"))) {
-  needMore = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  needMore = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(2873,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -52868,14 +52709,12 @@ void utils_wxGetMousePosition(WxeApp *app, wxeCommand& cmd)
   int x;
   int y;
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   ::wxGetMousePosition(&x,&y);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -52883,8 +52722,6 @@ void utils_wxGetMousePosition(WxeApp *app, wxeCommand& cmd)
 void utils_wxGetMouseState(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxMouseState Result = ::wxGetMouseState();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -52897,7 +52734,8 @@ void utils_wxSetDetectableAutoRepeat(WxeApp *app, wxeCommand& cmd)
   wxeMemEnv *memenv = cmd.memenv;
   ErlNifEnv *env = cmd.env;
   ERL_NIF_TERM * argv = cmd.args;
-  flag = enif_is_identical(argv[0], WXE_ATOM_TRUE);
+  bool flag;
+  flag = enif_is_identical(argv[0], WXE_ATOM_true);
   bool Result = ::wxSetDetectableAutoRepeat(flag);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
@@ -52908,8 +52746,6 @@ void utils_wxSetDetectableAutoRepeat(WxeApp *app, wxeCommand& cmd)
 void utils_wxBell(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   ::wxBell();
 
 }
@@ -52924,11 +52760,11 @@ void utils_wxFindMenuItemId(WxeApp *app, wxeCommand& cmd)
   frame = (wxFrame *) memenv->getPtr(env, argv[0]);
   ErlNifBinary menuString_bin;
   wxString menuString;
-  if(enif_inspect_binary(env, argv[1], menuString_bin)) Badarg(2936,"menuString")
+  if(enif_inspect_binary(env, argv[1], &menuString_bin)) Badarg(2936,"menuString")
   menuString = wxString(menuString_bin.data, wxConvUTF8, menuString_bin.size);
   ErlNifBinary itemString_bin;
   wxString itemString;
-  if(enif_inspect_binary(env, argv[2], itemString_bin)) Badarg(2936,"itemString")
+  if(enif_inspect_binary(env, argv[2], &itemString_bin)) Badarg(2936,"itemString")
   itemString = wxString(itemString_bin.data, wxConvUTF8, itemString_bin.size);
   int Result = ::wxFindMenuItemId(frame,menuString,itemString);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -53002,8 +52838,6 @@ void utils_wxBeginBusyCursor(WxeApp *app, wxeCommand& cmd)
 void utils_wxEndBusyCursor(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   ::wxEndBusyCursor();
 
 }
@@ -53012,8 +52846,6 @@ void utils_wxEndBusyCursor(WxeApp *app, wxeCommand& cmd)
 void utils_wxIsBusy(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   bool Result = ::wxIsBusy();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
@@ -53051,7 +52883,7 @@ void utils_wxShell(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2943,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "command"))) {
   ErlNifBinary command_bin;
-  if(enif_inspect_binary(env, tpl[1], command_bin)) Badarg(2943,"command")
+  if(enif_inspect_binary(env, tpl[1], &command_bin)) Badarg(2943,"command")
   command = wxString(command_bin.data, wxConvUTF8, command_bin.size);
     } else        Badarg(2943,"Options");
   };
@@ -53070,7 +52902,7 @@ void utils_wxLaunchDefaultBrowser(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary url_bin;
   wxString url;
-  if(enif_inspect_binary(env, argv[0], url_bin)) Badarg(2944,"url")
+  if(enif_inspect_binary(env, argv[0], &url_bin)) Badarg(2944,"url")
   url = wxString(url_bin.data, wxConvUTF8, url_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -53094,8 +52926,6 @@ void utils_wxLaunchDefaultBrowser(WxeApp *app, wxeCommand& cmd)
 void utils_wxGetEmailAddress(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxString Result = ::wxGetEmailAddress();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -53106,8 +52936,6 @@ void utils_wxGetEmailAddress(WxeApp *app, wxeCommand& cmd)
 void utils_wxGetUserId(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxString Result = ::wxGetUserId();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -53118,8 +52946,6 @@ void utils_wxGetUserId(WxeApp *app, wxeCommand& cmd)
 void utils_wxGetHomeDir(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxString Result = ::wxGetHomeDir();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -53130,8 +52956,6 @@ void utils_wxGetHomeDir(WxeApp *app, wxeCommand& cmd)
 void utils_wxNewId(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   long Result = ::wxNewId();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -53154,8 +52978,6 @@ void utils_wxRegisterId(WxeApp *app, wxeCommand& cmd)
 void utils_wxGetCurrentId(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   long Result = ::wxGetCurrentId();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -53166,8 +52988,6 @@ void utils_wxGetCurrentId(WxeApp *app, wxeCommand& cmd)
 void utils_wxGetOsDescription(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxString Result = ::wxGetOsDescription();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -53178,8 +52998,6 @@ void utils_wxGetOsDescription(WxeApp *app, wxeCommand& cmd)
 void utils_wxIsPlatformLittleEndian(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   bool Result = ::wxIsPlatformLittleEndian();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
@@ -53190,8 +53008,6 @@ void utils_wxIsPlatformLittleEndian(WxeApp *app, wxeCommand& cmd)
 void utils_wxIsPlatform64Bit(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   bool Result = ::wxIsPlatform64Bit();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_bool(Result));
@@ -53204,14 +53020,12 @@ void gdicmn_wxDisplaySize(WxeApp *app, wxeCommand& cmd)
   int width;
   int height;
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   ::wxDisplaySize(&width,&height);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(width),
   rt.make_int(height));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -53286,7 +53100,7 @@ void wxPrintout_GetPageSizeMM(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(w),
   rt.make_int(h));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -53306,7 +53120,7 @@ void wxPrintout_GetPageSizePixels(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(w),
   rt.make_int(h));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -53341,7 +53155,7 @@ void wxPrintout_GetPPIPrinter(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -53361,7 +53175,7 @@ void wxPrintout_GetPPIScreen(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -53650,8 +53464,6 @@ void wxStyledTextCtrl_new_2(WxeApp *app, wxeCommand& cmd)
 void wxStyledTextCtrl_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl * Result = new EwxStyledTextCtrl();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -53722,7 +53534,7 @@ void wxStyledTextCtrl_AddText(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(2982,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2982,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AddText(text);
@@ -53756,7 +53568,7 @@ void wxStyledTextCtrl_InsertText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(2984,"pos");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(2984,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2984,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->InsertText(pos,text);
@@ -53889,7 +53701,8 @@ void wxStyledTextCtrl_SetUndoCollection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  collectUndo = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool collectUndo;
+  collectUndo = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetUndoCollection(collectUndo);
 
@@ -54133,7 +53946,7 @@ void wxStyledTextCtrl_GetCurLine(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
 rt.make(Result)  rt.make_int(linePos));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -54254,7 +54067,8 @@ void wxStyledTextCtrl_SetBufferedDraw(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  buffered = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool buffered;
+  buffered = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetBufferedDraw(buffered);
 
@@ -54683,7 +54497,8 @@ void wxStyledTextCtrl_SetMarginSensitive(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int margin;
   if(!enif_get_int(env, argv[1], &margin)) Badarg(3038,"margin");
-  sensitive = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool sensitive;
+  sensitive = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetMarginSensitive(margin,sensitive);
 
@@ -54783,7 +54598,8 @@ void wxStyledTextCtrl_StyleSetBold(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int style;
   if(!enif_get_int(env, argv[1], &style)) Badarg(3043,"style");
-  bold = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool bold;
+  bold = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->StyleSetBold(style,bold);
 
@@ -54799,7 +54615,8 @@ void wxStyledTextCtrl_StyleSetItalic(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int style;
   if(!enif_get_int(env, argv[1], &style)) Badarg(3044,"style");
-  italic = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool italic;
+  italic = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->StyleSetItalic(style,italic);
 
@@ -54834,7 +54651,7 @@ void wxStyledTextCtrl_StyleSetFaceName(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &style)) Badarg(3046,"style");
   ErlNifBinary fontName_bin;
   wxString fontName;
-  if(enif_inspect_binary(env, argv[2], fontName_bin)) Badarg(3046,"fontName")
+  if(enif_inspect_binary(env, argv[2], &fontName_bin)) Badarg(3046,"fontName")
   fontName = wxString(fontName_bin.data, wxConvUTF8, fontName_bin.size);
   if(!This) throw wxe_badarg(0);
   This->StyleSetFaceName(style,fontName);
@@ -54851,7 +54668,8 @@ void wxStyledTextCtrl_StyleSetEOLFilled(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int style;
   if(!enif_get_int(env, argv[1], &style)) Badarg(3047,"style");
-  filled = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool filled;
+  filled = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->StyleSetEOLFilled(style,filled);
 
@@ -54880,7 +54698,8 @@ void wxStyledTextCtrl_StyleSetUnderline(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int style;
   if(!enif_get_int(env, argv[1], &style)) Badarg(3049,"style");
-  underline = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool underline;
+  underline = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->StyleSetUnderline(style,underline);
 
@@ -54913,7 +54732,8 @@ void wxStyledTextCtrl_StyleSetHotSpot(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int style;
   if(!enif_get_int(env, argv[1], &style)) Badarg(3051,"style");
-  hotspot = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool hotspot;
+  hotspot = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->StyleSetHotSpot(style,hotspot);
 
@@ -54927,7 +54747,8 @@ void wxStyledTextCtrl_SetSelForeground(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *fore_t;
   int fore_sz;
   if(!enif_get_tuple(env, argv[2], &fore_sz, &fore_t)) Badarg(3052,"fore");
@@ -54953,7 +54774,8 @@ void wxStyledTextCtrl_SetSelBackground(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *back_t;
   int back_sz;
   if(!enif_get_tuple(env, argv[2], &back_sz, &back_t)) Badarg(3053,"back");
@@ -55103,7 +54925,8 @@ void wxStyledTextCtrl_StyleSetVisible(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int style;
   if(!enif_get_int(env, argv[1], &style)) Badarg(3061,"style");
-  visible = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool visible;
+  visible = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->StyleSetVisible(style,visible);
 
@@ -55149,7 +54972,7 @@ void wxStyledTextCtrl_SetWordChars(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characters_bin;
   wxString characters;
-  if(enif_inspect_binary(env, argv[1], characters_bin)) Badarg(3064,"characters")
+  if(enif_inspect_binary(env, argv[1], &characters_bin)) Badarg(3064,"characters")
   characters = wxString(characters_bin.data, wxConvUTF8, characters_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetWordChars(characters);
@@ -55268,7 +55091,8 @@ void wxStyledTextCtrl_SetWhitespaceForeground(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *fore_t;
   int fore_sz;
   if(!enif_get_tuple(env, argv[2], &fore_sz, &fore_t)) Badarg(3071,"fore");
@@ -55294,7 +55118,8 @@ void wxStyledTextCtrl_SetWhitespaceBackground(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *back_t;
   int back_sz;
   if(!enif_get_tuple(env, argv[2], &back_sz, &back_t)) Badarg(3072,"back");
@@ -55399,7 +55224,8 @@ void wxStyledTextCtrl_SetCaretLineVisible(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetCaretLineVisible(show);
 
@@ -55457,7 +55283,7 @@ void wxStyledTextCtrl_AutoCompShow(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &lenEntered)) Badarg(3081,"lenEntered");
   ErlNifBinary itemList_bin;
   wxString itemList;
-  if(enif_inspect_binary(env, argv[2], itemList_bin)) Badarg(3081,"itemList")
+  if(enif_inspect_binary(env, argv[2], &itemList_bin)) Badarg(3081,"itemList")
   itemList = wxString(itemList_bin.data, wxConvUTF8, itemList_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AutoCompShow(lenEntered,itemList);
@@ -55530,7 +55356,7 @@ void wxStyledTextCtrl_AutoCompStops(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characterSet_bin;
   wxString characterSet;
-  if(enif_inspect_binary(env, argv[1], characterSet_bin)) Badarg(3086,"characterSet")
+  if(enif_inspect_binary(env, argv[1], &characterSet_bin)) Badarg(3086,"characterSet")
   characterSet = wxString(characterSet_bin.data, wxConvUTF8, characterSet_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AutoCompStops(characterSet);
@@ -55577,7 +55403,7 @@ void wxStyledTextCtrl_AutoCompSelect(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3089,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3089,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSelect(text);
@@ -55592,7 +55418,8 @@ void wxStyledTextCtrl_AutoCompSetCancelAtStart(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  cancel = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool cancel;
+  cancel = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSetCancelAtStart(cancel);
 
@@ -55623,7 +55450,7 @@ void wxStyledTextCtrl_AutoCompSetFillUps(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characterSet_bin;
   wxString characterSet;
-  if(enif_inspect_binary(env, argv[1], characterSet_bin)) Badarg(3092,"characterSet")
+  if(enif_inspect_binary(env, argv[1], &characterSet_bin)) Badarg(3092,"characterSet")
   characterSet = wxString(characterSet_bin.data, wxConvUTF8, characterSet_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSetFillUps(characterSet);
@@ -55638,7 +55465,8 @@ void wxStyledTextCtrl_AutoCompSetChooseSingle(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  chooseSingle = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool chooseSingle;
+  chooseSingle = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSetChooseSingle(chooseSingle);
 
@@ -55667,7 +55495,8 @@ void wxStyledTextCtrl_AutoCompSetIgnoreCase(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  ignoreCase = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool ignoreCase;
+  ignoreCase = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSetIgnoreCase(ignoreCase);
 
@@ -55700,7 +55529,7 @@ void wxStyledTextCtrl_UserListShow(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &listType)) Badarg(3097,"listType");
   ErlNifBinary itemList_bin;
   wxString itemList;
-  if(enif_inspect_binary(env, argv[2], itemList_bin)) Badarg(3097,"itemList")
+  if(enif_inspect_binary(env, argv[2], &itemList_bin)) Badarg(3097,"itemList")
   itemList = wxString(itemList_bin.data, wxConvUTF8, itemList_bin.size);
   if(!This) throw wxe_badarg(0);
   This->UserListShow(listType,itemList);
@@ -55715,7 +55544,8 @@ void wxStyledTextCtrl_AutoCompSetAutoHide(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  autoHide = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool autoHide;
+  autoHide = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSetAutoHide(autoHide);
 
@@ -55744,7 +55574,8 @@ void wxStyledTextCtrl_AutoCompSetDropRestOfWord(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  dropRestOfWord = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool dropRestOfWord;
+  dropRestOfWord = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->AutoCompSetDropRestOfWord(dropRestOfWord);
 
@@ -55923,7 +55754,8 @@ void wxStyledTextCtrl_SetUseTabs(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useTabs = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useTabs;
+  useTabs = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetUseTabs(useTabs);
 
@@ -56020,7 +55852,8 @@ void wxStyledTextCtrl_SetUseHorizontalScrollBar(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetUseHorizontalScrollBar(show);
 
@@ -56049,7 +55882,8 @@ void wxStyledTextCtrl_SetIndentationGuides(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetIndentationGuides(show);
 
@@ -56312,7 +56146,7 @@ void wxStyledTextCtrl_FindText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &maxPos)) Badarg(3137,"maxPos");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], text_bin)) Badarg(3137,"text")
+  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(3137,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -56341,7 +56175,8 @@ void wxStyledTextCtrl_FormatRange(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  doDraw = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool doDraw;
+  doDraw = enif_is_identical(argv[1], WXE_ATOM_true);
   int startPos;
   if(!enif_get_int(env, argv[2], &startPos)) Badarg(3138,"startPos");
   int endPos;
@@ -56562,7 +56397,8 @@ void wxStyledTextCtrl_HideSelection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  normal = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool normal;
+  normal = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->HideSelection(normal);
 
@@ -56642,7 +56478,7 @@ void wxStyledTextCtrl_ReplaceSelection(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3155,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3155,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->ReplaceSelection(text);
@@ -56657,7 +56493,8 @@ void wxStyledTextCtrl_SetReadOnly(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  readOnly = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool readOnly;
+  readOnly = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetReadOnly(readOnly);
 
@@ -56781,7 +56618,7 @@ void wxStyledTextCtrl_SetText(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3165,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3165,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetText(text);
@@ -56933,7 +56770,7 @@ void wxStyledTextCtrl_ReplaceTarget(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3175,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3175,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->ReplaceTarget(text);
@@ -56952,7 +56789,7 @@ void wxStyledTextCtrl_SearchInTarget(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3176,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3176,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->SearchInTarget(text);
@@ -57003,7 +56840,7 @@ void wxStyledTextCtrl_CallTipShow(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3179,"pos");
   ErlNifBinary definition_bin;
   wxString definition;
-  if(enif_inspect_binary(env, argv[2], definition_bin)) Badarg(3179,"definition")
+  if(enif_inspect_binary(env, argv[2], &definition_bin)) Badarg(3179,"definition")
   definition = wxString(definition_bin.data, wxConvUTF8, definition_bin.size);
   if(!This) throw wxe_badarg(0);
   This->CallTipShow(pos,definition);
@@ -57342,7 +57179,8 @@ void wxStyledTextCtrl_SetFoldExpanded(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int line;
   if(!enif_get_int(env, argv[1], &line)) Badarg(3198,"line");
-  expanded = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool expanded;
+  expanded = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetFoldExpanded(line,expanded);
 
@@ -57433,7 +57271,8 @@ void wxStyledTextCtrl_SetTabIndents(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  tabIndents = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool tabIndents;
+  tabIndents = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetTabIndents(tabIndents);
 
@@ -57462,7 +57301,8 @@ void wxStyledTextCtrl_SetBackSpaceUnIndents(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  bsUnIndents = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool bsUnIndents;
+  bsUnIndents = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetBackSpaceUnIndents(bsUnIndents);
 
@@ -57523,7 +57363,8 @@ void wxStyledTextCtrl_WordStartPosition(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int pos;
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3210,"pos");
-  onlyWordCharacters = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool onlyWordCharacters;
+  onlyWordCharacters = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   int Result = This->WordStartPosition(pos,onlyWordCharacters);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -57541,7 +57382,8 @@ void wxStyledTextCtrl_WordEndPosition(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   int pos;
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3211,"pos");
-  onlyWordCharacters = enif_is_identical(argv[2], WXE_ATOM_TRUE);
+  bool onlyWordCharacters;
+  onlyWordCharacters = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   int Result = This->WordEndPosition(pos,onlyWordCharacters);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -57741,7 +57583,7 @@ void wxStyledTextCtrl_TextWidth(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &style)) Badarg(3224,"style");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(3224,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3224,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->TextWidth(style,text);
@@ -57790,7 +57632,8 @@ void wxStyledTextCtrl_SetUseVerticalScrollBar(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  show = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool show;
+  show = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetUseVerticalScrollBar(show);
 
@@ -57821,7 +57664,7 @@ void wxStyledTextCtrl_AppendText(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3229,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3229,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AppendText(text);
@@ -57851,7 +57694,8 @@ void wxStyledTextCtrl_SetTwoPhaseDraw(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  twoPhase = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool twoPhase;
+  twoPhase = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetTwoPhaseDraw(twoPhase);
 
@@ -57906,7 +57750,8 @@ void wxStyledTextCtrl_SetFoldMarginColour(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *back_t;
   int back_sz;
   if(!enif_get_tuple(env, argv[2], &back_sz, &back_t)) Badarg(3235,"back");
@@ -57932,7 +57777,8 @@ void wxStyledTextCtrl_SetFoldMarginHiColour(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *fore_t;
   int fore_sz;
   if(!enif_get_tuple(env, argv[2], &fore_sz, &fore_t)) Badarg(3236,"fore");
@@ -58780,7 +58626,8 @@ void wxStyledTextCtrl_SetViewEOL(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  visible = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool visible;
+  visible = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetViewEOL(visible);
 
@@ -58926,7 +58773,7 @@ void wxStyledTextCtrl_SearchNext(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &flags)) Badarg(3308,"flags");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(3308,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3308,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->SearchNext(flags,text);
@@ -58947,7 +58794,7 @@ void wxStyledTextCtrl_SearchPrev(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &flags)) Badarg(3309,"flags");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(3309,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3309,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   int Result = This->SearchPrev(flags,text);
@@ -58979,7 +58826,8 @@ void wxStyledTextCtrl_UsePopUp(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  allowPopUp = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool allowPopUp;
+  allowPopUp = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->UsePopUp(allowPopUp);
 
@@ -59053,7 +58901,8 @@ void wxStyledTextCtrl_SetSTCFocus(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  focus = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool focus;
+  focus = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetSTCFocus(focus);
 
@@ -59112,7 +58961,8 @@ void wxStyledTextCtrl_SetMouseDownCaptures(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  captures = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool captures;
+  captures = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetMouseDownCaptures(captures);
 
@@ -59373,7 +59223,8 @@ void wxStyledTextCtrl_SetHotspotActiveForeground(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *fore_t;
   int fore_sz;
   if(!enif_get_tuple(env, argv[2], &fore_sz, &fore_t)) Badarg(3338,"fore");
@@ -59399,7 +59250,8 @@ void wxStyledTextCtrl_SetHotspotActiveBackground(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useSetting = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useSetting;
+  useSetting = enif_is_identical(argv[1], WXE_ATOM_true);
   const ERL_NIF_TERM *back_t;
   int back_sz;
   if(!enif_get_tuple(env, argv[2], &back_sz, &back_t)) Badarg(3339,"back");
@@ -59425,7 +59277,8 @@ void wxStyledTextCtrl_SetHotspotActiveUnderline(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  underline = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool underline;
+  underline = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetHotspotActiveUnderline(underline);
 
@@ -59439,7 +59292,8 @@ void wxStyledTextCtrl_SetHotspotSingleLine(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  singleLine = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool singleLine;
+  singleLine = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetHotspotSingleLine(singleLine);
 
@@ -59547,7 +59401,7 @@ void wxStyledTextCtrl_CopyText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &length)) Badarg(3348,"length");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], text_bin)) Badarg(3348,"text")
+  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3348,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->CopyText(length,text);
@@ -59815,7 +59669,7 @@ void wxStyledTextCtrl_SetWhitespaceChars(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characters_bin;
   wxString characters;
-  if(enif_inspect_binary(env, argv[1], characters_bin)) Badarg(3368,"characters")
+  if(enif_inspect_binary(env, argv[1], &characters_bin)) Badarg(3368,"characters")
   characters = wxString(characters_bin.data, wxConvUTF8, characters_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetWhitespaceChars(characters);
@@ -59907,7 +59761,8 @@ void wxStyledTextCtrl_SetCaretSticky(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  useCaretStickyBehaviour = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool useCaretStickyBehaviour;
+  useCaretStickyBehaviour = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetCaretSticky(useCaretStickyBehaviour);
 
@@ -59934,7 +59789,8 @@ void wxStyledTextCtrl_SetPasteConvertEndings(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  convert = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool convert;
+  convert = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetPasteConvertEndings(convert);
 
@@ -60081,11 +59937,11 @@ void wxStyledTextCtrl_SetProperty(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary key_bin;
   wxString key;
-  if(enif_inspect_binary(env, argv[1], key_bin)) Badarg(3386,"key")
+  if(enif_inspect_binary(env, argv[1], &key_bin)) Badarg(3386,"key")
   key = wxString(key_bin.data, wxConvUTF8, key_bin.size);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[2], value_bin)) Badarg(3386,"value")
+  if(enif_inspect_binary(env, argv[2], &value_bin)) Badarg(3386,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetProperty(key,value);
@@ -60104,7 +59960,7 @@ void wxStyledTextCtrl_SetKeyWords(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &keywordSet)) Badarg(3387,"keywordSet");
   ErlNifBinary keyWords_bin;
   wxString keyWords;
-  if(enif_inspect_binary(env, argv[2], keyWords_bin)) Badarg(3387,"keyWords")
+  if(enif_inspect_binary(env, argv[2], &keyWords_bin)) Badarg(3387,"keyWords")
   keyWords = wxString(keyWords_bin.data, wxConvUTF8, keyWords_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetKeyWords(keywordSet,keyWords);
@@ -60121,7 +59977,7 @@ void wxStyledTextCtrl_SetLexerLanguage(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary language_bin;
   wxString language;
-  if(enif_inspect_binary(env, argv[1], language_bin)) Badarg(3388,"language")
+  if(enif_inspect_binary(env, argv[1], &language_bin)) Badarg(3388,"language")
   language = wxString(language_bin.data, wxConvUTF8, language_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetLexerLanguage(language);
@@ -60138,7 +59994,7 @@ void wxStyledTextCtrl_GetProperty(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary key_bin;
   wxString key;
-  if(enif_inspect_binary(env, argv[1], key_bin)) Badarg(3389,"key")
+  if(enif_inspect_binary(env, argv[1], &key_bin)) Badarg(3389,"key")
   key = wxString(key_bin.data, wxConvUTF8, key_bin.size);
   if(!This) throw wxe_badarg(0);
   wxString Result = This->GetProperty(key);
@@ -60189,7 +60045,7 @@ void wxStyledTextCtrl_StyleSetSpec(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &styleNum)) Badarg(3392,"styleNum");
   ErlNifBinary spec_bin;
   wxString spec;
-  if(enif_inspect_binary(env, argv[2], spec_bin)) Badarg(3392,"spec")
+  if(enif_inspect_binary(env, argv[2], &spec_bin)) Badarg(3392,"spec")
   spec = wxString(spec_bin.data, wxConvUTF8, spec_bin.size);
   if(!This) throw wxe_badarg(0);
   This->StyleSetSpec(styleNum,spec);
@@ -60228,11 +60084,14 @@ void wxStyledTextCtrl_StyleSetFontAttr(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &size)) Badarg(3394,"size");
   ErlNifBinary faceName_bin;
   wxString faceName;
-  if(enif_inspect_binary(env, argv[3], faceName_bin)) Badarg(3394,"faceName")
+  if(enif_inspect_binary(env, argv[3], &faceName_bin)) Badarg(3394,"faceName")
   faceName = wxString(faceName_bin.data, wxConvUTF8, faceName_bin.size);
-  bold = enif_is_identical(argv[4], WXE_ATOM_TRUE);
-  italic = enif_is_identical(argv[5], WXE_ATOM_TRUE);
-  underline = enif_is_identical(argv[6], WXE_ATOM_TRUE);
+  bool bold;
+  bold = enif_is_identical(argv[4], WXE_ATOM_true);
+  bool italic;
+  italic = enif_is_identical(argv[5], WXE_ATOM_true);
+  bool underline;
+  underline = enif_is_identical(argv[6], WXE_ATOM_true);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[7];
   if(!enif_is_list(env, lstTail)) Badarg(3394,"Options");
@@ -60332,7 +60191,7 @@ void wxStyledTextCtrl_GetSelection(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(startPos),
   rt.make_int(endPos));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -60436,7 +60295,8 @@ void wxStyledTextCtrl_SetLastKeydownProcessed(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxStyledTextCtrl *This;
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
-  val = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool val;
+  val = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetLastKeydownProcessed(val);
 
@@ -60452,7 +60312,7 @@ void wxStyledTextCtrl_SaveFile(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], filename_bin)) Badarg(3407,"filename")
+  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3407,"filename")
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SaveFile(filename);
@@ -60471,7 +60331,7 @@ void wxStyledTextCtrl_LoadFile(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], filename_bin)) Badarg(3408,"filename")
+  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3408,"filename")
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->LoadFile(filename);
@@ -60515,7 +60375,7 @@ void wxStyledTextCtrl_DoDropText(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(3410,"y");
   ErlNifBinary data_bin;
   wxString data;
-  if(enif_inspect_binary(env, argv[3], data_bin)) Badarg(3410,"data")
+  if(enif_inspect_binary(env, argv[3], &data_bin)) Badarg(3410,"data")
   data = wxString(data_bin.data, wxConvUTF8, data_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->DoDropText(x,y,data);
@@ -60549,10 +60409,10 @@ void wxStyledTextCtrl_AddTextRaw(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   const char * text;
   ErlNifBinary text_bin;
-  if(!enif_inspect_binary(env, argv[1], text_bin)) Badarg(3412,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3412,"text");
   text = (const char*) text_bin.data;
   if(!This) throw wxe_badarg(0);
-  This->AddTextRaw(text);
+  This->AddTextRaw(&text);
 
 }
 
@@ -60568,10 +60428,10 @@ void wxStyledTextCtrl_InsertTextRaw(WxeApp *app, wxeCommand& cmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3413,"pos");
   const char * text;
   ErlNifBinary text_bin;
-  if(!enif_inspect_binary(env, argv[2], text_bin)) Badarg(3413,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3413,"text");
   text = (const char*) text_bin.data;
   if(!This) throw wxe_badarg(0);
-  This->InsertTextRaw(pos,text);
+  This->InsertTextRaw(pos,&text);
 
 }
 
@@ -60589,7 +60449,7 @@ void wxStyledTextCtrl_GetCurLineRaw(WxeApp *app, wxeCommand& cmd)
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
  if(Result) {    rt.make_binary(Result, strlen(Result)) } else {rt.make_atom("null");};  rt.make_int(linePos));
-  rt:send(msg);
+  rt.send(msg);
 
 }
 
@@ -60654,10 +60514,10 @@ void wxStyledTextCtrl_SetTextRaw(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   const char * text;
   ErlNifBinary text_bin;
-  if(!enif_inspect_binary(env, argv[1], text_bin)) Badarg(3418,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3418,"text");
   text = (const char*) text_bin.data;
   if(!This) throw wxe_badarg(0);
-  This->SetTextRaw(text);
+  This->SetTextRaw(&text);
 
 }
 
@@ -60686,10 +60546,10 @@ void wxStyledTextCtrl_AppendTextRaw(WxeApp *app, wxeCommand& cmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   const char * text;
   ErlNifBinary text_bin;
-  if(!enif_inspect_binary(env, argv[1], text_bin)) Badarg(3420,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3420,"text");
   text = (const char*) text_bin.data;
   if(!This) throw wxe_badarg(0);
-  This->AppendTextRaw(text);
+  This->AppendTextRaw(&text);
 
 }
 
@@ -60703,7 +60563,7 @@ void wxArtProvider_GetBitmap(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary id_bin;
   wxString id;
-  if(enif_inspect_binary(env, argv[0], id_bin)) Badarg(3421,"id")
+  if(enif_inspect_binary(env, argv[0], &id_bin)) Badarg(3421,"id")
   id = wxString(id_bin.data, wxConvUTF8, id_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -60715,7 +60575,7 @@ void wxArtProvider_GetBitmap(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3421,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "client"))) {
   ErlNifBinary client_bin;
-  if(enif_inspect_binary(env, tpl[1], client_bin)) Badarg(3421,"client")
+  if(enif_inspect_binary(env, tpl[1], &client_bin)) Badarg(3421,"client")
   client = wxString(client_bin.data, wxConvUTF8, client_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "size"))) {
   const ERL_NIF_TERM *size_t;
@@ -60744,7 +60604,7 @@ void wxArtProvider_GetIcon(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary id_bin;
   wxString id;
-  if(enif_inspect_binary(env, argv[0], id_bin)) Badarg(3422,"id")
+  if(enif_inspect_binary(env, argv[0], &id_bin)) Badarg(3422,"id")
   id = wxString(id_bin.data, wxConvUTF8, id_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -60756,7 +60616,7 @@ void wxArtProvider_GetIcon(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3422,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "client"))) {
   ErlNifBinary client_bin;
-  if(enif_inspect_binary(env, tpl[1], client_bin)) Badarg(3422,"client")
+  if(enif_inspect_binary(env, tpl[1], &client_bin)) Badarg(3422,"client")
   client = wxString(client_bin.data, wxConvUTF8, client_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "size"))) {
   const ERL_NIF_TERM *size_t;
@@ -60890,7 +60750,7 @@ void wxTreeEvent_SetToolTip(WxeApp *app, wxeCommand& cmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   ErlNifBinary toolTip_bin;
   wxString toolTip;
-  if(enif_inspect_binary(env, argv[1], toolTip_bin)) Badarg(3430,"toolTip")
+  if(enif_inspect_binary(env, argv[1], &toolTip_bin)) Badarg(3430,"toolTip")
   toolTip = wxString(toolTip_bin.data, wxConvUTF8, toolTip_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetToolTip(toolTip);
@@ -60961,8 +60821,6 @@ void wxNotebookEvent_SetSelection(WxeApp *app, wxeCommand& cmd)
 void wxFileDataObject_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxFileDataObject * Result = new wxFileDataObject();
   app->newPtr((void *) Result, 213, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -60980,7 +60838,7 @@ void wxFileDataObject_AddFile(WxeApp *app, wxeCommand& cmd)
   This = (wxFileDataObject *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], filename_bin)) Badarg(3436,"filename")
+  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3436,"filename")
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg(0);
   This->AddFile(filename);
@@ -61031,7 +60889,7 @@ void wxTextDataObject_new(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3439,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], text_bin)) Badarg(3439,"text")
+  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(3439,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else        Badarg(3439,"Options");
   };
@@ -61082,7 +60940,7 @@ void wxTextDataObject_SetText(WxeApp *app, wxeCommand& cmd)
   This = (wxTextDataObject *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], text_bin)) Badarg(3442,"text")
+  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3442,"text")
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetText(text);
@@ -61187,8 +61045,6 @@ void wxBitmapDataObject_destroy(WxeApp *app, wxeCommand& cmd)
 void wxClipboard_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxClipboard * Result = new EwxClipboard();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -61336,7 +61192,7 @@ void wxClipboard_UsePrimarySelection(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(3461,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3461,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "primary"))) {
-  primary = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  primary = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(3461,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -61365,8 +61221,6 @@ void wxClipboard_IsSupported(WxeApp *app, wxeCommand& cmd)
 void wxClipboard_Get(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxClipboard * Result = (wxClipboard*)wxClipboard::Get();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_ref(app->getRef((void *)Result,memenv), "wxClipboard"));
@@ -61407,8 +61261,6 @@ void wxSpinEvent_SetPosition(WxeApp *app, wxeCommand& cmd)
 void wxSplitterWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxSplitterWindow * Result = new EwxSplitterWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -61546,7 +61398,7 @@ void wxSplitterWindow_GetSashGravity(WxeApp *app, wxeCommand& cmd)
   if(!This) throw wxe_badarg(0);
   double Result = This->GetSashGravity();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
-  rt.send(rt.make_float(Result));
+  rt.send(rt.make_double(Result));
 
 }
 
@@ -61694,7 +61546,7 @@ void wxSplitterWindow_SetSashPosition(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(3480,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3480,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "redraw"))) {
-  redraw = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  redraw = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(3480,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -61930,8 +61782,6 @@ void wxSplitterEvent_SetSashPosition(WxeApp *app, wxeCommand& cmd)
 void wxHtmlWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxHtmlWindow * Result = new EwxHtmlWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62000,7 +61850,7 @@ void wxHtmlWindow_AppendToPage(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary source_bin;
   wxString source;
-  if(enif_inspect_binary(env, argv[1], source_bin)) Badarg(3495,"source")
+  if(enif_inspect_binary(env, argv[1], &source_bin)) Badarg(3495,"source")
   source = wxString(source_bin.data, wxConvUTF8, source_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->AppendToPage(source);
@@ -62152,7 +62002,7 @@ void wxHtmlWindow_LoadFile(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filenameStr;
-  if(!enif_inspect_binary(env, argv[1], filename_bin)) Badarg(3505,"filename");
+  if(!enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3505,"filename");
   filenameStr = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   wxFileName  filename = wxFileName(filenameStr);
   if(!This) throw wxe_badarg(0);
@@ -62172,7 +62022,7 @@ void wxHtmlWindow_LoadPage(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary location_bin;
   wxString location;
-  if(enif_inspect_binary(env, argv[1], location_bin)) Badarg(3506,"location")
+  if(enif_inspect_binary(env, argv[1], &location_bin)) Badarg(3506,"location")
   location = wxString(location_bin.data, wxConvUTF8, location_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->LoadPage(location);
@@ -62277,11 +62127,11 @@ void wxHtmlWindow_SetFonts(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary normal_face_bin;
   wxString normal_face;
-  if(enif_inspect_binary(env, argv[1], normal_face_bin)) Badarg(3512,"normal_face")
+  if(enif_inspect_binary(env, argv[1], &normal_face_bin)) Badarg(3512,"normal_face")
   normal_face = wxString(normal_face_bin.data, wxConvUTF8, normal_face_bin.size);
   ErlNifBinary fixed_face_bin;
   wxString fixed_face;
-  if(enif_inspect_binary(env, argv[2], fixed_face_bin)) Badarg(3512,"fixed_face")
+  if(enif_inspect_binary(env, argv[2], &fixed_face_bin)) Badarg(3512,"fixed_face")
   fixed_face = wxString(fixed_face_bin.data, wxConvUTF8, fixed_face_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -62296,7 +62146,7 @@ void wxHtmlWindow_SetFonts(WxeApp *app, wxeCommand& cmd)
     } else        Badarg(3512,"Options");
   };
   if(!This) throw wxe_badarg(0);
-  This->SetFonts(normal_face,fixed_face,sizes);
+  This->SetFonts(normal_face,fixed_face,&sizes);
 
 }
 
@@ -62310,7 +62160,7 @@ void wxHtmlWindow_SetPage(WxeApp *app, wxeCommand& cmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary source_bin;
   wxString source;
-  if(enif_inspect_binary(env, argv[1], source_bin)) Badarg(3513,"source")
+  if(enif_inspect_binary(env, argv[1], &source_bin)) Badarg(3513,"source")
   source = wxString(source_bin.data, wxConvUTF8, source_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->SetPage(source);
@@ -62331,7 +62181,7 @@ void wxHtmlWindow_SetRelatedFrame(WxeApp *app, wxeCommand& cmd)
   frame = (wxFrame *) memenv->getPtr(env, argv[1]);
   ErlNifBinary format_bin;
   wxString format;
-  if(enif_inspect_binary(env, argv[2], format_bin)) Badarg(3514,"format")
+  if(enif_inspect_binary(env, argv[2], &format_bin)) Badarg(3514,"format")
   format = wxString(format_bin.data, wxConvUTF8, format_bin.size);
   if(!This) throw wxe_badarg(0);
   This->SetRelatedFrame(frame,format);
@@ -62441,8 +62291,6 @@ void wxSystemSettings_GetMetric(WxeApp *app, wxeCommand& cmd)
 void wxSystemSettings_GetScreenType(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxSystemSettings::GetScreenType();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -62457,7 +62305,7 @@ void wxSystemOptions_GetOption(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(3523,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3523,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   wxString Result = wxSystemOptions::GetOption(name);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62473,7 +62321,7 @@ void wxSystemOptions_GetOptionInt(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(3524,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3524,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int Result = wxSystemOptions::GetOptionInt(name);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62489,7 +62337,7 @@ void wxSystemOptions_HasOption(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(3525,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3525,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   bool Result = wxSystemOptions::HasOption(name);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62505,7 +62353,7 @@ void wxSystemOptions_IsFalse(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(3526,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3526,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   bool Result = wxSystemOptions::IsFalse(name);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62521,11 +62369,11 @@ void wxSystemOptions_SetOption_2_1(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(3527,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3527,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], value_bin)) Badarg(3527,"value")
+  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(3527,"value")
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   wxSystemOptions::SetOption(name,value);
 
@@ -62539,7 +62387,7 @@ void wxSystemOptions_SetOption_2_0(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], name_bin)) Badarg(3528,"name")
+  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3528,"name")
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int value;
   if(!enif_get_int(env, argv[1], &value)) Badarg(3528,"value");
@@ -62775,7 +62623,7 @@ void wxAuiManagerEvent_Veto(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(3543,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3543,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "veto"))) {
-  veto = enif_is_identical(tpl[1], WXE_ATOM_TRUE);
+  veto = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else        Badarg(3543,"Options");
   };
   if(!This) throw wxe_badarg(0);
@@ -62806,7 +62654,8 @@ void wxAuiManagerEvent_SetCanVeto(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   wxAuiManagerEvent *This;
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
-  can_veto = enif_is_identical(argv[1], WXE_ATOM_TRUE);
+  bool can_veto;
+  can_veto = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg(0);
   This->SetCanVeto(can_veto);
 
@@ -62831,8 +62680,6 @@ void wxAuiManagerEvent_CanVeto(WxeApp *app, wxeCommand& cmd)
 void wxLogNull_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxLogNull * Result = new wxLogNull();
   app->newPtr((void *) Result, 227, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62856,8 +62703,6 @@ void wxLogNull_destroy(WxeApp *app, wxeCommand& cmd)
 void wxTaskBarIcon_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxTaskBarIcon * Result = new EwxTaskBarIcon();
   app->newPtr((void *) Result, 1, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -62918,7 +62763,7 @@ void wxTaskBarIcon_SetIcon(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3553,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "tooltip"))) {
   ErlNifBinary tooltip_bin;
-  if(enif_inspect_binary(env, tpl[1], tooltip_bin)) Badarg(3553,"tooltip")
+  if(enif_inspect_binary(env, tpl[1], &tooltip_bin)) Badarg(3553,"tooltip")
   tooltip = wxString(tooltip_bin.data, wxConvUTF8, tooltip_bin.size);
     } else        Badarg(3553,"Options");
   };
@@ -62933,8 +62778,6 @@ void wxTaskBarIcon_SetIcon(WxeApp *app, wxeCommand& cmd)
 void wxLocale_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxLocale * Result = new EwxLocale();
   app->newPtr((void *) Result, 231, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -63023,7 +62866,7 @@ void wxLocale_AddCatalog_1(WxeApp *app, wxeCommand& cmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szDomain_bin;
   wxString szDomain;
-  if(enif_inspect_binary(env, argv[1], szDomain_bin)) Badarg(3560,"szDomain")
+  if(enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3560,"szDomain")
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->AddCatalog(szDomain);
@@ -63042,13 +62885,13 @@ void wxLocale_AddCatalog_3(WxeApp *app, wxeCommand& cmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szDomain_bin;
   wxString szDomain;
-  if(enif_inspect_binary(env, argv[1], szDomain_bin)) Badarg(3561,"szDomain")
+  if(enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3561,"szDomain")
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
   int msgIdLanguage;
   if(!enif_get_int(env, argv[2], &msgIdLanguage)) Badarg(3561,"msgIdLanguage"); // enum
   ErlNifBinary msgIdCharset_bin;
   wxString msgIdCharset;
-  if(enif_inspect_binary(env, argv[3], msgIdCharset_bin)) Badarg(3561,"msgIdCharset")
+  if(enif_inspect_binary(env, argv[3], &msgIdCharset_bin)) Badarg(3561,"msgIdCharset")
   msgIdCharset = wxString(msgIdCharset_bin.data, wxConvUTF8, msgIdCharset_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->AddCatalog(szDomain,msgIdLanguage,msgIdCharset);
@@ -63065,7 +62908,7 @@ void wxLocale_AddCatalogLookupPathPrefix(WxeApp *app, wxeCommand& cmd)
   ERL_NIF_TERM * argv = cmd.args;
   ErlNifBinary prefix_bin;
   wxString prefix;
-  if(enif_inspect_binary(env, argv[0], prefix_bin)) Badarg(3562,"prefix")
+  if(enif_inspect_binary(env, argv[0], &prefix_bin)) Badarg(3562,"prefix")
   prefix = wxString(prefix_bin.data, wxConvUTF8, prefix_bin.size);
   wxLocale::AddCatalogLookupPathPrefix(prefix);
 
@@ -63156,7 +62999,7 @@ void wxLocale_GetString_2(WxeApp *app, wxeCommand& cmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szOrigString_bin;
   wxString szOrigString;
-  if(enif_inspect_binary(env, argv[1], szOrigString_bin)) Badarg(3568,"szOrigString")
+  if(enif_inspect_binary(env, argv[1], &szOrigString_bin)) Badarg(3568,"szOrigString")
   szOrigString = wxString(szOrigString_bin.data, wxConvUTF8, szOrigString_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -63168,7 +63011,7 @@ void wxLocale_GetString_2(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3568,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "szDomain"))) {
   ErlNifBinary szDomain_bin;
-  if(enif_inspect_binary(env, tpl[1], szDomain_bin)) Badarg(3568,"szDomain")
+  if(enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3568,"szDomain")
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
     } else        Badarg(3568,"Options");
   };
@@ -63190,11 +63033,11 @@ void wxLocale_GetString_4(WxeApp *app, wxeCommand& cmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szOrigString_bin;
   wxString szOrigString;
-  if(enif_inspect_binary(env, argv[1], szOrigString_bin)) Badarg(3569,"szOrigString")
+  if(enif_inspect_binary(env, argv[1], &szOrigString_bin)) Badarg(3569,"szOrigString")
   szOrigString = wxString(szOrigString_bin.data, wxConvUTF8, szOrigString_bin.size);
   ErlNifBinary szOrigString2_bin;
   wxString szOrigString2;
-  if(enif_inspect_binary(env, argv[2], szOrigString2_bin)) Badarg(3569,"szOrigString2")
+  if(enif_inspect_binary(env, argv[2], &szOrigString2_bin)) Badarg(3569,"szOrigString2")
   szOrigString2 = wxString(szOrigString2_bin.data, wxConvUTF8, szOrigString2_bin.size);
   int n;
   if(!enif_get_int(env, argv[3], &n)) Badarg(3569,"n");
@@ -63208,7 +63051,7 @@ void wxLocale_GetString_4(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3569,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "szDomain"))) {
   ErlNifBinary szDomain_bin;
-  if(enif_inspect_binary(env, tpl[1], szDomain_bin)) Badarg(3569,"szDomain")
+  if(enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3569,"szDomain")
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
     } else        Badarg(3569,"Options");
   };
@@ -63230,7 +63073,7 @@ void wxLocale_GetHeaderValue(WxeApp *app, wxeCommand& cmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szHeader_bin;
   wxString szHeader;
-  if(enif_inspect_binary(env, argv[1], szHeader_bin)) Badarg(3570,"szHeader")
+  if(enif_inspect_binary(env, argv[1], &szHeader_bin)) Badarg(3570,"szHeader")
   szHeader = wxString(szHeader_bin.data, wxConvUTF8, szHeader_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -63242,7 +63085,7 @@ void wxLocale_GetHeaderValue(WxeApp *app, wxeCommand& cmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3570,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "szDomain"))) {
   ErlNifBinary szDomain_bin;
-  if(enif_inspect_binary(env, tpl[1], szDomain_bin)) Badarg(3570,"szDomain")
+  if(enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3570,"szDomain")
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
     } else        Badarg(3570,"Options");
   };
@@ -63272,8 +63115,6 @@ void wxLocale_GetSysName(WxeApp *app, wxeCommand& cmd)
 void wxLocale_GetSystemEncoding(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxLocale::GetSystemEncoding();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -63284,8 +63125,6 @@ void wxLocale_GetSystemEncoding(WxeApp *app, wxeCommand& cmd)
 void wxLocale_GetSystemEncodingName(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxString Result = wxLocale::GetSystemEncodingName();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make(Result));
@@ -63296,8 +63135,6 @@ void wxLocale_GetSystemEncodingName(WxeApp *app, wxeCommand& cmd)
 void wxLocale_GetSystemLanguage(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxLocale::GetSystemLanguage();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_int(Result));
@@ -63314,7 +63151,7 @@ void wxLocale_IsLoaded(WxeApp *app, wxeCommand& cmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szDomain_bin;
   wxString szDomain;
-  if(enif_inspect_binary(env, argv[1], szDomain_bin)) Badarg(3575,"szDomain")
+  if(enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3575,"szDomain")
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
   if(!This) throw wxe_badarg(0);
   bool Result = This->IsLoaded(szDomain);
@@ -63386,8 +63223,6 @@ void wxPopupWindow_new_2(WxeApp *app, wxeCommand& cmd)
 void wxPopupWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPopupWindow * Result = new EwxPopupWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -63460,8 +63295,6 @@ void wxPopupWindow_Position(WxeApp *app, wxeCommand& cmd)
 void wxPopupTransientWindow_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxPopupTransientWindow * Result = new EwxPopupTransientWindow();
   app->newPtr((void *) Result, 0, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -63540,8 +63373,6 @@ void wxPopupTransientWindow_Dismiss(WxeApp *app, wxeCommand& cmd)
 void wxOverlay_new(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxOverlay * Result = new wxOverlay();
   app->newPtr((void *) Result, 236, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
@@ -63807,8 +63638,6 @@ void wxDisplay_IsPrimary(WxeApp *app, wxeCommand& cmd)
 void wxDisplay_GetCount(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   int Result = wxDisplay::GetCount();
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);
   rt.send(rt.make_uint(Result));
@@ -63887,8 +63716,6 @@ void wxGCDC_new_1(WxeApp *app, wxeCommand& cmd)
 void wxGCDC_new_0(WxeApp *app, wxeCommand& cmd)
 {
   wxeMemEnv *memenv = cmd.memenv;
-  ErlNifEnv *env = cmd.env;
-  ERL_NIF_TERM * argv = cmd.args;
   wxGCDC * Result = new EwxGCDC();
   app->newPtr((void *) Result, 8, memenv);
   wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);

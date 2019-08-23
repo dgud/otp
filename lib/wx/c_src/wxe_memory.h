@@ -58,7 +58,7 @@ class wxe_badarg
  wxe_badarg(int Ref) : ref(Ref) { } ;
  wxe_badarg(const char * Var) : var(Var) { } ;
     int ref;
-    char * var = NULL;
+    const char * var = NULL;
 };
 
 class wxeMemEnv {
