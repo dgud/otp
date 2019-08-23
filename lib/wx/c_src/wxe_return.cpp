@@ -90,9 +90,13 @@ INLINE
 ERL_NIF_TERM wxeReturn::make_binary(const char* buf, const size_t size) {
   ERL_NIF_TERM bin;
   unsigned char * data;
-  data = enif_make_new_binary(env, size, &bin);
-  memcpy(data, buf, size);
-  return bin;
+  if(buf) {
+    data = enif_make_new_binary(env, size, &bin);
+    memcpy(data, buf, size);
+    return bin;
+  } else {
+    return rt.make_atom("null");
+  }
 }
 
 INLINE

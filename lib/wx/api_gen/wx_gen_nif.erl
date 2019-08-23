@@ -334,12 +334,12 @@ gen_method(CName, M=#method{name=N,params=[Ps],method_type=destructor,id=MethodI
 	root ->
 	    ?WTC("gen_method"),
             w("// ~s::~s~n", [CName,N]),
-	    w("void ~s(WxeApp *app, wxeCommand& cmd)~n",
+	    w("void ~s(WxeApp *app, wxeCommand& Ecmd)~n",
               [wx_gen_erl:get_unique_name(MethodId)]),
             w("{~n",[]),
-            w(" ErlNifEnv *env = cmd.env;~n"),
-            w(" wxeMemEnv *memenv = cmd.memenv;~n"),
-            w(" ERL_NIF_TERM * argv = cmd.args;~n"),
+            w(" ErlNifEnv *env = Ecmd.env;~n"),
+            w(" wxeMemEnv *memenv = Ecmd.memenv;~n"),
+            w(" ERL_NIF_TERM * argv = Ecmd.args;~n"),
 	    decode_arguments([Ps]),
 	    w(" if(This) {", []),
 	    w("   ((WxeApp *) wxTheApp)->clearPtr((void *) This);~n", []),
@@ -359,17 +359,17 @@ gen_method(CName,  M=#method{name=N,params=Ps0,type=T,method_type=MT,id=MethodId
     Endif1 = gen_if(deprecated, FOpts),
     Endif2 = gen_if(test_if, FOpts),
     w("// ~s::~s~n", [CName,N]),
-    w("void ~s(WxeApp *app, wxeCommand& cmd)~n",
+    w("void ~s(WxeApp *app, wxeCommand& Ecmd)~n",
       [wx_gen_erl:get_unique_name(MethodId)]),
     w("{~n",[]),
     Ps1 = declare_variables(void, Ps0),
 
-    w("  wxeMemEnv *memenv = cmd.memenv;~n"),
+    w("  wxeMemEnv *memenv = Ecmd.memenv;~n"),
     case length([In || #param{in=In,where=Where} <- Ps1, In =/= false, Where =/= c]) of
         0 -> ignore;
         _Else ->
-            w("  ErlNifEnv *env = cmd.env;~n"),
-            w("  ERL_NIF_TERM * argv = cmd.args;~n")
+            w("  ErlNifEnv *env = Ecmd.env;~n"),
+            w("  ERL_NIF_TERM * argv = Ecmd.args;~n")
     end,
 
     {Ps2,Argc} = decode_arguments(Ps1),
@@ -441,9 +441,12 @@ declare_type(N,false,_,#type{name=Type, base=int64, ref=reference}) ->
     w("  ~s ~s;~n", [Type,N]);
 declare_type(N,false,_,#type{base={comp,_,_},single=true,name=Type,ref=reference}) ->
     w("  ~s ~s;~n", [Type,N]);
-declare_type(N,true,Def,#type{base=Base,single=true,name=Type,by_val=true})
+declare_type(N,true,Def,#type{base=Base,single=true,name=Type,by_val=true,mod=Mod})
   when Base =:= int; Base =:= long; Base =:= float; Base =:= double; Base =:= bool ->
-    w("  ~s ~s=~s;~n", [Type,N,Def]);
+    case Type of
+        "char" -> w("  ~sint ~s=~s;~n", [mods(Mod),N,Def]);
+        _  -> w("  ~s ~s=~s;~n", [Type,N,Def])
+    end;
 declare_type(N,true,Def,#type{base={comp,_,_},single=true,name=Type,mod=Mod,ref={pointer,1}}) ->
     w("  ~s~s *~s=~s; ~s ~s;~n", [mods(Mod),Type,N,Def,Type,N++"Tmp"]);
 declare_type(N,true,Def,#type{base={comp,_,_},single=true,name=Type,ref=reference}) ->
@@ -475,7 +478,7 @@ declare_type(N,true,Def,#type{name=Type, ref={pointer,2}}) ->
     %% xxxx
     w("  ~s ** ~s = ~s;~n", [Type,N,Def]);
 declare_type(N,true,Def,#type{name=Type, single=array, ref={pointer,1}}) ->
-    w("  int * ~sLen = 0;~n", [N]),
+    w("  unsigned int ~sLen;~n", [N]),
     w("  ~s * ~s = ~s;~n", [Type,N,Def]);
 declare_type(N,true,"",#type{name="wxArrayString", single=array, ref=reference}) ->
     w("  wxArrayString ~s;~n", [N]);
@@ -569,25 +572,29 @@ decode_arg(N,#type{base={enum,Type},single=true},Arg,Argc) ->
         {Class,Enum} -> wa("  ~s::~s ~s;~n",[Class,Enum, N], Arg)
     end,
     w("  if(!enif_get_int(env, ~s, (int *) &~s)) ~s; // enum~n", [Argc, N, badarg(N)]);
-%% decode_arg(N,#type{base={comp,"wxDateTime",List},single=true,name=Type,ref=Ref},Arg,Argc) ->
-%%     Decl = fun({int,Spec}) ->
-%% 		   w(" int * ~s~s = (int *) bp; bp += 4;~n", [N,Spec])
-%% 	   end,
-%%     lists:foreach(Decl,List),
-%%     Name = fun({_,"Mo"}) -> "(wxDateTime::Month) *"++N++"Mo";
-%% 	      ({_,"Y"}) -> "*"++N++"Y";
-%% 	      ({_,Spec}) -> "(wxDateTime::wxDateTime_t) *"++N++Spec
-%% 	   end,
-%%     case Arg of
-%% 	arg -> w(" ~s ~s = ~s(~s);~n", [Type,N,Type,args(Name, ",", List)]);
-%% 	opt when Ref =:= {pointer,1} ->
-%% 	    w(" ~sTmp = ~s(~s); ~s = & ~sTmp;~n",
-%% 	      [N,Type,args(Name, ",", List), N,N]);
-%% 	opt ->
-%% 	    w(" ~s = ~s(~s);~n", [N,Type,args(Name, ",", List)])
-%%     end;
+decode_arg(N,#type{base={comp,"wxDateTime",List},single=true,name=Type,ref=Ref},Arg,Argc) ->
+    w("  const ERL_NIF_TERM *~s_t;~n", [N]),
+    w("  int ~s_sz;~n", [N]),
+    w("  if(!enif_get_tuple(env, ~s, &~s_sz, &~s_t)) ~s;~n", [Argc,N,N,badarg(N)]),
+    Decl = fun({int,Spec},Idx) ->
+                   w("  int ~s~s;~n", [N,Spec]),
+                   w("  if(!enif_get_int(env, ~s_t[~w], &~s~s)) ~s;~n", [N,Idx,N,Spec,badarg(N)]),
+                   Idx+1
+	   end,
+    lists:foldl(Decl,0,List),
+    Name = fun({_,"Mo"}) -> "(wxDateTime::Month) "++N++"Mo";
+	      ({_,"Y"}) -> ""++N++"Y";
+	      ({_,Spec}) -> "(wxDateTime::wxDateTime_t) "++N++Spec
+	   end,
+    case Arg of
+	arg -> w(" ~s ~s = ~s(~s);~n", [Type,N,Type,args(Name, ",", List)]);
+	opt when Ref =:= {pointer,1} ->
+	    w(" ~sTmp = ~s(~s); ~s = & ~sTmp;~n",
+	      [N,Type,args(Name, ",", List), N,N]);
+	opt ->
+	    w(" ~s = ~s(~s);~n", [N,Type,args(Name, ",", List)])
+    end;
 decode_arg(N,#type{base={comp,_,List},single=true,name=Type,ref=Ref},Arg,Argc) ->
-    Len = length(List),
     w("  const ERL_NIF_TERM *~s_t;~n", [N]),
     w("  int ~s_sz;~n", [N]),
     w("  if(!enif_get_tuple(env, ~s, &~s_sz, &~s_t)) ~s;~n", [Argc,N,N,badarg(N)]),
@@ -758,7 +765,7 @@ decode_arg(N,#type{by_val=true,single=array,base={class,Class}},arg,Argc) ->
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
     w("    if(!enif_get_list_cell(env, ~sTail, &~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
-    w("    ~s_ptr = * (~s *) memenv->getPtr(env, ~s);~n", [N, Class, N]),
+    w("    *~s_ptr = * (~s *) memenv->getPtr(env, ~sHead);~n", [N, Class, N]),
     w("    ~s_ptr++;~n", [N]),
     w("  };~n",[]),
     store_free(N);
@@ -906,19 +913,22 @@ call_arg(#param{name=N,type=#type{by_val=true, single=_False}}) -> N;
 call_arg(#param{name=N,def=Def,type=#type{by_val=false, ref={pointer,2}}})
   when Def =/= none -> N;
 call_arg(#param{name=N,type=#type{by_val=false, ref={pointer,2}}}) -> "&" ++ N;
-call_arg(#param{name=N,in=false,type=#type{ref=reference, single=true}}) -> N;
-call_arg(#param{name=N,in=false,type=#type{by_val=false, single=true}}) -> "&" ++ N;
-call_arg(#param{name=N,def=Def,type=#type{base={comp,_,_},ref={pointer,1},single=true}}) ->
+call_arg(#param{name=N,in=false,type=#type{ref=reference}}) -> N;
+call_arg(#param{name=N,in=IN,type=#type{by_val=false, single=true}})
+  when IN =/= true -> "&" ++ N;
+call_arg(#param{name=N,type=#type{by_val=false, single=array}}) -> N;
+call_arg(#param{name=N,def=Def,type=#type{base={comp,_,_},ref={pointer,1},single=true}}=P) ->
     case Def =:= none of
-        true -> "&" ++N;
+        true -> "&" ++ N;
         _ -> N
     end;
 call_arg(#param{name=N,type=#type{base=int, ref=reference, single=true}}) -> "*" ++ N;
-call_arg(#param{name=N,type=#type{base={class,_},by_val=false}}) -> N;
-call_arg(#param{name=N,in=true,type=#type{by_val=false, ref=reference}} = P) ->
-    N;
+%% call_arg(#param{name=N,type=#type{base={class,_},by_val=false}}) -> N;
+%% call_arg(#param{name=N,type=#type{base={term,_},by_val=false}}) -> N;
+%% call_arg(#param{name=N,in=true,type=#type{by_val=false, ref=reference}} = P) ->
+%%     N;
 call_arg(#param{name=N,type=#type{by_val=false}}=P) ->
-    "&" ++ N;
+    N;
 call_arg(#param{name=N,type={merged,_,#type{base={class,_},single=true,
 					    by_val=ByVal,
 					    ref=Ref},_,_,_,_}})
@@ -981,10 +991,10 @@ build_return_vals(Type,Ps0) ->
 
     if
 	NoOut > 1 ->
-            w("  wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);~n"),
+            w("  wxeReturn rt = wxeReturn(memenv->tmp_env, Ecmd.caller);~n"),
             w("  ERL_NIF_TERM msg = enif_make_tuple~w(rt.env,~n",[NoOut]);
         NoOut =:= 1 ->
-            w("  wxeReturn rt = wxeReturn(memenv->tmp_env, cmd.caller);~n"),
+            w("  wxeReturn rt = wxeReturn(memenv->tmp_env, Ecmd.caller);~n"),
             w("  rt.send(");
 	true ->
             ignore
@@ -1007,10 +1017,12 @@ build_ret_types(void,Ps,Indent) ->
 	   end,
     fold_arg(Calc, [], Ps, Indent);
 build_ret_types(Type,Ps, Indent) ->
+    w("~*c", [Indent,$\s]),
     Free = case build_ret("Result", {ret, out}, Type) of
 	       ok -> [];
 	       FreeStr -> [FreeStr]
 	   end,
+    Ps /= [] andalso w(",~n~*c", [Indent,$\s]),
     Calc = fun(#param{name=N,in=In,type=T}, FreeAcc) ->
 		   case build_ret(N, {arg, In}, T) of
 		       ok -> FreeAcc;
@@ -1048,9 +1060,7 @@ build_ret(Name,_,#type{name="wxTreeItemIdValue",single=true}) ->
 build_ret(Name,_,#type{base={term,_},single=true}) ->
     w("rt.make_ext2term(~s)", [Name]);
 build_ret(Name,_,#type{base={binary,Size},single=true}) ->
-    w(" if(~s) {", [Name]),
-    w("    rt.make_binary(~s, ~s)", [Name,Size]),
-    w(" } else {rt.make_atom(\"null\");};");
+    w("rt.make_binary(~s, ~s)", [Name,Size]);
 build_ret(Name,_,#type{name="wxUIntPtr", ref={pointer,1}, single=true}) ->
     w("rt.make(~s)", [Name]);
 build_ret(Name,_,#type{base={enum,_Type},single=true}) ->
