@@ -62,6 +62,8 @@ public:
 
     ERL_NIF_TERM make_list_strings(size_t size, wxString* atomName);
     ERL_NIF_TERM make_list_objs(const wxList& wx_list, WxeApp *app, const char *cname);
+    ERL_NIF_TERM make_array_objs(wxGridCellCoordsArray& arr);
+    // ERL_NIF_TERM make_array_objs(const wxList& wx_list, WxeApp *app, const char *cname);
 
     ERL_NIF_TERM make_bool(int val);
     ERL_NIF_TERM make_int(int val);
