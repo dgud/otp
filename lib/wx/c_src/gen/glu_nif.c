@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2008-2018. All Rights Reserved.
+ * Copyright Ericsson AB 2008-2019. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * %CopyrightEnd% 
+ * %CopyrightEnd%
 */
 /***** This file is generated do not edit ****/
 
