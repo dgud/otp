@@ -35,14 +35,14 @@ void handle_event_callback(wxeMemEnv *memenv, ErlNifPid process);
 class wxeEvtListener : public wxEvtHandler
 {
 public:
-   wxeEvtListener(ErlNifPid caller, int req, char *req_type,
+   wxeEvtListener(ErlNifPid caller, int req, ERL_NIF_TERM req_type,
 		  int funcb, int skip_ev, wxeErlTerm * userData, wxeMemEnv *menv);
    ~wxeEvtListener();
    void forward(wxEvent& event);
    ErlNifPid    listener;
    int          fun_id;
    int          obj;
-   char         class_name[40];
+   ERL_NIF_TERM class_name;
    int          skip;
    wxeErlTerm * user_data;
    wxeMemEnv  * memenv;

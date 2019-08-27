@@ -28,12 +28,12 @@ bool sendevent(wxEvent * event, wxeMemEnv *env);
 class wxeEtype 
 {
 public: 
-  wxeEtype (const char *, int);
-  const char *eName;
+  wxeEtype (ERL_NIF_TERM , int);
+  ERL_NIF_TERM eName;
   int cID;
 };
 
 void initEventTable();
-int  wxeEventTypeFromAtom(unsigned char *etype_atom);
+int  wxeEventTypeFromAtom(ERL_NIF_TERM atom);
 
 #endif

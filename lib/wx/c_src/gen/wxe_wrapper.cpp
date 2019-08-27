@@ -48,22 +48,20 @@ void wxEvtHandler_Connect(WxeApp *app, wxeCommand& Ecmd)
   int skip;
   wxeErlTerm * userData;
   int fun_cb;
-  ErlNifBinary ev_type_bin;
-  ErlNifBinary class_name_bin;
   wxEvtHandler *This = (wxEvtHandler *) memenv->getPtr(env, argv[0]);
-  if(!enif_get_int(env, argv[1], &winid)) Badarg(106,"Winid");
-  if(!enif_get_int(env, argv[2], &lastid)) Badarg(106,"LastId");
+  if(!enif_get_int(env, argv[1], &winid)) Badarg(100,"Winid");
+  if(!enif_get_int(env, argv[2], &lastid)) Badarg(100,"LastId");
   skip = enif_is_identical(argv[3], WXE_ATOM_true);
   userData = new wxeErlTerm(argv[4]);
-  if(!enif_get_int(env, argv[5], &fun_cb)) Badarg(106,"FunId");
-  if(enif_inspect_binary(env, argv[6], &ev_type_bin)) Badarg(888,"EvType");
-  if(enif_inspect_binary(env, argv[6], &class_name_bin)) Badarg(888,"ClassName");
-  int eventType = wxeEventTypeFromAtom(ev_type_bin.data);
+  if(!enif_get_int(env, argv[5], &fun_cb)) Badarg(100,"FunId");
+  if(!enif_is_atom(env, argv[6])) Badarg(100,"EvType");
+  int eventType = wxeEventTypeFromAtom(argv[6]);
+  if(!enif_is_atom(env, argv[7])) Badarg(100,"ClassName");
+
   wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
   if(eventType > 0 ) {
     wxeEvtListener * Evt_cb = new wxeEvtListener(Ecmd.caller,app->getRef(This, memenv),
-                                                 class_name_bin.data,
-						 fun_cb, skip, userData, memenv);
+                                                 argv[7], fun_cb, skip, userData, memenv);
     This->Connect(winid, lastid, eventType,
 	          (wxObjectEventFunction)(wxEventFunction) &wxeEvtListener::forward,
 	          Evt_cb, Evt_cb);
@@ -82,15 +80,13 @@ void wxEvtHandler_Disconnect_2(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   int winid;
   int lastid;
-  ErlNifBinary ev_type_bin;
 
   wxeEvtListener *Listener = (wxeEvtListener *) memenv->getPtr(env, argv[0]);
   wxEvtHandler *This = (wxEvtHandler *) memenv->getPtr(env, argv[1]);
-  if(!enif_get_int(env, argv[2], &winid)) Badarg(106,"Winid");
-  if(!enif_get_int(env, argv[3], &lastid)) Badarg(106,"LastId");
-
-  if(enif_inspect_binary(env, argv[6], &ev_type_bin)) Badarg(888,"EvType");
-  int eventType = wxeEventTypeFromAtom(ev_type_bin.data);
+  if(!enif_get_int(env, argv[2], &winid)) Badarg(101,"Winid");
+  if(!enif_get_int(env, argv[3], &lastid)) Badarg(101,"LastId");
+  if(!enif_is_atom(env, argv[4])) Badarg(101,"EvType");
+  int eventType = wxeEventTypeFromAtom(argv[4]);
   wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
 
   if(eventType > 0) {

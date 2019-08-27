@@ -29,10 +29,11 @@ extern ERL_NIF_TERM WXE_ATOM_undefined;
 extern ERL_NIF_TERM WXE_ATOM_true;
 extern ERL_NIF_TERM WXE_ATOM_false;
 
+extern ERL_NIF_TERM WXE_ATOM_wx;
 extern ERL_NIF_TERM WXE_ATOM_wx_ref;
 extern ERL_NIF_TERM WXE_ATOM_reply;
 extern ERL_NIF_TERM WXE_ATOM_error;
-
+extern ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 
 #define WXE_NOT_INITIATED 0
 #define WXE_INITIATED     1

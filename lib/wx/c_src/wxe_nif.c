@@ -27,9 +27,11 @@ ERL_NIF_TERM WXE_ATOM_badarg;
 ERL_NIF_TERM WXE_ATOM_true;
 ERL_NIF_TERM WXE_ATOM_false;
 
+ERL_NIF_TERM WXE_ATOM_wx;
 ERL_NIF_TERM WXE_ATOM_reply;
 ERL_NIF_TERM WXE_ATOM_error;
 ERL_NIF_TERM WXE_ATOM_wx_ref;
+ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 
 ErlNifResourceType* wxeMemEnvRt = NULL;
 extern void wxe_initOpenGL(void * fptr);
@@ -143,11 +145,12 @@ void wxe_init_atoms(ErlNifEnv *env) {
     WXE_ATOM_true = enif_make_atom(env, "true");
     WXE_ATOM_false = enif_make_atom(env, "false");
 
+    WXE_ATOM_wx = enif_make_atom(env, "wx");
     WXE_ATOM_wx_ref = enif_make_atom(env, "wx_ref");
     WXE_ATOM_reply = enif_make_atom(env, "_wx_result_");
     WXE_ATOM_error = enif_make_atom(env, "_wx_error_");
+    WXE_ATOM__wx_invoke_cb_ = enif_make_atom(env, "_wx_invoke_cb_");
 }
-
 
 static int wxe_init(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM arg)
 {

@@ -31,7 +31,7 @@
  * CallbackData *
  * ****************************************************************************/
 
-wxeEvtListener::wxeEvtListener(ErlNifPid caller, int req, char *req_type,
+wxeEvtListener::wxeEvtListener(ErlNifPid caller, int req, ERL_NIF_TERM req_type,
 			       int funcb, int skip_ev, wxeErlTerm * userData,
 			       wxeMemEnv *menv)
   : wxEvtHandler()
@@ -40,7 +40,7 @@ wxeEvtListener::wxeEvtListener(ErlNifPid caller, int req, char *req_type,
   listener = caller;
   obj = req;
   fun_id = funcb;
-  strcpy(class_name, req_type);
+  class_name = req_type;
   skip = skip_ev;
   user_data = userData;
 }
@@ -59,7 +59,7 @@ wxeEvtListener::~wxeEvtListener() {
                              rt.make_atom("wx_delete_cb"),
                              rt.make_int(fun_id),
                              rt.make_ref(refd->ref, "wxeEvtListener"),
-                             rt.make_ref(obj, class_name)));
+                             class_name));
   }
   ((WxeApp *)wxTheApp)->clearPtr(this);
 }

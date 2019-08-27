@@ -28,23 +28,23 @@
 
 #include "../wxe_return.h"
 
-wxeEtype::wxeEtype(const char *name, int Id) {eName = name;cID = Id;}
+wxeEtype::wxeEtype(ERL_NIF_TERM atom, int Id) {eName = atom;cID = Id;}
 
 WX_DECLARE_HASH_MAP(int, wxeEtype*, wxIntegerHash, wxIntegerEqual, wxeETmap );
 
 wxeETmap etmap;
 
-int wxeEventTypeFromAtom(unsigned char *etype_atom) {
+int wxeEventTypeFromAtom(ERL_NIF_TERM etype_atom) {
   wxeETmap::iterator it;
   for(it = etmap.begin(); it != etmap.end(); ++it) {
-       wxeEtype * value = it->second;
-       if(strcmp(value->eName, etype_atom) == 0) {
-	 if(it->first > wxEVT_USER_FIRST) {
-	       return it->first - wxEVT_USER_FIRST;
-	    } else {
-	       return it->first;
-	    }
-       }
+    wxeEtype * value = it->second;
+    if(enif_is_identical(value->eName, etype_atom) == 0) {
+      if(it->first > wxEVT_USER_FIRST) {
+        return it->first - wxEVT_USER_FIRST;
+      } else {
+        return it->first;
+      }
+    }
   }
   return -1;
 }
@@ -309,10 +309,12 @@ void initEventTable()
    {wxEVT_DROP_FILES, 238, "drop_files"},
    {-1, 0, }
   };
+
+  ErlNifEnv *env = enif_alloc_env();
   for(int i=0; event_types[i].ev_type != -1; i++) {
      if(NULL == etmap[event_types[i].ev_type]) {
        etmap[event_types[i].ev_type] =
-        new wxeEtype(event_types[i].ev_name, event_types[i].class_id);
+         new wxeEtype(enif_make_atom(env,event_types[i].ev_name), event_types[i].class_id);
      } else {
        wxeEtype *prev = etmap[event_types[i].ev_type];
        wxString msg(wxT("Duplicate event defs: "));
@@ -323,6 +325,7 @@ void initEventTable()
        send_msg("internal_error", &msg);
      }
   }
+  enif_free_env(env);
 }
 
 bool sendevent(wxEvent *event, wxeMemEnv *memenv)
@@ -343,7 +346,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxCommandEvent";
     ev_term = enif_make_tuple5(rt.env,
         rt.make_atom((char*)"wxCommand"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetString()),
         rt.make_int(ev->GetInt()),
         rt.make_int(ev->GetExtraLong()));
@@ -355,7 +358,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxScrollEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxScroll"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetInt()),
         rt.make_int(ev->GetExtraLong()));
     } else {
@@ -364,7 +367,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSpinEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxSpin"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetInt()));
   }
     break;
@@ -374,7 +377,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxScrollWinEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxScrollWin"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetPosition()),
         rt.make_int(ev->GetOrientation()));
     break;
@@ -384,7 +387,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxMouseEvent";
     ev_term = enif_make_tuple(rt.env,14,
         rt.make_atom((char*)"wxMouse"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->m_x),
         rt.make_int(ev->m_y),
         rt.make_bool(ev->m_leftDown),
@@ -411,7 +414,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSetCursorEvent";
     ev_term = enif_make_tuple5(rt.env,
         rt.make_atom((char*)"wxSetCursor"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetX()),
         rt.make_int(ev->GetY()),
         rt.make_ref(app->getRef((void *)GetCursor,memenv), "wxCursor"));
@@ -422,7 +425,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxKeyEvent";
     ev_term = enif_make_tuple(rt.env,13,
         rt.make_atom((char*)"wxKey"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->m_x),
         rt.make_int(ev->m_y),
         rt.make_int(ev->m_keyCode),
@@ -451,7 +454,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSizeEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxSize"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->m_size),
         rt.make(ev->m_rect));
     break;
@@ -461,7 +464,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxMoveEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxMove"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetPosition()),
         rt.make(ev->GetRect()));
     break;
@@ -470,7 +473,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxPaintEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxPaint"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -480,7 +483,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxEraseEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxErase"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_ref(app->getRef((void *)GetDC,memenv), "wxDC"));
     break;
   }
@@ -490,7 +493,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxFocusEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxFocus"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_ref(app->getRef((void *)GetWindow,memenv), "wxWindow"));
     break;
   }
@@ -498,7 +501,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxChildFocusEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxChildFocus"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -508,7 +511,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxMenuEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxMenu"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetMenuId()),
         rt.make_ref(app->getRef((void *)GetMenu,memenv), "wxMenu"));
     break;
@@ -517,7 +520,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxCloseEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxClose"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -526,7 +529,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxShowEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxShow"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_bool(ev->GetShow()));
     break;
   }
@@ -535,7 +538,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxIconizeEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxIconize"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_bool(ev->Iconized()));
     break;
   }
@@ -543,7 +546,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxMaximizeEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxMaximize"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -552,7 +555,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxJoystickEvent";
     ev_term = enif_make_tuple7(rt.env,
         rt.make_atom((char*)"wxJoystick"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetPosition()),
         rt.make_int(ev->GetZPosition()),
         rt.make_int(ev->GetButtonChange()),
@@ -564,7 +567,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxUpdateUIEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxUpdateUI"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -572,7 +575,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSysColourChangedEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxSysColourChanged"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -580,7 +583,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxMouseCaptureChangedEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxMouseCaptureChanged"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -588,7 +591,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxDisplayChangedEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxDisplayChanged"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -596,7 +599,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxPaletteChangedEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxPaletteChanged"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -604,7 +607,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxQueryNewPaletteEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxQueryNewPalette"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -613,7 +616,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxNavigationKeyEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxNavigationKey"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->m_flags),
         rt.make_ref(app->getRef((void *)ev->m_focus,memenv), "wxWindow"));
     break;
@@ -622,7 +625,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxWindowCreateEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxWindowCreate"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -630,7 +633,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxWindowDestroyEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxWindowDestroy"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -638,7 +641,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxHelpEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxHelp"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -647,7 +650,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxContextMenuEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxContextMenu"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetPosition()));
     break;
   }
@@ -655,7 +658,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxIdleEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxIdle"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -664,7 +667,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxGridEvent";
     ev_term = enif_make_tuple(rt.env,11,
         rt.make_atom((char*)"wxGrid"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetRow()),
         rt.make_int(ev->GetCol()),
         rt.make_int(ev->GetPosition().x),
@@ -681,7 +684,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSashEvent";
     ev_term = enif_make_tuple5(rt.env,
         rt.make_atom((char*)"wxSash"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetEdge()),
         rt.make(ev->GetDragRect()),
         rt.make_int(ev->GetDragStatus()));
@@ -692,7 +695,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxListEvent";
     ev_term = enif_make_tuple7(rt.env,
         rt.make_atom((char*)"wxList"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetKeyCode()),
         rt.make_int(ev->m_oldItemIndex),
         rt.make_int(ev->GetIndex()),
@@ -705,7 +708,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxDateEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxDate"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetDate()));
     break;
   }
@@ -714,7 +717,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxCalendarEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxCalendar"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetWeekDay()),
         rt.make(ev->GetDate()));
     break;
@@ -724,7 +727,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxFileDirPickerEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxFileDirPicker"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetPath()));
     break;
   }
@@ -733,7 +736,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxColourPickerEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxColourPicker"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetColour()));
     break;
   }
@@ -744,7 +747,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxFontPickerEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxFontPicker"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_ref(app->getRef((void *)GetFont,memenv), "wxFont"));
     break;
   }
@@ -753,7 +756,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxStyledTextEvent";
     ev_term = enif_make_tuple(rt.env,22,
         rt.make_atom((char*)"wxStyledText"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetPosition()),
         rt.make_int(ev->GetKey()),
         rt.make_int(ev->GetModifiers()),
@@ -781,7 +784,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxTreeEvent";
     ev_term = enif_make_tuple5(rt.env,
         rt.make_atom((char*)"wxTree"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make((wxUIntPtr *) ev->GetItem().m_pItem),
         rt.make((wxUIntPtr *) ev->GetOldItem().m_pItem),
         rt.make(ev->GetPoint()));
@@ -792,7 +795,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxNotebookEvent";
     ev_term = enif_make_tuple4(rt.env,
         rt.make_atom((char*)"wxNotebook"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetSelection()),
         rt.make_int(ev->GetOldSelection()));
     break;
@@ -801,7 +804,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxClipboardTextEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxClipboardText"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -810,7 +813,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSpinEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxSpin"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetInt()));
     break;
   }
@@ -818,7 +821,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxSplitterEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxSplitter"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -827,7 +830,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxHtmlLinkEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxHtmlLink"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make(ev->GetLinkInfo()));
     break;
   }
@@ -837,7 +840,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxAuiNotebookEvent";
     ev_term = enif_make_tuple5(rt.env,
         rt.make_atom((char*)"wxAuiNotebook"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->GetOldSelection()),
         rt.make_int(ev->GetSelection()),
         rt.make_ref(app->getRef((void *)GetDragSource,memenv), "wxAuiNotebook"));
@@ -851,7 +854,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxAuiManagerEvent";
     ev_term = enif_make_tuple(rt.env,8,
         rt.make_atom((char*)"wxAuiManager"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_ref(app->getRef((void *)GetManager,memenv), "wxAuiManager"),
         rt.make_ref(app->getRef((void *)GetPane,memenv), "wxAuiPaneInfo"),
         rt.make_int(ev->GetButton()),
@@ -864,7 +867,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxTaskBarIconEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxTaskBarIcon"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -872,7 +875,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxInitDialogEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxInitDialog"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -881,7 +884,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxActivateEvent";
     ev_term = enif_make_tuple3(rt.env,
         rt.make_atom((char*)"wxActivate"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_bool(ev->GetActive()));
     break;
   }
@@ -889,7 +892,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxMouseCaptureLostEvent";
     ev_term = enif_make_tuple2(rt.env,
         rt.make_atom((char*)"wxMouseCaptureLost"),
-        rt.make_atom(Etype->eName)
+        Etype->eName
 );
     break;
   }
@@ -898,7 +901,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
     evClass = (char*)"wxDropFilesEvent";
     ev_term = enif_make_tuple5(rt.env,
         rt.make_atom((char*)"wxDropFiles"),
-        rt.make_atom(Etype->eName),
+        Etype->eName,
         rt.make_int(ev->m_noFiles),
         rt.make(ev->m_pos),
         rt.make_list_strings(ev->m_noFiles, ev->m_files)
@@ -909,7 +912,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
 
   ERL_NIF_TERM wx_ev =
     enif_make_tuple5(rt.env,
-                     rt.make_atom((char*)"wx"),
+                     WXE_ATOM_wx,
                      rt.make_int((int) event->GetId()),
                      rt.make_ref(cb->obj, cb->class_name),
                      rt.make_ext2term(cb->user_data),
@@ -918,7 +921,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
   if(cb->fun_id) {
     ERL_NIF_TERM wx_cb =
       enif_make_tuple4(rt.env,
-                       rt.make_atom("_wx_invoke_cb_"),
+                       WXE_ATOM__wx_invoke_cb_,
                        rt.make_int(cb->fun_id),
                        wx_ev,
                        rt.make_ref(app->getRef((void *)event,memenv), evClass)
