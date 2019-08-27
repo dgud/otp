@@ -54,7 +54,7 @@ wxeEvtListener::~wxeEvtListener() {
   it = ((WxeApp *)wxTheApp)->ptr2ref.find(this);
   if(it != ((WxeApp *)wxTheApp)->ptr2ref.end()) {
     wxeRefData *refd = it->second;
-    wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);
+    wxeReturn rt = wxeReturn(memenv, memenv->owner, false);
     rt.send(enif_make_tuple4(rt.env,
                              rt.make_atom("wx_delete_cb"),
                              rt.make_int(fun_id),
@@ -79,7 +79,7 @@ void wxeEvtListener::forward(wxEvent& event)
 
 #define INVOKE_CALLBACK_INIT(memenv, callback, class_str, args)		\
   {									\
-    wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);	\
+    wxeReturn rt = wxeReturn(memenv, memenv->owner, false);	\
     ERL_NIF_TERM cb_term = enif_make_tuple4(rt.env,                     \
       rt.make_atom("_wx_invoke_cb_"),                                   \
       rt.make_int(callback),                                            \
@@ -287,7 +287,7 @@ int wxCALLBACK wxEListCtrlCompare(wxeIntPtr item1, wxeIntPtr item2, wxeIntPtr ca
 {
   callbackInfo * cbi = (callbackInfo *)callbackInfoPtr;
   wxeMemEnv *memenv = cbi->memenv;
-  wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);
+  wxeReturn rt = wxeReturn(memenv, memenv->owner, false);
   ERL_NIF_TERM cb_msg =
     enif_make_tuple4(rt.env,
                      rt.make_atom("_wx_invoke_cb_"),
@@ -315,7 +315,7 @@ int wxCALLBACK wxEListCtrlCompare(wxeIntPtr item1, wxeIntPtr item2, wxeIntPtr ca
 void clear_cb(wxeMemEnv *memenv, int callback)
 {
   if(callback > 0) {
-    wxeReturn rt = wxeReturn(memenv->tmp_env, memenv->owner, false);
+    wxeReturn rt = wxeReturn(memenv, memenv->owner, false);
     ERL_NIF_TERM cb_msg =
       enif_make_tuple2(rt.env,
                        rt.make_atom("wx_delete_cb"),

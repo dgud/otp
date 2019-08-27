@@ -34,6 +34,6 @@ public:
 };
 
 void initEventTable();
-int  wxeEventTypeFromAtom(char *etype_atom);
+int  wxeEventTypeFromAtom(unsigned char *etype_atom);
 
 #endif

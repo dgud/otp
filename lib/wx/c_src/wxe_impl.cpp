@@ -128,7 +128,7 @@ void meta_command(ErlNifEnv *env, int what, void *mp) {
 
 void send_msg(const char * type, const wxString * msg) {
   WxeApp * app = (WxeApp *) wxTheApp;
-  wxeReturn rt = wxeReturn(app->global_me->tmp_env, init_caller);
+  wxeReturn rt = wxeReturn(app->global_me, init_caller);
   ERL_NIF_TERM emsg = enif_make_tuple3(rt.env,
                                        rt.make_atom((char *) "wxe_driver"),
                                        rt.make_atom((char *) type),
@@ -670,7 +670,7 @@ void WxeApp::clearPtr(void * ptr) {
 
     if(refd->reg_pid) {
       // Send terminate pid to owner
-      wxeReturn rt = wxeReturn(refd->memenv->tmp_env,refd->pid, false);
+      wxeReturn rt = wxeReturn(refd->memenv,refd->pid, false);
       rt.send(enif_make_tuple2(rt.env,
                                rt.make_atom("_wxe_destroy_"),
                                enif_make_pid(rt.env, &refd->pid)));

@@ -284,6 +284,8 @@ gen_funcs(Defs) ->
     [Case(Class) || Class <- Defs],
     w("  default: delete (wxObject *) ptr; return false;~n", []),
     w("  }~n  return true;~n}~n~n", []),
+
+    gen_func_table(Defs),
     Res.
 
 gen_class(C=#class{name=Name,methods=Ms,options=Opts}) ->
@@ -364,9 +366,13 @@ gen_method(CName,  M=#method{name=N,params=Ps0,type=T,method_type=MT,id=MethodId
     w("{~n",[]),
     Ps1 = declare_variables(void, Ps0),
 
+    %% case {MT,T,[In || #param{in=In} <- Ps1, In =/= true]} of
+    %%     {static, void, []} -> ignore;
+    %%     _ ->
     w("  wxeMemEnv *memenv = Ecmd.memenv;~n"),
-    case length([In || #param{in=In,where=Where} <- Ps1, In =/= false, Where =/= c]) of
-        0 -> ignore;
+    %%end,
+    case [In || #param{in=In,where=Where} <- Ps1, In =/= false, Where =/= c] of
+        [] -> ignore;
         _Else ->
             w("  ErlNifEnv *env = Ecmd.env;~n"),
             w("  ERL_NIF_TERM * argv = Ecmd.args;~n")
@@ -445,7 +451,7 @@ declare_type(N,true,Def,#type{base=Base,single=true,name=Type,by_val=true,mod=Mo
   when Base =:= int; Base =:= long; Base =:= float; Base =:= double; Base =:= bool ->
     case Type of
         "char" -> w("  ~sint ~s=~s;~n", [mods(Mod),N,Def]);
-        _  -> w("  ~s ~s=~s;~n", [Type,N,Def])
+        _  -> w("  ~s~s ~s=~s;~n", [mods(Mod--[const]),Type,N,Def])
     end;
 declare_type(N,true,Def,#type{base={comp,_,_},single=true,name=Type,mod=Mod,ref={pointer,1}}) ->
     w("  ~s~s *~s=~s; ~s ~s;~n", [mods(Mod),Type,N,Def,Type,N++"Tmp"]);
@@ -542,7 +548,7 @@ badarg(Arg) ->
 
 decode_arg(N,#type{name=Class,base={class,_},single=true}, Arg,Argc) ->
     wa("  ~s *~s;~n",[Class, N], Arg),
-    wa("  ~s = (~s *) memenv->getPtr(env, ~s);~n", [N,Class,Argc],Arg);
+    w("  ~s = (~s *) memenv->getPtr(env, ~s);~n", [N,Class,Argc]);
 decode_arg(N,{merged,_,#type{name=Class,base={class,_},single=true},_,_,_,_},arg,Argc) ->
     w("  ~s * ~s = (~s *) memenv->getPtr(env, ~s);~n", [Class,N,Class,Argc]);
 decode_arg(N,#type{base=int,name=long,single=true},Arg,Argc) ->
@@ -644,7 +650,7 @@ decode_arg(N,#type{base=string, name="wxFileName"}, Arg,Argc)  ->
 decode_arg(N,#type{base=string},Arg,Argc)  ->
     w("  ErlNifBinary ~s_bin;~n",[N]),
     wa("  wxString ~s;~n",[N], Arg),
-    w("  if(enif_inspect_binary(env, ~s, &~s_bin)) ~s~n",[Argc, N, badarg(N)]),
+    w("  if(enif_inspect_binary(env, ~s, &~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
     w("  ~s = wxString(~s_bin.data, wxConvUTF8, ~s_bin.size);~n", [N, N, N]);
     %% wa(" wxString", []," ~s = wxString(bp, wxConvUTF8);~n", [N],Arg),
 
@@ -659,13 +665,17 @@ decode_arg(N,#type{name="wxArrayString"},Arg,Argc) ->
     w("    ~s.Add(wxString(~s_bin.data, wxConvUTF8, ~s_bin.size));~n", [N,N,N]),
     w("  };~n",[]);
 
-%% decode_arg(N,#type{name="wxArrayInt"},arg,Argc) ->
-%%     w(" int * ~sLen = (int *) bp; bp += 4;~n", [N]),
-%%     w(" wxArrayInt ~s;~n", [N]),
-%%     w(" for(int i=0; i < *~sLen; i++) {", [N]),
-%%     w("  ~s.Add(*(int *) bp); bp += 4;}~n", [N]),
-%%     w(" bp += ((*~sLen + ~p) % 2 )*4;~n",[N, (A0+1)]),
-%%     0;
+decode_arg(N,#type{name="wxArrayInt"},_arg,Argc) ->
+    w("  wxArrayInt ~s;~n",[N]),
+    w("  int ~s_tmp;~n",[N]),
+    w("  ERL_NIF_TERM ~sHead, ~sTail;~n", [N,N]),
+    w("  ~sTail = ~s;~n",[N,Argc]),
+    w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
+    w("    if(!enif_get_list_cell(env, ~sTail, &~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
+    w("    if(!enif_get_int(env, ~sHead, &~s_tmp)) ~s;~n", [N,N,badarg(N)]),
+    w("    ~s.Add(~s_tmp);~n",[N,N]),
+    w("  };~n",[]);
+
 %% decode_arg(N,#type{name="wxArrayDouble"},arg,Argc) ->
 %%     w(" int * ~sLen = (int *) bp; bp += 4;~n", [N]),
 %%     align(A0+1,64),
@@ -711,18 +721,21 @@ decode_arg(N,#type{name=Type,base={term,_},mod=Mod0},Arg,Argc) ->
     wa("  ~s~s * ~s;~n",[Mod,Type,N], Arg),
     w("  ~s = new ~s(~s);~n", [N,Type,Argc]);
 
-decode_arg(N,#type{single=array,base=int},Arg,Argc)  ->
-    wa("  int * ~s;~n",[N], Arg),
-    w("  int * ~s_ptr;~n",[N]),
-    wa("  unsigned ~sLen;~n",[N], Arg),
+decode_arg(N,#type{single=array,base=int,name=Type},Arg,Argc)  ->
+    wa("  ~s * ~s;~n",[Type,N],Arg),
+    w("  ~s * ~s_ptr;~n",[Type,N]),
+    w("  int ~s_tmp;~n",[N]),
+    wa("  unsigned int ~sLen;~n",[N], Arg),
     w("  ERL_NIF_TERM ~sHead, ~sTail;~n", [N,N]),
     w("  if(!enif_get_list_length(env, ~s, &~sLen)) ~s;~n", [Argc,N,badarg(N)]),
-    w("  ~s = (int *) enif_alloc(sizeof(int)*~sLen);~n",[N,N]),
+    w("  ~s = (~s *) enif_alloc(sizeof(~s)*~sLen);~n",[N,Type,Type,N]),
     w("  ~s_ptr = ~s;~n",[N,N]),
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
     w("    if(!enif_get_list_cell(env, ~sTail, &~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
-    w("    if(!enif_get_int(env, ~sHead, ~s_ptr++)) ~s;~n", [N,N,badarg(N)]),
+    w("    if(!enif_get_int(env, ~sHead, &~s_tmp)) ~s;~n", [N,N,badarg(N)]),
+    w("    *~s_ptr = (~s) ~s_tmp;~n",[N,Type,N]),
+    w("    ~s_ptr++;~n", [N]),
     w("  };~n",[]),
     store_free(N);
 
@@ -822,7 +835,7 @@ call_wx(_N,{constructor,_},#type{base={class,RClass}},Ps) ->
     Ps;
 call_wx(N,{member,_},Type,Ps) ->
     {Beg,End} = return_res(Type),
-    w("  if(!This) throw wxe_badarg(0);~n",[]),
+    w("  if(!This) throw wxe_badarg(\"This\");~n",[]),
     w("  ~sThis->~s(~s)~s;~n",[Beg,N,args(fun call_arg/1, ",",filter(Ps)),End]),
     Ps;
 call_wx(N,{static,Class},Type,Ps) ->
@@ -898,9 +911,9 @@ filter_arg(#param{}) -> true.
 
 call_arg(#param{where=c, alt={length,Alt}}) when is_list(Alt) ->
     Alt ++ "Len";
-call_arg(#param{where=c, alt={size,Id}}) when is_integer(Id) ->
+call_arg(#param{where=c, alt={size,N}}) ->
     %% It's a binary
-    "Ecmd.bin["++ integer_to_list(Id) ++ "].size";
+    N ++ "_bin.size";
 call_arg(#param{name=N,def=_Def,type=#type{by_val=true,single=true,base=Base}})
   when Base =:= int; Base =:= long; Base =:= float; Base =:= double; Base =:= bool ->
     N;
@@ -913,9 +926,11 @@ call_arg(#param{name=N,type=#type{by_val=true, single=_False}}) -> N;
 call_arg(#param{name=N,def=Def,type=#type{by_val=false, ref={pointer,2}}})
   when Def =/= none -> N;
 call_arg(#param{name=N,type=#type{by_val=false, ref={pointer,2}}}) -> "&" ++ N;
-call_arg(#param{name=N,in=false,type=#type{ref=reference}}) -> N;
-call_arg(#param{name=N,in=IN,type=#type{by_val=false, single=true}})
-  when IN =/= true -> "&" ++ N;
+call_arg(#param{name=N,in=IN,type=#type{ref=reference}}) when IN =/= true -> N;
+call_arg(#param{name=N,in=IN,type=#type{by_val=false, single=true}}=P)
+  when IN =/= true ->
+    N == "cookie" andalso io:format("~p~n",[P]),
+    "&" ++ N;
 call_arg(#param{name=N,type=#type{by_val=false, single=array}}) -> N;
 call_arg(#param{name=N,def=Def,type=#type{base={comp,_,_},ref={pointer,1},single=true}}=P) ->
     case Def =:= none of
@@ -991,10 +1006,10 @@ build_return_vals(Type,Ps0) ->
 
     if
 	NoOut > 1 ->
-            w("  wxeReturn rt = wxeReturn(memenv->tmp_env, Ecmd.caller);~n"),
+            w("  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);~n"),
             w("  ERL_NIF_TERM msg = enif_make_tuple~w(rt.env,~n",[NoOut]);
         NoOut =:= 1 ->
-            w("  wxeReturn rt = wxeReturn(memenv->tmp_env, Ecmd.caller);~n"),
+            w("  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);~n"),
             w("  rt.send(");
 	true ->
             ignore
@@ -1106,22 +1121,15 @@ build_ret(Name,_,#type{base={comp,_,_},single=array}) ->
     w("rt.make_array_objs(~s)", [Name]);
 
 build_ret(Name,_,#type{base={class,Class},single=array}) ->
-    w(" for(unsigned int i=0; i < ~s.GetCount(); i++) {~n", [Name]),
-    w("  rt.make_ref(app->getRef((void *) &~s.Item(i), memenv), \"~s\")~n }~n",[Name, Class]),
-    w(" rt.endList(~s.GetCount())~n",[Name]);
-build_ret(Name,_,#type{name=_List,single=list,base={class,Class}}) ->
-    %% w(" int i=0;~n"),
-    %% w(" for(~s::const_iterator it = ~s.begin(); it != ~s.end(); ++it) {~n",
-    %%   [List, Name, Name]),
-    %% w("   ~s * ~sTmp = *it;~n", [Class,Name]),
-    %% w("   rt.make_ref(app->getRef((void *)~sTmp,memenv), \"~s\"); i++;}~n",[Name,Class]),
+    w("rt.make_array_objs(~s, app, \"~s\")", [Name,Class]);
+    %% w(" for(unsigned int i=0; i < ~s.GetCount(); i++) {~n", [Name]),
+    %% w("  rt.make_ref(app->getRef((void *) &~s.Item(i), memenv), \"~s\")~n }~n",[Name, Class]),
     %% w(" rt.endList(~s.GetCount())~n",[Name]);
+build_ret(Name,_,#type{name=_List,single=list,base={class,Class}}) ->
     w("rt.make_list_objs(~s, app, \"~s\")", [Name,Class]);
 
 build_ret(Name,_,#type{name="wxArrayTreeItemIds"}) ->
-    w(" for(unsigned int i=0; i < ~s.GetCount(); i++) {~n", [Name]),
-    w("    rt.make((wxUIntPtr *)~s[i].m_pItem);}~n",[Name]),
-    w(" rt.endList(~s.GetCount())~n",[Name]);
+    w("rt.make_array_objs(~s)", [Name]);
 
 build_ret(Name,_,#type{base=float,single=true}) ->
     w("rt.make_double(~s)",[Name]);
@@ -1138,8 +1146,6 @@ build_ret(Name,_,#type{name="wxString", single={list,Variable}}) ->
               "ev->" ++ _ -> "ev";
               _ -> "This"
           end,
-    %% w(" wxArrayString tmpArrayStr(~s->~s, ~s)~n", [Obj,Variable,Name]),
-    %% w("rt.make(tmpArrayStr)", []);
     w("rt.make_list_strings(~s->~s, ~s)~n", [Obj,Variable,Name]);
 build_ret(Name,In,T) ->
     ?error({nyi, Name,In, T}).
@@ -1147,6 +1153,44 @@ build_ret(Name,In,T) ->
 mods([const|R]) -> "const " ++ mods(R);
 mods([unsigned|R]) -> "unsigned " ++ mods(R);
 mods([]) -> "".
+
+
+gen_func_table(Defs) ->
+    Ms = [{Class,Method} ||
+             #class{name=Class, methods=Ms} <- Defs,
+             Method <- lists:keysort(#method.id, lists:flatten(Ms))],
+    w("wxe_fns_t wxe_fns[] =~n{~n"),
+    _ = lists:foldl(fun gen_func_table/2, 0, Ms),
+    w("};~n").
+
+gen_func_table({_, #method{where=erl_no_opt}}, Id) ->
+    Id;
+gen_func_table({Class, #method{id=Id, method_type=MT, opts=FOpts}}, Id) ->
+    IsObjectDest = MT =:= destructor andalso
+        hd(reverse(wx_gen_erl:parents(Class))) =:= object,
+    Func = wx_gen_erl:get_unique_name(Id),
+    IsTaylorMadeErl = lists:member(Func, ["wxXmlResource_xrcctrl",
+                                          "wxListCtrl_new_2",
+                                          "wxEvtHandler_Disconnect_1",
+                                          "wxEvtHandler_Disconnect_0"]),
+    Endif1 = gen_if(deprecated, FOpts),
+    Endif2 = gen_if(test_if, FOpts),
+    if IsObjectDest ->
+            w("  {~w, NULL}, // obj destructor ~s~n", [Id, Func]);
+       IsTaylorMadeErl ->
+            w("  {~w, NULL}, // TaylorMade erl only ~s~n", [Id, Func]);
+       true ->
+            w("  {~w, ~s},~n", [Id, Func])
+    end,
+    if Endif1 orelse Endif2 ->
+            w("#else~n  {~w, NULL},~n#endif~n", [Id]);
+       true -> ignore
+    end,
+    Id+1;
+gen_func_table({_, #method{id=MId}}=CM, Id) when MId > Id ->
+    w("  {~w, NULL},~n", [Id]),
+    gen_func_table(CM, Id+1).
+
 
 build_enums() ->
     Tree = get(consts),
@@ -1160,7 +1204,8 @@ build_enums() ->
     Size = length(NotConsts),
     GVars = get(gvars),
     GSize = length(GVars),
-    w("  wxeReturn rt = wxeReturn(memenv->tmp_env, caller);~n"),
+    w("  WxeApp * app = this;~n"),
+    w("  wxeReturn rt = wxeReturn(memenv, caller);~n"),
     w("  ERL_NIF_TERM consts[] = {\n"),
     [build_enum(NConst) || NConst <- lists:keysort(#const.val, NotConsts)],
     lists:foreach(fun build_gvar/1, lists:sort(GVars)),
@@ -1268,7 +1313,7 @@ build_events() ->
     w("wxeETmap etmap;~n~n"),
 
     w(
-"int wxeEventTypeFromAtom(char *etype_atom) {
+"int wxeEventTypeFromAtom(unsigned char *etype_atom) {
   wxeETmap::iterator it;
   for(it = etmap.begin(); it != etmap.end(); ++it) {
        wxeEtype * value = it->second;
@@ -1350,7 +1395,7 @@ encode_events(Evs) ->
       "  wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;~n"
       "  WxeApp * app = (WxeApp *) wxTheApp;~n"
       "  if(!memenv) return 0;~n~n"
-      "  wxeReturn rt = wxeReturn(memenv->tmp_env, cb->listener);~n"),
+      "  wxeReturn rt = wxeReturn(memenv, cb->listener);~n"),
     w("  ERL_NIF_TERM ev_term;~n"),
     w("  switch(Etype->cID) {~n"),
     lists:foreach(fun(Ev) -> encode_event(Ev) end, Evs),

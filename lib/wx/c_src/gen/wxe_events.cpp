@@ -34,7 +34,7 @@ WX_DECLARE_HASH_MAP(int, wxeEtype*, wxIntegerHash, wxIntegerEqual, wxeETmap );
 
 wxeETmap etmap;
 
-int wxeEventTypeFromAtom(char *etype_atom) {
+int wxeEventTypeFromAtom(unsigned char *etype_atom) {
   wxeETmap::iterator it;
   for(it = etmap.begin(); it != etmap.end(); ++it) {
        wxeEtype * value = it->second;
@@ -335,7 +335,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
   WxeApp * app = (WxeApp *) wxTheApp;
   if(!memenv) return 0;
 
-  wxeReturn rt = wxeReturn(memenv->tmp_env, cb->listener);
+  wxeReturn rt = wxeReturn(memenv, cb->listener);
   ERL_NIF_TERM ev_term;
   switch(Etype->cID) {
   case 165: {// wxCommandEvent

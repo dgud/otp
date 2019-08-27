@@ -23,7 +23,8 @@
 #include "wxe_macros.h"
 #include "../wxe_return.h"
 void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller) {
-  wxeReturn rt = wxeReturn(memenv->tmp_env, caller);
+  WxeApp * app = this;
+  wxeReturn rt = wxeReturn(memenv, caller);
   ERL_NIF_TERM consts[] = {
     enif_make_tuple2(rt.env, rt.make_atom("wxALWAYS_NATIVE_DOUBLE_BUFFER"), rt.make_int(wxALWAYS_NATIVE_DOUBLE_BUFFER)),
     enif_make_tuple2(rt.env, rt.make_atom("wxBYTE_ORDER"), rt.make_int(wxBYTE_ORDER)),

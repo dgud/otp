@@ -99,4 +99,11 @@ public:
 
 #define Badarg(Op, Argc) {wxe_badarg(Argc); return;}
 
+typedef struct {
+    int op;
+    void (*nif_cb) (WxeApp *, wxeCommand& );
+} wxe_fns_t;
+
+extern wxe_fns_t wxe_fns[];
+
 #endif  //_WXE_IMPL_H

@@ -22,16 +22,14 @@
 
 #define INLINE
 
-wxeReturn::wxeReturn (ErlNifEnv * _env,
+wxeReturn::wxeReturn (wxeMemEnv * _memenv,
                       ErlNifPid   _caller,
 		      bool        _isResult) {
-    env     = _env;
-    caller  = _caller;
+  memenv  = memenv;
+  env     = memenv->tmp_env;
+  caller  = _caller;
 
-    isResult = _isResult;
-    // if (isResult) {
-    //   addAtom("_wxe_result_");
-    // }
+  isResult = _isResult;
 }
 
 //clear everything so we can re-use if we want
@@ -44,13 +42,6 @@ wxeReturn::~wxeReturn () {
 }
 
 int wxeReturn::send(ERL_NIF_TERM msg) {
-  // if ((rt_n == 2 && isResult) || rt_n == 0)
-  //   return 1;  // not a call bail out
-
-  // if (isResult) {
-  //   addTupleCount(2);
-  // }
-
   int res = enif_send(NULL, &caller, env, msg);
 
 #ifdef DEBUG
@@ -95,7 +86,7 @@ ERL_NIF_TERM wxeReturn::make_binary(const char* buf, const size_t size) {
     memcpy(data, buf, size);
     return bin;
   } else {
-    return rt.make_atom("null");
+    return make_atom("null");
   }
 }
 
@@ -168,14 +159,51 @@ ERL_NIF_TERM  wxeReturn::make(wxArrayString val) {
     return tail;
 }
 
-ERL_NIF_TERM wxeReturn::make_list_objs(const wxList& wx_list, WxeApp *app, const char *cname)
+ERL_NIF_TERM wxeReturn::make_list_objs(const wxList& list, WxeApp *app, const char *cname)
 {
   ERL_NIF_TERM head, tail;
   ERL_NIF_TERM class_name = enif_make_atom(env, cname);
   tail = enif_make_list(env, 0);
-  for(wxList::const_iterator it = Result.end(); it != Result.begin(); ++it) {
+  for(wxList::const_iterator it = list.end(); it != list.begin(); ++it) {
     void * ResultTmp = *it;
     head = make_ref(app->getRef(ResultTmp,memenv), class_name);
+    tail = enif_make_list_cell(env, head, tail);
+  }
+  return tail;
+}
+
+
+ERL_NIF_TERM wxeReturn::make_array_objs(wxAuiPaneInfoArray& arr, WxeApp *app, const char *cname)
+{
+  ERL_NIF_TERM head, tail;
+  ERL_NIF_TERM class_name = enif_make_atom(env, cname);
+  tail = enif_make_list(env, 0);
+  for(unsigned int i = arr.GetCount() -1; i >= 0; i--) {
+    head = make_ref(app->getRef((void *) &arr.Item(i),memenv), class_name);
+    tail = enif_make_list_cell(env, head, tail);
+  }
+  return tail;
+}
+
+
+ERL_NIF_TERM wxeReturn::make_array_objs(wxArrayTreeItemIds& arr)
+{
+  ERL_NIF_TERM head, tail;
+  tail = enif_make_list(env, 0);
+  for(unsigned int i = arr.GetCount() -1; i >= 0; i--) {
+    head = make((wxUIntPtr *) arr[i].m_pItem);
+    tail = enif_make_list_cell(env, head, tail);
+  }
+  return tail;
+}
+
+
+ERL_NIF_TERM wxeReturn::make_array_objs(wxGridCellCoordsArray& arr)
+{
+  ERL_NIF_TERM head, tail;
+  tail = enif_make_list(env, 0);
+  for(unsigned int i = arr.GetCount() -1; i >= 0; i--) {
+    head = make(arr[i]);
     tail = enif_make_list_cell(env, head, tail);
   }
   return tail;
@@ -216,7 +244,7 @@ ERL_NIF_TERM  wxeReturn::make(wxArrayDouble val) {
 
 INLINE
 ERL_NIF_TERM wxeReturn::make(wxUIntPtr *val) {
-  return enif_make_uint(env, *val);
+  return enif_make_uint64(env, *val);
 }
 
 INLINE

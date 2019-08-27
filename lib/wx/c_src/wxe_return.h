@@ -30,6 +30,7 @@
 //#define wxUSEGUI
 #include "wxe_impl.h"
 #include <wx/wx.h>
+#include <wx/aui/aui.h>
 #include <wx/geometry.h>
 #include <wx/colour.h>
 #include <wx/grid.h>
@@ -45,7 +46,7 @@
 class wxeReturn {
 
 public:
-    wxeReturn (ErlNifEnv           *_env,
+    wxeReturn (wxeMemEnv           *_memenv,
                ErlNifPid           _caller,
 	       bool                _isResult=false);
 
@@ -64,6 +65,8 @@ public:
     ERL_NIF_TERM make_list_objs(const wxList& wx_list, WxeApp *app, const char *cname);
     ERL_NIF_TERM make_array_objs(wxGridCellCoordsArray& arr);
     // ERL_NIF_TERM make_array_objs(const wxList& wx_list, WxeApp *app, const char *cname);
+    ERL_NIF_TERM make_array_objs(wxArrayTreeItemIds& arr);
+    ERL_NIF_TERM make_array_objs(wxAuiPaneInfoArray&, WxeApp *app, const char *cname);
 
     ERL_NIF_TERM make_bool(int val);
     ERL_NIF_TERM make_int(int val);
@@ -114,7 +117,7 @@ private:
     ErlNifPid               caller;
     wxMBConvUTF32           utfConverter;
     bool                    isResult;
-
+    wxeMemEnv               *memenv;
 };
 
 #endif	/* _WXE_RETURN_H */

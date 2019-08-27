@@ -40,6 +40,7 @@ extern ERL_NIF_TERM WXE_ATOM_error;
 #define WXE_EXITED        3
 #define WXE_ERROR        -1
 
+int wxe_get_float(ErlNifEnv* env, ERL_NIF_TERM term, float* dp);
 
 /* wxe_impl.cpp functions */
 

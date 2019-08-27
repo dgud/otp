@@ -74,30 +74,11 @@ new(Parent)
 	      {onGetItemAttr, function()} |
 	      {onGetItemColumnImage, function()}.
 
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{}=Parent, Options)
   when is_list(Options)->
-    ?CLASS(ParentT,wxWindow),
-    MOpts = fun({winid, Winid}, Acc) -> [<<1:32/?UI,Winid:32/?UI>>|Acc];
-	       ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-	       ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-	       ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-	       ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->
-		    ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-	       ({onGetItemText, F}, Acc) when is_function(F) ->
-		    Fun = fun([This,Item,Col]) -> unicode:characters_to_binary([F(This,Item,Col),0]) end,
-		    [<<6:32/?UI,(wxe_util:get_cbId(Fun)):32/?UI>>|Acc];
-	       ({onGetItemAttr, F}, Acc) when is_function(F) ->
-		    Fun = fun([This,Item]) ->
-				  #wx_ref{type=wxListItemAttr,ref=ThisRef} = F(This,Item),
-				  <<ThisRef:32/?UI>>
-			  end,
-		    [<<7:32/?UI,(wxe_util:get_cbId(Fun)):32/?UI>>|Acc];
-	       ({onGetItemColumnImage, F}, Acc) when is_function(F) ->
-		    Fun = fun([This,Item, Col]) -> <<(F(This,Item,Col)):32/?I>> end,
-		    [<<8:32/?UI,(wxe_util:get_cbId(Fun)):32/?UI>>|Acc];
-	       (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-    BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-    wxe_util:construct(~s, <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+    %% ~s
+    ListCtrl = new(),
+    create(ListCtrl,Parent,Options).
 
 wxListCtrl_new_2>>
 

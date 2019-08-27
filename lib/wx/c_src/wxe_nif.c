@@ -45,6 +45,15 @@ int get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp)
     } else return 0;
 }
 
+int wxe_get_float(ErlNifEnv* env, ERL_NIF_TERM term, float* dp)
+{
+    double temp;
+    if(enif_get_double(env, term, &temp)) {
+        *dp = (float) temp;
+        return 1;
+    } else return 0;
+}
+
 static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     int op;
