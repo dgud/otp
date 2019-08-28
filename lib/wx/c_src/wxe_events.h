@@ -25,12 +25,28 @@
 
 bool sendevent(wxEvent * event, wxeMemEnv *env);
 
+typedef struct {
+    int ev_type;
+    int class_id;
+    const char * ev_name;
+    const char* ev_class;
+    const char* ev_rec;
+} wxe_evInfo;
+
 class wxeEtype 
 {
 public: 
-  wxeEtype (ERL_NIF_TERM , int);
-  ERL_NIF_TERM eName;
+    wxeEtype (ErlNifEnv *env, wxe_evInfo* info)
+    {
+        cID = info->class_id;
+        evName = enif_make_atom(env, info->ev_name);
+        evClass = enif_make_atom(env, info->ev_class);
+        evRecord = enif_make_atom(env, info->ev_rec);
+    } ;
   int cID;
+  ERL_NIF_TERM evName;
+  ERL_NIF_TERM evClass;
+  ERL_NIF_TERM evRecord;
 };
 
 void initEventTable();

@@ -434,6 +434,29 @@ void WxeApp::dispatch_cb(wxeFifo * batch, wxeMemEnv * memenv, ErlNifPid process)
   }
 }
 
+
+void WxeApp::wxe_dispatch(wxeCommand& event)
+{
+  void (*nif_cb) (WxeApp *, wxeCommand& ) = wxe_fns[event.op].nif_cb;
+  if(nif_cb) {
+    try { nif_cb(this, event); }
+    catch (wxe_badarg badarg) {
+      wxeReturn rt = wxeReturn(event.memenv, event.caller, false);
+      ERL_NIF_TERM ba =
+        enif_make_tuple2(rt.env,
+                         WXE_ATOM_badarg,
+                         enif_make_string(rt.env, badarg.var, ERL_NIF_LATIN1));
+      rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error, rt.make_int(event.op), ba));
+
+    }
+  } else {
+    wxeReturn rt = wxeReturn(event.memenv, event.caller, false);
+    ERL_NIF_TERM undef = enif_make_atom(rt.env, "undefined_function");
+    rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error,
+                             rt.make_int(event.op), undef));
+  }
+}
+
 /* Memory handling */
 
 ERL_NIF_TERM newMemEnv(ErlNifEnv* env)

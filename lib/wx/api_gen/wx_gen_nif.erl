@@ -1307,7 +1307,6 @@ build_events() ->
     w("#include \"../wxe_events.h\"~n~n"),
     w("#include \"../wxe_return.h\"~n~n"),
 
-    w("wxeEtype::wxeEtype(ERL_NIF_TERM atom, int Id) {eName = atom;cID = Id;}~n~n"),
     w("WX_DECLARE_HASH_MAP(int, wxeEtype*, wxIntegerHash, wxIntegerEqual, wxeETmap );~n~n"),
 
     w("wxeETmap etmap;~n~n"),
@@ -1317,7 +1316,7 @@ build_events() ->
   wxeETmap::iterator it;
   for(it = etmap.begin(); it != etmap.end(); ++it) {
     wxeEtype * value = it->second;
-    if(enif_is_identical(value->eName, etype_atom) == 0) {
+    if(enif_is_identical(value->evName, etype_atom) == 0) {
       if(it->first > wxEVT_USER_FIRST) {
         return it->first - wxEVT_USER_FIRST;
       } else {
@@ -1338,23 +1337,22 @@ build_events() ->
 
 initEventTable(Evs) ->
     w("void initEventTable()~n{~n"),
-    w("  struct { ",[]),
-    w("int ev_type;  int class_id; const char * ev_name;} event_types[] =~n  {~n",[]),
+    w("  wxe_evInfo event_types[] =~n    {~n",[]),
 
     lists:foreach(fun(Ev) -> init_event_classes(Ev) end,
-		  [#class{id=0,event=[wxEVT_NULL]}|Evs]),
-    w("   {-1, 0, ""}~n  };~n~n",[]),
+		  [#class{name="wxWXENullEvent", id=0,event=[wxEVT_NULL]}|Evs]),
+    w("     {-1, 0, \"\", \"\", \"\"}~n  };~n~n",[]),
     w("  ErlNifEnv *env = enif_alloc_env();~n"),
     w("  for(int i=0; event_types[i].ev_type != -1; i++) {~n",[]),
     w("     if(NULL == etmap[event_types[i].ev_type]) {~n",[]),
     w("       etmap[event_types[i].ev_type] =~n"
-      "         new wxeEtype(enif_make_atom(env,event_types[i].ev_name), event_types[i].class_id);~n"),
+      "         new wxeEtype(env, &event_types[i]);~n"),
     w("     } else {~n",[]),
     w("       wxeEtype *prev = etmap[event_types[i].ev_type];~n"
       "       wxString msg(wxT(\"Duplicate event defs: \"));~n"
       "       msg += wxString::FromAscii(event_types[i].ev_name);~n"
       "       msg += wxString::Format(wxT(\" %d \"), event_types[i].class_id);~n"
-      "       msg += wxString::FromAscii(prev->eName);~n"
+      "       msg += wxString::FromAscii(prev->evName);~n"
       "       msg += wxString::Format(wxT(\" %d\"), prev->cID);~n"
       "       send_msg(\"internal_error\", &msg);~n"
       "     }~n"
@@ -1362,18 +1360,21 @@ initEventTable(Evs) ->
     w("  enif_free_env(env);~n"),
     w("}~n~n").
 
-init_event_classes(#class{event=ETs, id=Id}) ->
+init_event_classes(#class{name=Name, event=ETs, id=Id}) ->
     F = fun({Eev, Cev, OtherClass}) ->
-		w("   {~w + wxEVT_USER_FIRST, ~w, ~p},~n",
-		  [Cev, find_id(OtherClass), wx_gen_erl:event_type_name(Eev)]);
+		w("     {~w + wxEVT_USER_FIRST, ~w, ~p, ~p, ~p},~n",
+		  [Cev, find_id(OtherClass), wx_gen_erl:event_type_name(Eev),
+                   Name, wx_gen_erl:event_rec_name(Name)]);
 	   ({Ev, {test_if, Test}}) ->
 		w("#if ~s~n", [Test]),
-		w("   {~w, ~w, ~p},~n",
-		  [Ev, Id, wx_gen_erl:event_type_name(Ev)]),
+		w("     {~w, ~w, ~p, ~p, ~p},~n",
+		  [Ev, Id, wx_gen_erl:event_type_name(Ev),
+                   Name, wx_gen_erl:event_rec_name(Name)]),
 		w("#endif~n", []);
 	   (Ev) ->
-		w("   {~w, ~w, ~p},~n",
-		  [Ev, Id, wx_gen_erl:event_type_name(Ev)])
+		w("     {~w, ~w, ~p, ~p, ~p},~n",
+		  [Ev, Id, wx_gen_erl:event_type_name(Ev),
+                   Name, wx_gen_erl:event_rec_name(Name)])
 	end,
     [F(ET) || ET <- ETs].
 
@@ -1384,14 +1385,8 @@ find_id(OtherClass) ->
 
 encode_events(Evs) ->
     ?WTC("encode_events"),
-    %% w("~nint getRef(void* ptr, wxeMemEnv* memenv)~n"
-    %%   "{~n"
-    %%   "  WxeApp * app = (WxeApp *) wxTheApp;~n"
-    %%   "  return app->getRef(ptr,memenv);~n"
-    %%   "}~n~n"),
     w("bool sendevent(wxEvent *event, wxeMemEnv *memenv)~n{~n"
       "  int send_res ;~n"
-      "  char * evClass = NULL;~n"
       "  wxMBConvUTF32 UTFconverter;~n"
       "  wxeEtype *Etype = etmap[event->GetEventType()];~n"
       "  wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;~n"
@@ -1417,7 +1412,7 @@ encode_events(Evs) ->
       "                       WXE_ATOM__wx_invoke_cb_,\n"
       "                       rt.make_int(cb->fun_id),\n"
       "                       wx_ev,\n"
-      "                       rt.make_ref(app->getRef((void *)event,memenv), evClass)\n"
+      "                       rt.make_ref(app->getRef((void *)event,memenv), Etype->evClass)\n"
       "                       );\n"
       "    pre_callback();\n"
       "    send_res =  rt.send(wx_cb);\n"
@@ -1460,15 +1455,14 @@ encode_event(C = #class{name=Class, id=Id, options=Opts}) ->
 encode_event2(Class = #class{name=Name}) ->
     Attrs = build_event_attrs(Class),
     TupleSz = length(Attrs) + 2,
-    w("    evClass = (char*)\"~s\";~n",[Name]),
     case TupleSz < 8 of
         true  -> w("    ev_term = enif_make_tuple~w(rt.env,~n",[TupleSz]);
         false -> w("    ev_term = enif_make_tuple(rt.env,~w,~n",[TupleSz])
     end,
-    w("        rt.make_atom((char*)\"~s\"),~n", [wx_gen_erl:event_rec_name(Name)]),
+    w("        Etype->evRecord,~n", []),
     case TupleSz == 2 of
-        true  -> w("        Etype->eName~n");
-        false -> w("        Etype->eName,~n"),
+        true  -> w("        Etype->evName~n");
+        false -> w("        Etype->evName,~n"),
                  build_ret_types(void, Attrs, 8)
     end,
     w(");~n").

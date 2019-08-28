@@ -26,7 +26,7 @@ wxeReturn::wxeReturn (wxeMemEnv * _memenv,
                       ErlNifPid   _caller,
 		      bool        _isResult) {
   memenv  = memenv;
-  env     = memenv->tmp_env;
+  env     = _memenv->tmp_env;
   caller  = _caller;
 
   isResult = _isResult;
