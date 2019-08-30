@@ -96,7 +96,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframewxmdiparentframe">external documentation</a>.
 -spec new() -> wxMDIParentFrame().
 new() ->
-  wxe_util:construct(?wxMDIParentFrame_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxMDIParentFrame_new_0),
+  wxe_util:rec(?wxMDIParentFrame_new_0).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxMDIParentFrame() when
@@ -112,39 +113,40 @@ new(Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:construct(?wxMDIParentFrame_new_4,[ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxMDIParentFrame_new_4),
+  wxe_util:rec(?wxMDIParentFrame_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframeactivatenext">external documentation</a>.
 -spec activateNext(This) -> 'ok' when
 	This::wxMDIParentFrame().
-activateNext(#wx_ref{type=ThisT,ref=ThisRef}) ->
+activateNext(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_ActivateNext,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIParentFrame_ActivateNext).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframeactivateprevious">external documentation</a>.
 -spec activatePrevious(This) -> 'ok' when
 	This::wxMDIParentFrame().
-activatePrevious(#wx_ref{type=ThisT,ref=ThisRef}) ->
+activatePrevious(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_ActivatePrevious,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIParentFrame_ActivatePrevious).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframearrangeicons">external documentation</a>.
 -spec arrangeIcons(This) -> 'ok' when
 	This::wxMDIParentFrame().
-arrangeIcons(#wx_ref{type=ThisT,ref=ThisRef}) ->
+arrangeIcons(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_ArrangeIcons,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIParentFrame_ArrangeIcons).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframecascade">external documentation</a>.
 -spec cascade(This) -> 'ok' when
 	This::wxMDIParentFrame().
-cascade(#wx_ref{type=ThisT,ref=ThisRef}) ->
+cascade(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_Cascade,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIParentFrame_Cascade).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -160,26 +162,29 @@ create(This,Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxMDIParentFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMDIParentFrame_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxMDIParentFrame_Create),
+  wxe_util:rec(?wxMDIParentFrame_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframegetactivechild">external documentation</a>.
 -spec getActiveChild(This) -> wxMDIChildFrame:wxMDIChildFrame() when
 	This::wxMDIParentFrame().
-getActiveChild(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getActiveChild(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:call(?wxMDIParentFrame_GetActiveChild,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIParentFrame_GetActiveChild),
+  wxe_util:rec(?wxMDIParentFrame_GetActiveChild).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframegetclientwindow">external documentation</a>.
 -spec getClientWindow(This) -> wxMDIClientWindow:wxMDIClientWindow() when
 	This::wxMDIParentFrame().
-getClientWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getClientWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:call(?wxMDIParentFrame_GetClientWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIParentFrame_GetClientWindow),
+  wxe_util:rec(?wxMDIParentFrame_GetClientWindow).
 
 %% @equiv tile(This, [])
 -spec tile(This) -> 'ok' when
@@ -194,10 +199,10 @@ tile(This)
 -spec tile(This, [Option]) -> 'ok' when
 	This::wxMDIParentFrame(),
 	Option :: {'orient', wx:wx_enum()}.
-tile(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+tile(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_Tile,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMDIParentFrame_Tile).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMDIParentFrame()) -> 'ok'.

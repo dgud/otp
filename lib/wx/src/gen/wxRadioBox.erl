@@ -97,13 +97,14 @@ new(Parent,Id,Title,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
 	Option :: {'majorDim', integer()}
 		 | {'style', integer()}
 		 | {'val', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  wxe_util:construct(?wxRadioBox_new,[ParentRef,Id,Title_UC,Pos,Size,Choices_UCA, Options]).
+  wxe_util:queue_cmd(Parent,Id,Title_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxRadioBox_new),
+  wxe_util:rec(?wxRadioBox_new).
 
 %% @equiv create(This,Parent,Id,Title,Pos,Size,Choices, [])
 -spec create(This, Parent, Id, Title, Pos, Size, Choices) -> boolean() when
@@ -119,14 +120,15 @@ create(This,Parent,Id,Title,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choi
 	Option :: {'majorDim', integer()}
 		 | {'style', integer()}
 		 | {'val', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  wxe_util:call(?wxRadioBox_Create,[ThisRef,ParentRef,Id,Title_UC,Pos,Size,Choices_UCA, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxRadioBox_Create),
+  wxe_util:rec(?wxRadioBox_Create).
 
 %% @equiv enable(This, [])
 -spec enable(This) -> boolean() when
@@ -151,42 +153,46 @@ enable(This)
 enable(This,N)
  when is_record(This, wx_ref),is_integer(N) ->
   enable(This,N, []);
-enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_Enable_1,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxRadioBox_Enable_1),
+  wxe_util:rec(?wxRadioBox_Enable_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxenable">external documentation</a>.
 -spec enable(This, N, [Option]) -> boolean() when
 	This::wxRadioBox(), N::integer(),
 	Option :: {'enable', boolean()}.
-enable(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
+enable(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_Enable_2,[ThisRef,N, Options]).
+  wxe_util:queue_cmd(This,N, Options,?get_env(),?wxRadioBox_Enable_2),
+  wxe_util:rec(?wxRadioBox_Enable_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxRadioBox().
-getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxRadioBox_GetSelection),
+  wxe_util:rec(?wxRadioBox_GetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetstring">external documentation</a>.
 -spec getString(This, N) -> unicode:charlist() when
 	This::wxRadioBox(), N::integer().
-getString(#wx_ref{type=ThisT,ref=ThisRef},N)
+getString(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetString,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxRadioBox_GetString),
+  wxe_util:rec(?wxRadioBox_GetString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetselection">external documentation</a>.
 -spec setSelection(This, N) -> 'ok' when
 	This::wxRadioBox(), N::integer().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
+setSelection(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:cast(?wxRadioBox_SetSelection,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxRadioBox_SetSelection).
 
 %% @equiv show(This, [])
 -spec show(This) -> boolean() when
@@ -211,91 +217,100 @@ show(This)
 show(This,N)
  when is_record(This, wx_ref),is_integer(N) ->
   show(This,N, []);
-show(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_Show_1,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxRadioBox_Show_1),
+  wxe_util:rec(?wxRadioBox_Show_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxshow">external documentation</a>.
 -spec show(This, N, [Option]) -> boolean() when
 	This::wxRadioBox(), N::integer(),
 	Option :: {'show', boolean()}.
-show(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
+show(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_Show_2,[ThisRef,N, Options]).
+  wxe_util:queue_cmd(This,N, Options,?get_env(),?wxRadioBox_Show_2),
+  wxe_util:rec(?wxRadioBox_Show_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetcolumncount">external documentation</a>.
 -spec getColumnCount(This) -> integer() when
 	This::wxRadioBox().
-getColumnCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColumnCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetColumnCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxRadioBox_GetColumnCount),
+  wxe_util:rec(?wxRadioBox_GetColumnCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetitemhelptext">external documentation</a>.
 -spec getItemHelpText(This, N) -> unicode:charlist() when
 	This::wxRadioBox(), N::integer().
-getItemHelpText(#wx_ref{type=ThisT,ref=ThisRef},N)
+getItemHelpText(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetItemHelpText,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxRadioBox_GetItemHelpText),
+  wxe_util:rec(?wxRadioBox_GetItemHelpText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetitemtooltip">external documentation</a>.
 -spec getItemToolTip(This, Item) -> wxToolTip:wxToolTip() when
 	This::wxRadioBox(), Item::integer().
-getItemToolTip(#wx_ref{type=ThisT,ref=ThisRef},Item)
+getItemToolTip(#wx_ref{type=ThisT}=This,Item)
  when is_integer(Item) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetItemToolTip,[ThisRef,Item]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxRadioBox_GetItemToolTip),
+  wxe_util:rec(?wxRadioBox_GetItemToolTip).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetitemfrompoint">external documentation</a>.
 -spec getItemFromPoint(This, Pt) -> integer() when
 	This::wxRadioBox(), Pt::{X::integer(), Y::integer()}.
-getItemFromPoint(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
+getItemFromPoint(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetItemFromPoint,[ThisRef,Pt]).
+  wxe_util:queue_cmd(This,Pt,?get_env(),?wxRadioBox_GetItemFromPoint),
+  wxe_util:rec(?wxRadioBox_GetItemFromPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetrowcount">external documentation</a>.
 -spec getRowCount(This) -> integer() when
 	This::wxRadioBox().
-getRowCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRowCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetRowCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxRadioBox_GetRowCount),
+  wxe_util:rec(?wxRadioBox_GetRowCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxisitemenabled">external documentation</a>.
 -spec isItemEnabled(This, N) -> boolean() when
 	This::wxRadioBox(), N::integer().
-isItemEnabled(#wx_ref{type=ThisT,ref=ThisRef},N)
+isItemEnabled(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_IsItemEnabled,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxRadioBox_IsItemEnabled),
+  wxe_util:rec(?wxRadioBox_IsItemEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxisitemshown">external documentation</a>.
 -spec isItemShown(This, N) -> boolean() when
 	This::wxRadioBox(), N::integer().
-isItemShown(#wx_ref{type=ThisT,ref=ThisRef},N)
+isItemShown(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_IsItemShown,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxRadioBox_IsItemShown),
+  wxe_util:rec(?wxRadioBox_IsItemShown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetitemhelptext">external documentation</a>.
 -spec setItemHelpText(This, N, HelpText) -> 'ok' when
 	This::wxRadioBox(), N::integer(), HelpText::unicode:chardata().
-setItemHelpText(#wx_ref{type=ThisT,ref=ThisRef},N,HelpText)
+setItemHelpText(#wx_ref{type=ThisT}=This,N,HelpText)
  when is_integer(N),?is_chardata(HelpText) ->
   ?CLASS(ThisT,wxRadioBox),
   HelpText_UC = unicode:characters_to_binary([HelpText,0]),
-  wxe_util:cast(?wxRadioBox_SetItemHelpText,[ThisRef,N,HelpText_UC]).
+  wxe_util:queue_cmd(This,N,HelpText_UC,?get_env(),?wxRadioBox_SetItemHelpText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetitemtooltip">external documentation</a>.
 -spec setItemToolTip(This, Item, Text) -> 'ok' when
 	This::wxRadioBox(), Item::integer(), Text::unicode:chardata().
-setItemToolTip(#wx_ref{type=ThisT,ref=ThisRef},Item,Text)
+setItemToolTip(#wx_ref{type=ThisT}=This,Item,Text)
  when is_integer(Item),?is_chardata(Text) ->
   ?CLASS(ThisT,wxRadioBox),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxRadioBox_SetItemToolTip,[ThisRef,Item,Text_UC]).
+  wxe_util:queue_cmd(This,Item,Text_UC,?get_env(),?wxRadioBox_SetItemToolTip).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxRadioBox()) -> 'ok'.

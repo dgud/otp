@@ -54,60 +54,67 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventgetkeycode">external documentation</a>.
 -spec getKeyCode(This) -> integer() when
 	This::wxTreeEvent().
-getKeyCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getKeyCode(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_GetKeyCode,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_GetKeyCode),
+  wxe_util:rec(?wxTreeEvent_GetKeyCode).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventgetitem">external documentation</a>.
 -spec getItem(This) -> integer() when
 	This::wxTreeEvent().
-getItem(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getItem(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_GetItem,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_GetItem),
+  wxe_util:rec(?wxTreeEvent_GetItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventgetkeyevent">external documentation</a>.
 -spec getKeyEvent(This) -> wxKeyEvent:wxKeyEvent() when
 	This::wxTreeEvent().
-getKeyEvent(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getKeyEvent(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_GetKeyEvent,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_GetKeyEvent),
+  wxe_util:rec(?wxTreeEvent_GetKeyEvent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventgetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxTreeEvent().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_GetLabel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_GetLabel),
+  wxe_util:rec(?wxTreeEvent_GetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventgetolditem">external documentation</a>.
 -spec getOldItem(This) -> integer() when
 	This::wxTreeEvent().
-getOldItem(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOldItem(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_GetOldItem,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_GetOldItem),
+  wxe_util:rec(?wxTreeEvent_GetOldItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventgetpoint">external documentation</a>.
 -spec getPoint(This) -> {X::integer(), Y::integer()} when
 	This::wxTreeEvent().
-getPoint(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPoint(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_GetPoint,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_GetPoint),
+  wxe_util:rec(?wxTreeEvent_GetPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventiseditcancelled">external documentation</a>.
 -spec isEditCancelled(This) -> boolean() when
 	This::wxTreeEvent().
-isEditCancelled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isEditCancelled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTreeEvent),
-  wxe_util:call(?wxTreeEvent_IsEditCancelled,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTreeEvent_IsEditCancelled),
+  wxe_util:rec(?wxTreeEvent_IsEditCancelled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreeevent.html#wxtreeeventsettooltip">external documentation</a>.
 -spec setToolTip(This, ToolTip) -> 'ok' when
 	This::wxTreeEvent(), ToolTip::unicode:chardata().
-setToolTip(#wx_ref{type=ThisT,ref=ThisRef},ToolTip)
+setToolTip(#wx_ref{type=ThisT}=This,ToolTip)
  when ?is_chardata(ToolTip) ->
   ?CLASS(ThisT,wxTreeEvent),
   ToolTip_UC = unicode:characters_to_binary([ToolTip,0]),
-  wxe_util:cast(?wxTreeEvent_SetToolTip,[ThisRef,ToolTip_UC]).
+  wxe_util:queue_cmd(This,ToolTip_UC,?get_env(),?wxTreeEvent_SetToolTip).
 
  %% From wxNotifyEvent
 %% @hidden

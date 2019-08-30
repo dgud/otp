@@ -42,22 +42,25 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtaskbaricon.html#wxtaskbariconwxtaskbaricon">external documentation</a>.
 -spec new() -> wxTaskBarIcon().
 new() ->
-  wxe_util:construct(?wxTaskBarIcon_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxTaskBarIcon_new),
+  wxe_util:rec(?wxTaskBarIcon_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtaskbaricon.html#wxtaskbariconpopupmenu">external documentation</a>.
 -spec popupMenu(This, Menu) -> boolean() when
 	This::wxTaskBarIcon(), Menu::wxMenu:wxMenu().
-popupMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
+popupMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu) ->
   ?CLASS(ThisT,wxTaskBarIcon),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:call(?wxTaskBarIcon_PopupMenu,[ThisRef,MenuRef]).
+  wxe_util:queue_cmd(This,Menu,?get_env(),?wxTaskBarIcon_PopupMenu),
+  wxe_util:rec(?wxTaskBarIcon_PopupMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtaskbaricon.html#wxtaskbariconremoveicon">external documentation</a>.
 -spec removeIcon(This) -> boolean() when
 	This::wxTaskBarIcon().
-removeIcon(#wx_ref{type=ThisT,ref=ThisRef}) ->
+removeIcon(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTaskBarIcon),
-  wxe_util:call(?wxTaskBarIcon_RemoveIcon,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTaskBarIcon_RemoveIcon),
+  wxe_util:rec(?wxTaskBarIcon_RemoveIcon).
 
 %% @equiv setIcon(This,Icon, [])
 -spec setIcon(This, Icon) -> boolean() when
@@ -71,11 +74,12 @@ setIcon(This,Icon)
 -spec setIcon(This, Icon, [Option]) -> boolean() when
 	This::wxTaskBarIcon(), Icon::wxIcon:wxIcon(),
 	Option :: {'tooltip', unicode:chardata()}.
-setIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}, Options)
+setIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTaskBarIcon),
   ?CLASS(IconT,wxIcon),
-  wxe_util:call(?wxTaskBarIcon_SetIcon,[ThisRef,IconRef, Options]).
+  wxe_util:queue_cmd(This,Icon, Options,?get_env(),?wxTaskBarIcon_SetIcon),
+  wxe_util:rec(?wxTaskBarIcon_SetIcon).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxTaskBarIcon()) -> 'ok'.

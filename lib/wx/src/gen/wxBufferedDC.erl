@@ -66,7 +66,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbuffereddc.html#wxbuffereddcwxbuffereddc">external documentation</a>.
 -spec new() -> wxBufferedDC().
 new() ->
-  wxe_util:construct(?wxBufferedDC_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxBufferedDC_new_0),
+  wxe_util:rec(?wxBufferedDC_new_0).
 
 %% @equiv new(Dc, [])
 -spec new(Dc) -> wxBufferedDC() when
@@ -93,19 +94,21 @@ new(Dc)
 new(Dc,Area={AreaW,AreaH} = Area)
  when is_record(Dc, wx_ref),is_integer(AreaW),is_integer(AreaH) ->
   new(Dc,Area, []);
-new(#wx_ref{type=DcT,ref=DcRef}, Options)
+new(#wx_ref{type=DcT}=Dc, Options)
  when is_list(Options) ->
   ?CLASS(DcT,wxDC),
-  wxe_util:construct(?wxBufferedDC_new_2,[DcRef, Options]).
+  wxe_util:queue_cmd(Dc, Options,?get_env(),?wxBufferedDC_new_2),
+  wxe_util:rec(?wxBufferedDC_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbuffereddc.html#wxbuffereddcwxbuffereddc">external documentation</a>.
 -spec new(Dc, Area, [Option]) -> wxBufferedDC() when
 	Dc::wxDC:wxDC(), Area::{W::integer(), H::integer()},
 	Option :: {'style', integer()}.
-new(#wx_ref{type=DcT,ref=DcRef},{AreaW,AreaH} = Area, Options)
+new(#wx_ref{type=DcT}=Dc,{AreaW,AreaH} = Area, Options)
  when is_integer(AreaW),is_integer(AreaH),is_list(Options) ->
   ?CLASS(DcT,wxDC),
-  wxe_util:construct(?wxBufferedDC_new_3,[DcRef,Area, Options]).
+  wxe_util:queue_cmd(Dc,Area, Options,?get_env(),?wxBufferedDC_new_3),
+  wxe_util:rec(?wxBufferedDC_new_3).
 
 %% @equiv init(This,Dc, [])
 -spec init(This, Dc) -> 'ok' when
@@ -132,21 +135,21 @@ init(This,Dc)
 init(This,Dc,Area={AreaW,AreaH} = Area)
  when is_record(This, wx_ref),is_record(Dc, wx_ref),is_integer(AreaW),is_integer(AreaH) ->
   init(This,Dc,Area, []);
-init(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef}, Options)
+init(#wx_ref{type=ThisT}=This,#wx_ref{type=DcT}=Dc, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxBufferedDC),
   ?CLASS(DcT,wxDC),
-  wxe_util:cast(?wxBufferedDC_Init_2,[ThisRef,DcRef, Options]).
+  wxe_util:queue_cmd(This,Dc, Options,?get_env(),?wxBufferedDC_Init_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbuffereddc.html#wxbuffereddcinit">external documentation</a>.
 -spec init(This, Dc, Area, [Option]) -> 'ok' when
 	This::wxBufferedDC(), Dc::wxDC:wxDC(), Area::{W::integer(), H::integer()},
 	Option :: {'style', integer()}.
-init(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef},{AreaW,AreaH} = Area, Options)
+init(#wx_ref{type=ThisT}=This,#wx_ref{type=DcT}=Dc,{AreaW,AreaH} = Area, Options)
  when is_integer(AreaW),is_integer(AreaH),is_list(Options) ->
   ?CLASS(ThisT,wxBufferedDC),
   ?CLASS(DcT,wxDC),
-  wxe_util:cast(?wxBufferedDC_Init_3,[ThisRef,DcRef,Area, Options]).
+  wxe_util:queue_cmd(This,Dc,Area, Options,?get_env(),?wxBufferedDC_Init_3).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBufferedDC()) -> 'ok'.

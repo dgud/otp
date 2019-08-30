@@ -64,7 +64,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscreendc.html#wxscreendcwxscreendc">external documentation</a>.
 -spec new() -> wxScreenDC().
 new() ->
-  wxe_util:construct(?wxScreenDC_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxScreenDC_new),
+  wxe_util:rec(?wxScreenDC_new).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxScreenDC()) -> 'ok'.

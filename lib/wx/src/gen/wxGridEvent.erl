@@ -54,58 +54,66 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventaltdown">external documentation</a>.
 -spec altDown(This) -> boolean() when
 	This::wxGridEvent().
-altDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+altDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_AltDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_AltDown),
+  wxe_util:rec(?wxGridEvent_AltDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventcontroldown">external documentation</a>.
 -spec controlDown(This) -> boolean() when
 	This::wxGridEvent().
-controlDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+controlDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_ControlDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_ControlDown),
+  wxe_util:rec(?wxGridEvent_ControlDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventgetcol">external documentation</a>.
 -spec getCol(This) -> integer() when
 	This::wxGridEvent().
-getCol(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCol(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_GetCol,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_GetCol),
+  wxe_util:rec(?wxGridEvent_GetCol).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxGridEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_GetPosition),
+  wxe_util:rec(?wxGridEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventgetrow">external documentation</a>.
 -spec getRow(This) -> integer() when
 	This::wxGridEvent().
-getRow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_GetRow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_GetRow),
+  wxe_util:rec(?wxGridEvent_GetRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventmetadown">external documentation</a>.
 -spec metaDown(This) -> boolean() when
 	This::wxGridEvent().
-metaDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+metaDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_MetaDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_MetaDown),
+  wxe_util:rec(?wxGridEvent_MetaDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventselecting">external documentation</a>.
 -spec selecting(This) -> boolean() when
 	This::wxGridEvent().
-selecting(#wx_ref{type=ThisT,ref=ThisRef}) ->
+selecting(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_Selecting,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_Selecting),
+  wxe_util:rec(?wxGridEvent_Selecting).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridevent.html#wxgrideventshiftdown">external documentation</a>.
 -spec shiftDown(This) -> boolean() when
 	This::wxGridEvent().
-shiftDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+shiftDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridEvent),
-  wxe_util:call(?wxGridEvent_ShiftDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridEvent_ShiftDown),
+  wxe_util:rec(?wxGridEvent_ShiftDown).
 
  %% From wxNotifyEvent
 %% @hidden

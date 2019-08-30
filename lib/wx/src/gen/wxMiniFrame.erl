@@ -94,7 +94,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxminiframe.html#wxminiframewxminiframe">external documentation</a>.
 -spec new() -> wxMiniFrame().
 new() ->
-  wxe_util:construct(?wxMiniFrame_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxMiniFrame_new_0),
+  wxe_util:rec(?wxMiniFrame_new_0).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxMiniFrame() when
@@ -110,11 +111,12 @@ new(Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:construct(?wxMiniFrame_new_4,[ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxMiniFrame_new_4),
+  wxe_util:rec(?wxMiniFrame_new_4).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -130,12 +132,13 @@ create(This,Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxMiniFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMiniFrame_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxMiniFrame_Create),
+  wxe_util:rec(?wxMiniFrame_Create).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMiniFrame()) -> 'ok'.

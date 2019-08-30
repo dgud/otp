@@ -51,140 +51,154 @@ new(Printout)
 	Printout::wxPrintout:wxPrintout(),
 	Option :: {'printoutForPrinting', wxPrintout:wxPrintout()}
 		 | {'data', wxPrintDialogData:wxPrintDialogData()}.
-new(#wx_ref{type=PrintoutT,ref=PrintoutRef}, Options)
+new(#wx_ref{type=PrintoutT}=Printout, Options)
  when is_list(Options) ->
   ?CLASS(PrintoutT,wxPrintout),
-  wxe_util:construct(?wxPrintPreview_new_2,[PrintoutRef, Options]).
+  wxe_util:queue_cmd(Printout, Options,?get_env(),?wxPrintPreview_new_2),
+  wxe_util:rec(?wxPrintPreview_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewwxprintpreview">external documentation</a>.
 -spec new(Printout, PrintoutForPrinting, Data) -> wxPrintPreview() when
 	Printout::wxPrintout:wxPrintout(), PrintoutForPrinting::wxPrintout:wxPrintout(), Data::wxPrintData:wxPrintData().
-new(#wx_ref{type=PrintoutT,ref=PrintoutRef},#wx_ref{type=PrintoutForPrintingT,ref=PrintoutForPrintingRef},#wx_ref{type=DataT,ref=DataRef}) ->
+new(#wx_ref{type=PrintoutT}=Printout,#wx_ref{type=PrintoutForPrintingT}=PrintoutForPrinting,#wx_ref{type=DataT}=Data) ->
   ?CLASS(PrintoutT,wxPrintout),
   ?CLASS(PrintoutForPrintingT,wxPrintout),
   ?CLASS(DataT,wxPrintData),
-  wxe_util:construct(?wxPrintPreview_new_3,[PrintoutRef,PrintoutForPrintingRef,DataRef]).
+  wxe_util:queue_cmd(Printout,PrintoutForPrinting,Data,?get_env(),?wxPrintPreview_new_3),
+  wxe_util:rec(?wxPrintPreview_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetcanvas">external documentation</a>.
 -spec getCanvas(This) -> wxPreviewCanvas:wxPreviewCanvas() when
 	This::wxPrintPreview().
-getCanvas(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCanvas(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetCanvas,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetCanvas),
+  wxe_util:rec(?wxPrintPreview_GetCanvas).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetcurrentpage">external documentation</a>.
 -spec getCurrentPage(This) -> integer() when
 	This::wxPrintPreview().
-getCurrentPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCurrentPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetCurrentPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetCurrentPage),
+  wxe_util:rec(?wxPrintPreview_GetCurrentPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetframe">external documentation</a>.
 -spec getFrame(This) -> wxFrame:wxFrame() when
 	This::wxPrintPreview().
-getFrame(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFrame(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetFrame,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetFrame),
+  wxe_util:rec(?wxPrintPreview_GetFrame).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetmaxpage">external documentation</a>.
 -spec getMaxPage(This) -> integer() when
 	This::wxPrintPreview().
-getMaxPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaxPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetMaxPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetMaxPage),
+  wxe_util:rec(?wxPrintPreview_GetMaxPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetminpage">external documentation</a>.
 -spec getMinPage(This) -> integer() when
 	This::wxPrintPreview().
-getMinPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMinPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetMinPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetMinPage),
+  wxe_util:rec(?wxPrintPreview_GetMinPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetprintout">external documentation</a>.
 -spec getPrintout(This) -> wxPrintout:wxPrintout() when
 	This::wxPrintPreview().
-getPrintout(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintout(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetPrintout,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetPrintout),
+  wxe_util:rec(?wxPrintPreview_GetPrintout).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewgetprintoutforprinting">external documentation</a>.
 -spec getPrintoutForPrinting(This) -> wxPrintout:wxPrintout() when
 	This::wxPrintPreview().
-getPrintoutForPrinting(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintoutForPrinting(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_GetPrintoutForPrinting,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_GetPrintoutForPrinting),
+  wxe_util:rec(?wxPrintPreview_GetPrintoutForPrinting).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxPrintPreview().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintPreview_IsOk),
+  wxe_util:rec(?wxPrintPreview_IsOk).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewpaintpage">external documentation</a>.
 -spec paintPage(This, Canvas, Dc) -> boolean() when
 	This::wxPrintPreview(), Canvas::wxPreviewCanvas:wxPreviewCanvas(), Dc::wxDC:wxDC().
-paintPage(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CanvasT,ref=CanvasRef},#wx_ref{type=DcT,ref=DcRef}) ->
+paintPage(#wx_ref{type=ThisT}=This,#wx_ref{type=CanvasT}=Canvas,#wx_ref{type=DcT}=Dc) ->
   ?CLASS(ThisT,wxPrintPreview),
   ?CLASS(CanvasT,wxPreviewCanvas),
   ?CLASS(DcT,wxDC),
-  wxe_util:call(?wxPrintPreview_PaintPage,[ThisRef,CanvasRef,DcRef]).
+  wxe_util:queue_cmd(This,Canvas,Dc,?get_env(),?wxPrintPreview_PaintPage),
+  wxe_util:rec(?wxPrintPreview_PaintPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewprint">external documentation</a>.
 -spec print(This, Interactive) -> boolean() when
 	This::wxPrintPreview(), Interactive::boolean().
-print(#wx_ref{type=ThisT,ref=ThisRef},Interactive)
+print(#wx_ref{type=ThisT}=This,Interactive)
  when is_boolean(Interactive) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_Print,[ThisRef,Interactive]).
+  wxe_util:queue_cmd(This,Interactive,?get_env(),?wxPrintPreview_Print),
+  wxe_util:rec(?wxPrintPreview_Print).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewrenderpage">external documentation</a>.
 -spec renderPage(This, PageNum) -> boolean() when
 	This::wxPrintPreview(), PageNum::integer().
-renderPage(#wx_ref{type=ThisT,ref=ThisRef},PageNum)
+renderPage(#wx_ref{type=ThisT}=This,PageNum)
  when is_integer(PageNum) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_RenderPage,[ThisRef,PageNum]).
+  wxe_util:queue_cmd(This,PageNum,?get_env(),?wxPrintPreview_RenderPage),
+  wxe_util:rec(?wxPrintPreview_RenderPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewsetcanvas">external documentation</a>.
 -spec setCanvas(This, Canvas) -> 'ok' when
 	This::wxPrintPreview(), Canvas::wxPreviewCanvas:wxPreviewCanvas().
-setCanvas(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CanvasT,ref=CanvasRef}) ->
+setCanvas(#wx_ref{type=ThisT}=This,#wx_ref{type=CanvasT}=Canvas) ->
   ?CLASS(ThisT,wxPrintPreview),
   ?CLASS(CanvasT,wxPreviewCanvas),
-  wxe_util:cast(?wxPrintPreview_SetCanvas,[ThisRef,CanvasRef]).
+  wxe_util:queue_cmd(This,Canvas,?get_env(),?wxPrintPreview_SetCanvas).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewsetcurrentpage">external documentation</a>.
 -spec setCurrentPage(This, PageNum) -> boolean() when
 	This::wxPrintPreview(), PageNum::integer().
-setCurrentPage(#wx_ref{type=ThisT,ref=ThisRef},PageNum)
+setCurrentPage(#wx_ref{type=ThisT}=This,PageNum)
  when is_integer(PageNum) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:call(?wxPrintPreview_SetCurrentPage,[ThisRef,PageNum]).
+  wxe_util:queue_cmd(This,PageNum,?get_env(),?wxPrintPreview_SetCurrentPage),
+  wxe_util:rec(?wxPrintPreview_SetCurrentPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewsetframe">external documentation</a>.
 -spec setFrame(This, Frame) -> 'ok' when
 	This::wxPrintPreview(), Frame::wxFrame:wxFrame().
-setFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}) ->
+setFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame) ->
   ?CLASS(ThisT,wxPrintPreview),
   ?CLASS(FrameT,wxFrame),
-  wxe_util:cast(?wxPrintPreview_SetFrame,[ThisRef,FrameRef]).
+  wxe_util:queue_cmd(This,Frame,?get_env(),?wxPrintPreview_SetFrame).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewsetprintout">external documentation</a>.
 -spec setPrintout(This, Printout) -> 'ok' when
 	This::wxPrintPreview(), Printout::wxPrintout:wxPrintout().
-setPrintout(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PrintoutT,ref=PrintoutRef}) ->
+setPrintout(#wx_ref{type=ThisT}=This,#wx_ref{type=PrintoutT}=Printout) ->
   ?CLASS(ThisT,wxPrintPreview),
   ?CLASS(PrintoutT,wxPrintout),
-  wxe_util:cast(?wxPrintPreview_SetPrintout,[ThisRef,PrintoutRef]).
+  wxe_util:queue_cmd(This,Printout,?get_env(),?wxPrintPreview_SetPrintout).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewsetzoom">external documentation</a>.
 -spec setZoom(This, Percent) -> 'ok' when
 	This::wxPrintPreview(), Percent::integer().
-setZoom(#wx_ref{type=ThisT,ref=ThisRef},Percent)
+setZoom(#wx_ref{type=ThisT}=This,Percent)
  when is_integer(Percent) ->
   ?CLASS(ThisT,wxPrintPreview),
-  wxe_util:cast(?wxPrintPreview_SetZoom,[ThisRef,Percent]).
+  wxe_util:queue_cmd(This,Percent,?get_env(),?wxPrintPreview_SetZoom).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrintPreview()) -> 'ok'.

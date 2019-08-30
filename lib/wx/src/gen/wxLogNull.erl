@@ -38,7 +38,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlognull.html#wxlognullwxlognull">external documentation</a>.
 -spec new() -> wxLogNull().
 new() ->
-  wxe_util:construct(?wxLogNull_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxLogNull_new),
+  wxe_util:rec(?wxLogNull_new).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxLogNull()) -> 'ok'.

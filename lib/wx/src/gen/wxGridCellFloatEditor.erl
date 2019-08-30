@@ -54,16 +54,17 @@ new() ->
 		 | {'precision', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxGridCellFloatEditor_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxGridCellFloatEditor_new),
+  wxe_util:rec(?wxGridCellFloatEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloateditor.html#wxgridcellfloateditorsetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
 	This::wxGridCellFloatEditor(), Params::unicode:chardata().
-setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
+setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellFloatEditor),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellFloatEditor_SetParameters,[ThisRef,Params_UC]).
+  wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellFloatEditor_SetParameters).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellFloatEditor()) -> 'ok'.

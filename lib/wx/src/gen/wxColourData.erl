@@ -39,60 +39,65 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatawxcolourdata">external documentation</a>.
 -spec new() -> wxColourData().
 new() ->
-  wxe_util:construct(?wxColourData_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxColourData_new_0),
+  wxe_util:rec(?wxColourData_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatawxcolourdata">external documentation</a>.
 -spec new(Data) -> wxColourData() when
 	Data::wxColourData().
-new(#wx_ref{type=DataT,ref=DataRef}) ->
+new(#wx_ref{type=DataT}=Data) ->
   ?CLASS(DataT,wxColourData),
-  wxe_util:construct(?wxColourData_new_1,[DataRef]).
+  wxe_util:queue_cmd(Data,?get_env(),?wxColourData_new_1),
+  wxe_util:rec(?wxColourData_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatagetchoosefull">external documentation</a>.
 -spec getChooseFull(This) -> boolean() when
 	This::wxColourData().
-getChooseFull(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getChooseFull(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxColourData),
-  wxe_util:call(?wxColourData_GetChooseFull,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxColourData_GetChooseFull),
+  wxe_util:rec(?wxColourData_GetChooseFull).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatagetcolour">external documentation</a>.
 -spec getColour(This) -> wx:wx_colour4() when
 	This::wxColourData().
-getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxColourData),
-  wxe_util:call(?wxColourData_GetColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxColourData_GetColour),
+  wxe_util:rec(?wxColourData_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatagetcustomcolour">external documentation</a>.
 -spec getCustomColour(This, I) -> wx:wx_colour4() when
 	This::wxColourData(), I::integer().
-getCustomColour(#wx_ref{type=ThisT,ref=ThisRef},I)
+getCustomColour(#wx_ref{type=ThisT}=This,I)
  when is_integer(I) ->
   ?CLASS(ThisT,wxColourData),
-  wxe_util:call(?wxColourData_GetCustomColour,[ThisRef,I]).
+  wxe_util:queue_cmd(This,I,?get_env(),?wxColourData_GetCustomColour),
+  wxe_util:rec(?wxColourData_GetCustomColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatasetchoosefull">external documentation</a>.
 -spec setChooseFull(This, Flag) -> 'ok' when
 	This::wxColourData(), Flag::boolean().
-setChooseFull(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setChooseFull(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxColourData),
-  wxe_util:cast(?wxColourData_SetChooseFull,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxColourData_SetChooseFull).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatasetcolour">external documentation</a>.
 -spec setColour(This, Colour) -> 'ok' when
 	This::wxColourData(), Colour::wx:wx_colour().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxColourData),
-  wxe_util:cast(?wxColourData_SetColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxColourData_SetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdata.html#wxcolourdatasetcustomcolour">external documentation</a>.
 -spec setCustomColour(This, I, Colour) -> 'ok' when
 	This::wxColourData(), I::integer(), Colour::wx:wx_colour().
-setCustomColour(#wx_ref{type=ThisT,ref=ThisRef},I,Colour)
+setCustomColour(#wx_ref{type=ThisT}=This,I,Colour)
  when is_integer(I),tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxColourData),
-  wxe_util:cast(?wxColourData_SetCustomColour,[ThisRef,I,Colour]).
+  wxe_util:queue_cmd(This,I,wxe_util:color(Colour),?get_env(),?wxColourData_SetCustomColour).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxColourData()) -> 'ok'.

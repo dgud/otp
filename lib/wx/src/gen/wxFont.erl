@@ -42,7 +42,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontwxfont">external documentation</a>.
 -spec new() -> wxFont().
 new() ->
-  wxe_util:construct(?wxFont_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFont_new_0),
+  wxe_util:rec(?wxFont_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontwxfont">external documentation</a>.
 -spec new(Fontname) -> wxFont() when
@@ -50,7 +51,8 @@ new() ->
 new(Fontname)
  when ?is_chardata(Fontname) ->
   Fontname_UC = unicode:characters_to_binary([Fontname,0]),
-  wxe_util:construct(?wxFont_new_1,[Fontname_UC]).
+  wxe_util:queue_cmd(Fontname_UC,?get_env(),?wxFont_new_1),
+  wxe_util:rec(?wxFont_new_1).
 
 %% @equiv new(Size,Family,Style,Weight, [])
 -spec new(Size, Family, Style, Weight) -> wxFont() when
@@ -71,85 +73,97 @@ new(Size,Family,Style,Weight)
 		 | {'encoding', wx:wx_enum()}.
 new(Size,Family,Style,Weight, Options)
  when is_integer(Size),is_integer(Family),is_integer(Style),is_integer(Weight),is_list(Options) ->
-  wxe_util:construct(?wxFont_new_5,[Size,Family,Style,Weight, Options]).
+  wxe_util:queue_cmd(Size,Family,Style,Weight, Options,?get_env(),?wxFont_new_5),
+  wxe_util:rec(?wxFont_new_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontisfixedwidth">external documentation</a>.
 -spec isFixedWidth(This) -> boolean() when
 	This::wxFont().
-isFixedWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isFixedWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_IsFixedWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_IsFixedWidth),
+  wxe_util:rec(?wxFont_IsFixedWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetdefaultencoding">external documentation</a>.
 %%<br /> Res = ?wxFONTENCODING_SYSTEM | ?wxFONTENCODING_DEFAULT | ?wxFONTENCODING_ISO8859_1 | ?wxFONTENCODING_ISO8859_2 | ?wxFONTENCODING_ISO8859_3 | ?wxFONTENCODING_ISO8859_4 | ?wxFONTENCODING_ISO8859_5 | ?wxFONTENCODING_ISO8859_6 | ?wxFONTENCODING_ISO8859_7 | ?wxFONTENCODING_ISO8859_8 | ?wxFONTENCODING_ISO8859_9 | ?wxFONTENCODING_ISO8859_10 | ?wxFONTENCODING_ISO8859_11 | ?wxFONTENCODING_ISO8859_12 | ?wxFONTENCODING_ISO8859_13 | ?wxFONTENCODING_ISO8859_14 | ?wxFONTENCODING_ISO8859_15 | ?wxFONTENCODING_ISO8859_MAX | ?wxFONTENCODING_KOI8 | ?wxFONTENCODING_KOI8_U | ?wxFONTENCODING_ALTERNATIVE | ?wxFONTENCODING_BULGARIAN | ?wxFONTENCODING_CP437 | ?wxFONTENCODING_CP850 | ?wxFONTENCODING_CP852 | ?wxFONTENCODING_CP855 | ?wxFONTENCODING_CP866 | ?wxFONTENCODING_CP874 | ?wxFONTENCODING_CP932 | ?wxFONTENCODING_CP936 | ?wxFONTENCODING_CP949 | ?wxFONTENCODING_CP950 | ?wxFONTENCODING_CP1250 | ?wxFONTENCODING_CP1251 | ?wxFONTENCODING_CP1252 | ?wxFONTENCODING_CP1253 | ?wxFONTENCODING_CP1254 | ?wxFONTENCODING_CP1255 | ?wxFONTENCODING_CP1256 | ?wxFONTENCODING_CP1257 | ?wxFONTENCODING_CP12_MAX | ?wxFONTENCODING_UTF7 | ?wxFONTENCODING_UTF8 | ?wxFONTENCODING_EUC_JP | ?wxFONTENCODING_UTF16BE | ?wxFONTENCODING_UTF16LE | ?wxFONTENCODING_UTF32BE | ?wxFONTENCODING_UTF32LE | ?wxFONTENCODING_MACROMAN | ?wxFONTENCODING_MACJAPANESE | ?wxFONTENCODING_MACCHINESETRAD | ?wxFONTENCODING_MACKOREAN | ?wxFONTENCODING_MACARABIC | ?wxFONTENCODING_MACHEBREW | ?wxFONTENCODING_MACGREEK | ?wxFONTENCODING_MACCYRILLIC | ?wxFONTENCODING_MACDEVANAGARI | ?wxFONTENCODING_MACGURMUKHI | ?wxFONTENCODING_MACGUJARATI | ?wxFONTENCODING_MACORIYA | ?wxFONTENCODING_MACBENGALI | ?wxFONTENCODING_MACTAMIL | ?wxFONTENCODING_MACTELUGU | ?wxFONTENCODING_MACKANNADA | ?wxFONTENCODING_MACMALAJALAM | ?wxFONTENCODING_MACSINHALESE | ?wxFONTENCODING_MACBURMESE | ?wxFONTENCODING_MACKHMER | ?wxFONTENCODING_MACTHAI | ?wxFONTENCODING_MACLAOTIAN | ?wxFONTENCODING_MACGEORGIAN | ?wxFONTENCODING_MACARMENIAN | ?wxFONTENCODING_MACCHINESESIMP | ?wxFONTENCODING_MACTIBETAN | ?wxFONTENCODING_MACMONGOLIAN | ?wxFONTENCODING_MACETHIOPIC | ?wxFONTENCODING_MACCENTRALEUR | ?wxFONTENCODING_MACVIATNAMESE | ?wxFONTENCODING_MACARABICEXT | ?wxFONTENCODING_MACSYMBOL | ?wxFONTENCODING_MACDINGBATS | ?wxFONTENCODING_MACTURKISH | ?wxFONTENCODING_MACCROATIAN | ?wxFONTENCODING_MACICELANDIC | ?wxFONTENCODING_MACROMANIAN | ?wxFONTENCODING_MACCELTIC | ?wxFONTENCODING_MACGAELIC | ?wxFONTENCODING_MACKEYBOARD | ?wxFONTENCODING_MAX | ?wxFONTENCODING_MACMIN | ?wxFONTENCODING_MACMAX | ?wxFONTENCODING_UTF16 | ?wxFONTENCODING_UTF32 | ?wxFONTENCODING_UNICODE | ?wxFONTENCODING_GB2312 | ?wxFONTENCODING_BIG5 | ?wxFONTENCODING_SHIFT_JIS
 -spec getDefaultEncoding() -> wx:wx_enum().
 getDefaultEncoding() ->
-  wxe_util:call(?wxFont_GetDefaultEncoding,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFont_GetDefaultEncoding),
+  wxe_util:rec(?wxFont_GetDefaultEncoding).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetfacename">external documentation</a>.
 -spec getFaceName(This) -> unicode:charlist() when
 	This::wxFont().
-getFaceName(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFaceName(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetFaceName,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetFaceName),
+  wxe_util:rec(?wxFont_GetFaceName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetfamily">external documentation</a>.
 %%<br /> Res = ?wxFONTFAMILY_DEFAULT | ?wxFONTFAMILY_DECORATIVE | ?wxFONTFAMILY_ROMAN | ?wxFONTFAMILY_SCRIPT | ?wxFONTFAMILY_SWISS | ?wxFONTFAMILY_MODERN | ?wxFONTFAMILY_TELETYPE | ?wxFONTFAMILY_MAX | ?wxFONTFAMILY_UNKNOWN
 -spec getFamily(This) -> wx:wx_enum() when
 	This::wxFont().
-getFamily(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFamily(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetFamily,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetFamily),
+  wxe_util:rec(?wxFont_GetFamily).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetnativefontinfodesc">external documentation</a>.
 -spec getNativeFontInfoDesc(This) -> unicode:charlist() when
 	This::wxFont().
-getNativeFontInfoDesc(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNativeFontInfoDesc(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetNativeFontInfoDesc,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetNativeFontInfoDesc),
+  wxe_util:rec(?wxFont_GetNativeFontInfoDesc).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetnativefontinfouserdesc">external documentation</a>.
 -spec getNativeFontInfoUserDesc(This) -> unicode:charlist() when
 	This::wxFont().
-getNativeFontInfoUserDesc(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNativeFontInfoUserDesc(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetNativeFontInfoUserDesc,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetNativeFontInfoUserDesc),
+  wxe_util:rec(?wxFont_GetNativeFontInfoUserDesc).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetpointsize">external documentation</a>.
 -spec getPointSize(This) -> integer() when
 	This::wxFont().
-getPointSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPointSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetPointSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetPointSize),
+  wxe_util:rec(?wxFont_GetPointSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetstyle">external documentation</a>.
 %%<br /> Res = ?wxFONTSTYLE_NORMAL | ?wxFONTSTYLE_ITALIC | ?wxFONTSTYLE_SLANT | ?wxFONTSTYLE_MAX
 -spec getStyle(This) -> wx:wx_enum() when
 	This::wxFont().
-getStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getStyle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetStyle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetStyle),
+  wxe_util:rec(?wxFont_GetStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetunderlined">external documentation</a>.
 -spec getUnderlined(This) -> boolean() when
 	This::wxFont().
-getUnderlined(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getUnderlined(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetUnderlined,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetUnderlined),
+  wxe_util:rec(?wxFont_GetUnderlined).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontgetweight">external documentation</a>.
 -spec getWeight(This) -> integer() when
 	This::wxFont().
-getWeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWeight(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_GetWeight,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_GetWeight),
+  wxe_util:rec(?wxFont_GetWeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxFont().
-ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
+ok(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:call(?wxFont_Ok,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFont_Ok),
+  wxe_util:rec(?wxFont_Ok).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetdefaultencoding">external documentation</a>.
 %%<br /> Encoding = ?wxFONTENCODING_SYSTEM | ?wxFONTENCODING_DEFAULT | ?wxFONTENCODING_ISO8859_1 | ?wxFONTENCODING_ISO8859_2 | ?wxFONTENCODING_ISO8859_3 | ?wxFONTENCODING_ISO8859_4 | ?wxFONTENCODING_ISO8859_5 | ?wxFONTENCODING_ISO8859_6 | ?wxFONTENCODING_ISO8859_7 | ?wxFONTENCODING_ISO8859_8 | ?wxFONTENCODING_ISO8859_9 | ?wxFONTENCODING_ISO8859_10 | ?wxFONTENCODING_ISO8859_11 | ?wxFONTENCODING_ISO8859_12 | ?wxFONTENCODING_ISO8859_13 | ?wxFONTENCODING_ISO8859_14 | ?wxFONTENCODING_ISO8859_15 | ?wxFONTENCODING_ISO8859_MAX | ?wxFONTENCODING_KOI8 | ?wxFONTENCODING_KOI8_U | ?wxFONTENCODING_ALTERNATIVE | ?wxFONTENCODING_BULGARIAN | ?wxFONTENCODING_CP437 | ?wxFONTENCODING_CP850 | ?wxFONTENCODING_CP852 | ?wxFONTENCODING_CP855 | ?wxFONTENCODING_CP866 | ?wxFONTENCODING_CP874 | ?wxFONTENCODING_CP932 | ?wxFONTENCODING_CP936 | ?wxFONTENCODING_CP949 | ?wxFONTENCODING_CP950 | ?wxFONTENCODING_CP1250 | ?wxFONTENCODING_CP1251 | ?wxFONTENCODING_CP1252 | ?wxFONTENCODING_CP1253 | ?wxFONTENCODING_CP1254 | ?wxFONTENCODING_CP1255 | ?wxFONTENCODING_CP1256 | ?wxFONTENCODING_CP1257 | ?wxFONTENCODING_CP12_MAX | ?wxFONTENCODING_UTF7 | ?wxFONTENCODING_UTF8 | ?wxFONTENCODING_EUC_JP | ?wxFONTENCODING_UTF16BE | ?wxFONTENCODING_UTF16LE | ?wxFONTENCODING_UTF32BE | ?wxFONTENCODING_UTF32LE | ?wxFONTENCODING_MACROMAN | ?wxFONTENCODING_MACJAPANESE | ?wxFONTENCODING_MACCHINESETRAD | ?wxFONTENCODING_MACKOREAN | ?wxFONTENCODING_MACARABIC | ?wxFONTENCODING_MACHEBREW | ?wxFONTENCODING_MACGREEK | ?wxFONTENCODING_MACCYRILLIC | ?wxFONTENCODING_MACDEVANAGARI | ?wxFONTENCODING_MACGURMUKHI | ?wxFONTENCODING_MACGUJARATI | ?wxFONTENCODING_MACORIYA | ?wxFONTENCODING_MACBENGALI | ?wxFONTENCODING_MACTAMIL | ?wxFONTENCODING_MACTELUGU | ?wxFONTENCODING_MACKANNADA | ?wxFONTENCODING_MACMALAJALAM | ?wxFONTENCODING_MACSINHALESE | ?wxFONTENCODING_MACBURMESE | ?wxFONTENCODING_MACKHMER | ?wxFONTENCODING_MACTHAI | ?wxFONTENCODING_MACLAOTIAN | ?wxFONTENCODING_MACGEORGIAN | ?wxFONTENCODING_MACARMENIAN | ?wxFONTENCODING_MACCHINESESIMP | ?wxFONTENCODING_MACTIBETAN | ?wxFONTENCODING_MACMONGOLIAN | ?wxFONTENCODING_MACETHIOPIC | ?wxFONTENCODING_MACCENTRALEUR | ?wxFONTENCODING_MACVIATNAMESE | ?wxFONTENCODING_MACARABICEXT | ?wxFONTENCODING_MACSYMBOL | ?wxFONTENCODING_MACDINGBATS | ?wxFONTENCODING_MACTURKISH | ?wxFONTENCODING_MACCROATIAN | ?wxFONTENCODING_MACICELANDIC | ?wxFONTENCODING_MACROMANIAN | ?wxFONTENCODING_MACCELTIC | ?wxFONTENCODING_MACGAELIC | ?wxFONTENCODING_MACKEYBOARD | ?wxFONTENCODING_MAX | ?wxFONTENCODING_MACMIN | ?wxFONTENCODING_MACMAX | ?wxFONTENCODING_UTF16 | ?wxFONTENCODING_UTF32 | ?wxFONTENCODING_UNICODE | ?wxFONTENCODING_GB2312 | ?wxFONTENCODING_BIG5 | ?wxFONTENCODING_SHIFT_JIS
@@ -157,58 +171,59 @@ ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	Encoding::wx:wx_enum().
 setDefaultEncoding(Encoding)
  when is_integer(Encoding) ->
-  wxe_util:cast(?wxFont_SetDefaultEncoding,[Encoding]).
+  wxe_util:queue_cmd(Encoding,?get_env(),?wxFont_SetDefaultEncoding).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetfacename">external documentation</a>.
 -spec setFaceName(This, FaceName) -> boolean() when
 	This::wxFont(), FaceName::unicode:chardata().
-setFaceName(#wx_ref{type=ThisT,ref=ThisRef},FaceName)
+setFaceName(#wx_ref{type=ThisT}=This,FaceName)
  when ?is_chardata(FaceName) ->
   ?CLASS(ThisT,wxFont),
   FaceName_UC = unicode:characters_to_binary([FaceName,0]),
-  wxe_util:call(?wxFont_SetFaceName,[ThisRef,FaceName_UC]).
+  wxe_util:queue_cmd(This,FaceName_UC,?get_env(),?wxFont_SetFaceName),
+  wxe_util:rec(?wxFont_SetFaceName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetfamily">external documentation</a>.
 %%<br /> Family = ?wxFONTFAMILY_DEFAULT | ?wxFONTFAMILY_DECORATIVE | ?wxFONTFAMILY_ROMAN | ?wxFONTFAMILY_SCRIPT | ?wxFONTFAMILY_SWISS | ?wxFONTFAMILY_MODERN | ?wxFONTFAMILY_TELETYPE | ?wxFONTFAMILY_MAX | ?wxFONTFAMILY_UNKNOWN
 -spec setFamily(This, Family) -> 'ok' when
 	This::wxFont(), Family::wx:wx_enum().
-setFamily(#wx_ref{type=ThisT,ref=ThisRef},Family)
+setFamily(#wx_ref{type=ThisT}=This,Family)
  when is_integer(Family) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:cast(?wxFont_SetFamily,[ThisRef,Family]).
+  wxe_util:queue_cmd(This,Family,?get_env(),?wxFont_SetFamily).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetpointsize">external documentation</a>.
 -spec setPointSize(This, PointSize) -> 'ok' when
 	This::wxFont(), PointSize::integer().
-setPointSize(#wx_ref{type=ThisT,ref=ThisRef},PointSize)
+setPointSize(#wx_ref{type=ThisT}=This,PointSize)
  when is_integer(PointSize) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:cast(?wxFont_SetPointSize,[ThisRef,PointSize]).
+  wxe_util:queue_cmd(This,PointSize,?get_env(),?wxFont_SetPointSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetstyle">external documentation</a>.
 %%<br /> Style = ?wxFONTSTYLE_NORMAL | ?wxFONTSTYLE_ITALIC | ?wxFONTSTYLE_SLANT | ?wxFONTSTYLE_MAX
 -spec setStyle(This, Style) -> 'ok' when
 	This::wxFont(), Style::wx:wx_enum().
-setStyle(#wx_ref{type=ThisT,ref=ThisRef},Style)
+setStyle(#wx_ref{type=ThisT}=This,Style)
  when is_integer(Style) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:cast(?wxFont_SetStyle,[ThisRef,Style]).
+  wxe_util:queue_cmd(This,Style,?get_env(),?wxFont_SetStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetunderlined">external documentation</a>.
 -spec setUnderlined(This, Underlined) -> 'ok' when
 	This::wxFont(), Underlined::boolean().
-setUnderlined(#wx_ref{type=ThisT,ref=ThisRef},Underlined)
+setUnderlined(#wx_ref{type=ThisT}=This,Underlined)
  when is_boolean(Underlined) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:cast(?wxFont_SetUnderlined,[ThisRef,Underlined]).
+  wxe_util:queue_cmd(This,Underlined,?get_env(),?wxFont_SetUnderlined).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontsetweight">external documentation</a>.
 -spec setWeight(This, Weight) -> 'ok' when
 	This::wxFont(), Weight::integer().
-setWeight(#wx_ref{type=ThisT,ref=ThisRef},Weight)
+setWeight(#wx_ref{type=ThisT}=This,Weight)
  when is_integer(Weight) ->
   ?CLASS(ThisT,wxFont),
-  wxe_util:cast(?wxFont_SetWeight,[ThisRef,Weight]).
+  wxe_util:queue_cmd(This,Weight,?get_env(),?wxFont_SetWeight).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFont()) -> 'ok'.

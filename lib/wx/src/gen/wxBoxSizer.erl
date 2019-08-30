@@ -52,14 +52,16 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Orient::integer().
 new(Orient)
  when is_integer(Orient) ->
-  wxe_util:construct(?wxBoxSizer_new,[Orient]).
+  wxe_util:queue_cmd(Orient,?get_env(),?wxBoxSizer_new),
+  wxe_util:rec(?wxBoxSizer_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxboxsizer.html#wxboxsizergetorientation">external documentation</a>.
 -spec getOrientation(This) -> integer() when
 	This::wxBoxSizer().
-getOrientation(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOrientation(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBoxSizer),
-  wxe_util:call(?wxBoxSizer_GetOrientation,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBoxSizer_GetOrientation),
+  wxe_util:rec(?wxBoxSizer_GetOrientation).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBoxSizer()) -> 'ok'.

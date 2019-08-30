@@ -42,7 +42,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellboolrenderer.html#wxgridcellboolrendererwxgridcellboolrenderer">external documentation</a>.
 -spec new() -> wxGridCellBoolRenderer().
 new() ->
-  wxe_util:construct(?wxGridCellBoolRenderer_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGridCellBoolRenderer_new),
+  wxe_util:rec(?wxGridCellBoolRenderer_new).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellBoolRenderer()) -> 'ok'.

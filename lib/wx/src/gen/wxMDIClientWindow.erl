@@ -83,7 +83,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiclientwindow.html#wxmdiclientwindowwxmdiclientwindow">external documentation</a>.
 -spec new() -> wxMDIClientWindow().
 new() ->
-  wxe_util:construct(?wxMDIClientWindow_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxMDIClientWindow_new_0),
+  wxe_util:rec(?wxMDIClientWindow_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxMDIClientWindow() when
@@ -97,10 +98,11 @@ new(Parent)
 -spec new(Parent, [Option]) -> wxMDIClientWindow() when
 	Parent::wxMDIParentFrame:wxMDIParentFrame(),
 	Option :: {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxMDIParentFrame),
-  wxe_util:construct(?wxMDIClientWindow_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxMDIClientWindow_new_2),
+  wxe_util:rec(?wxMDIClientWindow_new_2).
 
 %% @equiv createClient(This,Parent, [])
 -spec createClient(This, Parent) -> boolean() when
@@ -114,11 +116,12 @@ createClient(This,Parent)
 -spec createClient(This, Parent, [Option]) -> boolean() when
 	This::wxMDIClientWindow(), Parent::wxMDIParentFrame:wxMDIParentFrame(),
 	Option :: {'style', integer()}.
-createClient(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+createClient(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIClientWindow),
   ?CLASS(ParentT,wxMDIParentFrame),
-  wxe_util:call(?wxMDIClientWindow_CreateClient,[ThisRef,ParentRef, Options]).
+  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxMDIClientWindow_CreateClient),
+  wxe_util:rec(?wxMDIClientWindow_CreateClient).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMDIClientWindow()) -> 'ok'.

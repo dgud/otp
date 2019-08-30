@@ -84,7 +84,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugewxgauge">external documentation</a>.
 -spec new() -> wxGauge().
 new() ->
-  wxe_util:construct(?wxGauge_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGauge_new_0),
+  wxe_util:rec(?wxGauge_new_0).
 
 %% @equiv new(Parent,Id,Range, [])
 -spec new(Parent, Id, Range) -> wxGauge() when
@@ -101,10 +102,11 @@ new(Parent,Id,Range)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Range, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Range, Options)
  when is_integer(Id),is_integer(Range),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxGauge_new_4,[ParentRef,Id,Range, Options]).
+  wxe_util:queue_cmd(Parent,Id,Range, Options,?get_env(),?wxGauge_new_4),
+  wxe_util:rec(?wxGauge_new_4).
 
 %% @equiv create(This,Parent,Id,Range, [])
 -spec create(This, Parent, Id, Range) -> boolean() when
@@ -121,55 +123,59 @@ create(This,Parent,Id,Range)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Range, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Range, Options)
  when is_integer(Id),is_integer(Range),is_list(Options) ->
   ?CLASS(ThisT,wxGauge),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxGauge_Create,[ThisRef,ParentRef,Id,Range, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Range, Options,?get_env(),?wxGauge_Create),
+  wxe_util:rec(?wxGauge_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugegetrange">external documentation</a>.
 -spec getRange(This) -> integer() when
 	This::wxGauge().
-getRange(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRange(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:call(?wxGauge_GetRange,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGauge_GetRange),
+  wxe_util:rec(?wxGauge_GetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugegetvalue">external documentation</a>.
 -spec getValue(This) -> integer() when
 	This::wxGauge().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:call(?wxGauge_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGauge_GetValue),
+  wxe_util:rec(?wxGauge_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugeisvertical">external documentation</a>.
 -spec isVertical(This) -> boolean() when
 	This::wxGauge().
-isVertical(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isVertical(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:call(?wxGauge_IsVertical,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGauge_IsVertical),
+  wxe_util:rec(?wxGauge_IsVertical).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugesetrange">external documentation</a>.
 -spec setRange(This, R) -> 'ok' when
 	This::wxGauge(), R::integer().
-setRange(#wx_ref{type=ThisT,ref=ThisRef},R)
+setRange(#wx_ref{type=ThisT}=This,R)
  when is_integer(R) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:cast(?wxGauge_SetRange,[ThisRef,R]).
+  wxe_util:queue_cmd(This,R,?get_env(),?wxGauge_SetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugesetvalue">external documentation</a>.
 -spec setValue(This, Pos) -> 'ok' when
 	This::wxGauge(), Pos::integer().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Pos)
+setValue(#wx_ref{type=ThisT}=This,Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:cast(?wxGauge_SetValue,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxGauge_SetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugepulse">external documentation</a>.
 -spec pulse(This) -> 'ok' when
 	This::wxGauge().
-pulse(#wx_ref{type=ThisT,ref=ThisRef}) ->
+pulse(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:cast(?wxGauge_Pulse,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGauge_Pulse).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGauge()) -> 'ok'.

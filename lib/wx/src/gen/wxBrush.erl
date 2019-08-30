@@ -39,7 +39,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushwxbrush">external documentation</a>.
 -spec new() -> wxBrush().
 new() ->
-  wxe_util:construct(?wxBrush_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxBrush_new_0),
+  wxe_util:rec(?wxBrush_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushwxbrush">external documentation</a>.
 %% <br /> Also:<br />
@@ -54,9 +55,10 @@ new() ->
 new(Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   new(Colour, []);
-new(#wx_ref{type=StippleBitmapT,ref=StippleBitmapRef}) ->
+new(#wx_ref{type=StippleBitmapT}=StippleBitmap) ->
   ?CLASS(StippleBitmapT,wxBitmap),
-  wxe_util:construct(?wxBrush_new_1,[StippleBitmapRef]).
+  wxe_util:queue_cmd(StippleBitmap,?get_env(),?wxBrush_new_1),
+  wxe_util:rec(?wxBrush_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushwxbrush">external documentation</a>.
 -spec new(Colour, [Option]) -> wxBrush() when
@@ -64,74 +66,80 @@ new(#wx_ref{type=StippleBitmapT,ref=StippleBitmapRef}) ->
 	Option :: {'style', integer()}.
 new(Colour, Options)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4,is_list(Options) ->
-  wxe_util:construct(?wxBrush_new_2,[Colour, Options]).
+  wxe_util:queue_cmd(wxe_util:color(Colour), Options,?get_env(),?wxBrush_new_2),
+  wxe_util:rec(?wxBrush_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushgetcolour">external documentation</a>.
 -spec getColour(This) -> wx:wx_colour4() when
 	This::wxBrush().
-getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:call(?wxBrush_GetColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBrush_GetColour),
+  wxe_util:rec(?wxBrush_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushgetstipple">external documentation</a>.
 -spec getStipple(This) -> wxBitmap:wxBitmap() when
 	This::wxBrush().
-getStipple(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getStipple(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:call(?wxBrush_GetStipple,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBrush_GetStipple),
+  wxe_util:rec(?wxBrush_GetStipple).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushgetstyle">external documentation</a>.
 -spec getStyle(This) -> integer() when
 	This::wxBrush().
-getStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getStyle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:call(?wxBrush_GetStyle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBrush_GetStyle),
+  wxe_util:rec(?wxBrush_GetStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushishatch">external documentation</a>.
 -spec isHatch(This) -> boolean() when
 	This::wxBrush().
-isHatch(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isHatch(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:call(?wxBrush_IsHatch,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBrush_IsHatch),
+  wxe_util:rec(?wxBrush_IsHatch).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxBrush().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:call(?wxBrush_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBrush_IsOk),
+  wxe_util:rec(?wxBrush_IsOk).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushsetcolour">external documentation</a>.
 -spec setColour(This, Col) -> 'ok' when
 	This::wxBrush(), Col::wx:wx_colour().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
+setColour(#wx_ref{type=ThisT}=This,Col)
  when tuple_size(Col) =:= 3; tuple_size(Col) =:= 4 ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:cast(?wxBrush_SetColour_1,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,wxe_util:color(Col),?get_env(),?wxBrush_SetColour_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushsetcolour">external documentation</a>.
 -spec setColour(This, R, G, B) -> 'ok' when
 	This::wxBrush(), R::integer(), G::integer(), B::integer().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},R,G,B)
+setColour(#wx_ref{type=ThisT}=This,R,G,B)
  when is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:cast(?wxBrush_SetColour_3,[ThisRef,R,G,B]).
+  wxe_util:queue_cmd(This,R,G,B,?get_env(),?wxBrush_SetColour_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushsetstipple">external documentation</a>.
 -spec setStipple(This, Stipple) -> 'ok' when
 	This::wxBrush(), Stipple::wxBitmap:wxBitmap().
-setStipple(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=StippleT,ref=StippleRef}) ->
+setStipple(#wx_ref{type=ThisT}=This,#wx_ref{type=StippleT}=Stipple) ->
   ?CLASS(ThisT,wxBrush),
   ?CLASS(StippleT,wxBitmap),
-  wxe_util:cast(?wxBrush_SetStipple,[ThisRef,StippleRef]).
+  wxe_util:queue_cmd(This,Stipple,?get_env(),?wxBrush_SetStipple).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbrush.html#wxbrushsetstyle">external documentation</a>.
 -spec setStyle(This, Style) -> 'ok' when
 	This::wxBrush(), Style::integer().
-setStyle(#wx_ref{type=ThisT,ref=ThisRef},Style)
+setStyle(#wx_ref{type=ThisT}=This,Style)
  when is_integer(Style) ->
   ?CLASS(ThisT,wxBrush),
-  wxe_util:cast(?wxBrush_SetStyle,[ThisRef,Style]).
+  wxe_util:queue_cmd(This,Style,?get_env(),?wxBrush_SetStyle).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBrush()) -> 'ok'.

@@ -38,49 +38,52 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartgetcolour">external documentation</a>.
 -spec getColour(This, Id) -> wx:wx_colour4() when
 	This::wxAuiDockArt(), Id::integer().
-getColour(#wx_ref{type=ThisT,ref=ThisRef},Id)
+getColour(#wx_ref{type=ThisT}=This,Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:call(?wxAuiDockArt_GetColour,[ThisRef,Id]).
+  wxe_util:queue_cmd(This,Id,?get_env(),?wxAuiDockArt_GetColour),
+  wxe_util:rec(?wxAuiDockArt_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartgetfont">external documentation</a>.
 -spec getFont(This, Id) -> wxFont:wxFont() when
 	This::wxAuiDockArt(), Id::integer().
-getFont(#wx_ref{type=ThisT,ref=ThisRef},Id)
+getFont(#wx_ref{type=ThisT}=This,Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:call(?wxAuiDockArt_GetFont,[ThisRef,Id]).
+  wxe_util:queue_cmd(This,Id,?get_env(),?wxAuiDockArt_GetFont),
+  wxe_util:rec(?wxAuiDockArt_GetFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartgetmetric">external documentation</a>.
 -spec getMetric(This, Id) -> integer() when
 	This::wxAuiDockArt(), Id::integer().
-getMetric(#wx_ref{type=ThisT,ref=ThisRef},Id)
+getMetric(#wx_ref{type=ThisT}=This,Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:call(?wxAuiDockArt_GetMetric,[ThisRef,Id]).
+  wxe_util:queue_cmd(This,Id,?get_env(),?wxAuiDockArt_GetMetric),
+  wxe_util:rec(?wxAuiDockArt_GetMetric).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartsetcolour">external documentation</a>.
 -spec setColour(This, Id, Colour) -> 'ok' when
 	This::wxAuiDockArt(), Id::integer(), Colour::wx:wx_colour().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Id,Colour)
+setColour(#wx_ref{type=ThisT}=This,Id,Colour)
  when is_integer(Id),tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:cast(?wxAuiDockArt_SetColour,[ThisRef,Id,Colour]).
+  wxe_util:queue_cmd(This,Id,wxe_util:color(Colour),?get_env(),?wxAuiDockArt_SetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartsetfont">external documentation</a>.
 -spec setFont(This, Id, Font) -> 'ok' when
 	This::wxAuiDockArt(), Id::integer(), Font::wxFont:wxFont().
-setFont(#wx_ref{type=ThisT,ref=ThisRef},Id,#wx_ref{type=FontT,ref=FontRef})
+setFont(#wx_ref{type=ThisT}=This,Id,#wx_ref{type=FontT}=Font)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxAuiDockArt_SetFont,[ThisRef,Id,FontRef]).
+  wxe_util:queue_cmd(This,Id,Font,?get_env(),?wxAuiDockArt_SetFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartsetmetric">external documentation</a>.
 -spec setMetric(This, Id, New_val) -> 'ok' when
 	This::wxAuiDockArt(), Id::integer(), New_val::integer().
-setMetric(#wx_ref{type=ThisT,ref=ThisRef},Id,New_val)
+setMetric(#wx_ref{type=ThisT}=This,Id,New_val)
  when is_integer(Id),is_integer(New_val) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:cast(?wxAuiDockArt_SetMetric,[ThisRef,Id,New_val]).
+  wxe_util:queue_cmd(This,Id,New_val,?get_env(),?wxAuiDockArt_SetMetric).
 

@@ -53,17 +53,18 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinevent.html#wxspineventgetposition">external documentation</a>.
 -spec getPosition(This) -> integer() when
 	This::wxSpinEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinEvent),
-  wxe_util:call(?wxSpinEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinEvent_GetPosition),
+  wxe_util:rec(?wxSpinEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinevent.html#wxspineventsetposition">external documentation</a>.
 -spec setPosition(This, Pos) -> 'ok' when
 	This::wxSpinEvent(), Pos::integer().
-setPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
+setPosition(#wx_ref{type=ThisT}=This,Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxSpinEvent),
-  wxe_util:cast(?wxSpinEvent_SetPosition,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxSpinEvent_SetPosition).
 
  %% From wxNotifyEvent
 %% @hidden

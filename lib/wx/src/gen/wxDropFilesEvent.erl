@@ -47,23 +47,26 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdropfilesevent.html#wxdropfileseventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxDropFilesEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDropFilesEvent),
-  wxe_util:call(?wxDropFilesEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDropFilesEvent_GetPosition),
+  wxe_util:rec(?wxDropFilesEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdropfilesevent.html#wxdropfileseventgetnumberoffiles">external documentation</a>.
 -spec getNumberOfFiles(This) -> integer() when
 	This::wxDropFilesEvent().
-getNumberOfFiles(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNumberOfFiles(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDropFilesEvent),
-  wxe_util:call(?wxDropFilesEvent_GetNumberOfFiles,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDropFilesEvent_GetNumberOfFiles),
+  wxe_util:rec(?wxDropFilesEvent_GetNumberOfFiles).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdropfilesevent.html#wxdropfileseventgetfiles">external documentation</a>.
 -spec getFiles(This) -> [unicode:charlist()] when
 	This::wxDropFilesEvent().
-getFiles(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFiles(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDropFilesEvent),
-  wxe_util:call(?wxDropFilesEvent_GetFiles,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDropFilesEvent_GetFiles),
+  wxe_util:rec(?wxDropFilesEvent_GetFiles).
 
  %% From wxEvent
 %% @hidden

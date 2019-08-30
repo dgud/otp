@@ -107,28 +107,32 @@ new(Parent)
 	Option :: {'data', wxPrintDialogData:wxPrintDialogData()};
       (Parent, Data) -> wxPrintDialog() when
 	Parent::wxWindow:wxWindow(), Data::wxPrintData:wxPrintData().
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPrintDialog_new_2_0,[ParentRef, Options]);
-new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef}) ->
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPrintDialog_new_2_0),
+  wxe_util:rec(?wxPrintDialog_new_2_0);
+new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxPrintData),
-  wxe_util:construct(?wxPrintDialog_new_2_1,[ParentRef,DataRef]).
+  wxe_util:queue_cmd(Parent,Data,?get_env(),?wxPrintDialog_new_2_1),
+  wxe_util:rec(?wxPrintDialog_new_2_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialog.html#wxprintdialoggetprintdialogdata">external documentation</a>.
 -spec getPrintDialogData(This) -> wxPrintDialogData:wxPrintDialogData() when
 	This::wxPrintDialog().
-getPrintDialogData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintDialogData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialog),
-  wxe_util:call(?wxPrintDialog_GetPrintDialogData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialog_GetPrintDialogData),
+  wxe_util:rec(?wxPrintDialog_GetPrintDialogData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialog.html#wxprintdialoggetprintdc">external documentation</a>.
 -spec getPrintDC(This) -> wxDC:wxDC() when
 	This::wxPrintDialog().
-getPrintDC(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintDC(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialog),
-  wxe_util:call(?wxPrintDialog_GetPrintDC,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialog_GetPrintDC),
+  wxe_util:rec(?wxPrintDialog_GetPrintDC).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrintDialog()) -> 'ok'.

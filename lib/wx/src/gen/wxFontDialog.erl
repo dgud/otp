@@ -92,31 +92,35 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialogwxfontdialog">external documentation</a>.
 -spec new() -> wxFontDialog().
 new() ->
-  wxe_util:construct(?wxFontDialog_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFontDialog_new_0),
+  wxe_util:rec(?wxFontDialog_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialogwxfontdialog">external documentation</a>.
 -spec new(Parent, Data) -> wxFontDialog() when
 	Parent::wxWindow:wxWindow(), Data::wxFontData:wxFontData().
-new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef}) ->
+new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFontData),
-  wxe_util:construct(?wxFontDialog_new_2,[ParentRef,DataRef]).
+  wxe_util:queue_cmd(Parent,Data,?get_env(),?wxFontDialog_new_2),
+  wxe_util:rec(?wxFontDialog_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialogcreate">external documentation</a>.
 -spec create(This, Parent, Data) -> boolean() when
 	This::wxFontDialog(), Parent::wxWindow:wxWindow(), Data::wxFontData:wxFontData().
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef}) ->
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data) ->
   ?CLASS(ThisT,wxFontDialog),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFontData),
-  wxe_util:call(?wxFontDialog_Create,[ThisRef,ParentRef,DataRef]).
+  wxe_util:queue_cmd(This,Parent,Data,?get_env(),?wxFontDialog_Create),
+  wxe_util:rec(?wxFontDialog_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialoggetfontdata">external documentation</a>.
 -spec getFontData(This) -> wxFontData:wxFontData() when
 	This::wxFontDialog().
-getFontData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFontData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontDialog),
-  wxe_util:call(?wxFontDialog_GetFontData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontDialog_GetFontData),
+  wxe_util:rec(?wxFontDialog_GetFontData).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFontDialog()) -> 'ok'.

@@ -84,7 +84,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlwxspinctrl">external documentation</a>.
 -spec new() -> wxSpinCtrl().
 new() ->
-  wxe_util:construct(?wxSpinCtrl_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxSpinCtrl_new_0),
+  wxe_util:rec(?wxSpinCtrl_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxSpinCtrl() when
@@ -105,10 +106,11 @@ new(Parent)
 		 | {'min', integer()}
 		 | {'max', integer()}
 		 | {'initial', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxSpinCtrl_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxSpinCtrl_new_2),
+  wxe_util:rec(?wxSpinCtrl_new_2).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -129,11 +131,12 @@ create(This,Parent)
 		 | {'min', integer()}
 		 | {'max', integer()}
 		 | {'initial', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSpinCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxSpinCtrl_Create,[ThisRef,ParentRef, Options]).
+  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxSpinCtrl_Create),
+  wxe_util:rec(?wxSpinCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlsetvalue">external documentation</a>.
 %% <br /> Also:<br />
@@ -144,52 +147,55 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
 	This::wxSpinCtrl(), Value::integer();
       (This, Text) -> 'ok' when
 	This::wxSpinCtrl(), Text::unicode:chardata().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Value)
+setValue(#wx_ref{type=ThisT}=This,Value)
  when is_integer(Value) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:cast(?wxSpinCtrl_SetValue_1_0,[ThisRef,Value]);
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Text)
+  wxe_util:queue_cmd(This,Value,?get_env(),?wxSpinCtrl_SetValue_1_0);
+setValue(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxSpinCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxSpinCtrl_SetValue_1_1,[ThisRef,Text_UC]).
+  wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxSpinCtrl_SetValue_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetvalue">external documentation</a>.
 -spec getValue(This) -> integer() when
 	This::wxSpinCtrl().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:call(?wxSpinCtrl_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinCtrl_GetValue),
+  wxe_util:rec(?wxSpinCtrl_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlsetrange">external documentation</a>.
 -spec setRange(This, MinVal, MaxVal) -> 'ok' when
 	This::wxSpinCtrl(), MinVal::integer(), MaxVal::integer().
-setRange(#wx_ref{type=ThisT,ref=ThisRef},MinVal,MaxVal)
+setRange(#wx_ref{type=ThisT}=This,MinVal,MaxVal)
  when is_integer(MinVal),is_integer(MaxVal) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:cast(?wxSpinCtrl_SetRange,[ThisRef,MinVal,MaxVal]).
+  wxe_util:queue_cmd(This,MinVal,MaxVal,?get_env(),?wxSpinCtrl_SetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlsetselection">external documentation</a>.
 -spec setSelection(This, From, To) -> 'ok' when
 	This::wxSpinCtrl(), From::integer(), To::integer().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},From,To)
+setSelection(#wx_ref{type=ThisT}=This,From,To)
  when is_integer(From),is_integer(To) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:cast(?wxSpinCtrl_SetSelection,[ThisRef,From,To]).
+  wxe_util:queue_cmd(This,From,To,?get_env(),?wxSpinCtrl_SetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetmin">external documentation</a>.
 -spec getMin(This) -> integer() when
 	This::wxSpinCtrl().
-getMin(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMin(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:call(?wxSpinCtrl_GetMin,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinCtrl_GetMin),
+  wxe_util:rec(?wxSpinCtrl_GetMin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetmax">external documentation</a>.
 -spec getMax(This) -> integer() when
 	This::wxSpinCtrl().
-getMax(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMax(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:call(?wxSpinCtrl_GetMax,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinCtrl_GetMax),
+  wxe_util:rec(?wxSpinCtrl_GetMax).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSpinCtrl()) -> 'ok'.

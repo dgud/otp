@@ -90,7 +90,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontpickerctrl.html#wxfontpickerctrlwxfontpickerctrl">external documentation</a>.
 -spec new() -> wxFontPickerCtrl().
 new() ->
-  wxe_util:construct(?wxFontPickerCtrl_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFontPickerCtrl_new_0),
+  wxe_util:rec(?wxFontPickerCtrl_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxFontPickerCtrl() when
@@ -108,10 +109,11 @@ new(Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxFontPickerCtrl_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxFontPickerCtrl_new_3),
+  wxe_util:rec(?wxFontPickerCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -129,41 +131,44 @@ create(This,Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxFontPickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxFontPickerCtrl_Create,[ThisRef,ParentRef,Id, Options]).
+  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxFontPickerCtrl_Create),
+  wxe_util:rec(?wxFontPickerCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontpickerctrl.html#wxfontpickerctrlgetselectedfont">external documentation</a>.
 -spec getSelectedFont(This) -> wxFont:wxFont() when
 	This::wxFontPickerCtrl().
-getSelectedFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectedFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontPickerCtrl),
-  wxe_util:call(?wxFontPickerCtrl_GetSelectedFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontPickerCtrl_GetSelectedFont),
+  wxe_util:rec(?wxFontPickerCtrl_GetSelectedFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontpickerctrl.html#wxfontpickerctrlsetselectedfont">external documentation</a>.
 -spec setSelectedFont(This, F) -> 'ok' when
 	This::wxFontPickerCtrl(), F::wxFont:wxFont().
-setSelectedFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FT,ref=FRef}) ->
+setSelectedFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FT}=F) ->
   ?CLASS(ThisT,wxFontPickerCtrl),
   ?CLASS(FT,wxFont),
-  wxe_util:cast(?wxFontPickerCtrl_SetSelectedFont,[ThisRef,FRef]).
+  wxe_util:queue_cmd(This,F,?get_env(),?wxFontPickerCtrl_SetSelectedFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontpickerctrl.html#wxfontpickerctrlgetmaxpointsize">external documentation</a>.
 -spec getMaxPointSize(This) -> integer() when
 	This::wxFontPickerCtrl().
-getMaxPointSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaxPointSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontPickerCtrl),
-  wxe_util:call(?wxFontPickerCtrl_GetMaxPointSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontPickerCtrl_GetMaxPointSize),
+  wxe_util:rec(?wxFontPickerCtrl_GetMaxPointSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontpickerctrl.html#wxfontpickerctrlsetmaxpointsize">external documentation</a>.
 -spec setMaxPointSize(This, Max) -> 'ok' when
 	This::wxFontPickerCtrl(), Max::integer().
-setMaxPointSize(#wx_ref{type=ThisT,ref=ThisRef},Max)
+setMaxPointSize(#wx_ref{type=ThisT}=This,Max)
  when is_integer(Max) ->
   ?CLASS(ThisT,wxFontPickerCtrl),
-  wxe_util:cast(?wxFontPickerCtrl_SetMaxPointSize,[ThisRef,Max]).
+  wxe_util:queue_cmd(This,Max,?get_env(),?wxFontPickerCtrl_SetMaxPointSize).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFontPickerCtrl()) -> 'ok'.

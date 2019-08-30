@@ -64,29 +64,32 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcwxgcdc">external documentation</a>.
 -spec new() -> wxGCDC().
 new() ->
-  wxe_util:construct(?wxGCDC_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGCDC_new_0),
+  wxe_util:rec(?wxGCDC_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcwxgcdc">external documentation</a>.
 -spec new(Dc) -> wxGCDC() when
 	Dc::wxWindowDC:wxWindowDC().
-new(#wx_ref{type=DcT,ref=DcRef}) ->
+new(#wx_ref{type=DcT}=Dc) ->
   ?CLASS(DcT,wxWindowDC),
-  wxe_util:construct(?wxGCDC_new_1,[DcRef]).
+  wxe_util:queue_cmd(Dc,?get_env(),?wxGCDC_new_1),
+  wxe_util:rec(?wxGCDC_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcgetgraphicscontext">external documentation</a>.
 -spec getGraphicsContext(This) -> wxGraphicsContext:wxGraphicsContext() when
 	This::wxGCDC().
-getGraphicsContext(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGraphicsContext(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGCDC),
-  wxe_util:call(?wxGCDC_GetGraphicsContext,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGCDC_GetGraphicsContext),
+  wxe_util:rec(?wxGCDC_GetGraphicsContext).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcsetgraphicscontext">external documentation</a>.
 -spec setGraphicsContext(This, Ctx) -> 'ok' when
 	This::wxGCDC(), Ctx::wxGraphicsContext:wxGraphicsContext().
-setGraphicsContext(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CtxT,ref=CtxRef}) ->
+setGraphicsContext(#wx_ref{type=ThisT}=This,#wx_ref{type=CtxT}=Ctx) ->
   ?CLASS(ThisT,wxGCDC),
   ?CLASS(CtxT,wxGraphicsContext),
-  wxe_util:cast(?wxGCDC_SetGraphicsContext,[ThisRef,CtxRef]).
+  wxe_util:queue_cmd(This,Ctx,?get_env(),?wxGCDC_SetGraphicsContext).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGCDC()) -> 'ok'.

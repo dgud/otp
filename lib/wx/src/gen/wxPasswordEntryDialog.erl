@@ -106,11 +106,12 @@ new(Parent,Message)
 		 | {'value', unicode:chardata()}
 		 | {'style', integer()}
 		 | {'pos', {X::integer(), Y::integer()}}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Message, Options)
+new(#wx_ref{type=ParentT}=Parent,Message, Options)
  when ?is_chardata(Message),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:construct(?wxPasswordEntryDialog_new,[ParentRef,Message_UC, Options]).
+  wxe_util:queue_cmd(Parent,Message_UC, Options,?get_env(),?wxPasswordEntryDialog_new),
+  wxe_util:rec(?wxPasswordEntryDialog_new).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPasswordEntryDialog()) -> 'ok'.

@@ -26,13 +26,11 @@
 %% @hidden
 -module(wxe_util).
 
--export([call/2,cast/2,construct/2,
-	 destroy/2, register_pid/1,
+-export([register_pid/1,rec/1,
 	 connect_cb/2,disconnect_cb/2,
-	 %send_bin/1,
+         color/1,
          get_cbId/1,
-	 get_const/1,colour_bin/1,datetime_bin/1,
-	 to_bool/1,from_bool/1]).
+	 get_const/1]).
 
 -export([queue_cmd/1,queue_cmd/2,queue_cmd/3,queue_cmd/4,queue_cmd/5,
          queue_cmd/6,queue_cmd/7,queue_cmd/8,queue_cmd/9,queue_cmd/10,
@@ -51,44 +49,32 @@ init_nif(Silent) ->
     Dir = priv_dir("wxe_driver", Silent),
     erlang:load_nif(filename:join(Dir, "wxe_driver"), 0).
 
-to_bool(0) -> false;
-to_bool(_) -> true.
 
-from_bool(true) -> 1;
-from_bool(false) -> 0.
-
-colour_bin({R,G,B}) ->
-    <<R:32/?UI,G:32/?UI, B:32/?UI,255:32/?UI>>;
-colour_bin({R,G,B,A}) ->
-    <<R:32/?UI,G:32/?UI, B:32/?UI,A:32/?UI>>.
-
-datetime_bin({{Y,Mo,D},{H,Mi,S}}) ->
-    %% DMY fits wxDaytime constructor
-    %% Also wxDaytime:Month is enum from zero
-    <<D:32/?UI,(Mo-1):32/?UI,Y:32/?UI,H:32/?UI,Mi:32/?UI,S:32/?UI>>.
+color({R,G,B}) -> {R,G,B,255};
+color(RGBA) -> RGBA.
 
 get_const(Id) ->
     [{Id, Data}] = ets:lookup(wx_non_consts, Id),
     Data.
 
-cast(Op,Args) ->
-    #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
-    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-    case Dbg > 0 of
-	true ->  debug_cast(Dbg band 15, Op,Args,Ref);
-	false -> ok
-    end,
-    ok.
+%% cast(Op,Args) ->
+%%     #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
+%%     apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
+%%     case Dbg > 0 of
+%% 	true ->  debug_cast(Dbg band 15, Op,Args,Ref);
+%% 	false -> ok
+%%     end,
+%%     ok.
 
-call(Op, Args) ->
-    #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
-    case Dbg > 0 of
-	false ->
-            apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-	    rec(Op);
-	true ->
-	    debug_call(Dbg band 15, Op, Args, Ref)
-    end.
+%% call(Op, Args) ->
+%%     #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
+%%     case Dbg > 0 of
+%% 	false ->
+%%             apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
+%% 	    rec(Op);
+%% 	true ->
+%% 	    debug_call(Dbg band 15, Op, Args, Ref)
+%%     end.
 
 init_opengl(_) -> ?NIF_ERROR.
 debug_ping() -> queue_cmd(?WXE_DEBUG_PING).
@@ -125,24 +111,12 @@ rec(Op) ->
 	    rec(Op)
     end.
 
-construct(Op, Args) ->
-    call(Op,Args).
+%% destroy(Op, #wx_ref{ref=Ref}) ->
+%%     cast(Op,<<Ref:32/?UI>>).
 
-destroy(Op, #wx_ref{ref=Ref}) ->
-    cast(Op,<<Ref:32/?UI>>).
-
-register_pid(#wx_ref{ref=Ref}) ->
-    call(?WXE_REGISTER_OBJECT, <<Ref:32/?UI>>).
-
-%% send_bin(Bin) when is_binary(Bin) ->    
-%%     #wx_env{port=Port,debug=Dbg} = wx:get_env(),
-%%     case Dbg > 0 of
-%% 	false ->	    
-%% 	    erlang:port_command(Port, Bin);
-%% 	true ->
-%% 	    io:format("WX binary ~p(~p) ~n",[self(), Port]),
-%% 	    erlang:port_command(Port, Bin)
-%%     end.
+register_pid(#wx_ref{ref=_Ref}) ->
+    %call(?WXE_REGISTER_OBJECT, <<Ref:32/?UI>>).
+    exit(fixme_undef).
 
 get_cbId(Fun) ->
     gen_server:call((wx:get_env())#wx_env.sv,{register_cb, Fun}, infinity).
@@ -179,55 +153,6 @@ disconnect(Object,[Ev|Evs]) ->
     end;
 disconnect(_, []) -> false.
 
-
-debug_cast(1, Op, _Args, _Port) ->
-    check_previous(),
-    case ets:lookup(wx_debug_info,Op) of
-	[{_,{M,F,_}}] ->
-	    io:format("WX ~p: ~s:~s(~p) -> ok~n", [self(),M,F,Op]);
-	[] -> 
-	    io:format("WX ~p: unknown(~p) -> ok~n", [self(),Op])
-    end;
-debug_cast(2, Op, Args, Port) ->
-    check_previous(),
-    case ets:lookup(wx_debug_info,Op) of
-	[{_,{M,F,_}}] ->
-	    io:format("WX ~p(~p): ~s:~s(~p) (~p) -> ok~n", 
-		      [self(),Port,M,F,Op,Args]);
-	[] ->
-	    io:format("WX ~p(~p): unknown(~p) (~p) -> ok~n", 
-		      [self(),Port,Op,Args])
-    end;
-debug_cast(_, _Op, _Args, _Port) ->
-    check_previous(),
-    ok.
-
-debug_call(1, Op, Args, Ref) ->
-    check_previous(),
-    case ets:lookup(wx_debug_info,Op) of
-	[{_,{M,F,_}}] ->
-	    io:format("WX ~p: ~s:~s(~p) -> ",[self(),M,F,Op]);
-	[] ->
-	    io:format("WX ~p: unknown(~p) -> ",[self(),Op])
-    end,
-    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-    debug_rec(1);
-debug_call(2, Op, Args, Ref) ->
-    check_previous(),
-    case ets:lookup(wx_debug_info,Op) of
-	[{_,{M,F,_}}] ->
-	    io:format("WX ~p(~p): ~s:~s(~p) (~p) -> ",
-		      [self(), Ref, M, F, Op, Args]);
-	[] ->
-	    io:format("WX ~p(~p): unknown(~p) (~p) -> ",
-		      [self(), Ref, Op, Args])
-    end,
-    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-    debug_rec(2);
-debug_call(_, Op, Args, Ref) ->
-    check_previous(),
-    apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-    rec(Op).
 
 debug_rec(1) ->
     receive

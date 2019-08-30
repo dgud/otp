@@ -47,24 +47,27 @@ new(Parent)
 -spec new(Parent, [Option]) -> wxPageSetupDialog() when
 	Parent::wxWindow:wxWindow(),
 	Option :: {'data', wxPageSetupDialogData:wxPageSetupDialogData()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPageSetupDialog_new,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPageSetupDialog_new),
+  wxe_util:rec(?wxPageSetupDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpagesetupdialog.html#wxpagesetupdialoggetpagesetupdata">external documentation</a>.
 -spec getPageSetupData(This) -> wxPageSetupDialogData:wxPageSetupDialogData() when
 	This::wxPageSetupDialog().
-getPageSetupData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPageSetupData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPageSetupDialog),
-  wxe_util:call(?wxPageSetupDialog_GetPageSetupData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPageSetupDialog_GetPageSetupData),
+  wxe_util:rec(?wxPageSetupDialog_GetPageSetupData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpagesetupdialog.html#wxpagesetupdialogshowmodal">external documentation</a>.
 -spec showModal(This) -> integer() when
 	This::wxPageSetupDialog().
-showModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
+showModal(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPageSetupDialog),
-  wxe_util:call(?wxPageSetupDialog_ShowModal,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPageSetupDialog_ShowModal),
+  wxe_util:rec(?wxPageSetupDialog_ShowModal).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPageSetupDialog()) -> 'ok'.

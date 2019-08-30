@@ -89,7 +89,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirpickerctrl.html#wxdirpickerctrlwxdirpickerctrl">external documentation</a>.
 -spec new() -> wxDirPickerCtrl().
 new() ->
-  wxe_util:construct(?wxDirPickerCtrl_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxDirPickerCtrl_new_0),
+  wxe_util:rec(?wxDirPickerCtrl_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxDirPickerCtrl() when
@@ -108,10 +109,11 @@ new(Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxDirPickerCtrl_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxDirPickerCtrl_new_3),
+  wxe_util:rec(?wxDirPickerCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -130,27 +132,29 @@ create(This,Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxDirPickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxDirPickerCtrl_Create,[ThisRef,ParentRef,Id, Options]).
+  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxDirPickerCtrl_Create),
+  wxe_util:rec(?wxDirPickerCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirpickerctrl.html#wxdirpickerctrlgetpath">external documentation</a>.
 -spec getPath(This) -> unicode:charlist() when
 	This::wxDirPickerCtrl().
-getPath(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPath(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDirPickerCtrl),
-  wxe_util:call(?wxDirPickerCtrl_GetPath,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDirPickerCtrl_GetPath),
+  wxe_util:rec(?wxDirPickerCtrl_GetPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirpickerctrl.html#wxdirpickerctrlsetpath">external documentation</a>.
 -spec setPath(This, Str) -> 'ok' when
 	This::wxDirPickerCtrl(), Str::unicode:chardata().
-setPath(#wx_ref{type=ThisT,ref=ThisRef},Str)
+setPath(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxDirPickerCtrl),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxDirPickerCtrl_SetPath,[ThisRef,Str_UC]).
+  wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxDirPickerCtrl_SetPath).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDirPickerCtrl()) -> 'ok'.

@@ -92,7 +92,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdialog.html#wxcolourdialogwxcolourdialog">external documentation</a>.
 -spec new() -> wxColourDialog().
 new() ->
-  wxe_util:construct(?wxColourDialog_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxColourDialog_new_0),
+  wxe_util:rec(?wxColourDialog_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxColourDialog() when
@@ -106,10 +107,11 @@ new(Parent)
 -spec new(Parent, [Option]) -> wxColourDialog() when
 	Parent::wxWindow:wxWindow(),
 	Option :: {'data', wxColourData:wxColourData()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxColourDialog_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxColourDialog_new_2),
+  wxe_util:rec(?wxColourDialog_new_2).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -123,18 +125,20 @@ create(This,Parent)
 -spec create(This, Parent, [Option]) -> boolean() when
 	This::wxColourDialog(), Parent::wxWindow:wxWindow(),
 	Option :: {'data', wxColourData:wxColourData()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxColourDialog),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxColourDialog_Create,[ThisRef,ParentRef, Options]).
+  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxColourDialog_Create),
+  wxe_util:rec(?wxColourDialog_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdialog.html#wxcolourdialoggetcolourdata">external documentation</a>.
 -spec getColourData(This) -> wxColourData:wxColourData() when
 	This::wxColourDialog().
-getColourData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColourData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxColourDialog),
-  wxe_util:call(?wxColourDialog_GetColourData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxColourDialog_GetColourData),
+  wxe_util:rec(?wxColourDialog_GetColourData).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxColourDialog()) -> 'ok'.

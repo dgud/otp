@@ -88,7 +88,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttonwxbitmapbutton">external documentation</a>.
 -spec new() -> wxBitmapButton().
 new() ->
-  wxe_util:construct(?wxBitmapButton_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxBitmapButton_new_0),
+  wxe_util:rec(?wxBitmapButton_new_0).
 
 %% @equiv new(Parent,Id,Bitmap, [])
 -spec new(Parent, Id, Bitmap) -> wxBitmapButton() when
@@ -105,11 +106,12 @@ new(Parent,Id,Bitmap)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,#wx_ref{type=BitmapT,ref=BitmapRef}, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:construct(?wxBitmapButton_new_4,[ParentRef,Id,BitmapRef, Options]).
+  wxe_util:queue_cmd(Parent,Id,Bitmap, Options,?get_env(),?wxBitmapButton_new_4),
+  wxe_util:rec(?wxBitmapButton_new_4).
 
 %% @equiv create(This,Parent,Id,Bitmap, [])
 -spec create(This, Parent, Id, Bitmap) -> boolean() when
@@ -126,72 +128,77 @@ create(This,Parent,Id,Bitmap)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,#wx_ref{type=BitmapT,ref=BitmapRef}, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxBitmapButton),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxBitmapButton_Create,[ThisRef,ParentRef,Id,BitmapRef, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Bitmap, Options,?get_env(),?wxBitmapButton_Create),
+  wxe_util:rec(?wxBitmapButton_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapdisabled">external documentation</a>.
 -spec getBitmapDisabled(This) -> wxBitmap:wxBitmap() when
 	This::wxBitmapButton().
-getBitmapDisabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBitmapDisabled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmapButton),
-  wxe_util:call(?wxBitmapButton_GetBitmapDisabled,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmapButton_GetBitmapDisabled),
+  wxe_util:rec(?wxBitmapButton_GetBitmapDisabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapfocus">external documentation</a>.
 -spec getBitmapFocus(This) -> wxBitmap:wxBitmap() when
 	This::wxBitmapButton().
-getBitmapFocus(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBitmapFocus(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmapButton),
-  wxe_util:call(?wxBitmapButton_GetBitmapFocus,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmapButton_GetBitmapFocus),
+  wxe_util:rec(?wxBitmapButton_GetBitmapFocus).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttongetbitmaplabel">external documentation</a>.
 -spec getBitmapLabel(This) -> wxBitmap:wxBitmap() when
 	This::wxBitmapButton().
-getBitmapLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBitmapLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmapButton),
-  wxe_util:call(?wxBitmapButton_GetBitmapLabel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmapButton_GetBitmapLabel),
+  wxe_util:rec(?wxBitmapButton_GetBitmapLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapselected">external documentation</a>.
 -spec getBitmapSelected(This) -> wxBitmap:wxBitmap() when
 	This::wxBitmapButton().
-getBitmapSelected(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBitmapSelected(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmapButton),
-  wxe_util:call(?wxBitmapButton_GetBitmapSelected,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmapButton_GetBitmapSelected),
+  wxe_util:rec(?wxBitmapButton_GetBitmapSelected).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapdisabled">external documentation</a>.
 -spec setBitmapDisabled(This, Disabled) -> 'ok' when
 	This::wxBitmapButton(), Disabled::wxBitmap:wxBitmap().
-setBitmapDisabled(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DisabledT,ref=DisabledRef}) ->
+setBitmapDisabled(#wx_ref{type=ThisT}=This,#wx_ref{type=DisabledT}=Disabled) ->
   ?CLASS(ThisT,wxBitmapButton),
   ?CLASS(DisabledT,wxBitmap),
-  wxe_util:cast(?wxBitmapButton_SetBitmapDisabled,[ThisRef,DisabledRef]).
+  wxe_util:queue_cmd(This,Disabled,?get_env(),?wxBitmapButton_SetBitmapDisabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapfocus">external documentation</a>.
 -spec setBitmapFocus(This, Focus) -> 'ok' when
 	This::wxBitmapButton(), Focus::wxBitmap:wxBitmap().
-setBitmapFocus(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FocusT,ref=FocusRef}) ->
+setBitmapFocus(#wx_ref{type=ThisT}=This,#wx_ref{type=FocusT}=Focus) ->
   ?CLASS(ThisT,wxBitmapButton),
   ?CLASS(FocusT,wxBitmap),
-  wxe_util:cast(?wxBitmapButton_SetBitmapFocus,[ThisRef,FocusRef]).
+  wxe_util:queue_cmd(This,Focus,?get_env(),?wxBitmapButton_SetBitmapFocus).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmaplabel">external documentation</a>.
 -spec setBitmapLabel(This, Bitmap) -> 'ok' when
 	This::wxBitmapButton(), Bitmap::wxBitmap:wxBitmap().
-setBitmapLabel(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
+setBitmapLabel(#wx_ref{type=ThisT}=This,#wx_ref{type=BitmapT}=Bitmap) ->
   ?CLASS(ThisT,wxBitmapButton),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:cast(?wxBitmapButton_SetBitmapLabel,[ThisRef,BitmapRef]).
+  wxe_util:queue_cmd(This,Bitmap,?get_env(),?wxBitmapButton_SetBitmapLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttonsetbitmapselected">external documentation</a>.
 -spec setBitmapSelected(This, Sel) -> 'ok' when
 	This::wxBitmapButton(), Sel::wxBitmap:wxBitmap().
-setBitmapSelected(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=SelT,ref=SelRef}) ->
+setBitmapSelected(#wx_ref{type=ThisT}=This,#wx_ref{type=SelT}=Sel) ->
   ?CLASS(ThisT,wxBitmapButton),
   ?CLASS(SelT,wxBitmap),
-  wxe_util:cast(?wxBitmapButton_SetBitmapSelected,[ThisRef,SelRef]).
+  wxe_util:queue_cmd(This,Sel,?get_env(),?wxBitmapButton_SetBitmapSelected).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBitmapButton()) -> 'ok'.

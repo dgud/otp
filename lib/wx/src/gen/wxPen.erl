@@ -40,7 +40,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpenwxpen">external documentation</a>.
 -spec new() -> wxPen().
 new() ->
-  wxe_util:construct(?wxPen_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPen_new_0),
+  wxe_util:rec(?wxPen_new_0).
 
 %% @equiv new(Colour, [])
 -spec new(Colour) -> wxPen() when
@@ -57,99 +58,106 @@ new(Colour)
 		 | {'style', integer()}.
 new(Colour, Options)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4,is_list(Options) ->
-  wxe_util:construct(?wxPen_new_2,[Colour, Options]).
+  wxe_util:queue_cmd(wxe_util:color(Colour), Options,?get_env(),?wxPen_new_2),
+  wxe_util:rec(?wxPen_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpengetcap">external documentation</a>.
 -spec getCap(This) -> integer() when
 	This::wxPen().
-getCap(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCap(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:call(?wxPen_GetCap,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPen_GetCap),
+  wxe_util:rec(?wxPen_GetCap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpengetcolour">external documentation</a>.
 -spec getColour(This) -> wx:wx_colour4() when
 	This::wxPen().
-getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:call(?wxPen_GetColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPen_GetColour),
+  wxe_util:rec(?wxPen_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpengetjoin">external documentation</a>.
 -spec getJoin(This) -> integer() when
 	This::wxPen().
-getJoin(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getJoin(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:call(?wxPen_GetJoin,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPen_GetJoin),
+  wxe_util:rec(?wxPen_GetJoin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpengetstyle">external documentation</a>.
 -spec getStyle(This) -> integer() when
 	This::wxPen().
-getStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getStyle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:call(?wxPen_GetStyle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPen_GetStyle),
+  wxe_util:rec(?wxPen_GetStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpengetwidth">external documentation</a>.
 -spec getWidth(This) -> integer() when
 	This::wxPen().
-getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:call(?wxPen_GetWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPen_GetWidth),
+  wxe_util:rec(?wxPen_GetWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpenisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxPen().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:call(?wxPen_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPen_IsOk),
+  wxe_util:rec(?wxPen_IsOk).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpensetcap">external documentation</a>.
 %%<br /> CapStyle = integer
 -spec setCap(This, CapStyle) -> 'ok' when
 	This::wxPen(), CapStyle::wx:wx_enum().
-setCap(#wx_ref{type=ThisT,ref=ThisRef},CapStyle)
+setCap(#wx_ref{type=ThisT}=This,CapStyle)
  when is_integer(CapStyle) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:cast(?wxPen_SetCap,[ThisRef,CapStyle]).
+  wxe_util:queue_cmd(This,CapStyle,?get_env(),?wxPen_SetCap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpensetcolour">external documentation</a>.
 -spec setColour(This, Colour) -> 'ok' when
 	This::wxPen(), Colour::wx:wx_colour().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:cast(?wxPen_SetColour_1,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxPen_SetColour_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpensetcolour">external documentation</a>.
 -spec setColour(This, Red, Green, Blue) -> 'ok' when
 	This::wxPen(), Red::integer(), Green::integer(), Blue::integer().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Red,Green,Blue)
+setColour(#wx_ref{type=ThisT}=This,Red,Green,Blue)
  when is_integer(Red),is_integer(Green),is_integer(Blue) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:cast(?wxPen_SetColour_3,[ThisRef,Red,Green,Blue]).
+  wxe_util:queue_cmd(This,Red,Green,Blue,?get_env(),?wxPen_SetColour_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpensetjoin">external documentation</a>.
 %%<br /> JoinStyle = integer
 -spec setJoin(This, JoinStyle) -> 'ok' when
 	This::wxPen(), JoinStyle::wx:wx_enum().
-setJoin(#wx_ref{type=ThisT,ref=ThisRef},JoinStyle)
+setJoin(#wx_ref{type=ThisT}=This,JoinStyle)
  when is_integer(JoinStyle) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:cast(?wxPen_SetJoin,[ThisRef,JoinStyle]).
+  wxe_util:queue_cmd(This,JoinStyle,?get_env(),?wxPen_SetJoin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpensetstyle">external documentation</a>.
 -spec setStyle(This, Style) -> 'ok' when
 	This::wxPen(), Style::integer().
-setStyle(#wx_ref{type=ThisT,ref=ThisRef},Style)
+setStyle(#wx_ref{type=ThisT}=This,Style)
  when is_integer(Style) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:cast(?wxPen_SetStyle,[ThisRef,Style]).
+  wxe_util:queue_cmd(This,Style,?get_env(),?wxPen_SetStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpensetwidth">external documentation</a>.
 -spec setWidth(This, Width) -> 'ok' when
 	This::wxPen(), Width::integer().
-setWidth(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setWidth(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxPen),
-  wxe_util:cast(?wxPen_SetWidth,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxPen_SetWidth).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPen()) -> 'ok'.

@@ -543,9 +543,9 @@ badarg(Arg) ->
 
 decode_arg(N,#type{name=Class,base={class,_},single=true}, Arg,Argc) ->
     wa("  ~s *~s;~n",[Class, N], Arg),
-    w("  ~s = (~s *) memenv->getPtr(env, ~s);~n", [N,Class,Argc]);
+    w("  ~s = (~s *) memenv->getPtr(env, ~s, \"~s\");~n", [N,Class,Argc,N]);
 decode_arg(N,{merged,_,#type{name=Class,base={class,_},single=true},_,_,_,_},arg,Argc) ->
-    w("  ~s * ~s = (~s *) memenv->getPtr(env, ~s);~n", [Class,N,Class,Argc]);
+    w("  ~s * ~s = (~s *) memenv->getPtr(env, ~s, \"~s\");~n", [Class,N,Class,Argc,N]);
 decode_arg(N,#type{base=int,name=long,single=true},Arg,Argc) ->
     wa("  long ~s;~n",[N], Arg),
     w("  if(!enif_get_long(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
@@ -773,7 +773,7 @@ decode_arg(N,#type{by_val=true,single=array,base={class,Class}},arg,Argc) ->
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
     w("    if(!enif_get_list_cell(env, ~sTail, &~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
-    w("    *~s_ptr = * (~s *) memenv->getPtr(env, ~sHead);~n", [N, Class, N]),
+    w("    *~s_ptr = * (~s *) memenv->getPtr(env, ~sHead,\"~s\");~n", [N, Class, N,N]),
     w("    ~s_ptr++;~n", [N]),
     w("  };~n",[]),
     store_free(N);
@@ -849,8 +849,6 @@ needs_env(Ps) ->
                 (#param{type=#type{base=bool}}) -> false;
                 (_) -> true
              end,
-    get(current_func) =:= "Enable" andalso
-        io:format("ps: ~p~n",[Ps]),
     lists:any(Filter, Ps).
 
 needs_memenv(MT,T,Ps) ->
@@ -1330,7 +1328,7 @@ build_events() ->
   wxeETmap::iterator it;
   for(it = etmap.begin(); it != etmap.end(); ++it) {
     wxeEtype * value = it->second;
-    if(enif_is_identical(value->evName, etype_atom) == 0) {
+    if(enif_is_identical(value->evName, etype_atom)) {
       if(it->first > wxEVT_USER_FIRST) {
         return it->first - wxEVT_USER_FIRST;
       } else {

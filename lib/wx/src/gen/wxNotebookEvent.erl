@@ -53,32 +53,34 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventgetoldselection">external documentation</a>.
 -spec getOldSelection(This) -> integer() when
 	This::wxNotebookEvent().
-getOldSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOldSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:call(?wxNotebookEvent_GetOldSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxNotebookEvent_GetOldSelection),
+  wxe_util:rec(?wxNotebookEvent_GetOldSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxNotebookEvent().
-getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:call(?wxNotebookEvent_GetSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxNotebookEvent_GetSelection),
+  wxe_util:rec(?wxNotebookEvent_GetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventsetoldselection">external documentation</a>.
 -spec setOldSelection(This, NOldSel) -> 'ok' when
 	This::wxNotebookEvent(), NOldSel::integer().
-setOldSelection(#wx_ref{type=ThisT,ref=ThisRef},NOldSel)
+setOldSelection(#wx_ref{type=ThisT}=This,NOldSel)
  when is_integer(NOldSel) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:cast(?wxNotebookEvent_SetOldSelection,[ThisRef,NOldSel]).
+  wxe_util:queue_cmd(This,NOldSel,?get_env(),?wxNotebookEvent_SetOldSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventsetselection">external documentation</a>.
 -spec setSelection(This, NSel) -> 'ok' when
 	This::wxNotebookEvent(), NSel::integer().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},NSel)
+setSelection(#wx_ref{type=ThisT}=This,NSel)
  when is_integer(NSel) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:cast(?wxNotebookEvent_SetSelection,[ThisRef,NSel]).
+  wxe_util:queue_cmd(This,NSel,?get_env(),?wxNotebookEvent_SetSelection).
 
  %% From wxNotifyEvent
 %% @hidden

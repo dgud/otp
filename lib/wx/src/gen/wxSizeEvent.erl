@@ -47,9 +47,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizeevent.html#wxsizeeventgetsize">external documentation</a>.
 -spec getSize(This) -> {W::integer(), H::integer()} when
 	This::wxSizeEvent().
-getSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSizeEvent),
-  wxe_util:call(?wxSizeEvent_GetSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSizeEvent_GetSize),
+  wxe_util:rec(?wxSizeEvent_GetSize).
 
  %% From wxEvent
 %% @hidden

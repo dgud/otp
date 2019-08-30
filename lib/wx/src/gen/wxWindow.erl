@@ -80,7 +80,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowwxwindow">external documentation</a>.
 -spec new() -> wxWindow().
 new() ->
-  wxe_util:construct(?wxWindow_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxWindow_new_0),
+  wxe_util:rec(?wxWindow_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxWindow() when
@@ -96,25 +97,26 @@ new(Parent,Id)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxWindow_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxWindow_new_3),
+  wxe_util:rec(?wxWindow_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowcachebestsize">external documentation</a>.
 -spec cacheBestSize(This, Size) -> 'ok' when
 	This::wxWindow(), Size::{W::integer(), H::integer()}.
-cacheBestSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
+cacheBestSize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_CacheBestSize,[ThisRef,Size]).
+  wxe_util:queue_cmd(This,Size,?get_env(),?wxWindow_CacheBestSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowcapturemouse">external documentation</a>.
 -spec captureMouse(This) -> 'ok' when
 	This::wxWindow().
-captureMouse(#wx_ref{type=ThisT,ref=ThisRef}) ->
+captureMouse(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_CaptureMouse,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_CaptureMouse).
 
 %% @equiv center(This, [])
 -spec center(This) -> 'ok' when
@@ -128,10 +130,10 @@ center(This)
 -spec center(This, [Option]) -> 'ok' when
 	This::wxWindow(),
 	Option :: {'dir', integer()}.
-center(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+center(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Center,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Center).
 
 %% @equiv centerOnParent(This, [])
 -spec centerOnParent(This) -> 'ok' when
@@ -145,10 +147,10 @@ centerOnParent(This)
 -spec centerOnParent(This, [Option]) -> 'ok' when
 	This::wxWindow(),
 	Option :: {'dir', integer()}.
-centerOnParent(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+centerOnParent(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_CenterOnParent,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_CenterOnParent).
 
 %% @equiv centre(This, [])
 -spec centre(This) -> 'ok' when
@@ -162,10 +164,10 @@ centre(This)
 -spec centre(This, [Option]) -> 'ok' when
 	This::wxWindow(),
 	Option :: {'dir', integer()}.
-centre(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+centre(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Centre,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Centre).
 
 %% @equiv centreOnParent(This, [])
 -spec centreOnParent(This) -> 'ok' when
@@ -179,33 +181,35 @@ centreOnParent(This)
 -spec centreOnParent(This, [Option]) -> 'ok' when
 	This::wxWindow(),
 	Option :: {'dir', integer()}.
-centreOnParent(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+centreOnParent(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_CentreOnParent,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_CentreOnParent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowclearbackground">external documentation</a>.
 -spec clearBackground(This) -> 'ok' when
 	This::wxWindow().
-clearBackground(#wx_ref{type=ThisT,ref=ThisRef}) ->
+clearBackground(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_ClearBackground,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_ClearBackground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowclienttoscreen">external documentation</a>.
 -spec clientToScreen(This, Pt) -> {X::integer(), Y::integer()} when
 	This::wxWindow(), Pt::{X::integer(), Y::integer()}.
-clientToScreen(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
+clientToScreen(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ClientToScreen_1,[ThisRef,Pt]).
+  wxe_util:queue_cmd(This,Pt,?get_env(),?wxWindow_ClientToScreen_1),
+  wxe_util:rec(?wxWindow_ClientToScreen_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowclienttoscreen">external documentation</a>.
 -spec clientToScreen(This, X, Y) -> {X::integer(), Y::integer()} when
 	This::wxWindow(), X::integer(), Y::integer().
-clientToScreen(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+clientToScreen(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ClientToScreen_2,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxWindow_ClientToScreen_2),
+  wxe_util:rec(?wxWindow_ClientToScreen_2).
 
 %% @equiv close(This, [])
 -spec close(This) -> boolean() when
@@ -219,55 +223,61 @@ close(This)
 -spec close(This, [Option]) -> boolean() when
 	This::wxWindow(),
 	Option :: {'force', boolean()}.
-close(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+close(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Close,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Close),
+  wxe_util:rec(?wxWindow_Close).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowconvertdialogtopixels">external documentation</a>.
 -spec convertDialogToPixels(This, Sz) -> {W::integer(), H::integer()} when
 	This::wxWindow(), Sz::{W::integer(), H::integer()}.
-convertDialogToPixels(#wx_ref{type=ThisT,ref=ThisRef},{SzW,SzH} = Sz)
+convertDialogToPixels(#wx_ref{type=ThisT}=This,{SzW,SzH} = Sz)
  when is_integer(SzW),is_integer(SzH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ConvertDialogToPixels,[ThisRef,Sz]).
+  wxe_util:queue_cmd(This,Sz,?get_env(),?wxWindow_ConvertDialogToPixels),
+  wxe_util:rec(?wxWindow_ConvertDialogToPixels).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowconvertpixelstodialog">external documentation</a>.
 -spec convertPixelsToDialog(This, Sz) -> {W::integer(), H::integer()} when
 	This::wxWindow(), Sz::{W::integer(), H::integer()}.
-convertPixelsToDialog(#wx_ref{type=ThisT,ref=ThisRef},{SzW,SzH} = Sz)
+convertPixelsToDialog(#wx_ref{type=ThisT}=This,{SzW,SzH} = Sz)
  when is_integer(SzW),is_integer(SzH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ConvertPixelsToDialog,[ThisRef,Sz]).
+  wxe_util:queue_cmd(This,Sz,?get_env(),?wxWindow_ConvertPixelsToDialog),
+  wxe_util:rec(?wxWindow_ConvertPixelsToDialog).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowdestroy">external documentation</a>.
 -spec 'Destroy'(This) -> boolean() when
 	This::wxWindow().
-'Destroy'(#wx_ref{type=ThisT,ref=ThisRef}) ->
+'Destroy'(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Destroy,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Destroy),
+  wxe_util:rec(?wxWindow_Destroy).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowdestroychildren">external documentation</a>.
 -spec destroyChildren(This) -> boolean() when
 	This::wxWindow().
-destroyChildren(#wx_ref{type=ThisT,ref=ThisRef}) ->
+destroyChildren(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_DestroyChildren,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_DestroyChildren),
+  wxe_util:rec(?wxWindow_DestroyChildren).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowdisable">external documentation</a>.
 -spec disable(This) -> boolean() when
 	This::wxWindow().
-disable(#wx_ref{type=ThisT,ref=ThisRef}) ->
+disable(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Disable,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Disable),
+  wxe_util:rec(?wxWindow_Disable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowdragacceptfiles">external documentation</a>.
 -spec dragAcceptFiles(This, Accept) -> 'ok' when
 	This::wxWindow(), Accept::boolean().
-dragAcceptFiles(#wx_ref{type=ThisT,ref=ThisRef},Accept)
+dragAcceptFiles(#wx_ref{type=ThisT}=This,Accept)
  when is_boolean(Accept) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_DragAcceptFiles,[ThisRef,Accept]).
+  wxe_util:queue_cmd(This,Accept,?get_env(),?wxWindow_DragAcceptFiles).
 
 %% @equiv enable(This, [])
 -spec enable(This) -> boolean() when
@@ -281,15 +291,17 @@ enable(This)
 -spec enable(This, [Option]) -> boolean() when
 	This::wxWindow(),
 	Option :: {'enable', boolean()}.
-enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Enable,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Enable),
+  wxe_util:rec(?wxWindow_Enable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfindfocus">external documentation</a>.
 -spec findFocus() -> wxWindow().
 findFocus() ->
-  wxe_util:call(?wxWindow_FindFocus,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxWindow_FindFocus),
+  wxe_util:rec(?wxWindow_FindFocus).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfindwindow">external documentation</a>.
 %% <br /> Also:<br />
@@ -300,15 +312,17 @@ findFocus() ->
 	This::wxWindow(), Winid::integer();
       (This, Name) -> wxWindow() when
 	This::wxWindow(), Name::unicode:chardata().
-findWindow(#wx_ref{type=ThisT,ref=ThisRef},Winid)
+findWindow(#wx_ref{type=ThisT}=This,Winid)
  when is_integer(Winid) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_FindWindow_1_0,[ThisRef,Winid]);
-findWindow(#wx_ref{type=ThisT,ref=ThisRef},Name)
+  wxe_util:queue_cmd(This,Winid,?get_env(),?wxWindow_FindWindow_1_0),
+  wxe_util:rec(?wxWindow_FindWindow_1_0);
+findWindow(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxWindow_FindWindow_1_1,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxWindow_FindWindow_1_1),
+  wxe_util:rec(?wxWindow_FindWindow_1_1).
 
 %% @equiv findWindowById(Winid, [])
 -spec findWindowById(Winid) -> wxWindow() when
@@ -324,7 +338,8 @@ findWindowById(Winid)
 	Option :: {'parent', wxWindow()}.
 findWindowById(Winid, Options)
  when is_integer(Winid),is_list(Options) ->
-  wxe_util:call(?wxWindow_FindWindowById,[Winid, Options]).
+  wxe_util:queue_cmd(Winid, Options,?get_env(),?wxWindow_FindWindowById),
+  wxe_util:rec(?wxWindow_FindWindowById).
 
 %% @equiv findWindowByName(Name, [])
 -spec findWindowByName(Name) -> wxWindow() when
@@ -341,7 +356,8 @@ findWindowByName(Name)
 findWindowByName(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxWindow_FindWindowByName,[Name_UC, Options]).
+  wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxWindow_FindWindowByName),
+  wxe_util:rec(?wxWindow_FindWindowByName).
 
 %% @equiv findWindowByLabel(Label, [])
 -spec findWindowByLabel(Label) -> wxWindow() when
@@ -358,275 +374,311 @@ findWindowByLabel(Label)
 findWindowByLabel(Label, Options)
  when ?is_chardata(Label),is_list(Options) ->
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:call(?wxWindow_FindWindowByLabel,[Label_UC, Options]).
+  wxe_util:queue_cmd(Label_UC, Options,?get_env(),?wxWindow_FindWindowByLabel),
+  wxe_util:rec(?wxWindow_FindWindowByLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfit">external documentation</a>.
 -spec fit(This) -> 'ok' when
 	This::wxWindow().
-fit(#wx_ref{type=ThisT,ref=ThisRef}) ->
+fit(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Fit,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Fit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfitinside">external documentation</a>.
 -spec fitInside(This) -> 'ok' when
 	This::wxWindow().
-fitInside(#wx_ref{type=ThisT,ref=ThisRef}) ->
+fitInside(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_FitInside,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_FitInside).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfreeze">external documentation</a>.
 -spec freeze(This) -> 'ok' when
 	This::wxWindow().
-freeze(#wx_ref{type=ThisT,ref=ThisRef}) ->
+freeze(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Freeze,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Freeze).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetacceleratortable">external documentation</a>.
 -spec getAcceleratorTable(This) -> wxAcceleratorTable:wxAcceleratorTable() when
 	This::wxWindow().
-getAcceleratorTable(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAcceleratorTable(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetAcceleratorTable,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetAcceleratorTable),
+  wxe_util:rec(?wxWindow_GetAcceleratorTable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetbackgroundcolour">external documentation</a>.
 -spec getBackgroundColour(This) -> wx:wx_colour4() when
 	This::wxWindow().
-getBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBackgroundColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetBackgroundColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetBackgroundColour),
+  wxe_util:rec(?wxWindow_GetBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetbackgroundstyle">external documentation</a>.
 %%<br /> Res = ?wxBG_STYLE_SYSTEM | ?wxBG_STYLE_COLOUR | ?wxBG_STYLE_CUSTOM
 -spec getBackgroundStyle(This) -> wx:wx_enum() when
 	This::wxWindow().
-getBackgroundStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBackgroundStyle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetBackgroundStyle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetBackgroundStyle),
+  wxe_util:rec(?wxWindow_GetBackgroundStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetbestsize">external documentation</a>.
 -spec getBestSize(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getBestSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBestSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetBestSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetBestSize),
+  wxe_util:rec(?wxWindow_GetBestSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcaret">external documentation</a>.
 -spec getCaret(This) -> wxCaret:wxCaret() when
 	This::wxWindow().
-getCaret(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCaret(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetCaret,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetCaret),
+  wxe_util:rec(?wxWindow_GetCaret).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcapture">external documentation</a>.
 -spec getCapture() -> wxWindow().
 getCapture() ->
-  wxe_util:call(?wxWindow_GetCapture,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxWindow_GetCapture),
+  wxe_util:rec(?wxWindow_GetCapture).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcharheight">external documentation</a>.
 -spec getCharHeight(This) -> integer() when
 	This::wxWindow().
-getCharHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCharHeight(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetCharHeight,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetCharHeight),
+  wxe_util:rec(?wxWindow_GetCharHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcharwidth">external documentation</a>.
 -spec getCharWidth(This) -> integer() when
 	This::wxWindow().
-getCharWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCharWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetCharWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetCharWidth),
+  wxe_util:rec(?wxWindow_GetCharWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetchildren">external documentation</a>.
 -spec getChildren(This) -> [wxWindow()] when
 	This::wxWindow().
-getChildren(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getChildren(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetChildren,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetChildren),
+  wxe_util:rec(?wxWindow_GetChildren).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetclientsize">external documentation</a>.
 -spec getClientSize(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getClientSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getClientSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetClientSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetClientSize),
+  wxe_util:rec(?wxWindow_GetClientSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcontainingsizer">external documentation</a>.
 -spec getContainingSizer(This) -> wxSizer:wxSizer() when
 	This::wxWindow().
-getContainingSizer(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getContainingSizer(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetContainingSizer,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetContainingSizer),
+  wxe_util:rec(?wxWindow_GetContainingSizer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcursor">external documentation</a>.
 -spec getCursor(This) -> wxCursor:wxCursor() when
 	This::wxWindow().
-getCursor(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCursor(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetCursor,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetCursor),
+  wxe_util:rec(?wxWindow_GetCursor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetdroptarget">external documentation</a>.
 -spec getDropTarget(This) -> wx:wx_object() when
 	This::wxWindow().
-getDropTarget(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDropTarget(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetDropTarget,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetDropTarget),
+  wxe_util:rec(?wxWindow_GetDropTarget).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgeteventhandler">external documentation</a>.
 -spec getEventHandler(This) -> wxEvtHandler:wxEvtHandler() when
 	This::wxWindow().
-getEventHandler(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getEventHandler(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetEventHandler,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetEventHandler),
+  wxe_util:rec(?wxWindow_GetEventHandler).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetextrastyle">external documentation</a>.
 -spec getExtraStyle(This) -> integer() when
 	This::wxWindow().
-getExtraStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getExtraStyle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetExtraStyle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetExtraStyle),
+  wxe_util:rec(?wxWindow_GetExtraStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetfont">external documentation</a>.
 -spec getFont(This) -> wxFont:wxFont() when
 	This::wxWindow().
-getFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetFont),
+  wxe_util:rec(?wxWindow_GetFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetforegroundcolour">external documentation</a>.
 -spec getForegroundColour(This) -> wx:wx_colour4() when
 	This::wxWindow().
-getForegroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getForegroundColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetForegroundColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetForegroundColour),
+  wxe_util:rec(?wxWindow_GetForegroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetgrandparent">external documentation</a>.
 -spec getGrandParent(This) -> wxWindow() when
 	This::wxWindow().
-getGrandParent(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGrandParent(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetGrandParent,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetGrandParent),
+  wxe_util:rec(?wxWindow_GetGrandParent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgethandle">external documentation</a>.
 -spec getHandle(This) -> integer() when
 	This::wxWindow().
-getHandle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getHandle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetHandle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetHandle),
+  wxe_util:rec(?wxWindow_GetHandle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgethelptext">external documentation</a>.
 -spec getHelpText(This) -> unicode:charlist() when
 	This::wxWindow().
-getHelpText(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getHelpText(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetHelpText,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetHelpText),
+  wxe_util:rec(?wxWindow_GetHelpText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetid">external documentation</a>.
 -spec getId(This) -> integer() when
 	This::wxWindow().
-getId(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getId(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetId,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetId),
+  wxe_util:rec(?wxWindow_GetId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxWindow().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetLabel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetLabel),
+  wxe_util:rec(?wxWindow_GetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetmaxsize">external documentation</a>.
 -spec getMaxSize(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getMaxSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaxSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetMaxSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetMaxSize),
+  wxe_util:rec(?wxWindow_GetMaxSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetminsize">external documentation</a>.
 -spec getMinSize(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getMinSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMinSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetMinSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetMinSize),
+  wxe_util:rec(?wxWindow_GetMinSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetname">external documentation</a>.
 -spec getName(This) -> unicode:charlist() when
 	This::wxWindow().
-getName(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getName(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetName,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetName),
+  wxe_util:rec(?wxWindow_GetName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetparent">external documentation</a>.
 -spec getParent(This) -> wxWindow() when
 	This::wxWindow().
-getParent(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getParent(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetParent,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetParent),
+  wxe_util:rec(?wxWindow_GetParent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxWindow().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetPosition),
+  wxe_util:rec(?wxWindow_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetrect">external documentation</a>.
 -spec getRect(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxWindow().
-getRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRect(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetRect,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetRect),
+  wxe_util:rec(?wxWindow_GetRect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetscreenposition">external documentation</a>.
 -spec getScreenPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxWindow().
-getScreenPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getScreenPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetScreenPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetScreenPosition),
+  wxe_util:rec(?wxWindow_GetScreenPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetscreenrect">external documentation</a>.
 -spec getScreenRect(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxWindow().
-getScreenRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getScreenRect(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetScreenRect,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetScreenRect),
+  wxe_util:rec(?wxWindow_GetScreenRect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetscrollpos">external documentation</a>.
 -spec getScrollPos(This, Orient) -> integer() when
 	This::wxWindow(), Orient::integer().
-getScrollPos(#wx_ref{type=ThisT,ref=ThisRef},Orient)
+getScrollPos(#wx_ref{type=ThisT}=This,Orient)
  when is_integer(Orient) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetScrollPos,[ThisRef,Orient]).
+  wxe_util:queue_cmd(This,Orient,?get_env(),?wxWindow_GetScrollPos),
+  wxe_util:rec(?wxWindow_GetScrollPos).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetscrollrange">external documentation</a>.
 -spec getScrollRange(This, Orient) -> integer() when
 	This::wxWindow(), Orient::integer().
-getScrollRange(#wx_ref{type=ThisT,ref=ThisRef},Orient)
+getScrollRange(#wx_ref{type=ThisT}=This,Orient)
  when is_integer(Orient) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetScrollRange,[ThisRef,Orient]).
+  wxe_util:queue_cmd(This,Orient,?get_env(),?wxWindow_GetScrollRange),
+  wxe_util:rec(?wxWindow_GetScrollRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetscrollthumb">external documentation</a>.
 -spec getScrollThumb(This, Orient) -> integer() when
 	This::wxWindow(), Orient::integer().
-getScrollThumb(#wx_ref{type=ThisT,ref=ThisRef},Orient)
+getScrollThumb(#wx_ref{type=ThisT}=This,Orient)
  when is_integer(Orient) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetScrollThumb,[ThisRef,Orient]).
+  wxe_util:queue_cmd(This,Orient,?get_env(),?wxWindow_GetScrollThumb),
+  wxe_util:rec(?wxWindow_GetScrollThumb).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetsize">external documentation</a>.
 -spec getSize(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetSize),
+  wxe_util:rec(?wxWindow_GetSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetsizer">external documentation</a>.
 -spec getSizer(This) -> wxSizer:wxSizer() when
 	This::wxWindow().
-getSizer(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSizer(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetSizer,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetSizer),
+  wxe_util:rec(?wxWindow_GetSizer).
 
 %% @equiv getTextExtent(This,String, [])
 -spec getTextExtent(This, String) -> Result when
@@ -642,104 +694,115 @@ getTextExtent(This,String)
 	Result :: {X::integer(), Y::integer(), Descent::integer(), ExternalLeading::integer()},
 	This::wxWindow(), String::unicode:chardata(),
 	Option :: {'theFont', wxFont:wxFont()}.
-getTextExtent(#wx_ref{type=ThisT,ref=ThisRef},String, Options)
+getTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   String_UC = unicode:characters_to_binary([String,0]),
-  wxe_util:call(?wxWindow_GetTextExtent,[ThisRef,String_UC, Options]).
+  wxe_util:queue_cmd(This,String_UC, Options,?get_env(),?wxWindow_GetTextExtent),
+  wxe_util:rec(?wxWindow_GetTextExtent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgettooltip">external documentation</a>.
 -spec getToolTip(This) -> wxToolTip:wxToolTip() when
 	This::wxWindow().
-getToolTip(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getToolTip(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetToolTip,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetToolTip),
+  wxe_util:rec(?wxWindow_GetToolTip).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetupdateregion">external documentation</a>.
 -spec getUpdateRegion(This) -> wxRegion:wxRegion() when
 	This::wxWindow().
-getUpdateRegion(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getUpdateRegion(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetUpdateRegion,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetUpdateRegion),
+  wxe_util:rec(?wxWindow_GetUpdateRegion).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetvirtualsize">external documentation</a>.
 -spec getVirtualSize(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getVirtualSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getVirtualSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetVirtualSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetVirtualSize),
+  wxe_util:rec(?wxWindow_GetVirtualSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetwindowstyleflag">external documentation</a>.
 -spec getWindowStyleFlag(This) -> integer() when
 	This::wxWindow().
-getWindowStyleFlag(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWindowStyleFlag(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetWindowStyleFlag,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetWindowStyleFlag),
+  wxe_util:rec(?wxWindow_GetWindowStyleFlag).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetwindowvariant">external documentation</a>.
 %%<br /> Res = ?wxWINDOW_VARIANT_NORMAL | ?wxWINDOW_VARIANT_SMALL | ?wxWINDOW_VARIANT_MINI | ?wxWINDOW_VARIANT_LARGE | ?wxWINDOW_VARIANT_MAX
 -spec getWindowVariant(This) -> wx:wx_enum() when
 	This::wxWindow().
-getWindowVariant(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWindowVariant(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetWindowVariant,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetWindowVariant),
+  wxe_util:rec(?wxWindow_GetWindowVariant).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowhascapture">external documentation</a>.
 -spec hasCapture(This) -> boolean() when
 	This::wxWindow().
-hasCapture(#wx_ref{type=ThisT,ref=ThisRef}) ->
+hasCapture(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_HasCapture,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_HasCapture),
+  wxe_util:rec(?wxWindow_HasCapture).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowhasscrollbar">external documentation</a>.
 -spec hasScrollbar(This, Orient) -> boolean() when
 	This::wxWindow(), Orient::integer().
-hasScrollbar(#wx_ref{type=ThisT,ref=ThisRef},Orient)
+hasScrollbar(#wx_ref{type=ThisT}=This,Orient)
  when is_integer(Orient) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_HasScrollbar,[ThisRef,Orient]).
+  wxe_util:queue_cmd(This,Orient,?get_env(),?wxWindow_HasScrollbar),
+  wxe_util:rec(?wxWindow_HasScrollbar).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowhastransparentbackground">external documentation</a>.
 -spec hasTransparentBackground(This) -> boolean() when
 	This::wxWindow().
-hasTransparentBackground(#wx_ref{type=ThisT,ref=ThisRef}) ->
+hasTransparentBackground(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_HasTransparentBackground,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_HasTransparentBackground),
+  wxe_util:rec(?wxWindow_HasTransparentBackground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowhide">external documentation</a>.
 -spec hide(This) -> boolean() when
 	This::wxWindow().
-hide(#wx_ref{type=ThisT,ref=ThisRef}) ->
+hide(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Hide,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Hide),
+  wxe_util:rec(?wxWindow_Hide).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowinheritattributes">external documentation</a>.
 -spec inheritAttributes(This) -> 'ok' when
 	This::wxWindow().
-inheritAttributes(#wx_ref{type=ThisT,ref=ThisRef}) ->
+inheritAttributes(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_InheritAttributes,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_InheritAttributes).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowinitdialog">external documentation</a>.
 -spec initDialog(This) -> 'ok' when
 	This::wxWindow().
-initDialog(#wx_ref{type=ThisT,ref=ThisRef}) ->
+initDialog(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_InitDialog,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_InitDialog).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowinvalidatebestsize">external documentation</a>.
 -spec invalidateBestSize(This) -> 'ok' when
 	This::wxWindow().
-invalidateBestSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+invalidateBestSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_InvalidateBestSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_InvalidateBestSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisenabled">external documentation</a>.
 -spec isEnabled(This) -> boolean() when
 	This::wxWindow().
-isEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isEnabled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsEnabled,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_IsEnabled),
+  wxe_util:rec(?wxWindow_IsEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisexposed">external documentation</a>.
 %% <br /> Also:<br />
@@ -750,51 +813,58 @@ isEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxWindow(), Pt::{X::integer(), Y::integer()};
       (This, Rect) -> boolean() when
 	This::wxWindow(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-isExposed(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
+isExposed(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsExposed_1_0,[ThisRef,Pt]);
-isExposed(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
+  wxe_util:queue_cmd(This,Pt,?get_env(),?wxWindow_IsExposed_1_0),
+  wxe_util:rec(?wxWindow_IsExposed_1_0);
+isExposed(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsExposed_1_1,[ThisRef,Rect]).
+  wxe_util:queue_cmd(This,Rect,?get_env(),?wxWindow_IsExposed_1_1),
+  wxe_util:rec(?wxWindow_IsExposed_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisexposed">external documentation</a>.
 -spec isExposed(This, X, Y) -> boolean() when
 	This::wxWindow(), X::integer(), Y::integer().
-isExposed(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+isExposed(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsExposed_2,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxWindow_IsExposed_2),
+  wxe_util:rec(?wxWindow_IsExposed_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisexposed">external documentation</a>.
 -spec isExposed(This, X, Y, W, H) -> boolean() when
 	This::wxWindow(), X::integer(), Y::integer(), W::integer(), H::integer().
-isExposed(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
+isExposed(#wx_ref{type=ThisT}=This,X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsExposed_4,[ThisRef,X,Y,W,H]).
+  wxe_util:queue_cmd(This,X,Y,W,H,?get_env(),?wxWindow_IsExposed_4),
+  wxe_util:rec(?wxWindow_IsExposed_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisretained">external documentation</a>.
 -spec isRetained(This) -> boolean() when
 	This::wxWindow().
-isRetained(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isRetained(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsRetained,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_IsRetained),
+  wxe_util:rec(?wxWindow_IsRetained).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisshown">external documentation</a>.
 -spec isShown(This) -> boolean() when
 	This::wxWindow().
-isShown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isShown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsShown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_IsShown),
+  wxe_util:rec(?wxWindow_IsShown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowistoplevel">external documentation</a>.
 -spec isTopLevel(This) -> boolean() when
 	This::wxWindow().
-isTopLevel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isTopLevel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsTopLevel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_IsTopLevel),
+  wxe_util:rec(?wxWindow_IsTopLevel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisshownonscreen">external documentation</a>.
 -spec isShownOnScreen(This) -> boolean() when
@@ -807,30 +877,33 @@ isShownOnScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowlayout">external documentation</a>.
 -spec layout(This) -> boolean() when
 	This::wxWindow().
-layout(#wx_ref{type=ThisT,ref=ThisRef}) ->
+layout(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Layout,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Layout),
+  wxe_util:rec(?wxWindow_Layout).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowlinedown">external documentation</a>.
 -spec lineDown(This) -> boolean() when
 	This::wxWindow().
-lineDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+lineDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_LineDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_LineDown),
+  wxe_util:rec(?wxWindow_LineDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowlineup">external documentation</a>.
 -spec lineUp(This) -> boolean() when
 	This::wxWindow().
-lineUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+lineUp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_LineUp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_LineUp),
+  wxe_util:rec(?wxWindow_LineUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowlower">external documentation</a>.
 -spec lower(This) -> 'ok' when
 	This::wxWindow().
-lower(#wx_ref{type=ThisT,ref=ThisRef}) ->
+lower(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Lower,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Lower).
 
 %% @equiv makeModal(This, [])
 -spec makeModal(This) -> 'ok' when
@@ -844,10 +917,10 @@ makeModal(This)
 -spec makeModal(This, [Option]) -> 'ok' when
 	This::wxWindow(),
 	Option :: {'modal', boolean()}.
-makeModal(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+makeModal(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_MakeModal,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_MakeModal).
 
 %% @equiv move(This,Pt, [])
 -spec move(This, Pt) -> 'ok' when
@@ -872,35 +945,35 @@ move(This,Pt={PtX,PtY} = Pt)
 move(This,X,Y)
  when is_record(This, wx_ref),is_integer(X),is_integer(Y) ->
   move(This,X,Y, []);
-move(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt, Options)
+move(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt, Options)
  when is_integer(PtX),is_integer(PtY),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Move_2,[ThisRef,Pt, Options]).
+  wxe_util:queue_cmd(This,Pt, Options,?get_env(),?wxWindow_Move_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowmove">external documentation</a>.
 -spec move(This, X, Y, [Option]) -> 'ok' when
 	This::wxWindow(), X::integer(), Y::integer(),
 	Option :: {'flags', integer()}.
-move(#wx_ref{type=ThisT,ref=ThisRef},X,Y, Options)
+move(#wx_ref{type=ThisT}=This,X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Move_3,[ThisRef,X,Y, Options]).
+  wxe_util:queue_cmd(This,X,Y, Options,?get_env(),?wxWindow_Move_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowmoveafterintaborder">external documentation</a>.
 -spec moveAfterInTabOrder(This, Win) -> 'ok' when
 	This::wxWindow(), Win::wxWindow().
-moveAfterInTabOrder(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WinT,ref=WinRef}) ->
+moveAfterInTabOrder(#wx_ref{type=ThisT}=This,#wx_ref{type=WinT}=Win) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(WinT,wxWindow),
-  wxe_util:cast(?wxWindow_MoveAfterInTabOrder,[ThisRef,WinRef]).
+  wxe_util:queue_cmd(This,Win,?get_env(),?wxWindow_MoveAfterInTabOrder).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowmovebeforeintaborder">external documentation</a>.
 -spec moveBeforeInTabOrder(This, Win) -> 'ok' when
 	This::wxWindow(), Win::wxWindow().
-moveBeforeInTabOrder(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WinT,ref=WinRef}) ->
+moveBeforeInTabOrder(#wx_ref{type=ThisT}=This,#wx_ref{type=WinT}=Win) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(WinT,wxWindow),
-  wxe_util:cast(?wxWindow_MoveBeforeInTabOrder,[ThisRef,WinRef]).
+  wxe_util:queue_cmd(This,Win,?get_env(),?wxWindow_MoveBeforeInTabOrder).
 
 %% @equiv navigate(This, [])
 -spec navigate(This) -> boolean() when
@@ -914,24 +987,27 @@ navigate(This)
 -spec navigate(This, [Option]) -> boolean() when
 	This::wxWindow(),
 	Option :: {'flags', integer()}.
-navigate(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+navigate(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Navigate,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Navigate),
+  wxe_util:rec(?wxWindow_Navigate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowpagedown">external documentation</a>.
 -spec pageDown(This) -> boolean() when
 	This::wxWindow().
-pageDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+pageDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_PageDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_PageDown),
+  wxe_util:rec(?wxWindow_PageDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowpageup">external documentation</a>.
 -spec pageUp(This) -> boolean() when
 	This::wxWindow().
-pageUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+pageUp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_PageUp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_PageUp),
+  wxe_util:rec(?wxWindow_PageUp).
 
 %% @equiv popEventHandler(This, [])
 -spec popEventHandler(This) -> wxEvtHandler:wxEvtHandler() when
@@ -945,10 +1021,11 @@ popEventHandler(This)
 -spec popEventHandler(This, [Option]) -> wxEvtHandler:wxEvtHandler() when
 	This::wxWindow(),
 	Option :: {'deleteHandler', boolean()}.
-popEventHandler(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+popEventHandler(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_PopEventHandler,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_PopEventHandler),
+  wxe_util:rec(?wxWindow_PopEventHandler).
 
 %% @equiv popupMenu(This,Menu, [])
 -spec popupMenu(This, Menu) -> boolean() when
@@ -962,27 +1039,29 @@ popupMenu(This,Menu)
 -spec popupMenu(This, Menu, [Option]) -> boolean() when
 	This::wxWindow(), Menu::wxMenu:wxMenu(),
 	Option :: {'pos', {X::integer(), Y::integer()}}.
-popupMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}, Options)
+popupMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:call(?wxWindow_PopupMenu_2,[ThisRef,MenuRef, Options]).
+  wxe_util:queue_cmd(This,Menu, Options,?get_env(),?wxWindow_PopupMenu_2),
+  wxe_util:rec(?wxWindow_PopupMenu_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowpopupmenu">external documentation</a>.
 -spec popupMenu(This, Menu, X, Y) -> boolean() when
 	This::wxWindow(), Menu::wxMenu:wxMenu(), X::integer(), Y::integer().
-popupMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef},X,Y)
+popupMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:call(?wxWindow_PopupMenu_3,[ThisRef,MenuRef,X,Y]).
+  wxe_util:queue_cmd(This,Menu,X,Y,?get_env(),?wxWindow_PopupMenu_3),
+  wxe_util:rec(?wxWindow_PopupMenu_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowraise">external documentation</a>.
 -spec raise(This) -> 'ok' when
 	This::wxWindow().
-raise(#wx_ref{type=ThisT,ref=ThisRef}) ->
+raise(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Raise,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Raise).
 
 %% @equiv refresh(This, [])
 -spec refresh(This) -> 'ok' when
@@ -997,10 +1076,10 @@ refresh(This)
 	This::wxWindow(),
 	Option :: {'eraseBackground', boolean()}
 		 | {'rect', {X::integer(), Y::integer(), W::integer(), H::integer()}}.
-refresh(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+refresh(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Refresh,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Refresh).
 
 %% @equiv refreshRect(This,Rect, [])
 -spec refreshRect(This, Rect) -> 'ok' when
@@ -1014,64 +1093,69 @@ refreshRect(This,Rect={RectX,RectY,RectW,RectH} = Rect)
 -spec refreshRect(This, Rect, [Option]) -> 'ok' when
 	This::wxWindow(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()},
 	Option :: {'eraseBackground', boolean()}.
-refreshRect(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect, Options)
+refreshRect(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect, Options)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_RefreshRect,[ThisRef,Rect, Options]).
+  wxe_util:queue_cmd(This,Rect, Options,?get_env(),?wxWindow_RefreshRect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowreleasemouse">external documentation</a>.
 -spec releaseMouse(This) -> 'ok' when
 	This::wxWindow().
-releaseMouse(#wx_ref{type=ThisT,ref=ThisRef}) ->
+releaseMouse(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_ReleaseMouse,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_ReleaseMouse).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowremovechild">external documentation</a>.
 -spec removeChild(This, Child) -> 'ok' when
 	This::wxWindow(), Child::wxWindow().
-removeChild(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ChildT,ref=ChildRef}) ->
+removeChild(#wx_ref{type=ThisT}=This,#wx_ref{type=ChildT}=Child) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(ChildT,wxWindow),
-  wxe_util:cast(?wxWindow_RemoveChild,[ThisRef,ChildRef]).
+  wxe_util:queue_cmd(This,Child,?get_env(),?wxWindow_RemoveChild).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowreparent">external documentation</a>.
 -spec reparent(This, NewParent) -> boolean() when
 	This::wxWindow(), NewParent::wxWindow().
-reparent(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=NewParentT,ref=NewParentRef}) ->
+reparent(#wx_ref{type=ThisT}=This,#wx_ref{type=NewParentT}=NewParent) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(NewParentT,wxWindow),
-  wxe_util:call(?wxWindow_Reparent,[ThisRef,NewParentRef]).
+  wxe_util:queue_cmd(This,NewParent,?get_env(),?wxWindow_Reparent),
+  wxe_util:rec(?wxWindow_Reparent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowscreentoclient">external documentation</a>.
 -spec screenToClient(This) -> {X::integer(), Y::integer()} when
 	This::wxWindow().
-screenToClient(#wx_ref{type=ThisT,ref=ThisRef}) ->
+screenToClient(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ScreenToClient_2,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_ScreenToClient_2),
+  wxe_util:rec(?wxWindow_ScreenToClient_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowscreentoclient">external documentation</a>.
 -spec screenToClient(This, Pt) -> {X::integer(), Y::integer()} when
 	This::wxWindow(), Pt::{X::integer(), Y::integer()}.
-screenToClient(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
+screenToClient(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ScreenToClient_1,[ThisRef,Pt]).
+  wxe_util:queue_cmd(This,Pt,?get_env(),?wxWindow_ScreenToClient_1),
+  wxe_util:rec(?wxWindow_ScreenToClient_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowscrolllines">external documentation</a>.
 -spec scrollLines(This, Lines) -> boolean() when
 	This::wxWindow(), Lines::integer().
-scrollLines(#wx_ref{type=ThisT,ref=ThisRef},Lines)
+scrollLines(#wx_ref{type=ThisT}=This,Lines)
  when is_integer(Lines) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ScrollLines,[ThisRef,Lines]).
+  wxe_util:queue_cmd(This,Lines,?get_env(),?wxWindow_ScrollLines),
+  wxe_util:rec(?wxWindow_ScrollLines).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowscrollpages">external documentation</a>.
 -spec scrollPages(This, Pages) -> boolean() when
 	This::wxWindow(), Pages::integer().
-scrollPages(#wx_ref{type=ThisT,ref=ThisRef},Pages)
+scrollPages(#wx_ref{type=ThisT}=This,Pages)
  when is_integer(Pages) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ScrollPages,[ThisRef,Pages]).
+  wxe_util:queue_cmd(This,Pages,?get_env(),?wxWindow_ScrollPages),
+  wxe_util:rec(?wxWindow_ScrollPages).
 
 %% @equiv scrollWindow(This,Dx,Dy, [])
 -spec scrollWindow(This, Dx, Dy) -> 'ok' when
@@ -1085,51 +1169,53 @@ scrollWindow(This,Dx,Dy)
 -spec scrollWindow(This, Dx, Dy, [Option]) -> 'ok' when
 	This::wxWindow(), Dx::integer(), Dy::integer(),
 	Option :: {'rect', {X::integer(), Y::integer(), W::integer(), H::integer()}}.
-scrollWindow(#wx_ref{type=ThisT,ref=ThisRef},Dx,Dy, Options)
+scrollWindow(#wx_ref{type=ThisT}=This,Dx,Dy, Options)
  when is_integer(Dx),is_integer(Dy),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_ScrollWindow,[ThisRef,Dx,Dy, Options]).
+  wxe_util:queue_cmd(This,Dx,Dy, Options,?get_env(),?wxWindow_ScrollWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetacceleratortable">external documentation</a>.
 -spec setAcceleratorTable(This, Accel) -> 'ok' when
 	This::wxWindow(), Accel::wxAcceleratorTable:wxAcceleratorTable().
-setAcceleratorTable(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=AccelT,ref=AccelRef}) ->
+setAcceleratorTable(#wx_ref{type=ThisT}=This,#wx_ref{type=AccelT}=Accel) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(AccelT,wxAcceleratorTable),
-  wxe_util:cast(?wxWindow_SetAcceleratorTable,[ThisRef,AccelRef]).
+  wxe_util:queue_cmd(This,Accel,?get_env(),?wxWindow_SetAcceleratorTable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetautolayout">external documentation</a>.
 -spec setAutoLayout(This, AutoLayout) -> 'ok' when
 	This::wxWindow(), AutoLayout::boolean().
-setAutoLayout(#wx_ref{type=ThisT,ref=ThisRef},AutoLayout)
+setAutoLayout(#wx_ref{type=ThisT}=This,AutoLayout)
  when is_boolean(AutoLayout) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetAutoLayout,[ThisRef,AutoLayout]).
+  wxe_util:queue_cmd(This,AutoLayout,?get_env(),?wxWindow_SetAutoLayout).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetbackgroundcolour">external documentation</a>.
 -spec setBackgroundColour(This, Colour) -> boolean() when
 	This::wxWindow(), Colour::wx:wx_colour().
-setBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setBackgroundColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_SetBackgroundColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxWindow_SetBackgroundColour),
+  wxe_util:rec(?wxWindow_SetBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetbackgroundstyle">external documentation</a>.
 %%<br /> Style = ?wxBG_STYLE_SYSTEM | ?wxBG_STYLE_COLOUR | ?wxBG_STYLE_CUSTOM
 -spec setBackgroundStyle(This, Style) -> boolean() when
 	This::wxWindow(), Style::wx:wx_enum().
-setBackgroundStyle(#wx_ref{type=ThisT,ref=ThisRef},Style)
+setBackgroundStyle(#wx_ref{type=ThisT}=This,Style)
  when is_integer(Style) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_SetBackgroundStyle,[ThisRef,Style]).
+  wxe_util:queue_cmd(This,Style,?get_env(),?wxWindow_SetBackgroundStyle),
+  wxe_util:rec(?wxWindow_SetBackgroundStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetcaret">external documentation</a>.
 -spec setCaret(This, Caret) -> 'ok' when
 	This::wxWindow(), Caret::wxCaret:wxCaret().
-setCaret(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CaretT,ref=CaretRef}) ->
+setCaret(#wx_ref{type=ThisT}=This,#wx_ref{type=CaretT}=Caret) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(CaretT,wxCaret),
-  wxe_util:cast(?wxWindow_SetCaret,[ThisRef,CaretRef]).
+  wxe_util:queue_cmd(This,Caret,?get_env(),?wxWindow_SetCaret).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetclientsize">external documentation</a>.
 %% <br /> Also:<br />
@@ -1140,167 +1226,170 @@ setCaret(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CaretT,ref=CaretRef}) ->
 	This::wxWindow(), Size::{W::integer(), H::integer()};
       (This, Rect) -> 'ok' when
 	This::wxWindow(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-setClientSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
+setClientSize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetClientSize_1_0,[ThisRef,Size]);
-setClientSize(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
+  wxe_util:queue_cmd(This,Size,?get_env(),?wxWindow_SetClientSize_1_0);
+setClientSize(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetClientSize_1_1,[ThisRef,Rect]).
+  wxe_util:queue_cmd(This,Rect,?get_env(),?wxWindow_SetClientSize_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetclientsize">external documentation</a>.
 -spec setClientSize(This, Width, Height) -> 'ok' when
 	This::wxWindow(), Width::integer(), Height::integer().
-setClientSize(#wx_ref{type=ThisT,ref=ThisRef},Width,Height)
+setClientSize(#wx_ref{type=ThisT}=This,Width,Height)
  when is_integer(Width),is_integer(Height) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetClientSize_2,[ThisRef,Width,Height]).
+  wxe_util:queue_cmd(This,Width,Height,?get_env(),?wxWindow_SetClientSize_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetcontainingsizer">external documentation</a>.
 -spec setContainingSizer(This, Sizer) -> 'ok' when
 	This::wxWindow(), Sizer::wxSizer:wxSizer().
-setContainingSizer(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=SizerT,ref=SizerRef}) ->
+setContainingSizer(#wx_ref{type=ThisT}=This,#wx_ref{type=SizerT}=Sizer) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(SizerT,wxSizer),
-  wxe_util:cast(?wxWindow_SetContainingSizer,[ThisRef,SizerRef]).
+  wxe_util:queue_cmd(This,Sizer,?get_env(),?wxWindow_SetContainingSizer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetcursor">external documentation</a>.
 -spec setCursor(This, Cursor) -> boolean() when
 	This::wxWindow(), Cursor::wxCursor:wxCursor().
-setCursor(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CursorT,ref=CursorRef}) ->
+setCursor(#wx_ref{type=ThisT}=This,#wx_ref{type=CursorT}=Cursor) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(CursorT,wxCursor),
-  wxe_util:call(?wxWindow_SetCursor,[ThisRef,CursorRef]).
+  wxe_util:queue_cmd(This,Cursor,?get_env(),?wxWindow_SetCursor),
+  wxe_util:rec(?wxWindow_SetCursor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetmaxsize">external documentation</a>.
 -spec setMaxSize(This, MaxSize) -> 'ok' when
 	This::wxWindow(), MaxSize::{W::integer(), H::integer()}.
-setMaxSize(#wx_ref{type=ThisT,ref=ThisRef},{MaxSizeW,MaxSizeH} = MaxSize)
+setMaxSize(#wx_ref{type=ThisT}=This,{MaxSizeW,MaxSizeH} = MaxSize)
  when is_integer(MaxSizeW),is_integer(MaxSizeH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetMaxSize,[ThisRef,MaxSize]).
+  wxe_util:queue_cmd(This,MaxSize,?get_env(),?wxWindow_SetMaxSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetminsize">external documentation</a>.
 -spec setMinSize(This, MinSize) -> 'ok' when
 	This::wxWindow(), MinSize::{W::integer(), H::integer()}.
-setMinSize(#wx_ref{type=ThisT,ref=ThisRef},{MinSizeW,MinSizeH} = MinSize)
+setMinSize(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize)
  when is_integer(MinSizeW),is_integer(MinSizeH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetMinSize,[ThisRef,MinSize]).
+  wxe_util:queue_cmd(This,MinSize,?get_env(),?wxWindow_SetMinSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetownbackgroundcolour">external documentation</a>.
 -spec setOwnBackgroundColour(This, Colour) -> 'ok' when
 	This::wxWindow(), Colour::wx:wx_colour().
-setOwnBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setOwnBackgroundColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetOwnBackgroundColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxWindow_SetOwnBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetownfont">external documentation</a>.
 -spec setOwnFont(This, Font) -> 'ok' when
 	This::wxWindow(), Font::wxFont:wxFont().
-setOwnFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
+setOwnFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxWindow_SetOwnFont,[ThisRef,FontRef]).
+  wxe_util:queue_cmd(This,Font,?get_env(),?wxWindow_SetOwnFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetownforegroundcolour">external documentation</a>.
 -spec setOwnForegroundColour(This, Colour) -> 'ok' when
 	This::wxWindow(), Colour::wx:wx_colour().
-setOwnForegroundColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setOwnForegroundColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetOwnForegroundColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxWindow_SetOwnForegroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetdroptarget">external documentation</a>.
 -spec setDropTarget(This, DropTarget) -> 'ok' when
 	This::wxWindow(), DropTarget::wx:wx_object().
-setDropTarget(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DropTargetT,ref=DropTargetRef}) ->
+setDropTarget(#wx_ref{type=ThisT}=This,#wx_ref{type=DropTargetT}=DropTarget) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(DropTargetT,wxDropTarget),
-  wxe_util:cast(?wxWindow_SetDropTarget,[ThisRef,DropTargetRef]).
+  wxe_util:queue_cmd(This,DropTarget,?get_env(),?wxWindow_SetDropTarget).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetextrastyle">external documentation</a>.
 -spec setExtraStyle(This, ExStyle) -> 'ok' when
 	This::wxWindow(), ExStyle::integer().
-setExtraStyle(#wx_ref{type=ThisT,ref=ThisRef},ExStyle)
+setExtraStyle(#wx_ref{type=ThisT}=This,ExStyle)
  when is_integer(ExStyle) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetExtraStyle,[ThisRef,ExStyle]).
+  wxe_util:queue_cmd(This,ExStyle,?get_env(),?wxWindow_SetExtraStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetfocus">external documentation</a>.
 -spec setFocus(This) -> 'ok' when
 	This::wxWindow().
-setFocus(#wx_ref{type=ThisT,ref=ThisRef}) ->
+setFocus(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetFocus,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_SetFocus).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetfocusfromkbd">external documentation</a>.
 -spec setFocusFromKbd(This) -> 'ok' when
 	This::wxWindow().
-setFocusFromKbd(#wx_ref{type=ThisT,ref=ThisRef}) ->
+setFocusFromKbd(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetFocusFromKbd,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_SetFocusFromKbd).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetfont">external documentation</a>.
 -spec setFont(This, Font) -> boolean() when
 	This::wxWindow(), Font::wxFont:wxFont().
-setFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
+setFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(FontT,wxFont),
-  wxe_util:call(?wxWindow_SetFont,[ThisRef,FontRef]).
+  wxe_util:queue_cmd(This,Font,?get_env(),?wxWindow_SetFont),
+  wxe_util:rec(?wxWindow_SetFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetforegroundcolour">external documentation</a>.
 -spec setForegroundColour(This, Colour) -> boolean() when
 	This::wxWindow(), Colour::wx:wx_colour().
-setForegroundColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setForegroundColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_SetForegroundColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxWindow_SetForegroundColour),
+  wxe_util:rec(?wxWindow_SetForegroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsethelptext">external documentation</a>.
 -spec setHelpText(This, Text) -> 'ok' when
 	This::wxWindow(), Text::unicode:chardata().
-setHelpText(#wx_ref{type=ThisT,ref=ThisRef},Text)
+setHelpText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxWindow),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxWindow_SetHelpText,[ThisRef,Text_UC]).
+  wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxWindow_SetHelpText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetid">external documentation</a>.
 -spec setId(This, Winid) -> 'ok' when
 	This::wxWindow(), Winid::integer().
-setId(#wx_ref{type=ThisT,ref=ThisRef},Winid)
+setId(#wx_ref{type=ThisT}=This,Winid)
  when is_integer(Winid) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetId,[ThisRef,Winid]).
+  wxe_util:queue_cmd(This,Winid,?get_env(),?wxWindow_SetId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetlabel">external documentation</a>.
 -spec setLabel(This, Label) -> 'ok' when
 	This::wxWindow(), Label::unicode:chardata().
-setLabel(#wx_ref{type=ThisT,ref=ThisRef},Label)
+setLabel(#wx_ref{type=ThisT}=This,Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxWindow_SetLabel,[ThisRef,Label_UC]).
+  wxe_util:queue_cmd(This,Label_UC,?get_env(),?wxWindow_SetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetname">external documentation</a>.
 -spec setName(This, Name) -> 'ok' when
 	This::wxWindow(), Name::unicode:chardata().
-setName(#wx_ref{type=ThisT,ref=ThisRef},Name)
+setName(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:cast(?wxWindow_SetName,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxWindow_SetName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetpalette">external documentation</a>.
 -spec setPalette(This, Pal) -> 'ok' when
 	This::wxWindow(), Pal::wxPalette:wxPalette().
-setPalette(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PalT,ref=PalRef}) ->
+setPalette(#wx_ref{type=ThisT}=This,#wx_ref{type=PalT}=Pal) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(PalT,wxPalette),
-  wxe_util:cast(?wxWindow_SetPalette,[ThisRef,PalRef]).
+  wxe_util:queue_cmd(This,Pal,?get_env(),?wxWindow_SetPalette).
 
 %% @equiv setScrollbar(This,Orient,Pos,ThumbVisible,Range, [])
 -spec setScrollbar(This, Orient, Pos, ThumbVisible, Range) -> 'ok' when
@@ -1314,10 +1403,10 @@ setScrollbar(This,Orient,Pos,ThumbVisible,Range)
 -spec setScrollbar(This, Orient, Pos, ThumbVisible, Range, [Option]) -> 'ok' when
 	This::wxWindow(), Orient::integer(), Pos::integer(), ThumbVisible::integer(), Range::integer(),
 	Option :: {'refresh', boolean()}.
-setScrollbar(#wx_ref{type=ThisT,ref=ThisRef},Orient,Pos,ThumbVisible,Range, Options)
+setScrollbar(#wx_ref{type=ThisT}=This,Orient,Pos,ThumbVisible,Range, Options)
  when is_integer(Orient),is_integer(Pos),is_integer(ThumbVisible),is_integer(Range),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetScrollbar,[ThisRef,Orient,Pos,ThumbVisible,Range, Options]).
+  wxe_util:queue_cmd(This,Orient,Pos,ThumbVisible,Range, Options,?get_env(),?wxWindow_SetScrollbar).
 
 %% @equiv setScrollPos(This,Orient,Pos, [])
 -spec setScrollPos(This, Orient, Pos) -> 'ok' when
@@ -1331,10 +1420,10 @@ setScrollPos(This,Orient,Pos)
 -spec setScrollPos(This, Orient, Pos, [Option]) -> 'ok' when
 	This::wxWindow(), Orient::integer(), Pos::integer(),
 	Option :: {'refresh', boolean()}.
-setScrollPos(#wx_ref{type=ThisT,ref=ThisRef},Orient,Pos, Options)
+setScrollPos(#wx_ref{type=ThisT}=This,Orient,Pos, Options)
  when is_integer(Orient),is_integer(Pos),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetScrollPos,[ThisRef,Orient,Pos, Options]).
+  wxe_util:queue_cmd(This,Orient,Pos, Options,?get_env(),?wxWindow_SetScrollPos).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetsize">external documentation</a>.
 %% <br /> Also:<br />
@@ -1349,10 +1438,10 @@ setScrollPos(#wx_ref{type=ThisT,ref=ThisRef},Orient,Pos, Options)
 setSize(This,Rect={RectX,RectY,RectW,RectH} = Rect)
  when is_record(This, wx_ref),is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   setSize(This,Rect, []);
-setSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
+setSize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetSize_1,[ThisRef,Size]).
+  wxe_util:queue_cmd(This,Size,?get_env(),?wxWindow_SetSize_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetsize">external documentation</a>.
 %% <br /> Also:<br />
@@ -1365,14 +1454,14 @@ setSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
       (This, Rect, [Option]) -> 'ok' when
 	This::wxWindow(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()},
 	Option :: {'sizeFlags', integer()}.
-setSize(#wx_ref{type=ThisT,ref=ThisRef},Width,Height)
+setSize(#wx_ref{type=ThisT}=This,Width,Height)
  when is_integer(Width),is_integer(Height) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetSize_2_0,[ThisRef,Width,Height]);
-setSize(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect, Options)
+  wxe_util:queue_cmd(This,Width,Height,?get_env(),?wxWindow_SetSize_2_0);
+setSize(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect, Options)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetSize_2_1,[ThisRef,Rect, Options]).
+  wxe_util:queue_cmd(This,Rect, Options,?get_env(),?wxWindow_SetSize_2_1).
 
 %% @equiv setSize(This,X,Y,Width,Height, [])
 -spec setSize(This, X, Y, Width, Height) -> 'ok' when
@@ -1386,10 +1475,10 @@ setSize(This,X,Y,Width,Height)
 -spec setSize(This, X, Y, Width, Height, [Option]) -> 'ok' when
 	This::wxWindow(), X::integer(), Y::integer(), Width::integer(), Height::integer(),
 	Option :: {'sizeFlags', integer()}.
-setSize(#wx_ref{type=ThisT,ref=ThisRef},X,Y,Width,Height, Options)
+setSize(#wx_ref{type=ThisT}=This,X,Y,Width,Height, Options)
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetSize_5,[ThisRef,X,Y,Width,Height, Options]).
+  wxe_util:queue_cmd(This,X,Y,Width,Height, Options,?get_env(),?wxWindow_SetSize_5).
 
 %% @equiv setSizeHints(This,MinSize, [])
 -spec setSizeHints(This, MinSize) -> 'ok' when
@@ -1416,10 +1505,10 @@ setSizeHints(This,MinSize={MinSizeW,MinSizeH} = MinSize)
 setSizeHints(This,MinW,MinH)
  when is_record(This, wx_ref),is_integer(MinW),is_integer(MinH) ->
   setSizeHints(This,MinW,MinH, []);
-setSizeHints(#wx_ref{type=ThisT,ref=ThisRef},{MinSizeW,MinSizeH} = MinSize, Options)
+setSizeHints(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize, Options)
  when is_integer(MinSizeW),is_integer(MinSizeH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetSizeHints_2,[ThisRef,MinSize, Options]).
+  wxe_util:queue_cmd(This,MinSize, Options,?get_env(),?wxWindow_SetSizeHints_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetsizehints">external documentation</a>.
 -spec setSizeHints(This, MinW, MinH, [Option]) -> 'ok' when
@@ -1428,10 +1517,10 @@ setSizeHints(#wx_ref{type=ThisT,ref=ThisRef},{MinSizeW,MinSizeH} = MinSize, Opti
 		 | {'maxH', integer()}
 		 | {'incW', integer()}
 		 | {'incH', integer()}.
-setSizeHints(#wx_ref{type=ThisT,ref=ThisRef},MinW,MinH, Options)
+setSizeHints(#wx_ref{type=ThisT}=This,MinW,MinH, Options)
  when is_integer(MinW),is_integer(MinH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetSizeHints_3,[ThisRef,MinW,MinH, Options]).
+  wxe_util:queue_cmd(This,MinW,MinH, Options,?get_env(),?wxWindow_SetSizeHints_3).
 
 %% @equiv setSizer(This,Sizer, [])
 -spec setSizer(This, Sizer) -> 'ok' when
@@ -1445,11 +1534,11 @@ setSizer(This,Sizer)
 -spec setSizer(This, Sizer, [Option]) -> 'ok' when
 	This::wxWindow(), Sizer::wxSizer:wxSizer(),
 	Option :: {'deleteOld', boolean()}.
-setSizer(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=SizerT,ref=SizerRef}, Options)
+setSizer(#wx_ref{type=ThisT}=This,#wx_ref{type=SizerT}=Sizer, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(SizerT,wxSizer),
-  wxe_util:cast(?wxWindow_SetSizer,[ThisRef,SizerRef, Options]).
+  wxe_util:queue_cmd(This,Sizer, Options,?get_env(),?wxWindow_SetSizer).
 
 %% @equiv setSizerAndFit(This,Sizer, [])
 -spec setSizerAndFit(This, Sizer) -> 'ok' when
@@ -1463,19 +1552,19 @@ setSizerAndFit(This,Sizer)
 -spec setSizerAndFit(This, Sizer, [Option]) -> 'ok' when
 	This::wxWindow(), Sizer::wxSizer:wxSizer(),
 	Option :: {'deleteOld', boolean()}.
-setSizerAndFit(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=SizerT,ref=SizerRef}, Options)
+setSizerAndFit(#wx_ref{type=ThisT}=This,#wx_ref{type=SizerT}=Sizer, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(SizerT,wxSizer),
-  wxe_util:cast(?wxWindow_SetSizerAndFit,[ThisRef,SizerRef, Options]).
+  wxe_util:queue_cmd(This,Sizer, Options,?get_env(),?wxWindow_SetSizerAndFit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetthemeenabled">external documentation</a>.
 -spec setThemeEnabled(This, EnableTheme) -> 'ok' when
 	This::wxWindow(), EnableTheme::boolean().
-setThemeEnabled(#wx_ref{type=ThisT,ref=ThisRef},EnableTheme)
+setThemeEnabled(#wx_ref{type=ThisT}=This,EnableTheme)
  when is_boolean(EnableTheme) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetThemeEnabled,[ThisRef,EnableTheme]).
+  wxe_util:queue_cmd(This,EnableTheme,?get_env(),?wxWindow_SetThemeEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsettooltip">external documentation</a>.
 %% <br /> Also:<br />
@@ -1486,31 +1575,31 @@ setThemeEnabled(#wx_ref{type=ThisT,ref=ThisRef},EnableTheme)
 	This::wxWindow(), Tip::unicode:chardata();
       (This, Tip) -> 'ok' when
 	This::wxWindow(), Tip::wxToolTip:wxToolTip().
-setToolTip(#wx_ref{type=ThisT,ref=ThisRef},Tip)
+setToolTip(#wx_ref{type=ThisT}=This,Tip)
  when ?is_chardata(Tip) ->
   ?CLASS(ThisT,wxWindow),
   Tip_UC = unicode:characters_to_binary([Tip,0]),
-  wxe_util:cast(?wxWindow_SetToolTip_1_0,[ThisRef,Tip_UC]);
-setToolTip(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TipT,ref=TipRef}) ->
+  wxe_util:queue_cmd(This,Tip_UC,?get_env(),?wxWindow_SetToolTip_1_0);
+setToolTip(#wx_ref{type=ThisT}=This,#wx_ref{type=TipT}=Tip) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(TipT,wxToolTip),
-  wxe_util:cast(?wxWindow_SetToolTip_1_1,[ThisRef,TipRef]).
+  wxe_util:queue_cmd(This,Tip,?get_env(),?wxWindow_SetToolTip_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetvirtualsize">external documentation</a>.
 -spec setVirtualSize(This, Size) -> 'ok' when
 	This::wxWindow(), Size::{W::integer(), H::integer()}.
-setVirtualSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
+setVirtualSize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetVirtualSize_1,[ThisRef,Size]).
+  wxe_util:queue_cmd(This,Size,?get_env(),?wxWindow_SetVirtualSize_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetvirtualsize">external documentation</a>.
 -spec setVirtualSize(This, X, Y) -> 'ok' when
 	This::wxWindow(), X::integer(), Y::integer().
-setVirtualSize(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+setVirtualSize(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetVirtualSize_2,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxWindow_SetVirtualSize_2).
 
 %% @equiv setVirtualSizeHints(This,MinSize, [])
 -spec setVirtualSizeHints(This, MinSize) -> 'ok' when
@@ -1535,52 +1624,53 @@ setVirtualSizeHints(This,MinSize={MinSizeW,MinSizeH} = MinSize)
 setVirtualSizeHints(This,MinW,MinH)
  when is_record(This, wx_ref),is_integer(MinW),is_integer(MinH) ->
   setVirtualSizeHints(This,MinW,MinH, []);
-setVirtualSizeHints(#wx_ref{type=ThisT,ref=ThisRef},{MinSizeW,MinSizeH} = MinSize, Options)
+setVirtualSizeHints(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize, Options)
  when is_integer(MinSizeW),is_integer(MinSizeH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetVirtualSizeHints_2,[ThisRef,MinSize, Options]).
+  wxe_util:queue_cmd(This,MinSize, Options,?get_env(),?wxWindow_SetVirtualSizeHints_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetvirtualsizehints">external documentation</a>.
 -spec setVirtualSizeHints(This, MinW, MinH, [Option]) -> 'ok' when
 	This::wxWindow(), MinW::integer(), MinH::integer(),
 	Option :: {'maxW', integer()}
 		 | {'maxH', integer()}.
-setVirtualSizeHints(#wx_ref{type=ThisT,ref=ThisRef},MinW,MinH, Options)
+setVirtualSizeHints(#wx_ref{type=ThisT}=This,MinW,MinH, Options)
  when is_integer(MinW),is_integer(MinH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetVirtualSizeHints_3,[ThisRef,MinW,MinH, Options]).
+  wxe_util:queue_cmd(This,MinW,MinH, Options,?get_env(),?wxWindow_SetVirtualSizeHints_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetwindowstyle">external documentation</a>.
 -spec setWindowStyle(This, Style) -> 'ok' when
 	This::wxWindow(), Style::integer().
-setWindowStyle(#wx_ref{type=ThisT,ref=ThisRef},Style)
+setWindowStyle(#wx_ref{type=ThisT}=This,Style)
  when is_integer(Style) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetWindowStyle,[ThisRef,Style]).
+  wxe_util:queue_cmd(This,Style,?get_env(),?wxWindow_SetWindowStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetwindowstyleflag">external documentation</a>.
 -spec setWindowStyleFlag(This, Style) -> 'ok' when
 	This::wxWindow(), Style::integer().
-setWindowStyleFlag(#wx_ref{type=ThisT,ref=ThisRef},Style)
+setWindowStyleFlag(#wx_ref{type=ThisT}=This,Style)
  when is_integer(Style) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetWindowStyleFlag,[ThisRef,Style]).
+  wxe_util:queue_cmd(This,Style,?get_env(),?wxWindow_SetWindowStyleFlag).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetwindowvariant">external documentation</a>.
 %%<br /> Variant = ?wxWINDOW_VARIANT_NORMAL | ?wxWINDOW_VARIANT_SMALL | ?wxWINDOW_VARIANT_MINI | ?wxWINDOW_VARIANT_LARGE | ?wxWINDOW_VARIANT_MAX
 -spec setWindowVariant(This, Variant) -> 'ok' when
 	This::wxWindow(), Variant::wx:wx_enum().
-setWindowVariant(#wx_ref{type=ThisT,ref=ThisRef},Variant)
+setWindowVariant(#wx_ref{type=ThisT}=This,Variant)
  when is_integer(Variant) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetWindowVariant,[ThisRef,Variant]).
+  wxe_util:queue_cmd(This,Variant,?get_env(),?wxWindow_SetWindowVariant).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowshouldinheritcolours">external documentation</a>.
 -spec shouldInheritColours(This) -> boolean() when
 	This::wxWindow().
-shouldInheritColours(#wx_ref{type=ThisT,ref=ThisRef}) ->
+shouldInheritColours(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ShouldInheritColours,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_ShouldInheritColours),
+  wxe_util:rec(?wxWindow_ShouldInheritColours).
 
 %% @equiv show(This, [])
 -spec show(This) -> boolean() when
@@ -1594,38 +1684,41 @@ show(This)
 -spec show(This, [Option]) -> boolean() when
 	This::wxWindow(),
 	Option :: {'show', boolean()}.
-show(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Show,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Show),
+  wxe_util:rec(?wxWindow_Show).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowthaw">external documentation</a>.
 -spec thaw(This) -> 'ok' when
 	This::wxWindow().
-thaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
+thaw(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Thaw,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Thaw).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowtransferdatafromwindow">external documentation</a>.
 -spec transferDataFromWindow(This) -> boolean() when
 	This::wxWindow().
-transferDataFromWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+transferDataFromWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_TransferDataFromWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_TransferDataFromWindow),
+  wxe_util:rec(?wxWindow_TransferDataFromWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowtransferdatatowindow">external documentation</a>.
 -spec transferDataToWindow(This) -> boolean() when
 	This::wxWindow().
-transferDataToWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+transferDataToWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_TransferDataToWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_TransferDataToWindow),
+  wxe_util:rec(?wxWindow_TransferDataToWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowupdate">external documentation</a>.
 -spec update(This) -> 'ok' when
 	This::wxWindow().
-update(#wx_ref{type=ThisT,ref=ThisRef}) ->
+update(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_Update,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Update).
 
 %% @equiv updateWindowUI(This, [])
 -spec updateWindowUI(This) -> 'ok' when
@@ -1639,62 +1732,67 @@ updateWindowUI(This)
 -spec updateWindowUI(This, [Option]) -> 'ok' when
 	This::wxWindow(),
 	Option :: {'flags', integer()}.
-updateWindowUI(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+updateWindowUI(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_UpdateWindowUI,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_UpdateWindowUI).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowvalidate">external documentation</a>.
 -spec validate(This) -> boolean() when
 	This::wxWindow().
-validate(#wx_ref{type=ThisT,ref=ThisRef}) ->
+validate(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_Validate,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_Validate),
+  wxe_util:rec(?wxWindow_Validate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowwarppointer">external documentation</a>.
 -spec warpPointer(This, X, Y) -> 'ok' when
 	This::wxWindow(), X::integer(), Y::integer().
-warpPointer(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+warpPointer(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_WarpPointer,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxWindow_WarpPointer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsettransparent">external documentation</a>.
 -spec setTransparent(This, Alpha) -> boolean() when
 	This::wxWindow(), Alpha::integer().
-setTransparent(#wx_ref{type=ThisT,ref=ThisRef},Alpha)
+setTransparent(#wx_ref{type=ThisT}=This,Alpha)
  when is_integer(Alpha) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_SetTransparent,[ThisRef,Alpha]).
+  wxe_util:queue_cmd(This,Alpha,?get_env(),?wxWindow_SetTransparent),
+  wxe_util:rec(?wxWindow_SetTransparent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowcansettransparent">external documentation</a>.
 -spec canSetTransparent(This) -> boolean() when
 	This::wxWindow().
-canSetTransparent(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canSetTransparent(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_CanSetTransparent,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_CanSetTransparent),
+  wxe_util:rec(?wxWindow_CanSetTransparent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisdoublebuffered">external documentation</a>.
 -spec isDoubleBuffered(This) -> boolean() when
 	This::wxWindow().
-isDoubleBuffered(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isDoubleBuffered(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsDoubleBuffered,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_IsDoubleBuffered),
+  wxe_util:rec(?wxWindow_IsDoubleBuffered).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetdoublebuffered">external documentation</a>.
 -spec setDoubleBuffered(This, On) -> 'ok' when
 	This::wxWindow(), On::boolean().
-setDoubleBuffered(#wx_ref{type=ThisT,ref=ThisRef},On)
+setDoubleBuffered(#wx_ref{type=ThisT}=This,On)
  when is_boolean(On) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:cast(?wxWindow_SetDoubleBuffered,[ThisRef,On]).
+  wxe_util:queue_cmd(This,On,?get_env(),?wxWindow_SetDoubleBuffered).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetcontentscalefactor">external documentation</a>.
 -spec getContentScaleFactor(This) -> number() when
 	This::wxWindow().
-getContentScaleFactor(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getContentScaleFactor(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetContentScaleFactor,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetContentScaleFactor),
+  wxe_util:rec(?wxWindow_GetContentScaleFactor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetdpi">external documentation</a>.
 -spec getDPI(This) -> {W::integer(), H::integer()} when

@@ -49,15 +49,17 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventcansend">external documentation</a>.
 -spec canSend(Win) -> boolean() when
 	Win::wxWindow:wxWindow().
-canSend(#wx_ref{type=WinT,ref=WinRef}) ->
+canSend(#wx_ref{type=WinT}=Win) ->
   ?CLASS(WinT,wxWindow),
-  wxe_util:call(?wxIdleEvent_CanSend,[WinRef]).
+  wxe_util:queue_cmd(Win,?get_env(),?wxIdleEvent_CanSend),
+  wxe_util:rec(?wxIdleEvent_CanSend).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventgetmode">external documentation</a>.
 %%<br /> Res = ?wxIDLE_PROCESS_ALL | ?wxIDLE_PROCESS_SPECIFIED
 -spec getMode() -> wx:wx_enum().
 getMode() ->
-  wxe_util:call(?wxIdleEvent_GetMode,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxIdleEvent_GetMode),
+  wxe_util:rec(?wxIdleEvent_GetMode).
 
 %% @equiv requestMore(This, [])
 -spec requestMore(This) -> 'ok' when
@@ -71,17 +73,18 @@ requestMore(This)
 -spec requestMore(This, [Option]) -> 'ok' when
 	This::wxIdleEvent(),
 	Option :: {'needMore', boolean()}.
-requestMore(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+requestMore(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxIdleEvent),
-  wxe_util:cast(?wxIdleEvent_RequestMore,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxIdleEvent_RequestMore).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventmorerequested">external documentation</a>.
 -spec moreRequested(This) -> boolean() when
 	This::wxIdleEvent().
-moreRequested(#wx_ref{type=ThisT,ref=ThisRef}) ->
+moreRequested(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxIdleEvent),
-  wxe_util:call(?wxIdleEvent_MoreRequested,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxIdleEvent_MoreRequested),
+  wxe_util:rec(?wxIdleEvent_MoreRequested).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventsetmode">external documentation</a>.
 %%<br /> Mode = ?wxIDLE_PROCESS_ALL | ?wxIDLE_PROCESS_SPECIFIED
@@ -89,7 +92,7 @@ moreRequested(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	Mode::wx:wx_enum().
 setMode(Mode)
  when is_integer(Mode) ->
-  wxe_util:cast(?wxIdleEvent_SetMode,[Mode]).
+  wxe_util:queue_cmd(Mode,?get_env(),?wxIdleEvent_SetMode).
 
  %% From wxEvent
 %% @hidden

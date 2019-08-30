@@ -89,7 +89,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlwxfilepickerctrl">external documentation</a>.
 -spec new() -> wxFilePickerCtrl().
 new() ->
-  wxe_util:construct(?wxFilePickerCtrl_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFilePickerCtrl_new_0),
+  wxe_util:rec(?wxFilePickerCtrl_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxFilePickerCtrl() when
@@ -109,10 +110,11 @@ new(Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxFilePickerCtrl_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxFilePickerCtrl_new_3),
+  wxe_util:rec(?wxFilePickerCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -132,27 +134,29 @@ create(This,Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxFilePickerCtrl_Create,[ThisRef,ParentRef,Id, Options]).
+  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxFilePickerCtrl_Create),
+  wxe_util:rec(?wxFilePickerCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlgetpath">external documentation</a>.
 -spec getPath(This) -> unicode:charlist() when
 	This::wxFilePickerCtrl().
-getPath(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPath(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
-  wxe_util:call(?wxFilePickerCtrl_GetPath,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFilePickerCtrl_GetPath),
+  wxe_util:rec(?wxFilePickerCtrl_GetPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlsetpath">external documentation</a>.
 -spec setPath(This, Str) -> 'ok' when
 	This::wxFilePickerCtrl(), Str::unicode:chardata().
-setPath(#wx_ref{type=ThisT,ref=ThisRef},Str)
+setPath(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxFilePickerCtrl_SetPath,[ThisRef,Str_UC]).
+  wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxFilePickerCtrl_SetPath).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFilePickerCtrl()) -> 'ok'.

@@ -96,40 +96,43 @@ new(Preview,Buttons,Parent)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=PreviewT,ref=PreviewRef},Buttons,#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=PreviewT}=Preview,Buttons,#wx_ref{type=ParentT}=Parent, Options)
  when is_integer(Buttons),is_list(Options) ->
   ?CLASS(PreviewT,wxPrintPreview),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPreviewControlBar_new,[PreviewRef,Buttons,ParentRef, Options]).
+  wxe_util:queue_cmd(Preview,Buttons,Parent, Options,?get_env(),?wxPreviewControlBar_new),
+  wxe_util:rec(?wxPreviewControlBar_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewcontrolbar.html#wxpreviewcontrolbarcreatebuttons">external documentation</a>.
 -spec createButtons(This) -> 'ok' when
 	This::wxPreviewControlBar().
-createButtons(#wx_ref{type=ThisT,ref=ThisRef}) ->
+createButtons(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPreviewControlBar),
-  wxe_util:cast(?wxPreviewControlBar_CreateButtons,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPreviewControlBar_CreateButtons).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewcontrolbar.html#wxpreviewcontrolbargetprintpreview">external documentation</a>.
 -spec getPrintPreview(This) -> wxPrintPreview:wxPrintPreview() when
 	This::wxPreviewControlBar().
-getPrintPreview(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintPreview(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPreviewControlBar),
-  wxe_util:call(?wxPreviewControlBar_GetPrintPreview,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPreviewControlBar_GetPrintPreview),
+  wxe_util:rec(?wxPreviewControlBar_GetPrintPreview).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewcontrolbar.html#wxpreviewcontrolbargetzoomcontrol">external documentation</a>.
 -spec getZoomControl(This) -> integer() when
 	This::wxPreviewControlBar().
-getZoomControl(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getZoomControl(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPreviewControlBar),
-  wxe_util:call(?wxPreviewControlBar_GetZoomControl,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPreviewControlBar_GetZoomControl),
+  wxe_util:rec(?wxPreviewControlBar_GetZoomControl).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewcontrolbar.html#wxpreviewcontrolbarsetzoomcontrol">external documentation</a>.
 -spec setZoomControl(This, Zoom) -> 'ok' when
 	This::wxPreviewControlBar(), Zoom::integer().
-setZoomControl(#wx_ref{type=ThisT,ref=ThisRef},Zoom)
+setZoomControl(#wx_ref{type=ThisT}=This,Zoom)
  when is_integer(Zoom) ->
   ?CLASS(ThisT,wxPreviewControlBar),
-  wxe_util:cast(?wxPreviewControlBar_SetZoomControl,[ThisRef,Zoom]).
+  wxe_util:queue_cmd(This,Zoom,?get_env(),?wxPreviewControlBar_SetZoomControl).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPreviewControlBar()) -> 'ok'.

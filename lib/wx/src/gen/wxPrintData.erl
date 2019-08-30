@@ -41,163 +41,175 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatawxprintdata">external documentation</a>.
 -spec new() -> wxPrintData().
 new() ->
-  wxe_util:construct(?wxPrintData_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPrintData_new_0),
+  wxe_util:rec(?wxPrintData_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatawxprintdata">external documentation</a>.
 -spec new(PrintData) -> wxPrintData() when
 	PrintData::wxPrintData().
-new(#wx_ref{type=PrintDataT,ref=PrintDataRef}) ->
+new(#wx_ref{type=PrintDataT}=PrintData) ->
   ?CLASS(PrintDataT,wxPrintData),
-  wxe_util:construct(?wxPrintData_new_1,[PrintDataRef]).
+  wxe_util:queue_cmd(PrintData,?get_env(),?wxPrintData_new_1),
+  wxe_util:rec(?wxPrintData_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetcollate">external documentation</a>.
 -spec getCollate(This) -> boolean() when
 	This::wxPrintData().
-getCollate(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCollate(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetCollate,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetCollate),
+  wxe_util:rec(?wxPrintData_GetCollate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetbin">external documentation</a>.
 %%<br /> Res = ?wxPRINTBIN_DEFAULT | ?wxPRINTBIN_ONLYONE | ?wxPRINTBIN_LOWER | ?wxPRINTBIN_MIDDLE | ?wxPRINTBIN_MANUAL | ?wxPRINTBIN_ENVELOPE | ?wxPRINTBIN_ENVMANUAL | ?wxPRINTBIN_AUTO | ?wxPRINTBIN_TRACTOR | ?wxPRINTBIN_SMALLFMT | ?wxPRINTBIN_LARGEFMT | ?wxPRINTBIN_LARGECAPACITY | ?wxPRINTBIN_CASSETTE | ?wxPRINTBIN_FORMSOURCE | ?wxPRINTBIN_USER
 -spec getBin(This) -> wx:wx_enum() when
 	This::wxPrintData().
-getBin(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBin(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetBin,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetBin),
+  wxe_util:rec(?wxPrintData_GetBin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetcolour">external documentation</a>.
 -spec getColour(This) -> boolean() when
 	This::wxPrintData().
-getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetColour),
+  wxe_util:rec(?wxPrintData_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetduplex">external documentation</a>.
 %%<br /> Res = ?wxDUPLEX_SIMPLEX | ?wxDUPLEX_HORIZONTAL | ?wxDUPLEX_VERTICAL
 -spec getDuplex(This) -> wx:wx_enum() when
 	This::wxPrintData().
-getDuplex(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDuplex(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetDuplex,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetDuplex),
+  wxe_util:rec(?wxPrintData_GetDuplex).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetnocopies">external documentation</a>.
 -spec getNoCopies(This) -> integer() when
 	This::wxPrintData().
-getNoCopies(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNoCopies(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetNoCopies,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetNoCopies),
+  wxe_util:rec(?wxPrintData_GetNoCopies).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetorientation">external documentation</a>.
 -spec getOrientation(This) -> integer() when
 	This::wxPrintData().
-getOrientation(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOrientation(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetOrientation,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetOrientation),
+  wxe_util:rec(?wxPrintData_GetOrientation).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetpaperid">external documentation</a>.
 %%<br /> Res = ?wxPAPER_NONE | ?wxPAPER_LETTER | ?wxPAPER_LEGAL | ?wxPAPER_A4 | ?wxPAPER_CSHEET | ?wxPAPER_DSHEET | ?wxPAPER_ESHEET | ?wxPAPER_LETTERSMALL | ?wxPAPER_TABLOID | ?wxPAPER_LEDGER | ?wxPAPER_STATEMENT | ?wxPAPER_EXECUTIVE | ?wxPAPER_A3 | ?wxPAPER_A4SMALL | ?wxPAPER_A5 | ?wxPAPER_B4 | ?wxPAPER_B5 | ?wxPAPER_FOLIO | ?wxPAPER_QUARTO | ?wxPAPER_10X14 | ?wxPAPER_11X17 | ?wxPAPER_NOTE | ?wxPAPER_ENV_9 | ?wxPAPER_ENV_10 | ?wxPAPER_ENV_11 | ?wxPAPER_ENV_12 | ?wxPAPER_ENV_14 | ?wxPAPER_ENV_DL | ?wxPAPER_ENV_C5 | ?wxPAPER_ENV_C3 | ?wxPAPER_ENV_C4 | ?wxPAPER_ENV_C6 | ?wxPAPER_ENV_C65 | ?wxPAPER_ENV_B4 | ?wxPAPER_ENV_B5 | ?wxPAPER_ENV_B6 | ?wxPAPER_ENV_ITALY | ?wxPAPER_ENV_MONARCH | ?wxPAPER_ENV_PERSONAL | ?wxPAPER_FANFOLD_US | ?wxPAPER_FANFOLD_STD_GERMAN | ?wxPAPER_FANFOLD_LGL_GERMAN | ?wxPAPER_ISO_B4 | ?wxPAPER_JAPANESE_POSTCARD | ?wxPAPER_9X11 | ?wxPAPER_10X11 | ?wxPAPER_15X11 | ?wxPAPER_ENV_INVITE | ?wxPAPER_LETTER_EXTRA | ?wxPAPER_LEGAL_EXTRA | ?wxPAPER_TABLOID_EXTRA | ?wxPAPER_A4_EXTRA | ?wxPAPER_LETTER_TRANSVERSE | ?wxPAPER_A4_TRANSVERSE | ?wxPAPER_LETTER_EXTRA_TRANSVERSE | ?wxPAPER_A_PLUS | ?wxPAPER_B_PLUS | ?wxPAPER_LETTER_PLUS | ?wxPAPER_A4_PLUS | ?wxPAPER_A5_TRANSVERSE | ?wxPAPER_B5_TRANSVERSE | ?wxPAPER_A3_EXTRA | ?wxPAPER_A5_EXTRA | ?wxPAPER_B5_EXTRA | ?wxPAPER_A2 | ?wxPAPER_A3_TRANSVERSE | ?wxPAPER_A3_EXTRA_TRANSVERSE | ?wxPAPER_DBL_JAPANESE_POSTCARD | ?wxPAPER_A6 | ?wxPAPER_JENV_KAKU2 | ?wxPAPER_JENV_KAKU3 | ?wxPAPER_JENV_CHOU3 | ?wxPAPER_JENV_CHOU4 | ?wxPAPER_LETTER_ROTATED | ?wxPAPER_A3_ROTATED | ?wxPAPER_A4_ROTATED | ?wxPAPER_A5_ROTATED | ?wxPAPER_B4_JIS_ROTATED | ?wxPAPER_B5_JIS_ROTATED | ?wxPAPER_JAPANESE_POSTCARD_ROTATED | ?wxPAPER_DBL_JAPANESE_POSTCARD_ROTATED | ?wxPAPER_A6_ROTATED | ?wxPAPER_JENV_KAKU2_ROTATED | ?wxPAPER_JENV_KAKU3_ROTATED | ?wxPAPER_JENV_CHOU3_ROTATED | ?wxPAPER_JENV_CHOU4_ROTATED | ?wxPAPER_B6_JIS | ?wxPAPER_B6_JIS_ROTATED | ?wxPAPER_12X11 | ?wxPAPER_JENV_YOU4 | ?wxPAPER_JENV_YOU4_ROTATED | ?wxPAPER_P16K | ?wxPAPER_P32K | ?wxPAPER_P32KBIG | ?wxPAPER_PENV_1 | ?wxPAPER_PENV_2 | ?wxPAPER_PENV_3 | ?wxPAPER_PENV_4 | ?wxPAPER_PENV_5 | ?wxPAPER_PENV_6 | ?wxPAPER_PENV_7 | ?wxPAPER_PENV_8 | ?wxPAPER_PENV_9 | ?wxPAPER_PENV_10 | ?wxPAPER_P16K_ROTATED | ?wxPAPER_P32K_ROTATED | ?wxPAPER_P32KBIG_ROTATED | ?wxPAPER_PENV_1_ROTATED | ?wxPAPER_PENV_2_ROTATED | ?wxPAPER_PENV_3_ROTATED | ?wxPAPER_PENV_4_ROTATED | ?wxPAPER_PENV_5_ROTATED | ?wxPAPER_PENV_6_ROTATED | ?wxPAPER_PENV_7_ROTATED | ?wxPAPER_PENV_8_ROTATED | ?wxPAPER_PENV_9_ROTATED | ?wxPAPER_PENV_10_ROTATED
 -spec getPaperId(This) -> wx:wx_enum() when
 	This::wxPrintData().
-getPaperId(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPaperId(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetPaperId,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetPaperId),
+  wxe_util:rec(?wxPrintData_GetPaperId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetprintername">external documentation</a>.
 -spec getPrinterName(This) -> unicode:charlist() when
 	This::wxPrintData().
-getPrinterName(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrinterName(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetPrinterName,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetPrinterName),
+  wxe_util:rec(?wxPrintData_GetPrinterName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatagetquality">external documentation</a>.
 -spec getQuality(This) -> integer() when
 	This::wxPrintData().
-getQuality(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getQuality(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_GetQuality,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_GetQuality),
+  wxe_util:rec(?wxPrintData_GetQuality).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdataisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxPrintData().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:call(?wxPrintData_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintData_IsOk),
+  wxe_util:rec(?wxPrintData_IsOk).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetbin">external documentation</a>.
 %%<br /> Bin = ?wxPRINTBIN_DEFAULT | ?wxPRINTBIN_ONLYONE | ?wxPRINTBIN_LOWER | ?wxPRINTBIN_MIDDLE | ?wxPRINTBIN_MANUAL | ?wxPRINTBIN_ENVELOPE | ?wxPRINTBIN_ENVMANUAL | ?wxPRINTBIN_AUTO | ?wxPRINTBIN_TRACTOR | ?wxPRINTBIN_SMALLFMT | ?wxPRINTBIN_LARGEFMT | ?wxPRINTBIN_LARGECAPACITY | ?wxPRINTBIN_CASSETTE | ?wxPRINTBIN_FORMSOURCE | ?wxPRINTBIN_USER
 -spec setBin(This, Bin) -> 'ok' when
 	This::wxPrintData(), Bin::wx:wx_enum().
-setBin(#wx_ref{type=ThisT,ref=ThisRef},Bin)
+setBin(#wx_ref{type=ThisT}=This,Bin)
  when is_integer(Bin) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetBin,[ThisRef,Bin]).
+  wxe_util:queue_cmd(This,Bin,?get_env(),?wxPrintData_SetBin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetcollate">external documentation</a>.
 -spec setCollate(This, Flag) -> 'ok' when
 	This::wxPrintData(), Flag::boolean().
-setCollate(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setCollate(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetCollate,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintData_SetCollate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetcolour">external documentation</a>.
 -spec setColour(This, Colour) -> 'ok' when
 	This::wxPrintData(), Colour::boolean().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setColour(#wx_ref{type=ThisT}=This,Colour)
  when is_boolean(Colour) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,Colour,?get_env(),?wxPrintData_SetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetduplex">external documentation</a>.
 %%<br /> Duplex = ?wxDUPLEX_SIMPLEX | ?wxDUPLEX_HORIZONTAL | ?wxDUPLEX_VERTICAL
 -spec setDuplex(This, Duplex) -> 'ok' when
 	This::wxPrintData(), Duplex::wx:wx_enum().
-setDuplex(#wx_ref{type=ThisT,ref=ThisRef},Duplex)
+setDuplex(#wx_ref{type=ThisT}=This,Duplex)
  when is_integer(Duplex) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetDuplex,[ThisRef,Duplex]).
+  wxe_util:queue_cmd(This,Duplex,?get_env(),?wxPrintData_SetDuplex).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetnocopies">external documentation</a>.
 -spec setNoCopies(This, V) -> 'ok' when
 	This::wxPrintData(), V::integer().
-setNoCopies(#wx_ref{type=ThisT,ref=ThisRef},V)
+setNoCopies(#wx_ref{type=ThisT}=This,V)
  when is_integer(V) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetNoCopies,[ThisRef,V]).
+  wxe_util:queue_cmd(This,V,?get_env(),?wxPrintData_SetNoCopies).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetorientation">external documentation</a>.
 -spec setOrientation(This, Orient) -> 'ok' when
 	This::wxPrintData(), Orient::integer().
-setOrientation(#wx_ref{type=ThisT,ref=ThisRef},Orient)
+setOrientation(#wx_ref{type=ThisT}=This,Orient)
  when is_integer(Orient) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetOrientation,[ThisRef,Orient]).
+  wxe_util:queue_cmd(This,Orient,?get_env(),?wxPrintData_SetOrientation).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetpaperid">external documentation</a>.
 %%<br /> SizeId = ?wxPAPER_NONE | ?wxPAPER_LETTER | ?wxPAPER_LEGAL | ?wxPAPER_A4 | ?wxPAPER_CSHEET | ?wxPAPER_DSHEET | ?wxPAPER_ESHEET | ?wxPAPER_LETTERSMALL | ?wxPAPER_TABLOID | ?wxPAPER_LEDGER | ?wxPAPER_STATEMENT | ?wxPAPER_EXECUTIVE | ?wxPAPER_A3 | ?wxPAPER_A4SMALL | ?wxPAPER_A5 | ?wxPAPER_B4 | ?wxPAPER_B5 | ?wxPAPER_FOLIO | ?wxPAPER_QUARTO | ?wxPAPER_10X14 | ?wxPAPER_11X17 | ?wxPAPER_NOTE | ?wxPAPER_ENV_9 | ?wxPAPER_ENV_10 | ?wxPAPER_ENV_11 | ?wxPAPER_ENV_12 | ?wxPAPER_ENV_14 | ?wxPAPER_ENV_DL | ?wxPAPER_ENV_C5 | ?wxPAPER_ENV_C3 | ?wxPAPER_ENV_C4 | ?wxPAPER_ENV_C6 | ?wxPAPER_ENV_C65 | ?wxPAPER_ENV_B4 | ?wxPAPER_ENV_B5 | ?wxPAPER_ENV_B6 | ?wxPAPER_ENV_ITALY | ?wxPAPER_ENV_MONARCH | ?wxPAPER_ENV_PERSONAL | ?wxPAPER_FANFOLD_US | ?wxPAPER_FANFOLD_STD_GERMAN | ?wxPAPER_FANFOLD_LGL_GERMAN | ?wxPAPER_ISO_B4 | ?wxPAPER_JAPANESE_POSTCARD | ?wxPAPER_9X11 | ?wxPAPER_10X11 | ?wxPAPER_15X11 | ?wxPAPER_ENV_INVITE | ?wxPAPER_LETTER_EXTRA | ?wxPAPER_LEGAL_EXTRA | ?wxPAPER_TABLOID_EXTRA | ?wxPAPER_A4_EXTRA | ?wxPAPER_LETTER_TRANSVERSE | ?wxPAPER_A4_TRANSVERSE | ?wxPAPER_LETTER_EXTRA_TRANSVERSE | ?wxPAPER_A_PLUS | ?wxPAPER_B_PLUS | ?wxPAPER_LETTER_PLUS | ?wxPAPER_A4_PLUS | ?wxPAPER_A5_TRANSVERSE | ?wxPAPER_B5_TRANSVERSE | ?wxPAPER_A3_EXTRA | ?wxPAPER_A5_EXTRA | ?wxPAPER_B5_EXTRA | ?wxPAPER_A2 | ?wxPAPER_A3_TRANSVERSE | ?wxPAPER_A3_EXTRA_TRANSVERSE | ?wxPAPER_DBL_JAPANESE_POSTCARD | ?wxPAPER_A6 | ?wxPAPER_JENV_KAKU2 | ?wxPAPER_JENV_KAKU3 | ?wxPAPER_JENV_CHOU3 | ?wxPAPER_JENV_CHOU4 | ?wxPAPER_LETTER_ROTATED | ?wxPAPER_A3_ROTATED | ?wxPAPER_A4_ROTATED | ?wxPAPER_A5_ROTATED | ?wxPAPER_B4_JIS_ROTATED | ?wxPAPER_B5_JIS_ROTATED | ?wxPAPER_JAPANESE_POSTCARD_ROTATED | ?wxPAPER_DBL_JAPANESE_POSTCARD_ROTATED | ?wxPAPER_A6_ROTATED | ?wxPAPER_JENV_KAKU2_ROTATED | ?wxPAPER_JENV_KAKU3_ROTATED | ?wxPAPER_JENV_CHOU3_ROTATED | ?wxPAPER_JENV_CHOU4_ROTATED | ?wxPAPER_B6_JIS | ?wxPAPER_B6_JIS_ROTATED | ?wxPAPER_12X11 | ?wxPAPER_JENV_YOU4 | ?wxPAPER_JENV_YOU4_ROTATED | ?wxPAPER_P16K | ?wxPAPER_P32K | ?wxPAPER_P32KBIG | ?wxPAPER_PENV_1 | ?wxPAPER_PENV_2 | ?wxPAPER_PENV_3 | ?wxPAPER_PENV_4 | ?wxPAPER_PENV_5 | ?wxPAPER_PENV_6 | ?wxPAPER_PENV_7 | ?wxPAPER_PENV_8 | ?wxPAPER_PENV_9 | ?wxPAPER_PENV_10 | ?wxPAPER_P16K_ROTATED | ?wxPAPER_P32K_ROTATED | ?wxPAPER_P32KBIG_ROTATED | ?wxPAPER_PENV_1_ROTATED | ?wxPAPER_PENV_2_ROTATED | ?wxPAPER_PENV_3_ROTATED | ?wxPAPER_PENV_4_ROTATED | ?wxPAPER_PENV_5_ROTATED | ?wxPAPER_PENV_6_ROTATED | ?wxPAPER_PENV_7_ROTATED | ?wxPAPER_PENV_8_ROTATED | ?wxPAPER_PENV_9_ROTATED | ?wxPAPER_PENV_10_ROTATED
 -spec setPaperId(This, SizeId) -> 'ok' when
 	This::wxPrintData(), SizeId::wx:wx_enum().
-setPaperId(#wx_ref{type=ThisT,ref=ThisRef},SizeId)
+setPaperId(#wx_ref{type=ThisT}=This,SizeId)
  when is_integer(SizeId) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetPaperId,[ThisRef,SizeId]).
+  wxe_util:queue_cmd(This,SizeId,?get_env(),?wxPrintData_SetPaperId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetprintername">external documentation</a>.
 -spec setPrinterName(This, Name) -> 'ok' when
 	This::wxPrintData(), Name::unicode:chardata().
-setPrinterName(#wx_ref{type=ThisT,ref=ThisRef},Name)
+setPrinterName(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxPrintData),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:cast(?wxPrintData_SetPrinterName,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxPrintData_SetPrinterName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetquality">external documentation</a>.
 -spec setQuality(This, Quality) -> 'ok' when
 	This::wxPrintData(), Quality::integer().
-setQuality(#wx_ref{type=ThisT,ref=ThisRef},Quality)
+setQuality(#wx_ref{type=ThisT}=This,Quality)
  when is_integer(Quality) ->
   ?CLASS(ThisT,wxPrintData),
-  wxe_util:cast(?wxPrintData_SetQuality,[ThisRef,Quality]).
+  wxe_util:queue_cmd(This,Quality,?get_env(),?wxPrintData_SetQuality).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrintData()) -> 'ok'.

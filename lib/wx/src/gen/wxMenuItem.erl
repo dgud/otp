@@ -55,7 +55,8 @@ new() ->
 		 | {'subMenu', wxMenu:wxMenu()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxMenuItem_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxMenuItem_new),
+  wxe_util:rec(?wxMenuItem_new).
 
 %% @equiv check(This, [])
 -spec check(This) -> 'ok' when
@@ -69,10 +70,10 @@ check(This)
 -spec check(This, [Option]) -> 'ok' when
 	This::wxMenuItem(),
 	Option :: {'check', boolean()}.
-check(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+check(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:cast(?wxMenuItem_Check,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMenuItem_Check).
 
 %% @equiv enable(This, [])
 -spec enable(This) -> 'ok' when
@@ -86,46 +87,51 @@ enable(This)
 -spec enable(This, [Option]) -> 'ok' when
 	This::wxMenuItem(),
 	Option :: {'enable', boolean()}.
-enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:cast(?wxMenuItem_Enable,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMenuItem_Enable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetbitmap">external documentation</a>.
 -spec getBitmap(This) -> wxBitmap:wxBitmap() when
 	This::wxMenuItem().
-getBitmap(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBitmap(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetBitmap,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetBitmap),
+  wxe_util:rec(?wxMenuItem_GetBitmap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgethelp">external documentation</a>.
 -spec getHelp(This) -> unicode:charlist() when
 	This::wxMenuItem().
-getHelp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getHelp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetHelp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetHelp),
+  wxe_util:rec(?wxMenuItem_GetHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetid">external documentation</a>.
 -spec getId(This) -> integer() when
 	This::wxMenuItem().
-getId(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getId(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetId,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetId),
+  wxe_util:rec(?wxMenuItem_GetId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetkind">external documentation</a>.
 %%<br /> Res = ?wxITEM_SEPARATOR | ?wxITEM_NORMAL | ?wxITEM_CHECK | ?wxITEM_RADIO | ?wxITEM_MAX
 -spec getKind(This) -> wx:wx_enum() when
 	This::wxMenuItem().
-getKind(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getKind(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetKind,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetKind),
+  wxe_util:rec(?wxMenuItem_GetKind).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxMenuItem().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetLabel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetLabel),
+  wxe_util:rec(?wxMenuItem_GetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetlabelfromtext">external documentation</a>.
 -spec getLabelFromText(Text) -> unicode:charlist() when
@@ -133,105 +139,114 @@ getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getLabelFromText(Text)
  when ?is_chardata(Text) ->
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenuItem_GetLabelFromText,[Text_UC]).
+  wxe_util:queue_cmd(Text_UC,?get_env(),?wxMenuItem_GetLabelFromText),
+  wxe_util:rec(?wxMenuItem_GetLabelFromText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetmenu">external documentation</a>.
 -spec getMenu(This) -> wxMenu:wxMenu() when
 	This::wxMenuItem().
-getMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMenu(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetMenu,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetMenu),
+  wxe_util:rec(?wxMenuItem_GetMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxMenuItem().
-getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getText(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetText,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetText),
+  wxe_util:rec(?wxMenuItem_GetText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetsubmenu">external documentation</a>.
 -spec getSubMenu(This) -> wxMenu:wxMenu() when
 	This::wxMenuItem().
-getSubMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSubMenu(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetSubMenu,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_GetSubMenu),
+  wxe_util:rec(?wxMenuItem_GetSubMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemischeckable">external documentation</a>.
 -spec isCheckable(This) -> boolean() when
 	This::wxMenuItem().
-isCheckable(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isCheckable(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsCheckable,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_IsCheckable),
+  wxe_util:rec(?wxMenuItem_IsCheckable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemischecked">external documentation</a>.
 -spec isChecked(This) -> boolean() when
 	This::wxMenuItem().
-isChecked(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isChecked(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsChecked,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_IsChecked),
+  wxe_util:rec(?wxMenuItem_IsChecked).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemisenabled">external documentation</a>.
 -spec isEnabled(This) -> boolean() when
 	This::wxMenuItem().
-isEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isEnabled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsEnabled,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_IsEnabled),
+  wxe_util:rec(?wxMenuItem_IsEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemisseparator">external documentation</a>.
 -spec isSeparator(This) -> boolean() when
 	This::wxMenuItem().
-isSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isSeparator(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsSeparator,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_IsSeparator),
+  wxe_util:rec(?wxMenuItem_IsSeparator).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemissubmenu">external documentation</a>.
 -spec isSubMenu(This) -> boolean() when
 	This::wxMenuItem().
-isSubMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isSubMenu(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsSubMenu,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuItem_IsSubMenu),
+  wxe_util:rec(?wxMenuItem_IsSubMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetbitmap">external documentation</a>.
 -spec setBitmap(This, Bitmap) -> 'ok' when
 	This::wxMenuItem(), Bitmap::wxBitmap:wxBitmap().
-setBitmap(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
+setBitmap(#wx_ref{type=ThisT}=This,#wx_ref{type=BitmapT}=Bitmap) ->
   ?CLASS(ThisT,wxMenuItem),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:cast(?wxMenuItem_SetBitmap,[ThisRef,BitmapRef]).
+  wxe_util:queue_cmd(This,Bitmap,?get_env(),?wxMenuItem_SetBitmap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsethelp">external documentation</a>.
 -spec setHelp(This, Str) -> 'ok' when
 	This::wxMenuItem(), Str::unicode:chardata().
-setHelp(#wx_ref{type=ThisT,ref=ThisRef},Str)
+setHelp(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxMenuItem),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxMenuItem_SetHelp,[ThisRef,Str_UC]).
+  wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxMenuItem_SetHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetmenu">external documentation</a>.
 -spec setMenu(This, Menu) -> 'ok' when
 	This::wxMenuItem(), Menu::wxMenu:wxMenu().
-setMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
+setMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu) ->
   ?CLASS(ThisT,wxMenuItem),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:cast(?wxMenuItem_SetMenu,[ThisRef,MenuRef]).
+  wxe_util:queue_cmd(This,Menu,?get_env(),?wxMenuItem_SetMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetsubmenu">external documentation</a>.
 -spec setSubMenu(This, Menu) -> 'ok' when
 	This::wxMenuItem(), Menu::wxMenu:wxMenu().
-setSubMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
+setSubMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu) ->
   ?CLASS(ThisT,wxMenuItem),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:cast(?wxMenuItem_SetSubMenu,[ThisRef,MenuRef]).
+  wxe_util:queue_cmd(This,Menu,?get_env(),?wxMenuItem_SetSubMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsettext">external documentation</a>.
 -spec setText(This, Str) -> 'ok' when
 	This::wxMenuItem(), Str::unicode:chardata().
-setText(#wx_ref{type=ThisT,ref=ThisRef},Str)
+setText(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxMenuItem),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxMenuItem_SetText,[ThisRef,Str_UC]).
+  wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxMenuItem_SetText).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMenuItem()) -> 'ok'.

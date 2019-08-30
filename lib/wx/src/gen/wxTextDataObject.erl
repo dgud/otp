@@ -50,30 +50,33 @@ new() ->
 	Option :: {'text', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxTextDataObject_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxTextDataObject_new),
+  wxe_util:rec(?wxTextDataObject_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectgettextlength">external documentation</a>.
 -spec getTextLength(This) -> integer() when
 	This::wxTextDataObject().
-getTextLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getTextLength(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTextDataObject),
-  wxe_util:call(?wxTextDataObject_GetTextLength,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTextDataObject_GetTextLength),
+  wxe_util:rec(?wxTextDataObject_GetTextLength).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxTextDataObject().
-getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getText(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTextDataObject),
-  wxe_util:call(?wxTextDataObject_GetText,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTextDataObject_GetText),
+  wxe_util:rec(?wxTextDataObject_GetText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectsettext">external documentation</a>.
 -spec setText(This, Text) -> 'ok' when
 	This::wxTextDataObject(), Text::unicode:chardata().
-setText(#wx_ref{type=ThisT,ref=ThisRef},Text)
+setText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxTextDataObject),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxTextDataObject_SetText,[ThisRef,Text_UC]).
+  wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxTextDataObject_SetText).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxTextDataObject()) -> 'ok'.

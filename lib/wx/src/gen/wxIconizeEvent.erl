@@ -47,9 +47,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconizeevent.html#wxiconizeeventiconized">external documentation</a>.
 -spec iconized(This) -> boolean() when
 	This::wxIconizeEvent().
-iconized(#wx_ref{type=ThisT,ref=ThisRef}) ->
+iconized(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxIconizeEvent),
-  wxe_util:call(?wxIconizeEvent_Iconized,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxIconizeEvent_Iconized),
+  wxe_util:rec(?wxIconizeEvent_Iconized).
 
  %% From wxEvent
 %% @hidden

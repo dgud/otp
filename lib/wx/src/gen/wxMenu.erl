@@ -58,7 +58,8 @@ new() ->
 	Option :: {'style', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxMenu_new_1,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxMenu_new_1),
+  wxe_util:rec(?wxMenu_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuwxmenu">external documentation</a>.
 -spec new(Title, [Option]) -> wxMenu() when
@@ -67,15 +68,17 @@ new(Options)
 new(Title, Options)
  when ?is_chardata(Title),is_list(Options) ->
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:construct(?wxMenu_new_2,[Title_UC, Options]).
+  wxe_util:queue_cmd(Title_UC, Options,?get_env(),?wxMenu_new_2),
+  wxe_util:rec(?wxMenu_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuappend">external documentation</a>.
 -spec append(This, Item) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Item::wxMenuItem:wxMenuItem().
-append(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
+append(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
   ?CLASS(ThisT,wxMenu),
   ?CLASS(ItemT,wxMenuItem),
-  wxe_util:call(?wxMenu_Append_1,[ThisRef,ItemRef]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxMenu_Append_1),
+  wxe_util:rec(?wxMenu_Append_1).
 
 %% @equiv append(This,Itemid,Text, [])
 -spec append(This, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -103,11 +106,12 @@ append(This,Itemid,Text)
 append(This,Itemid,Text,Submenu)
  when is_record(This, wx_ref),is_integer(Itemid),?is_chardata(Text),is_record(Submenu, wx_ref) ->
   append(This,Itemid,Text,Submenu, []);
-append(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text, Options)
+append(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_Append_3,[ThisRef,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_Append_3),
+  wxe_util:rec(?wxMenu_Append_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuappend">external documentation</a>.
 %% <br /> Also:<br />
@@ -120,18 +124,19 @@ append(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text, Options)
       (This, Itemid, Text, Submenu, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Itemid::integer(), Text::unicode:chardata(), Submenu::wxMenu(),
 	Option :: {'help', unicode:chardata()}.
-append(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text,Help,IsCheckable)
+append(#wx_ref{type=ThisT}=This,Itemid,Text,Help,IsCheckable)
  when is_integer(Itemid),?is_chardata(Text),?is_chardata(Help),is_boolean(IsCheckable) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
   Help_UC = unicode:characters_to_binary([Help,0]),
-  wxe_util:cast(?wxMenu_Append_4_0,[ThisRef,Itemid,Text_UC,Help_UC,IsCheckable]);
-append(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text,#wx_ref{type=SubmenuT,ref=SubmenuRef}, Options)
+  wxe_util:queue_cmd(This,Itemid,Text_UC,Help_UC,IsCheckable,?get_env(),?wxMenu_Append_4_0);
+append(#wx_ref{type=ThisT}=This,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
   ?CLASS(SubmenuT,wxMenu),
-  wxe_util:call(?wxMenu_Append_4_1,[ThisRef,Itemid,Text_UC,SubmenuRef, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Append_4_1),
+  wxe_util:rec(?wxMenu_Append_4_1).
 
 %% @equiv appendCheckItem(This,Itemid,Text, [])
 -spec appendCheckItem(This, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -145,11 +150,12 @@ appendCheckItem(This,Itemid,Text)
 -spec appendCheckItem(This, Itemid, Text, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Itemid::integer(), Text::unicode:chardata(),
 	Option :: {'help', unicode:chardata()}.
-appendCheckItem(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text, Options)
+appendCheckItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_AppendCheckItem,[ThisRef,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_AppendCheckItem),
+  wxe_util:rec(?wxMenu_AppendCheckItem).
 
 %% @equiv appendRadioItem(This,Itemid,Text, [])
 -spec appendRadioItem(This, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -163,33 +169,35 @@ appendRadioItem(This,Itemid,Text)
 -spec appendRadioItem(This, Itemid, Text, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Itemid::integer(), Text::unicode:chardata(),
 	Option :: {'help', unicode:chardata()}.
-appendRadioItem(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text, Options)
+appendRadioItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_AppendRadioItem,[ThisRef,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_AppendRadioItem),
+  wxe_util:rec(?wxMenu_AppendRadioItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuappendseparator">external documentation</a>.
 -spec appendSeparator(This) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu().
-appendSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
+appendSeparator(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_AppendSeparator,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenu_AppendSeparator),
+  wxe_util:rec(?wxMenu_AppendSeparator).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenubreak">external documentation</a>.
 -spec break(This) -> 'ok' when
 	This::wxMenu().
-break(#wx_ref{type=ThisT,ref=ThisRef}) ->
+break(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:cast(?wxMenu_Break,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenu_Break).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenucheck">external documentation</a>.
 -spec check(This, Itemid, Check) -> 'ok' when
 	This::wxMenu(), Itemid::integer(), Check::boolean().
-check(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Check)
+check(#wx_ref{type=ThisT}=This,Itemid,Check)
  when is_integer(Itemid),is_boolean(Check) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:cast(?wxMenu_Check,[ThisRef,Itemid,Check]).
+  wxe_util:queue_cmd(This,Itemid,Check,?get_env(),?wxMenu_Check).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenudelete">external documentation</a>.
 %% <br /> Also:<br />
@@ -200,14 +208,16 @@ check(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Check)
 	This::wxMenu(), Itemid::integer();
       (This, Item) -> boolean() when
 	This::wxMenu(), Item::wxMenuItem:wxMenuItem().
-delete(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+delete(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_Delete_1_0,[ThisRef,Itemid]);
-delete(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_Delete_1_0),
+  wxe_util:rec(?wxMenu_Delete_1_0);
+delete(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
   ?CLASS(ThisT,wxMenu),
   ?CLASS(ItemT,wxMenuItem),
-  wxe_util:call(?wxMenu_Delete_1_1,[ThisRef,ItemRef]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxMenu_Delete_1_1),
+  wxe_util:rec(?wxMenu_Delete_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenudestroy">external documentation</a>.
 %% <br /> Also:<br />
@@ -218,22 +228,24 @@ delete(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
 	This::wxMenu(), Itemid::integer();
       (This, Item) -> boolean() when
 	This::wxMenu(), Item::wxMenuItem:wxMenuItem().
-'Destroy'(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+'Destroy'(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_Destroy_1_0,[ThisRef,Itemid]);
-'Destroy'(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_Destroy_1_0),
+  wxe_util:rec(?wxMenu_Destroy_1_0);
+'Destroy'(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
   ?CLASS(ThisT,wxMenu),
   ?CLASS(ItemT,wxMenuItem),
-  wxe_util:call(?wxMenu_Destroy_1_1,[ThisRef,ItemRef]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxMenu_Destroy_1_1),
+  wxe_util:rec(?wxMenu_Destroy_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuenable">external documentation</a>.
 -spec enable(This, Itemid, Enable) -> 'ok' when
 	This::wxMenu(), Itemid::integer(), Enable::boolean().
-enable(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Enable)
+enable(#wx_ref{type=ThisT}=This,Itemid,Enable)
  when is_integer(Itemid),is_boolean(Enable) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:cast(?wxMenu_Enable,[ThisRef,Itemid,Enable]).
+  wxe_util:queue_cmd(This,Itemid,Enable,?get_env(),?wxMenu_Enable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenufinditem">external documentation</a>.
 %% <br /> Also:<br />
@@ -244,60 +256,68 @@ enable(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Enable)
 	This::wxMenu(), Itemid::integer();
       (This, Item) -> integer() when
 	This::wxMenu(), Item::unicode:chardata().
-findItem(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+findItem(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_FindItem_2,[ThisRef,Itemid]);
-findItem(#wx_ref{type=ThisT,ref=ThisRef},Item)
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_FindItem_2),
+  wxe_util:rec(?wxMenu_FindItem_2);
+findItem(#wx_ref{type=ThisT}=This,Item)
  when ?is_chardata(Item) ->
   ?CLASS(ThisT,wxMenu),
   Item_UC = unicode:characters_to_binary([Item,0]),
-  wxe_util:call(?wxMenu_FindItem_1,[ThisRef,Item_UC]).
+  wxe_util:queue_cmd(This,Item_UC,?get_env(),?wxMenu_FindItem_1),
+  wxe_util:rec(?wxMenu_FindItem_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenufinditembyposition">external documentation</a>.
 -spec findItemByPosition(This, Position) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Position::integer().
-findItemByPosition(#wx_ref{type=ThisT,ref=ThisRef},Position)
+findItemByPosition(#wx_ref{type=ThisT}=This,Position)
  when is_integer(Position) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_FindItemByPosition,[ThisRef,Position]).
+  wxe_util:queue_cmd(This,Position,?get_env(),?wxMenu_FindItemByPosition),
+  wxe_util:rec(?wxMenu_FindItemByPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenugethelpstring">external documentation</a>.
 -spec getHelpString(This, Itemid) -> unicode:charlist() when
 	This::wxMenu(), Itemid::integer().
-getHelpString(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+getHelpString(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_GetHelpString,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_GetHelpString),
+  wxe_util:rec(?wxMenu_GetHelpString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenugetlabel">external documentation</a>.
 -spec getLabel(This, Itemid) -> unicode:charlist() when
 	This::wxMenu(), Itemid::integer().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+getLabel(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_GetLabel,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_GetLabel),
+  wxe_util:rec(?wxMenu_GetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenugetmenuitemcount">external documentation</a>.
 -spec getMenuItemCount(This) -> integer() when
 	This::wxMenu().
-getMenuItemCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMenuItemCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_GetMenuItemCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenu_GetMenuItemCount),
+  wxe_util:rec(?wxMenu_GetMenuItemCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenugetmenuitems">external documentation</a>.
 -spec getMenuItems(This) -> [wxMenuItem:wxMenuItem()] when
 	This::wxMenu().
-getMenuItems(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMenuItems(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_GetMenuItems,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenu_GetMenuItems),
+  wxe_util:rec(?wxMenu_GetMenuItems).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenugettitle">external documentation</a>.
 -spec getTitle(This) -> unicode:charlist() when
 	This::wxMenu().
-getTitle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getTitle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_GetTitle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenu_GetTitle),
+  wxe_util:rec(?wxMenu_GetTitle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuinsert">external documentation</a>.
 %% <br /> Also:<br />
@@ -313,11 +333,12 @@ getTitle(#wx_ref{type=ThisT,ref=ThisRef}) ->
 insert(This,Pos,Itemid)
  when is_record(This, wx_ref),is_integer(Pos),is_integer(Itemid) ->
   insert(This,Pos,Itemid, []);
-insert(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=ItemT,ref=ItemRef})
+insert(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=ItemT}=Item)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxMenu),
   ?CLASS(ItemT,wxMenuItem),
-  wxe_util:call(?wxMenu_Insert_2,[ThisRef,Pos,ItemRef]).
+  wxe_util:queue_cmd(This,Pos,Item,?get_env(),?wxMenu_Insert_2),
+  wxe_util:rec(?wxMenu_Insert_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuinsert">external documentation</a>.
 %%<br /> Kind = ?wxITEM_SEPARATOR | ?wxITEM_NORMAL | ?wxITEM_CHECK | ?wxITEM_RADIO | ?wxITEM_MAX
@@ -326,10 +347,11 @@ insert(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=ItemT,ref=ItemRef})
 	Option :: {'text', unicode:chardata()}
 		 | {'help', unicode:chardata()}
 		 | {'kind', wx:wx_enum()}.
-insert(#wx_ref{type=ThisT,ref=ThisRef},Pos,Itemid, Options)
+insert(#wx_ref{type=ThisT}=This,Pos,Itemid, Options)
  when is_integer(Pos),is_integer(Itemid),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_Insert_3,[ThisRef,Pos,Itemid, Options]).
+  wxe_util:queue_cmd(This,Pos,Itemid, Options,?get_env(),?wxMenu_Insert_3),
+  wxe_util:rec(?wxMenu_Insert_3).
 
 %% @equiv insert(This,Pos,Itemid,Text,Submenu, [])
 -spec insert(This, Pos, Itemid, Text, Submenu) -> wxMenuItem:wxMenuItem() when
@@ -350,18 +372,19 @@ insert(This,Pos,Itemid,Text,Submenu)
       (This, Pos, Itemid, Text, Submenu, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Pos::integer(), Itemid::integer(), Text::unicode:chardata(), Submenu::wxMenu(),
 	Option :: {'help', unicode:chardata()}.
-insert(#wx_ref{type=ThisT,ref=ThisRef},Pos,Itemid,Text,Help,IsCheckable)
+insert(#wx_ref{type=ThisT}=This,Pos,Itemid,Text,Help,IsCheckable)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),?is_chardata(Help),is_boolean(IsCheckable) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
   Help_UC = unicode:characters_to_binary([Help,0]),
-  wxe_util:cast(?wxMenu_Insert_5_0,[ThisRef,Pos,Itemid,Text_UC,Help_UC,IsCheckable]);
-insert(#wx_ref{type=ThisT,ref=ThisRef},Pos,Itemid,Text,#wx_ref{type=SubmenuT,ref=SubmenuRef}, Options)
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC,Help_UC,IsCheckable,?get_env(),?wxMenu_Insert_5_0);
+insert(#wx_ref{type=ThisT}=This,Pos,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
   ?CLASS(SubmenuT,wxMenu),
-  wxe_util:call(?wxMenu_Insert_5_1,[ThisRef,Pos,Itemid,Text_UC,SubmenuRef, Options]).
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Insert_5_1),
+  wxe_util:rec(?wxMenu_Insert_5_1).
 
 %% @equiv insertCheckItem(This,Pos,Itemid,Text, [])
 -spec insertCheckItem(This, Pos, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -375,11 +398,12 @@ insertCheckItem(This,Pos,Itemid,Text)
 -spec insertCheckItem(This, Pos, Itemid, Text, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Pos::integer(), Itemid::integer(), Text::unicode:chardata(),
 	Option :: {'help', unicode:chardata()}.
-insertCheckItem(#wx_ref{type=ThisT,ref=ThisRef},Pos,Itemid,Text, Options)
+insertCheckItem(#wx_ref{type=ThisT}=This,Pos,Itemid,Text, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_InsertCheckItem,[ThisRef,Pos,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Options,?get_env(),?wxMenu_InsertCheckItem),
+  wxe_util:rec(?wxMenu_InsertCheckItem).
 
 %% @equiv insertRadioItem(This,Pos,Itemid,Text, [])
 -spec insertRadioItem(This, Pos, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -393,35 +417,39 @@ insertRadioItem(This,Pos,Itemid,Text)
 -spec insertRadioItem(This, Pos, Itemid, Text, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Pos::integer(), Itemid::integer(), Text::unicode:chardata(),
 	Option :: {'help', unicode:chardata()}.
-insertRadioItem(#wx_ref{type=ThisT,ref=ThisRef},Pos,Itemid,Text, Options)
+insertRadioItem(#wx_ref{type=ThisT}=This,Pos,Itemid,Text, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_InsertRadioItem,[ThisRef,Pos,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Options,?get_env(),?wxMenu_InsertRadioItem),
+  wxe_util:rec(?wxMenu_InsertRadioItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuinsertseparator">external documentation</a>.
 -spec insertSeparator(This, Pos) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Pos::integer().
-insertSeparator(#wx_ref{type=ThisT,ref=ThisRef},Pos)
+insertSeparator(#wx_ref{type=ThisT}=This,Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_InsertSeparator,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxMenu_InsertSeparator),
+  wxe_util:rec(?wxMenu_InsertSeparator).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuischecked">external documentation</a>.
 -spec isChecked(This, Itemid) -> boolean() when
 	This::wxMenu(), Itemid::integer().
-isChecked(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+isChecked(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_IsChecked,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_IsChecked),
+  wxe_util:rec(?wxMenu_IsChecked).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuisenabled">external documentation</a>.
 -spec isEnabled(This, Itemid) -> boolean() when
 	This::wxMenu(), Itemid::integer().
-isEnabled(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+isEnabled(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_IsEnabled,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_IsEnabled),
+  wxe_util:rec(?wxMenu_IsEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuprepend">external documentation</a>.
 %% <br /> Also:<br />
@@ -437,10 +465,11 @@ isEnabled(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
 prepend(This,Itemid)
  when is_record(This, wx_ref),is_integer(Itemid) ->
   prepend(This,Itemid, []);
-prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
+prepend(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
   ?CLASS(ThisT,wxMenu),
   ?CLASS(ItemT,wxMenuItem),
-  wxe_util:call(?wxMenu_Prepend_1,[ThisRef,ItemRef]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxMenu_Prepend_1),
+  wxe_util:rec(?wxMenu_Prepend_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuprepend">external documentation</a>.
 %%<br /> Kind = ?wxITEM_SEPARATOR | ?wxITEM_NORMAL | ?wxITEM_CHECK | ?wxITEM_RADIO | ?wxITEM_MAX
@@ -449,10 +478,11 @@ prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
 	Option :: {'text', unicode:chardata()}
 		 | {'help', unicode:chardata()}
 		 | {'kind', wx:wx_enum()}.
-prepend(#wx_ref{type=ThisT,ref=ThisRef},Itemid, Options)
+prepend(#wx_ref{type=ThisT}=This,Itemid, Options)
  when is_integer(Itemid),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_Prepend_2,[ThisRef,Itemid, Options]).
+  wxe_util:queue_cmd(This,Itemid, Options,?get_env(),?wxMenu_Prepend_2),
+  wxe_util:rec(?wxMenu_Prepend_2).
 
 %% @equiv prepend(This,Itemid,Text,Submenu, [])
 -spec prepend(This, Itemid, Text, Submenu) -> wxMenuItem:wxMenuItem() when
@@ -473,18 +503,19 @@ prepend(This,Itemid,Text,Submenu)
       (This, Itemid, Text, Submenu, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Itemid::integer(), Text::unicode:chardata(), Submenu::wxMenu(),
 	Option :: {'help', unicode:chardata()}.
-prepend(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text,Help,IsCheckable)
+prepend(#wx_ref{type=ThisT}=This,Itemid,Text,Help,IsCheckable)
  when is_integer(Itemid),?is_chardata(Text),?is_chardata(Help),is_boolean(IsCheckable) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
   Help_UC = unicode:characters_to_binary([Help,0]),
-  wxe_util:cast(?wxMenu_Prepend_4_0,[ThisRef,Itemid,Text_UC,Help_UC,IsCheckable]);
-prepend(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text,#wx_ref{type=SubmenuT,ref=SubmenuRef}, Options)
+  wxe_util:queue_cmd(This,Itemid,Text_UC,Help_UC,IsCheckable,?get_env(),?wxMenu_Prepend_4_0);
+prepend(#wx_ref{type=ThisT}=This,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
   ?CLASS(SubmenuT,wxMenu),
-  wxe_util:call(?wxMenu_Prepend_4_1,[ThisRef,Itemid,Text_UC,SubmenuRef, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Prepend_4_1),
+  wxe_util:rec(?wxMenu_Prepend_4_1).
 
 %% @equiv prependCheckItem(This,Itemid,Text, [])
 -spec prependCheckItem(This, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -498,11 +529,12 @@ prependCheckItem(This,Itemid,Text)
 -spec prependCheckItem(This, Itemid, Text, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Itemid::integer(), Text::unicode:chardata(),
 	Option :: {'help', unicode:chardata()}.
-prependCheckItem(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text, Options)
+prependCheckItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_PrependCheckItem,[ThisRef,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_PrependCheckItem),
+  wxe_util:rec(?wxMenu_PrependCheckItem).
 
 %% @equiv prependRadioItem(This,Itemid,Text, [])
 -spec prependRadioItem(This, Itemid, Text) -> wxMenuItem:wxMenuItem() when
@@ -516,18 +548,20 @@ prependRadioItem(This,Itemid,Text)
 -spec prependRadioItem(This, Itemid, Text, [Option]) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Itemid::integer(), Text::unicode:chardata(),
 	Option :: {'help', unicode:chardata()}.
-prependRadioItem(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Text, Options)
+prependRadioItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenu_PrependRadioItem,[ThisRef,Itemid,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_PrependRadioItem),
+  wxe_util:rec(?wxMenu_PrependRadioItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuprependseparator">external documentation</a>.
 -spec prependSeparator(This) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu().
-prependSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
+prependSeparator(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_PrependSeparator,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenu_PrependSeparator),
+  wxe_util:rec(?wxMenu_PrependSeparator).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuremove">external documentation</a>.
 %% <br /> Also:<br />
@@ -538,41 +572,43 @@ prependSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxMenu(), Itemid::integer();
       (This, Item) -> wxMenuItem:wxMenuItem() when
 	This::wxMenu(), Item::wxMenuItem:wxMenuItem().
-remove(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+remove(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:call(?wxMenu_Remove_1_0,[ThisRef,Itemid]);
-remove(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenu_Remove_1_0),
+  wxe_util:rec(?wxMenu_Remove_1_0);
+remove(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
   ?CLASS(ThisT,wxMenu),
   ?CLASS(ItemT,wxMenuItem),
-  wxe_util:call(?wxMenu_Remove_1_1,[ThisRef,ItemRef]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxMenu_Remove_1_1),
+  wxe_util:rec(?wxMenu_Remove_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenusethelpstring">external documentation</a>.
 -spec setHelpString(This, Itemid, HelpString) -> 'ok' when
 	This::wxMenu(), Itemid::integer(), HelpString::unicode:chardata().
-setHelpString(#wx_ref{type=ThisT,ref=ThisRef},Itemid,HelpString)
+setHelpString(#wx_ref{type=ThisT}=This,Itemid,HelpString)
  when is_integer(Itemid),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxMenu),
   HelpString_UC = unicode:characters_to_binary([HelpString,0]),
-  wxe_util:cast(?wxMenu_SetHelpString,[ThisRef,Itemid,HelpString_UC]).
+  wxe_util:queue_cmd(This,Itemid,HelpString_UC,?get_env(),?wxMenu_SetHelpString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenusetlabel">external documentation</a>.
 -spec setLabel(This, Itemid, Label) -> 'ok' when
 	This::wxMenu(), Itemid::integer(), Label::unicode:chardata().
-setLabel(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Label)
+setLabel(#wx_ref{type=ThisT}=This,Itemid,Label)
  when is_integer(Itemid),?is_chardata(Label) ->
   ?CLASS(ThisT,wxMenu),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxMenu_SetLabel,[ThisRef,Itemid,Label_UC]).
+  wxe_util:queue_cmd(This,Itemid,Label_UC,?get_env(),?wxMenu_SetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenusettitle">external documentation</a>.
 -spec setTitle(This, Title) -> 'ok' when
 	This::wxMenu(), Title::unicode:chardata().
-setTitle(#wx_ref{type=ThisT,ref=ThisRef},Title)
+setTitle(#wx_ref{type=ThisT}=This,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenu),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:cast(?wxMenu_SetTitle,[ThisRef,Title_UC]).
+  wxe_util:queue_cmd(This,Title_UC,?get_env(),?wxMenu_SetTitle).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMenu()) -> 'ok'.

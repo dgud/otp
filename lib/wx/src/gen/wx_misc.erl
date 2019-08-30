@@ -39,53 +39,60 @@
 	Key::wx:wx_enum().
 getKeyState(Key)
  when is_integer(Key) ->
-  wxe_util:call(?utils_wxGetKeyState,[Key]).
+  wxe_util:queue_cmd(Key,?get_env(),?utils_wxGetKeyState),
+  wxe_util:rec(?utils_wxGetKeyState).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetmouseposition">external documentation</a>.
 -spec getMousePosition() -> {X::integer(), Y::integer()}.
 getMousePosition() ->
-  wxe_util:call(?utils_wxGetMousePosition,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetMousePosition),
+  wxe_util:rec(?utils_wxGetMousePosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetmousestate">external documentation</a>.
 -spec getMouseState() -> wx:wx_wxMouseState().
 getMouseState() ->
-  wxe_util:call(?utils_wxGetMouseState,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetMouseState),
+  wxe_util:rec(?utils_wxGetMouseState).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxsetdetectableautorepeat">external documentation</a>.
 -spec setDetectableAutoRepeat(Flag) -> boolean() when
 	Flag::boolean().
 setDetectableAutoRepeat(Flag)
  when is_boolean(Flag) ->
-  wxe_util:call(?utils_wxSetDetectableAutoRepeat,[Flag]).
+  wxe_util:queue_cmd(Flag,?get_env(),?utils_wxSetDetectableAutoRepeat),
+  wxe_util:rec(?utils_wxSetDetectableAutoRepeat).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxbell">external documentation</a>.
 -spec bell() -> 'ok'.
 bell() ->
-  wxe_util:cast(?utils_wxBell,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxBell).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxfindmenuitemid">external documentation</a>.
 -spec findMenuItemId(Frame, MenuString, ItemString) -> integer() when
 	Frame::wxFrame:wxFrame(), MenuString::unicode:chardata(), ItemString::unicode:chardata().
-findMenuItemId(#wx_ref{type=FrameT,ref=FrameRef},MenuString,ItemString)
+findMenuItemId(#wx_ref{type=FrameT}=Frame,MenuString,ItemString)
  when ?is_chardata(MenuString),?is_chardata(ItemString) ->
   ?CLASS(FrameT,wxFrame),
   MenuString_UC = unicode:characters_to_binary([MenuString,0]),
   ItemString_UC = unicode:characters_to_binary([ItemString,0]),
-  wxe_util:call(?utils_wxFindMenuItemId,[FrameRef,MenuString_UC,ItemString_UC]).
+  wxe_util:queue_cmd(Frame,MenuString_UC,ItemString_UC,?get_env(),?utils_wxFindMenuItemId),
+  wxe_util:rec(?utils_wxFindMenuItemId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgenericfindwindowatpoint">external documentation</a>.
 -spec genericFindWindowAtPoint(Pt) -> wxWindow:wxWindow() when
 	Pt::{X::integer(), Y::integer()}.
 genericFindWindowAtPoint({PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
-  wxe_util:call(?utils_wxGenericFindWindowAtPoint,[Pt]).
+  wxe_util:queue_cmd(Pt,?get_env(),?utils_wxGenericFindWindowAtPoint),
+  wxe_util:rec(?utils_wxGenericFindWindowAtPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxfindwindowatpoint">external documentation</a>.
 -spec findWindowAtPoint(Pt) -> wxWindow:wxWindow() when
 	Pt::{X::integer(), Y::integer()}.
 findWindowAtPoint({PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
-  wxe_util:call(?utils_wxFindWindowAtPoint,[Pt]).
+  wxe_util:queue_cmd(Pt,?get_env(),?utils_wxFindWindowAtPoint),
+  wxe_util:rec(?utils_wxFindWindowAtPoint).
 
 %% @equiv beginBusyCursor([])
 -spec beginBusyCursor() -> 'ok'.
@@ -98,17 +105,18 @@ beginBusyCursor() ->
 	Option :: {'cursor', wxCursor:wxCursor()}.
 beginBusyCursor(Options)
  when is_list(Options) ->
-  wxe_util:cast(?utils_wxBeginBusyCursor,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?utils_wxBeginBusyCursor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxendbusycursor">external documentation</a>.
 -spec endBusyCursor() -> 'ok'.
 endBusyCursor() ->
-  wxe_util:cast(?utils_wxEndBusyCursor,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxEndBusyCursor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxisbusy">external documentation</a>.
 -spec isBusy() -> boolean().
 isBusy() ->
-  wxe_util:call(?utils_wxIsBusy,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxIsBusy),
+  wxe_util:rec(?utils_wxIsBusy).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxshutdown">external documentation</a>.
 %%<br /> WFlags = ?wxSHUTDOWN_POWEROFF | ?wxSHUTDOWN_REBOOT
@@ -116,7 +124,8 @@ isBusy() ->
 	WFlags::wx:wx_enum().
 shutdown(WFlags)
  when is_integer(WFlags) ->
-  wxe_util:call(?utils_wxShutdown,[WFlags]).
+  wxe_util:queue_cmd(WFlags,?get_env(),?utils_wxShutdown),
+  wxe_util:rec(?utils_wxShutdown).
 
 %% @equiv shell([])
 -spec shell() -> boolean().
@@ -129,7 +138,8 @@ shell() ->
 	Option :: {'command', unicode:chardata()}.
 shell(Options)
  when is_list(Options) ->
-  wxe_util:call(?utils_wxShell,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?utils_wxShell),
+  wxe_util:rec(?utils_wxShell).
 
 %% @equiv launchDefaultBrowser(Url, [])
 -spec launchDefaultBrowser(Url) -> boolean() when
@@ -146,64 +156,74 @@ launchDefaultBrowser(Url)
 launchDefaultBrowser(Url, Options)
  when ?is_chardata(Url),is_list(Options) ->
   Url_UC = unicode:characters_to_binary([Url,0]),
-  wxe_util:call(?utils_wxLaunchDefaultBrowser,[Url_UC, Options]).
+  wxe_util:queue_cmd(Url_UC, Options,?get_env(),?utils_wxLaunchDefaultBrowser),
+  wxe_util:rec(?utils_wxLaunchDefaultBrowser).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetemailaddress">external documentation</a>.
 -spec getEmailAddress() -> unicode:charlist().
 getEmailAddress() ->
-  wxe_util:call(?utils_wxGetEmailAddress,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetEmailAddress),
+  wxe_util:rec(?utils_wxGetEmailAddress).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetuserid">external documentation</a>.
 -spec getUserId() -> unicode:charlist().
 getUserId() ->
-  wxe_util:call(?utils_wxGetUserId,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetUserId),
+  wxe_util:rec(?utils_wxGetUserId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgethomedir">external documentation</a>.
 -spec getHomeDir() -> unicode:charlist().
 getHomeDir() ->
-  wxe_util:call(?utils_wxGetHomeDir,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetHomeDir),
+  wxe_util:rec(?utils_wxGetHomeDir).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxnewid">external documentation</a>.
 -spec newId() -> integer().
 newId() ->
-  wxe_util:call(?utils_wxNewId,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxNewId),
+  wxe_util:rec(?utils_wxNewId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxregisterid">external documentation</a>.
 -spec registerId(Id) -> 'ok' when
 	Id::integer().
 registerId(Id)
  when is_integer(Id) ->
-  wxe_util:cast(?utils_wxRegisterId,[Id]).
+  wxe_util:queue_cmd(Id,?get_env(),?utils_wxRegisterId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetcurrentid">external documentation</a>.
 -spec getCurrentId() -> integer().
 getCurrentId() ->
-  wxe_util:call(?utils_wxGetCurrentId,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetCurrentId),
+  wxe_util:rec(?utils_wxGetCurrentId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetosdescription">external documentation</a>.
 -spec getOsDescription() -> unicode:charlist().
 getOsDescription() ->
-  wxe_util:call(?utils_wxGetOsDescription,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxGetOsDescription),
+  wxe_util:rec(?utils_wxGetOsDescription).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxisplatformlittleendian">external documentation</a>.
 -spec isPlatformLittleEndian() -> boolean().
 isPlatformLittleEndian() ->
-  wxe_util:call(?utils_wxIsPlatformLittleEndian,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxIsPlatformLittleEndian),
+  wxe_util:rec(?utils_wxIsPlatformLittleEndian).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxisplatform64bit">external documentation</a>.
 -spec isPlatform64Bit() -> boolean().
 isPlatform64Bit() ->
-  wxe_util:call(?utils_wxIsPlatform64Bit,[]).
+  wxe_util:queue_cmd(?get_env(), ?utils_wxIsPlatform64Bit),
+  wxe_util:rec(?utils_wxIsPlatform64Bit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_gdicmn.html#gdicmnwxdisplaysize">external documentation</a>.
 -spec displaySize() -> {Width::integer(), Height::integer()}.
 displaySize() ->
-  wxe_util:call(?gdicmn_wxDisplaySize,[]).
+  wxe_util:queue_cmd(?get_env(), ?gdicmn_wxDisplaySize),
+  wxe_util:rec(?gdicmn_wxDisplaySize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_gdicmn.html#gdicmnwxsetcursor">external documentation</a>.
 -spec setCursor(Cursor) -> 'ok' when
 	Cursor::wxCursor:wxCursor().
-setCursor(#wx_ref{type=CursorT,ref=CursorRef}) ->
+setCursor(#wx_ref{type=CursorT}=Cursor) ->
   ?CLASS(CursorT,wxCursor),
-  wxe_util:cast(?gdicmn_wxSetCursor,[CursorRef]).
+  wxe_util:queue_cmd(Cursor,?get_env(),?gdicmn_wxSetCursor).
 

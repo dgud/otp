@@ -39,61 +39,66 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatawxfindreplacedata">external documentation</a>.
 -spec new() -> wxFindReplaceData().
 new() ->
-  wxe_util:construct(?wxFindReplaceData_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFindReplaceData_new_0),
+  wxe_util:rec(?wxFindReplaceData_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatawxfindreplacedata">external documentation</a>.
 -spec new(Flags) -> wxFindReplaceData() when
 	Flags::integer().
 new(Flags)
  when is_integer(Flags) ->
-  wxe_util:construct(?wxFindReplaceData_new_1,[Flags]).
+  wxe_util:queue_cmd(Flags,?get_env(),?wxFindReplaceData_new_1),
+  wxe_util:rec(?wxFindReplaceData_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatagetfindstring">external documentation</a>.
 -spec getFindString(This) -> unicode:charlist() when
 	This::wxFindReplaceData().
-getFindString(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFindString(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFindReplaceData),
-  wxe_util:call(?wxFindReplaceData_GetFindString,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFindReplaceData_GetFindString),
+  wxe_util:rec(?wxFindReplaceData_GetFindString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatagetreplacestring">external documentation</a>.
 -spec getReplaceString(This) -> unicode:charlist() when
 	This::wxFindReplaceData().
-getReplaceString(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getReplaceString(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFindReplaceData),
-  wxe_util:call(?wxFindReplaceData_GetReplaceString,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFindReplaceData_GetReplaceString),
+  wxe_util:rec(?wxFindReplaceData_GetReplaceString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatagetflags">external documentation</a>.
 -spec getFlags(This) -> integer() when
 	This::wxFindReplaceData().
-getFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFlags(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFindReplaceData),
-  wxe_util:call(?wxFindReplaceData_GetFlags,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFindReplaceData_GetFlags),
+  wxe_util:rec(?wxFindReplaceData_GetFlags).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatasetflags">external documentation</a>.
 -spec setFlags(This, Flags) -> 'ok' when
 	This::wxFindReplaceData(), Flags::integer().
-setFlags(#wx_ref{type=ThisT,ref=ThisRef},Flags)
+setFlags(#wx_ref{type=ThisT}=This,Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxFindReplaceData),
-  wxe_util:cast(?wxFindReplaceData_SetFlags,[ThisRef,Flags]).
+  wxe_util:queue_cmd(This,Flags,?get_env(),?wxFindReplaceData_SetFlags).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatasetfindstring">external documentation</a>.
 -spec setFindString(This, Str) -> 'ok' when
 	This::wxFindReplaceData(), Str::unicode:chardata().
-setFindString(#wx_ref{type=ThisT,ref=ThisRef},Str)
+setFindString(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFindReplaceData),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxFindReplaceData_SetFindString,[ThisRef,Str_UC]).
+  wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxFindReplaceData_SetFindString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatasetreplacestring">external documentation</a>.
 -spec setReplaceString(This, Str) -> 'ok' when
 	This::wxFindReplaceData(), Str::unicode:chardata().
-setReplaceString(#wx_ref{type=ThisT,ref=ThisRef},Str)
+setReplaceString(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFindReplaceData),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxFindReplaceData_SetReplaceString,[ThisRef,Str_UC]).
+  wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxFindReplaceData_SetReplaceString).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFindReplaceData()) -> 'ok'.

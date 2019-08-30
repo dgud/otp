@@ -86,7 +86,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowwxsplitterwindow">external documentation</a>.
 -spec new() -> wxSplitterWindow().
 new() ->
-  wxe_util:construct(?wxSplitterWindow_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxSplitterWindow_new_0),
+  wxe_util:rec(?wxSplitterWindow_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxSplitterWindow() when
@@ -103,10 +104,11 @@ new(Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxSplitterWindow_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxSplitterWindow_new_2),
+  wxe_util:rec(?wxSplitterWindow_new_2).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -123,86 +125,95 @@ create(This,Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxSplitterWindow_Create,[ThisRef,ParentRef, Options]).
+  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxSplitterWindow_Create),
+  wxe_util:rec(?wxSplitterWindow_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetminimumpanesize">external documentation</a>.
 -spec getMinimumPaneSize(This) -> integer() when
 	This::wxSplitterWindow().
-getMinimumPaneSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMinimumPaneSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_GetMinimumPaneSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_GetMinimumPaneSize),
+  wxe_util:rec(?wxSplitterWindow_GetMinimumPaneSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetsashgravity">external documentation</a>.
 -spec getSashGravity(This) -> number() when
 	This::wxSplitterWindow().
-getSashGravity(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSashGravity(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_GetSashGravity,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_GetSashGravity),
+  wxe_util:rec(?wxSplitterWindow_GetSashGravity).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetsashposition">external documentation</a>.
 -spec getSashPosition(This) -> integer() when
 	This::wxSplitterWindow().
-getSashPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSashPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_GetSashPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_GetSashPosition),
+  wxe_util:rec(?wxSplitterWindow_GetSashPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetsplitmode">external documentation</a>.
 %%<br /> Res = ?wxSPLIT_HORIZONTAL | ?wxSPLIT_VERTICAL
 -spec getSplitMode(This) -> wx:wx_enum() when
 	This::wxSplitterWindow().
-getSplitMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSplitMode(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_GetSplitMode,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_GetSplitMode),
+  wxe_util:rec(?wxSplitterWindow_GetSplitMode).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetwindow1">external documentation</a>.
 -spec getWindow1(This) -> wxWindow:wxWindow() when
 	This::wxSplitterWindow().
-getWindow1(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWindow1(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_GetWindow1,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_GetWindow1),
+  wxe_util:rec(?wxSplitterWindow_GetWindow1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetwindow2">external documentation</a>.
 -spec getWindow2(This) -> wxWindow:wxWindow() when
 	This::wxSplitterWindow().
-getWindow2(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWindow2(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_GetWindow2,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_GetWindow2),
+  wxe_util:rec(?wxSplitterWindow_GetWindow2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowinitialize">external documentation</a>.
 -spec initialize(This, Window) -> 'ok' when
 	This::wxSplitterWindow(), Window::wxWindow:wxWindow().
-initialize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
+initialize(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window) ->
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(WindowT,wxWindow),
-  wxe_util:cast(?wxSplitterWindow_Initialize,[ThisRef,WindowRef]).
+  wxe_util:queue_cmd(This,Window,?get_env(),?wxSplitterWindow_Initialize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowissplit">external documentation</a>.
 -spec isSplit(This) -> boolean() when
 	This::wxSplitterWindow().
-isSplit(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isSplit(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_IsSplit,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_IsSplit),
+  wxe_util:rec(?wxSplitterWindow_IsSplit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowreplacewindow">external documentation</a>.
 -spec replaceWindow(This, WinOld, WinNew) -> boolean() when
 	This::wxSplitterWindow(), WinOld::wxWindow:wxWindow(), WinNew::wxWindow:wxWindow().
-replaceWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WinOldT,ref=WinOldRef},#wx_ref{type=WinNewT,ref=WinNewRef}) ->
+replaceWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=WinOldT}=WinOld,#wx_ref{type=WinNewT}=WinNew) ->
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(WinOldT,wxWindow),
   ?CLASS(WinNewT,wxWindow),
-  wxe_util:call(?wxSplitterWindow_ReplaceWindow,[ThisRef,WinOldRef,WinNewRef]).
+  wxe_util:queue_cmd(This,WinOld,WinNew,?get_env(),?wxSplitterWindow_ReplaceWindow),
+  wxe_util:rec(?wxSplitterWindow_ReplaceWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowsetsashgravity">external documentation</a>.
 -spec setSashGravity(This, Gravity) -> 'ok' when
 	This::wxSplitterWindow(), Gravity::number().
-setSashGravity(#wx_ref{type=ThisT,ref=ThisRef},Gravity)
+setSashGravity(#wx_ref{type=ThisT}=This,Gravity)
  when is_number(Gravity) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:cast(?wxSplitterWindow_SetSashGravity,[ThisRef,Gravity]).
+  wxe_util:queue_cmd(This,Gravity,?get_env(),?wxSplitterWindow_SetSashGravity).
 
 %% @equiv setSashPosition(This,Position, [])
 -spec setSashPosition(This, Position) -> 'ok' when
@@ -216,34 +227,34 @@ setSashPosition(This,Position)
 -spec setSashPosition(This, Position, [Option]) -> 'ok' when
 	This::wxSplitterWindow(), Position::integer(),
 	Option :: {'redraw', boolean()}.
-setSashPosition(#wx_ref{type=ThisT,ref=ThisRef},Position, Options)
+setSashPosition(#wx_ref{type=ThisT}=This,Position, Options)
  when is_integer(Position),is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:cast(?wxSplitterWindow_SetSashPosition,[ThisRef,Position, Options]).
+  wxe_util:queue_cmd(This,Position, Options,?get_env(),?wxSplitterWindow_SetSashPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowsetsashsize">external documentation</a>.
 -spec setSashSize(This, Width) -> 'ok' when
 	This::wxSplitterWindow(), Width::integer().
-setSashSize(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setSashSize(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:cast(?wxSplitterWindow_SetSashSize,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxSplitterWindow_SetSashSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowsetminimumpanesize">external documentation</a>.
 -spec setMinimumPaneSize(This, Min) -> 'ok' when
 	This::wxSplitterWindow(), Min::integer().
-setMinimumPaneSize(#wx_ref{type=ThisT,ref=ThisRef},Min)
+setMinimumPaneSize(#wx_ref{type=ThisT}=This,Min)
  when is_integer(Min) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:cast(?wxSplitterWindow_SetMinimumPaneSize,[ThisRef,Min]).
+  wxe_util:queue_cmd(This,Min,?get_env(),?wxSplitterWindow_SetMinimumPaneSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowsetsplitmode">external documentation</a>.
 -spec setSplitMode(This, Mode) -> 'ok' when
 	This::wxSplitterWindow(), Mode::integer().
-setSplitMode(#wx_ref{type=ThisT,ref=ThisRef},Mode)
+setSplitMode(#wx_ref{type=ThisT}=This,Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:cast(?wxSplitterWindow_SetSplitMode,[ThisRef,Mode]).
+  wxe_util:queue_cmd(This,Mode,?get_env(),?wxSplitterWindow_SetSplitMode).
 
 %% @equiv splitHorizontally(This,Window1,Window2, [])
 -spec splitHorizontally(This, Window1, Window2) -> boolean() when
@@ -257,12 +268,13 @@ splitHorizontally(This,Window1,Window2)
 -spec splitHorizontally(This, Window1, Window2, [Option]) -> boolean() when
 	This::wxSplitterWindow(), Window1::wxWindow:wxWindow(), Window2::wxWindow:wxWindow(),
 	Option :: {'sashPosition', integer()}.
-splitHorizontally(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=Window1T,ref=Window1Ref},#wx_ref{type=Window2T,ref=Window2Ref}, Options)
+splitHorizontally(#wx_ref{type=ThisT}=This,#wx_ref{type=Window1T}=Window1,#wx_ref{type=Window2T}=Window2, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(Window1T,wxWindow),
   ?CLASS(Window2T,wxWindow),
-  wxe_util:call(?wxSplitterWindow_SplitHorizontally,[ThisRef,Window1Ref,Window2Ref, Options]).
+  wxe_util:queue_cmd(This,Window1,Window2, Options,?get_env(),?wxSplitterWindow_SplitHorizontally),
+  wxe_util:rec(?wxSplitterWindow_SplitHorizontally).
 
 %% @equiv splitVertically(This,Window1,Window2, [])
 -spec splitVertically(This, Window1, Window2) -> boolean() when
@@ -276,12 +288,13 @@ splitVertically(This,Window1,Window2)
 -spec splitVertically(This, Window1, Window2, [Option]) -> boolean() when
 	This::wxSplitterWindow(), Window1::wxWindow:wxWindow(), Window2::wxWindow:wxWindow(),
 	Option :: {'sashPosition', integer()}.
-splitVertically(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=Window1T,ref=Window1Ref},#wx_ref{type=Window2T,ref=Window2Ref}, Options)
+splitVertically(#wx_ref{type=ThisT}=This,#wx_ref{type=Window1T}=Window1,#wx_ref{type=Window2T}=Window2, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(Window1T,wxWindow),
   ?CLASS(Window2T,wxWindow),
-  wxe_util:call(?wxSplitterWindow_SplitVertically,[ThisRef,Window1Ref,Window2Ref, Options]).
+  wxe_util:queue_cmd(This,Window1,Window2, Options,?get_env(),?wxSplitterWindow_SplitVertically),
+  wxe_util:rec(?wxSplitterWindow_SplitVertically).
 
 %% @equiv unsplit(This, [])
 -spec unsplit(This) -> boolean() when
@@ -295,17 +308,18 @@ unsplit(This)
 -spec unsplit(This, [Option]) -> boolean() when
 	This::wxSplitterWindow(),
 	Option :: {'toRemove', wxWindow:wxWindow()}.
-unsplit(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+unsplit(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:call(?wxSplitterWindow_Unsplit,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxSplitterWindow_Unsplit),
+  wxe_util:rec(?wxSplitterWindow_Unsplit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowupdatesize">external documentation</a>.
 -spec updateSize(This) -> 'ok' when
 	This::wxSplitterWindow().
-updateSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+updateSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:cast(?wxSplitterWindow_UpdateSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplitterWindow_UpdateSize).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSplitterWindow()) -> 'ok'.

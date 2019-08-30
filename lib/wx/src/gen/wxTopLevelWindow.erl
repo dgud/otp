@@ -85,30 +85,34 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowgeticon">external documentation</a>.
 -spec getIcon(This) -> wxIcon:wxIcon() when
 	This::wxTopLevelWindow().
-getIcon(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getIcon(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_GetIcon,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_GetIcon),
+  wxe_util:rec(?wxTopLevelWindow_GetIcon).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowgeticons">external documentation</a>.
 -spec getIcons(This) -> wxIconBundle:wxIconBundle() when
 	This::wxTopLevelWindow().
-getIcons(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getIcons(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_GetIcons,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_GetIcons),
+  wxe_util:rec(?wxTopLevelWindow_GetIcons).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowgettitle">external documentation</a>.
 -spec getTitle(This) -> unicode:charlist() when
 	This::wxTopLevelWindow().
-getTitle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getTitle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_GetTitle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_GetTitle),
+  wxe_util:rec(?wxTopLevelWindow_GetTitle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisactive">external documentation</a>.
 -spec isActive(This) -> boolean() when
 	This::wxTopLevelWindow().
-isActive(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isActive(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsActive,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_IsActive),
+  wxe_util:rec(?wxTopLevelWindow_IsActive).
 
 %% @equiv iconize(This, [])
 -spec iconize(This) -> 'ok' when
@@ -122,31 +126,34 @@ iconize(This)
 -spec iconize(This, [Option]) -> 'ok' when
 	This::wxTopLevelWindow(),
 	Option :: {'iconize', boolean()}.
-iconize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+iconize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:cast(?wxTopLevelWindow_Iconize,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_Iconize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisfullscreen">external documentation</a>.
 -spec isFullScreen(This) -> boolean() when
 	This::wxTopLevelWindow().
-isFullScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isFullScreen(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsFullScreen,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_IsFullScreen),
+  wxe_util:rec(?wxTopLevelWindow_IsFullScreen).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisiconized">external documentation</a>.
 -spec isIconized(This) -> boolean() when
 	This::wxTopLevelWindow().
-isIconized(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isIconized(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsIconized,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_IsIconized),
+  wxe_util:rec(?wxTopLevelWindow_IsIconized).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowismaximized">external documentation</a>.
 -spec isMaximized(This) -> boolean() when
 	This::wxTopLevelWindow().
-isMaximized(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isMaximized(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsMaximized,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTopLevelWindow_IsMaximized),
+  wxe_util:rec(?wxTopLevelWindow_IsMaximized).
 
 %% @equiv maximize(This, [])
 -spec maximize(This) -> 'ok' when
@@ -160,10 +167,10 @@ maximize(This)
 -spec maximize(This, [Option]) -> 'ok' when
 	This::wxTopLevelWindow(),
 	Option :: {'maximize', boolean()}.
-maximize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+maximize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:cast(?wxTopLevelWindow_Maximize,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_Maximize).
 
 %% @equiv requestUserAttention(This, [])
 -spec requestUserAttention(This) -> 'ok' when
@@ -177,26 +184,26 @@ requestUserAttention(This)
 -spec requestUserAttention(This, [Option]) -> 'ok' when
 	This::wxTopLevelWindow(),
 	Option :: {'flags', integer()}.
-requestUserAttention(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+requestUserAttention(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:cast(?wxTopLevelWindow_RequestUserAttention,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_RequestUserAttention).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowseticon">external documentation</a>.
 -spec setIcon(This, Icon) -> 'ok' when
 	This::wxTopLevelWindow(), Icon::wxIcon:wxIcon().
-setIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}) ->
+setIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   ?CLASS(IconT,wxIcon),
-  wxe_util:cast(?wxTopLevelWindow_SetIcon,[ThisRef,IconRef]).
+  wxe_util:queue_cmd(This,Icon,?get_env(),?wxTopLevelWindow_SetIcon).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowseticons">external documentation</a>.
 -spec setIcons(This, Icons) -> 'ok' when
 	This::wxTopLevelWindow(), Icons::wxIconBundle:wxIconBundle().
-setIcons(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconsT,ref=IconsRef}) ->
+setIcons(#wx_ref{type=ThisT}=This,#wx_ref{type=IconsT}=Icons) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   ?CLASS(IconsT,wxIconBundle),
-  wxe_util:cast(?wxTopLevelWindow_SetIcons,[ThisRef,IconsRef]).
+  wxe_util:queue_cmd(This,Icons,?get_env(),?wxTopLevelWindow_SetIcons).
 
 %% @equiv centerOnScreen(This, [])
 -spec centerOnScreen(This) -> 'ok' when
@@ -210,10 +217,10 @@ centerOnScreen(This)
 -spec centerOnScreen(This, [Option]) -> 'ok' when
 	This::wxTopLevelWindow(),
 	Option :: {'dir', integer()}.
-centerOnScreen(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+centerOnScreen(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:cast(?wxTopLevelWindow_CenterOnScreen,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_CenterOnScreen).
 
 %% @equiv centreOnScreen(This, [])
 -spec centreOnScreen(This) -> 'ok' when
@@ -227,27 +234,28 @@ centreOnScreen(This)
 -spec centreOnScreen(This, [Option]) -> 'ok' when
 	This::wxTopLevelWindow(),
 	Option :: {'dir', integer()}.
-centreOnScreen(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+centreOnScreen(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:cast(?wxTopLevelWindow_CentreOnScreen,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_CentreOnScreen).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowsetshape">external documentation</a>.
 -spec setShape(This, Region) -> boolean() when
 	This::wxTopLevelWindow(), Region::wxRegion:wxRegion().
-setShape(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RegionT,ref=RegionRef}) ->
+setShape(#wx_ref{type=ThisT}=This,#wx_ref{type=RegionT}=Region) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   ?CLASS(RegionT,wxRegion),
-  wxe_util:call(?wxTopLevelWindow_SetShape,[ThisRef,RegionRef]).
+  wxe_util:queue_cmd(This,Region,?get_env(),?wxTopLevelWindow_SetShape),
+  wxe_util:rec(?wxTopLevelWindow_SetShape).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowsettitle">external documentation</a>.
 -spec setTitle(This, Title) -> 'ok' when
 	This::wxTopLevelWindow(), Title::unicode:chardata().
-setTitle(#wx_ref{type=ThisT,ref=ThisRef},Title)
+setTitle(#wx_ref{type=ThisT}=This,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:cast(?wxTopLevelWindow_SetTitle,[ThisRef,Title_UC]).
+  wxe_util:queue_cmd(This,Title_UC,?get_env(),?wxTopLevelWindow_SetTitle).
 
 %% @equiv showFullScreen(This,Show, [])
 -spec showFullScreen(This, Show) -> boolean() when
@@ -261,10 +269,11 @@ showFullScreen(This,Show)
 -spec showFullScreen(This, Show, [Option]) -> boolean() when
 	This::wxTopLevelWindow(), Show::boolean(),
 	Option :: {'style', integer()}.
-showFullScreen(#wx_ref{type=ThisT,ref=ThisRef},Show, Options)
+showFullScreen(#wx_ref{type=ThisT}=This,Show, Options)
  when is_boolean(Show),is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_ShowFullScreen,[ThisRef,Show, Options]).
+  wxe_util:queue_cmd(This,Show, Options,?get_env(),?wxTopLevelWindow_ShowFullScreen),
+  wxe_util:rec(?wxTopLevelWindow_ShowFullScreen).
 
  %% From wxWindow
 %% @hidden

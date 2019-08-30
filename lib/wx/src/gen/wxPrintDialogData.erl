@@ -42,200 +42,213 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatawxprintdialogdata">external documentation</a>.
 -spec new() -> wxPrintDialogData().
 new() ->
-  wxe_util:construct(?wxPrintDialogData_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPrintDialogData_new_0),
+  wxe_util:rec(?wxPrintDialogData_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatawxprintdialogdata">external documentation</a>.
 -spec new(DialogData) -> wxPrintDialogData() when
 	DialogData::wxPrintDialogData() | wxPrintData:wxPrintData().
-new(#wx_ref{type=DialogDataT,ref=DialogDataRef}) ->
+new(#wx_ref{type=DialogDataT}=DialogData) ->
   DialogDataOP = case ?CLASS_T(DialogDataT,wxPrintDialogData) of
      true ->
        ?wxPrintDialogData_new_1_1;
      _ -> ?CLASS(DialogDataT,wxPrintData),
        ?wxPrintDialogData_new_1_0
      end,
-  wxe_util:construct(DialogDataOP,[DialogDataRef]).
+  wxe_util:queue_cmd(DialogData,?get_env(),DialogDataOP),
+  wxe_util:rec(DialogDataOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdataenablehelp">external documentation</a>.
 -spec enableHelp(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-enableHelp(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+enableHelp(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_EnableHelp,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_EnableHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdataenablepagenumbers">external documentation</a>.
 -spec enablePageNumbers(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-enablePageNumbers(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+enablePageNumbers(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_EnablePageNumbers,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_EnablePageNumbers).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdataenableprinttofile">external documentation</a>.
 -spec enablePrintToFile(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-enablePrintToFile(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+enablePrintToFile(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_EnablePrintToFile,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_EnablePrintToFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdataenableselection">external documentation</a>.
 -spec enableSelection(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-enableSelection(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+enableSelection(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_EnableSelection,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_EnableSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetallpages">external documentation</a>.
 -spec getAllPages(This) -> boolean() when
 	This::wxPrintDialogData().
-getAllPages(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAllPages(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetAllPages,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetAllPages),
+  wxe_util:rec(?wxPrintDialogData_GetAllPages).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetcollate">external documentation</a>.
 -spec getCollate(This) -> boolean() when
 	This::wxPrintDialogData().
-getCollate(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCollate(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetCollate,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetCollate),
+  wxe_util:rec(?wxPrintDialogData_GetCollate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetfrompage">external documentation</a>.
 -spec getFromPage(This) -> integer() when
 	This::wxPrintDialogData().
-getFromPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFromPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetFromPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetFromPage),
+  wxe_util:rec(?wxPrintDialogData_GetFromPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetmaxpage">external documentation</a>.
 -spec getMaxPage(This) -> integer() when
 	This::wxPrintDialogData().
-getMaxPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaxPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetMaxPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetMaxPage),
+  wxe_util:rec(?wxPrintDialogData_GetMaxPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetminpage">external documentation</a>.
 -spec getMinPage(This) -> integer() when
 	This::wxPrintDialogData().
-getMinPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMinPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetMinPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetMinPage),
+  wxe_util:rec(?wxPrintDialogData_GetMinPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetnocopies">external documentation</a>.
 -spec getNoCopies(This) -> integer() when
 	This::wxPrintDialogData().
-getNoCopies(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNoCopies(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetNoCopies,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetNoCopies),
+  wxe_util:rec(?wxPrintDialogData_GetNoCopies).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetprintdata">external documentation</a>.
 -spec getPrintData(This) -> wxPrintData:wxPrintData() when
 	This::wxPrintDialogData().
-getPrintData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetPrintData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetPrintData),
+  wxe_util:rec(?wxPrintDialogData_GetPrintData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetprinttofile">external documentation</a>.
 -spec getPrintToFile(This) -> boolean() when
 	This::wxPrintDialogData().
-getPrintToFile(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintToFile(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetPrintToFile,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetPrintToFile),
+  wxe_util:rec(?wxPrintDialogData_GetPrintToFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagetselection">external documentation</a>.
 -spec getSelection(This) -> boolean() when
 	This::wxPrintDialogData().
-getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetSelection),
+  wxe_util:rec(?wxPrintDialogData_GetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatagettopage">external documentation</a>.
 -spec getToPage(This) -> integer() when
 	This::wxPrintDialogData().
-getToPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getToPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_GetToPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_GetToPage),
+  wxe_util:rec(?wxPrintDialogData_GetToPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdataisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxPrintDialogData().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:call(?wxPrintDialogData_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrintDialogData_IsOk),
+  wxe_util:rec(?wxPrintDialogData_IsOk).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetcollate">external documentation</a>.
 -spec setCollate(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-setCollate(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setCollate(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetCollate,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_SetCollate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetfrompage">external documentation</a>.
 -spec setFromPage(This, V) -> 'ok' when
 	This::wxPrintDialogData(), V::integer().
-setFromPage(#wx_ref{type=ThisT,ref=ThisRef},V)
+setFromPage(#wx_ref{type=ThisT}=This,V)
  when is_integer(V) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetFromPage,[ThisRef,V]).
+  wxe_util:queue_cmd(This,V,?get_env(),?wxPrintDialogData_SetFromPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetmaxpage">external documentation</a>.
 -spec setMaxPage(This, V) -> 'ok' when
 	This::wxPrintDialogData(), V::integer().
-setMaxPage(#wx_ref{type=ThisT,ref=ThisRef},V)
+setMaxPage(#wx_ref{type=ThisT}=This,V)
  when is_integer(V) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetMaxPage,[ThisRef,V]).
+  wxe_util:queue_cmd(This,V,?get_env(),?wxPrintDialogData_SetMaxPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetminpage">external documentation</a>.
 -spec setMinPage(This, V) -> 'ok' when
 	This::wxPrintDialogData(), V::integer().
-setMinPage(#wx_ref{type=ThisT,ref=ThisRef},V)
+setMinPage(#wx_ref{type=ThisT}=This,V)
  when is_integer(V) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetMinPage,[ThisRef,V]).
+  wxe_util:queue_cmd(This,V,?get_env(),?wxPrintDialogData_SetMinPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetnocopies">external documentation</a>.
 -spec setNoCopies(This, V) -> 'ok' when
 	This::wxPrintDialogData(), V::integer().
-setNoCopies(#wx_ref{type=ThisT,ref=ThisRef},V)
+setNoCopies(#wx_ref{type=ThisT}=This,V)
  when is_integer(V) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetNoCopies,[ThisRef,V]).
+  wxe_util:queue_cmd(This,V,?get_env(),?wxPrintDialogData_SetNoCopies).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetprintdata">external documentation</a>.
 -spec setPrintData(This, PrintData) -> 'ok' when
 	This::wxPrintDialogData(), PrintData::wxPrintData:wxPrintData().
-setPrintData(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PrintDataT,ref=PrintDataRef}) ->
+setPrintData(#wx_ref{type=ThisT}=This,#wx_ref{type=PrintDataT}=PrintData) ->
   ?CLASS(ThisT,wxPrintDialogData),
   ?CLASS(PrintDataT,wxPrintData),
-  wxe_util:cast(?wxPrintDialogData_SetPrintData,[ThisRef,PrintDataRef]).
+  wxe_util:queue_cmd(This,PrintData,?get_env(),?wxPrintDialogData_SetPrintData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetprinttofile">external documentation</a>.
 -spec setPrintToFile(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-setPrintToFile(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setPrintToFile(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetPrintToFile,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_SetPrintToFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasetselection">external documentation</a>.
 -spec setSelection(This, Flag) -> 'ok' when
 	This::wxPrintDialogData(), Flag::boolean().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setSelection(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetSelection,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxPrintDialogData_SetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialogdata.html#wxprintdialogdatasettopage">external documentation</a>.
 -spec setToPage(This, V) -> 'ok' when
 	This::wxPrintDialogData(), V::integer().
-setToPage(#wx_ref{type=ThisT,ref=ThisRef},V)
+setToPage(#wx_ref{type=ThisT}=This,V)
  when is_integer(V) ->
   ?CLASS(ThisT,wxPrintDialogData),
-  wxe_util:cast(?wxPrintDialogData_SetToPage,[ThisRef,V]).
+  wxe_util:queue_cmd(This,V,?get_env(),?wxPrintDialogData_SetToPage).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrintDialogData()) -> 'ok'.

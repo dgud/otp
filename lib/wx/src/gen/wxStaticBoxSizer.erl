@@ -62,26 +62,29 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 new(Orient,Win)
  when is_integer(Orient),is_record(Win, wx_ref) ->
   new(Orient,Win, []);
-new(#wx_ref{type=BoxT,ref=BoxRef},Orient)
+new(#wx_ref{type=BoxT}=Box,Orient)
  when is_integer(Orient) ->
   ?CLASS(BoxT,wxStaticBox),
-  wxe_util:construct(?wxStaticBoxSizer_new_2,[BoxRef,Orient]).
+  wxe_util:queue_cmd(Box,Orient,?get_env(),?wxStaticBoxSizer_new_2),
+  wxe_util:rec(?wxStaticBoxSizer_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticboxsizer.html#wxstaticboxsizerwxstaticboxsizer">external documentation</a>.
 -spec new(Orient, Win, [Option]) -> wxStaticBoxSizer() when
 	Orient::integer(), Win::wxWindow:wxWindow(),
 	Option :: {'label', unicode:chardata()}.
-new(Orient,#wx_ref{type=WinT,ref=WinRef}, Options)
+new(Orient,#wx_ref{type=WinT}=Win, Options)
  when is_integer(Orient),is_list(Options) ->
   ?CLASS(WinT,wxWindow),
-  wxe_util:construct(?wxStaticBoxSizer_new_3,[Orient,WinRef, Options]).
+  wxe_util:queue_cmd(Orient,Win, Options,?get_env(),?wxStaticBoxSizer_new_3),
+  wxe_util:rec(?wxStaticBoxSizer_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticboxsizer.html#wxstaticboxsizergetstaticbox">external documentation</a>.
 -spec getStaticBox(This) -> wxStaticBox:wxStaticBox() when
 	This::wxStaticBoxSizer().
-getStaticBox(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getStaticBox(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStaticBoxSizer),
-  wxe_util:call(?wxStaticBoxSizer_GetStaticBox,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStaticBoxSizer_GetStaticBox),
+  wxe_util:rec(?wxStaticBoxSizer_GetStaticBox).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticBoxSizer()) -> 'ok'.

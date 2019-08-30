@@ -54,9 +54,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %%<br /> Res = ?wxDateTime_Sun | ?wxDateTime_Mon | ?wxDateTime_Tue | ?wxDateTime_Wed | ?wxDateTime_Thu | ?wxDateTime_Fri | ?wxDateTime_Sat | ?wxDateTime_Inv_WeekDay
 -spec getWeekDay(This) -> wx:wx_enum() when
 	This::wxCalendarEvent().
-getWeekDay(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWeekDay(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCalendarEvent),
-  wxe_util:call(?wxCalendarEvent_GetWeekDay,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCalendarEvent_GetWeekDay),
+  wxe_util:rec(?wxCalendarEvent_GetWeekDay).
 
  %% From wxDateEvent
 %% @hidden

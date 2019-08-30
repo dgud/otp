@@ -35,18 +35,24 @@
 	      handler=undefined % added after connect
 	     }).
 
+-define(WXE_IDENTIFIER, wx_env).
+
 -define(CLASS(Type,Class), ((Type) =:= Class) orelse (Type):parent_class(Class)).
 
 -define(CLASS_T(Type,Class),
 	try (((Type) =:= Class) orelse (Type):parent_class(Class)) catch _:_ -> false end).
+
+-define(get_env(),
+        case erlang:get(?WXE_IDENTIFIER) of
+            #wx_env{ref=Ref} -> Ref;
+            _ -> erlang:error({wx,unknown_env})
+        end).
 
 -define(UI, unsigned-native).
 -define(I,  signed-native).
 -define(F,  float-native).
 
 -define(is_chardata(String), (is_list(String) orelse is_binary(String))).
-
--define(WXE_IDENTIFIER, wx_env).
 
 -define(DESTROY_OBJECT, 4).
 -define(BATCH_BEGIN,    5).

@@ -42,23 +42,25 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectwxfiledataobject">external documentation</a>.
 -spec new() -> wxFileDataObject().
 new() ->
-  wxe_util:construct(?wxFileDataObject_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFileDataObject_new),
+  wxe_util:rec(?wxFileDataObject_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectaddfile">external documentation</a>.
 -spec addFile(This, Filename) -> 'ok' when
 	This::wxFileDataObject(), Filename::unicode:chardata().
-addFile(#wx_ref{type=ThisT,ref=ThisRef},Filename)
+addFile(#wx_ref{type=ThisT}=This,Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxFileDataObject),
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:cast(?wxFileDataObject_AddFile,[ThisRef,Filename_UC]).
+  wxe_util:queue_cmd(This,Filename_UC,?get_env(),?wxFileDataObject_AddFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectgetfilenames">external documentation</a>.
 -spec getFilenames(This) -> [unicode:charlist()] when
 	This::wxFileDataObject().
-getFilenames(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFilenames(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDataObject),
-  wxe_util:call(?wxFileDataObject_GetFilenames,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDataObject_GetFilenames),
+  wxe_util:rec(?wxFileDataObject_GetFilenames).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFileDataObject()) -> 'ok'.

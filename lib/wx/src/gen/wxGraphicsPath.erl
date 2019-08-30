@@ -46,129 +46,129 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathmovetopoint">external documentation</a>.
 -spec moveToPoint(This, P) -> 'ok' when
 	This::wxGraphicsPath(), P::{X::float(), Y::float()}.
-moveToPoint(#wx_ref{type=ThisT,ref=ThisRef},{PX,PY} = P)
+moveToPoint(#wx_ref{type=ThisT}=This,{PX,PY} = P)
  when is_number(PX),is_number(PY) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_MoveToPoint_1,[ThisRef,P]).
+  wxe_util:queue_cmd(This,P,?get_env(),?wxGraphicsPath_MoveToPoint_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathmovetopoint">external documentation</a>.
 -spec moveToPoint(This, X, Y) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number().
-moveToPoint(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+moveToPoint(#wx_ref{type=ThisT}=This,X,Y)
  when is_number(X),is_number(Y) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_MoveToPoint_2,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxGraphicsPath_MoveToPoint_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddarc">external documentation</a>.
 -spec addArc(This, C, R, StartAngle, EndAngle, Clockwise) -> 'ok' when
 	This::wxGraphicsPath(), C::{X::float(), Y::float()}, R::number(), StartAngle::number(), EndAngle::number(), Clockwise::boolean().
-addArc(#wx_ref{type=ThisT,ref=ThisRef},{CX,CY} = C,R,StartAngle,EndAngle,Clockwise)
+addArc(#wx_ref{type=ThisT}=This,{CX,CY} = C,R,StartAngle,EndAngle,Clockwise)
  when is_number(CX),is_number(CY),is_number(R),is_number(StartAngle),is_number(EndAngle),is_boolean(Clockwise) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddArc_5,[ThisRef,C,R,StartAngle,EndAngle,Clockwise]).
+  wxe_util:queue_cmd(This,C,R,StartAngle,EndAngle,Clockwise,?get_env(),?wxGraphicsPath_AddArc_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddarc">external documentation</a>.
 -spec addArc(This, X, Y, R, StartAngle, EndAngle, Clockwise) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number(), R::number(), StartAngle::number(), EndAngle::number(), Clockwise::boolean().
-addArc(#wx_ref{type=ThisT,ref=ThisRef},X,Y,R,StartAngle,EndAngle,Clockwise)
+addArc(#wx_ref{type=ThisT}=This,X,Y,R,StartAngle,EndAngle,Clockwise)
  when is_number(X),is_number(Y),is_number(R),is_number(StartAngle),is_number(EndAngle),is_boolean(Clockwise) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddArc_6,[ThisRef,X,Y,R,StartAngle,EndAngle,Clockwise]).
+  wxe_util:queue_cmd(This,X,Y,R,StartAngle,EndAngle,Clockwise,?get_env(),?wxGraphicsPath_AddArc_6).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddarctopoint">external documentation</a>.
 -spec addArcToPoint(This, X1, Y1, X2, Y2, R) -> 'ok' when
 	This::wxGraphicsPath(), X1::number(), Y1::number(), X2::number(), Y2::number(), R::number().
-addArcToPoint(#wx_ref{type=ThisT,ref=ThisRef},X1,Y1,X2,Y2,R)
+addArcToPoint(#wx_ref{type=ThisT}=This,X1,Y1,X2,Y2,R)
  when is_number(X1),is_number(Y1),is_number(X2),is_number(Y2),is_number(R) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddArcToPoint,[ThisRef,X1,Y1,X2,Y2,R]).
+  wxe_util:queue_cmd(This,X1,Y1,X2,Y2,R,?get_env(),?wxGraphicsPath_AddArcToPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddcircle">external documentation</a>.
 -spec addCircle(This, X, Y, R) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number(), R::number().
-addCircle(#wx_ref{type=ThisT,ref=ThisRef},X,Y,R)
+addCircle(#wx_ref{type=ThisT}=This,X,Y,R)
  when is_number(X),is_number(Y),is_number(R) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddCircle,[ThisRef,X,Y,R]).
+  wxe_util:queue_cmd(This,X,Y,R,?get_env(),?wxGraphicsPath_AddCircle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddcurvetopoint">external documentation</a>.
 -spec addCurveToPoint(This, C1, C2, E) -> 'ok' when
 	This::wxGraphicsPath(), C1::{X::float(), Y::float()}, C2::{X::float(), Y::float()}, E::{X::float(), Y::float()}.
-addCurveToPoint(#wx_ref{type=ThisT,ref=ThisRef},{C1X,C1Y} = C1,{C2X,C2Y} = C2,{EX,EY} = E)
+addCurveToPoint(#wx_ref{type=ThisT}=This,{C1X,C1Y} = C1,{C2X,C2Y} = C2,{EX,EY} = E)
  when is_number(C1X),is_number(C1Y),is_number(C2X),is_number(C2Y),is_number(EX),is_number(EY) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddCurveToPoint_3,[ThisRef,C1,C2,E]).
+  wxe_util:queue_cmd(This,C1,C2,E,?get_env(),?wxGraphicsPath_AddCurveToPoint_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddcurvetopoint">external documentation</a>.
 -spec addCurveToPoint(This, Cx1, Cy1, Cx2, Cy2, X, Y) -> 'ok' when
 	This::wxGraphicsPath(), Cx1::number(), Cy1::number(), Cx2::number(), Cy2::number(), X::number(), Y::number().
-addCurveToPoint(#wx_ref{type=ThisT,ref=ThisRef},Cx1,Cy1,Cx2,Cy2,X,Y)
+addCurveToPoint(#wx_ref{type=ThisT}=This,Cx1,Cy1,Cx2,Cy2,X,Y)
  when is_number(Cx1),is_number(Cy1),is_number(Cx2),is_number(Cy2),is_number(X),is_number(Y) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddCurveToPoint_6,[ThisRef,Cx1,Cy1,Cx2,Cy2,X,Y]).
+  wxe_util:queue_cmd(This,Cx1,Cy1,Cx2,Cy2,X,Y,?get_env(),?wxGraphicsPath_AddCurveToPoint_6).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddellipse">external documentation</a>.
 -spec addEllipse(This, X, Y, W, H) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number(), W::number(), H::number().
-addEllipse(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
+addEllipse(#wx_ref{type=ThisT}=This,X,Y,W,H)
  when is_number(X),is_number(Y),is_number(W),is_number(H) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddEllipse,[ThisRef,X,Y,W,H]).
+  wxe_util:queue_cmd(This,X,Y,W,H,?get_env(),?wxGraphicsPath_AddEllipse).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddlinetopoint">external documentation</a>.
 -spec addLineToPoint(This, P) -> 'ok' when
 	This::wxGraphicsPath(), P::{X::float(), Y::float()}.
-addLineToPoint(#wx_ref{type=ThisT,ref=ThisRef},{PX,PY} = P)
+addLineToPoint(#wx_ref{type=ThisT}=This,{PX,PY} = P)
  when is_number(PX),is_number(PY) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddLineToPoint_1,[ThisRef,P]).
+  wxe_util:queue_cmd(This,P,?get_env(),?wxGraphicsPath_AddLineToPoint_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddlinetopoint">external documentation</a>.
 -spec addLineToPoint(This, X, Y) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number().
-addLineToPoint(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+addLineToPoint(#wx_ref{type=ThisT}=This,X,Y)
  when is_number(X),is_number(Y) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddLineToPoint_2,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxGraphicsPath_AddLineToPoint_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddpath">external documentation</a>.
 -spec addPath(This, Path) -> 'ok' when
 	This::wxGraphicsPath(), Path::wxGraphicsPath().
-addPath(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PathT,ref=PathRef}) ->
+addPath(#wx_ref{type=ThisT}=This,#wx_ref{type=PathT}=Path) ->
   ?CLASS(ThisT,wxGraphicsPath),
   ?CLASS(PathT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddPath,[ThisRef,PathRef]).
+  wxe_util:queue_cmd(This,Path,?get_env(),?wxGraphicsPath_AddPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddquadcurvetopoint">external documentation</a>.
 -spec addQuadCurveToPoint(This, Cx, Cy, X, Y) -> 'ok' when
 	This::wxGraphicsPath(), Cx::number(), Cy::number(), X::number(), Y::number().
-addQuadCurveToPoint(#wx_ref{type=ThisT,ref=ThisRef},Cx,Cy,X,Y)
+addQuadCurveToPoint(#wx_ref{type=ThisT}=This,Cx,Cy,X,Y)
  when is_number(Cx),is_number(Cy),is_number(X),is_number(Y) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddQuadCurveToPoint,[ThisRef,Cx,Cy,X,Y]).
+  wxe_util:queue_cmd(This,Cx,Cy,X,Y,?get_env(),?wxGraphicsPath_AddQuadCurveToPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddrectangle">external documentation</a>.
 -spec addRectangle(This, X, Y, W, H) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number(), W::number(), H::number().
-addRectangle(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
+addRectangle(#wx_ref{type=ThisT}=This,X,Y,W,H)
  when is_number(X),is_number(Y),is_number(W),is_number(H) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddRectangle,[ThisRef,X,Y,W,H]).
+  wxe_util:queue_cmd(This,X,Y,W,H,?get_env(),?wxGraphicsPath_AddRectangle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathaddroundedrectangle">external documentation</a>.
 -spec addRoundedRectangle(This, X, Y, W, H, Radius) -> 'ok' when
 	This::wxGraphicsPath(), X::number(), Y::number(), W::number(), H::number(), Radius::number().
-addRoundedRectangle(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H,Radius)
+addRoundedRectangle(#wx_ref{type=ThisT}=This,X,Y,W,H,Radius)
  when is_number(X),is_number(Y),is_number(W),is_number(H),is_number(Radius) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_AddRoundedRectangle,[ThisRef,X,Y,W,H,Radius]).
+  wxe_util:queue_cmd(This,X,Y,W,H,Radius,?get_env(),?wxGraphicsPath_AddRoundedRectangle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathclosesubpath">external documentation</a>.
 -spec closeSubpath(This) -> 'ok' when
 	This::wxGraphicsPath().
-closeSubpath(#wx_ref{type=ThisT,ref=ThisRef}) ->
+closeSubpath(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:cast(?wxGraphicsPath_CloseSubpath,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsPath_CloseSubpath).
 
 %% @equiv contains(This,C, [])
 -spec contains(This, C) -> boolean() when
@@ -194,42 +194,46 @@ contains(This,C={CX,CY} = C)
 contains(This,X,Y)
  when is_record(This, wx_ref),is_number(X),is_number(Y) ->
   contains(This,X,Y, []);
-contains(#wx_ref{type=ThisT,ref=ThisRef},{CX,CY} = C, Options)
+contains(#wx_ref{type=ThisT}=This,{CX,CY} = C, Options)
  when is_number(CX),is_number(CY),is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:call(?wxGraphicsPath_Contains_2,[ThisRef,C, Options]).
+  wxe_util:queue_cmd(This,C, Options,?get_env(),?wxGraphicsPath_Contains_2),
+  wxe_util:rec(?wxGraphicsPath_Contains_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathcontains">external documentation</a>.
 %%<br /> FillStyle = integer
 -spec contains(This, X, Y, [Option]) -> boolean() when
 	This::wxGraphicsPath(), X::number(), Y::number(),
 	Option :: {'fillStyle', wx:wx_enum()}.
-contains(#wx_ref{type=ThisT,ref=ThisRef},X,Y, Options)
+contains(#wx_ref{type=ThisT}=This,X,Y, Options)
  when is_number(X),is_number(Y),is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:call(?wxGraphicsPath_Contains_3,[ThisRef,X,Y, Options]).
+  wxe_util:queue_cmd(This,X,Y, Options,?get_env(),?wxGraphicsPath_Contains_3),
+  wxe_util:rec(?wxGraphicsPath_Contains_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathgetbox">external documentation</a>.
 -spec getBox(This) -> {X::float(), Y::float(), W::float(), H::float()} when
 	This::wxGraphicsPath().
-getBox(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBox(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:call(?wxGraphicsPath_GetBox,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsPath_GetBox),
+  wxe_util:rec(?wxGraphicsPath_GetBox).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathgetcurrentpoint">external documentation</a>.
 -spec getCurrentPoint(This) -> {X::float(), Y::float()} when
 	This::wxGraphicsPath().
-getCurrentPoint(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCurrentPoint(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:call(?wxGraphicsPath_GetCurrentPoint,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsPath_GetCurrentPoint),
+  wxe_util:rec(?wxGraphicsPath_GetCurrentPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathtransform">external documentation</a>.
 -spec transform(This, Matrix) -> 'ok' when
 	This::wxGraphicsPath(), Matrix::wxGraphicsMatrix:wxGraphicsMatrix().
-transform(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MatrixT,ref=MatrixRef}) ->
+transform(#wx_ref{type=ThisT}=This,#wx_ref{type=MatrixT}=Matrix) ->
   ?CLASS(ThisT,wxGraphicsPath),
   ?CLASS(MatrixT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsPath_Transform,[ThisRef,MatrixRef]).
+  wxe_util:queue_cmd(This,Matrix,?get_env(),?wxGraphicsPath_Transform).
 
  %% From wxGraphicsObject
 %% @hidden

@@ -47,36 +47,41 @@ new() ->
 	Option :: {'data', wxPrintDialogData:wxPrintDialogData()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxPrinter_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxPrinter_new),
+  wxe_util:rec(?wxPrinter_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprintercreateabortwindow">external documentation</a>.
 -spec createAbortWindow(This, Parent, Printout) -> wxWindow:wxWindow() when
 	This::wxPrinter(), Parent::wxWindow:wxWindow(), Printout::wxPrintout:wxPrintout().
-createAbortWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=PrintoutT,ref=PrintoutRef}) ->
+createAbortWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=PrintoutT}=Printout) ->
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(PrintoutT,wxPrintout),
-  wxe_util:call(?wxPrinter_CreateAbortWindow,[ThisRef,ParentRef,PrintoutRef]).
+  wxe_util:queue_cmd(This,Parent,Printout,?get_env(),?wxPrinter_CreateAbortWindow),
+  wxe_util:rec(?wxPrinter_CreateAbortWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprintergetabort">external documentation</a>.
 -spec getAbort(This) -> boolean() when
 	This::wxPrinter().
-getAbort(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAbort(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrinter),
-  wxe_util:call(?wxPrinter_GetAbort,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrinter_GetAbort),
+  wxe_util:rec(?wxPrinter_GetAbort).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprintergetlasterror">external documentation</a>.
 %%<br /> Res = ?wxPRINTER_NO_ERROR | ?wxPRINTER_CANCELLED | ?wxPRINTER_ERROR
 -spec getLastError() -> wx:wx_enum().
 getLastError() ->
-  wxe_util:call(?wxPrinter_GetLastError,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPrinter_GetLastError),
+  wxe_util:rec(?wxPrinter_GetLastError).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprintergetprintdialogdata">external documentation</a>.
 -spec getPrintDialogData(This) -> wxPrintDialogData:wxPrintDialogData() when
 	This::wxPrinter().
-getPrintDialogData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrintDialogData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPrinter),
-  wxe_util:call(?wxPrinter_GetPrintDialogData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPrinter_GetPrintDialogData),
+  wxe_util:rec(?wxPrinter_GetPrintDialogData).
 
 %% @equiv print(This,Parent,Printout, [])
 -spec print(This, Parent, Printout) -> boolean() when
@@ -90,39 +95,42 @@ print(This,Parent,Printout)
 -spec print(This, Parent, Printout, [Option]) -> boolean() when
 	This::wxPrinter(), Parent::wxWindow:wxWindow(), Printout::wxPrintout:wxPrintout(),
 	Option :: {'prompt', boolean()}.
-print(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=PrintoutT,ref=PrintoutRef}, Options)
+print(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=PrintoutT}=Printout, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(PrintoutT,wxPrintout),
-  wxe_util:call(?wxPrinter_Print,[ThisRef,ParentRef,PrintoutRef, Options]).
+  wxe_util:queue_cmd(This,Parent,Printout, Options,?get_env(),?wxPrinter_Print),
+  wxe_util:rec(?wxPrinter_Print).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprinterprintdialog">external documentation</a>.
 -spec printDialog(This, Parent) -> wxDC:wxDC() when
 	This::wxPrinter(), Parent::wxWindow:wxWindow().
-printDialog(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}) ->
+printDialog(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent) ->
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxPrinter_PrintDialog,[ThisRef,ParentRef]).
+  wxe_util:queue_cmd(This,Parent,?get_env(),?wxPrinter_PrintDialog),
+  wxe_util:rec(?wxPrinter_PrintDialog).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprinterreporterror">external documentation</a>.
 -spec reportError(This, Parent, Printout, Message) -> 'ok' when
 	This::wxPrinter(), Parent::wxWindow:wxWindow(), Printout::wxPrintout:wxPrintout(), Message::unicode:chardata().
-reportError(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=PrintoutT,ref=PrintoutRef},Message)
+reportError(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=PrintoutT}=Printout,Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(PrintoutT,wxPrintout),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:cast(?wxPrinter_ReportError,[ThisRef,ParentRef,PrintoutRef,Message_UC]).
+  wxe_util:queue_cmd(This,Parent,Printout,Message_UC,?get_env(),?wxPrinter_ReportError).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprintersetup">external documentation</a>.
 -spec setup(This, Parent) -> boolean() when
 	This::wxPrinter(), Parent::wxWindow:wxWindow().
-setup(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}) ->
+setup(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent) ->
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxPrinter_Setup,[ThisRef,ParentRef]).
+  wxe_util:queue_cmd(This,Parent,?get_env(),?wxPrinter_Setup),
+  wxe_util:rec(?wxPrinter_Setup).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrinter()) -> 'ok'.

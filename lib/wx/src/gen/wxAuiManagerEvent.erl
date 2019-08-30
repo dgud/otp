@@ -48,62 +48,66 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetmanager">external documentation</a>.
 -spec setManager(This, Mgr) -> 'ok' when
 	This::wxAuiManagerEvent(), Mgr::wxAuiManager:wxAuiManager().
-setManager(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MgrT,ref=MgrRef}) ->
+setManager(#wx_ref{type=ThisT}=This,#wx_ref{type=MgrT}=Mgr) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
   ?CLASS(MgrT,wxAuiManager),
-  wxe_util:cast(?wxAuiManagerEvent_SetManager,[ThisRef,MgrRef]).
+  wxe_util:queue_cmd(This,Mgr,?get_env(),?wxAuiManagerEvent_SetManager).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetmanager">external documentation</a>.
 -spec getManager(This) -> wxAuiManager:wxAuiManager() when
 	This::wxAuiManagerEvent().
-getManager(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getManager(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetManager,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiManagerEvent_GetManager),
+  wxe_util:rec(?wxAuiManagerEvent_GetManager).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetpane">external documentation</a>.
 -spec setPane(This, P) -> 'ok' when
 	This::wxAuiManagerEvent(), P::wxAuiPaneInfo:wxAuiPaneInfo().
-setPane(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PT,ref=PRef}) ->
+setPane(#wx_ref{type=ThisT}=This,#wx_ref{type=PT}=P) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
   ?CLASS(PT,wxAuiPaneInfo),
-  wxe_util:cast(?wxAuiManagerEvent_SetPane,[ThisRef,PRef]).
+  wxe_util:queue_cmd(This,P,?get_env(),?wxAuiManagerEvent_SetPane).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetpane">external documentation</a>.
 -spec getPane(This) -> wxAuiPaneInfo:wxAuiPaneInfo() when
 	This::wxAuiManagerEvent().
-getPane(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPane(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetPane,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiManagerEvent_GetPane),
+  wxe_util:rec(?wxAuiManagerEvent_GetPane).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetbutton">external documentation</a>.
 -spec setButton(This, B) -> 'ok' when
 	This::wxAuiManagerEvent(), B::integer().
-setButton(#wx_ref{type=ThisT,ref=ThisRef},B)
+setButton(#wx_ref{type=ThisT}=This,B)
  when is_integer(B) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:cast(?wxAuiManagerEvent_SetButton,[ThisRef,B]).
+  wxe_util:queue_cmd(This,B,?get_env(),?wxAuiManagerEvent_SetButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetbutton">external documentation</a>.
 -spec getButton(This) -> integer() when
 	This::wxAuiManagerEvent().
-getButton(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getButton(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetButton,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiManagerEvent_GetButton),
+  wxe_util:rec(?wxAuiManagerEvent_GetButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetdc">external documentation</a>.
 -spec setDC(This, Pdc) -> 'ok' when
 	This::wxAuiManagerEvent(), Pdc::wxDC:wxDC().
-setDC(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PdcT,ref=PdcRef}) ->
+setDC(#wx_ref{type=ThisT}=This,#wx_ref{type=PdcT}=Pdc) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
   ?CLASS(PdcT,wxDC),
-  wxe_util:cast(?wxAuiManagerEvent_SetDC,[ThisRef,PdcRef]).
+  wxe_util:queue_cmd(This,Pdc,?get_env(),?wxAuiManagerEvent_SetDC).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetdc">external documentation</a>.
 -spec getDC(This) -> wxDC:wxDC() when
 	This::wxAuiManagerEvent().
-getDC(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDC(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetDC,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiManagerEvent_GetDC),
+  wxe_util:rec(?wxAuiManagerEvent_GetDC).
 
 %% @equiv veto(This, [])
 -spec veto(This) -> 'ok' when
@@ -117,32 +121,34 @@ veto(This)
 -spec veto(This, [Option]) -> 'ok' when
 	This::wxAuiManagerEvent(),
 	Option :: {'veto', boolean()}.
-veto(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+veto(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:cast(?wxAuiManagerEvent_Veto,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiManagerEvent_Veto).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetveto">external documentation</a>.
 -spec getVeto(This) -> boolean() when
 	This::wxAuiManagerEvent().
-getVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getVeto(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetVeto,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiManagerEvent_GetVeto),
+  wxe_util:rec(?wxAuiManagerEvent_GetVeto).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetcanveto">external documentation</a>.
 -spec setCanVeto(This, Can_veto) -> 'ok' when
 	This::wxAuiManagerEvent(), Can_veto::boolean().
-setCanVeto(#wx_ref{type=ThisT,ref=ThisRef},Can_veto)
+setCanVeto(#wx_ref{type=ThisT}=This,Can_veto)
  when is_boolean(Can_veto) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:cast(?wxAuiManagerEvent_SetCanVeto,[ThisRef,Can_veto]).
+  wxe_util:queue_cmd(This,Can_veto,?get_env(),?wxAuiManagerEvent_SetCanVeto).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventcanveto">external documentation</a>.
 -spec canVeto(This) -> boolean() when
 	This::wxAuiManagerEvent().
-canVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canVeto(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_CanVeto,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiManagerEvent_CanVeto),
+  wxe_util:rec(?wxAuiManagerEvent_CanVeto).
 
  %% From wxEvent
 %% @hidden

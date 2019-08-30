@@ -51,17 +51,18 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontextmenuevent.html#wxcontextmenueventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxContextMenuEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxContextMenuEvent),
-  wxe_util:call(?wxContextMenuEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxContextMenuEvent_GetPosition),
+  wxe_util:rec(?wxContextMenuEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontextmenuevent.html#wxcontextmenueventsetposition">external documentation</a>.
 -spec setPosition(This, Pos) -> 'ok' when
 	This::wxContextMenuEvent(), Pos::{X::integer(), Y::integer()}.
-setPosition(#wx_ref{type=ThisT,ref=ThisRef},{PosX,PosY} = Pos)
+setPosition(#wx_ref{type=ThisT}=This,{PosX,PosY} = Pos)
  when is_integer(PosX),is_integer(PosY) ->
   ?CLASS(ThisT,wxContextMenuEvent),
-  wxe_util:cast(?wxContextMenuEvent_SetPosition,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxContextMenuEvent_SetPosition).
 
  %% From wxCommandEvent
 %% @hidden

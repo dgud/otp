@@ -140,7 +140,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridwxgrid">external documentation</a>.
 -spec new() -> wxGrid().
 new() ->
-  wxe_util:construct(?wxGrid_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGrid_new_0),
+  wxe_util:rec(?wxGrid_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxGrid() when
@@ -169,10 +170,11 @@ new(Parent,Id)
 new(Parent,X,Y)
  when is_record(Parent, wx_ref),is_integer(X),is_integer(Y) ->
   new(Parent,X,Y, []);
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxGrid_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxGrid_new_3),
+  wxe_util:rec(?wxGrid_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridwxgrid">external documentation</a>.
 -spec new(Parent, X, Y, [Option]) -> wxGrid() when
@@ -180,10 +182,11 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
 	Option :: {'w', integer()}
 		 | {'h', integer()}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},X,Y, Options)
+new(#wx_ref{type=ParentT}=Parent,X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxGrid_new_4,[ParentRef,X,Y, Options]).
+  wxe_util:queue_cmd(Parent,X,Y, Options,?get_env(),?wxGrid_new_4),
+  wxe_util:rec(?wxGrid_new_4).
 
 %% @equiv appendCols(This, [])
 -spec appendCols(This) -> boolean() when
@@ -198,10 +201,11 @@ appendCols(This)
 	This::wxGrid(),
 	Option :: {'numCols', integer()}
 		 | {'updateLabels', boolean()}.
-appendCols(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+appendCols(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_AppendCols,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_AppendCols),
+  wxe_util:rec(?wxGrid_AppendCols).
 
 %% @equiv appendRows(This, [])
 -spec appendRows(This) -> boolean() when
@@ -216,17 +220,18 @@ appendRows(This)
 	This::wxGrid(),
 	Option :: {'numRows', integer()}
 		 | {'updateLabels', boolean()}.
-appendRows(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+appendRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_AppendRows,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_AppendRows),
+  wxe_util:rec(?wxGrid_AppendRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridautosize">external documentation</a>.
 -spec autoSize(This) -> 'ok' when
 	This::wxGrid().
-autoSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+autoSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_AutoSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_AutoSize).
 
 %% @equiv autoSizeColumn(This,Col, [])
 -spec autoSizeColumn(This, Col) -> 'ok' when
@@ -240,10 +245,10 @@ autoSizeColumn(This,Col)
 -spec autoSizeColumn(This, Col, [Option]) -> 'ok' when
 	This::wxGrid(), Col::integer(),
 	Option :: {'setAsMin', boolean()}.
-autoSizeColumn(#wx_ref{type=ThisT,ref=ThisRef},Col, Options)
+autoSizeColumn(#wx_ref{type=ThisT}=This,Col, Options)
  when is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_AutoSizeColumn,[ThisRef,Col, Options]).
+  wxe_util:queue_cmd(This,Col, Options,?get_env(),?wxGrid_AutoSizeColumn).
 
 %% @equiv autoSizeColumns(This, [])
 -spec autoSizeColumns(This) -> 'ok' when
@@ -257,10 +262,10 @@ autoSizeColumns(This)
 -spec autoSizeColumns(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'setAsMin', boolean()}.
-autoSizeColumns(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+autoSizeColumns(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_AutoSizeColumns,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_AutoSizeColumns).
 
 %% @equiv autoSizeRow(This,Row, [])
 -spec autoSizeRow(This, Row) -> 'ok' when
@@ -274,10 +279,10 @@ autoSizeRow(This,Row)
 -spec autoSizeRow(This, Row, [Option]) -> 'ok' when
 	This::wxGrid(), Row::integer(),
 	Option :: {'setAsMin', boolean()}.
-autoSizeRow(#wx_ref{type=ThisT,ref=ThisRef},Row, Options)
+autoSizeRow(#wx_ref{type=ThisT}=This,Row, Options)
  when is_integer(Row),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_AutoSizeRow,[ThisRef,Row, Options]).
+  wxe_util:queue_cmd(This,Row, Options,?get_env(),?wxGrid_AutoSizeRow).
 
 %% @equiv autoSizeRows(This, [])
 -spec autoSizeRows(This) -> 'ok' when
@@ -291,83 +296,90 @@ autoSizeRows(This)
 -spec autoSizeRows(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'setAsMin', boolean()}.
-autoSizeRows(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+autoSizeRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_AutoSizeRows,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_AutoSizeRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridbeginbatch">external documentation</a>.
 -spec beginBatch(This) -> 'ok' when
 	This::wxGrid().
-beginBatch(#wx_ref{type=ThisT,ref=ThisRef}) ->
+beginBatch(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_BeginBatch,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_BeginBatch).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridblocktodevicerect">external documentation</a>.
 -spec blockToDeviceRect(This, TopLeft, BottomRight) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxGrid(), TopLeft::{R::integer(), C::integer()}, BottomRight::{R::integer(), C::integer()}.
-blockToDeviceRect(#wx_ref{type=ThisT,ref=ThisRef},{TopLeftR,TopLeftC} = TopLeft,{BottomRightR,BottomRightC} = BottomRight)
+blockToDeviceRect(#wx_ref{type=ThisT}=This,{TopLeftR,TopLeftC} = TopLeft,{BottomRightR,BottomRightC} = BottomRight)
  when is_integer(TopLeftR),is_integer(TopLeftC),is_integer(BottomRightR),is_integer(BottomRightC) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_BlockToDeviceRect,[ThisRef,TopLeft,BottomRight]).
+  wxe_util:queue_cmd(This,TopLeft,BottomRight,?get_env(),?wxGrid_BlockToDeviceRect),
+  wxe_util:rec(?wxGrid_BlockToDeviceRect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcandragcolsize">external documentation</a>.
 -spec canDragColSize(This) -> boolean() when
 	This::wxGrid().
-canDragColSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canDragColSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CanDragColSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_CanDragColSize),
+  wxe_util:rec(?wxGrid_CanDragColSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcandragrowsize">external documentation</a>.
 -spec canDragRowSize(This) -> boolean() when
 	This::wxGrid().
-canDragRowSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canDragRowSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CanDragRowSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_CanDragRowSize),
+  wxe_util:rec(?wxGrid_CanDragRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcandraggridsize">external documentation</a>.
 -spec canDragGridSize(This) -> boolean() when
 	This::wxGrid().
-canDragGridSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canDragGridSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CanDragGridSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_CanDragGridSize),
+  wxe_util:rec(?wxGrid_CanDragGridSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcanenablecellcontrol">external documentation</a>.
 -spec canEnableCellControl(This) -> boolean() when
 	This::wxGrid().
-canEnableCellControl(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canEnableCellControl(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CanEnableCellControl,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_CanEnableCellControl),
+  wxe_util:rec(?wxGrid_CanEnableCellControl).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcelltorect">external documentation</a>.
 -spec cellToRect(This, Coords) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxGrid(), Coords::{R::integer(), C::integer()}.
-cellToRect(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords)
+cellToRect(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords)
  when is_integer(CoordsR),is_integer(CoordsC) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CellToRect_1,[ThisRef,Coords]).
+  wxe_util:queue_cmd(This,Coords,?get_env(),?wxGrid_CellToRect_1),
+  wxe_util:rec(?wxGrid_CellToRect_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcelltorect">external documentation</a>.
 -spec cellToRect(This, Row, Col) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxGrid(), Row::integer(), Col::integer().
-cellToRect(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+cellToRect(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CellToRect_2,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_CellToRect_2),
+  wxe_util:rec(?wxGrid_CellToRect_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridcleargrid">external documentation</a>.
 -spec clearGrid(This) -> 'ok' when
 	This::wxGrid().
-clearGrid(#wx_ref{type=ThisT,ref=ThisRef}) ->
+clearGrid(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_ClearGrid,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_ClearGrid).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridclearselection">external documentation</a>.
 -spec clearSelection(This) -> 'ok' when
 	This::wxGrid().
-clearSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+clearSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_ClearSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_ClearSelection).
 
 %% @equiv createGrid(This,NumRows,NumCols, [])
 -spec createGrid(This, NumRows, NumCols) -> boolean() when
@@ -382,10 +394,11 @@ createGrid(This,NumRows,NumCols)
 -spec createGrid(This, NumRows, NumCols, [Option]) -> boolean() when
 	This::wxGrid(), NumRows::integer(), NumCols::integer(),
 	Option :: {'selmode', wx:wx_enum()}.
-createGrid(#wx_ref{type=ThisT,ref=ThisRef},NumRows,NumCols, Options)
+createGrid(#wx_ref{type=ThisT}=This,NumRows,NumCols, Options)
  when is_integer(NumRows),is_integer(NumCols),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_CreateGrid,[ThisRef,NumRows,NumCols, Options]).
+  wxe_util:queue_cmd(This,NumRows,NumCols, Options,?get_env(),?wxGrid_CreateGrid),
+  wxe_util:rec(?wxGrid_CreateGrid).
 
 %% @equiv deleteCols(This, [])
 -spec deleteCols(This) -> boolean() when
@@ -401,10 +414,11 @@ deleteCols(This)
 	Option :: {'pos', integer()}
 		 | {'numCols', integer()}
 		 | {'updateLabels', boolean()}.
-deleteCols(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+deleteCols(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_DeleteCols,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_DeleteCols),
+  wxe_util:rec(?wxGrid_DeleteCols).
 
 %% @equiv deleteRows(This, [])
 -spec deleteRows(This) -> boolean() when
@@ -420,38 +434,39 @@ deleteRows(This)
 	Option :: {'pos', integer()}
 		 | {'numRows', integer()}
 		 | {'updateLabels', boolean()}.
-deleteRows(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+deleteRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_DeleteRows,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_DeleteRows),
+  wxe_util:rec(?wxGrid_DeleteRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgriddisablecelleditcontrol">external documentation</a>.
 -spec disableCellEditControl(This) -> 'ok' when
 	This::wxGrid().
-disableCellEditControl(#wx_ref{type=ThisT,ref=ThisRef}) ->
+disableCellEditControl(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_DisableCellEditControl,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_DisableCellEditControl).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgriddisabledragcolsize">external documentation</a>.
 -spec disableDragColSize(This) -> 'ok' when
 	This::wxGrid().
-disableDragColSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+disableDragColSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_DisableDragColSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_DisableDragColSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgriddisabledraggridsize">external documentation</a>.
 -spec disableDragGridSize(This) -> 'ok' when
 	This::wxGrid().
-disableDragGridSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+disableDragGridSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_DisableDragGridSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_DisableDragGridSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgriddisabledragrowsize">external documentation</a>.
 -spec disableDragRowSize(This) -> 'ok' when
 	This::wxGrid().
-disableDragRowSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+disableDragRowSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_DisableDragRowSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_DisableDragRowSize).
 
 %% @equiv enableCellEditControl(This, [])
 -spec enableCellEditControl(This) -> 'ok' when
@@ -465,10 +480,10 @@ enableCellEditControl(This)
 -spec enableCellEditControl(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'enable', boolean()}.
-enableCellEditControl(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enableCellEditControl(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EnableCellEditControl,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_EnableCellEditControl).
 
 %% @equiv enableDragColSize(This, [])
 -spec enableDragColSize(This) -> 'ok' when
@@ -482,10 +497,10 @@ enableDragColSize(This)
 -spec enableDragColSize(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'enable', boolean()}.
-enableDragColSize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enableDragColSize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EnableDragColSize,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_EnableDragColSize).
 
 %% @equiv enableDragGridSize(This, [])
 -spec enableDragGridSize(This) -> 'ok' when
@@ -499,10 +514,10 @@ enableDragGridSize(This)
 -spec enableDragGridSize(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'enable', boolean()}.
-enableDragGridSize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enableDragGridSize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EnableDragGridSize,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_EnableDragGridSize).
 
 %% @equiv enableDragRowSize(This, [])
 -spec enableDragRowSize(This) -> 'ok' when
@@ -516,18 +531,18 @@ enableDragRowSize(This)
 -spec enableDragRowSize(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'enable', boolean()}.
-enableDragRowSize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enableDragRowSize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EnableDragRowSize,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_EnableDragRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridenableediting">external documentation</a>.
 -spec enableEditing(This, Edit) -> 'ok' when
 	This::wxGrid(), Edit::boolean().
-enableEditing(#wx_ref{type=ThisT,ref=ThisRef},Edit)
+enableEditing(#wx_ref{type=ThisT}=This,Edit)
  when is_boolean(Edit) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EnableEditing,[ThisRef,Edit]).
+  wxe_util:queue_cmd(This,Edit,?get_env(),?wxGrid_EnableEditing).
 
 %% @equiv enableGridLines(This, [])
 -spec enableGridLines(This) -> 'ok' when
@@ -541,456 +556,513 @@ enableGridLines(This)
 -spec enableGridLines(This, [Option]) -> 'ok' when
 	This::wxGrid(),
 	Option :: {'enable', boolean()}.
-enableGridLines(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enableGridLines(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EnableGridLines,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_EnableGridLines).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridendbatch">external documentation</a>.
 -spec endBatch(This) -> 'ok' when
 	This::wxGrid().
-endBatch(#wx_ref{type=ThisT,ref=ThisRef}) ->
+endBatch(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_EndBatch,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_EndBatch).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridfit">external documentation</a>.
 -spec fit(This) -> 'ok' when
 	This::wxGrid().
-fit(#wx_ref{type=ThisT,ref=ThisRef}) ->
+fit(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_Fit,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_Fit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridforcerefresh">external documentation</a>.
 -spec forceRefresh(This) -> 'ok' when
 	This::wxGrid().
-forceRefresh(#wx_ref{type=ThisT,ref=ThisRef}) ->
+forceRefresh(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_ForceRefresh,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_ForceRefresh).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetbatchcount">external documentation</a>.
 -spec getBatchCount(This) -> integer() when
 	This::wxGrid().
-getBatchCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBatchCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetBatchCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetBatchCount),
+  wxe_util:rec(?wxGrid_GetBatchCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcellalignment">external documentation</a>.
 -spec getCellAlignment(This, Row, Col) -> {Horiz::integer(), Vert::integer()} when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellAlignment(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellAlignment(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellAlignment,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellAlignment),
+  wxe_util:rec(?wxGrid_GetCellAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcellbackgroundcolour">external documentation</a>.
 -spec getCellBackgroundColour(This, Row, Col) -> wx:wx_colour4() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellBackgroundColour(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellBackgroundColour,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellBackgroundColour),
+  wxe_util:rec(?wxGrid_GetCellBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcelleditor">external documentation</a>.
 -spec getCellEditor(This, Row, Col) -> wxGridCellEditor:wxGridCellEditor() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellEditor(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellEditor(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellEditor,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellEditor),
+  wxe_util:rec(?wxGrid_GetCellEditor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcellfont">external documentation</a>.
 -spec getCellFont(This, Row, Col) -> wxFont:wxFont() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellFont(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellFont(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellFont,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellFont),
+  wxe_util:rec(?wxGrid_GetCellFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcellrenderer">external documentation</a>.
 -spec getCellRenderer(This, Row, Col) -> wxGridCellRenderer:wxGridCellRenderer() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellRenderer(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellRenderer(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellRenderer,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellRenderer),
+  wxe_util:rec(?wxGrid_GetCellRenderer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcelltextcolour">external documentation</a>.
 -spec getCellTextColour(This, Row, Col) -> wx:wx_colour4() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellTextColour(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellTextColour(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellTextColour,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellTextColour),
+  wxe_util:rec(?wxGrid_GetCellTextColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcellvalue">external documentation</a>.
 -spec getCellValue(This, Coords) -> unicode:charlist() when
 	This::wxGrid(), Coords::{R::integer(), C::integer()}.
-getCellValue(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords)
+getCellValue(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords)
  when is_integer(CoordsR),is_integer(CoordsC) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellValue_1,[ThisRef,Coords]).
+  wxe_util:queue_cmd(This,Coords,?get_env(),?wxGrid_GetCellValue_1),
+  wxe_util:rec(?wxGrid_GetCellValue_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcellvalue">external documentation</a>.
 -spec getCellValue(This, Row, Col) -> unicode:charlist() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getCellValue(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getCellValue(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetCellValue_2,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetCellValue_2),
+  wxe_util:rec(?wxGrid_GetCellValue_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcollabelalignment">external documentation</a>.
 -spec getColLabelAlignment(This) -> {Horiz::integer(), Vert::integer()} when
 	This::wxGrid().
-getColLabelAlignment(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColLabelAlignment(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetColLabelAlignment,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetColLabelAlignment),
+  wxe_util:rec(?wxGrid_GetColLabelAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcollabelsize">external documentation</a>.
 -spec getColLabelSize(This) -> integer() when
 	This::wxGrid().
-getColLabelSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColLabelSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetColLabelSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetColLabelSize),
+  wxe_util:rec(?wxGrid_GetColLabelSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcollabelvalue">external documentation</a>.
 -spec getColLabelValue(This, Col) -> unicode:charlist() when
 	This::wxGrid(), Col::integer().
-getColLabelValue(#wx_ref{type=ThisT,ref=ThisRef},Col)
+getColLabelValue(#wx_ref{type=ThisT}=This,Col)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetColLabelValue,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,Col,?get_env(),?wxGrid_GetColLabelValue),
+  wxe_util:rec(?wxGrid_GetColLabelValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetcolminimalacceptablewidth">external documentation</a>.
 -spec getColMinimalAcceptableWidth(This) -> integer() when
 	This::wxGrid().
-getColMinimalAcceptableWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColMinimalAcceptableWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetColMinimalAcceptableWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetColMinimalAcceptableWidth),
+  wxe_util:rec(?wxGrid_GetColMinimalAcceptableWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultcellalignment">external documentation</a>.
 -spec getDefaultCellAlignment(This) -> {Horiz::integer(), Vert::integer()} when
 	This::wxGrid().
-getDefaultCellAlignment(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultCellAlignment(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultCellAlignment,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultCellAlignment),
+  wxe_util:rec(?wxGrid_GetDefaultCellAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultcellbackgroundcolour">external documentation</a>.
 -spec getDefaultCellBackgroundColour(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getDefaultCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultCellBackgroundColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultCellBackgroundColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultCellBackgroundColour),
+  wxe_util:rec(?wxGrid_GetDefaultCellBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultcellfont">external documentation</a>.
 -spec getDefaultCellFont(This) -> wxFont:wxFont() when
 	This::wxGrid().
-getDefaultCellFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultCellFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultCellFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultCellFont),
+  wxe_util:rec(?wxGrid_GetDefaultCellFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultcelltextcolour">external documentation</a>.
 -spec getDefaultCellTextColour(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getDefaultCellTextColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultCellTextColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultCellTextColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultCellTextColour),
+  wxe_util:rec(?wxGrid_GetDefaultCellTextColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultcollabelsize">external documentation</a>.
 -spec getDefaultColLabelSize(This) -> integer() when
 	This::wxGrid().
-getDefaultColLabelSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultColLabelSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultColLabelSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultColLabelSize),
+  wxe_util:rec(?wxGrid_GetDefaultColLabelSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultcolsize">external documentation</a>.
 -spec getDefaultColSize(This) -> integer() when
 	This::wxGrid().
-getDefaultColSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultColSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultColSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultColSize),
+  wxe_util:rec(?wxGrid_GetDefaultColSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaulteditor">external documentation</a>.
 -spec getDefaultEditor(This) -> wxGridCellEditor:wxGridCellEditor() when
 	This::wxGrid().
-getDefaultEditor(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultEditor(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultEditor,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultEditor),
+  wxe_util:rec(?wxGrid_GetDefaultEditor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaulteditorforcell">external documentation</a>.
 -spec getDefaultEditorForCell(This, C) -> wxGridCellEditor:wxGridCellEditor() when
 	This::wxGrid(), C::{R::integer(), C::integer()}.
-getDefaultEditorForCell(#wx_ref{type=ThisT,ref=ThisRef},{CR,CC} = C)
+getDefaultEditorForCell(#wx_ref{type=ThisT}=This,{CR,CC} = C)
  when is_integer(CR),is_integer(CC) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultEditorForCell_1,[ThisRef,C]).
+  wxe_util:queue_cmd(This,C,?get_env(),?wxGrid_GetDefaultEditorForCell_1),
+  wxe_util:rec(?wxGrid_GetDefaultEditorForCell_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaulteditorforcell">external documentation</a>.
 -spec getDefaultEditorForCell(This, Row, Col) -> wxGridCellEditor:wxGridCellEditor() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getDefaultEditorForCell(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getDefaultEditorForCell(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultEditorForCell_2,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetDefaultEditorForCell_2),
+  wxe_util:rec(?wxGrid_GetDefaultEditorForCell_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaulteditorfortype">external documentation</a>.
 -spec getDefaultEditorForType(This, TypeName) -> wxGridCellEditor:wxGridCellEditor() when
 	This::wxGrid(), TypeName::unicode:chardata().
-getDefaultEditorForType(#wx_ref{type=ThisT,ref=ThisRef},TypeName)
+getDefaultEditorForType(#wx_ref{type=ThisT}=This,TypeName)
  when ?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
   TypeName_UC = unicode:characters_to_binary([TypeName,0]),
-  wxe_util:call(?wxGrid_GetDefaultEditorForType,[ThisRef,TypeName_UC]).
+  wxe_util:queue_cmd(This,TypeName_UC,?get_env(),?wxGrid_GetDefaultEditorForType),
+  wxe_util:rec(?wxGrid_GetDefaultEditorForType).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultrenderer">external documentation</a>.
 -spec getDefaultRenderer(This) -> wxGridCellRenderer:wxGridCellRenderer() when
 	This::wxGrid().
-getDefaultRenderer(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultRenderer(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultRenderer,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultRenderer),
+  wxe_util:rec(?wxGrid_GetDefaultRenderer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultrendererforcell">external documentation</a>.
 -spec getDefaultRendererForCell(This, Row, Col) -> wxGridCellRenderer:wxGridCellRenderer() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getDefaultRendererForCell(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getDefaultRendererForCell(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultRendererForCell,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetDefaultRendererForCell),
+  wxe_util:rec(?wxGrid_GetDefaultRendererForCell).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultrendererfortype">external documentation</a>.
 -spec getDefaultRendererForType(This, TypeName) -> wxGridCellRenderer:wxGridCellRenderer() when
 	This::wxGrid(), TypeName::unicode:chardata().
-getDefaultRendererForType(#wx_ref{type=ThisT,ref=ThisRef},TypeName)
+getDefaultRendererForType(#wx_ref{type=ThisT}=This,TypeName)
  when ?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
   TypeName_UC = unicode:characters_to_binary([TypeName,0]),
-  wxe_util:call(?wxGrid_GetDefaultRendererForType,[ThisRef,TypeName_UC]).
+  wxe_util:queue_cmd(This,TypeName_UC,?get_env(),?wxGrid_GetDefaultRendererForType),
+  wxe_util:rec(?wxGrid_GetDefaultRendererForType).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultrowlabelsize">external documentation</a>.
 -spec getDefaultRowLabelSize(This) -> integer() when
 	This::wxGrid().
-getDefaultRowLabelSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultRowLabelSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultRowLabelSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultRowLabelSize),
+  wxe_util:rec(?wxGrid_GetDefaultRowLabelSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetdefaultrowsize">external documentation</a>.
 -spec getDefaultRowSize(This) -> integer() when
 	This::wxGrid().
-getDefaultRowSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDefaultRowSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetDefaultRowSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetDefaultRowSize),
+  wxe_util:rec(?wxGrid_GetDefaultRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridcursorcol">external documentation</a>.
 -spec getGridCursorCol(This) -> integer() when
 	This::wxGrid().
-getGridCursorCol(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridCursorCol(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridCursorCol,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridCursorCol),
+  wxe_util:rec(?wxGrid_GetGridCursorCol).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridcursorrow">external documentation</a>.
 -spec getGridCursorRow(This) -> integer() when
 	This::wxGrid().
-getGridCursorRow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridCursorRow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridCursorRow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridCursorRow),
+  wxe_util:rec(?wxGrid_GetGridCursorRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridlinecolour">external documentation</a>.
 -spec getGridLineColour(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getGridLineColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridLineColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridLineColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridLineColour),
+  wxe_util:rec(?wxGrid_GetGridLineColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgridlinesenabled">external documentation</a>.
 -spec gridLinesEnabled(This) -> boolean() when
 	This::wxGrid().
-gridLinesEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+gridLinesEnabled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GridLinesEnabled,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GridLinesEnabled),
+  wxe_util:rec(?wxGrid_GridLinesEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetlabelbackgroundcolour">external documentation</a>.
 -spec getLabelBackgroundColour(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getLabelBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabelBackgroundColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetLabelBackgroundColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetLabelBackgroundColour),
+  wxe_util:rec(?wxGrid_GetLabelBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetlabelfont">external documentation</a>.
 -spec getLabelFont(This) -> wxFont:wxFont() when
 	This::wxGrid().
-getLabelFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabelFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetLabelFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetLabelFont),
+  wxe_util:rec(?wxGrid_GetLabelFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetlabeltextcolour">external documentation</a>.
 -spec getLabelTextColour(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getLabelTextColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabelTextColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetLabelTextColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetLabelTextColour),
+  wxe_util:rec(?wxGrid_GetLabelTextColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetnumbercols">external documentation</a>.
 -spec getNumberCols(This) -> integer() when
 	This::wxGrid().
-getNumberCols(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNumberCols(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetNumberCols,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetNumberCols),
+  wxe_util:rec(?wxGrid_GetNumberCols).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetnumberrows">external documentation</a>.
 -spec getNumberRows(This) -> integer() when
 	This::wxGrid().
-getNumberRows(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNumberRows(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetNumberRows,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetNumberRows),
+  wxe_util:rec(?wxGrid_GetNumberRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetorcreatecellattr">external documentation</a>.
 -spec getOrCreateCellAttr(This, Row, Col) -> wxGridCellAttr:wxGridCellAttr() when
 	This::wxGrid(), Row::integer(), Col::integer().
-getOrCreateCellAttr(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+getOrCreateCellAttr(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetOrCreateCellAttr,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_GetOrCreateCellAttr),
+  wxe_util:rec(?wxGrid_GetOrCreateCellAttr).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetrowminimalacceptableheight">external documentation</a>.
 -spec getRowMinimalAcceptableHeight(This) -> integer() when
 	This::wxGrid().
-getRowMinimalAcceptableHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRowMinimalAcceptableHeight(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetRowMinimalAcceptableHeight,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetRowMinimalAcceptableHeight),
+  wxe_util:rec(?wxGrid_GetRowMinimalAcceptableHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetrowlabelalignment">external documentation</a>.
 -spec getRowLabelAlignment(This) -> {Horiz::integer(), Vert::integer()} when
 	This::wxGrid().
-getRowLabelAlignment(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRowLabelAlignment(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetRowLabelAlignment,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetRowLabelAlignment),
+  wxe_util:rec(?wxGrid_GetRowLabelAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetrowlabelsize">external documentation</a>.
 -spec getRowLabelSize(This) -> integer() when
 	This::wxGrid().
-getRowLabelSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRowLabelSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetRowLabelSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetRowLabelSize),
+  wxe_util:rec(?wxGrid_GetRowLabelSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetrowlabelvalue">external documentation</a>.
 -spec getRowLabelValue(This, Row) -> unicode:charlist() when
 	This::wxGrid(), Row::integer().
-getRowLabelValue(#wx_ref{type=ThisT,ref=ThisRef},Row)
+getRowLabelValue(#wx_ref{type=ThisT}=This,Row)
  when is_integer(Row) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetRowLabelValue,[ThisRef,Row]).
+  wxe_util:queue_cmd(This,Row,?get_env(),?wxGrid_GetRowLabelValue),
+  wxe_util:rec(?wxGrid_GetRowLabelValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetrowsize">external documentation</a>.
 -spec getRowSize(This, Row) -> integer() when
 	This::wxGrid(), Row::integer().
-getRowSize(#wx_ref{type=ThisT,ref=ThisRef},Row)
+getRowSize(#wx_ref{type=ThisT}=This,Row)
  when is_integer(Row) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetRowSize,[ThisRef,Row]).
+  wxe_util:queue_cmd(This,Row,?get_env(),?wxGrid_GetRowSize),
+  wxe_util:rec(?wxGrid_GetRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetscrolllinex">external documentation</a>.
 -spec getScrollLineX(This) -> integer() when
 	This::wxGrid().
-getScrollLineX(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getScrollLineX(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetScrollLineX,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetScrollLineX),
+  wxe_util:rec(?wxGrid_GetScrollLineX).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetscrollliney">external documentation</a>.
 -spec getScrollLineY(This) -> integer() when
 	This::wxGrid().
-getScrollLineY(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getScrollLineY(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetScrollLineY,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetScrollLineY),
+  wxe_util:rec(?wxGrid_GetScrollLineY).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectedcells">external documentation</a>.
 -spec getSelectedCells(This) -> [{R::integer(), C::integer()}] when
 	This::wxGrid().
-getSelectedCells(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectedCells(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectedCells,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectedCells),
+  wxe_util:rec(?wxGrid_GetSelectedCells).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectedcols">external documentation</a>.
 -spec getSelectedCols(This) -> [integer()] when
 	This::wxGrid().
-getSelectedCols(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectedCols(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectedCols,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectedCols),
+  wxe_util:rec(?wxGrid_GetSelectedCols).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectedrows">external documentation</a>.
 -spec getSelectedRows(This) -> [integer()] when
 	This::wxGrid().
-getSelectedRows(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectedRows(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectedRows,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectedRows),
+  wxe_util:rec(?wxGrid_GetSelectedRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectionbackground">external documentation</a>.
 -spec getSelectionBackground(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getSelectionBackground(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectionBackground(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectionBackground,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectionBackground),
+  wxe_util:rec(?wxGrid_GetSelectionBackground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectionblocktopleft">external documentation</a>.
 -spec getSelectionBlockTopLeft(This) -> [{R::integer(), C::integer()}] when
 	This::wxGrid().
-getSelectionBlockTopLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectionBlockTopLeft(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectionBlockTopLeft,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectionBlockTopLeft),
+  wxe_util:rec(?wxGrid_GetSelectionBlockTopLeft).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectionblockbottomright">external documentation</a>.
 -spec getSelectionBlockBottomRight(This) -> [{R::integer(), C::integer()}] when
 	This::wxGrid().
-getSelectionBlockBottomRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectionBlockBottomRight(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectionBlockBottomRight,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectionBlockBottomRight),
+  wxe_util:rec(?wxGrid_GetSelectionBlockBottomRight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetselectionforeground">external documentation</a>.
 -spec getSelectionForeground(This) -> wx:wx_colour4() when
 	This::wxGrid().
-getSelectionForeground(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelectionForeground(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetSelectionForeground,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetSelectionForeground),
+  wxe_util:rec(?wxGrid_GetSelectionForeground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetviewwidth">external documentation</a>.
 -spec getViewWidth(This) -> integer() when
 	This::wxGrid().
-getViewWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getViewWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetViewWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetViewWidth),
+  wxe_util:rec(?wxGrid_GetViewWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridwindow">external documentation</a>.
 -spec getGridWindow(This) -> wxWindow:wxWindow() when
 	This::wxGrid().
-getGridWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridWindow),
+  wxe_util:rec(?wxGrid_GetGridWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridrowlabelwindow">external documentation</a>.
 -spec getGridRowLabelWindow(This) -> wxWindow:wxWindow() when
 	This::wxGrid().
-getGridRowLabelWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridRowLabelWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridRowLabelWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridRowLabelWindow),
+  wxe_util:rec(?wxGrid_GetGridRowLabelWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridcollabelwindow">external documentation</a>.
 -spec getGridColLabelWindow(This) -> wxWindow:wxWindow() when
 	This::wxGrid().
-getGridColLabelWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridColLabelWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridColLabelWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridColLabelWindow),
+  wxe_util:rec(?wxGrid_GetGridColLabelWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridgetgridcornerlabelwindow">external documentation</a>.
 -spec getGridCornerLabelWindow(This) -> wxWindow:wxWindow() when
 	This::wxGrid().
-getGridCornerLabelWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGridCornerLabelWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_GetGridCornerLabelWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_GetGridCornerLabelWindow),
+  wxe_util:rec(?wxGrid_GetGridCornerLabelWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridhidecelleditcontrol">external documentation</a>.
 -spec hideCellEditControl(This) -> 'ok' when
 	This::wxGrid().
-hideCellEditControl(#wx_ref{type=ThisT,ref=ThisRef}) ->
+hideCellEditControl(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_HideCellEditControl,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_HideCellEditControl).
 
 %% @equiv insertCols(This, [])
 -spec insertCols(This) -> boolean() when
@@ -1006,10 +1078,11 @@ insertCols(This)
 	Option :: {'pos', integer()}
 		 | {'numCols', integer()}
 		 | {'updateLabels', boolean()}.
-insertCols(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+insertCols(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_InsertCols,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_InsertCols),
+  wxe_util:rec(?wxGrid_InsertCols).
 
 %% @equiv insertRows(This, [])
 -spec insertRows(This) -> boolean() when
@@ -1025,62 +1098,70 @@ insertRows(This)
 	Option :: {'pos', integer()}
 		 | {'numRows', integer()}
 		 | {'updateLabels', boolean()}.
-insertRows(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+insertRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_InsertRows,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGrid_InsertRows),
+  wxe_util:rec(?wxGrid_InsertRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridiscelleditcontrolenabled">external documentation</a>.
 -spec isCellEditControlEnabled(This) -> boolean() when
 	This::wxGrid().
-isCellEditControlEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isCellEditControlEnabled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsCellEditControlEnabled,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_IsCellEditControlEnabled),
+  wxe_util:rec(?wxGrid_IsCellEditControlEnabled).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridiscurrentcellreadonly">external documentation</a>.
 -spec isCurrentCellReadOnly(This) -> boolean() when
 	This::wxGrid().
-isCurrentCellReadOnly(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isCurrentCellReadOnly(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsCurrentCellReadOnly,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_IsCurrentCellReadOnly),
+  wxe_util:rec(?wxGrid_IsCurrentCellReadOnly).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridiseditable">external documentation</a>.
 -spec isEditable(This) -> boolean() when
 	This::wxGrid().
-isEditable(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isEditable(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsEditable,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_IsEditable),
+  wxe_util:rec(?wxGrid_IsEditable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridisinselection">external documentation</a>.
 -spec isInSelection(This, Coords) -> boolean() when
 	This::wxGrid(), Coords::{R::integer(), C::integer()}.
-isInSelection(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords)
+isInSelection(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords)
  when is_integer(CoordsR),is_integer(CoordsC) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsInSelection_1,[ThisRef,Coords]).
+  wxe_util:queue_cmd(This,Coords,?get_env(),?wxGrid_IsInSelection_1),
+  wxe_util:rec(?wxGrid_IsInSelection_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridisinselection">external documentation</a>.
 -spec isInSelection(This, Row, Col) -> boolean() when
 	This::wxGrid(), Row::integer(), Col::integer().
-isInSelection(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+isInSelection(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsInSelection_2,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_IsInSelection_2),
+  wxe_util:rec(?wxGrid_IsInSelection_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridisreadonly">external documentation</a>.
 -spec isReadOnly(This, Row, Col) -> boolean() when
 	This::wxGrid(), Row::integer(), Col::integer().
-isReadOnly(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+isReadOnly(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsReadOnly,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_IsReadOnly),
+  wxe_util:rec(?wxGrid_IsReadOnly).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridisselection">external documentation</a>.
 -spec isSelection(This) -> boolean() when
 	This::wxGrid().
-isSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_IsSelection),
+  wxe_util:rec(?wxGrid_IsSelection).
 
 %% @equiv isVisible(This,Coords, [])
 -spec isVisible(This, Coords) -> boolean() when
@@ -1105,138 +1186,150 @@ isVisible(This,Coords={CoordsR,CoordsC} = Coords)
 isVisible(This,Row,Col)
  when is_record(This, wx_ref),is_integer(Row),is_integer(Col) ->
   isVisible(This,Row,Col, []);
-isVisible(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords, Options)
+isVisible(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords, Options)
  when is_integer(CoordsR),is_integer(CoordsC),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsVisible_2,[ThisRef,Coords, Options]).
+  wxe_util:queue_cmd(This,Coords, Options,?get_env(),?wxGrid_IsVisible_2),
+  wxe_util:rec(?wxGrid_IsVisible_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridisvisible">external documentation</a>.
 -spec isVisible(This, Row, Col, [Option]) -> boolean() when
 	This::wxGrid(), Row::integer(), Col::integer(),
 	Option :: {'wholeCellVisible', boolean()}.
-isVisible(#wx_ref{type=ThisT,ref=ThisRef},Row,Col, Options)
+isVisible(#wx_ref{type=ThisT}=This,Row,Col, Options)
  when is_integer(Row),is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_IsVisible_3,[ThisRef,Row,Col, Options]).
+  wxe_util:queue_cmd(This,Row,Col, Options,?get_env(),?wxGrid_IsVisible_3),
+  wxe_util:rec(?wxGrid_IsVisible_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmakecellvisible">external documentation</a>.
 -spec makeCellVisible(This, Coords) -> 'ok' when
 	This::wxGrid(), Coords::{R::integer(), C::integer()}.
-makeCellVisible(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords)
+makeCellVisible(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords)
  when is_integer(CoordsR),is_integer(CoordsC) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_MakeCellVisible_1,[ThisRef,Coords]).
+  wxe_util:queue_cmd(This,Coords,?get_env(),?wxGrid_MakeCellVisible_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmakecellvisible">external documentation</a>.
 -spec makeCellVisible(This, Row, Col) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer().
-makeCellVisible(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+makeCellVisible(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_MakeCellVisible_2,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_MakeCellVisible_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursordown">external documentation</a>.
 -spec moveCursorDown(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorDown(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorDown(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorDown,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorDown),
+  wxe_util:rec(?wxGrid_MoveCursorDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursorleft">external documentation</a>.
 -spec moveCursorLeft(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorLeft(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorLeft(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorLeft,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorLeft),
+  wxe_util:rec(?wxGrid_MoveCursorLeft).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursorright">external documentation</a>.
 -spec moveCursorRight(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorRight(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorRight(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorRight,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorRight),
+  wxe_util:rec(?wxGrid_MoveCursorRight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursorup">external documentation</a>.
 -spec moveCursorUp(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorUp(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorUp(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorUp,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorUp),
+  wxe_util:rec(?wxGrid_MoveCursorUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursordownblock">external documentation</a>.
 -spec moveCursorDownBlock(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorDownBlock(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorDownBlock(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorDownBlock,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorDownBlock),
+  wxe_util:rec(?wxGrid_MoveCursorDownBlock).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursorleftblock">external documentation</a>.
 -spec moveCursorLeftBlock(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorLeftBlock(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorLeftBlock(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorLeftBlock,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorLeftBlock),
+  wxe_util:rec(?wxGrid_MoveCursorLeftBlock).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursorrightblock">external documentation</a>.
 -spec moveCursorRightBlock(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorRightBlock(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorRightBlock(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorRightBlock,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorRightBlock),
+  wxe_util:rec(?wxGrid_MoveCursorRightBlock).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovecursorupblock">external documentation</a>.
 -spec moveCursorUpBlock(This, ExpandSelection) -> boolean() when
 	This::wxGrid(), ExpandSelection::boolean().
-moveCursorUpBlock(#wx_ref{type=ThisT,ref=ThisRef},ExpandSelection)
+moveCursorUpBlock(#wx_ref{type=ThisT}=This,ExpandSelection)
  when is_boolean(ExpandSelection) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MoveCursorUpBlock,[ThisRef,ExpandSelection]).
+  wxe_util:queue_cmd(This,ExpandSelection,?get_env(),?wxGrid_MoveCursorUpBlock),
+  wxe_util:rec(?wxGrid_MoveCursorUpBlock).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovepagedown">external documentation</a>.
 -spec movePageDown(This) -> boolean() when
 	This::wxGrid().
-movePageDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+movePageDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MovePageDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_MovePageDown),
+  wxe_util:rec(?wxGrid_MovePageDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridmovepageup">external documentation</a>.
 -spec movePageUp(This) -> boolean() when
 	This::wxGrid().
-movePageUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+movePageUp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_MovePageUp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_MovePageUp),
+  wxe_util:rec(?wxGrid_MovePageUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridregisterdatatype">external documentation</a>.
 -spec registerDataType(This, TypeName, Renderer, Editor) -> 'ok' when
 	This::wxGrid(), TypeName::unicode:chardata(), Renderer::wxGridCellRenderer:wxGridCellRenderer(), Editor::wxGridCellEditor:wxGridCellEditor().
-registerDataType(#wx_ref{type=ThisT,ref=ThisRef},TypeName,#wx_ref{type=RendererT,ref=RendererRef},#wx_ref{type=EditorT,ref=EditorRef})
+registerDataType(#wx_ref{type=ThisT}=This,TypeName,#wx_ref{type=RendererT}=Renderer,#wx_ref{type=EditorT}=Editor)
  when ?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
   TypeName_UC = unicode:characters_to_binary([TypeName,0]),
   ?CLASS(RendererT,wxGridCellRenderer),
   ?CLASS(EditorT,wxGridCellEditor),
-  wxe_util:cast(?wxGrid_RegisterDataType,[ThisRef,TypeName_UC,RendererRef,EditorRef]).
+  wxe_util:queue_cmd(This,TypeName_UC,Renderer,Editor,?get_env(),?wxGrid_RegisterDataType).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsaveeditcontrolvalue">external documentation</a>.
 -spec saveEditControlValue(This) -> 'ok' when
 	This::wxGrid().
-saveEditControlValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+saveEditControlValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SaveEditControlValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_SaveEditControlValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridselectall">external documentation</a>.
 -spec selectAll(This) -> 'ok' when
 	This::wxGrid().
-selectAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
+selectAll(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SelectAll,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_SelectAll).
 
 %% @equiv selectBlock(This,TopLeft,BottomRight, [])
 -spec selectBlock(This, TopLeft, BottomRight) -> 'ok' when
@@ -1250,10 +1343,10 @@ selectBlock(This,TopLeft={TopLeftR,TopLeftC} = TopLeft,BottomRight={BottomRightR
 -spec selectBlock(This, TopLeft, BottomRight, [Option]) -> 'ok' when
 	This::wxGrid(), TopLeft::{R::integer(), C::integer()}, BottomRight::{R::integer(), C::integer()},
 	Option :: {'addToSelected', boolean()}.
-selectBlock(#wx_ref{type=ThisT,ref=ThisRef},{TopLeftR,TopLeftC} = TopLeft,{BottomRightR,BottomRightC} = BottomRight, Options)
+selectBlock(#wx_ref{type=ThisT}=This,{TopLeftR,TopLeftC} = TopLeft,{BottomRightR,BottomRightC} = BottomRight, Options)
  when is_integer(TopLeftR),is_integer(TopLeftC),is_integer(BottomRightR),is_integer(BottomRightC),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SelectBlock_3,[ThisRef,TopLeft,BottomRight, Options]).
+  wxe_util:queue_cmd(This,TopLeft,BottomRight, Options,?get_env(),?wxGrid_SelectBlock_3).
 
 %% @equiv selectBlock(This,TopRow,LeftCol,BottomRow,RightCol, [])
 -spec selectBlock(This, TopRow, LeftCol, BottomRow, RightCol) -> 'ok' when
@@ -1267,10 +1360,10 @@ selectBlock(This,TopRow,LeftCol,BottomRow,RightCol)
 -spec selectBlock(This, TopRow, LeftCol, BottomRow, RightCol, [Option]) -> 'ok' when
 	This::wxGrid(), TopRow::integer(), LeftCol::integer(), BottomRow::integer(), RightCol::integer(),
 	Option :: {'addToSelected', boolean()}.
-selectBlock(#wx_ref{type=ThisT,ref=ThisRef},TopRow,LeftCol,BottomRow,RightCol, Options)
+selectBlock(#wx_ref{type=ThisT}=This,TopRow,LeftCol,BottomRow,RightCol, Options)
  when is_integer(TopRow),is_integer(LeftCol),is_integer(BottomRow),is_integer(RightCol),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SelectBlock_5,[ThisRef,TopRow,LeftCol,BottomRow,RightCol, Options]).
+  wxe_util:queue_cmd(This,TopRow,LeftCol,BottomRow,RightCol, Options,?get_env(),?wxGrid_SelectBlock_5).
 
 %% @equiv selectCol(This,Col, [])
 -spec selectCol(This, Col) -> 'ok' when
@@ -1284,10 +1377,10 @@ selectCol(This,Col)
 -spec selectCol(This, Col, [Option]) -> 'ok' when
 	This::wxGrid(), Col::integer(),
 	Option :: {'addToSelected', boolean()}.
-selectCol(#wx_ref{type=ThisT,ref=ThisRef},Col, Options)
+selectCol(#wx_ref{type=ThisT}=This,Col, Options)
  when is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SelectCol,[ThisRef,Col, Options]).
+  wxe_util:queue_cmd(This,Col, Options,?get_env(),?wxGrid_SelectCol).
 
 %% @equiv selectRow(This,Row, [])
 -spec selectRow(This, Row) -> 'ok' when
@@ -1301,42 +1394,42 @@ selectRow(This,Row)
 -spec selectRow(This, Row, [Option]) -> 'ok' when
 	This::wxGrid(), Row::integer(),
 	Option :: {'addToSelected', boolean()}.
-selectRow(#wx_ref{type=ThisT,ref=ThisRef},Row, Options)
+selectRow(#wx_ref{type=ThisT}=This,Row, Options)
  when is_integer(Row),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SelectRow,[ThisRef,Row, Options]).
+  wxe_util:queue_cmd(This,Row, Options,?get_env(),?wxGrid_SelectRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellalignment">external documentation</a>.
 -spec setCellAlignment(This, Align) -> 'ok' when
 	This::wxGrid(), Align::integer().
-setCellAlignment(#wx_ref{type=ThisT,ref=ThisRef},Align)
+setCellAlignment(#wx_ref{type=ThisT}=This,Align)
  when is_integer(Align) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellAlignment_1,[ThisRef,Align]).
+  wxe_util:queue_cmd(This,Align,?get_env(),?wxGrid_SetCellAlignment_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellalignment">external documentation</a>.
 -spec setCellAlignment(This, Align, Row, Col) -> 'ok' when
 	This::wxGrid(), Align::integer(), Row::integer(), Col::integer().
-setCellAlignment(#wx_ref{type=ThisT,ref=ThisRef},Align,Row,Col)
+setCellAlignment(#wx_ref{type=ThisT}=This,Align,Row,Col)
  when is_integer(Align),is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellAlignment_3,[ThisRef,Align,Row,Col]).
+  wxe_util:queue_cmd(This,Align,Row,Col,?get_env(),?wxGrid_SetCellAlignment_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellalignment">external documentation</a>.
 -spec setCellAlignment(This, Row, Col, Horiz, Vert) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer(), Horiz::integer(), Vert::integer().
-setCellAlignment(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,Horiz,Vert)
+setCellAlignment(#wx_ref{type=ThisT}=This,Row,Col,Horiz,Vert)
  when is_integer(Row),is_integer(Col),is_integer(Horiz),is_integer(Vert) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellAlignment_4,[ThisRef,Row,Col,Horiz,Vert]).
+  wxe_util:queue_cmd(This,Row,Col,Horiz,Vert,?get_env(),?wxGrid_SetCellAlignment_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellbackgroundcolour">external documentation</a>.
 -spec setCellBackgroundColour(This, Col) -> 'ok' when
 	This::wxGrid(), Col::wx:wx_colour().
-setCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
+setCellBackgroundColour(#wx_ref{type=ThisT}=This,Col)
  when tuple_size(Col) =:= 3; tuple_size(Col) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellBackgroundColour_1,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,wxe_util:color(Col),?get_env(),?wxGrid_SetCellBackgroundColour_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellbackgroundcolour">external documentation</a>.
 %% <br /> Also:<br />
@@ -1347,49 +1440,49 @@ setCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
 	This::wxGrid(), Row::integer(), Col::integer(), Val::wx:wx_colour();
       (This, Colour, Row, Col) -> 'ok' when
 	This::wxGrid(), Colour::wx:wx_colour(), Row::integer(), Col::integer().
-setCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,Val)
+setCellBackgroundColour(#wx_ref{type=ThisT}=This,Row,Col,Val)
  when is_integer(Row),is_integer(Col),tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellBackgroundColour_3_0,[ThisRef,Row,Col,Val]);
-setCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Colour,Row,Col)
+  wxe_util:queue_cmd(This,Row,Col,wxe_util:color(Val),?get_env(),?wxGrid_SetCellBackgroundColour_3_0);
+setCellBackgroundColour(#wx_ref{type=ThisT}=This,Colour,Row,Col)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4,is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellBackgroundColour_3_1,[ThisRef,Colour,Row,Col]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),Row,Col,?get_env(),?wxGrid_SetCellBackgroundColour_3_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcelleditor">external documentation</a>.
 -spec setCellEditor(This, Row, Col, Editor) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer(), Editor::wxGridCellEditor:wxGridCellEditor().
-setCellEditor(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=EditorT,ref=EditorRef})
+setCellEditor(#wx_ref{type=ThisT}=This,Row,Col,#wx_ref{type=EditorT}=Editor)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(EditorT,wxGridCellEditor),
-  wxe_util:cast(?wxGrid_SetCellEditor,[ThisRef,Row,Col,EditorRef]).
+  wxe_util:queue_cmd(This,Row,Col,Editor,?get_env(),?wxGrid_SetCellEditor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellfont">external documentation</a>.
 -spec setCellFont(This, Row, Col, Val) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer(), Val::wxFont:wxFont().
-setCellFont(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=ValT,ref=ValRef})
+setCellFont(#wx_ref{type=ThisT}=This,Row,Col,#wx_ref{type=ValT}=Val)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(ValT,wxFont),
-  wxe_util:cast(?wxGrid_SetCellFont,[ThisRef,Row,Col,ValRef]).
+  wxe_util:queue_cmd(This,Row,Col,Val,?get_env(),?wxGrid_SetCellFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellrenderer">external documentation</a>.
 -spec setCellRenderer(This, Row, Col, Renderer) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer(), Renderer::wxGridCellRenderer:wxGridCellRenderer().
-setCellRenderer(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=RendererT,ref=RendererRef})
+setCellRenderer(#wx_ref{type=ThisT}=This,Row,Col,#wx_ref{type=RendererT}=Renderer)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(RendererT,wxGridCellRenderer),
-  wxe_util:cast(?wxGrid_SetCellRenderer,[ThisRef,Row,Col,RendererRef]).
+  wxe_util:queue_cmd(This,Row,Col,Renderer,?get_env(),?wxGrid_SetCellRenderer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcelltextcolour">external documentation</a>.
 -spec setCellTextColour(This, Col) -> 'ok' when
 	This::wxGrid(), Col::wx:wx_colour().
-setCellTextColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
+setCellTextColour(#wx_ref{type=ThisT}=This,Col)
  when tuple_size(Col) =:= 3; tuple_size(Col) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellTextColour_1,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,wxe_util:color(Col),?get_env(),?wxGrid_SetCellTextColour_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcelltextcolour">external documentation</a>.
 %% <br /> Also:<br />
@@ -1400,23 +1493,23 @@ setCellTextColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
 	This::wxGrid(), Row::integer(), Col::integer(), Val::wx:wx_colour();
       (This, Val, Row, Col) -> 'ok' when
 	This::wxGrid(), Val::wx:wx_colour(), Row::integer(), Col::integer().
-setCellTextColour(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,Val)
+setCellTextColour(#wx_ref{type=ThisT}=This,Row,Col,Val)
  when is_integer(Row),is_integer(Col),tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellTextColour_3_0,[ThisRef,Row,Col,Val]);
-setCellTextColour(#wx_ref{type=ThisT,ref=ThisRef},Val,Row,Col)
+  wxe_util:queue_cmd(This,Row,Col,wxe_util:color(Val),?get_env(),?wxGrid_SetCellTextColour_3_0);
+setCellTextColour(#wx_ref{type=ThisT}=This,Val,Row,Col)
  when tuple_size(Val) =:= 3; tuple_size(Val) =:= 4,is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetCellTextColour_3_1,[ThisRef,Val,Row,Col]).
+  wxe_util:queue_cmd(This,wxe_util:color(Val),Row,Col,?get_env(),?wxGrid_SetCellTextColour_3_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellvalue">external documentation</a>.
 -spec setCellValue(This, Coords, S) -> 'ok' when
 	This::wxGrid(), Coords::{R::integer(), C::integer()}, S::unicode:chardata().
-setCellValue(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords,S)
+setCellValue(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords,S)
  when is_integer(CoordsR),is_integer(CoordsC),?is_chardata(S) ->
   ?CLASS(ThisT,wxGrid),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxGrid_SetCellValue_2,[ThisRef,Coords,S_UC]).
+  wxe_util:queue_cmd(This,Coords,S_UC,?get_env(),?wxGrid_SetCellValue_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellvalue">external documentation</a>.
 %% <br /> Also:<br />
@@ -1427,41 +1520,41 @@ setCellValue(#wx_ref{type=ThisT,ref=ThisRef},{CoordsR,CoordsC} = Coords,S)
 	This::wxGrid(), Row::integer(), Col::integer(), S::unicode:chardata();
       (This, Val, Row, Col) -> 'ok' when
 	This::wxGrid(), Val::unicode:chardata(), Row::integer(), Col::integer().
-setCellValue(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,S)
+setCellValue(#wx_ref{type=ThisT}=This,Row,Col,S)
  when is_integer(Row),is_integer(Col),?is_chardata(S) ->
   ?CLASS(ThisT,wxGrid),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxGrid_SetCellValue_3_0,[ThisRef,Row,Col,S_UC]);
-setCellValue(#wx_ref{type=ThisT,ref=ThisRef},Val,Row,Col)
+  wxe_util:queue_cmd(This,Row,Col,S_UC,?get_env(),?wxGrid_SetCellValue_3_0);
+setCellValue(#wx_ref{type=ThisT}=This,Val,Row,Col)
  when ?is_chardata(Val),is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
   Val_UC = unicode:characters_to_binary([Val,0]),
-  wxe_util:cast(?wxGrid_SetCellValue_3_1,[ThisRef,Val_UC,Row,Col]).
+  wxe_util:queue_cmd(This,Val_UC,Row,Col,?get_env(),?wxGrid_SetCellValue_3_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolattr">external documentation</a>.
 -spec setColAttr(This, Col, Attr) -> 'ok' when
 	This::wxGrid(), Col::integer(), Attr::wxGridCellAttr:wxGridCellAttr().
-setColAttr(#wx_ref{type=ThisT,ref=ThisRef},Col,#wx_ref{type=AttrT,ref=AttrRef})
+setColAttr(#wx_ref{type=ThisT}=This,Col,#wx_ref{type=AttrT}=Attr)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(AttrT,wxGridCellAttr),
-  wxe_util:cast(?wxGrid_SetColAttr,[ThisRef,Col,AttrRef]).
+  wxe_util:queue_cmd(This,Col,Attr,?get_env(),?wxGrid_SetColAttr).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolformatbool">external documentation</a>.
 -spec setColFormatBool(This, Col) -> 'ok' when
 	This::wxGrid(), Col::integer().
-setColFormatBool(#wx_ref{type=ThisT,ref=ThisRef},Col)
+setColFormatBool(#wx_ref{type=ThisT}=This,Col)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColFormatBool,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,Col,?get_env(),?wxGrid_SetColFormatBool).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolformatnumber">external documentation</a>.
 -spec setColFormatNumber(This, Col) -> 'ok' when
 	This::wxGrid(), Col::integer().
-setColFormatNumber(#wx_ref{type=ThisT,ref=ThisRef},Col)
+setColFormatNumber(#wx_ref{type=ThisT}=This,Col)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColFormatNumber,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,Col,?get_env(),?wxGrid_SetColFormatNumber).
 
 %% @equiv setColFormatFloat(This,Col, [])
 -spec setColFormatFloat(This, Col) -> 'ok' when
@@ -1476,116 +1569,116 @@ setColFormatFloat(This,Col)
 	This::wxGrid(), Col::integer(),
 	Option :: {'width', integer()}
 		 | {'precision', integer()}.
-setColFormatFloat(#wx_ref{type=ThisT,ref=ThisRef},Col, Options)
+setColFormatFloat(#wx_ref{type=ThisT}=This,Col, Options)
  when is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColFormatFloat,[ThisRef,Col, Options]).
+  wxe_util:queue_cmd(This,Col, Options,?get_env(),?wxGrid_SetColFormatFloat).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolformatcustom">external documentation</a>.
 -spec setColFormatCustom(This, Col, TypeName) -> 'ok' when
 	This::wxGrid(), Col::integer(), TypeName::unicode:chardata().
-setColFormatCustom(#wx_ref{type=ThisT,ref=ThisRef},Col,TypeName)
+setColFormatCustom(#wx_ref{type=ThisT}=This,Col,TypeName)
  when is_integer(Col),?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
   TypeName_UC = unicode:characters_to_binary([TypeName,0]),
-  wxe_util:cast(?wxGrid_SetColFormatCustom,[ThisRef,Col,TypeName_UC]).
+  wxe_util:queue_cmd(This,Col,TypeName_UC,?get_env(),?wxGrid_SetColFormatCustom).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcollabelalignment">external documentation</a>.
 -spec setColLabelAlignment(This, Horiz, Vert) -> 'ok' when
 	This::wxGrid(), Horiz::integer(), Vert::integer().
-setColLabelAlignment(#wx_ref{type=ThisT,ref=ThisRef},Horiz,Vert)
+setColLabelAlignment(#wx_ref{type=ThisT}=This,Horiz,Vert)
  when is_integer(Horiz),is_integer(Vert) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColLabelAlignment,[ThisRef,Horiz,Vert]).
+  wxe_util:queue_cmd(This,Horiz,Vert,?get_env(),?wxGrid_SetColLabelAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcollabelsize">external documentation</a>.
 -spec setColLabelSize(This, Height) -> 'ok' when
 	This::wxGrid(), Height::integer().
-setColLabelSize(#wx_ref{type=ThisT,ref=ThisRef},Height)
+setColLabelSize(#wx_ref{type=ThisT}=This,Height)
  when is_integer(Height) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColLabelSize,[ThisRef,Height]).
+  wxe_util:queue_cmd(This,Height,?get_env(),?wxGrid_SetColLabelSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcollabelvalue">external documentation</a>.
 -spec setColLabelValue(This, Col, Val) -> 'ok' when
 	This::wxGrid(), Col::integer(), Val::unicode:chardata().
-setColLabelValue(#wx_ref{type=ThisT,ref=ThisRef},Col,Val)
+setColLabelValue(#wx_ref{type=ThisT}=This,Col,Val)
  when is_integer(Col),?is_chardata(Val) ->
   ?CLASS(ThisT,wxGrid),
   Val_UC = unicode:characters_to_binary([Val,0]),
-  wxe_util:cast(?wxGrid_SetColLabelValue,[ThisRef,Col,Val_UC]).
+  wxe_util:queue_cmd(This,Col,Val_UC,?get_env(),?wxGrid_SetColLabelValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolminimalwidth">external documentation</a>.
 -spec setColMinimalWidth(This, Col, Width) -> 'ok' when
 	This::wxGrid(), Col::integer(), Width::integer().
-setColMinimalWidth(#wx_ref{type=ThisT,ref=ThisRef},Col,Width)
+setColMinimalWidth(#wx_ref{type=ThisT}=This,Col,Width)
  when is_integer(Col),is_integer(Width) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColMinimalWidth,[ThisRef,Col,Width]).
+  wxe_util:queue_cmd(This,Col,Width,?get_env(),?wxGrid_SetColMinimalWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolminimalacceptablewidth">external documentation</a>.
 -spec setColMinimalAcceptableWidth(This, Width) -> 'ok' when
 	This::wxGrid(), Width::integer().
-setColMinimalAcceptableWidth(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setColMinimalAcceptableWidth(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColMinimalAcceptableWidth,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxGrid_SetColMinimalAcceptableWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolsize">external documentation</a>.
 -spec setColSize(This, Col, Width) -> 'ok' when
 	This::wxGrid(), Col::integer(), Width::integer().
-setColSize(#wx_ref{type=ThisT,ref=ThisRef},Col,Width)
+setColSize(#wx_ref{type=ThisT}=This,Col,Width)
  when is_integer(Col),is_integer(Width) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetColSize,[ThisRef,Col,Width]).
+  wxe_util:queue_cmd(This,Col,Width,?get_env(),?wxGrid_SetColSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetdefaultcellalignment">external documentation</a>.
 -spec setDefaultCellAlignment(This, Horiz, Vert) -> 'ok' when
 	This::wxGrid(), Horiz::integer(), Vert::integer().
-setDefaultCellAlignment(#wx_ref{type=ThisT,ref=ThisRef},Horiz,Vert)
+setDefaultCellAlignment(#wx_ref{type=ThisT}=This,Horiz,Vert)
  when is_integer(Horiz),is_integer(Vert) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetDefaultCellAlignment,[ThisRef,Horiz,Vert]).
+  wxe_util:queue_cmd(This,Horiz,Vert,?get_env(),?wxGrid_SetDefaultCellAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetdefaultcellbackgroundcolour">external documentation</a>.
 -spec setDefaultCellBackgroundColour(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wx:wx_colour().
-setDefaultCellBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setDefaultCellBackgroundColour(#wx_ref{type=ThisT}=This,Val)
  when tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetDefaultCellBackgroundColour,[ThisRef,Val]).
+  wxe_util:queue_cmd(This,wxe_util:color(Val),?get_env(),?wxGrid_SetDefaultCellBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetdefaultcellfont">external documentation</a>.
 -spec setDefaultCellFont(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wxFont:wxFont().
-setDefaultCellFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ValT,ref=ValRef}) ->
+setDefaultCellFont(#wx_ref{type=ThisT}=This,#wx_ref{type=ValT}=Val) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(ValT,wxFont),
-  wxe_util:cast(?wxGrid_SetDefaultCellFont,[ThisRef,ValRef]).
+  wxe_util:queue_cmd(This,Val,?get_env(),?wxGrid_SetDefaultCellFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetdefaultcelltextcolour">external documentation</a>.
 -spec setDefaultCellTextColour(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wx:wx_colour().
-setDefaultCellTextColour(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setDefaultCellTextColour(#wx_ref{type=ThisT}=This,Val)
  when tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetDefaultCellTextColour,[ThisRef,Val]).
+  wxe_util:queue_cmd(This,wxe_util:color(Val),?get_env(),?wxGrid_SetDefaultCellTextColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetdefaulteditor">external documentation</a>.
 -spec setDefaultEditor(This, Editor) -> 'ok' when
 	This::wxGrid(), Editor::wxGridCellEditor:wxGridCellEditor().
-setDefaultEditor(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=EditorT,ref=EditorRef}) ->
+setDefaultEditor(#wx_ref{type=ThisT}=This,#wx_ref{type=EditorT}=Editor) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(EditorT,wxGridCellEditor),
-  wxe_util:cast(?wxGrid_SetDefaultEditor,[ThisRef,EditorRef]).
+  wxe_util:queue_cmd(This,Editor,?get_env(),?wxGrid_SetDefaultEditor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetdefaultrenderer">external documentation</a>.
 -spec setDefaultRenderer(This, Renderer) -> 'ok' when
 	This::wxGrid(), Renderer::wxGridCellRenderer:wxGridCellRenderer().
-setDefaultRenderer(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RendererT,ref=RendererRef}) ->
+setDefaultRenderer(#wx_ref{type=ThisT}=This,#wx_ref{type=RendererT}=Renderer) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(RendererT,wxGridCellRenderer),
-  wxe_util:cast(?wxGrid_SetDefaultRenderer,[ThisRef,RendererRef]).
+  wxe_util:queue_cmd(This,Renderer,?get_env(),?wxGrid_SetDefaultRenderer).
 
 %% @equiv setDefaultColSize(This,Width, [])
 -spec setDefaultColSize(This, Width) -> 'ok' when
@@ -1599,10 +1692,10 @@ setDefaultColSize(This,Width)
 -spec setDefaultColSize(This, Width, [Option]) -> 'ok' when
 	This::wxGrid(), Width::integer(),
 	Option :: {'resizeExistingCols', boolean()}.
-setDefaultColSize(#wx_ref{type=ThisT,ref=ThisRef},Width, Options)
+setDefaultColSize(#wx_ref{type=ThisT}=This,Width, Options)
  when is_integer(Width),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetDefaultColSize,[ThisRef,Width, Options]).
+  wxe_util:queue_cmd(This,Width, Options,?get_env(),?wxGrid_SetDefaultColSize).
 
 %% @equiv setDefaultRowSize(This,Height, [])
 -spec setDefaultRowSize(This, Height) -> 'ok' when
@@ -1616,58 +1709,58 @@ setDefaultRowSize(This,Height)
 -spec setDefaultRowSize(This, Height, [Option]) -> 'ok' when
 	This::wxGrid(), Height::integer(),
 	Option :: {'resizeExistingRows', boolean()}.
-setDefaultRowSize(#wx_ref{type=ThisT,ref=ThisRef},Height, Options)
+setDefaultRowSize(#wx_ref{type=ThisT}=This,Height, Options)
  when is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetDefaultRowSize,[ThisRef,Height, Options]).
+  wxe_util:queue_cmd(This,Height, Options,?get_env(),?wxGrid_SetDefaultRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetgridcursor">external documentation</a>.
 -spec setGridCursor(This, Row, Col) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer().
-setGridCursor(#wx_ref{type=ThisT,ref=ThisRef},Row,Col)
+setGridCursor(#wx_ref{type=ThisT}=This,Row,Col)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetGridCursor,[ThisRef,Row,Col]).
+  wxe_util:queue_cmd(This,Row,Col,?get_env(),?wxGrid_SetGridCursor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetgridlinecolour">external documentation</a>.
 -spec setGridLineColour(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wx:wx_colour().
-setGridLineColour(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setGridLineColour(#wx_ref{type=ThisT}=This,Val)
  when tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetGridLineColour,[ThisRef,Val]).
+  wxe_util:queue_cmd(This,wxe_util:color(Val),?get_env(),?wxGrid_SetGridLineColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetlabelbackgroundcolour">external documentation</a>.
 -spec setLabelBackgroundColour(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wx:wx_colour().
-setLabelBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setLabelBackgroundColour(#wx_ref{type=ThisT}=This,Val)
  when tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetLabelBackgroundColour,[ThisRef,Val]).
+  wxe_util:queue_cmd(This,wxe_util:color(Val),?get_env(),?wxGrid_SetLabelBackgroundColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetlabelfont">external documentation</a>.
 -spec setLabelFont(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wxFont:wxFont().
-setLabelFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ValT,ref=ValRef}) ->
+setLabelFont(#wx_ref{type=ThisT}=This,#wx_ref{type=ValT}=Val) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(ValT,wxFont),
-  wxe_util:cast(?wxGrid_SetLabelFont,[ThisRef,ValRef]).
+  wxe_util:queue_cmd(This,Val,?get_env(),?wxGrid_SetLabelFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetlabeltextcolour">external documentation</a>.
 -spec setLabelTextColour(This, Val) -> 'ok' when
 	This::wxGrid(), Val::wx:wx_colour().
-setLabelTextColour(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setLabelTextColour(#wx_ref{type=ThisT}=This,Val)
  when tuple_size(Val) =:= 3; tuple_size(Val) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetLabelTextColour,[ThisRef,Val]).
+  wxe_util:queue_cmd(This,wxe_util:color(Val),?get_env(),?wxGrid_SetLabelTextColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetmargins">external documentation</a>.
 -spec setMargins(This, ExtraWidth, ExtraHeight) -> 'ok' when
 	This::wxGrid(), ExtraWidth::integer(), ExtraHeight::integer().
-setMargins(#wx_ref{type=ThisT,ref=ThisRef},ExtraWidth,ExtraHeight)
+setMargins(#wx_ref{type=ThisT}=This,ExtraWidth,ExtraHeight)
  when is_integer(ExtraWidth),is_integer(ExtraHeight) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetMargins,[ThisRef,ExtraWidth,ExtraHeight]).
+  wxe_util:queue_cmd(This,ExtraWidth,ExtraHeight,?get_env(),?wxGrid_SetMargins).
 
 %% @equiv setReadOnly(This,Row,Col, [])
 -spec setReadOnly(This, Row, Col) -> 'ok' when
@@ -1681,116 +1774,116 @@ setReadOnly(This,Row,Col)
 -spec setReadOnly(This, Row, Col, [Option]) -> 'ok' when
 	This::wxGrid(), Row::integer(), Col::integer(),
 	Option :: {'isReadOnly', boolean()}.
-setReadOnly(#wx_ref{type=ThisT,ref=ThisRef},Row,Col, Options)
+setReadOnly(#wx_ref{type=ThisT}=This,Row,Col, Options)
  when is_integer(Row),is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetReadOnly,[ThisRef,Row,Col, Options]).
+  wxe_util:queue_cmd(This,Row,Col, Options,?get_env(),?wxGrid_SetReadOnly).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowattr">external documentation</a>.
 -spec setRowAttr(This, Row, Attr) -> 'ok' when
 	This::wxGrid(), Row::integer(), Attr::wxGridCellAttr:wxGridCellAttr().
-setRowAttr(#wx_ref{type=ThisT,ref=ThisRef},Row,#wx_ref{type=AttrT,ref=AttrRef})
+setRowAttr(#wx_ref{type=ThisT}=This,Row,#wx_ref{type=AttrT}=Attr)
  when is_integer(Row) ->
   ?CLASS(ThisT,wxGrid),
   ?CLASS(AttrT,wxGridCellAttr),
-  wxe_util:cast(?wxGrid_SetRowAttr,[ThisRef,Row,AttrRef]).
+  wxe_util:queue_cmd(This,Row,Attr,?get_env(),?wxGrid_SetRowAttr).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowlabelalignment">external documentation</a>.
 -spec setRowLabelAlignment(This, Horiz, Vert) -> 'ok' when
 	This::wxGrid(), Horiz::integer(), Vert::integer().
-setRowLabelAlignment(#wx_ref{type=ThisT,ref=ThisRef},Horiz,Vert)
+setRowLabelAlignment(#wx_ref{type=ThisT}=This,Horiz,Vert)
  when is_integer(Horiz),is_integer(Vert) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetRowLabelAlignment,[ThisRef,Horiz,Vert]).
+  wxe_util:queue_cmd(This,Horiz,Vert,?get_env(),?wxGrid_SetRowLabelAlignment).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowlabelsize">external documentation</a>.
 -spec setRowLabelSize(This, Width) -> 'ok' when
 	This::wxGrid(), Width::integer().
-setRowLabelSize(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setRowLabelSize(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetRowLabelSize,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxGrid_SetRowLabelSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowlabelvalue">external documentation</a>.
 -spec setRowLabelValue(This, Row, Val) -> 'ok' when
 	This::wxGrid(), Row::integer(), Val::unicode:chardata().
-setRowLabelValue(#wx_ref{type=ThisT,ref=ThisRef},Row,Val)
+setRowLabelValue(#wx_ref{type=ThisT}=This,Row,Val)
  when is_integer(Row),?is_chardata(Val) ->
   ?CLASS(ThisT,wxGrid),
   Val_UC = unicode:characters_to_binary([Val,0]),
-  wxe_util:cast(?wxGrid_SetRowLabelValue,[ThisRef,Row,Val_UC]).
+  wxe_util:queue_cmd(This,Row,Val_UC,?get_env(),?wxGrid_SetRowLabelValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowminimalheight">external documentation</a>.
 -spec setRowMinimalHeight(This, Row, Width) -> 'ok' when
 	This::wxGrid(), Row::integer(), Width::integer().
-setRowMinimalHeight(#wx_ref{type=ThisT,ref=ThisRef},Row,Width)
+setRowMinimalHeight(#wx_ref{type=ThisT}=This,Row,Width)
  when is_integer(Row),is_integer(Width) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetRowMinimalHeight,[ThisRef,Row,Width]).
+  wxe_util:queue_cmd(This,Row,Width,?get_env(),?wxGrid_SetRowMinimalHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowminimalacceptableheight">external documentation</a>.
 -spec setRowMinimalAcceptableHeight(This, Width) -> 'ok' when
 	This::wxGrid(), Width::integer().
-setRowMinimalAcceptableHeight(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setRowMinimalAcceptableHeight(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetRowMinimalAcceptableHeight,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxGrid_SetRowMinimalAcceptableHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowsize">external documentation</a>.
 -spec setRowSize(This, Row, Height) -> 'ok' when
 	This::wxGrid(), Row::integer(), Height::integer().
-setRowSize(#wx_ref{type=ThisT,ref=ThisRef},Row,Height)
+setRowSize(#wx_ref{type=ThisT}=This,Row,Height)
  when is_integer(Row),is_integer(Height) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetRowSize,[ThisRef,Row,Height]).
+  wxe_util:queue_cmd(This,Row,Height,?get_env(),?wxGrid_SetRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetscrolllinex">external documentation</a>.
 -spec setScrollLineX(This, X) -> 'ok' when
 	This::wxGrid(), X::integer().
-setScrollLineX(#wx_ref{type=ThisT,ref=ThisRef},X)
+setScrollLineX(#wx_ref{type=ThisT}=This,X)
  when is_integer(X) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetScrollLineX,[ThisRef,X]).
+  wxe_util:queue_cmd(This,X,?get_env(),?wxGrid_SetScrollLineX).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetscrollliney">external documentation</a>.
 -spec setScrollLineY(This, Y) -> 'ok' when
 	This::wxGrid(), Y::integer().
-setScrollLineY(#wx_ref{type=ThisT,ref=ThisRef},Y)
+setScrollLineY(#wx_ref{type=ThisT}=This,Y)
  when is_integer(Y) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetScrollLineY,[ThisRef,Y]).
+  wxe_util:queue_cmd(This,Y,?get_env(),?wxGrid_SetScrollLineY).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetselectionbackground">external documentation</a>.
 -spec setSelectionBackground(This, C) -> 'ok' when
 	This::wxGrid(), C::wx:wx_colour().
-setSelectionBackground(#wx_ref{type=ThisT,ref=ThisRef},C)
+setSelectionBackground(#wx_ref{type=ThisT}=This,C)
  when tuple_size(C) =:= 3; tuple_size(C) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetSelectionBackground,[ThisRef,C]).
+  wxe_util:queue_cmd(This,wxe_util:color(C),?get_env(),?wxGrid_SetSelectionBackground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetselectionforeground">external documentation</a>.
 -spec setSelectionForeground(This, C) -> 'ok' when
 	This::wxGrid(), C::wx:wx_colour().
-setSelectionForeground(#wx_ref{type=ThisT,ref=ThisRef},C)
+setSelectionForeground(#wx_ref{type=ThisT}=This,C)
  when tuple_size(C) =:= 3; tuple_size(C) =:= 4 ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetSelectionForeground,[ThisRef,C]).
+  wxe_util:queue_cmd(This,wxe_util:color(C),?get_env(),?wxGrid_SetSelectionForeground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetselectionmode">external documentation</a>.
 %%<br /> Selmode = ?wxGrid_wxGridSelectCells | ?wxGrid_wxGridSelectRows | ?wxGrid_wxGridSelectColumns
 -spec setSelectionMode(This, Selmode) -> 'ok' when
 	This::wxGrid(), Selmode::wx:wx_enum().
-setSelectionMode(#wx_ref{type=ThisT,ref=ThisRef},Selmode)
+setSelectionMode(#wx_ref{type=ThisT}=This,Selmode)
  when is_integer(Selmode) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_SetSelectionMode,[ThisRef,Selmode]).
+  wxe_util:queue_cmd(This,Selmode,?get_env(),?wxGrid_SetSelectionMode).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridshowcelleditcontrol">external documentation</a>.
 -spec showCellEditControl(This) -> 'ok' when
 	This::wxGrid().
-showCellEditControl(#wx_ref{type=ThisT,ref=ThisRef}) ->
+showCellEditControl(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:cast(?wxGrid_ShowCellEditControl,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGrid_ShowCellEditControl).
 
 %% @equiv xToCol(This,X, [])
 -spec xToCol(This, X) -> integer() when
@@ -1804,34 +1897,38 @@ xToCol(This,X)
 -spec xToCol(This, X, [Option]) -> integer() when
 	This::wxGrid(), X::integer(),
 	Option :: {'clipToMinMax', boolean()}.
-xToCol(#wx_ref{type=ThisT,ref=ThisRef},X, Options)
+xToCol(#wx_ref{type=ThisT}=This,X, Options)
  when is_integer(X),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_XToCol,[ThisRef,X, Options]).
+  wxe_util:queue_cmd(This,X, Options,?get_env(),?wxGrid_XToCol),
+  wxe_util:rec(?wxGrid_XToCol).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridxtoedgeofcol">external documentation</a>.
 -spec xToEdgeOfCol(This, X) -> integer() when
 	This::wxGrid(), X::integer().
-xToEdgeOfCol(#wx_ref{type=ThisT,ref=ThisRef},X)
+xToEdgeOfCol(#wx_ref{type=ThisT}=This,X)
  when is_integer(X) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_XToEdgeOfCol,[ThisRef,X]).
+  wxe_util:queue_cmd(This,X,?get_env(),?wxGrid_XToEdgeOfCol),
+  wxe_util:rec(?wxGrid_XToEdgeOfCol).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridytoedgeofrow">external documentation</a>.
 -spec yToEdgeOfRow(This, Y) -> integer() when
 	This::wxGrid(), Y::integer().
-yToEdgeOfRow(#wx_ref{type=ThisT,ref=ThisRef},Y)
+yToEdgeOfRow(#wx_ref{type=ThisT}=This,Y)
  when is_integer(Y) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_YToEdgeOfRow,[ThisRef,Y]).
+  wxe_util:queue_cmd(This,Y,?get_env(),?wxGrid_YToEdgeOfRow),
+  wxe_util:rec(?wxGrid_YToEdgeOfRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridytorow">external documentation</a>.
 -spec yToRow(This, Y) -> integer() when
 	This::wxGrid(), Y::integer().
-yToRow(#wx_ref{type=ThisT,ref=ThisRef},Y)
+yToRow(#wx_ref{type=ThisT}=This,Y)
  when is_integer(Y) ->
   ?CLASS(ThisT,wxGrid),
-  wxe_util:call(?wxGrid_YToRow,[ThisRef,Y]).
+  wxe_util:queue_cmd(This,Y,?get_env(),?wxGrid_YToRow),
+  wxe_util:rec(?wxGrid_YToRow).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGrid()) -> 'ok'.

@@ -89,7 +89,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlwxcolourpickerctrl">external documentation</a>.
 -spec new() -> wxColourPickerCtrl().
 new() ->
-  wxe_util:construct(?wxColourPickerCtrl_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxColourPickerCtrl_new_0),
+  wxe_util:rec(?wxColourPickerCtrl_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxColourPickerCtrl() when
@@ -107,10 +108,11 @@ new(Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxColourPickerCtrl_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxColourPickerCtrl_new_3),
+  wxe_util:rec(?wxColourPickerCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -128,18 +130,20 @@ create(This,Parent,Id)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxColourPickerCtrl_Create,[ThisRef,ParentRef,Id, Options]).
+  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxColourPickerCtrl_Create),
+  wxe_util:rec(?wxColourPickerCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlgetcolour">external documentation</a>.
 -spec getColour(This) -> wx:wx_colour4() when
 	This::wxColourPickerCtrl().
-getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
-  wxe_util:call(?wxColourPickerCtrl_GetColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxColourPickerCtrl_GetColour),
+  wxe_util:rec(?wxColourPickerCtrl_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlsetcolour">external documentation</a>.
 %% <br /> Also:<br />
@@ -150,15 +154,16 @@ getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxColourPickerCtrl(), Text::unicode:chardata();
       (This, Col) -> 'ok' when
 	This::wxColourPickerCtrl(), Col::wx:wx_colour().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Text)
+setColour(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxColourPickerCtrl_SetColour_1_0,[ThisRef,Text_UC]);
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
+  wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxColourPickerCtrl_SetColour_1_0),
+  wxe_util:rec(?wxColourPickerCtrl_SetColour_1_0);
+setColour(#wx_ref{type=ThisT}=This,Col)
  when tuple_size(Col) =:= 3; tuple_size(Col) =:= 4 ->
   ?CLASS(ThisT,wxColourPickerCtrl),
-  wxe_util:cast(?wxColourPickerCtrl_SetColour_1_1,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,wxe_util:color(Col),?get_env(),?wxColourPickerCtrl_SetColour_1_1).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxColourPickerCtrl()) -> 'ok'.

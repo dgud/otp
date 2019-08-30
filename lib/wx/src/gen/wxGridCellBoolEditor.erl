@@ -45,7 +45,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellbooleditor.html#wxgridcellbooleditorwxgridcellbooleditor">external documentation</a>.
 -spec new() -> wxGridCellBoolEditor().
 new() ->
-  wxe_util:construct(?wxGridCellBoolEditor_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGridCellBoolEditor_new),
+  wxe_util:rec(?wxGridCellBoolEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellbooleditor.html#wxgridcellbooleditoristruevalue">external documentation</a>.
 -spec isTrueValue(Value) -> boolean() when
@@ -53,7 +54,8 @@ new() ->
 isTrueValue(Value)
  when ?is_chardata(Value) ->
   Value_UC = unicode:characters_to_binary([Value,0]),
-  wxe_util:call(?wxGridCellBoolEditor_IsTrueValue,[Value_UC]).
+  wxe_util:queue_cmd(Value_UC,?get_env(),?wxGridCellBoolEditor_IsTrueValue),
+  wxe_util:rec(?wxGridCellBoolEditor_IsTrueValue).
 
 %% @equiv useStringValues([])
 -spec useStringValues() -> 'ok'.
@@ -67,7 +69,7 @@ useStringValues() ->
 		 | {'valueFalse', unicode:chardata()}.
 useStringValues(Options)
  when is_list(Options) ->
-  wxe_util:cast(?wxGridCellBoolEditor_UseStringValues,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxGridCellBoolEditor_UseStringValues).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellBoolEditor()) -> 'ok'.

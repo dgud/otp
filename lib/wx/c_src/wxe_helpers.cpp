@@ -109,6 +109,7 @@ int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, wx
 
   enif_self(env, &curr->caller);
 
+  curr->argc = argc;
   for(i=0; i<argc; i++)
     curr->args[i] = enif_make_copy(curr->env, argv[i]);
 

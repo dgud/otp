@@ -56,25 +56,28 @@ new() ->
 	Bitmap::wxBitmap:wxBitmap().
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxBitmapDataObject_new_1_0,[Options]);
-new(#wx_ref{type=BitmapT,ref=BitmapRef}) ->
+  wxe_util:queue_cmd(Options,?get_env(),?wxBitmapDataObject_new_1_0),
+  wxe_util:rec(?wxBitmapDataObject_new_1_0);
+new(#wx_ref{type=BitmapT}=Bitmap) ->
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:construct(?wxBitmapDataObject_new_1_1,[BitmapRef]).
+  wxe_util:queue_cmd(Bitmap,?get_env(),?wxBitmapDataObject_new_1_1),
+  wxe_util:rec(?wxBitmapDataObject_new_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapdataobject.html#wxbitmapdataobjectgetbitmap">external documentation</a>.
 -spec getBitmap(This) -> wxBitmap:wxBitmap() when
 	This::wxBitmapDataObject().
-getBitmap(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getBitmap(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmapDataObject),
-  wxe_util:call(?wxBitmapDataObject_GetBitmap,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmapDataObject_GetBitmap),
+  wxe_util:rec(?wxBitmapDataObject_GetBitmap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapdataobject.html#wxbitmapdataobjectsetbitmap">external documentation</a>.
 -spec setBitmap(This, Bitmap) -> 'ok' when
 	This::wxBitmapDataObject(), Bitmap::wxBitmap:wxBitmap().
-setBitmap(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
+setBitmap(#wx_ref{type=ThisT}=This,#wx_ref{type=BitmapT}=Bitmap) ->
   ?CLASS(ThisT,wxBitmapDataObject),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:cast(?wxBitmapDataObject_SetBitmap,[ThisRef,BitmapRef]).
+  wxe_util:queue_cmd(This,Bitmap,?get_env(),?wxBitmapDataObject_SetBitmap).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBitmapDataObject()) -> 'ok'.

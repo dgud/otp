@@ -239,7 +239,7 @@ wxListItemAttr* EwxListCtrl::OnGetItemAttr(long item) const {
     INVOKE_CALLBACK_END(memenv);
     wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
     if(cb) {
-      wxListItemAttr * result = (wxListItemAttr *) memenv->getPtr(cb->env, cb->args[0]);
+      wxListItemAttr * result = (wxListItemAttr *) memenv->getPtr(cb->env, cb->args[0], "CB item");
       cb->Delete();
       return result;
     }

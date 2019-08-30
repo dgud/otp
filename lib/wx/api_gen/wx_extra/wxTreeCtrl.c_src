@@ -27,7 +27,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint64(Ecmd.env, Ecmd.args[0], &tmp)) Badarg(0, "item");
   wxTreeItemId item = wxTreeItemId((void *) tmp);
   bool Result = item.IsOk();
-  wxeReturn rt = wxeReturn(Ecmd.memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(Ecmd.memenv, Ecmd.caller,true);
   rt.send(  rt.make_bool(Result));
 }
 

@@ -48,7 +48,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
 					 hasPage,getPageInfo);
   Result->memenv = memenv;
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintout"));
 }
 

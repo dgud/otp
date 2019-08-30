@@ -84,48 +84,52 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewclearcolumnimage">external documentation</a>.
 -spec clearColumnImage(This, Col) -> 'ok' when
 	This::wxListView(), Col::integer().
-clearColumnImage(#wx_ref{type=ThisT,ref=ThisRef},Col)
+clearColumnImage(#wx_ref{type=ThisT}=This,Col)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_ClearColumnImage,[ThisRef,Col]).
+  wxe_util:queue_cmd(This,Col,?get_env(),?wxListView_ClearColumnImage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewfocus">external documentation</a>.
 -spec focus(This, Index) -> 'ok' when
 	This::wxListView(), Index::integer().
-focus(#wx_ref{type=ThisT,ref=ThisRef},Index)
+focus(#wx_ref{type=ThisT}=This,Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_Focus,[ThisRef,Index]).
+  wxe_util:queue_cmd(This,Index,?get_env(),?wxListView_Focus).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewgetfirstselected">external documentation</a>.
 -spec getFirstSelected(This) -> integer() when
 	This::wxListView().
-getFirstSelected(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFirstSelected(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_GetFirstSelected,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxListView_GetFirstSelected),
+  wxe_util:rec(?wxListView_GetFirstSelected).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewgetfocuseditem">external documentation</a>.
 -spec getFocusedItem(This) -> integer() when
 	This::wxListView().
-getFocusedItem(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFocusedItem(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_GetFocusedItem,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxListView_GetFocusedItem),
+  wxe_util:rec(?wxListView_GetFocusedItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewgetnextselected">external documentation</a>.
 -spec getNextSelected(This, Item) -> integer() when
 	This::wxListView(), Item::integer().
-getNextSelected(#wx_ref{type=ThisT,ref=ThisRef},Item)
+getNextSelected(#wx_ref{type=ThisT}=This,Item)
  when is_integer(Item) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_GetNextSelected,[ThisRef,Item]).
+  wxe_util:queue_cmd(This,Item,?get_env(),?wxListView_GetNextSelected),
+  wxe_util:rec(?wxListView_GetNextSelected).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewisselected">external documentation</a>.
 -spec isSelected(This, Index) -> boolean() when
 	This::wxListView(), Index::integer().
-isSelected(#wx_ref{type=ThisT,ref=ThisRef},Index)
+isSelected(#wx_ref{type=ThisT}=This,Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_IsSelected,[ThisRef,Index]).
+  wxe_util:queue_cmd(This,Index,?get_env(),?wxListView_IsSelected),
+  wxe_util:rec(?wxListView_IsSelected).
 
 %% @equiv select(This,N, [])
 -spec select(This, N) -> 'ok' when
@@ -139,18 +143,18 @@ select(This,N)
 -spec select(This, N, [Option]) -> 'ok' when
 	This::wxListView(), N::integer(),
 	Option :: {'on', boolean()}.
-select(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
+select(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_Select,[ThisRef,N, Options]).
+  wxe_util:queue_cmd(This,N, Options,?get_env(),?wxListView_Select).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewsetcolumnimage">external documentation</a>.
 -spec setColumnImage(This, Col, Image) -> 'ok' when
 	This::wxListView(), Col::integer(), Image::integer().
-setColumnImage(#wx_ref{type=ThisT,ref=ThisRef},Col,Image)
+setColumnImage(#wx_ref{type=ThisT}=This,Col,Image)
  when is_integer(Col),is_integer(Image) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_SetColumnImage,[ThisRef,Col,Image]).
+  wxe_util:queue_cmd(This,Col,Image,?get_env(),?wxListView_SetColumnImage).
 
  %% From wxControl
 %% @hidden

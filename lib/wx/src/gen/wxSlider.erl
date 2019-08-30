@@ -85,7 +85,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxsliderwxslider">external documentation</a>.
 -spec new() -> wxSlider().
 new() ->
-  wxe_util:construct(?wxSlider_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxSlider_new_0),
+  wxe_util:rec(?wxSlider_new_0).
 
 %% @equiv new(Parent,Id,Value,MinValue,MaxValue, [])
 -spec new(Parent, Id, Value, MinValue, MaxValue) -> wxSlider() when
@@ -102,10 +103,11 @@ new(Parent,Id,Value,MinValue,MaxValue)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Value,MinValue,MaxValue, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Value,MinValue,MaxValue, Options)
  when is_integer(Id),is_integer(Value),is_integer(MinValue),is_integer(MaxValue),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxSlider_new_6,[ParentRef,Id,Value,MinValue,MaxValue, Options]).
+  wxe_util:queue_cmd(Parent,Id,Value,MinValue,MaxValue, Options,?get_env(),?wxSlider_new_6),
+  wxe_util:rec(?wxSlider_new_6).
 
 %% @equiv create(This,Parent,Id,Value,MinValue,MaxValue, [])
 -spec create(This, Parent, Id, Value, MinValue, MaxValue) -> boolean() when
@@ -122,93 +124,100 @@ create(This,Parent,Id,Value,MinValue,MaxValue)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Value,MinValue,MaxValue, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Value,MinValue,MaxValue, Options)
  when is_integer(Id),is_integer(Value),is_integer(MinValue),is_integer(MaxValue),is_list(Options) ->
   ?CLASS(ThisT,wxSlider),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxSlider_Create,[ThisRef,ParentRef,Id,Value,MinValue,MaxValue, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Value,MinValue,MaxValue, Options,?get_env(),?wxSlider_Create),
+  wxe_util:rec(?wxSlider_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetlinesize">external documentation</a>.
 -spec getLineSize(This) -> integer() when
 	This::wxSlider().
-getLineSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLineSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:call(?wxSlider_GetLineSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSlider_GetLineSize),
+  wxe_util:rec(?wxSlider_GetLineSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetmax">external documentation</a>.
 -spec getMax(This) -> integer() when
 	This::wxSlider().
-getMax(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMax(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:call(?wxSlider_GetMax,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSlider_GetMax),
+  wxe_util:rec(?wxSlider_GetMax).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetmin">external documentation</a>.
 -spec getMin(This) -> integer() when
 	This::wxSlider().
-getMin(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMin(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:call(?wxSlider_GetMin,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSlider_GetMin),
+  wxe_util:rec(?wxSlider_GetMin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetpagesize">external documentation</a>.
 -spec getPageSize(This) -> integer() when
 	This::wxSlider().
-getPageSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPageSize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:call(?wxSlider_GetPageSize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSlider_GetPageSize),
+  wxe_util:rec(?wxSlider_GetPageSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetthumblength">external documentation</a>.
 -spec getThumbLength(This) -> integer() when
 	This::wxSlider().
-getThumbLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getThumbLength(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:call(?wxSlider_GetThumbLength,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSlider_GetThumbLength),
+  wxe_util:rec(?wxSlider_GetThumbLength).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetvalue">external documentation</a>.
 -spec getValue(This) -> integer() when
 	This::wxSlider().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:call(?wxSlider_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSlider_GetValue),
+  wxe_util:rec(?wxSlider_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidersetlinesize">external documentation</a>.
 -spec setLineSize(This, LineSize) -> 'ok' when
 	This::wxSlider(), LineSize::integer().
-setLineSize(#wx_ref{type=ThisT,ref=ThisRef},LineSize)
+setLineSize(#wx_ref{type=ThisT}=This,LineSize)
  when is_integer(LineSize) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:cast(?wxSlider_SetLineSize,[ThisRef,LineSize]).
+  wxe_util:queue_cmd(This,LineSize,?get_env(),?wxSlider_SetLineSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidersetpagesize">external documentation</a>.
 -spec setPageSize(This, PageSize) -> 'ok' when
 	This::wxSlider(), PageSize::integer().
-setPageSize(#wx_ref{type=ThisT,ref=ThisRef},PageSize)
+setPageSize(#wx_ref{type=ThisT}=This,PageSize)
  when is_integer(PageSize) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:cast(?wxSlider_SetPageSize,[ThisRef,PageSize]).
+  wxe_util:queue_cmd(This,PageSize,?get_env(),?wxSlider_SetPageSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidersetrange">external documentation</a>.
 -spec setRange(This, MinValue, MaxValue) -> 'ok' when
 	This::wxSlider(), MinValue::integer(), MaxValue::integer().
-setRange(#wx_ref{type=ThisT,ref=ThisRef},MinValue,MaxValue)
+setRange(#wx_ref{type=ThisT}=This,MinValue,MaxValue)
  when is_integer(MinValue),is_integer(MaxValue) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:cast(?wxSlider_SetRange,[ThisRef,MinValue,MaxValue]).
+  wxe_util:queue_cmd(This,MinValue,MaxValue,?get_env(),?wxSlider_SetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidersetthumblength">external documentation</a>.
 -spec setThumbLength(This, LenPixels) -> 'ok' when
 	This::wxSlider(), LenPixels::integer().
-setThumbLength(#wx_ref{type=ThisT,ref=ThisRef},LenPixels)
+setThumbLength(#wx_ref{type=ThisT}=This,LenPixels)
  when is_integer(LenPixels) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:cast(?wxSlider_SetThumbLength,[ThisRef,LenPixels]).
+  wxe_util:queue_cmd(This,LenPixels,?get_env(),?wxSlider_SetThumbLength).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidersetvalue">external documentation</a>.
 -spec setValue(This, Value) -> 'ok' when
 	This::wxSlider(), Value::integer().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Value)
+setValue(#wx_ref{type=ThisT}=This,Value)
  when is_integer(Value) ->
   ?CLASS(ThisT,wxSlider),
-  wxe_util:cast(?wxSlider_SetValue,[ThisRef,Value]).
+  wxe_util:queue_cmd(This,Value,?get_env(),?wxSlider_SetValue).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSlider()) -> 'ok'.

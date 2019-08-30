@@ -51,9 +51,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontpickerevent.html#wxfontpickereventgetfont">external documentation</a>.
 -spec getFont(This) -> wxFont:wxFont() when
 	This::wxFontPickerEvent().
-getFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontPickerEvent),
-  wxe_util:call(?wxFontPickerEvent_GetFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontPickerEvent_GetFont),
+  wxe_util:rec(?wxFontPickerEvent_GetFont).
 
  %% From wxCommandEvent
 %% @hidden

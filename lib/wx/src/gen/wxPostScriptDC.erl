@@ -66,26 +66,29 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpostscriptdc.html#wxpostscriptdcwxpostscriptdc">external documentation</a>.
 -spec new() -> wxPostScriptDC().
 new() ->
-  wxe_util:construct(?wxPostScriptDC_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPostScriptDC_new_0),
+  wxe_util:rec(?wxPostScriptDC_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpostscriptdc.html#wxpostscriptdcwxpostscriptdc">external documentation</a>.
 -spec new(PrintData) -> wxPostScriptDC() when
 	PrintData::wxPrintData:wxPrintData().
-new(#wx_ref{type=PrintDataT,ref=PrintDataRef}) ->
+new(#wx_ref{type=PrintDataT}=PrintData) ->
   ?CLASS(PrintDataT,wxPrintData),
-  wxe_util:construct(?wxPostScriptDC_new_1,[PrintDataRef]).
+  wxe_util:queue_cmd(PrintData,?get_env(),?wxPostScriptDC_new_1),
+  wxe_util:rec(?wxPostScriptDC_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpostscriptdc.html#wxpostscriptdcsetresolution">external documentation</a>.
 -spec setResolution(Ppi) -> 'ok' when
 	Ppi::integer().
 setResolution(Ppi)
  when is_integer(Ppi) ->
-  wxe_util:cast(?wxPostScriptDC_SetResolution,[Ppi]).
+  wxe_util:queue_cmd(Ppi,?get_env(),?wxPostScriptDC_SetResolution).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpostscriptdc.html#wxpostscriptdcgetresolution">external documentation</a>.
 -spec getResolution() -> integer().
 getResolution() ->
-  wxe_util:call(?wxPostScriptDC_GetResolution,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPostScriptDC_GetResolution),
+  wxe_util:rec(?wxPostScriptDC_GetResolution).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPostScriptDC()) -> 'ok'.

@@ -47,9 +47,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxactivateevent.html#wxactivateeventgetactive">external documentation</a>.
 -spec getActive(This) -> boolean() when
 	This::wxActivateEvent().
-getActive(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getActive(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxActivateEvent),
-  wxe_util:call(?wxActivateEvent_GetActive,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxActivateEvent_GetActive),
+  wxe_util:rec(?wxActivateEvent_GetActive).
 
  %% From wxEvent
 %% @hidden

@@ -107,21 +107,22 @@ new(Title,Message, Options)
  when ?is_chardata(Title),?is_chardata(Message),is_list(Options) ->
   Title_UC = unicode:characters_to_binary([Title,0]),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:construct(?wxProgressDialog_new,[Title_UC,Message_UC, Options]).
+  wxe_util:queue_cmd(Title_UC,Message_UC, Options,?get_env(),?wxProgressDialog_new),
+  wxe_util:rec(?wxProgressDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprogressdialog.html#wxprogressdialogresume">external documentation</a>.
 -spec resume(This) -> 'ok' when
 	This::wxProgressDialog().
-resume(#wx_ref{type=ThisT,ref=ThisRef}) ->
+resume(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxProgressDialog),
-  wxe_util:cast(?wxProgressDialog_Resume,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxProgressDialog_Resume).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprogressdialog.html#wxprogressdialogupdate">external documentation</a>.
 -spec update(This) -> 'ok' when
 	This::wxProgressDialog().
-update(#wx_ref{type=ThisT,ref=ThisRef}) ->
+update(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxProgressDialog),
-  wxe_util:cast(?wxProgressDialog_Update_0,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxProgressDialog_Update_0).
 
 %% @equiv update(This,Value, [])
 -spec update(This, Value) -> boolean() when
@@ -135,10 +136,11 @@ update(This,Value)
 -spec update(This, Value, [Option]) -> boolean() when
 	This::wxProgressDialog(), Value::integer(),
 	Option :: {'newmsg', unicode:chardata()}.
-update(#wx_ref{type=ThisT,ref=ThisRef},Value, Options)
+update(#wx_ref{type=ThisT}=This,Value, Options)
  when is_integer(Value),is_list(Options) ->
   ?CLASS(ThisT,wxProgressDialog),
-  wxe_util:call(?wxProgressDialog_Update_2,[ThisRef,Value, Options]).
+  wxe_util:queue_cmd(This,Value, Options,?get_env(),?wxProgressDialog_Update_2),
+  wxe_util:rec(?wxProgressDialog_Update_2).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxProgressDialog()) -> 'ok'.

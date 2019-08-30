@@ -47,23 +47,24 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotifyevent.html#wxnotifyeventallow">external documentation</a>.
 -spec allow(This) -> 'ok' when
 	This::wxNotifyEvent().
-allow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+allow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxNotifyEvent),
-  wxe_util:cast(?wxNotifyEvent_Allow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxNotifyEvent_Allow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotifyevent.html#wxnotifyeventisallowed">external documentation</a>.
 -spec isAllowed(This) -> boolean() when
 	This::wxNotifyEvent().
-isAllowed(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isAllowed(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxNotifyEvent),
-  wxe_util:call(?wxNotifyEvent_IsAllowed,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxNotifyEvent_IsAllowed),
+  wxe_util:rec(?wxNotifyEvent_IsAllowed).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotifyevent.html#wxnotifyeventveto">external documentation</a>.
 -spec veto(This) -> 'ok' when
 	This::wxNotifyEvent().
-veto(#wx_ref{type=ThisT,ref=ThisRef}) ->
+veto(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxNotifyEvent),
-  wxe_util:cast(?wxNotifyEvent_Veto,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxNotifyEvent_Veto).
 
  %% From wxCommandEvent
 %% @hidden

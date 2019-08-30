@@ -53,46 +53,47 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizerwxstddialogbuttonsizer">external documentation</a>.
 -spec new() -> wxStdDialogButtonSizer().
 new() ->
-  wxe_util:construct(?wxStdDialogButtonSizer_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxStdDialogButtonSizer_new),
+  wxe_util:rec(?wxStdDialogButtonSizer_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizeraddbutton">external documentation</a>.
 -spec addButton(This, Button) -> 'ok' when
 	This::wxStdDialogButtonSizer(), Button::wxButton:wxButton().
-addButton(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ButtonT,ref=ButtonRef}) ->
+addButton(#wx_ref{type=ThisT}=This,#wx_ref{type=ButtonT}=Button) ->
   ?CLASS(ThisT,wxStdDialogButtonSizer),
   ?CLASS(ButtonT,wxButton),
-  wxe_util:cast(?wxStdDialogButtonSizer_AddButton,[ThisRef,ButtonRef]).
+  wxe_util:queue_cmd(This,Button,?get_env(),?wxStdDialogButtonSizer_AddButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizerrealize">external documentation</a>.
 -spec realize(This) -> 'ok' when
 	This::wxStdDialogButtonSizer().
-realize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+realize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStdDialogButtonSizer),
-  wxe_util:cast(?wxStdDialogButtonSizer_Realize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStdDialogButtonSizer_Realize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizersetaffirmativebutton">external documentation</a>.
 -spec setAffirmativeButton(This, Button) -> 'ok' when
 	This::wxStdDialogButtonSizer(), Button::wxButton:wxButton().
-setAffirmativeButton(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ButtonT,ref=ButtonRef}) ->
+setAffirmativeButton(#wx_ref{type=ThisT}=This,#wx_ref{type=ButtonT}=Button) ->
   ?CLASS(ThisT,wxStdDialogButtonSizer),
   ?CLASS(ButtonT,wxButton),
-  wxe_util:cast(?wxStdDialogButtonSizer_SetAffirmativeButton,[ThisRef,ButtonRef]).
+  wxe_util:queue_cmd(This,Button,?get_env(),?wxStdDialogButtonSizer_SetAffirmativeButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizersetcancelbutton">external documentation</a>.
 -spec setCancelButton(This, Button) -> 'ok' when
 	This::wxStdDialogButtonSizer(), Button::wxButton:wxButton().
-setCancelButton(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ButtonT,ref=ButtonRef}) ->
+setCancelButton(#wx_ref{type=ThisT}=This,#wx_ref{type=ButtonT}=Button) ->
   ?CLASS(ThisT,wxStdDialogButtonSizer),
   ?CLASS(ButtonT,wxButton),
-  wxe_util:cast(?wxStdDialogButtonSizer_SetCancelButton,[ThisRef,ButtonRef]).
+  wxe_util:queue_cmd(This,Button,?get_env(),?wxStdDialogButtonSizer_SetCancelButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizersetnegativebutton">external documentation</a>.
 -spec setNegativeButton(This, Button) -> 'ok' when
 	This::wxStdDialogButtonSizer(), Button::wxButton:wxButton().
-setNegativeButton(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ButtonT,ref=ButtonRef}) ->
+setNegativeButton(#wx_ref{type=ThisT}=This,#wx_ref{type=ButtonT}=Button) ->
   ?CLASS(ThisT,wxStdDialogButtonSizer),
   ?CLASS(ButtonT,wxButton),
-  wxe_util:cast(?wxStdDialogButtonSizer_SetNegativeButton,[ThisRef,ButtonRef]).
+  wxe_util:queue_cmd(This,Button,?get_env(),?wxStdDialogButtonSizer_SetNegativeButton).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStdDialogButtonSizer()) -> 'ok'.

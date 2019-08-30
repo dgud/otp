@@ -95,7 +95,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdichildframe.html#wxmdichildframewxmdichildframe">external documentation</a>.
 -spec new() -> wxMDIChildFrame().
 new() ->
-  wxe_util:construct(?wxMDIChildFrame_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxMDIChildFrame_new_0),
+  wxe_util:rec(?wxMDIChildFrame_new_0).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxMDIChildFrame() when
@@ -111,18 +112,19 @@ new(Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxMDIParentFrame),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:construct(?wxMDIChildFrame_new_4,[ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxMDIChildFrame_new_4),
+  wxe_util:rec(?wxMDIChildFrame_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdichildframe.html#wxmdichildframeactivate">external documentation</a>.
 -spec activate(This) -> 'ok' when
 	This::wxMDIChildFrame().
-activate(#wx_ref{type=ThisT,ref=ThisRef}) ->
+activate(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIChildFrame),
-  wxe_util:cast(?wxMDIChildFrame_Activate,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIChildFrame_Activate).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -138,12 +140,13 @@ create(This,Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxMDIChildFrame),
   ?CLASS(ParentT,wxMDIParentFrame),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMDIChildFrame_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxMDIChildFrame_Create),
+  wxe_util:rec(?wxMDIChildFrame_Create).
 
 %% @equiv maximize(This, [])
 -spec maximize(This) -> 'ok' when
@@ -157,17 +160,17 @@ maximize(This)
 -spec maximize(This, [Option]) -> 'ok' when
 	This::wxMDIChildFrame(),
 	Option :: {'maximize', boolean()}.
-maximize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+maximize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIChildFrame),
-  wxe_util:cast(?wxMDIChildFrame_Maximize,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMDIChildFrame_Maximize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdichildframe.html#wxmdichildframerestore">external documentation</a>.
 -spec restore(This) -> 'ok' when
 	This::wxMDIChildFrame().
-restore(#wx_ref{type=ThisT,ref=ThisRef}) ->
+restore(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMDIChildFrame),
-  wxe_util:cast(?wxMDIChildFrame_Restore,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMDIChildFrame_Restore).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMDIChildFrame()) -> 'ok'.

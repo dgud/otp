@@ -47,32 +47,34 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventcanveto">external documentation</a>.
 -spec canVeto(This) -> boolean() when
 	This::wxCloseEvent().
-canVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
+canVeto(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:call(?wxCloseEvent_CanVeto,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCloseEvent_CanVeto),
+  wxe_util:rec(?wxCloseEvent_CanVeto).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventgetloggingoff">external documentation</a>.
 -spec getLoggingOff(This) -> boolean() when
 	This::wxCloseEvent().
-getLoggingOff(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLoggingOff(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:call(?wxCloseEvent_GetLoggingOff,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCloseEvent_GetLoggingOff),
+  wxe_util:rec(?wxCloseEvent_GetLoggingOff).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventsetcanveto">external documentation</a>.
 -spec setCanVeto(This, CanVeto) -> 'ok' when
 	This::wxCloseEvent(), CanVeto::boolean().
-setCanVeto(#wx_ref{type=ThisT,ref=ThisRef},CanVeto)
+setCanVeto(#wx_ref{type=ThisT}=This,CanVeto)
  when is_boolean(CanVeto) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:cast(?wxCloseEvent_SetCanVeto,[ThisRef,CanVeto]).
+  wxe_util:queue_cmd(This,CanVeto,?get_env(),?wxCloseEvent_SetCanVeto).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventsetloggingoff">external documentation</a>.
 -spec setLoggingOff(This, LogOff) -> 'ok' when
 	This::wxCloseEvent(), LogOff::boolean().
-setLoggingOff(#wx_ref{type=ThisT,ref=ThisRef},LogOff)
+setLoggingOff(#wx_ref{type=ThisT}=This,LogOff)
  when is_boolean(LogOff) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:cast(?wxCloseEvent_SetLoggingOff,[ThisRef,LogOff]).
+  wxe_util:queue_cmd(This,LogOff,?get_env(),?wxCloseEvent_SetLoggingOff).
 
 %% @equiv veto(This, [])
 -spec veto(This) -> 'ok' when
@@ -86,10 +88,10 @@ veto(This)
 -spec veto(This, [Option]) -> 'ok' when
 	This::wxCloseEvent(),
 	Option :: {'veto', boolean()}.
-veto(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+veto(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:cast(?wxCloseEvent_Veto,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxCloseEvent_Veto).
 
  %% From wxEvent
 %% @hidden

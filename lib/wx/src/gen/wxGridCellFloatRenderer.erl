@@ -54,46 +54,49 @@ new() ->
 		 | {'precision', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxGridCellFloatRenderer_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxGridCellFloatRenderer_new),
+  wxe_util:rec(?wxGridCellFloatRenderer_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderergetprecision">external documentation</a>.
 -spec getPrecision(This) -> integer() when
 	This::wxGridCellFloatRenderer().
-getPrecision(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPrecision(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridCellFloatRenderer),
-  wxe_util:call(?wxGridCellFloatRenderer_GetPrecision,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridCellFloatRenderer_GetPrecision),
+  wxe_util:rec(?wxGridCellFloatRenderer_GetPrecision).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderergetwidth">external documentation</a>.
 -spec getWidth(This) -> integer() when
 	This::wxGridCellFloatRenderer().
-getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridCellFloatRenderer),
-  wxe_util:call(?wxGridCellFloatRenderer_GetWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridCellFloatRenderer_GetWidth),
+  wxe_util:rec(?wxGridCellFloatRenderer_GetWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderersetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
 	This::wxGridCellFloatRenderer(), Params::unicode:chardata().
-setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
+setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellFloatRenderer),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellFloatRenderer_SetParameters,[ThisRef,Params_UC]).
+  wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellFloatRenderer_SetParameters).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderersetprecision">external documentation</a>.
 -spec setPrecision(This, Precision) -> 'ok' when
 	This::wxGridCellFloatRenderer(), Precision::integer().
-setPrecision(#wx_ref{type=ThisT,ref=ThisRef},Precision)
+setPrecision(#wx_ref{type=ThisT}=This,Precision)
  when is_integer(Precision) ->
   ?CLASS(ThisT,wxGridCellFloatRenderer),
-  wxe_util:cast(?wxGridCellFloatRenderer_SetPrecision,[ThisRef,Precision]).
+  wxe_util:queue_cmd(This,Precision,?get_env(),?wxGridCellFloatRenderer_SetPrecision).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderersetwidth">external documentation</a>.
 -spec setWidth(This, Width) -> 'ok' when
 	This::wxGridCellFloatRenderer(), Width::integer().
-setWidth(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setWidth(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxGridCellFloatRenderer),
-  wxe_util:cast(?wxGridCellFloatRenderer_SetWidth,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxGridCellFloatRenderer_SetWidth).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellFloatRenderer()) -> 'ok'.

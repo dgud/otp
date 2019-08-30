@@ -47,9 +47,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmousecapturechangedevent.html#wxmousecapturechangedeventgetcapturedwindow">external documentation</a>.
 -spec getCapturedWindow(This) -> wxWindow:wxWindow() when
 	This::wxMouseCaptureChangedEvent().
-getCapturedWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCapturedWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseCaptureChangedEvent),
-  wxe_util:call(?wxMouseCaptureChangedEvent_GetCapturedWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseCaptureChangedEvent_GetCapturedWindow),
+  wxe_util:rec(?wxMouseCaptureChangedEvent_GetCapturedWindow).
 
  %% From wxEvent
 %% @hidden

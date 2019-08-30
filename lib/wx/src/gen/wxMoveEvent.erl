@@ -47,9 +47,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmoveevent.html#wxmoveeventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxMoveEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMoveEvent),
-  wxe_util:call(?wxMoveEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMoveEvent_GetPosition),
+  wxe_util:rec(?wxMoveEvent_GetPosition).
 
  %% From wxEvent
 %% @hidden

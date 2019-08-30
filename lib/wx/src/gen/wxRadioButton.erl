@@ -83,7 +83,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobutton.html#wxradiobuttonwxradiobutton">external documentation</a>.
 -spec new() -> wxRadioButton().
 new() ->
-  wxe_util:construct(?wxRadioButton_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxRadioButton_new_0),
+  wxe_util:rec(?wxRadioButton_new_0).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxRadioButton() when
@@ -100,11 +101,12 @@ new(Parent,Id,Label)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:construct(?wxRadioButton_new_4,[ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxRadioButton_new_4),
+  wxe_util:rec(?wxRadioButton_new_4).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -121,27 +123,29 @@ create(This,Parent,Id,Label)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxRadioButton),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:call(?wxRadioButton_Create,[ThisRef,ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxRadioButton_Create),
+  wxe_util:rec(?wxRadioButton_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobutton.html#wxradiobuttongetvalue">external documentation</a>.
 -spec getValue(This) -> boolean() when
 	This::wxRadioButton().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxRadioButton),
-  wxe_util:call(?wxRadioButton_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxRadioButton_GetValue),
+  wxe_util:rec(?wxRadioButton_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobutton.html#wxradiobuttonsetvalue">external documentation</a>.
 -spec setValue(This, Val) -> 'ok' when
 	This::wxRadioButton(), Val::boolean().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setValue(#wx_ref{type=ThisT}=This,Val)
  when is_boolean(Val) ->
   ?CLASS(ThisT,wxRadioButton),
-  wxe_util:cast(?wxRadioButton_SetValue,[ThisRef,Val]).
+  wxe_util:queue_cmd(This,Val,?get_env(),?wxRadioButton_SetValue).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxRadioButton()) -> 'ok'.

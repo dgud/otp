@@ -48,8 +48,6 @@ DEFINE_EVENT_TYPE(wxeEVT_META_COMMAND)
 #define WXE_CALLBACK    1
 #define WXE_STORED      2
 
-#define OPENGL_START 5000
-
 // Globals initiated in wxe_init.cpp
 extern ErlNifMutex *wxe_status_m;
 extern ErlNifCond  *wxe_status_c;
@@ -419,8 +417,12 @@ void WxeApp::dispatch_cb(wxeFifo * batch, wxeMemEnv * memenv, ErlNifPid process)
 void WxeApp::wxe_dispatch(wxeCommand& event)
 {
   void (*nif_cb) (WxeApp *, wxeCommand& ) = wxe_fns[event.op].nif_cb;
-  if(wxe_debug)
-    enif_fprintf(stderr, "\r\n***wxe_dispatch %d %p %T\r\n", event.op, nif_cb, event.caller);
+  if(wxe_debug) {
+    enif_fprintf(stderr, "cmd: %d %T (", event.op, event.caller);
+    for(int i=0; i < event.argc; i++)
+      enif_fprintf(stderr, "%T,", event.args[i]);
+    enif_fprintf(stderr, ")\r\n");
+  }
   if(nif_cb) {
     try { nif_cb(this, event); }
     catch (wxe_badarg badarg) {
@@ -713,18 +715,6 @@ void WxeApp::clearPtr(void * ptr) {
   }
 }
 
-// void * WxeApp::getPtr(char * bp, wxeMemEnv *memenv) {
-//   int index = *(int *) bp;
-//   if(!memenv) {
-//     throw wxe_badarg(index);
-//   }
-//   void * temp = memenv->ref2ptr[index];
-//   if((index < memenv->next) && ((index == 0) || (temp != (void *)NULL)))
-//     return temp;
-//   else {
-//     throw wxe_badarg(index);
-//   }
-// }
 
 void WxeApp::registerPid(char * bp, ErlNifPid pid, wxeMemEnv * memenv) {
   int index = *(int *) bp;

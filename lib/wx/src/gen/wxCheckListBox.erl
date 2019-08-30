@@ -92,7 +92,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchecklistbox.html#wxchecklistboxwxchecklistbox">external documentation</a>.
 -spec new() -> wxCheckListBox().
 new() ->
-  wxe_util:construct(?wxCheckListBox_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxCheckListBox_new_0),
+  wxe_util:rec(?wxCheckListBox_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxCheckListBox() when
@@ -110,10 +111,11 @@ new(Parent,Id)
 		 | {'choices', [unicode:chardata()]}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxCheckListBox_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxCheckListBox_new_3),
+  wxe_util:rec(?wxCheckListBox_new_3).
 
 %% @equiv check(This,Index, [])
 -spec check(This, Index) -> 'ok' when
@@ -127,18 +129,19 @@ check(This,Index)
 -spec check(This, Index, [Option]) -> 'ok' when
 	This::wxCheckListBox(), Index::integer(),
 	Option :: {'check', boolean()}.
-check(#wx_ref{type=ThisT,ref=ThisRef},Index, Options)
+check(#wx_ref{type=ThisT}=This,Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxCheckListBox),
-  wxe_util:cast(?wxCheckListBox_Check,[ThisRef,Index, Options]).
+  wxe_util:queue_cmd(This,Index, Options,?get_env(),?wxCheckListBox_Check).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchecklistbox.html#wxchecklistboxischecked">external documentation</a>.
 -spec isChecked(This, Index) -> boolean() when
 	This::wxCheckListBox(), Index::integer().
-isChecked(#wx_ref{type=ThisT,ref=ThisRef},Index)
+isChecked(#wx_ref{type=ThisT}=This,Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxCheckListBox),
-  wxe_util:call(?wxCheckListBox_IsChecked,[ThisRef,Index]).
+  wxe_util:queue_cmd(This,Index,?get_env(),?wxCheckListBox_IsChecked),
+  wxe_util:rec(?wxCheckListBox_IsChecked).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCheckListBox()) -> 'ok'.

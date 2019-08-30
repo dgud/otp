@@ -83,7 +83,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpopuptransientwindow.html#wxpopuptransientwindowwxpopuptransientwindow">external documentation</a>.
 -spec new() -> wxPopupTransientWindow().
 new() ->
-  wxe_util:construct(?wxPopupTransientWindow_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPopupTransientWindow_new_0),
+  wxe_util:rec(?wxPopupTransientWindow_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxPopupTransientWindow() when
@@ -97,10 +98,11 @@ new(Parent)
 -spec new(Parent, [Option]) -> wxPopupTransientWindow() when
 	Parent::wxWindow:wxWindow(),
 	Option :: {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPopupTransientWindow_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPopupTransientWindow_new_2),
+  wxe_util:rec(?wxPopupTransientWindow_new_2).
 
 %% @equiv popup(This, [])
 -spec popup(This) -> 'ok' when
@@ -114,17 +116,17 @@ popup(This)
 -spec popup(This, [Option]) -> 'ok' when
 	This::wxPopupTransientWindow(),
 	Option :: {'focus', wxWindow:wxWindow()}.
-popup(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+popup(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPopupTransientWindow),
-  wxe_util:cast(?wxPopupTransientWindow_Popup,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxPopupTransientWindow_Popup).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpopuptransientwindow.html#wxpopuptransientwindowdismiss">external documentation</a>.
 -spec dismiss(This) -> 'ok' when
 	This::wxPopupTransientWindow().
-dismiss(#wx_ref{type=ThisT,ref=ThisRef}) ->
+dismiss(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPopupTransientWindow),
-  wxe_util:cast(?wxPopupTransientWindow_Dismiss,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPopupTransientWindow_Dismiss).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPopupTransientWindow()) -> 'ok'.

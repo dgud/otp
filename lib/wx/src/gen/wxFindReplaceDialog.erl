@@ -92,7 +92,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedialog.html#wxfindreplacedialogwxfindreplacedialog">external documentation</a>.
 -spec new() -> wxFindReplaceDialog().
 new() ->
-  wxe_util:construct(?wxFindReplaceDialog_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFindReplaceDialog_new_0),
+  wxe_util:rec(?wxFindReplaceDialog_new_0).
 
 %% @equiv new(Parent,Data,Title, [])
 -spec new(Parent, Data, Title) -> wxFindReplaceDialog() when
@@ -106,12 +107,13 @@ new(Parent,Data,Title)
 -spec new(Parent, Data, Title, [Option]) -> wxFindReplaceDialog() when
 	Parent::wxWindow:wxWindow(), Data::wxFindReplaceData:wxFindReplaceData(), Title::unicode:chardata(),
 	Option :: {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef},Title, Options)
+new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data,Title, Options)
  when ?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:construct(?wxFindReplaceDialog_new_4,[ParentRef,DataRef,Title_UC, Options]).
+  wxe_util:queue_cmd(Parent,Data,Title_UC, Options,?get_env(),?wxFindReplaceDialog_new_4),
+  wxe_util:rec(?wxFindReplaceDialog_new_4).
 
 %% @equiv create(This,Parent,Data,Title, [])
 -spec create(This, Parent, Data, Title) -> boolean() when
@@ -125,20 +127,22 @@ create(This,Parent,Data,Title)
 -spec create(This, Parent, Data, Title, [Option]) -> boolean() when
 	This::wxFindReplaceDialog(), Parent::wxWindow:wxWindow(), Data::wxFindReplaceData:wxFindReplaceData(), Title::unicode:chardata(),
 	Option :: {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef},Title, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data,Title, Options)
  when ?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxFindReplaceDialog),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxFindReplaceDialog_Create,[ThisRef,ParentRef,DataRef,Title_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Data,Title_UC, Options,?get_env(),?wxFindReplaceDialog_Create),
+  wxe_util:rec(?wxFindReplaceDialog_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedialog.html#wxfindreplacedialoggetdata">external documentation</a>.
 -spec getData(This) -> wxFindReplaceData:wxFindReplaceData() when
 	This::wxFindReplaceDialog().
-getData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFindReplaceDialog),
-  wxe_util:call(?wxFindReplaceDialog_GetData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFindReplaceDialog_GetData),
+  wxe_util:rec(?wxFindReplaceDialog_GetData).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFindReplaceDialog()) -> 'ok'.

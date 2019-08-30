@@ -56,7 +56,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 -spec new() -> wxImage().
 new() ->
-  wxe_util:construct(?wxImage_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxImage_new_0),
+  wxe_util:rec(?wxImage_new_0).
 
 %% @equiv new(Name, [])
 -spec new(Name) -> wxImage() when
@@ -86,7 +87,8 @@ new(Width,Height)
 new(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:construct(?wxImage_new_2,[Name_UC, Options]).
+  wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxImage_new_2),
+  wxe_util:rec(?wxImage_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 %% <br /> Also:<br />
@@ -111,12 +113,14 @@ new(Width,Height,Data)
   new(Width,Height,Data, []);
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:construct(?wxImage_new_3_0,[Width,Height, Options]);
+  wxe_util:queue_cmd(Width,Height, Options,?get_env(),?wxImage_new_3_0),
+  wxe_util:rec(?wxImage_new_3_0);
 new(Name,Mimetype, Options)
  when ?is_chardata(Name),?is_chardata(Mimetype),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
   Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
-  wxe_util:construct(?wxImage_new_3_1,[Name_UC,Mimetype_UC, Options]).
+  wxe_util:queue_cmd(Name_UC,Mimetype_UC, Options,?get_env(),?wxImage_new_3_1),
+  wxe_util:rec(?wxImage_new_3_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 %% <br /> Also:<br />
@@ -135,7 +139,8 @@ new(Width,Height,Data,Alpha)
   new(Width,Height,Data,Alpha, []);
 new(Width,Height,Data, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_list(Options) ->
-  wxe_util:construct(?wxImage_new_4,[Width,Height,Data, Options]).
+  wxe_util:queue_cmd(Width,Height,Data, Options,?get_env(),?wxImage_new_4),
+  wxe_util:rec(?wxImage_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 -spec new(Width, Height, Data, Alpha, [Option]) -> wxImage() when
@@ -143,31 +148,35 @@ new(Width,Height,Data, Options)
 	Option :: {'static_data', boolean()}.
 new(Width,Height,Data,Alpha, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha),is_list(Options) ->
-  wxe_util:construct(?wxImage_new_5,[Width,Height,Data,Alpha, Options]).
+  wxe_util:queue_cmd(Width,Height,Data,Alpha, Options,?get_env(),?wxImage_new_5),
+  wxe_util:rec(?wxImage_new_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageblur">external documentation</a>.
 -spec blur(This, Radius) -> wxImage() when
 	This::wxImage(), Radius::integer().
-blur(#wx_ref{type=ThisT,ref=ThisRef},Radius)
+blur(#wx_ref{type=ThisT}=This,Radius)
  when is_integer(Radius) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Blur,[ThisRef,Radius]).
+  wxe_util:queue_cmd(This,Radius,?get_env(),?wxImage_Blur),
+  wxe_util:rec(?wxImage_Blur).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageblurhorizontal">external documentation</a>.
 -spec blurHorizontal(This, Radius) -> wxImage() when
 	This::wxImage(), Radius::integer().
-blurHorizontal(#wx_ref{type=ThisT,ref=ThisRef},Radius)
+blurHorizontal(#wx_ref{type=ThisT}=This,Radius)
  when is_integer(Radius) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_BlurHorizontal,[ThisRef,Radius]).
+  wxe_util:queue_cmd(This,Radius,?get_env(),?wxImage_BlurHorizontal),
+  wxe_util:rec(?wxImage_BlurHorizontal).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageblurvertical">external documentation</a>.
 -spec blurVertical(This, Radius) -> wxImage() when
 	This::wxImage(), Radius::integer().
-blurVertical(#wx_ref{type=ThisT,ref=ThisRef},Radius)
+blurVertical(#wx_ref{type=ThisT}=This,Radius)
  when is_integer(Radius) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_BlurVertical,[ThisRef,Radius]).
+  wxe_util:queue_cmd(This,Radius,?get_env(),?wxImage_BlurVertical),
+  wxe_util:rec(?wxImage_BlurVertical).
 
 %% @equiv convertAlphaToMask(This, [])
 -spec convertAlphaToMask(This) -> boolean() when
@@ -181,10 +190,11 @@ convertAlphaToMask(This)
 -spec convertAlphaToMask(This, [Option]) -> boolean() when
 	This::wxImage(),
 	Option :: {'threshold', integer()}.
-convertAlphaToMask(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+convertAlphaToMask(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_ConvertAlphaToMask,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxImage_ConvertAlphaToMask),
+  wxe_util:rec(?wxImage_ConvertAlphaToMask).
 
 %% @equiv convertToGreyscale(This, [])
 -spec convertToGreyscale(This) -> wxImage() when
@@ -200,25 +210,28 @@ convertToGreyscale(This)
 	Option :: {'lr', number()}
 		 | {'lg', number()}
 		 | {'lb', number()}.
-convertToGreyscale(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+convertToGreyscale(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_ConvertToGreyscale,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxImage_ConvertToGreyscale),
+  wxe_util:rec(?wxImage_ConvertToGreyscale).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageconverttomono">external documentation</a>.
 -spec convertToMono(This, R, G, B) -> wxImage() when
 	This::wxImage(), R::integer(), G::integer(), B::integer().
-convertToMono(#wx_ref{type=ThisT,ref=ThisRef},R,G,B)
+convertToMono(#wx_ref{type=ThisT}=This,R,G,B)
  when is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_ConvertToMono,[ThisRef,R,G,B]).
+  wxe_util:queue_cmd(This,R,G,B,?get_env(),?wxImage_ConvertToMono),
+  wxe_util:rec(?wxImage_ConvertToMono).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagecopy">external documentation</a>.
 -spec copy(This) -> wxImage() when
 	This::wxImage().
-copy(#wx_ref{type=ThisT,ref=ThisRef}) ->
+copy(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Copy,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_Copy),
+  wxe_util:rec(?wxImage_Copy).
 
 %% @equiv create(This,Width,Height, [])
 -spec create(This, Width, Height) -> boolean() when
@@ -243,10 +256,11 @@ create(This,Width,Height)
 create(This,Width,Height,Data)
  when is_record(This, wx_ref),is_integer(Width),is_integer(Height),is_binary(Data) ->
   create(This,Width,Height,Data, []);
-create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
+create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Create_3,[ThisRef,Width,Height, Options]).
+  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxImage_Create_3),
+  wxe_util:rec(?wxImage_Create_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagecreate">external documentation</a>.
 %% <br /> Also:<br />
@@ -263,26 +277,28 @@ create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
 create(This,Width,Height,Data,Alpha)
  when is_record(This, wx_ref),is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha) ->
   create(This,Width,Height,Data,Alpha, []);
-create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height,Data, Options)
+create(#wx_ref{type=ThisT}=This,Width,Height,Data, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Create_4,[ThisRef,Width,Height,Data, Options]).
+  wxe_util:queue_cmd(This,Width,Height,Data, Options,?get_env(),?wxImage_Create_4),
+  wxe_util:rec(?wxImage_Create_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagecreate">external documentation</a>.
 -spec create(This, Width, Height, Data, Alpha, [Option]) -> boolean() when
 	This::wxImage(), Width::integer(), Height::integer(), Data::binary(), Alpha::binary(),
 	Option :: {'static_data', boolean()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height,Data,Alpha, Options)
+create(#wx_ref{type=ThisT}=This,Width,Height,Data,Alpha, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Create_5,[ThisRef,Width,Height,Data,Alpha, Options]).
+  wxe_util:queue_cmd(This,Width,Height,Data,Alpha, Options,?get_env(),?wxImage_Create_5),
+  wxe_util:rec(?wxImage_Create_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagedestroy">external documentation</a>.
 -spec 'Destroy'(This) -> 'ok' when
 	This::wxImage().
-'Destroy'(#wx_ref{type=ThisT,ref=ThisRef}) ->
+'Destroy'(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_Destroy,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_Destroy).
 
 %% @equiv findFirstUnusedColour(This, [])
 -spec findFirstUnusedColour(This) -> Result when
@@ -300,53 +316,60 @@ findFirstUnusedColour(This)
 	Option :: {'startR', integer()}
 		 | {'startG', integer()}
 		 | {'startB', integer()}.
-findFirstUnusedColour(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+findFirstUnusedColour(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_FindFirstUnusedColour,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxImage_FindFirstUnusedColour),
+  wxe_util:rec(?wxImage_FindFirstUnusedColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetimageextwildcard">external documentation</a>.
 -spec getImageExtWildcard() -> unicode:charlist().
 getImageExtWildcard() ->
-  wxe_util:call(?wxImage_GetImageExtWildcard,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxImage_GetImageExtWildcard),
+  wxe_util:rec(?wxImage_GetImageExtWildcard).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetalpha">external documentation</a>.
 -spec getAlpha(This) -> binary() when
 	This::wxImage().
-getAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAlpha(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetAlpha_0,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetAlpha_0),
+  wxe_util:rec(?wxImage_GetAlpha_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetalpha">external documentation</a>.
 -spec getAlpha(This, X, Y) -> integer() when
 	This::wxImage(), X::integer(), Y::integer().
-getAlpha(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+getAlpha(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetAlpha_2,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxImage_GetAlpha_2),
+  wxe_util:rec(?wxImage_GetAlpha_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetblue">external documentation</a>.
 -spec getBlue(This, X, Y) -> integer() when
 	This::wxImage(), X::integer(), Y::integer().
-getBlue(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+getBlue(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetBlue,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxImage_GetBlue),
+  wxe_util:rec(?wxImage_GetBlue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetdata">external documentation</a>.
 -spec getData(This) -> binary() when
 	This::wxImage().
-getData(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getData(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetData,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetData),
+  wxe_util:rec(?wxImage_GetData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetgreen">external documentation</a>.
 -spec getGreen(This, X, Y) -> integer() when
 	This::wxImage(), X::integer(), Y::integer().
-getGreen(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+getGreen(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetGreen,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxImage_GetGreen),
+  wxe_util:rec(?wxImage_GetGreen).
 
 %% @equiv getImageCount(Name, [])
 -spec getImageCount(Name) -> integer() when
@@ -364,126 +387,141 @@ getImageCount(Name)
 getImageCount(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_GetImageCount,[Name_UC, Options]).
+  wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxImage_GetImageCount),
+  wxe_util:rec(?wxImage_GetImageCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetheight">external documentation</a>.
 -spec getHeight(This) -> integer() when
 	This::wxImage().
-getHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getHeight(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetHeight,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetHeight),
+  wxe_util:rec(?wxImage_GetHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetmaskblue">external documentation</a>.
 -spec getMaskBlue(This) -> integer() when
 	This::wxImage().
-getMaskBlue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaskBlue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetMaskBlue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetMaskBlue),
+  wxe_util:rec(?wxImage_GetMaskBlue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetmaskgreen">external documentation</a>.
 -spec getMaskGreen(This) -> integer() when
 	This::wxImage().
-getMaskGreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaskGreen(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetMaskGreen,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetMaskGreen),
+  wxe_util:rec(?wxImage_GetMaskGreen).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetmaskred">external documentation</a>.
 -spec getMaskRed(This) -> integer() when
 	This::wxImage().
-getMaskRed(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMaskRed(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetMaskRed,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetMaskRed),
+  wxe_util:rec(?wxImage_GetMaskRed).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetorfindmaskcolour">external documentation</a>.
 -spec getOrFindMaskColour(This) -> Result when
 	Result ::{Res ::boolean(), R::integer(), G::integer(), B::integer()},
 	This::wxImage().
-getOrFindMaskColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOrFindMaskColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetOrFindMaskColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetOrFindMaskColour),
+  wxe_util:rec(?wxImage_GetOrFindMaskColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetpalette">external documentation</a>.
 -spec getPalette(This) -> wxPalette:wxPalette() when
 	This::wxImage().
-getPalette(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPalette(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetPalette,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetPalette),
+  wxe_util:rec(?wxImage_GetPalette).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetred">external documentation</a>.
 -spec getRed(This, X, Y) -> integer() when
 	This::wxImage(), X::integer(), Y::integer().
-getRed(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
+getRed(#wx_ref{type=ThisT}=This,X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetRed,[ThisRef,X,Y]).
+  wxe_util:queue_cmd(This,X,Y,?get_env(),?wxImage_GetRed),
+  wxe_util:rec(?wxImage_GetRed).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetsubimage">external documentation</a>.
 -spec getSubImage(This, Rect) -> wxImage() when
 	This::wxImage(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-getSubImage(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
+getSubImage(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetSubImage,[ThisRef,Rect]).
+  wxe_util:queue_cmd(This,Rect,?get_env(),?wxImage_GetSubImage),
+  wxe_util:rec(?wxImage_GetSubImage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetwidth">external documentation</a>.
 -spec getWidth(This) -> integer() when
 	This::wxImage().
-getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_GetWidth),
+  wxe_util:rec(?wxImage_GetWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagehasalpha">external documentation</a>.
 -spec hasAlpha(This) -> boolean() when
 	This::wxImage().
-hasAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
+hasAlpha(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_HasAlpha,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_HasAlpha),
+  wxe_util:rec(?wxImage_HasAlpha).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagehasmask">external documentation</a>.
 -spec hasMask(This) -> boolean() when
 	This::wxImage().
-hasMask(#wx_ref{type=ThisT,ref=ThisRef}) ->
+hasMask(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_HasMask,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_HasMask),
+  wxe_util:rec(?wxImage_HasMask).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetoption">external documentation</a>.
 -spec getOption(This, Name) -> unicode:charlist() when
 	This::wxImage(), Name::unicode:chardata().
-getOption(#wx_ref{type=ThisT,ref=ThisRef},Name)
+getOption(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_GetOption,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_GetOption),
+  wxe_util:rec(?wxImage_GetOption).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetoptionint">external documentation</a>.
 -spec getOptionInt(This, Name) -> integer() when
 	This::wxImage(), Name::unicode:chardata().
-getOptionInt(#wx_ref{type=ThisT,ref=ThisRef},Name)
+getOptionInt(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_GetOptionInt,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_GetOptionInt),
+  wxe_util:rec(?wxImage_GetOptionInt).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagehasoption">external documentation</a>.
 -spec hasOption(This, Name) -> boolean() when
 	This::wxImage(), Name::unicode:chardata().
-hasOption(#wx_ref{type=ThisT,ref=ThisRef},Name)
+hasOption(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_HasOption,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_HasOption),
+  wxe_util:rec(?wxImage_HasOption).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageinitalpha">external documentation</a>.
 -spec initAlpha(This) -> 'ok' when
 	This::wxImage().
-initAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
+initAlpha(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_InitAlpha,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_InitAlpha).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageinitstandardhandlers">external documentation</a>.
 -spec initStandardHandlers() -> 'ok'.
 initStandardHandlers() ->
-  wxe_util:cast(?wxImage_InitStandardHandlers,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxImage_InitStandardHandlers).
 
 %% @equiv isTransparent(This,X,Y, [])
 -spec isTransparent(This, X, Y) -> boolean() when
@@ -497,10 +535,11 @@ isTransparent(This,X,Y)
 -spec isTransparent(This, X, Y, [Option]) -> boolean() when
 	This::wxImage(), X::integer(), Y::integer(),
 	Option :: {'threshold', integer()}.
-isTransparent(#wx_ref{type=ThisT,ref=ThisRef},X,Y, Options)
+isTransparent(#wx_ref{type=ThisT}=This,X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_IsTransparent,[ThisRef,X,Y, Options]).
+  wxe_util:queue_cmd(This,X,Y, Options,?get_env(),?wxImage_IsTransparent),
+  wxe_util:rec(?wxImage_IsTransparent).
 
 %% @equiv loadFile(This,Name, [])
 -spec loadFile(This, Name) -> boolean() when
@@ -515,29 +554,32 @@ loadFile(This,Name)
 	This::wxImage(), Name::unicode:chardata(),
 	Option :: {'type', integer()}
 		 | {'index', integer()}.
-loadFile(#wx_ref{type=ThisT,ref=ThisRef},Name, Options)
+loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_LoadFile_2,[ThisRef,Name_UC, Options]).
+  wxe_util:queue_cmd(This,Name_UC, Options,?get_env(),?wxImage_LoadFile_2),
+  wxe_util:rec(?wxImage_LoadFile_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageloadfile">external documentation</a>.
 -spec loadFile(This, Name, Mimetype, [Option]) -> boolean() when
 	This::wxImage(), Name::unicode:chardata(), Mimetype::unicode:chardata(),
 	Option :: {'index', integer()}.
-loadFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Mimetype, Options)
+loadFile(#wx_ref{type=ThisT}=This,Name,Mimetype, Options)
  when ?is_chardata(Name),?is_chardata(Mimetype),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
   Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
-  wxe_util:call(?wxImage_LoadFile_3,[ThisRef,Name_UC,Mimetype_UC, Options]).
+  wxe_util:queue_cmd(This,Name_UC,Mimetype_UC, Options,?get_env(),?wxImage_LoadFile_3),
+  wxe_util:rec(?wxImage_LoadFile_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxImage().
-ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
+ok(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Ok,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxImage_Ok),
+  wxe_util:rec(?wxImage_Ok).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageremovehandler">external documentation</a>.
 -spec removeHandler(Name) -> boolean() when
@@ -545,7 +587,8 @@ ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
 removeHandler(Name)
  when ?is_chardata(Name) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_RemoveHandler,[Name_UC]).
+  wxe_util:queue_cmd(Name_UC,?get_env(),?wxImage_RemoveHandler),
+  wxe_util:rec(?wxImage_RemoveHandler).
 
 %% @equiv mirror(This, [])
 -spec mirror(This) -> wxImage() when
@@ -559,18 +602,19 @@ mirror(This)
 -spec mirror(This, [Option]) -> wxImage() when
 	This::wxImage(),
 	Option :: {'horizontally', boolean()}.
-mirror(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+mirror(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Mirror,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxImage_Mirror),
+  wxe_util:rec(?wxImage_Mirror).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagereplace">external documentation</a>.
 -spec replace(This, R1, G1, B1, R2, G2, B2) -> 'ok' when
 	This::wxImage(), R1::integer(), G1::integer(), B1::integer(), R2::integer(), G2::integer(), B2::integer().
-replace(#wx_ref{type=ThisT,ref=ThisRef},R1,G1,B1,R2,G2,B2)
+replace(#wx_ref{type=ThisT}=This,R1,G1,B1,R2,G2,B2)
  when is_integer(R1),is_integer(G1),is_integer(B1),is_integer(R2),is_integer(G2),is_integer(B2) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_Replace,[ThisRef,R1,G1,B1,R2,G2,B2]).
+  wxe_util:queue_cmd(This,R1,G1,B1,R2,G2,B2,?get_env(),?wxImage_Replace).
 
 %% @equiv rescale(This,Width,Height, [])
 -spec rescale(This, Width, Height) -> wxImage() when
@@ -585,10 +629,11 @@ rescale(This,Width,Height)
 -spec rescale(This, Width, Height, [Option]) -> wxImage() when
 	This::wxImage(), Width::integer(), Height::integer(),
 	Option :: {'quality', wx:wx_enum()}.
-rescale(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
+rescale(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Rescale,[ThisRef,Width,Height, Options]).
+  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxImage_Rescale),
+  wxe_util:rec(?wxImage_Rescale).
 
 %% @equiv resize(This,Size,Pos, [])
 -spec resize(This, Size, Pos) -> wxImage() when
@@ -604,10 +649,11 @@ resize(This,Size={SizeW,SizeH} = Size,Pos={PosX,PosY} = Pos)
 	Option :: {'r', integer()}
 		 | {'g', integer()}
 		 | {'b', integer()}.
-resize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
+resize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
  when is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Resize,[ThisRef,Size,Pos, Options]).
+  wxe_util:queue_cmd(This,Size,Pos, Options,?get_env(),?wxImage_Resize),
+  wxe_util:rec(?wxImage_Resize).
 
 %% @equiv rotate(This,Angle,Centre_of_rotation, [])
 -spec rotate(This, Angle, Centre_of_rotation) -> wxImage() when
@@ -622,18 +668,19 @@ rotate(This,Angle,Centre_of_rotation={Centre_of_rotationX,Centre_of_rotationY} =
 	This::wxImage(), Angle::number(), Centre_of_rotation::{X::integer(), Y::integer()},
 	Option :: {'interpolating', boolean()}
 		 | {'offset_after_rotation', {X::integer(), Y::integer()}}.
-rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle,{Centre_of_rotationX,Centre_of_rotationY} = Centre_of_rotation, Options)
+rotate(#wx_ref{type=ThisT}=This,Angle,{Centre_of_rotationX,Centre_of_rotationY} = Centre_of_rotation, Options)
  when is_number(Angle),is_integer(Centre_of_rotationX),is_integer(Centre_of_rotationY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Rotate,[ThisRef,Angle,Centre_of_rotation, Options]).
+  wxe_util:queue_cmd(This,Angle,Centre_of_rotation, Options,?get_env(),?wxImage_Rotate),
+  wxe_util:rec(?wxImage_Rotate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagerotatehue">external documentation</a>.
 -spec rotateHue(This, Angle) -> 'ok' when
 	This::wxImage(), Angle::number().
-rotateHue(#wx_ref{type=ThisT,ref=ThisRef},Angle)
+rotateHue(#wx_ref{type=ThisT}=This,Angle)
  when is_number(Angle) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_RotateHue,[ThisRef,Angle]).
+  wxe_util:queue_cmd(This,Angle,?get_env(),?wxImage_RotateHue).
 
 %% @equiv rotate90(This, [])
 -spec rotate90(This) -> wxImage() when
@@ -647,19 +694,21 @@ rotate90(This)
 -spec rotate90(This, [Option]) -> wxImage() when
 	This::wxImage(),
 	Option :: {'clockwise', boolean()}.
-rotate90(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+rotate90(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Rotate90,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxImage_Rotate90),
+  wxe_util:rec(?wxImage_Rotate90).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesavefile">external documentation</a>.
 -spec saveFile(This, Name) -> boolean() when
 	This::wxImage(), Name::unicode:chardata().
-saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name)
+saveFile(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_SaveFile_1,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_SaveFile_1),
+  wxe_util:rec(?wxImage_SaveFile_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesavefile">external documentation</a>.
 %% <br /> Also:<br />
@@ -670,17 +719,19 @@ saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name)
 	This::wxImage(), Name::unicode:chardata(), Type::integer();
       (This, Name, Mimetype) -> boolean() when
 	This::wxImage(), Name::unicode:chardata(), Mimetype::unicode:chardata().
-saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Type)
+saveFile(#wx_ref{type=ThisT}=This,Name,Type)
  when ?is_chardata(Name),is_integer(Type) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_SaveFile_2_0,[ThisRef,Name_UC,Type]);
-saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Mimetype)
+  wxe_util:queue_cmd(This,Name_UC,Type,?get_env(),?wxImage_SaveFile_2_0),
+  wxe_util:rec(?wxImage_SaveFile_2_0);
+saveFile(#wx_ref{type=ThisT}=This,Name,Mimetype)
  when ?is_chardata(Name),?is_chardata(Mimetype) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
   Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
-  wxe_util:call(?wxImage_SaveFile_2_1,[ThisRef,Name_UC,Mimetype_UC]).
+  wxe_util:queue_cmd(This,Name_UC,Mimetype_UC,?get_env(),?wxImage_SaveFile_2_1),
+  wxe_util:rec(?wxImage_SaveFile_2_1).
 
 %% @equiv scale(This,Width,Height, [])
 -spec scale(This, Width, Height) -> wxImage() when
@@ -695,10 +746,11 @@ scale(This,Width,Height)
 -spec scale(This, Width, Height, [Option]) -> wxImage() when
 	This::wxImage(), Width::integer(), Height::integer(),
 	Option :: {'quality', wx:wx_enum()}.
-scale(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
+scale(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Scale,[ThisRef,Width,Height, Options]).
+  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxImage_Scale),
+  wxe_util:rec(?wxImage_Scale).
 
 %% @equiv size(This,Size,Pos, [])
 -spec size(This, Size, Pos) -> wxImage() when
@@ -714,10 +766,11 @@ size(This,Size={SizeW,SizeH} = Size,Pos={PosX,PosY} = Pos)
 	Option :: {'r', integer()}
 		 | {'g', integer()}
 		 | {'b', integer()}.
-size(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
+size(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
  when is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Size,[ThisRef,Size,Pos, Options]).
+  wxe_util:queue_cmd(This,Size,Pos, Options,?get_env(),?wxImage_Size),
+  wxe_util:rec(?wxImage_Size).
 
 %% @equiv setAlpha(This,Alpha, [])
 -spec setAlpha(This, Alpha) -> 'ok' when
@@ -731,18 +784,18 @@ setAlpha(This,Alpha)
 -spec setAlpha(This, Alpha, [Option]) -> 'ok' when
 	This::wxImage(), Alpha::binary(),
 	Option :: {'static_data', boolean()}.
-setAlpha(#wx_ref{type=ThisT,ref=ThisRef},Alpha, Options)
+setAlpha(#wx_ref{type=ThisT}=This,Alpha, Options)
  when is_binary(Alpha),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetAlpha_2,[ThisRef,Alpha, Options]).
+  wxe_util:queue_cmd(This,Alpha, Options,?get_env(),?wxImage_SetAlpha_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetalpha">external documentation</a>.
 -spec setAlpha(This, X, Y, Alpha) -> 'ok' when
 	This::wxImage(), X::integer(), Y::integer(), Alpha::integer().
-setAlpha(#wx_ref{type=ThisT,ref=ThisRef},X,Y,Alpha)
+setAlpha(#wx_ref{type=ThisT}=This,X,Y,Alpha)
  when is_integer(X),is_integer(Y),is_integer(Alpha) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetAlpha_3,[ThisRef,X,Y,Alpha]).
+  wxe_util:queue_cmd(This,X,Y,Alpha,?get_env(),?wxImage_SetAlpha_3).
 
 %% @equiv setData(This,Data, [])
 -spec setData(This, Data) -> 'ok' when
@@ -756,10 +809,10 @@ setData(This,Data)
 -spec setData(This, Data, [Option]) -> 'ok' when
 	This::wxImage(), Data::binary(),
 	Option :: {'static_data', boolean()}.
-setData(#wx_ref{type=ThisT,ref=ThisRef},Data, Options)
+setData(#wx_ref{type=ThisT}=This,Data, Options)
  when is_binary(Data),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetData_2,[ThisRef,Data, Options]).
+  wxe_util:queue_cmd(This,Data, Options,?get_env(),?wxImage_SetData_2).
 
 %% @equiv setData(This,Data,New_width,New_height, [])
 -spec setData(This, Data, New_width, New_height) -> 'ok' when
@@ -773,10 +826,10 @@ setData(This,Data,New_width,New_height)
 -spec setData(This, Data, New_width, New_height, [Option]) -> 'ok' when
 	This::wxImage(), Data::binary(), New_width::integer(), New_height::integer(),
 	Option :: {'static_data', boolean()}.
-setData(#wx_ref{type=ThisT,ref=ThisRef},Data,New_width,New_height, Options)
+setData(#wx_ref{type=ThisT}=This,Data,New_width,New_height, Options)
  when is_binary(Data),is_integer(New_width),is_integer(New_height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetData_4,[ThisRef,Data,New_width,New_height, Options]).
+  wxe_util:queue_cmd(This,Data,New_width,New_height, Options,?get_env(),?wxImage_SetData_4).
 
 %% @equiv setMask(This, [])
 -spec setMask(This) -> 'ok' when
@@ -790,27 +843,28 @@ setMask(This)
 -spec setMask(This, [Option]) -> 'ok' when
 	This::wxImage(),
 	Option :: {'mask', boolean()}.
-setMask(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+setMask(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetMask,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxImage_SetMask).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetmaskcolour">external documentation</a>.
 -spec setMaskColour(This, R, G, B) -> 'ok' when
 	This::wxImage(), R::integer(), G::integer(), B::integer().
-setMaskColour(#wx_ref{type=ThisT,ref=ThisRef},R,G,B)
+setMaskColour(#wx_ref{type=ThisT}=This,R,G,B)
  when is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetMaskColour,[ThisRef,R,G,B]).
+  wxe_util:queue_cmd(This,R,G,B,?get_env(),?wxImage_SetMaskColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetmaskfromimage">external documentation</a>.
 -spec setMaskFromImage(This, Mask, Mr, Mg, Mb) -> boolean() when
 	This::wxImage(), Mask::wxImage(), Mr::integer(), Mg::integer(), Mb::integer().
-setMaskFromImage(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MaskT,ref=MaskRef},Mr,Mg,Mb)
+setMaskFromImage(#wx_ref{type=ThisT}=This,#wx_ref{type=MaskT}=Mask,Mr,Mg,Mb)
  when is_integer(Mr),is_integer(Mg),is_integer(Mb) ->
   ?CLASS(ThisT,wxImage),
   ?CLASS(MaskT,wxImage),
-  wxe_util:call(?wxImage_SetMaskFromImage,[ThisRef,MaskRef,Mr,Mg,Mb]).
+  wxe_util:queue_cmd(This,Mask,Mr,Mg,Mb,?get_env(),?wxImage_SetMaskFromImage),
+  wxe_util:rec(?wxImage_SetMaskFromImage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetoption">external documentation</a>.
 %% <br /> Also:<br />
@@ -821,41 +875,41 @@ setMaskFromImage(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MaskT,ref=MaskRef}
 	This::wxImage(), Name::unicode:chardata(), Value::integer();
       (This, Name, Value) -> 'ok' when
 	This::wxImage(), Name::unicode:chardata(), Value::unicode:chardata().
-setOption(#wx_ref{type=ThisT,ref=ThisRef},Name,Value)
+setOption(#wx_ref{type=ThisT}=This,Name,Value)
  when ?is_chardata(Name),is_integer(Value) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:cast(?wxImage_SetOption_2_0,[ThisRef,Name_UC,Value]);
-setOption(#wx_ref{type=ThisT,ref=ThisRef},Name,Value)
+  wxe_util:queue_cmd(This,Name_UC,Value,?get_env(),?wxImage_SetOption_2_0);
+setOption(#wx_ref{type=ThisT}=This,Name,Value)
  when ?is_chardata(Name),?is_chardata(Value) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
   Value_UC = unicode:characters_to_binary([Value,0]),
-  wxe_util:cast(?wxImage_SetOption_2_1,[ThisRef,Name_UC,Value_UC]).
+  wxe_util:queue_cmd(This,Name_UC,Value_UC,?get_env(),?wxImage_SetOption_2_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetpalette">external documentation</a>.
 -spec setPalette(This, Palette) -> 'ok' when
 	This::wxImage(), Palette::wxPalette:wxPalette().
-setPalette(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PaletteT,ref=PaletteRef}) ->
+setPalette(#wx_ref{type=ThisT}=This,#wx_ref{type=PaletteT}=Palette) ->
   ?CLASS(ThisT,wxImage),
   ?CLASS(PaletteT,wxPalette),
-  wxe_util:cast(?wxImage_SetPalette,[ThisRef,PaletteRef]).
+  wxe_util:queue_cmd(This,Palette,?get_env(),?wxImage_SetPalette).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetrgb">external documentation</a>.
 -spec setRGB(This, Rect, R, G, B) -> 'ok' when
 	This::wxImage(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}, R::integer(), G::integer(), B::integer().
-setRGB(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect,R,G,B)
+setRGB(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect,R,G,B)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetRGB_4,[ThisRef,Rect,R,G,B]).
+  wxe_util:queue_cmd(This,Rect,R,G,B,?get_env(),?wxImage_SetRGB_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetrgb">external documentation</a>.
 -spec setRGB(This, X, Y, R, G, B) -> 'ok' when
 	This::wxImage(), X::integer(), Y::integer(), R::integer(), G::integer(), B::integer().
-setRGB(#wx_ref{type=ThisT,ref=ThisRef},X,Y,R,G,B)
+setRGB(#wx_ref{type=ThisT}=This,X,Y,R,G,B)
  when is_integer(X),is_integer(Y),is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetRGB_5,[ThisRef,X,Y,R,G,B]).
+  wxe_util:queue_cmd(This,X,Y,R,G,B,?get_env(),?wxImage_SetRGB_5).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxImage()) -> 'ok'.

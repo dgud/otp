@@ -113,10 +113,11 @@ new(Parent)
 new(Parent,Shared)
  when is_record(Parent, wx_ref),is_record(Shared, wx_ref) ->
   new(Parent,Shared, []);
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxGLCanvas_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxGLCanvas_new_2),
+  wxe_util:rec(?wxGLCanvas_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvaswxglcanvas">external documentation</a>.
 -spec new(Parent, Shared, [Option]) -> wxGLCanvas() when
@@ -128,7 +129,7 @@ new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
 		 | {'name', unicode:chardata()}
 		 | {'attribList', [integer()]}
 		 | {'palette', wxPalette:wxPalette()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=SharedT,ref=SharedRef}, Options)
+new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=SharedT}=Shared, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   SharedOP = case ?CLASS_T(SharedT,wxGLContext) of
@@ -137,30 +138,32 @@ new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=SharedT,ref=SharedRef}, Opt
      _ -> ?CLASS(SharedT,wxGLCanvas),
        ?wxGLCanvas_new_3_0
      end,
-  wxe_util:construct(SharedOP,[ParentRef,SharedRef, Options]).
+  wxe_util:queue_cmd(Parent,Shared, Options,?get_env(),SharedOP),
+  wxe_util:rec(SharedOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvasgetcontext">external documentation</a>.
 -spec getContext(This) -> wx:wx_object() when
 	This::wxGLCanvas().
-getContext(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getContext(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGLCanvas),
-  wxe_util:call(?wxGLCanvas_GetContext,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGLCanvas_GetContext),
+  wxe_util:rec(?wxGLCanvas_GetContext).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvassetcurrent">external documentation</a>.
 -spec setCurrent(This) -> 'ok' when
 	This::wxGLCanvas().
-setCurrent(#wx_ref{type=ThisT,ref=ThisRef}) ->
+setCurrent(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGLCanvas),
-  _Result =  wxe_util:cast(?wxGLCanvas_SetCurrent,[ThisRef]),
-  {ok, _} = wxe_master:init_opengl(),
-  _Result.
+  wxe_util:queue_cmd(This,?get_env(),?wxGLCanvas_SetCurrent),
+  {ok, _} = wxe_master:init_opengl()
+.
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvasswapbuffers">external documentation</a>.
 -spec swapBuffers(This) -> 'ok' when
 	This::wxGLCanvas().
-swapBuffers(#wx_ref{type=ThisT,ref=ThisRef}) ->
+swapBuffers(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGLCanvas),
-  wxe_util:cast(?wxGLCanvas_SwapBuffers,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGLCanvas_SwapBuffers).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGLCanvas()) -> 'ok'.

@@ -51,16 +51,18 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollevent.html#wxscrolleventgetorientation">external documentation</a>.
 -spec getOrientation(This) -> integer() when
 	This::wxScrollEvent().
-getOrientation(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOrientation(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxScrollEvent),
-  wxe_util:call(?wxScrollEvent_GetOrientation,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxScrollEvent_GetOrientation),
+  wxe_util:rec(?wxScrollEvent_GetOrientation).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollevent.html#wxscrolleventgetposition">external documentation</a>.
 -spec getPosition(This) -> integer() when
 	This::wxScrollEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxScrollEvent),
-  wxe_util:call(?wxScrollEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxScrollEvent_GetPosition),
+  wxe_util:rec(?wxScrollEvent_GetPosition).
 
  %% From wxCommandEvent
 %% @hidden

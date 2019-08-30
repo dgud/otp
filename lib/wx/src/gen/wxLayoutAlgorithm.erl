@@ -39,7 +39,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlayoutalgorithm.html#wxlayoutalgorithmwxlayoutalgorithm">external documentation</a>.
 -spec new() -> wxLayoutAlgorithm().
 new() ->
-  wxe_util:construct(?wxLayoutAlgorithm_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxLayoutAlgorithm_new),
+  wxe_util:rec(?wxLayoutAlgorithm_new).
 
 %% @equiv layoutFrame(This,Frame, [])
 -spec layoutFrame(This, Frame) -> boolean() when
@@ -53,11 +54,12 @@ layoutFrame(This,Frame)
 -spec layoutFrame(This, Frame, [Option]) -> boolean() when
 	This::wxLayoutAlgorithm(), Frame::wxFrame:wxFrame(),
 	Option :: {'mainWindow', wxWindow:wxWindow()}.
-layoutFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}, Options)
+layoutFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxFrame),
-  wxe_util:call(?wxLayoutAlgorithm_LayoutFrame,[ThisRef,FrameRef, Options]).
+  wxe_util:queue_cmd(This,Frame, Options,?get_env(),?wxLayoutAlgorithm_LayoutFrame),
+  wxe_util:rec(?wxLayoutAlgorithm_LayoutFrame).
 
 %% @equiv layoutMDIFrame(This,Frame, [])
 -spec layoutMDIFrame(This, Frame) -> boolean() when
@@ -71,11 +73,12 @@ layoutMDIFrame(This,Frame)
 -spec layoutMDIFrame(This, Frame, [Option]) -> boolean() when
 	This::wxLayoutAlgorithm(), Frame::wxMDIParentFrame:wxMDIParentFrame(),
 	Option :: {'rect', {X::integer(), Y::integer(), W::integer(), H::integer()}}.
-layoutMDIFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}, Options)
+layoutMDIFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxMDIParentFrame),
-  wxe_util:call(?wxLayoutAlgorithm_LayoutMDIFrame,[ThisRef,FrameRef, Options]).
+  wxe_util:queue_cmd(This,Frame, Options,?get_env(),?wxLayoutAlgorithm_LayoutMDIFrame),
+  wxe_util:rec(?wxLayoutAlgorithm_LayoutMDIFrame).
 
 %% @equiv layoutWindow(This,Frame, [])
 -spec layoutWindow(This, Frame) -> boolean() when
@@ -89,11 +92,12 @@ layoutWindow(This,Frame)
 -spec layoutWindow(This, Frame, [Option]) -> boolean() when
 	This::wxLayoutAlgorithm(), Frame::wxWindow:wxWindow(),
 	Option :: {'mainWindow', wxWindow:wxWindow()}.
-layoutWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}, Options)
+layoutWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxWindow),
-  wxe_util:call(?wxLayoutAlgorithm_LayoutWindow,[ThisRef,FrameRef, Options]).
+  wxe_util:queue_cmd(This,Frame, Options,?get_env(),?wxLayoutAlgorithm_LayoutWindow),
+  wxe_util:rec(?wxLayoutAlgorithm_LayoutWindow).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxLayoutAlgorithm()) -> 'ok'.

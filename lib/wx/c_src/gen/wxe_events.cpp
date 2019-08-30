@@ -36,7 +36,7 @@ int wxeEventTypeFromAtom(ERL_NIF_TERM etype_atom) {
   wxeETmap::iterator it;
   for(it = etmap.begin(); it != etmap.end(); ++it) {
     wxeEtype * value = it->second;
-    if(enif_is_identical(value->evName, etype_atom) == 0) {
+    if(enif_is_identical(value->evName, etype_atom)) {
       if(it->first > wxEVT_USER_FIRST) {
         return it->first - wxEVT_USER_FIRST;
       } else {

@@ -89,20 +89,22 @@ new(Window)
 new(Window,Buffer)
  when is_record(Window, wx_ref),is_record(Buffer, wx_ref) ->
   new(Window,Buffer, []);
-new(#wx_ref{type=WindowT,ref=WindowRef}, Options)
+new(#wx_ref{type=WindowT}=Window, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
-  wxe_util:construct(?wxBufferedPaintDC_new_2,[WindowRef, Options]).
+  wxe_util:queue_cmd(Window, Options,?get_env(),?wxBufferedPaintDC_new_2),
+  wxe_util:rec(?wxBufferedPaintDC_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbufferedpaintdc.html#wxbufferedpaintdcwxbufferedpaintdc">external documentation</a>.
 -spec new(Window, Buffer, [Option]) -> wxBufferedPaintDC() when
 	Window::wxWindow:wxWindow(), Buffer::wxBitmap:wxBitmap(),
 	Option :: {'style', integer()}.
-new(#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{type=BufferT,ref=BufferRef}, Options)
+new(#wx_ref{type=WindowT}=Window,#wx_ref{type=BufferT}=Buffer, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
   ?CLASS(BufferT,wxBitmap),
-  wxe_util:construct(?wxBufferedPaintDC_new_3,[WindowRef,BufferRef, Options]).
+  wxe_util:queue_cmd(Window,Buffer, Options,?get_env(),?wxBufferedPaintDC_new_3),
+  wxe_util:rec(?wxBufferedPaintDC_new_3).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBufferedPaintDC()) -> 'ok'.

@@ -64,11 +64,11 @@ static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM ar
     void *ptr;
     if(!enif_get_int(env, argv[argc-1], &op))
         return enif_make_badarg(env);
-    if(argc < 2 || !enif_get_resource(env, argv[argc-2], wxeMemEnvRt, &ptr)) {
+    if(op >= OPENGL_START || op < 50) {
         push_nif(env, argc-1, argv, op, NULL);
-    } else {
+    } else if(enif_get_resource(env, argv[argc-2], wxeMemEnvRt, &ptr)) {
         push_nif(env, argc-2, argv, op, ptr);
-    }
+    } else return enif_make_badarg(env);
     return WXE_ATOM_ok;
 }
 

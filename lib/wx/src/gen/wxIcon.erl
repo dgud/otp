@@ -45,7 +45,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxicon.html#wxiconwxicon">external documentation</a>.
 -spec new() -> wxIcon().
 new() ->
-  wxe_util:construct(?wxIcon_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxIcon_new_0),
+  wxe_util:rec(?wxIcon_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxicon.html#wxiconwxicon">external documentation</a>.
 %% <br /> Also:<br />
@@ -61,9 +62,10 @@ new() ->
 new(Filename)
  when ?is_chardata(Filename) ->
   new(Filename, []);
-new(#wx_ref{type=LocT,ref=LocRef}) ->
+new(#wx_ref{type=LocT}=Loc) ->
   ?CLASS(LocT,wx),
-  wxe_util:construct(?wxIcon_new_1,[LocRef]).
+  wxe_util:queue_cmd(Loc,?get_env(),?wxIcon_new_1),
+  wxe_util:rec(?wxIcon_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxicon.html#wxiconwxicon">external documentation</a>.
 %%<br /> Type = ?wxBITMAP_TYPE_INVALID | ?wxBITMAP_TYPE_BMP | ?wxBITMAP_TYPE_BMP_RESOURCE | ?wxBITMAP_TYPE_RESOURCE | ?wxBITMAP_TYPE_ICO | ?wxBITMAP_TYPE_ICO_RESOURCE | ?wxBITMAP_TYPE_CUR | ?wxBITMAP_TYPE_CUR_RESOURCE | ?wxBITMAP_TYPE_XBM | ?wxBITMAP_TYPE_XBM_DATA | ?wxBITMAP_TYPE_XPM | ?wxBITMAP_TYPE_XPM_DATA | ?wxBITMAP_TYPE_TIF | ?wxBITMAP_TYPE_TIF_RESOURCE | ?wxBITMAP_TYPE_GIF | ?wxBITMAP_TYPE_GIF_RESOURCE | ?wxBITMAP_TYPE_PNG | ?wxBITMAP_TYPE_PNG_RESOURCE | ?wxBITMAP_TYPE_JPEG | ?wxBITMAP_TYPE_JPEG_RESOURCE | ?wxBITMAP_TYPE_PNM | ?wxBITMAP_TYPE_PNM_RESOURCE | ?wxBITMAP_TYPE_PCX | ?wxBITMAP_TYPE_PCX_RESOURCE | ?wxBITMAP_TYPE_PICT | ?wxBITMAP_TYPE_PICT_RESOURCE | ?wxBITMAP_TYPE_ICON | ?wxBITMAP_TYPE_ICON_RESOURCE | ?wxBITMAP_TYPE_ANI | ?wxBITMAP_TYPE_IFF | ?wxBITMAP_TYPE_TGA | ?wxBITMAP_TYPE_MACCURSOR | ?wxBITMAP_TYPE_MACCURSOR_RESOURCE | ?wxBITMAP_TYPE_ANY
@@ -75,15 +77,16 @@ new(#wx_ref{type=LocT,ref=LocRef}) ->
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:construct(?wxIcon_new_2,[Filename_UC, Options]).
+  wxe_util:queue_cmd(Filename_UC, Options,?get_env(),?wxIcon_new_2),
+  wxe_util:rec(?wxIcon_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxicon.html#wxiconcopyfrombitmap">external documentation</a>.
 -spec copyFromBitmap(This, Bmp) -> 'ok' when
 	This::wxIcon(), Bmp::wxBitmap:wxBitmap().
-copyFromBitmap(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BmpT,ref=BmpRef}) ->
+copyFromBitmap(#wx_ref{type=ThisT}=This,#wx_ref{type=BmpT}=Bmp) ->
   ?CLASS(ThisT,wxIcon),
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:cast(?wxIcon_CopyFromBitmap,[ThisRef,BmpRef]).
+  wxe_util:queue_cmd(This,Bmp,?get_env(),?wxIcon_CopyFromBitmap).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxIcon()) -> 'ok'.

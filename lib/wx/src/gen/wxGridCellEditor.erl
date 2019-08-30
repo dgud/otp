@@ -41,27 +41,28 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorcreate">external documentation</a>.
 -spec create(This, Parent, Id, EvtHandler) -> 'ok' when
 	This::wxGridCellEditor(), Parent::wxWindow:wxWindow(), Id::integer(), EvtHandler::wxEvtHandler:wxEvtHandler().
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,#wx_ref{type=EvtHandlerT,ref=EvtHandlerRef})
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,#wx_ref{type=EvtHandlerT}=EvtHandler)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(EvtHandlerT,wxEvtHandler),
-  wxe_util:cast(?wxGridCellEditor_Create,[ThisRef,ParentRef,Id,EvtHandlerRef]).
+  wxe_util:queue_cmd(This,Parent,Id,EvtHandler,?get_env(),?wxGridCellEditor_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditoriscreated">external documentation</a>.
 -spec isCreated(This) -> boolean() when
 	This::wxGridCellEditor().
-isCreated(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isCreated(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:call(?wxGridCellEditor_IsCreated,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridCellEditor_IsCreated),
+  wxe_util:rec(?wxGridCellEditor_IsCreated).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorsetsize">external documentation</a>.
 -spec setSize(This, Rect) -> 'ok' when
 	This::wxGridCellEditor(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-setSize(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
+setSize(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_SetSize,[ThisRef,Rect]).
+  wxe_util:queue_cmd(This,Rect,?get_env(),?wxGridCellEditor_SetSize).
 
 %% @equiv show(This,Show, [])
 -spec show(This, Show) -> 'ok' when
@@ -75,65 +76,66 @@ show(This,Show)
 -spec show(This, Show, [Option]) -> 'ok' when
 	This::wxGridCellEditor(), Show::boolean(),
 	Option :: {'attr', wxGridCellAttr:wxGridCellAttr()}.
-show(#wx_ref{type=ThisT,ref=ThisRef},Show, Options)
+show(#wx_ref{type=ThisT}=This,Show, Options)
  when is_boolean(Show),is_list(Options) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_Show,[ThisRef,Show, Options]).
+  wxe_util:queue_cmd(This,Show, Options,?get_env(),?wxGridCellEditor_Show).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorpaintbackground">external documentation</a>.
 -spec paintBackground(This, RectCell, Attr) -> 'ok' when
 	This::wxGridCellEditor(), RectCell::{X::integer(), Y::integer(), W::integer(), H::integer()}, Attr::wxGridCellAttr:wxGridCellAttr().
-paintBackground(#wx_ref{type=ThisT,ref=ThisRef},{RectCellX,RectCellY,RectCellW,RectCellH} = RectCell,#wx_ref{type=AttrT,ref=AttrRef})
+paintBackground(#wx_ref{type=ThisT}=This,{RectCellX,RectCellY,RectCellW,RectCellH} = RectCell,#wx_ref{type=AttrT}=Attr)
  when is_integer(RectCellX),is_integer(RectCellY),is_integer(RectCellW),is_integer(RectCellH) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(AttrT,wxGridCellAttr),
-  wxe_util:cast(?wxGridCellEditor_PaintBackground,[ThisRef,RectCell,AttrRef]).
+  wxe_util:queue_cmd(This,RectCell,Attr,?get_env(),?wxGridCellEditor_PaintBackground).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorbeginedit">external documentation</a>.
 -spec beginEdit(This, Row, Col, Grid) -> 'ok' when
 	This::wxGridCellEditor(), Row::integer(), Col::integer(), Grid::wxGrid:wxGrid().
-beginEdit(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=GridT,ref=GridRef})
+beginEdit(#wx_ref{type=ThisT}=This,Row,Col,#wx_ref{type=GridT}=Grid)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(GridT,wxGrid),
-  wxe_util:cast(?wxGridCellEditor_BeginEdit,[ThisRef,Row,Col,GridRef]).
+  wxe_util:queue_cmd(This,Row,Col,Grid,?get_env(),?wxGridCellEditor_BeginEdit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorendedit">external documentation</a>.
 -spec endEdit(This, Row, Col, Grid) -> boolean() when
 	This::wxGridCellEditor(), Row::integer(), Col::integer(), Grid::wxGrid:wxGrid().
-endEdit(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=GridT,ref=GridRef})
+endEdit(#wx_ref{type=ThisT}=This,Row,Col,#wx_ref{type=GridT}=Grid)
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(GridT,wxGrid),
-  wxe_util:call(?wxGridCellEditor_EndEdit,[ThisRef,Row,Col,GridRef]).
+  wxe_util:queue_cmd(This,Row,Col,Grid,?get_env(),?wxGridCellEditor_EndEdit),
+  wxe_util:rec(?wxGridCellEditor_EndEdit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorreset">external documentation</a>.
 -spec reset(This) -> 'ok' when
 	This::wxGridCellEditor().
-reset(#wx_ref{type=ThisT,ref=ThisRef}) ->
+reset(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_Reset,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridCellEditor_Reset).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorstartingkey">external documentation</a>.
 -spec startingKey(This, Event) -> 'ok' when
 	This::wxGridCellEditor(), Event::wxKeyEvent:wxKeyEvent().
-startingKey(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=EventT,ref=EventRef}) ->
+startingKey(#wx_ref{type=ThisT}=This,#wx_ref{type=EventT}=Event) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(EventT,wxKeyEvent),
-  wxe_util:cast(?wxGridCellEditor_StartingKey,[ThisRef,EventRef]).
+  wxe_util:queue_cmd(This,Event,?get_env(),?wxGridCellEditor_StartingKey).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorstartingclick">external documentation</a>.
 -spec startingClick(This) -> 'ok' when
 	This::wxGridCellEditor().
-startingClick(#wx_ref{type=ThisT,ref=ThisRef}) ->
+startingClick(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_StartingClick,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridCellEditor_StartingClick).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorhandlereturn">external documentation</a>.
 -spec handleReturn(This, Event) -> 'ok' when
 	This::wxGridCellEditor(), Event::wxKeyEvent:wxKeyEvent().
-handleReturn(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=EventT,ref=EventRef}) ->
+handleReturn(#wx_ref{type=ThisT}=This,#wx_ref{type=EventT}=Event) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(EventT,wxKeyEvent),
-  wxe_util:cast(?wxGridCellEditor_HandleReturn,[ThisRef,EventRef]).
+  wxe_util:queue_cmd(This,Event,?get_env(),?wxGridCellEditor_HandleReturn).
 

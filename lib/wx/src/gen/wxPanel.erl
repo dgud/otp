@@ -81,7 +81,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpanel.html#wxpanelwxpanel">external documentation</a>.
 -spec new() -> wxPanel().
 new() ->
-  wxe_util:construct(?wxPanel_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPanel_new_0),
+  wxe_util:rec(?wxPanel_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxPanel() when
@@ -98,10 +99,11 @@ new(Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPanel_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPanel_new_2),
+  wxe_util:rec(?wxPanel_new_2).
 
 %% @equiv new(Parent,X,Y,Width,Height, [])
 -spec new(Parent, X, Y, Width, Height) -> wxPanel() when
@@ -115,24 +117,25 @@ new(Parent,X,Y,Width,Height)
 -spec new(Parent, X, Y, Width, Height, [Option]) -> wxPanel() when
 	Parent::wxWindow:wxWindow(), X::integer(), Y::integer(), Width::integer(), Height::integer(),
 	Option :: {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},X,Y,Width,Height, Options)
+new(#wx_ref{type=ParentT}=Parent,X,Y,Width,Height, Options)
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPanel_new_6,[ParentRef,X,Y,Width,Height, Options]).
+  wxe_util:queue_cmd(Parent,X,Y,Width,Height, Options,?get_env(),?wxPanel_new_6),
+  wxe_util:rec(?wxPanel_new_6).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpanel.html#wxpanelinitdialog">external documentation</a>.
 -spec initDialog(This) -> 'ok' when
 	This::wxPanel().
-initDialog(#wx_ref{type=ThisT,ref=ThisRef}) ->
+initDialog(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPanel),
-  wxe_util:cast(?wxPanel_InitDialog,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPanel_InitDialog).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpanel.html#wxpanelsetfocusignoringchildren">external documentation</a>.
 -spec setFocusIgnoringChildren(This) -> 'ok' when
 	This::wxPanel().
-setFocusIgnoringChildren(#wx_ref{type=ThisT,ref=ThisRef}) ->
+setFocusIgnoringChildren(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPanel),
-  wxe_util:cast(?wxPanel_SetFocusIgnoringChildren,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPanel_SetFocusIgnoringChildren).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPanel()) -> 'ok'.

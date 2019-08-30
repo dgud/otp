@@ -41,6 +41,8 @@ extern ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 #define WXE_EXITED        3
 #define WXE_ERROR        -1
 
+#define OPENGL_START 5000
+
 // META COMMANDS
 
 #define WXE_BATCH_BEGIN      5

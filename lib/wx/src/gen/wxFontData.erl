@@ -40,112 +40,120 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatawxfontdata">external documentation</a>.
 -spec new() -> wxFontData().
 new() ->
-  wxe_util:construct(?wxFontData_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxFontData_new_0),
+  wxe_util:rec(?wxFontData_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatawxfontdata">external documentation</a>.
 -spec new(Data) -> wxFontData() when
 	Data::wxFontData().
-new(#wx_ref{type=DataT,ref=DataRef}) ->
+new(#wx_ref{type=DataT}=Data) ->
   ?CLASS(DataT,wxFontData),
-  wxe_util:construct(?wxFontData_new_1,[DataRef]).
+  wxe_util:queue_cmd(Data,?get_env(),?wxFontData_new_1),
+  wxe_util:rec(?wxFontData_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdataenableeffects">external documentation</a>.
 -spec enableEffects(This, Flag) -> 'ok' when
 	This::wxFontData(), Flag::boolean().
-enableEffects(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+enableEffects(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:cast(?wxFontData_EnableEffects,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxFontData_EnableEffects).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatagetallowsymbols">external documentation</a>.
 -spec getAllowSymbols(This) -> boolean() when
 	This::wxFontData().
-getAllowSymbols(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAllowSymbols(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:call(?wxFontData_GetAllowSymbols,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontData_GetAllowSymbols),
+  wxe_util:rec(?wxFontData_GetAllowSymbols).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatagetcolour">external documentation</a>.
 -spec getColour(This) -> wx:wx_colour4() when
 	This::wxFontData().
-getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColour(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:call(?wxFontData_GetColour,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontData_GetColour),
+  wxe_util:rec(?wxFontData_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatagetchosenfont">external documentation</a>.
 -spec getChosenFont(This) -> wxFont:wxFont() when
 	This::wxFontData().
-getChosenFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getChosenFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:call(?wxFontData_GetChosenFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontData_GetChosenFont),
+  wxe_util:rec(?wxFontData_GetChosenFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatagetenableeffects">external documentation</a>.
 -spec getEnableEffects(This) -> boolean() when
 	This::wxFontData().
-getEnableEffects(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getEnableEffects(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:call(?wxFontData_GetEnableEffects,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontData_GetEnableEffects),
+  wxe_util:rec(?wxFontData_GetEnableEffects).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatagetinitialfont">external documentation</a>.
 -spec getInitialFont(This) -> wxFont:wxFont() when
 	This::wxFontData().
-getInitialFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getInitialFont(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:call(?wxFontData_GetInitialFont,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontData_GetInitialFont),
+  wxe_util:rec(?wxFontData_GetInitialFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatagetshowhelp">external documentation</a>.
 -spec getShowHelp(This) -> boolean() when
 	This::wxFontData().
-getShowHelp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getShowHelp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:call(?wxFontData_GetShowHelp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFontData_GetShowHelp),
+  wxe_util:rec(?wxFontData_GetShowHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatasetallowsymbols">external documentation</a>.
 -spec setAllowSymbols(This, Flag) -> 'ok' when
 	This::wxFontData(), Flag::boolean().
-setAllowSymbols(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setAllowSymbols(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:cast(?wxFontData_SetAllowSymbols,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxFontData_SetAllowSymbols).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatasetchosenfont">external documentation</a>.
 -spec setChosenFont(This, Font) -> 'ok' when
 	This::wxFontData(), Font::wxFont:wxFont().
-setChosenFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
+setChosenFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font) ->
   ?CLASS(ThisT,wxFontData),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxFontData_SetChosenFont,[ThisRef,FontRef]).
+  wxe_util:queue_cmd(This,Font,?get_env(),?wxFontData_SetChosenFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatasetcolour">external documentation</a>.
 -spec setColour(This, Colour) -> 'ok' when
 	This::wxFontData(), Colour::wx:wx_colour().
-setColour(#wx_ref{type=ThisT,ref=ThisRef},Colour)
+setColour(#wx_ref{type=ThisT}=This,Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:cast(?wxFontData_SetColour,[ThisRef,Colour]).
+  wxe_util:queue_cmd(This,wxe_util:color(Colour),?get_env(),?wxFontData_SetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatasetinitialfont">external documentation</a>.
 -spec setInitialFont(This, Font) -> 'ok' when
 	This::wxFontData(), Font::wxFont:wxFont().
-setInitialFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
+setInitialFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font) ->
   ?CLASS(ThisT,wxFontData),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxFontData_SetInitialFont,[ThisRef,FontRef]).
+  wxe_util:queue_cmd(This,Font,?get_env(),?wxFontData_SetInitialFont).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatasetrange">external documentation</a>.
 -spec setRange(This, MinRange, MaxRange) -> 'ok' when
 	This::wxFontData(), MinRange::integer(), MaxRange::integer().
-setRange(#wx_ref{type=ThisT,ref=ThisRef},MinRange,MaxRange)
+setRange(#wx_ref{type=ThisT}=This,MinRange,MaxRange)
  when is_integer(MinRange),is_integer(MaxRange) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:cast(?wxFontData_SetRange,[ThisRef,MinRange,MaxRange]).
+  wxe_util:queue_cmd(This,MinRange,MaxRange,?get_env(),?wxFontData_SetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdata.html#wxfontdatasetshowhelp">external documentation</a>.
 -spec setShowHelp(This, Flag) -> 'ok' when
 	This::wxFontData(), Flag::boolean().
-setShowHelp(#wx_ref{type=ThisT,ref=ThisRef},Flag)
+setShowHelp(#wx_ref{type=ThisT}=This,Flag)
  when is_boolean(Flag) ->
   ?CLASS(ThisT,wxFontData),
-  wxe_util:cast(?wxFontData_SetShowHelp,[ThisRef,Flag]).
+  wxe_util:queue_cmd(This,Flag,?get_env(),?wxFontData_SetShowHelp).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFontData()) -> 'ok'.

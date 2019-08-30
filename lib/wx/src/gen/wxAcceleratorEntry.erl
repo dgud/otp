@@ -55,31 +55,36 @@ new() ->
 	Entry::wxAcceleratorEntry().
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxAcceleratorEntry_new_1_0,[Options]);
-new(#wx_ref{type=EntryT,ref=EntryRef}) ->
+  wxe_util:queue_cmd(Options,?get_env(),?wxAcceleratorEntry_new_1_0),
+  wxe_util:rec(?wxAcceleratorEntry_new_1_0);
+new(#wx_ref{type=EntryT}=Entry) ->
   ?CLASS(EntryT,wxAcceleratorEntry),
-  wxe_util:construct(?wxAcceleratorEntry_new_1_1,[EntryRef]).
+  wxe_util:queue_cmd(Entry,?get_env(),?wxAcceleratorEntry_new_1_1),
+  wxe_util:rec(?wxAcceleratorEntry_new_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratorentry.html#wxacceleratorentrygetcommand">external documentation</a>.
 -spec getCommand(This) -> integer() when
 	This::wxAcceleratorEntry().
-getCommand(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCommand(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:call(?wxAcceleratorEntry_GetCommand,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAcceleratorEntry_GetCommand),
+  wxe_util:rec(?wxAcceleratorEntry_GetCommand).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratorentry.html#wxacceleratorentrygetflags">external documentation</a>.
 -spec getFlags(This) -> integer() when
 	This::wxAcceleratorEntry().
-getFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFlags(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:call(?wxAcceleratorEntry_GetFlags,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAcceleratorEntry_GetFlags),
+  wxe_util:rec(?wxAcceleratorEntry_GetFlags).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratorentry.html#wxacceleratorentrygetkeycode">external documentation</a>.
 -spec getKeyCode(This) -> integer() when
 	This::wxAcceleratorEntry().
-getKeyCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getKeyCode(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:call(?wxAcceleratorEntry_GetKeyCode,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAcceleratorEntry_GetKeyCode),
+  wxe_util:rec(?wxAcceleratorEntry_GetKeyCode).
 
 %% @equiv set(This,Flags,KeyCode,Cmd, [])
 -spec set(This, Flags, KeyCode, Cmd) -> 'ok' when
@@ -93,10 +98,10 @@ set(This,Flags,KeyCode,Cmd)
 -spec set(This, Flags, KeyCode, Cmd, [Option]) -> 'ok' when
 	This::wxAcceleratorEntry(), Flags::integer(), KeyCode::integer(), Cmd::integer(),
 	Option :: {'item', wxMenuItem:wxMenuItem()}.
-set(#wx_ref{type=ThisT,ref=ThisRef},Flags,KeyCode,Cmd, Options)
+set(#wx_ref{type=ThisT}=This,Flags,KeyCode,Cmd, Options)
  when is_integer(Flags),is_integer(KeyCode),is_integer(Cmd),is_list(Options) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:cast(?wxAcceleratorEntry_Set,[ThisRef,Flags,KeyCode,Cmd, Options]).
+  wxe_util:queue_cmd(This,Flags,KeyCode,Cmd, Options,?get_env(),?wxAcceleratorEntry_Set).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxAcceleratorEntry()) -> 'ok'.

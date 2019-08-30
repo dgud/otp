@@ -92,7 +92,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmultichoicedialog.html#wxmultichoicedialogwxmultichoicedialog">external documentation</a>.
 -spec new() -> wxMultiChoiceDialog().
 new() ->
-  wxe_util:construct(?wxMultiChoiceDialog_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxMultiChoiceDialog_new_0),
+  wxe_util:rec(?wxMultiChoiceDialog_new_0).
 
 %% @equiv new(Parent,Message,Caption,Choices, [])
 -spec new(Parent, Message, Caption, Choices) -> wxMultiChoiceDialog() when
@@ -107,29 +108,31 @@ new(Parent,Message,Caption,Choices)
 	Parent::wxWindow:wxWindow(), Message::unicode:chardata(), Caption::unicode:chardata(), Choices::[unicode:chardata()],
 	Option :: {'style', integer()}
 		 | {'pos', {X::integer(), Y::integer()}}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Message,Caption,Choices, Options)
+new(#wx_ref{type=ParentT}=Parent,Message,Caption,Choices, Options)
  when ?is_chardata(Message),?is_chardata(Caption),is_list(Choices),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Message_UC = unicode:characters_to_binary([Message,0]),
   Caption_UC = unicode:characters_to_binary([Caption,0]),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  wxe_util:construct(?wxMultiChoiceDialog_new_5,[ParentRef,Message_UC,Caption_UC,Choices_UCA, Options]).
+  wxe_util:queue_cmd(Parent,Message_UC,Caption_UC,Choices_UCA, Options,?get_env(),?wxMultiChoiceDialog_new_5),
+  wxe_util:rec(?wxMultiChoiceDialog_new_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmultichoicedialog.html#wxmultichoicedialoggetselections">external documentation</a>.
 -spec getSelections(This) -> [integer()] when
 	This::wxMultiChoiceDialog().
-getSelections(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelections(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMultiChoiceDialog),
-  wxe_util:call(?wxMultiChoiceDialog_GetSelections,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMultiChoiceDialog_GetSelections),
+  wxe_util:rec(?wxMultiChoiceDialog_GetSelections).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmultichoicedialog.html#wxmultichoicedialogsetselections">external documentation</a>.
 -spec setSelections(This, Selections) -> 'ok' when
 	This::wxMultiChoiceDialog(), Selections::[integer()].
-setSelections(#wx_ref{type=ThisT,ref=ThisRef},Selections)
+setSelections(#wx_ref{type=ThisT}=This,Selections)
  when is_list(Selections) ->
   ?CLASS(ThisT,wxMultiChoiceDialog),
-  wxe_util:cast(?wxMultiChoiceDialog_SetSelections,[ThisRef,Selections]).
+  wxe_util:queue_cmd(This,Selections,?get_env(),?wxMultiChoiceDialog_SetSelections).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMultiChoiceDialog()) -> 'ok'.

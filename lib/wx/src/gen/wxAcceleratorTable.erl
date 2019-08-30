@@ -38,7 +38,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratortable.html#wxacceleratortablewxacceleratortable">external documentation</a>.
 -spec new() -> wxAcceleratorTable().
 new() ->
-  wxe_util:construct(?wxAcceleratorTable_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxAcceleratorTable_new_0),
+  wxe_util:rec(?wxAcceleratorTable_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratortable.html#wxacceleratortablewxacceleratortable">external documentation</a>.
 -spec new(N, Entries) -> wxAcceleratorTable() when
@@ -46,14 +47,16 @@ new() ->
 new(N,Entries)
  when is_integer(N),is_list(Entries) ->
  _ = [?CLASS(EntriesT,wxAcceleratorEntry) || #wx_ref{type=EntriesT} <- Entries],
-  wxe_util:construct(?wxAcceleratorTable_new_2,[N,Entries]).
+  wxe_util:queue_cmd(N,Entries,?get_env(),?wxAcceleratorTable_new_2),
+  wxe_util:rec(?wxAcceleratorTable_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratortable.html#wxacceleratortableok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxAcceleratorTable().
-ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
+ok(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAcceleratorTable),
-  wxe_util:call(?wxAcceleratorTable_Ok,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAcceleratorTable_Ok),
+  wxe_util:rec(?wxAcceleratorTable_Ok).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxAcceleratorTable()) -> 'ok'.

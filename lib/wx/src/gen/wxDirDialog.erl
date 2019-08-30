@@ -105,42 +105,45 @@ new(Parent)
 		 | {'style', integer()}
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'sz', {W::integer(), H::integer()}}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxDirDialog_new,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxDirDialog_new),
+  wxe_util:rec(?wxDirDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialoggetpath">external documentation</a>.
 -spec getPath(This) -> unicode:charlist() when
 	This::wxDirDialog().
-getPath(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPath(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDirDialog),
-  wxe_util:call(?wxDirDialog_GetPath,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDirDialog_GetPath),
+  wxe_util:rec(?wxDirDialog_GetPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialoggetmessage">external documentation</a>.
 -spec getMessage(This) -> unicode:charlist() when
 	This::wxDirDialog().
-getMessage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMessage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDirDialog),
-  wxe_util:call(?wxDirDialog_GetMessage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDirDialog_GetMessage),
+  wxe_util:rec(?wxDirDialog_GetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialogsetmessage">external documentation</a>.
 -spec setMessage(This, Message) -> 'ok' when
 	This::wxDirDialog(), Message::unicode:chardata().
-setMessage(#wx_ref{type=ThisT,ref=ThisRef},Message)
+setMessage(#wx_ref{type=ThisT}=This,Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxDirDialog),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:cast(?wxDirDialog_SetMessage,[ThisRef,Message_UC]).
+  wxe_util:queue_cmd(This,Message_UC,?get_env(),?wxDirDialog_SetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialogsetpath">external documentation</a>.
 -spec setPath(This, Path) -> 'ok' when
 	This::wxDirDialog(), Path::unicode:chardata().
-setPath(#wx_ref{type=ThisT,ref=ThisRef},Path)
+setPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxDirDialog),
   Path_UC = unicode:characters_to_binary([Path,0]),
-  wxe_util:cast(?wxDirDialog_SetPath,[ThisRef,Path_UC]).
+  wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxDirDialog_SetPath).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDirDialog()) -> 'ok'.

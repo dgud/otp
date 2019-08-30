@@ -51,9 +51,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmllinkevent.html#wxhtmllinkeventgetlinkinfo">external documentation</a>.
 -spec getLinkInfo(This) -> wx:wx_wxHtmlLinkInfo() when
 	This::wxHtmlLinkEvent().
-getLinkInfo(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLinkInfo(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxHtmlLinkEvent),
-  wxe_util:call(?wxHtmlLinkEvent_GetLinkInfo,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxHtmlLinkEvent_GetLinkInfo),
+  wxe_util:rec(?wxHtmlLinkEvent_GetLinkInfo).
 
  %% From wxCommandEvent
 %% @hidden

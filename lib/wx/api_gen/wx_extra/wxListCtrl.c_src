@@ -70,9 +70,9 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   int onGetItemText = 0, onGetItemAttr = 0, onGetItemColumnImage = 0;
 
   EwxListCtrl *This;
-  This = (EwxListCtrl *) memenv->getPtr(env, argv[0]);
+  This = (EwxListCtrl *) memenv->getPtr(env, argv[0], "This");
   wxWindow *parent;
-  parent = (wxWindow *) memenv->getPtr(env, argv[1]);
+  parent = (wxWindow *) memenv->getPtr(env, argv[1], "parent");
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
   if(!enif_is_list(env, lstTail)) Badarg(1666,"Options");
@@ -104,7 +104,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
       if(!enif_get_long(env, tpl[1], &style)) Badarg(1666,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "validator"))) {
-      validator = (wxValidator *) memenv->getPtr(env, tpl[1]);
+      validator = (wxValidator *) memenv->getPtr(env, tpl[1], "validator");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "onGetItemText"))) {
       if(!enif_get_int(env, tpl[1], &onGetItemText)) Badarg(1666,"onGetItemText");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "onGetItemAttr"))) {
@@ -135,7 +135,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   EwxListCtrl *This;
-  This = (EwxListCtrl *) memenv->getPtr(env, argv[0]);
+  This = (EwxListCtrl *) memenv->getPtr(env, argv[0], "This");
   // wxListCtrlCompare *fn;
   // fn = (wxListCtrlCompare *) memenv->getPtr(env, argv[1]);
   callbackInfo cb = callbackInfo();
@@ -145,9 +145,9 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   // if(!enif_get_long(env, argv[2], &data)) Badarg(1725,"data");
   if(!This) throw wxe_badarg(0);
   bool Result = This->SortItems(wxEListCtrlCompare, (wxeIntPtr) &cb);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
-  wxeReturn rt2 = wxeReturn(memenv, memenv->owner);
+  wxeReturn rt2 = wxeReturn(memenv, memenv->owner, false);
   rt.send( enif_make_tuple2(rt.env,
 			    rt.make_atom("wx_delete_cb"),
 			    rt.make_int(cb.callbackID)));

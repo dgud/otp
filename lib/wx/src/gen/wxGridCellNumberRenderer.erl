@@ -44,7 +44,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellnumberrenderer.html#wxgridcellnumberrendererwxgridcellnumberrenderer">external documentation</a>.
 -spec new() -> wxGridCellNumberRenderer().
 new() ->
-  wxe_util:construct(?wxGridCellNumberRenderer_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGridCellNumberRenderer_new),
+  wxe_util:rec(?wxGridCellNumberRenderer_new).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellNumberRenderer()) -> 'ok'.

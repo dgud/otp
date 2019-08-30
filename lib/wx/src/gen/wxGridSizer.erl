@@ -63,74 +63,80 @@ new(Cols)
 		 | {'hgap', integer()}.
 new(Cols, Options)
  when is_integer(Cols),is_list(Options) ->
-  wxe_util:construct(?wxGridSizer_new_2,[Cols, Options]).
+  wxe_util:queue_cmd(Cols, Options,?get_env(),?wxGridSizer_new_2),
+  wxe_util:rec(?wxGridSizer_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizerwxgridsizer">external documentation</a>.
 -spec new(Rows, Cols, Vgap, Hgap) -> wxGridSizer() when
 	Rows::integer(), Cols::integer(), Vgap::integer(), Hgap::integer().
 new(Rows,Cols,Vgap,Hgap)
  when is_integer(Rows),is_integer(Cols),is_integer(Vgap),is_integer(Hgap) ->
-  wxe_util:construct(?wxGridSizer_new_4,[Rows,Cols,Vgap,Hgap]).
+  wxe_util:queue_cmd(Rows,Cols,Vgap,Hgap,?get_env(),?wxGridSizer_new_4),
+  wxe_util:rec(?wxGridSizer_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizergetcols">external documentation</a>.
 -spec getCols(This) -> integer() when
 	This::wxGridSizer().
-getCols(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCols(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:call(?wxGridSizer_GetCols,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridSizer_GetCols),
+  wxe_util:rec(?wxGridSizer_GetCols).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizergethgap">external documentation</a>.
 -spec getHGap(This) -> integer() when
 	This::wxGridSizer().
-getHGap(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getHGap(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:call(?wxGridSizer_GetHGap,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridSizer_GetHGap),
+  wxe_util:rec(?wxGridSizer_GetHGap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizergetrows">external documentation</a>.
 -spec getRows(This) -> integer() when
 	This::wxGridSizer().
-getRows(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getRows(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:call(?wxGridSizer_GetRows,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridSizer_GetRows),
+  wxe_util:rec(?wxGridSizer_GetRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizergetvgap">external documentation</a>.
 -spec getVGap(This) -> integer() when
 	This::wxGridSizer().
-getVGap(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getVGap(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:call(?wxGridSizer_GetVGap,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridSizer_GetVGap),
+  wxe_util:rec(?wxGridSizer_GetVGap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizersetcols">external documentation</a>.
 -spec setCols(This, Cols) -> 'ok' when
 	This::wxGridSizer(), Cols::integer().
-setCols(#wx_ref{type=ThisT,ref=ThisRef},Cols)
+setCols(#wx_ref{type=ThisT}=This,Cols)
  when is_integer(Cols) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:cast(?wxGridSizer_SetCols,[ThisRef,Cols]).
+  wxe_util:queue_cmd(This,Cols,?get_env(),?wxGridSizer_SetCols).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizersethgap">external documentation</a>.
 -spec setHGap(This, Gap) -> 'ok' when
 	This::wxGridSizer(), Gap::integer().
-setHGap(#wx_ref{type=ThisT,ref=ThisRef},Gap)
+setHGap(#wx_ref{type=ThisT}=This,Gap)
  when is_integer(Gap) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:cast(?wxGridSizer_SetHGap,[ThisRef,Gap]).
+  wxe_util:queue_cmd(This,Gap,?get_env(),?wxGridSizer_SetHGap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizersetrows">external documentation</a>.
 -spec setRows(This, Rows) -> 'ok' when
 	This::wxGridSizer(), Rows::integer().
-setRows(#wx_ref{type=ThisT,ref=ThisRef},Rows)
+setRows(#wx_ref{type=ThisT}=This,Rows)
  when is_integer(Rows) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:cast(?wxGridSizer_SetRows,[ThisRef,Rows]).
+  wxe_util:queue_cmd(This,Rows,?get_env(),?wxGridSizer_SetRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizersetvgap">external documentation</a>.
 -spec setVGap(This, Gap) -> 'ok' when
 	This::wxGridSizer(), Gap::integer().
-setVGap(#wx_ref{type=ThisT,ref=ThisRef},Gap)
+setVGap(#wx_ref{type=ThisT}=This,Gap)
  when is_integer(Gap) ->
   ?CLASS(ThisT,wxGridSizer),
-  wxe_util:cast(?wxGridSizer_SetVGap,[ThisRef,Gap]).
+  wxe_util:queue_cmd(This,Gap,?get_env(),?wxGridSizer_SetVGap).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridSizer()) -> 'ok'.

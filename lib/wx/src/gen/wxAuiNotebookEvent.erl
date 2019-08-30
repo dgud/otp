@@ -54,47 +54,50 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventsetselection">external documentation</a>.
 -spec setSelection(This, S) -> 'ok' when
 	This::wxAuiNotebookEvent(), S::integer().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},S)
+setSelection(#wx_ref{type=ThisT}=This,S)
  when is_integer(S) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:cast(?wxAuiNotebookEvent_SetSelection,[ThisRef,S]).
+  wxe_util:queue_cmd(This,S,?get_env(),?wxAuiNotebookEvent_SetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxAuiNotebookEvent().
-getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:call(?wxAuiNotebookEvent_GetSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiNotebookEvent_GetSelection),
+  wxe_util:rec(?wxAuiNotebookEvent_GetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventsetoldselection">external documentation</a>.
 -spec setOldSelection(This, S) -> 'ok' when
 	This::wxAuiNotebookEvent(), S::integer().
-setOldSelection(#wx_ref{type=ThisT,ref=ThisRef},S)
+setOldSelection(#wx_ref{type=ThisT}=This,S)
  when is_integer(S) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:cast(?wxAuiNotebookEvent_SetOldSelection,[ThisRef,S]).
+  wxe_util:queue_cmd(This,S,?get_env(),?wxAuiNotebookEvent_SetOldSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventgetoldselection">external documentation</a>.
 -spec getOldSelection(This) -> integer() when
 	This::wxAuiNotebookEvent().
-getOldSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getOldSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:call(?wxAuiNotebookEvent_GetOldSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiNotebookEvent_GetOldSelection),
+  wxe_util:rec(?wxAuiNotebookEvent_GetOldSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventsetdragsource">external documentation</a>.
 -spec setDragSource(This, S) -> 'ok' when
 	This::wxAuiNotebookEvent(), S::wxAuiNotebook:wxAuiNotebook().
-setDragSource(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ST,ref=SRef}) ->
+setDragSource(#wx_ref{type=ThisT}=This,#wx_ref{type=ST}=S) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
   ?CLASS(ST,wxAuiNotebook),
-  wxe_util:cast(?wxAuiNotebookEvent_SetDragSource,[ThisRef,SRef]).
+  wxe_util:queue_cmd(This,S,?get_env(),?wxAuiNotebookEvent_SetDragSource).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventgetdragsource">external documentation</a>.
 -spec getDragSource(This) -> wxAuiNotebook:wxAuiNotebook() when
 	This::wxAuiNotebookEvent().
-getDragSource(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDragSource(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:call(?wxAuiNotebookEvent_GetDragSource,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxAuiNotebookEvent_GetDragSource),
+  wxe_util:rec(?wxAuiNotebookEvent_GetDragSource).
 
  %% From wxNotifyEvent
 %% @hidden

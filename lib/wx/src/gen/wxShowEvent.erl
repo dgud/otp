@@ -47,17 +47,18 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxshowevent.html#wxshoweventsetshow">external documentation</a>.
 -spec setShow(This, Show) -> 'ok' when
 	This::wxShowEvent(), Show::boolean().
-setShow(#wx_ref{type=ThisT,ref=ThisRef},Show)
+setShow(#wx_ref{type=ThisT}=This,Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxShowEvent),
-  wxe_util:cast(?wxShowEvent_SetShow,[ThisRef,Show]).
+  wxe_util:queue_cmd(This,Show,?get_env(),?wxShowEvent_SetShow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxshowevent.html#wxshoweventgetshow">external documentation</a>.
 -spec getShow(This) -> boolean() when
 	This::wxShowEvent().
-getShow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getShow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxShowEvent),
-  wxe_util:call(?wxShowEvent_GetShow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxShowEvent_GetShow),
+  wxe_util:rec(?wxShowEvent_GetShow).
 
  %% From wxEvent
 %% @hidden

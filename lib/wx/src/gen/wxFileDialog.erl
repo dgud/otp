@@ -109,119 +109,128 @@ new(Parent)
 		 | {'style', integer()}
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'sz', {W::integer(), H::integer()}}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxFileDialog_new,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxFileDialog_new),
+  wxe_util:rec(?wxFileDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetdirectory">external documentation</a>.
 -spec getDirectory(This) -> unicode:charlist() when
 	This::wxFileDialog().
-getDirectory(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDirectory(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetDirectory,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetDirectory),
+  wxe_util:rec(?wxFileDialog_GetDirectory).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetfilename">external documentation</a>.
 -spec getFilename(This) -> unicode:charlist() when
 	This::wxFileDialog().
-getFilename(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFilename(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetFilename,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetFilename),
+  wxe_util:rec(?wxFileDialog_GetFilename).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetfilenames">external documentation</a>.
 -spec getFilenames(This) -> [unicode:charlist()] when
 	This::wxFileDialog().
-getFilenames(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFilenames(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetFilenames,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetFilenames),
+  wxe_util:rec(?wxFileDialog_GetFilenames).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetfilterindex">external documentation</a>.
 -spec getFilterIndex(This) -> integer() when
 	This::wxFileDialog().
-getFilterIndex(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFilterIndex(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetFilterIndex,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetFilterIndex),
+  wxe_util:rec(?wxFileDialog_GetFilterIndex).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetmessage">external documentation</a>.
 -spec getMessage(This) -> unicode:charlist() when
 	This::wxFileDialog().
-getMessage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMessage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetMessage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetMessage),
+  wxe_util:rec(?wxFileDialog_GetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetpath">external documentation</a>.
 -spec getPath(This) -> unicode:charlist() when
 	This::wxFileDialog().
-getPath(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPath(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetPath,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetPath),
+  wxe_util:rec(?wxFileDialog_GetPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetpaths">external documentation</a>.
 -spec getPaths(This) -> [unicode:charlist()] when
 	This::wxFileDialog().
-getPaths(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPaths(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetPaths,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetPaths),
+  wxe_util:rec(?wxFileDialog_GetPaths).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialoggetwildcard">external documentation</a>.
 -spec getWildcard(This) -> unicode:charlist() when
 	This::wxFileDialog().
-getWildcard(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWildcard(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:call(?wxFileDialog_GetWildcard,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFileDialog_GetWildcard),
+  wxe_util:rec(?wxFileDialog_GetWildcard).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetdirectory">external documentation</a>.
 -spec setDirectory(This, Dir) -> 'ok' when
 	This::wxFileDialog(), Dir::unicode:chardata().
-setDirectory(#wx_ref{type=ThisT,ref=ThisRef},Dir)
+setDirectory(#wx_ref{type=ThisT}=This,Dir)
  when ?is_chardata(Dir) ->
   ?CLASS(ThisT,wxFileDialog),
   Dir_UC = unicode:characters_to_binary([Dir,0]),
-  wxe_util:cast(?wxFileDialog_SetDirectory,[ThisRef,Dir_UC]).
+  wxe_util:queue_cmd(This,Dir_UC,?get_env(),?wxFileDialog_SetDirectory).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetfilename">external documentation</a>.
 -spec setFilename(This, Name) -> 'ok' when
 	This::wxFileDialog(), Name::unicode:chardata().
-setFilename(#wx_ref{type=ThisT,ref=ThisRef},Name)
+setFilename(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxFileDialog),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:cast(?wxFileDialog_SetFilename,[ThisRef,Name_UC]).
+  wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxFileDialog_SetFilename).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetfilterindex">external documentation</a>.
 -spec setFilterIndex(This, FilterIndex) -> 'ok' when
 	This::wxFileDialog(), FilterIndex::integer().
-setFilterIndex(#wx_ref{type=ThisT,ref=ThisRef},FilterIndex)
+setFilterIndex(#wx_ref{type=ThisT}=This,FilterIndex)
  when is_integer(FilterIndex) ->
   ?CLASS(ThisT,wxFileDialog),
-  wxe_util:cast(?wxFileDialog_SetFilterIndex,[ThisRef,FilterIndex]).
+  wxe_util:queue_cmd(This,FilterIndex,?get_env(),?wxFileDialog_SetFilterIndex).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetmessage">external documentation</a>.
 -spec setMessage(This, Message) -> 'ok' when
 	This::wxFileDialog(), Message::unicode:chardata().
-setMessage(#wx_ref{type=ThisT,ref=ThisRef},Message)
+setMessage(#wx_ref{type=ThisT}=This,Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxFileDialog),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:cast(?wxFileDialog_SetMessage,[ThisRef,Message_UC]).
+  wxe_util:queue_cmd(This,Message_UC,?get_env(),?wxFileDialog_SetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetpath">external documentation</a>.
 -spec setPath(This, Path) -> 'ok' when
 	This::wxFileDialog(), Path::unicode:chardata().
-setPath(#wx_ref{type=ThisT,ref=ThisRef},Path)
+setPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxFileDialog),
   Path_UC = unicode:characters_to_binary([Path,0]),
-  wxe_util:cast(?wxFileDialog_SetPath,[ThisRef,Path_UC]).
+  wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxFileDialog_SetPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetwildcard">external documentation</a>.
 -spec setWildcard(This, WildCard) -> 'ok' when
 	This::wxFileDialog(), WildCard::unicode:chardata().
-setWildcard(#wx_ref{type=ThisT,ref=ThisRef},WildCard)
+setWildcard(#wx_ref{type=ThisT}=This,WildCard)
  when ?is_chardata(WildCard) ->
   ?CLASS(ThisT,wxFileDialog),
   WildCard_UC = unicode:characters_to_binary([WildCard,0]),
-  wxe_util:cast(?wxFileDialog_SetWildcard,[ThisRef,WildCard_UC]).
+  wxe_util:queue_cmd(This,WildCard_UC,?get_env(),?wxFileDialog_SetWildcard).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFileDialog()) -> 'ok'.

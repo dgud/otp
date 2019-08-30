@@ -58,16 +58,17 @@ new(Choices, Options)
  when is_list(Choices),is_list(Options) ->
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  wxe_util:construct(?wxGridCellChoiceEditor_new,[Choices_UCA, Options]).
+  wxe_util:queue_cmd(Choices_UCA, Options,?get_env(),?wxGridCellChoiceEditor_new),
+  wxe_util:rec(?wxGridCellChoiceEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditorsetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
 	This::wxGridCellChoiceEditor(), Params::unicode:chardata().
-setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
+setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellChoiceEditor),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellChoiceEditor_SetParameters,[ThisRef,Params_UC]).
+  wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellChoiceEditor_SetParameters).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellChoiceEditor()) -> 'ok'.

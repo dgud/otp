@@ -39,53 +39,60 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpalettewxpalette">external documentation</a>.
 -spec new() -> wxPalette().
 new() ->
-  wxe_util:construct(?wxPalette_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxPalette_new_0),
+  wxe_util:rec(?wxPalette_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpalettewxpalette">external documentation</a>.
 -spec new(Red, Green, Blue) -> wxPalette() when
 	Red::binary(), Green::binary(), Blue::binary().
 new(Red,Green,Blue)
  when is_binary(Red),is_binary(Green),is_binary(Blue) ->
-  wxe_util:construct(?wxPalette_new_4,[Red,Green,Blue]).
+  wxe_util:queue_cmd(Red,Green,Blue,?get_env(),?wxPalette_new_4),
+  wxe_util:rec(?wxPalette_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpalettecreate">external documentation</a>.
 -spec create(This, Red, Green, Blue) -> boolean() when
 	This::wxPalette(), Red::binary(), Green::binary(), Blue::binary().
-create(#wx_ref{type=ThisT,ref=ThisRef},Red,Green,Blue)
+create(#wx_ref{type=ThisT}=This,Red,Green,Blue)
  when is_binary(Red),is_binary(Green),is_binary(Blue) ->
   ?CLASS(ThisT,wxPalette),
-  wxe_util:call(?wxPalette_Create,[ThisRef,Red,Green,Blue]).
+  wxe_util:queue_cmd(This,Red,Green,Blue,?get_env(),?wxPalette_Create),
+  wxe_util:rec(?wxPalette_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpalettegetcolourscount">external documentation</a>.
 -spec getColoursCount(This) -> integer() when
 	This::wxPalette().
-getColoursCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColoursCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPalette),
-  wxe_util:call(?wxPalette_GetColoursCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPalette_GetColoursCount),
+  wxe_util:rec(?wxPalette_GetColoursCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpalettegetpixel">external documentation</a>.
 -spec getPixel(This, Red, Green, Blue) -> integer() when
 	This::wxPalette(), Red::integer(), Green::integer(), Blue::integer().
-getPixel(#wx_ref{type=ThisT,ref=ThisRef},Red,Green,Blue)
+getPixel(#wx_ref{type=ThisT}=This,Red,Green,Blue)
  when is_integer(Red),is_integer(Green),is_integer(Blue) ->
   ?CLASS(ThisT,wxPalette),
-  wxe_util:call(?wxPalette_GetPixel,[ThisRef,Red,Green,Blue]).
+  wxe_util:queue_cmd(This,Red,Green,Blue,?get_env(),?wxPalette_GetPixel),
+  wxe_util:rec(?wxPalette_GetPixel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpalettegetrgb">external documentation</a>.
 -spec getRGB(This, Pixel) -> Result when
 	Result ::{Res ::boolean(), Red::integer(), Green::integer(), Blue::integer()},
 	This::wxPalette(), Pixel::integer().
-getRGB(#wx_ref{type=ThisT,ref=ThisRef},Pixel)
+getRGB(#wx_ref{type=ThisT}=This,Pixel)
  when is_integer(Pixel) ->
   ?CLASS(ThisT,wxPalette),
-  wxe_util:call(?wxPalette_GetRGB,[ThisRef,Pixel]).
+  wxe_util:queue_cmd(This,Pixel,?get_env(),?wxPalette_GetRGB),
+  wxe_util:rec(?wxPalette_GetRGB).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalette.html#wxpaletteisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxPalette().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPalette),
-  wxe_util:call(?wxPalette_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPalette_IsOk),
+  wxe_util:rec(?wxPalette_IsOk).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPalette()) -> 'ok'.

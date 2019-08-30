@@ -53,6 +53,7 @@ class wxeCommand
     ErlNifPid    caller;
     int          op;
     ErlNifEnv    *env;
+    int          argc;
     ERL_NIF_TERM args[16];
     wxeMemEnv    * memenv;
 };

@@ -104,27 +104,29 @@ new(Parent,Message)
 		 | {'value', unicode:chardata()}
 		 | {'style', integer()}
 		 | {'pos', {X::integer(), Y::integer()}}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Message, Options)
+new(#wx_ref{type=ParentT}=Parent,Message, Options)
  when ?is_chardata(Message),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:construct(?wxTextEntryDialog_new,[ParentRef,Message_UC, Options]).
+  wxe_util:queue_cmd(Parent,Message_UC, Options,?get_env(),?wxTextEntryDialog_new),
+  wxe_util:rec(?wxTextEntryDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextentrydialog.html#wxtextentrydialoggetvalue">external documentation</a>.
 -spec getValue(This) -> unicode:charlist() when
 	This::wxTextEntryDialog().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxTextEntryDialog),
-  wxe_util:call(?wxTextEntryDialog_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxTextEntryDialog_GetValue),
+  wxe_util:rec(?wxTextEntryDialog_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextentrydialog.html#wxtextentrydialogsetvalue">external documentation</a>.
 -spec setValue(This, Val) -> 'ok' when
 	This::wxTextEntryDialog(), Val::unicode:chardata().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Val)
+setValue(#wx_ref{type=ThisT}=This,Val)
  when ?is_chardata(Val) ->
   ?CLASS(ThisT,wxTextEntryDialog),
   Val_UC = unicode:characters_to_binary([Val,0]),
-  wxe_util:cast(?wxTextEntryDialog_SetValue,[ThisRef,Val_UC]).
+  wxe_util:queue_cmd(This,Val_UC,?get_env(),?wxTextEntryDialog_SetValue).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxTextEntryDialog()) -> 'ok'.

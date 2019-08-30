@@ -94,7 +94,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplashscreen.html#wxsplashscreenwxsplashscreen">external documentation</a>.
 -spec new() -> wxSplashScreen().
 new() ->
-  wxe_util:construct(?wxSplashScreen_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxSplashScreen_new_0),
+  wxe_util:rec(?wxSplashScreen_new_0).
 
 %% @equiv new(Bitmap,SplashStyle,Milliseconds,Parent,Id, [])
 -spec new(Bitmap, SplashStyle, Milliseconds, Parent, Id) -> wxSplashScreen() when
@@ -110,25 +111,28 @@ new(Bitmap,SplashStyle,Milliseconds,Parent,Id)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=BitmapT,ref=BitmapRef},SplashStyle,Milliseconds,#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=BitmapT}=Bitmap,SplashStyle,Milliseconds,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(SplashStyle),is_integer(Milliseconds),is_integer(Id),is_list(Options) ->
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxSplashScreen_new_6,[BitmapRef,SplashStyle,Milliseconds,ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Bitmap,SplashStyle,Milliseconds,Parent,Id, Options,?get_env(),?wxSplashScreen_new_6),
+  wxe_util:rec(?wxSplashScreen_new_6).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplashscreen.html#wxsplashscreengetsplashstyle">external documentation</a>.
 -spec getSplashStyle(This) -> integer() when
 	This::wxSplashScreen().
-getSplashStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSplashStyle(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplashScreen),
-  wxe_util:call(?wxSplashScreen_GetSplashStyle,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplashScreen_GetSplashStyle),
+  wxe_util:rec(?wxSplashScreen_GetSplashStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplashscreen.html#wxsplashscreengettimeout">external documentation</a>.
 -spec getTimeout(This) -> integer() when
 	This::wxSplashScreen().
-getTimeout(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getTimeout(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSplashScreen),
-  wxe_util:call(?wxSplashScreen_GetTimeout,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSplashScreen_GetTimeout),
+  wxe_util:rec(?wxSplashScreen_GetTimeout).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSplashScreen()) -> 'ok'.

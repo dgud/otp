@@ -56,23 +56,25 @@ new() ->
 		 | {'max', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxGridCellNumberEditor_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxGridCellNumberEditor_new),
+  wxe_util:rec(?wxGridCellNumberEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellnumbereditor.html#wxgridcellnumbereditorgetvalue">external documentation</a>.
 -spec getValue(This) -> unicode:charlist() when
 	This::wxGridCellNumberEditor().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGridCellNumberEditor),
-  wxe_util:call(?wxGridCellNumberEditor_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGridCellNumberEditor_GetValue),
+  wxe_util:rec(?wxGridCellNumberEditor_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellnumbereditor.html#wxgridcellnumbereditorsetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
 	This::wxGridCellNumberEditor(), Params::unicode:chardata().
-setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
+setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellNumberEditor),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellNumberEditor_SetParameters,[ThisRef,Params_UC]).
+  wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellNumberEditor_SetParameters).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellNumberEditor()) -> 'ok'.

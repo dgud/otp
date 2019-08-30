@@ -47,68 +47,78 @@ new() ->
 	Option :: {'n', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:construct(?wxDisplay_new,[Options]).
+  wxe_util:queue_cmd(Options,?get_env(),?wxDisplay_new),
+  wxe_util:rec(?wxDisplay_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplayisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxDisplay().
-isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isOk(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_IsOk,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDisplay_IsOk),
+  wxe_util:rec(?wxDisplay_IsOk).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetclientarea">external documentation</a>.
 -spec getClientArea(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxDisplay().
-getClientArea(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getClientArea(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetClientArea,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDisplay_GetClientArea),
+  wxe_util:rec(?wxDisplay_GetClientArea).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetgeometry">external documentation</a>.
 -spec getGeometry(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxDisplay().
-getGeometry(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getGeometry(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetGeometry,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDisplay_GetGeometry),
+  wxe_util:rec(?wxDisplay_GetGeometry).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetname">external documentation</a>.
 -spec getName(This) -> unicode:charlist() when
 	This::wxDisplay().
-getName(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getName(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetName,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDisplay_GetName),
+  wxe_util:rec(?wxDisplay_GetName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplayisprimary">external documentation</a>.
 -spec isPrimary(This) -> boolean() when
 	This::wxDisplay().
-isPrimary(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isPrimary(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_IsPrimary,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDisplay_IsPrimary),
+  wxe_util:rec(?wxDisplay_IsPrimary).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetcount">external documentation</a>.
 -spec getCount() -> integer().
 getCount() ->
-  wxe_util:call(?wxDisplay_GetCount,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxDisplay_GetCount),
+  wxe_util:rec(?wxDisplay_GetCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetfrompoint">external documentation</a>.
 -spec getFromPoint(Pt) -> integer() when
 	Pt::{X::integer(), Y::integer()}.
 getFromPoint({PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
-  wxe_util:call(?wxDisplay_GetFromPoint,[Pt]).
+  wxe_util:queue_cmd(Pt,?get_env(),?wxDisplay_GetFromPoint),
+  wxe_util:rec(?wxDisplay_GetFromPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetfromwindow">external documentation</a>.
 -spec getFromWindow(Window) -> integer() when
 	Window::wxWindow:wxWindow().
-getFromWindow(#wx_ref{type=WindowT,ref=WindowRef}) ->
+getFromWindow(#wx_ref{type=WindowT}=Window) ->
   ?CLASS(WindowT,wxWindow),
-  wxe_util:call(?wxDisplay_GetFromWindow,[WindowRef]).
+  wxe_util:queue_cmd(Window,?get_env(),?wxDisplay_GetFromWindow),
+  wxe_util:rec(?wxDisplay_GetFromWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetppi">external documentation</a>.
 -spec getPPI(This) -> {W::integer(), H::integer()} when
 	This::wxDisplay().
-getPPI(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPPI(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetPPI,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDisplay_GetPPI),
+  wxe_util:rec(?wxDisplay_GetPPI).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDisplay()) -> 'ok'.

@@ -41,7 +41,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Index::wx:wx_enum().
 getColour(Index)
  when is_integer(Index) ->
-  wxe_util:call(?wxSystemSettings_GetColour,[Index]).
+  wxe_util:queue_cmd(Index,?get_env(),?wxSystemSettings_GetColour),
+  wxe_util:rec(?wxSystemSettings_GetColour).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemsettings.html#wxsystemsettingsgetfont">external documentation</a>.
 %%<br /> Index = ?wxSYS_OEM_FIXED_FONT | ?wxSYS_ANSI_FIXED_FONT | ?wxSYS_ANSI_VAR_FONT | ?wxSYS_SYSTEM_FONT | ?wxSYS_DEVICE_DEFAULT_FONT | ?wxSYS_DEFAULT_PALETTE | ?wxSYS_SYSTEM_FIXED_FONT | ?wxSYS_DEFAULT_GUI_FONT | ?wxSYS_ICONTITLE_FONT
@@ -49,7 +50,8 @@ getColour(Index)
 	Index::wx:wx_enum().
 getFont(Index)
  when is_integer(Index) ->
-  wxe_util:call(?wxSystemSettings_GetFont,[Index]).
+  wxe_util:queue_cmd(Index,?get_env(),?wxSystemSettings_GetFont),
+  wxe_util:rec(?wxSystemSettings_GetFont).
 
 %% @equiv getMetric(Index, [])
 -spec getMetric(Index) -> integer() when
@@ -66,11 +68,13 @@ getMetric(Index)
 	Option :: {'win', wxWindow:wxWindow()}.
 getMetric(Index, Options)
  when is_integer(Index),is_list(Options) ->
-  wxe_util:call(?wxSystemSettings_GetMetric,[Index, Options]).
+  wxe_util:queue_cmd(Index, Options,?get_env(),?wxSystemSettings_GetMetric),
+  wxe_util:rec(?wxSystemSettings_GetMetric).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemsettings.html#wxsystemsettingsgetscreentype">external documentation</a>.
 %%<br /> Res = ?wxSYS_SCREEN_NONE | ?wxSYS_SCREEN_TINY | ?wxSYS_SCREEN_PDA | ?wxSYS_SCREEN_SMALL | ?wxSYS_SCREEN_DESKTOP
 -spec getScreenType() -> wx:wx_enum().
 getScreenType() ->
-  wxe_util:call(?wxSystemSettings_GetScreenType,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxSystemSettings_GetScreenType),
+  wxe_util:rec(?wxSystemSettings_GetScreenType).
 

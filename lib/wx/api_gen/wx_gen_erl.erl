@@ -335,26 +335,18 @@ gen_method2(M=#method{name=N,alias=A,params=Ps,type=T,method_type=MT,id=MethodId
 	Pre -> w("  ~s~n", [Pre])
     end,
 
+    case MArgs == [] andalso MOpts == [] of
+        true  -> w("  wxe_util:queue_cmd(?get_env(), ~s)", [MId]);
+        false -> w("  wxe_util:queue_cmd(~s~s,?get_env(),~s)", [MArgs,MOpts,MId])
+    end,
     case gen_util:get_hook(erl, M#method.post_hook) of
 	ignore -> skip;
-	_ -> w("  _Result =", [])
+	Post -> w(",~n  ~s~n", [Post])
     end,
-
     case have_return_vals(T, Ps) of
-	_ when MT =:= constructor ->
-	    w("  wxe_util:construct(~s,[~s~s])", [MId, MArgs,MOpts]);
-	true ->
-	    w("  wxe_util:call(~s,[~s~s])", [MId, MArgs,MOpts]);
-	false ->
-	    w("  wxe_util:cast(~s,[~s~s])", [MId, MArgs,MOpts])
+        true -> w(",~n  wxe_util:rec(~s)", [MId]);
+        false -> ignore
     end,
-    case gen_util:get_hook(erl, M#method.post_hook) of
-	ignore -> skip;
-	Post ->
-	    w(",~n  ~s~n", [Post]),
-	    w("  _Result", [])
-    end,
-
     erase(current_func),
     M.
 
@@ -619,14 +611,14 @@ func_arg(#param{name=Name,type=#type{name="wxArrayString"}}) ->
     erl_arg_name(Name);
 func_arg(#param{name=Name0,type=#type{base={class,_CN}, single=true}}) ->
     Name = erl_arg_name(Name0),
-    "#wx_ref{type=" ++ Name ++ "T,ref=" ++ Name++"Ref}";
+    "#wx_ref{type=" ++ Name ++ "T}=" ++ Name;
 func_arg(#param{name=Name0,type=#type{base={ref,CN}, single=true}}) ->
     Name = erl_arg_name(Name0),
-    "#wx_ref{type=" ++ CN ++ ",ref=" ++ Name++"Ref}";
+    "#wx_ref{type=" ++ CN ++ "}=" ++ Name;
 func_arg(#param{name=Name0,type={merged,_,#type{base={class,_},single=true},_,
 				 _, #type{base={class,_},single=true},_}}) ->
     Name = erl_arg_name(Name0),
-    "#wx_ref{type=" ++ Name ++ "T,ref=" ++ Name++"Ref}";
+    "#wx_ref{type=" ++ Name ++ "T}=" ++ Name;
 func_arg(#param{name=Name,type=#type{base={enum,_}}}) ->
     erl_arg_name(Name);
 func_arg(#param{name=Name,type=#type{base={comp,"wxColour",_Tup}, single=true}}) ->
@@ -972,12 +964,6 @@ marshal_args([#param{name=Name, type=Type}|Ps], Margs) ->
 marshal_args([],Margs) ->
     args(fun(Str) -> Str end, ",", reverse(Margs)).
 
-marshal_arg(#type{base={class,_}, single=true}, Name) ->
-    Name ++ "Ref";
-marshal_arg({merged,_,#type{base={class,_},single=true},_,_,_,_},Name) ->
-    Name ++ "Ref";
-marshal_arg(#type{base={ref,_}, single=true}, Name) ->
-    Name ++ "Ref";
 marshal_arg(#type{name="wxChar", single=Single}, Name)
   when Single =/= true ->
     Name ++ "_UC";
@@ -985,103 +971,10 @@ marshal_arg(#type{base=string}, Name) ->
     Name ++ "_UC";
 marshal_arg(#type{name="wxArrayString"}, Name) ->
     Name ++ "_UCA";
+marshal_arg(#type{single=true,base={comp,"wxColour",_Comp}}, Name) ->
+    "wxe_util:color(" ++ Name ++ ")";
 marshal_arg(_, Name) ->
     Name.
-
-%% marshal_arg(#type{base={class,_}, single=true}, Name, Align) ->
-%%     align(32, Align, Name ++ "Ref:32/?UI");
-%% marshal_arg({merged,_,#type{base={class,_},single=true},_,_,_,_},Name,Align) ->
-%%     align(32, Align, Name ++ "Ref:32/?UI");
-%% marshal_arg(#type{base={ref,_}, single=true}, Name, Align) ->
-%%     align(32, Align, Name ++ "Ref:32/?UI");
-%% marshal_arg(#type{single=true,base=long}, Name, Align) ->
-%%     align(64, Align, Name ++ ":64/?UI");
-%% marshal_arg(#type{single=true,base=float}, Name, Align) ->
-%%     align(32, Align, Name ++ ":32/?F");
-%% marshal_arg(#type{single=true,base=double}, Name, Align) ->
-%%     align(64, Align, Name ++ ":64/?F");
-%% marshal_arg(#type{single=true,base=int64}, Name, Align) ->
-%%     align(64, Align, Name ++ ":64/?UI");
-%% marshal_arg(#type{single=true,base=int}, Name, Align) ->
-%%     align(32, Align, Name ++ ":32/?UI");
-%% marshal_arg(#type{single=true,base={enum,_Enum}}, Name, Align) ->
-%%     align(32, Align, Name ++ ":32/?UI");
-
-%% marshal_arg(#type{single=true,base=bool}, Name, Align) ->
-%%     align(32, Align, "(wxe_util:from_bool(" ++ Name ++ ")):32/?UI");
-%% marshal_arg(#type{name="wxChar", single=Single}, Name, Align0)
-%%   when Single =/= true ->
-%%     {Str,Align} =
-%% 	align(32,Align0, "(byte_size("++Name++"_UC)):32/?UI,(" ++ Name ++ "_UC)/binary"),
-%%     MsgSize = "(" ++ integer_to_list(Align*4)++"+byte_size("++Name++"_UC))",
-%%     {Str++", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",0};
-%% marshal_arg(#type{base=string}, Name, Align0) ->
-%%     {Str,Align} =
-%% 	align(32,Align0, "(byte_size("++Name++"_UC)):32/?UI,(" ++ Name ++ "_UC)/binary"),
-%%     MsgSize = "(" ++ integer_to_list(Align*4)++"+byte_size("++Name++"_UC))",
-%%     {Str++", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",0};
-%% marshal_arg(#type{name="wxArrayString"}, Name, Align0) ->
-%%     InnerBin  = "<<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>",
-%%     Outer =  "(<< " ++ InnerBin ++ "|| UC_Str <- "++ Name ++"_UCA>>)/binary",
-%%     Str0  =  "(length("++Name++"_UCA)):32/?UI, " ++ Outer,
-%%     {Str,Align} = align(32,Align0,Str0),
-%%     MsgSize = "("++integer_to_list(Align*4) ++
-%% 	" + lists:sum([byte_size(S)+4||S<-" ++ Name ++"_UCA]))",
-%%     AStr = ", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",
-%%     {Str ++ AStr, 0};
-%% marshal_arg(#type{single=true,base={comp,"wxColour",_Comp}}, Name, Align0) ->
-%%     Str = "(wxe_util:colour_bin(" ++ Name ++ ")):16/binary",
-%%     {Str,Align0};
-%% marshal_arg(#type{single=true,base={comp,"wxDateTime",_Comp}}, Name, Align) ->
-%%     {"(wxe_util:datetime_bin(" ++ Name ++ ")):24/binary", Align};
-%% marshal_arg(#type{single=true,base={comp,_,Comp}}, Name, Align0) ->
-%%     case hd(Comp) of
-%% 	{int,_} ->
-%% 	    A = [Name++Spec++":32/?UI" || {int,Spec} <- Comp],
-%% 	    Str = args(fun(Str) -> Str end, ",", A),
-%% 	    {Str,(Align0 + length(Comp)) rem 2};
-%% 	{double,_} ->
-%% 	    A = [Name++Spec++":64/?F" || {double,Spec} <- Comp],
-%% 	    Str = args(fun(Str) -> Str end, ",", A),
-%% 	    align(64,Align0,Str)
-%%     end;
-%% marshal_arg(#type{base={term,_}}, _Name, Align0) ->
-%%     {skip,Align0};
-%% marshal_arg(#type{base=binary}, _Name, Align0) ->
-%%     {skip,Align0};
-%% marshal_arg(#type{base=Base, single=Single}, Name, Align0)
-%%   when Single =/= true ->
-%%     case Base of
-%% 	int ->
-%% 	    Str0 = "(length("++Name++")):32/?UI,\n"
-%% 		"        (<< <<C:32/?I>> || C <- "++Name++">>)/binary",
-%% 	    {Str,Align} = align(32,Align0, Str0),
-%% 	    {Str ++ ", 0:((("++integer_to_list(Align)++"+length("++Name++ ")) rem 2)*32)", 0};
-%% 	{ObjRef,_} when ObjRef =:= class; ObjRef =:= ref ->
-%% 	    Str0 = "(length("++Name++")):32/?UI,",
-%% 	    Str1 = "\n     (<< <<(C#wx_ref.ref):32/?UI>> || C <- "++Name++">>)/binary",
-%% 	    {Str2,Align} = align(32, Align0, Str1),
-%% 	    AlignStr = ", 0:((("++integer_to_list(Align)++"+length("++Name++ ")) rem 2)*32)",
-%% 	    {Str0 ++ Str2 ++ AlignStr, 0};
-%% 	{comp, "wxPoint", _} ->
-%% 	    Str0 = "(length("++Name++")):32/?UI,\n"
-%% 		"        (<< <<X:32/?I,Y:32/?I>> || {X,Y} <- "++Name++">>)/binary",
-%% 	    align(32,Align0, Str0);
-%% 	{comp, "wxPoint2DDouble", _} ->
-%% 	    Str0 = "(length("++Name++")):32/?UI,\n",
-%% 	    Str1 = "    (<< <<X:64/?F,Y:64/?F>> || {X,Y} <- "++Name++">>)/binary",
-%% 	    {Str,_Align} = align(64,Align0+1, Str1),
-%% 	    {Str0 ++ Str, 0};
-%% 	double ->
-%% 	    Str0 = "(length("++Name++")):32/?UI,\n",
-%% 	    Str1 = "  (<< <<C:64/?F>> || C <- "++Name++">>)/binary",
-%% 	    {Str,_Align} = align(64,Align0+1, Str1),
-%% 	    {Str0 ++ Str, 0};
-%% 	_ ->
-%% 	    ?error({unhandled_array_type, Base})
-%%     end;
-%% marshal_arg(T=#type{name=_wxString}, Name, _Align) ->
-%%     ?error({unhandled_type, {Name,T}}).
 
 enum_name(Name) ->
     case enum_split(Name) of

@@ -79,13 +79,15 @@ class wxeMemEnv {
         enif_free(ref2ptr);
     };
 
-    void * getPtr(ErlNifEnv *env, ERL_NIF_TERM term) {
-        int index;
-        enif_get_int(env, term, &index);
+    void * getPtr(ErlNifEnv *env, ERL_NIF_TERM term, const char *arg) {
+        int index, tpl_sz;
+        const ERL_NIF_TERM *tpl;
+        if(!enif_get_tuple(env, term, &tpl_sz, &tpl) && tpl_sz != 4) throw wxe_badarg(arg);
+        if(!enif_get_int(env, tpl[1], &index)) throw wxe_badarg(arg);
         void * temp = ref2ptr[index];
         if((index < next) && ((index == 0) || (temp != (void *)NULL)))
             return temp;
-        throw wxe_badarg(index);
+        throw wxe_badarg(arg);
     };
 
     int  next;

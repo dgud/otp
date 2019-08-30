@@ -26,13 +26,13 @@ void ~s(WxeApp *app, wxeCommand& cmd)
   ErlNifEnv *env = cmd.env;
   ERL_NIF_TERM * argv = cmd.args;
   wxGraphicsRenderer *This;
-  This = (wxGraphicsRenderer *) memenv->getPtr(env, argv[0]);
-  wxPen *pen = (wxPen *) memenv->getPtr(env, argv[1]);
+  This = (wxGraphicsRenderer *) memenv->getPtr(env, argv[0], "This");
+  wxPen *pen = (wxPen *) memenv->getPtr(env, argv[1], "pen");
   if(!This) throw wxe_badarg(0);
 #if !wxCHECK_VERSION(3,1,1)
   wxGraphicsPen * Result = new wxGraphicsPen(This->CreatePen(*pen));
   app->newPtr((void *) Result,4, memenv);
-  wxeReturn rt = wxeReturn(memenv, cmd.caller);
+  wxeReturn rt = wxeReturn(memenv, cmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsPen"));
 #else
  wxGraphicsPenInfo info = wxGraphicsPenInfo()
@@ -57,7 +57,7 @@ void ~s(WxeApp *app, wxeCommand& cmd)
  }
  wxGraphicsPen * Result = new wxGraphicsPen(This->CreatePen(info));
  app->newPtr((void *) Result,4, memenv);
- wxeReturn rt = wxeReturn(memenv, cmd.caller);
+ wxeReturn rt = wxeReturn(memenv, cmd.caller, true);
  rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsPen"));
 #endif
 }

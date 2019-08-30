@@ -38,19 +38,21 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundlewxiconbundle">external documentation</a>.
 -spec new() -> wxIconBundle().
 new() ->
-  wxe_util:construct(?wxIconBundle_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxIconBundle_new_0),
+  wxe_util:rec(?wxIconBundle_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundlewxiconbundle">external documentation</a>.
 -spec new(Ic) -> wxIconBundle() when
 	Ic::wxIconBundle() | wxIcon:wxIcon().
-new(#wx_ref{type=IcT,ref=IcRef}) ->
+new(#wx_ref{type=IcT}=Ic) ->
   IcOP = case ?CLASS_T(IcT,wxIconBundle) of
      true ->
        ?wxIconBundle_new_1_1;
      _ -> ?CLASS(IcT,wxIcon),
        ?wxIconBundle_new_1_0
      end,
-  wxe_util:construct(IcOP,[IcRef]).
+  wxe_util:queue_cmd(Ic,?get_env(),IcOP),
+  wxe_util:rec(IcOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundlewxiconbundle">external documentation</a>.
 -spec new(File, Type) -> wxIconBundle() when
@@ -58,24 +60,25 @@ new(#wx_ref{type=IcT,ref=IcRef}) ->
 new(File,Type)
  when ?is_chardata(File),is_integer(Type) ->
   File_UC = unicode:characters_to_binary([File,0]),
-  wxe_util:construct(?wxIconBundle_new_2,[File_UC,Type]).
+  wxe_util:queue_cmd(File_UC,Type,?get_env(),?wxIconBundle_new_2),
+  wxe_util:rec(?wxIconBundle_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundleaddicon">external documentation</a>.
 -spec addIcon(This, Icon) -> 'ok' when
 	This::wxIconBundle(), Icon::wxIcon:wxIcon().
-addIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}) ->
+addIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon) ->
   ?CLASS(ThisT,wxIconBundle),
   ?CLASS(IconT,wxIcon),
-  wxe_util:cast(?wxIconBundle_AddIcon_1,[ThisRef,IconRef]).
+  wxe_util:queue_cmd(This,Icon,?get_env(),?wxIconBundle_AddIcon_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundleaddicon">external documentation</a>.
 -spec addIcon(This, File, Type) -> 'ok' when
 	This::wxIconBundle(), File::unicode:chardata(), Type::integer().
-addIcon(#wx_ref{type=ThisT,ref=ThisRef},File,Type)
+addIcon(#wx_ref{type=ThisT}=This,File,Type)
  when ?is_chardata(File),is_integer(Type) ->
   ?CLASS(ThisT,wxIconBundle),
   File_UC = unicode:characters_to_binary([File,0]),
-  wxe_util:cast(?wxIconBundle_AddIcon_2,[ThisRef,File_UC,Type]).
+  wxe_util:queue_cmd(This,File_UC,Type,?get_env(),?wxIconBundle_AddIcon_2).
 
 %% @equiv getIcon(This, [])
 -spec getIcon(This) -> wxIcon:wxIcon() when
@@ -95,14 +98,16 @@ getIcon(This)
 	Option :: {'size', integer()};
       (This, Size) -> wxIcon:wxIcon() when
 	This::wxIconBundle(), Size::{W::integer(), H::integer()}.
-getIcon(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+getIcon(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxIconBundle),
-  wxe_util:call(?wxIconBundle_GetIcon_1_0,[ThisRef, Options]);
-getIcon(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxIconBundle_GetIcon_1_0),
+  wxe_util:rec(?wxIconBundle_GetIcon_1_0);
+getIcon(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxIconBundle),
-  wxe_util:call(?wxIconBundle_GetIcon_1_1,[ThisRef,Size]).
+  wxe_util:queue_cmd(This,Size,?get_env(),?wxIconBundle_GetIcon_1_1),
+  wxe_util:rec(?wxIconBundle_GetIcon_1_1).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxIconBundle()) -> 'ok'.

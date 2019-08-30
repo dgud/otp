@@ -58,10 +58,11 @@ buttonDown(This)
 -spec buttonDown(This, [Option]) -> boolean() when
 	This::wxJoystickEvent(),
 	Option :: {'but', integer()}.
-buttonDown(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+buttonDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_ButtonDown,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxJoystickEvent_ButtonDown),
+  wxe_util:rec(?wxJoystickEvent_ButtonDown).
 
 %% @equiv buttonIsDown(This, [])
 -spec buttonIsDown(This) -> boolean() when
@@ -75,10 +76,11 @@ buttonIsDown(This)
 -spec buttonIsDown(This, [Option]) -> boolean() when
 	This::wxJoystickEvent(),
 	Option :: {'but', integer()}.
-buttonIsDown(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+buttonIsDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_ButtonIsDown,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxJoystickEvent_ButtonIsDown),
+  wxe_util:rec(?wxJoystickEvent_ButtonIsDown).
 
 %% @equiv buttonUp(This, [])
 -spec buttonUp(This) -> boolean() when
@@ -92,66 +94,75 @@ buttonUp(This)
 -spec buttonUp(This, [Option]) -> boolean() when
 	This::wxJoystickEvent(),
 	Option :: {'but', integer()}.
-buttonUp(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+buttonUp(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_ButtonUp,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxJoystickEvent_ButtonUp),
+  wxe_util:rec(?wxJoystickEvent_ButtonUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventgetbuttonchange">external documentation</a>.
 -spec getButtonChange(This) -> integer() when
 	This::wxJoystickEvent().
-getButtonChange(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getButtonChange(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_GetButtonChange,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_GetButtonChange),
+  wxe_util:rec(?wxJoystickEvent_GetButtonChange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventgetbuttonstate">external documentation</a>.
 -spec getButtonState(This) -> integer() when
 	This::wxJoystickEvent().
-getButtonState(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getButtonState(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_GetButtonState,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_GetButtonState),
+  wxe_util:rec(?wxJoystickEvent_GetButtonState).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventgetjoystick">external documentation</a>.
 -spec getJoystick(This) -> integer() when
 	This::wxJoystickEvent().
-getJoystick(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getJoystick(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_GetJoystick,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_GetJoystick),
+  wxe_util:rec(?wxJoystickEvent_GetJoystick).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxJoystickEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_GetPosition),
+  wxe_util:rec(?wxJoystickEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventgetzposition">external documentation</a>.
 -spec getZPosition(This) -> integer() when
 	This::wxJoystickEvent().
-getZPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getZPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_GetZPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_GetZPosition),
+  wxe_util:rec(?wxJoystickEvent_GetZPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventisbutton">external documentation</a>.
 -spec isButton(This) -> boolean() when
 	This::wxJoystickEvent().
-isButton(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isButton(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_IsButton,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_IsButton),
+  wxe_util:rec(?wxJoystickEvent_IsButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventismove">external documentation</a>.
 -spec isMove(This) -> boolean() when
 	This::wxJoystickEvent().
-isMove(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isMove(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_IsMove,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_IsMove),
+  wxe_util:rec(?wxJoystickEvent_IsMove).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventiszmove">external documentation</a>.
 -spec isZMove(This) -> boolean() when
 	This::wxJoystickEvent().
-isZMove(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isZMove(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:call(?wxJoystickEvent_IsZMove,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxJoystickEvent_IsZMove),
+  wxe_util:rec(?wxJoystickEvent_IsZMove).
 
  %% From wxEvent
 %% @hidden

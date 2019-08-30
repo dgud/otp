@@ -107,40 +107,41 @@ new(Preview,Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=PreviewT,ref=PreviewRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=PreviewT}=Preview,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(PreviewT,wxPrintPreview),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxPreviewFrame_new,[PreviewRef,ParentRef, Options]).
+  wxe_util:queue_cmd(Preview,Parent, Options,?get_env(),?wxPreviewFrame_new),
+  wxe_util:rec(?wxPreviewFrame_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewframe.html#wxpreviewframecreatecontrolbar">external documentation</a>.
 -spec createControlBar(This) -> 'ok' when
 	This::wxPreviewFrame().
-createControlBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
+createControlBar(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPreviewFrame),
-  wxe_util:cast(?wxPreviewFrame_CreateControlBar,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPreviewFrame_CreateControlBar).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewframe.html#wxpreviewframecreatecanvas">external documentation</a>.
 -spec createCanvas(This) -> 'ok' when
 	This::wxPreviewFrame().
-createCanvas(#wx_ref{type=ThisT,ref=ThisRef}) ->
+createCanvas(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPreviewFrame),
-  wxe_util:cast(?wxPreviewFrame_CreateCanvas,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPreviewFrame_CreateCanvas).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewframe.html#wxpreviewframeinitialize">external documentation</a>.
 -spec initialize(This) -> 'ok' when
 	This::wxPreviewFrame().
-initialize(#wx_ref{type=ThisT,ref=ThisRef}) ->
+initialize(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPreviewFrame),
-  wxe_util:cast(?wxPreviewFrame_Initialize,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPreviewFrame_Initialize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewframe.html#wxpreviewframeonclosewindow">external documentation</a>.
 -spec onCloseWindow(This, Event) -> 'ok' when
 	This::wxPreviewFrame(), Event::wxCloseEvent:wxCloseEvent().
-onCloseWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=EventT,ref=EventRef}) ->
+onCloseWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=EventT}=Event) ->
   ?CLASS(ThisT,wxPreviewFrame),
   ?CLASS(EventT,wxCloseEvent),
-  wxe_util:cast(?wxPreviewFrame_OnCloseWindow,[ThisRef,EventRef]).
+  wxe_util:queue_cmd(This,Event,?get_env(),?wxPreviewFrame_OnCloseWindow).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPreviewFrame()) -> 'ok'.

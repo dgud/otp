@@ -41,7 +41,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 getOption(Name)
  when ?is_chardata(Name) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxSystemOptions_GetOption,[Name_UC]).
+  wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_GetOption),
+  wxe_util:rec(?wxSystemOptions_GetOption).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemoptions.html#wxsystemoptionsgetoptionint">external documentation</a>.
 -spec getOptionInt(Name) -> integer() when
@@ -49,7 +50,8 @@ getOption(Name)
 getOptionInt(Name)
  when ?is_chardata(Name) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxSystemOptions_GetOptionInt,[Name_UC]).
+  wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_GetOptionInt),
+  wxe_util:rec(?wxSystemOptions_GetOptionInt).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemoptions.html#wxsystemoptionshasoption">external documentation</a>.
 -spec hasOption(Name) -> boolean() when
@@ -57,7 +59,8 @@ getOptionInt(Name)
 hasOption(Name)
  when ?is_chardata(Name) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxSystemOptions_HasOption,[Name_UC]).
+  wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_HasOption),
+  wxe_util:rec(?wxSystemOptions_HasOption).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemoptions.html#wxsystemoptionsisfalse">external documentation</a>.
 -spec isFalse(Name) -> boolean() when
@@ -65,7 +68,8 @@ hasOption(Name)
 isFalse(Name)
  when ?is_chardata(Name) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxSystemOptions_IsFalse,[Name_UC]).
+  wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_IsFalse),
+  wxe_util:rec(?wxSystemOptions_IsFalse).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemoptions.html#wxsystemoptionssetoption">external documentation</a>.
 %% <br /> Also:<br />
@@ -79,10 +83,10 @@ isFalse(Name)
 setOption(Name,Value)
  when ?is_chardata(Name),is_integer(Value) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:cast(?wxSystemOptions_SetOption_2_0,[Name_UC,Value]);
+  wxe_util:queue_cmd(Name_UC,Value,?get_env(),?wxSystemOptions_SetOption_2_0);
 setOption(Name,Value)
  when ?is_chardata(Name),?is_chardata(Value) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
   Value_UC = unicode:characters_to_binary([Value,0]),
-  wxe_util:cast(?wxSystemOptions_SetOption_2_1,[Name_UC,Value_UC]).
+  wxe_util:queue_cmd(Name_UC,Value_UC,?get_env(),?wxSystemOptions_SetOption_2_1).
 

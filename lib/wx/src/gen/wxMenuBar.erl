@@ -85,32 +85,35 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarwxmenubar">external documentation</a>.
 -spec new() -> wxMenuBar().
 new() ->
-  wxe_util:construct(?wxMenuBar_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxMenuBar_new_0),
+  wxe_util:rec(?wxMenuBar_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarwxmenubar">external documentation</a>.
 -spec new(Style) -> wxMenuBar() when
 	Style::integer().
 new(Style)
  when is_integer(Style) ->
-  wxe_util:construct(?wxMenuBar_new_1,[Style]).
+  wxe_util:queue_cmd(Style,?get_env(),?wxMenuBar_new_1),
+  wxe_util:rec(?wxMenuBar_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarappend">external documentation</a>.
 -spec append(This, Menu, Title) -> boolean() when
 	This::wxMenuBar(), Menu::wxMenu:wxMenu(), Title::unicode:chardata().
-append(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef},Title)
+append(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   ?CLASS(MenuT,wxMenu),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMenuBar_Append,[ThisRef,MenuRef,Title_UC]).
+  wxe_util:queue_cmd(This,Menu,Title_UC,?get_env(),?wxMenuBar_Append),
+  wxe_util:rec(?wxMenuBar_Append).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarcheck">external documentation</a>.
 -spec check(This, Itemid, Check) -> 'ok' when
 	This::wxMenuBar(), Itemid::integer(), Check::boolean().
-check(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Check)
+check(#wx_ref{type=ThisT}=This,Itemid,Check)
  when is_integer(Itemid),is_boolean(Check) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:cast(?wxMenuBar_Check,[ThisRef,Itemid,Check]).
+  wxe_util:queue_cmd(This,Itemid,Check,?get_env(),?wxMenuBar_Check).
 
 %% @equiv enable(This, [])
 -spec enable(This) -> boolean() when
@@ -124,117 +127,129 @@ enable(This)
 -spec enable(This, [Option]) -> boolean() when
 	This::wxMenuBar(),
 	Option :: {'enable', boolean()}.
-enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_Enable_1,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMenuBar_Enable_1),
+  wxe_util:rec(?wxMenuBar_Enable_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarenable">external documentation</a>.
 -spec enable(This, Itemid, Enable) -> 'ok' when
 	This::wxMenuBar(), Itemid::integer(), Enable::boolean().
-enable(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Enable)
+enable(#wx_ref{type=ThisT}=This,Itemid,Enable)
  when is_integer(Itemid),is_boolean(Enable) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:cast(?wxMenuBar_Enable_2,[ThisRef,Itemid,Enable]).
+  wxe_util:queue_cmd(This,Itemid,Enable,?get_env(),?wxMenuBar_Enable_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarenabletop">external documentation</a>.
 -spec enableTop(This, Pos, Flag) -> 'ok' when
 	This::wxMenuBar(), Pos::integer(), Flag::boolean().
-enableTop(#wx_ref{type=ThisT,ref=ThisRef},Pos,Flag)
+enableTop(#wx_ref{type=ThisT}=This,Pos,Flag)
  when is_integer(Pos),is_boolean(Flag) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:cast(?wxMenuBar_EnableTop,[ThisRef,Pos,Flag]).
+  wxe_util:queue_cmd(This,Pos,Flag,?get_env(),?wxMenuBar_EnableTop).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarfindmenu">external documentation</a>.
 -spec findMenu(This, Title) -> integer() when
 	This::wxMenuBar(), Title::unicode:chardata().
-findMenu(#wx_ref{type=ThisT,ref=ThisRef},Title)
+findMenu(#wx_ref{type=ThisT}=This,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMenuBar_FindMenu,[ThisRef,Title_UC]).
+  wxe_util:queue_cmd(This,Title_UC,?get_env(),?wxMenuBar_FindMenu),
+  wxe_util:rec(?wxMenuBar_FindMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarfindmenuitem">external documentation</a>.
 -spec findMenuItem(This, MenuString, ItemString) -> integer() when
 	This::wxMenuBar(), MenuString::unicode:chardata(), ItemString::unicode:chardata().
-findMenuItem(#wx_ref{type=ThisT,ref=ThisRef},MenuString,ItemString)
+findMenuItem(#wx_ref{type=ThisT}=This,MenuString,ItemString)
  when ?is_chardata(MenuString),?is_chardata(ItemString) ->
   ?CLASS(ThisT,wxMenuBar),
   MenuString_UC = unicode:characters_to_binary([MenuString,0]),
   ItemString_UC = unicode:characters_to_binary([ItemString,0]),
-  wxe_util:call(?wxMenuBar_FindMenuItem,[ThisRef,MenuString_UC,ItemString_UC]).
+  wxe_util:queue_cmd(This,MenuString_UC,ItemString_UC,?get_env(),?wxMenuBar_FindMenuItem),
+  wxe_util:rec(?wxMenuBar_FindMenuItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarfinditem">external documentation</a>.
 -spec findItem(This, Id) -> wxMenuItem:wxMenuItem() when
 	This::wxMenuBar(), Id::integer().
-findItem(#wx_ref{type=ThisT,ref=ThisRef},Id)
+findItem(#wx_ref{type=ThisT}=This,Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_FindItem,[ThisRef,Id]).
+  wxe_util:queue_cmd(This,Id,?get_env(),?wxMenuBar_FindItem),
+  wxe_util:rec(?wxMenuBar_FindItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargethelpstring">external documentation</a>.
 -spec getHelpString(This, Itemid) -> unicode:charlist() when
 	This::wxMenuBar(), Itemid::integer().
-getHelpString(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+getHelpString(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_GetHelpString,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenuBar_GetHelpString),
+  wxe_util:rec(?wxMenuBar_GetHelpString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxMenuBar().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_GetLabel_0,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuBar_GetLabel_0),
+  wxe_util:rec(?wxMenuBar_GetLabel_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargetlabel">external documentation</a>.
 -spec getLabel(This, Itemid) -> unicode:charlist() when
 	This::wxMenuBar(), Itemid::integer().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+getLabel(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_GetLabel_1,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenuBar_GetLabel_1),
+  wxe_util:rec(?wxMenuBar_GetLabel_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargetlabeltop">external documentation</a>.
 -spec getLabelTop(This, Pos) -> unicode:charlist() when
 	This::wxMenuBar(), Pos::integer().
-getLabelTop(#wx_ref{type=ThisT,ref=ThisRef},Pos)
+getLabelTop(#wx_ref{type=ThisT}=This,Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_GetLabelTop,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxMenuBar_GetLabelTop),
+  wxe_util:rec(?wxMenuBar_GetLabelTop).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargetmenu">external documentation</a>.
 -spec getMenu(This, Pos) -> wxMenu:wxMenu() when
 	This::wxMenuBar(), Pos::integer().
-getMenu(#wx_ref{type=ThisT,ref=ThisRef},Pos)
+getMenu(#wx_ref{type=ThisT}=This,Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_GetMenu,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxMenuBar_GetMenu),
+  wxe_util:rec(?wxMenuBar_GetMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargetmenucount">external documentation</a>.
 -spec getMenuCount(This) -> integer() when
 	This::wxMenuBar().
-getMenuCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMenuCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_GetMenuCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuBar_GetMenuCount),
+  wxe_util:rec(?wxMenuBar_GetMenuCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarinsert">external documentation</a>.
 -spec insert(This, Pos, Menu, Title) -> boolean() when
 	This::wxMenuBar(), Pos::integer(), Menu::wxMenu:wxMenu(), Title::unicode:chardata().
-insert(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=MenuT,ref=MenuRef},Title)
+insert(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=MenuT}=Menu,Title)
  when is_integer(Pos),?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   ?CLASS(MenuT,wxMenu),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMenuBar_Insert,[ThisRef,Pos,MenuRef,Title_UC]).
+  wxe_util:queue_cmd(This,Pos,Menu,Title_UC,?get_env(),?wxMenuBar_Insert),
+  wxe_util:rec(?wxMenuBar_Insert).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarischecked">external documentation</a>.
 -spec isChecked(This, Itemid) -> boolean() when
 	This::wxMenuBar(), Itemid::integer().
-isChecked(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+isChecked(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_IsChecked,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenuBar_IsChecked),
+  wxe_util:rec(?wxMenuBar_IsChecked).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetautowindowmenu">external documentation</a>.
 -spec setAutoWindowMenu(Enable) -> 'ok' when
@@ -261,71 +276,75 @@ oSXGetAppleMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarisenabled">external documentation</a>.
 -spec isEnabled(This) -> boolean() when
 	This::wxMenuBar().
-isEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isEnabled(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_IsEnabled_0,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuBar_IsEnabled_0),
+  wxe_util:rec(?wxMenuBar_IsEnabled_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarisenabled">external documentation</a>.
 -spec isEnabled(This, Itemid) -> boolean() when
 	This::wxMenuBar(), Itemid::integer().
-isEnabled(#wx_ref{type=ThisT,ref=ThisRef},Itemid)
+isEnabled(#wx_ref{type=ThisT}=This,Itemid)
  when is_integer(Itemid) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_IsEnabled_1,[ThisRef,Itemid]).
+  wxe_util:queue_cmd(This,Itemid,?get_env(),?wxMenuBar_IsEnabled_1),
+  wxe_util:rec(?wxMenuBar_IsEnabled_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarremove">external documentation</a>.
 -spec remove(This, Pos) -> wxMenu:wxMenu() when
 	This::wxMenuBar(), Pos::integer().
-remove(#wx_ref{type=ThisT,ref=ThisRef},Pos)
+remove(#wx_ref{type=ThisT}=This,Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_Remove,[ThisRef,Pos]).
+  wxe_util:queue_cmd(This,Pos,?get_env(),?wxMenuBar_Remove),
+  wxe_util:rec(?wxMenuBar_Remove).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarreplace">external documentation</a>.
 -spec replace(This, Pos, Menu, Title) -> wxMenu:wxMenu() when
 	This::wxMenuBar(), Pos::integer(), Menu::wxMenu:wxMenu(), Title::unicode:chardata().
-replace(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=MenuT,ref=MenuRef},Title)
+replace(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=MenuT}=Menu,Title)
  when is_integer(Pos),?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   ?CLASS(MenuT,wxMenu),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxMenuBar_Replace,[ThisRef,Pos,MenuRef,Title_UC]).
+  wxe_util:queue_cmd(This,Pos,Menu,Title_UC,?get_env(),?wxMenuBar_Replace),
+  wxe_util:rec(?wxMenuBar_Replace).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsethelpstring">external documentation</a>.
 -spec setHelpString(This, Itemid, HelpString) -> 'ok' when
 	This::wxMenuBar(), Itemid::integer(), HelpString::unicode:chardata().
-setHelpString(#wx_ref{type=ThisT,ref=ThisRef},Itemid,HelpString)
+setHelpString(#wx_ref{type=ThisT}=This,Itemid,HelpString)
  when is_integer(Itemid),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxMenuBar),
   HelpString_UC = unicode:characters_to_binary([HelpString,0]),
-  wxe_util:cast(?wxMenuBar_SetHelpString,[ThisRef,Itemid,HelpString_UC]).
+  wxe_util:queue_cmd(This,Itemid,HelpString_UC,?get_env(),?wxMenuBar_SetHelpString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetlabel">external documentation</a>.
 -spec setLabel(This, S) -> 'ok' when
 	This::wxMenuBar(), S::unicode:chardata().
-setLabel(#wx_ref{type=ThisT,ref=ThisRef},S)
+setLabel(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxMenuBar),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxMenuBar_SetLabel_1,[ThisRef,S_UC]).
+  wxe_util:queue_cmd(This,S_UC,?get_env(),?wxMenuBar_SetLabel_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetlabel">external documentation</a>.
 -spec setLabel(This, Itemid, Label) -> 'ok' when
 	This::wxMenuBar(), Itemid::integer(), Label::unicode:chardata().
-setLabel(#wx_ref{type=ThisT,ref=ThisRef},Itemid,Label)
+setLabel(#wx_ref{type=ThisT}=This,Itemid,Label)
  when is_integer(Itemid),?is_chardata(Label) ->
   ?CLASS(ThisT,wxMenuBar),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxMenuBar_SetLabel_2,[ThisRef,Itemid,Label_UC]).
+  wxe_util:queue_cmd(This,Itemid,Label_UC,?get_env(),?wxMenuBar_SetLabel_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetlabeltop">external documentation</a>.
 -spec setLabelTop(This, Pos, Label) -> 'ok' when
 	This::wxMenuBar(), Pos::integer(), Label::unicode:chardata().
-setLabelTop(#wx_ref{type=ThisT,ref=ThisRef},Pos,Label)
+setLabelTop(#wx_ref{type=ThisT}=This,Pos,Label)
  when is_integer(Pos),?is_chardata(Label) ->
   ?CLASS(ThisT,wxMenuBar),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxMenuBar_SetLabelTop,[ThisRef,Pos,Label_UC]).
+  wxe_util:queue_cmd(This,Pos,Label_UC,?get_env(),?wxMenuBar_SetLabelTop).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMenuBar()) -> 'ok'.

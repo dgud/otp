@@ -47,9 +47,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxeraseevent.html#wxeraseeventgetdc">external documentation</a>.
 -spec getDC(This) -> wxDC:wxDC() when
 	This::wxEraseEvent().
-getDC(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDC(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxEraseEvent),
-  wxe_util:call(?wxEraseEvent_GetDC,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxEraseEvent_GetDC),
+  wxe_util:rec(?wxEraseEvent_GetDC).
 
  %% From wxEvent
 %% @hidden

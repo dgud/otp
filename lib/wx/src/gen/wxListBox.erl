@@ -91,7 +91,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxwxlistbox">external documentation</a>.
 -spec new() -> wxListBox().
 new() ->
-  wxe_util:construct(?wxListBox_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxListBox_new_0),
+  wxe_util:rec(?wxListBox_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxListBox() when
@@ -109,10 +110,11 @@ new(Parent,Id)
 		 | {'choices', [unicode:chardata()]}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxListBox_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxListBox_new_3),
+  wxe_util:rec(?wxListBox_new_3).
 
 %% @equiv create(This,Parent,Id,Pos,Size,Choices, [])
 -spec create(This, Parent, Id, Pos, Size, Choices) -> boolean() when
@@ -127,65 +129,69 @@ create(This,Parent,Id,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
 	This::wxListBox(), Parent::wxWindow:wxWindow(), Id::integer(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()],
 	Option :: {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxListBox),
   ?CLASS(ParentT,wxWindow),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  wxe_util:call(?wxListBox_Create,[ThisRef,ParentRef,Id,Pos,Size,Choices_UCA, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Pos,Size,Choices_UCA, Options,?get_env(),?wxListBox_Create),
+  wxe_util:rec(?wxListBox_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxdeselect">external documentation</a>.
 -spec deselect(This, N) -> 'ok' when
 	This::wxListBox(), N::integer().
-deselect(#wx_ref{type=ThisT,ref=ThisRef},N)
+deselect(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:cast(?wxListBox_Deselect,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxListBox_Deselect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxgetselections">external documentation</a>.
 -spec getSelections(This) -> Result when
 	Result ::{Res ::integer(), ASelections::[integer()]},
 	This::wxListBox().
-getSelections(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelections(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:call(?wxListBox_GetSelections,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxListBox_GetSelections),
+  wxe_util:rec(?wxListBox_GetSelections).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxinsertitems">external documentation</a>.
 -spec insertItems(This, Items, Pos) -> 'ok' when
 	This::wxListBox(), Items::[unicode:chardata()], Pos::integer().
-insertItems(#wx_ref{type=ThisT,ref=ThisRef},Items,Pos)
+insertItems(#wx_ref{type=ThisT}=This,Items,Pos)
  when is_list(Items),is_integer(Pos) ->
   ?CLASS(ThisT,wxListBox),
   Items_UCA = [unicode:characters_to_binary([ItemsTemp,0]) || 
               ItemsTemp <- Items],
-  wxe_util:cast(?wxListBox_InsertItems,[ThisRef,Items_UCA,Pos]).
+  wxe_util:queue_cmd(This,Items_UCA,Pos,?get_env(),?wxListBox_InsertItems).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxisselected">external documentation</a>.
 -spec isSelected(This, N) -> boolean() when
 	This::wxListBox(), N::integer().
-isSelected(#wx_ref{type=ThisT,ref=ThisRef},N)
+isSelected(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:call(?wxListBox_IsSelected,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxListBox_IsSelected),
+  wxe_util:rec(?wxListBox_IsSelected).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxset">external documentation</a>.
 -spec set(This, Items) -> 'ok' when
 	This::wxListBox(), Items::[unicode:chardata()].
-set(#wx_ref{type=ThisT,ref=ThisRef},Items)
+set(#wx_ref{type=ThisT}=This,Items)
  when is_list(Items) ->
   ?CLASS(ThisT,wxListBox),
   Items_UCA = [unicode:characters_to_binary([ItemsTemp,0]) || 
               ItemsTemp <- Items],
-  wxe_util:cast(?wxListBox_Set,[ThisRef,Items_UCA]).
+  wxe_util:queue_cmd(This,Items_UCA,?get_env(),?wxListBox_Set).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxhittest">external documentation</a>.
 -spec hitTest(This, Point) -> integer() when
 	This::wxListBox(), Point::{X::integer(), Y::integer()}.
-hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PointX,PointY} = Point)
+hitTest(#wx_ref{type=ThisT}=This,{PointX,PointY} = Point)
  when is_integer(PointX),is_integer(PointY) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:call(?wxListBox_HitTest,[ThisRef,Point]).
+  wxe_util:queue_cmd(This,Point,?get_env(),?wxListBox_HitTest),
+  wxe_util:rec(?wxListBox_HitTest).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxsetfirstitem">external documentation</a>.
 %% <br /> Also:<br />
@@ -196,15 +202,15 @@ hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PointX,PointY} = Point)
 	This::wxListBox(), N::integer();
       (This, S) -> 'ok' when
 	This::wxListBox(), S::unicode:chardata().
-setFirstItem(#wx_ref{type=ThisT,ref=ThisRef},N)
+setFirstItem(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:cast(?wxListBox_SetFirstItem_1_0,[ThisRef,N]);
-setFirstItem(#wx_ref{type=ThisT,ref=ThisRef},S)
+  wxe_util:queue_cmd(This,N,?get_env(),?wxListBox_SetFirstItem_1_0);
+setFirstItem(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxListBox),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxListBox_SetFirstItem_1_1,[ThisRef,S_UC]).
+  wxe_util:queue_cmd(This,S_UC,?get_env(),?wxListBox_SetFirstItem_1_1).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxListBox()) -> 'ok'.

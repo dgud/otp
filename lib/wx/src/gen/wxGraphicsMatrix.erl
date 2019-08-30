@@ -43,64 +43,67 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixconcat">external documentation</a>.
 -spec concat(This, T) -> 'ok' when
 	This::wxGraphicsMatrix(), T::wxGraphicsMatrix().
-concat(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TT,ref=TRef}) ->
+concat(#wx_ref{type=ThisT}=This,#wx_ref{type=TT}=T) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
   ?CLASS(TT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Concat,[ThisRef,TRef]).
+  wxe_util:queue_cmd(This,T,?get_env(),?wxGraphicsMatrix_Concat).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixget">external documentation</a>.
 -spec get(This) -> Result when
 	Result ::{A::number(), B::number(), C::number(), D::number(), Tx::number(), Ty::number()},
 	This::wxGraphicsMatrix().
-get(#wx_ref{type=ThisT,ref=ThisRef}) ->
+get(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_Get,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsMatrix_Get),
+  wxe_util:rec(?wxGraphicsMatrix_Get).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixinvert">external documentation</a>.
 -spec invert(This) -> 'ok' when
 	This::wxGraphicsMatrix().
-invert(#wx_ref{type=ThisT,ref=ThisRef}) ->
+invert(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Invert,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsMatrix_Invert).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixisequal">external documentation</a>.
 -spec isEqual(This, T) -> boolean() when
 	This::wxGraphicsMatrix(), T::wxGraphicsMatrix().
-isEqual(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TT,ref=TRef}) ->
+isEqual(#wx_ref{type=ThisT}=This,#wx_ref{type=TT}=T) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
   ?CLASS(TT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_IsEqual,[ThisRef,TRef]).
+  wxe_util:queue_cmd(This,T,?get_env(),?wxGraphicsMatrix_IsEqual),
+  wxe_util:rec(?wxGraphicsMatrix_IsEqual).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixisidentity">external documentation</a>.
 -spec isIdentity(This) -> boolean() when
 	This::wxGraphicsMatrix().
-isIdentity(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isIdentity(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_IsIdentity,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsMatrix_IsIdentity),
+  wxe_util:rec(?wxGraphicsMatrix_IsIdentity).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixrotate">external documentation</a>.
 -spec rotate(This, Angle) -> 'ok' when
 	This::wxGraphicsMatrix(), Angle::number().
-rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle)
+rotate(#wx_ref{type=ThisT}=This,Angle)
  when is_number(Angle) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Rotate,[ThisRef,Angle]).
+  wxe_util:queue_cmd(This,Angle,?get_env(),?wxGraphicsMatrix_Rotate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixscale">external documentation</a>.
 -spec scale(This, XScale, YScale) -> 'ok' when
 	This::wxGraphicsMatrix(), XScale::number(), YScale::number().
-scale(#wx_ref{type=ThisT,ref=ThisRef},XScale,YScale)
+scale(#wx_ref{type=ThisT}=This,XScale,YScale)
  when is_number(XScale),is_number(YScale) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Scale,[ThisRef,XScale,YScale]).
+  wxe_util:queue_cmd(This,XScale,YScale,?get_env(),?wxGraphicsMatrix_Scale).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtranslate">external documentation</a>.
 -spec translate(This, Dx, Dy) -> 'ok' when
 	This::wxGraphicsMatrix(), Dx::number(), Dy::number().
-translate(#wx_ref{type=ThisT,ref=ThisRef},Dx,Dy)
+translate(#wx_ref{type=ThisT}=This,Dx,Dy)
  when is_number(Dx),is_number(Dy) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Translate,[ThisRef,Dx,Dy]).
+  wxe_util:queue_cmd(This,Dx,Dy,?get_env(),?wxGraphicsMatrix_Translate).
 
 %% @equiv set(This, [])
 -spec set(This) -> 'ok' when
@@ -119,24 +122,26 @@ set(This)
 		 | {'d', number()}
 		 | {'tx', number()}
 		 | {'ty', number()}.
-set(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+set(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Set,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxGraphicsMatrix_Set).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtransformpoint">external documentation</a>.
 -spec transformPoint(This) -> {X::number(), Y::number()} when
 	This::wxGraphicsMatrix().
-transformPoint(#wx_ref{type=ThisT,ref=ThisRef}) ->
+transformPoint(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_TransformPoint,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsMatrix_TransformPoint),
+  wxe_util:rec(?wxGraphicsMatrix_TransformPoint).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtransformdistance">external documentation</a>.
 -spec transformDistance(This) -> {Dx::number(), Dy::number()} when
 	This::wxGraphicsMatrix().
-transformDistance(#wx_ref{type=ThisT,ref=ThisRef}) ->
+transformDistance(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_TransformDistance,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxGraphicsMatrix_TransformDistance),
+  wxe_util:rec(?wxGraphicsMatrix_TransformDistance).
 
  %% From wxGraphicsObject
 %% @hidden

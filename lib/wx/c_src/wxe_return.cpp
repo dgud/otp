@@ -49,15 +49,12 @@ int wxeReturn::send(ERL_NIF_TERM msg) {
   } else {
     res = enif_send(NULL, &caller, env, msg);
   }
-  if(wxe_debug)
-    enif_fprintf(stderr, "send(%d) %T msg %T\r\n", res, caller, msg);
-
-#ifdef DEBUG
-  if(res == 0) {
-    enif_fprintf(stderr, "Failed to send return or event msg to (%T) msg: %T\r\n",
-                 caller, msg);
+  if(wxe_debug) {
+    if(isResult)
+      enif_fprintf(stderr, "return (%d) to %T:  %T\r\n", res, caller, msg);
+    else
+      enif_fprintf(stderr, "send (%d) to %T:  %T\r\n", res, caller, msg);
   }
-#endif
 
   reset();
   return res;

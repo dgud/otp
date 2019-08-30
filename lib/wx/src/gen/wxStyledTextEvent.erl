@@ -55,164 +55,187 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetposition">external documentation</a>.
 -spec getPosition(This) -> integer() when
 	This::wxStyledTextEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetPosition),
+  wxe_util:rec(?wxStyledTextEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetkey">external documentation</a>.
 -spec getKey(This) -> integer() when
 	This::wxStyledTextEvent().
-getKey(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getKey(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetKey,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetKey),
+  wxe_util:rec(?wxStyledTextEvent_GetKey).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetmodifiers">external documentation</a>.
 -spec getModifiers(This) -> integer() when
 	This::wxStyledTextEvent().
-getModifiers(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getModifiers(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetModifiers,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetModifiers),
+  wxe_util:rec(?wxStyledTextEvent_GetModifiers).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetmodificationtype">external documentation</a>.
 -spec getModificationType(This) -> integer() when
 	This::wxStyledTextEvent().
-getModificationType(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getModificationType(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetModificationType,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetModificationType),
+  wxe_util:rec(?wxStyledTextEvent_GetModificationType).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxStyledTextEvent().
-getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getText(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetText,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetText),
+  wxe_util:rec(?wxStyledTextEvent_GetText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetlength">external documentation</a>.
 -spec getLength(This) -> integer() when
 	This::wxStyledTextEvent().
-getLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLength(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetLength,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetLength),
+  wxe_util:rec(?wxStyledTextEvent_GetLength).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetlinesadded">external documentation</a>.
 -spec getLinesAdded(This) -> integer() when
 	This::wxStyledTextEvent().
-getLinesAdded(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLinesAdded(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetLinesAdded,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetLinesAdded),
+  wxe_util:rec(?wxStyledTextEvent_GetLinesAdded).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetline">external documentation</a>.
 -spec getLine(This) -> integer() when
 	This::wxStyledTextEvent().
-getLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLine(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetLine,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetLine),
+  wxe_util:rec(?wxStyledTextEvent_GetLine).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetfoldlevelnow">external documentation</a>.
 -spec getFoldLevelNow(This) -> integer() when
 	This::wxStyledTextEvent().
-getFoldLevelNow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFoldLevelNow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetFoldLevelNow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetFoldLevelNow),
+  wxe_util:rec(?wxStyledTextEvent_GetFoldLevelNow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetfoldlevelprev">external documentation</a>.
 -spec getFoldLevelPrev(This) -> integer() when
 	This::wxStyledTextEvent().
-getFoldLevelPrev(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFoldLevelPrev(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetFoldLevelPrev,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetFoldLevelPrev),
+  wxe_util:rec(?wxStyledTextEvent_GetFoldLevelPrev).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetmargin">external documentation</a>.
 -spec getMargin(This) -> integer() when
 	This::wxStyledTextEvent().
-getMargin(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMargin(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetMargin,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetMargin),
+  wxe_util:rec(?wxStyledTextEvent_GetMargin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetmessage">external documentation</a>.
 -spec getMessage(This) -> integer() when
 	This::wxStyledTextEvent().
-getMessage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMessage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetMessage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetMessage),
+  wxe_util:rec(?wxStyledTextEvent_GetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetwparam">external documentation</a>.
 -spec getWParam(This) -> integer() when
 	This::wxStyledTextEvent().
-getWParam(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWParam(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetWParam,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetWParam),
+  wxe_util:rec(?wxStyledTextEvent_GetWParam).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetlparam">external documentation</a>.
 -spec getLParam(This) -> integer() when
 	This::wxStyledTextEvent().
-getLParam(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLParam(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetLParam,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetLParam),
+  wxe_util:rec(?wxStyledTextEvent_GetLParam).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetlisttype">external documentation</a>.
 -spec getListType(This) -> integer() when
 	This::wxStyledTextEvent().
-getListType(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getListType(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetListType,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetListType),
+  wxe_util:rec(?wxStyledTextEvent_GetListType).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetx">external documentation</a>.
 -spec getX(This) -> integer() when
 	This::wxStyledTextEvent().
-getX(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getX(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetX,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetX),
+  wxe_util:rec(?wxStyledTextEvent_GetX).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgety">external documentation</a>.
 -spec getY(This) -> integer() when
 	This::wxStyledTextEvent().
-getY(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getY(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetY,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetY),
+  wxe_util:rec(?wxStyledTextEvent_GetY).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetdragtext">external documentation</a>.
 -spec getDragText(This) -> unicode:charlist() when
 	This::wxStyledTextEvent().
-getDragText(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDragText(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetDragText,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetDragText),
+  wxe_util:rec(?wxStyledTextEvent_GetDragText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetdragallowmove">external documentation</a>.
 -spec getDragAllowMove(This) -> boolean() when
 	This::wxStyledTextEvent().
-getDragAllowMove(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDragAllowMove(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetDragAllowMove,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetDragAllowMove),
+  wxe_util:rec(?wxStyledTextEvent_GetDragAllowMove).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetdragresult">external documentation</a>.
 %%<br /> Res = ?wxDragError | ?wxDragNone | ?wxDragCopy | ?wxDragMove | ?wxDragLink | ?wxDragCancel
 -spec getDragResult(This) -> wx:wx_enum() when
 	This::wxStyledTextEvent().
-getDragResult(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDragResult(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetDragResult,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetDragResult),
+  wxe_util:rec(?wxStyledTextEvent_GetDragResult).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetshift">external documentation</a>.
 -spec getShift(This) -> boolean() when
 	This::wxStyledTextEvent().
-getShift(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getShift(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetShift,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetShift),
+  wxe_util:rec(?wxStyledTextEvent_GetShift).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetcontrol">external documentation</a>.
 -spec getControl(This) -> boolean() when
 	This::wxStyledTextEvent().
-getControl(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getControl(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetControl,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetControl),
+  wxe_util:rec(?wxStyledTextEvent_GetControl).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextevent.html#wxstyledtexteventgetalt">external documentation</a>.
 -spec getAlt(This) -> boolean() when
 	This::wxStyledTextEvent().
-getAlt(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAlt(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStyledTextEvent),
-  wxe_util:call(?wxStyledTextEvent_GetAlt,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStyledTextEvent_GetAlt),
+  wxe_util:rec(?wxStyledTextEvent_GetAlt).
 
  %% From wxCommandEvent
 %% @hidden

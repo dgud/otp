@@ -45,16 +45,17 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelltexteditor.html#wxgridcelltexteditorwxgridcelltexteditor">external documentation</a>.
 -spec new() -> wxGridCellTextEditor().
 new() ->
-  wxe_util:construct(?wxGridCellTextEditor_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxGridCellTextEditor_new),
+  wxe_util:rec(?wxGridCellTextEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelltexteditor.html#wxgridcelltexteditorsetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
 	This::wxGridCellTextEditor(), Params::unicode:chardata().
-setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
+setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellTextEditor),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellTextEditor_SetParameters,[ThisRef,Params_UC]).
+  wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellTextEditor_SetParameters).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellTextEditor()) -> 'ok'.

@@ -43,7 +43,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauisimpletabart.html#wxauisimpletabartwxauisimpletabart">external documentation</a>.
 -spec new() -> wxAuiSimpleTabArt().
 new() ->
-  wxe_util:construct(?wxAuiSimpleTabArt_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxAuiSimpleTabArt_new),
+  wxe_util:rec(?wxAuiSimpleTabArt_new).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxAuiSimpleTabArt()) -> 'ok'.

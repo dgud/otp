@@ -46,7 +46,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorwxcursor">external documentation</a>.
 -spec new() -> wxCursor().
 new() ->
-  wxe_util:construct(?wxCursor_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxCursor_new_0),
+  wxe_util:rec(?wxCursor_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorwxcursor">external documentation</a>.
 %% <br /> Also:<br />
@@ -59,10 +60,12 @@ new() ->
 	Image::wxImage:wxImage().
 new(CursorId)
  when is_integer(CursorId) ->
-  wxe_util:construct(?wxCursor_new_1_0,[CursorId]);
-new(#wx_ref{type=ImageT,ref=ImageRef}) ->
+  wxe_util:queue_cmd(CursorId,?get_env(),?wxCursor_new_1_0),
+  wxe_util:rec(?wxCursor_new_1_0);
+new(#wx_ref{type=ImageT}=Image) ->
   ?CLASS(ImageT,wxImage),
-  wxe_util:construct(?wxCursor_new_1_1,[ImageRef]).
+  wxe_util:queue_cmd(Image,?get_env(),?wxCursor_new_1_1),
+  wxe_util:rec(?wxCursor_new_1_1).
 
 %% @equiv new(Bits,Width,Height, [])
 -spec new(Bits, Width, Height) -> wxCursor() when
@@ -79,14 +82,16 @@ new(Bits,Width,Height)
 		 | {'hotSpotY', integer()}.
 new(Bits,Width,Height, Options)
  when is_binary(Bits),is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:construct(?wxCursor_new_4,[Bits,Width,Height, Options]).
+  wxe_util:queue_cmd(Bits,Width,Height, Options,?get_env(),?wxCursor_new_4),
+  wxe_util:rec(?wxCursor_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxCursor().
-ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
+ok(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCursor),
-  wxe_util:call(?wxCursor_Ok,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCursor_Ok),
+  wxe_util:rec(?wxCursor_Ok).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCursor()) -> 'ok'.

@@ -85,7 +85,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxwxcheckbox">external documentation</a>.
 -spec new() -> wxCheckBox().
 new() ->
-  wxe_util:construct(?wxCheckBox_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxCheckBox_new_0),
+  wxe_util:rec(?wxCheckBox_new_0).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxCheckBox() when
@@ -102,11 +103,12 @@ new(Parent,Id,Label)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:construct(?wxCheckBox_new_4,[ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxCheckBox_new_4),
+  wxe_util:rec(?wxCheckBox_new_4).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -123,65 +125,71 @@ create(This,Parent,Id,Label)
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxCheckBox),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:call(?wxCheckBox_Create,[ThisRef,ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxCheckBox_Create),
+  wxe_util:rec(?wxCheckBox_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxgetvalue">external documentation</a>.
 -spec getValue(This) -> boolean() when
 	This::wxCheckBox().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCheckBox_GetValue),
+  wxe_util:rec(?wxCheckBox_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxget3statevalue">external documentation</a>.
 %%<br /> Res = ?wxCHK_UNCHECKED | ?wxCHK_CHECKED | ?wxCHK_UNDETERMINED
 -spec get3StateValue(This) -> wx:wx_enum() when
 	This::wxCheckBox().
-get3StateValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+get3StateValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_Get3StateValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCheckBox_Get3StateValue),
+  wxe_util:rec(?wxCheckBox_Get3StateValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxis3rdstateallowedforuser">external documentation</a>.
 -spec is3rdStateAllowedForUser(This) -> boolean() when
 	This::wxCheckBox().
-is3rdStateAllowedForUser(#wx_ref{type=ThisT,ref=ThisRef}) ->
+is3rdStateAllowedForUser(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_Is3rdStateAllowedForUser,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCheckBox_Is3rdStateAllowedForUser),
+  wxe_util:rec(?wxCheckBox_Is3rdStateAllowedForUser).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxis3state">external documentation</a>.
 -spec is3State(This) -> boolean() when
 	This::wxCheckBox().
-is3State(#wx_ref{type=ThisT,ref=ThisRef}) ->
+is3State(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_Is3State,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCheckBox_Is3State),
+  wxe_util:rec(?wxCheckBox_Is3State).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxischecked">external documentation</a>.
 -spec isChecked(This) -> boolean() when
 	This::wxCheckBox().
-isChecked(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isChecked(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_IsChecked,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxCheckBox_IsChecked),
+  wxe_util:rec(?wxCheckBox_IsChecked).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxsetvalue">external documentation</a>.
 -spec setValue(This, State) -> 'ok' when
 	This::wxCheckBox(), State::boolean().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},State)
+setValue(#wx_ref{type=ThisT}=This,State)
  when is_boolean(State) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:cast(?wxCheckBox_SetValue,[ThisRef,State]).
+  wxe_util:queue_cmd(This,State,?get_env(),?wxCheckBox_SetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxset3statevalue">external documentation</a>.
 %%<br /> State = ?wxCHK_UNCHECKED | ?wxCHK_CHECKED | ?wxCHK_UNDETERMINED
 -spec set3StateValue(This, State) -> 'ok' when
 	This::wxCheckBox(), State::wx:wx_enum().
-set3StateValue(#wx_ref{type=ThisT,ref=ThisRef},State)
+set3StateValue(#wx_ref{type=ThisT}=This,State)
  when is_integer(State) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:cast(?wxCheckBox_Set3StateValue,[ThisRef,State]).
+  wxe_util:queue_cmd(This,State,?get_env(),?wxCheckBox_Set3StateValue).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCheckBox()) -> 'ok'.

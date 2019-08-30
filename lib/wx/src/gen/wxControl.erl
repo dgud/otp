@@ -81,18 +81,19 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrol.html#wxcontrolgetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxControl().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxControl),
-  wxe_util:call(?wxControl_GetLabel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxControl_GetLabel),
+  wxe_util:rec(?wxControl_GetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrol.html#wxcontrolsetlabel">external documentation</a>.
 -spec setLabel(This, Label) -> 'ok' when
 	This::wxControl(), Label::unicode:chardata().
-setLabel(#wx_ref{type=ThisT,ref=ThisRef},Label)
+setLabel(#wx_ref{type=ThisT}=This,Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxControl),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxControl_SetLabel,[ThisRef,Label_UC]).
+  wxe_util:queue_cmd(This,Label_UC,?get_env(),?wxControl_SetLabel).
 
  %% From wxWindow
 %% @hidden

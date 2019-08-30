@@ -88,7 +88,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookwxchoicebook">external documentation</a>.
 -spec new() -> wxChoicebook().
 new() ->
-  wxe_util:construct(?wxChoicebook_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxChoicebook_new_0),
+  wxe_util:rec(?wxChoicebook_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxChoicebook() when
@@ -104,10 +105,11 @@ new(Parent,Id)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxChoicebook_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxChoicebook_new_3),
+  wxe_util:rec(?wxChoicebook_new_3).
 
 %% @equiv addPage(This,Page,Text, [])
 -spec addPage(This, Page, Text) -> boolean() when
@@ -122,12 +124,13 @@ addPage(This,Page,Text)
 	This::wxChoicebook(), Page::wxWindow:wxWindow(), Text::unicode:chardata(),
 	Option :: {'bSelect', boolean()}
 		 | {'imageId', integer()}.
-addPage(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PageT,ref=PageRef},Text, Options)
+addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxChoicebook_AddPage,[ThisRef,PageRef,Text_UC, Options]).
+  wxe_util:queue_cmd(This,Page,Text_UC, Options,?get_env(),?wxChoicebook_AddPage),
+  wxe_util:rec(?wxChoicebook_AddPage).
 
 %% @equiv advanceSelection(This, [])
 -spec advanceSelection(This) -> 'ok' when
@@ -141,18 +144,18 @@ advanceSelection(This)
 -spec advanceSelection(This, [Option]) -> 'ok' when
 	This::wxChoicebook(),
 	Option :: {'forward', boolean()}.
-advanceSelection(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+advanceSelection(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:cast(?wxChoicebook_AdvanceSelection,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxChoicebook_AdvanceSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookassignimagelist">external documentation</a>.
 -spec assignImageList(This, ImageList) -> 'ok' when
 	This::wxChoicebook(), ImageList::wxImageList:wxImageList().
-assignImageList(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ImageListT,ref=ImageListRef}) ->
+assignImageList(#wx_ref{type=ThisT}=This,#wx_ref{type=ImageListT}=ImageList) ->
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(ImageListT,wxImageList),
-  wxe_util:cast(?wxChoicebook_AssignImageList,[ThisRef,ImageListRef]).
+  wxe_util:queue_cmd(This,ImageList,?get_env(),?wxChoicebook_AssignImageList).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -168,95 +171,107 @@ create(This,Parent,Id)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxChoicebook_Create,[ThisRef,ParentRef,Id, Options]).
+  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxChoicebook_Create),
+  wxe_util:rec(?wxChoicebook_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookdeleteallpages">external documentation</a>.
 -spec deleteAllPages(This) -> boolean() when
 	This::wxChoicebook().
-deleteAllPages(#wx_ref{type=ThisT,ref=ThisRef}) ->
+deleteAllPages(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_DeleteAllPages,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxChoicebook_DeleteAllPages),
+  wxe_util:rec(?wxChoicebook_DeleteAllPages).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookdeletepage">external documentation</a>.
 -spec deletePage(This, N) -> boolean() when
 	This::wxChoicebook(), N::integer().
-deletePage(#wx_ref{type=ThisT,ref=ThisRef},N)
+deletePage(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_DeletePage,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_DeletePage),
+  wxe_util:rec(?wxChoicebook_DeletePage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookremovepage">external documentation</a>.
 -spec removePage(This, N) -> boolean() when
 	This::wxChoicebook(), N::integer().
-removePage(#wx_ref{type=ThisT,ref=ThisRef},N)
+removePage(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_RemovePage,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_RemovePage),
+  wxe_util:rec(?wxChoicebook_RemovePage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetcurrentpage">external documentation</a>.
 -spec getCurrentPage(This) -> wxWindow:wxWindow() when
 	This::wxChoicebook().
-getCurrentPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCurrentPage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetCurrentPage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxChoicebook_GetCurrentPage),
+  wxe_util:rec(?wxChoicebook_GetCurrentPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetimagelist">external documentation</a>.
 -spec getImageList(This) -> wxImageList:wxImageList() when
 	This::wxChoicebook().
-getImageList(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getImageList(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetImageList,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxChoicebook_GetImageList),
+  wxe_util:rec(?wxChoicebook_GetImageList).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetpage">external documentation</a>.
 -spec getPage(This, N) -> wxWindow:wxWindow() when
 	This::wxChoicebook(), N::integer().
-getPage(#wx_ref{type=ThisT,ref=ThisRef},N)
+getPage(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetPage,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_GetPage),
+  wxe_util:rec(?wxChoicebook_GetPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetpagecount">external documentation</a>.
 -spec getPageCount(This) -> integer() when
 	This::wxChoicebook().
-getPageCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPageCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetPageCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxChoicebook_GetPageCount),
+  wxe_util:rec(?wxChoicebook_GetPageCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetpageimage">external documentation</a>.
 -spec getPageImage(This, N) -> integer() when
 	This::wxChoicebook(), N::integer().
-getPageImage(#wx_ref{type=ThisT,ref=ThisRef},N)
+getPageImage(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetPageImage,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_GetPageImage),
+  wxe_util:rec(?wxChoicebook_GetPageImage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetpagetext">external documentation</a>.
 -spec getPageText(This, N) -> unicode:charlist() when
 	This::wxChoicebook(), N::integer().
-getPageText(#wx_ref{type=ThisT,ref=ThisRef},N)
+getPageText(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetPageText,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_GetPageText),
+  wxe_util:rec(?wxChoicebook_GetPageText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxChoicebook().
-getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_GetSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxChoicebook_GetSelection),
+  wxe_util:rec(?wxChoicebook_GetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookhittest">external documentation</a>.
 -spec hitTest(This, Pt) -> Result when
 	Result ::{Res ::integer(), Flags::integer()},
 	This::wxChoicebook(), Pt::{X::integer(), Y::integer()}.
-hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
+hitTest(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_HitTest,[ThisRef,Pt]).
+  wxe_util:queue_cmd(This,Pt,?get_env(),?wxChoicebook_HitTest),
+  wxe_util:rec(?wxChoicebook_HitTest).
 
 %% @equiv insertPage(This,N,Page,Text, [])
 -spec insertPage(This, N, Page, Text) -> boolean() when
@@ -271,61 +286,66 @@ insertPage(This,N,Page,Text)
 	This::wxChoicebook(), N::integer(), Page::wxWindow:wxWindow(), Text::unicode:chardata(),
 	Option :: {'bSelect', boolean()}
 		 | {'imageId', integer()}.
-insertPage(#wx_ref{type=ThisT,ref=ThisRef},N,#wx_ref{type=PageT,ref=PageRef},Text, Options)
+insertPage(#wx_ref{type=ThisT}=This,N,#wx_ref{type=PageT}=Page,Text, Options)
  when is_integer(N),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxChoicebook_InsertPage,[ThisRef,N,PageRef,Text_UC, Options]).
+  wxe_util:queue_cmd(This,N,Page,Text_UC, Options,?get_env(),?wxChoicebook_InsertPage),
+  wxe_util:rec(?wxChoicebook_InsertPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebooksetimagelist">external documentation</a>.
 -spec setImageList(This, ImageList) -> 'ok' when
 	This::wxChoicebook(), ImageList::wxImageList:wxImageList().
-setImageList(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ImageListT,ref=ImageListRef}) ->
+setImageList(#wx_ref{type=ThisT}=This,#wx_ref{type=ImageListT}=ImageList) ->
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(ImageListT,wxImageList),
-  wxe_util:cast(?wxChoicebook_SetImageList,[ThisRef,ImageListRef]).
+  wxe_util:queue_cmd(This,ImageList,?get_env(),?wxChoicebook_SetImageList).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebooksetpagesize">external documentation</a>.
 -spec setPageSize(This, Size) -> 'ok' when
 	This::wxChoicebook(), Size::{W::integer(), H::integer()}.
-setPageSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
+setPageSize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:cast(?wxChoicebook_SetPageSize,[ThisRef,Size]).
+  wxe_util:queue_cmd(This,Size,?get_env(),?wxChoicebook_SetPageSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebooksetpageimage">external documentation</a>.
 -spec setPageImage(This, N, ImageId) -> boolean() when
 	This::wxChoicebook(), N::integer(), ImageId::integer().
-setPageImage(#wx_ref{type=ThisT,ref=ThisRef},N,ImageId)
+setPageImage(#wx_ref{type=ThisT}=This,N,ImageId)
  when is_integer(N),is_integer(ImageId) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_SetPageImage,[ThisRef,N,ImageId]).
+  wxe_util:queue_cmd(This,N,ImageId,?get_env(),?wxChoicebook_SetPageImage),
+  wxe_util:rec(?wxChoicebook_SetPageImage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebooksetpagetext">external documentation</a>.
 -spec setPageText(This, N, StrText) -> boolean() when
 	This::wxChoicebook(), N::integer(), StrText::unicode:chardata().
-setPageText(#wx_ref{type=ThisT,ref=ThisRef},N,StrText)
+setPageText(#wx_ref{type=ThisT}=This,N,StrText)
  when is_integer(N),?is_chardata(StrText) ->
   ?CLASS(ThisT,wxChoicebook),
   StrText_UC = unicode:characters_to_binary([StrText,0]),
-  wxe_util:call(?wxChoicebook_SetPageText,[ThisRef,N,StrText_UC]).
+  wxe_util:queue_cmd(This,N,StrText_UC,?get_env(),?wxChoicebook_SetPageText),
+  wxe_util:rec(?wxChoicebook_SetPageText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebooksetselection">external documentation</a>.
 -spec setSelection(This, N) -> integer() when
 	This::wxChoicebook(), N::integer().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
+setSelection(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_SetSelection,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_SetSelection),
+  wxe_util:rec(?wxChoicebook_SetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookchangeselection">external documentation</a>.
 -spec changeSelection(This, N) -> integer() when
 	This::wxChoicebook(), N::integer().
-changeSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
+changeSelection(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoicebook),
-  wxe_util:call(?wxChoicebook_ChangeSelection,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoicebook_ChangeSelection),
+  wxe_util:rec(?wxChoicebook_ChangeSelection).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxChoicebook()) -> 'ok'.

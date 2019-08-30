@@ -83,7 +83,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticbox.html#wxstaticboxwxstaticbox">external documentation</a>.
 -spec new() -> wxStaticBox().
 new() ->
-  wxe_util:construct(?wxStaticBox_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxStaticBox_new_0),
+  wxe_util:rec(?wxStaticBox_new_0).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxStaticBox() when
@@ -99,11 +100,12 @@ new(Parent,Id,Label)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:construct(?wxStaticBox_new_4,[ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxStaticBox_new_4),
+  wxe_util:rec(?wxStaticBox_new_4).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -119,12 +121,13 @@ create(This,Parent,Id,Label)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxStaticBox),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:call(?wxStaticBox_Create,[ThisRef,ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxStaticBox_Create),
+  wxe_util:rec(?wxStaticBox_Create).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticBox()) -> 'ok'.

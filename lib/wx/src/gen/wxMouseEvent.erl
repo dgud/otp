@@ -53,17 +53,19 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventaltdown">external documentation</a>.
 -spec altDown(This) -> boolean() when
 	This::wxMouseEvent().
-altDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+altDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_AltDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_AltDown),
+  wxe_util:rec(?wxMouseEvent_AltDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventbutton">external documentation</a>.
 -spec button(This, But) -> boolean() when
 	This::wxMouseEvent(), But::integer().
-button(#wx_ref{type=ThisT,ref=ThisRef},But)
+button(#wx_ref{type=ThisT}=This,But)
  when is_integer(But) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_Button,[ThisRef,But]).
+  wxe_util:queue_cmd(This,But,?get_env(),?wxMouseEvent_Button),
+  wxe_util:rec(?wxMouseEvent_Button).
 
 %% @equiv buttonDClick(This, [])
 -spec buttonDClick(This) -> boolean() when
@@ -77,10 +79,11 @@ buttonDClick(This)
 -spec buttonDClick(This, [Option]) -> boolean() when
 	This::wxMouseEvent(),
 	Option :: {'but', integer()}.
-buttonDClick(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+buttonDClick(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_ButtonDClick,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMouseEvent_ButtonDClick),
+  wxe_util:rec(?wxMouseEvent_ButtonDClick).
 
 %% @equiv buttonDown(This, [])
 -spec buttonDown(This) -> boolean() when
@@ -94,10 +97,11 @@ buttonDown(This)
 -spec buttonDown(This, [Option]) -> boolean() when
 	This::wxMouseEvent(),
 	Option :: {'but', integer()}.
-buttonDown(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+buttonDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_ButtonDown,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMouseEvent_ButtonDown),
+  wxe_util:rec(?wxMouseEvent_ButtonDown).
 
 %% @equiv buttonUp(This, [])
 -spec buttonUp(This) -> boolean() when
@@ -111,221 +115,252 @@ buttonUp(This)
 -spec buttonUp(This, [Option]) -> boolean() when
 	This::wxMouseEvent(),
 	Option :: {'but', integer()}.
-buttonUp(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+buttonUp(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_ButtonUp,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxMouseEvent_ButtonUp),
+  wxe_util:rec(?wxMouseEvent_ButtonUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventcmddown">external documentation</a>.
 -spec cmdDown(This) -> boolean() when
 	This::wxMouseEvent().
-cmdDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+cmdDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_CmdDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_CmdDown),
+  wxe_util:rec(?wxMouseEvent_CmdDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventcontroldown">external documentation</a>.
 -spec controlDown(This) -> boolean() when
 	This::wxMouseEvent().
-controlDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+controlDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_ControlDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_ControlDown),
+  wxe_util:rec(?wxMouseEvent_ControlDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventdragging">external documentation</a>.
 -spec dragging(This) -> boolean() when
 	This::wxMouseEvent().
-dragging(#wx_ref{type=ThisT,ref=ThisRef}) ->
+dragging(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_Dragging,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_Dragging),
+  wxe_util:rec(?wxMouseEvent_Dragging).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseevententering">external documentation</a>.
 -spec entering(This) -> boolean() when
 	This::wxMouseEvent().
-entering(#wx_ref{type=ThisT,ref=ThisRef}) ->
+entering(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_Entering,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_Entering),
+  wxe_util:rec(?wxMouseEvent_Entering).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetbutton">external documentation</a>.
 -spec getButton(This) -> integer() when
 	This::wxMouseEvent().
-getButton(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getButton(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetButton,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetButton),
+  wxe_util:rec(?wxMouseEvent_GetButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxMouseEvent().
-getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPosition(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetPosition,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetPosition),
+  wxe_util:rec(?wxMouseEvent_GetPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetlogicalposition">external documentation</a>.
 -spec getLogicalPosition(This, Dc) -> {X::integer(), Y::integer()} when
 	This::wxMouseEvent(), Dc::wxDC:wxDC().
-getLogicalPosition(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef}) ->
+getLogicalPosition(#wx_ref{type=ThisT}=This,#wx_ref{type=DcT}=Dc) ->
   ?CLASS(ThisT,wxMouseEvent),
   ?CLASS(DcT,wxDC),
-  wxe_util:call(?wxMouseEvent_GetLogicalPosition,[ThisRef,DcRef]).
+  wxe_util:queue_cmd(This,Dc,?get_env(),?wxMouseEvent_GetLogicalPosition),
+  wxe_util:rec(?wxMouseEvent_GetLogicalPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetlinesperaction">external documentation</a>.
 -spec getLinesPerAction(This) -> integer() when
 	This::wxMouseEvent().
-getLinesPerAction(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLinesPerAction(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetLinesPerAction,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetLinesPerAction),
+  wxe_util:rec(?wxMouseEvent_GetLinesPerAction).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetwheelrotation">external documentation</a>.
 -spec getWheelRotation(This) -> integer() when
 	This::wxMouseEvent().
-getWheelRotation(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWheelRotation(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetWheelRotation,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetWheelRotation),
+  wxe_util:rec(?wxMouseEvent_GetWheelRotation).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetwheeldelta">external documentation</a>.
 -spec getWheelDelta(This) -> integer() when
 	This::wxMouseEvent().
-getWheelDelta(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWheelDelta(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetWheelDelta,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetWheelDelta),
+  wxe_util:rec(?wxMouseEvent_GetWheelDelta).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetx">external documentation</a>.
 -spec getX(This) -> integer() when
 	This::wxMouseEvent().
-getX(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getX(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetX,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetX),
+  wxe_util:rec(?wxMouseEvent_GetX).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgety">external documentation</a>.
 -spec getY(This) -> integer() when
 	This::wxMouseEvent().
-getY(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getY(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetY,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetY),
+  wxe_util:rec(?wxMouseEvent_GetY).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventisbutton">external documentation</a>.
 -spec isButton(This) -> boolean() when
 	This::wxMouseEvent().
-isButton(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isButton(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_IsButton,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_IsButton),
+  wxe_util:rec(?wxMouseEvent_IsButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventispagescroll">external documentation</a>.
 -spec isPageScroll(This) -> boolean() when
 	This::wxMouseEvent().
-isPageScroll(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isPageScroll(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_IsPageScroll,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_IsPageScroll),
+  wxe_util:rec(?wxMouseEvent_IsPageScroll).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventleaving">external documentation</a>.
 -spec leaving(This) -> boolean() when
 	This::wxMouseEvent().
-leaving(#wx_ref{type=ThisT,ref=ThisRef}) ->
+leaving(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_Leaving,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_Leaving),
+  wxe_util:rec(?wxMouseEvent_Leaving).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventleftdclick">external documentation</a>.
 -spec leftDClick(This) -> boolean() when
 	This::wxMouseEvent().
-leftDClick(#wx_ref{type=ThisT,ref=ThisRef}) ->
+leftDClick(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_LeftDClick,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_LeftDClick),
+  wxe_util:rec(?wxMouseEvent_LeftDClick).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventleftdown">external documentation</a>.
 -spec leftDown(This) -> boolean() when
 	This::wxMouseEvent().
-leftDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+leftDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_LeftDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_LeftDown),
+  wxe_util:rec(?wxMouseEvent_LeftDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventleftisdown">external documentation</a>.
 -spec leftIsDown(This) -> boolean() when
 	This::wxMouseEvent().
-leftIsDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+leftIsDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_LeftIsDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_LeftIsDown),
+  wxe_util:rec(?wxMouseEvent_LeftIsDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventleftup">external documentation</a>.
 -spec leftUp(This) -> boolean() when
 	This::wxMouseEvent().
-leftUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+leftUp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_LeftUp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_LeftUp),
+  wxe_util:rec(?wxMouseEvent_LeftUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventmetadown">external documentation</a>.
 -spec metaDown(This) -> boolean() when
 	This::wxMouseEvent().
-metaDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+metaDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_MetaDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_MetaDown),
+  wxe_util:rec(?wxMouseEvent_MetaDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventmiddledclick">external documentation</a>.
 -spec middleDClick(This) -> boolean() when
 	This::wxMouseEvent().
-middleDClick(#wx_ref{type=ThisT,ref=ThisRef}) ->
+middleDClick(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_MiddleDClick,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_MiddleDClick),
+  wxe_util:rec(?wxMouseEvent_MiddleDClick).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventmiddledown">external documentation</a>.
 -spec middleDown(This) -> boolean() when
 	This::wxMouseEvent().
-middleDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+middleDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_MiddleDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_MiddleDown),
+  wxe_util:rec(?wxMouseEvent_MiddleDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventmiddleisdown">external documentation</a>.
 -spec middleIsDown(This) -> boolean() when
 	This::wxMouseEvent().
-middleIsDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+middleIsDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_MiddleIsDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_MiddleIsDown),
+  wxe_util:rec(?wxMouseEvent_MiddleIsDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventmiddleup">external documentation</a>.
 -spec middleUp(This) -> boolean() when
 	This::wxMouseEvent().
-middleUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+middleUp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_MiddleUp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_MiddleUp),
+  wxe_util:rec(?wxMouseEvent_MiddleUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventmoving">external documentation</a>.
 -spec moving(This) -> boolean() when
 	This::wxMouseEvent().
-moving(#wx_ref{type=ThisT,ref=ThisRef}) ->
+moving(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_Moving,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_Moving),
+  wxe_util:rec(?wxMouseEvent_Moving).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventrightdclick">external documentation</a>.
 -spec rightDClick(This) -> boolean() when
 	This::wxMouseEvent().
-rightDClick(#wx_ref{type=ThisT,ref=ThisRef}) ->
+rightDClick(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_RightDClick,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_RightDClick),
+  wxe_util:rec(?wxMouseEvent_RightDClick).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventrightdown">external documentation</a>.
 -spec rightDown(This) -> boolean() when
 	This::wxMouseEvent().
-rightDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+rightDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_RightDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_RightDown),
+  wxe_util:rec(?wxMouseEvent_RightDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventrightisdown">external documentation</a>.
 -spec rightIsDown(This) -> boolean() when
 	This::wxMouseEvent().
-rightIsDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+rightIsDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_RightIsDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_RightIsDown),
+  wxe_util:rec(?wxMouseEvent_RightIsDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventrightup">external documentation</a>.
 -spec rightUp(This) -> boolean() when
 	This::wxMouseEvent().
-rightUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
+rightUp(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_RightUp,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_RightUp),
+  wxe_util:rec(?wxMouseEvent_RightUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventshiftdown">external documentation</a>.
 -spec shiftDown(This) -> boolean() when
 	This::wxMouseEvent().
-shiftDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
+shiftDown(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_ShiftDown,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_ShiftDown),
+  wxe_util:rec(?wxMouseEvent_ShiftDown).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventgetwheelaxis">external documentation</a>.
 %%<br /> Res = ?wxMOUSE_WHEEL_VERTICAL | ?wxMOUSE_WHEEL_HORIZONTAL

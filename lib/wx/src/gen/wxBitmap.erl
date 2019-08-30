@@ -41,7 +41,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapwxbitmap">external documentation</a>.
 -spec new() -> wxBitmap().
 new() ->
-  wxe_util:construct(?wxBitmap_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxBitmap_new_0),
+  wxe_util:rec(?wxBitmap_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapwxbitmap">external documentation</a>.
 %% <br /> Also:<br />
@@ -87,11 +88,13 @@ new(Width,Height)
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:construct(?wxBitmap_new_2_0,[Filename_UC, Options]);
-new(#wx_ref{type=ImageT,ref=ImageRef}, Options)
+  wxe_util:queue_cmd(Filename_UC, Options,?get_env(),?wxBitmap_new_2_0),
+  wxe_util:rec(?wxBitmap_new_2_0);
+new(#wx_ref{type=ImageT}=Image, Options)
  when is_list(Options) ->
   ?CLASS(ImageT,wxImage),
-  wxe_util:construct(?wxBitmap_new_2_1,[ImageRef, Options]).
+  wxe_util:queue_cmd(Image, Options,?get_env(),?wxBitmap_new_2_1),
+  wxe_util:rec(?wxBitmap_new_2_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapwxbitmap">external documentation</a>.
 %% <br /> Also:<br />
@@ -110,7 +113,8 @@ new(Bits,Width,Height)
   new(Bits,Width,Height, []);
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:construct(?wxBitmap_new_3,[Width,Height, Options]).
+  wxe_util:queue_cmd(Width,Height, Options,?get_env(),?wxBitmap_new_3),
+  wxe_util:rec(?wxBitmap_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapwxbitmap">external documentation</a>.
 -spec new(Bits, Width, Height, [Option]) -> wxBitmap() when
@@ -118,22 +122,25 @@ new(Width,Height, Options)
 	Option :: {'depth', integer()}.
 new(Bits,Width,Height, Options)
  when is_binary(Bits),is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:construct(?wxBitmap_new_4,[Bits,Width,Height, Options]).
+  wxe_util:queue_cmd(Bits,Width,Height, Options,?get_env(),?wxBitmap_new_4),
+  wxe_util:rec(?wxBitmap_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapconverttoimage">external documentation</a>.
 -spec convertToImage(This) -> wxImage:wxImage() when
 	This::wxBitmap().
-convertToImage(#wx_ref{type=ThisT,ref=ThisRef}) ->
+convertToImage(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_ConvertToImage,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_ConvertToImage),
+  wxe_util:rec(?wxBitmap_ConvertToImage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapcopyfromicon">external documentation</a>.
 -spec copyFromIcon(This, Icon) -> boolean() when
 	This::wxBitmap(), Icon::wxIcon:wxIcon().
-copyFromIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}) ->
+copyFromIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon) ->
   ?CLASS(ThisT,wxBitmap),
   ?CLASS(IconT,wxIcon),
-  wxe_util:call(?wxBitmap_CopyFromIcon,[ThisRef,IconRef]).
+  wxe_util:queue_cmd(This,Icon,?get_env(),?wxBitmap_CopyFromIcon),
+  wxe_util:rec(?wxBitmap_CopyFromIcon).
 
 %% @equiv create(This,Width,Height, [])
 -spec create(This, Width, Height) -> boolean() when
@@ -147,53 +154,60 @@ create(This,Width,Height)
 -spec create(This, Width, Height, [Option]) -> boolean() when
 	This::wxBitmap(), Width::integer(), Height::integer(),
 	Option :: {'depth', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
+create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_Create,[ThisRef,Width,Height, Options]).
+  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxBitmap_Create),
+  wxe_util:rec(?wxBitmap_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetdepth">external documentation</a>.
 -spec getDepth(This) -> integer() when
 	This::wxBitmap().
-getDepth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDepth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_GetDepth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_GetDepth),
+  wxe_util:rec(?wxBitmap_GetDepth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetheight">external documentation</a>.
 -spec getHeight(This) -> integer() when
 	This::wxBitmap().
-getHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getHeight(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_GetHeight,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_GetHeight),
+  wxe_util:rec(?wxBitmap_GetHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetpalette">external documentation</a>.
 -spec getPalette(This) -> wxPalette:wxPalette() when
 	This::wxBitmap().
-getPalette(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getPalette(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_GetPalette,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_GetPalette),
+  wxe_util:rec(?wxBitmap_GetPalette).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetmask">external documentation</a>.
 -spec getMask(This) -> wxMask:wxMask() when
 	This::wxBitmap().
-getMask(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMask(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_GetMask,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_GetMask),
+  wxe_util:rec(?wxBitmap_GetMask).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetwidth">external documentation</a>.
 -spec getWidth(This) -> integer() when
 	This::wxBitmap().
-getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWidth(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_GetWidth,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_GetWidth),
+  wxe_util:rec(?wxBitmap_GetWidth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetsubbitmap">external documentation</a>.
 -spec getSubBitmap(This, Rect) -> wxBitmap() when
 	This::wxBitmap(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-getSubBitmap(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
+getSubBitmap(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_GetSubBitmap,[ThisRef,Rect]).
+  wxe_util:queue_cmd(This,Rect,?get_env(),?wxBitmap_GetSubBitmap),
+  wxe_util:rec(?wxBitmap_GetSubBitmap).
 
 %% @equiv loadFile(This,Name, [])
 -spec loadFile(This, Name) -> boolean() when
@@ -208,18 +222,20 @@ loadFile(This,Name)
 -spec loadFile(This, Name, [Option]) -> boolean() when
 	This::wxBitmap(), Name::unicode:chardata(),
 	Option :: {'type', wx:wx_enum()}.
-loadFile(#wx_ref{type=ThisT,ref=ThisRef},Name, Options)
+loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxBitmap_LoadFile,[ThisRef,Name_UC, Options]).
+  wxe_util:queue_cmd(This,Name_UC, Options,?get_env(),?wxBitmap_LoadFile),
+  wxe_util:rec(?wxBitmap_LoadFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxBitmap().
-ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
+ok(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:call(?wxBitmap_Ok,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxBitmap_Ok),
+  wxe_util:rec(?wxBitmap_Ok).
 
 %% @equiv saveFile(This,Name,Type, [])
 -spec saveFile(This, Name, Type) -> boolean() when
@@ -234,51 +250,52 @@ saveFile(This,Name,Type)
 -spec saveFile(This, Name, Type, [Option]) -> boolean() when
 	This::wxBitmap(), Name::unicode:chardata(), Type::wx:wx_enum(),
 	Option :: {'palette', wxPalette:wxPalette()}.
-saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Type, Options)
+saveFile(#wx_ref{type=ThisT}=This,Name,Type, Options)
  when ?is_chardata(Name),is_integer(Type),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxBitmap_SaveFile,[ThisRef,Name_UC,Type, Options]).
+  wxe_util:queue_cmd(This,Name_UC,Type, Options,?get_env(),?wxBitmap_SaveFile),
+  wxe_util:rec(?wxBitmap_SaveFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapsetdepth">external documentation</a>.
 -spec setDepth(This, Depth) -> 'ok' when
 	This::wxBitmap(), Depth::integer().
-setDepth(#wx_ref{type=ThisT,ref=ThisRef},Depth)
+setDepth(#wx_ref{type=ThisT}=This,Depth)
  when is_integer(Depth) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:cast(?wxBitmap_SetDepth,[ThisRef,Depth]).
+  wxe_util:queue_cmd(This,Depth,?get_env(),?wxBitmap_SetDepth).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapsetheight">external documentation</a>.
 -spec setHeight(This, Height) -> 'ok' when
 	This::wxBitmap(), Height::integer().
-setHeight(#wx_ref{type=ThisT,ref=ThisRef},Height)
+setHeight(#wx_ref{type=ThisT}=This,Height)
  when is_integer(Height) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:cast(?wxBitmap_SetHeight,[ThisRef,Height]).
+  wxe_util:queue_cmd(This,Height,?get_env(),?wxBitmap_SetHeight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapsetmask">external documentation</a>.
 -spec setMask(This, Mask) -> 'ok' when
 	This::wxBitmap(), Mask::wxMask:wxMask().
-setMask(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MaskT,ref=MaskRef}) ->
+setMask(#wx_ref{type=ThisT}=This,#wx_ref{type=MaskT}=Mask) ->
   ?CLASS(ThisT,wxBitmap),
   ?CLASS(MaskT,wxMask),
-  wxe_util:cast(?wxBitmap_SetMask,[ThisRef,MaskRef]).
+  wxe_util:queue_cmd(This,Mask,?get_env(),?wxBitmap_SetMask).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapsetpalette">external documentation</a>.
 -spec setPalette(This, Palette) -> 'ok' when
 	This::wxBitmap(), Palette::wxPalette:wxPalette().
-setPalette(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PaletteT,ref=PaletteRef}) ->
+setPalette(#wx_ref{type=ThisT}=This,#wx_ref{type=PaletteT}=Palette) ->
   ?CLASS(ThisT,wxBitmap),
   ?CLASS(PaletteT,wxPalette),
-  wxe_util:cast(?wxBitmap_SetPalette,[ThisRef,PaletteRef]).
+  wxe_util:queue_cmd(This,Palette,?get_env(),?wxBitmap_SetPalette).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapsetwidth">external documentation</a>.
 -spec setWidth(This, Width) -> 'ok' when
 	This::wxBitmap(), Width::integer().
-setWidth(#wx_ref{type=ThisT,ref=ThisRef},Width)
+setWidth(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:cast(?wxBitmap_SetWidth,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxBitmap_SetWidth).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBitmap()) -> 'ok'.

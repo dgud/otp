@@ -47,17 +47,18 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalettechangedevent.html#wxpalettechangedeventsetchangedwindow">external documentation</a>.
 -spec setChangedWindow(This, Win) -> 'ok' when
 	This::wxPaletteChangedEvent(), Win::wxWindow:wxWindow().
-setChangedWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WinT,ref=WinRef}) ->
+setChangedWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=WinT}=Win) ->
   ?CLASS(ThisT,wxPaletteChangedEvent),
   ?CLASS(WinT,wxWindow),
-  wxe_util:cast(?wxPaletteChangedEvent_SetChangedWindow,[ThisRef,WinRef]).
+  wxe_util:queue_cmd(This,Win,?get_env(),?wxPaletteChangedEvent_SetChangedWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalettechangedevent.html#wxpalettechangedeventgetchangedwindow">external documentation</a>.
 -spec getChangedWindow(This) -> wxWindow:wxWindow() when
 	This::wxPaletteChangedEvent().
-getChangedWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getChangedWindow(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxPaletteChangedEvent),
-  wxe_util:call(?wxPaletteChangedEvent_GetChangedWindow,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxPaletteChangedEvent_GetChangedWindow),
+  wxe_util:rec(?wxPaletteChangedEvent_GetChangedWindow).
 
  %% From wxEvent
 %% @hidden

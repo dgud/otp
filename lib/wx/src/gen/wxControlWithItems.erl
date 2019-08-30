@@ -86,45 +86,47 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsappend">external documentation</a>.
 -spec append(This, Item) -> integer() when
 	This::wxControlWithItems(), Item::unicode:chardata().
-append(#wx_ref{type=ThisT,ref=ThisRef},Item)
+append(#wx_ref{type=ThisT}=This,Item)
  when ?is_chardata(Item) ->
   ?CLASS(ThisT,wxControlWithItems),
   Item_UC = unicode:characters_to_binary([Item,0]),
-  wxe_util:call(?wxControlWithItems_Append_1,[ThisRef,Item_UC]).
+  wxe_util:queue_cmd(This,Item_UC,?get_env(),?wxControlWithItems_Append_1),
+  wxe_util:rec(?wxControlWithItems_Append_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsappend">external documentation</a>.
 -spec append(This, Item, ClientData) -> integer() when
 	This::wxControlWithItems(), Item::unicode:chardata(), ClientData::term().
-append(#wx_ref{type=ThisT,ref=ThisRef},Item,ClientData)
+append(#wx_ref{type=ThisT}=This,Item,ClientData)
  when ?is_chardata(Item) ->
   ?CLASS(ThisT,wxControlWithItems),
   Item_UC = unicode:characters_to_binary([Item,0]),
-  wxe_util:call(?wxControlWithItems_Append_2,[ThisRef,Item_UC,ClientData]).
+  wxe_util:queue_cmd(This,Item_UC,ClientData,?get_env(),?wxControlWithItems_Append_2),
+  wxe_util:rec(?wxControlWithItems_Append_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsappend">external documentation</a>.
 -spec appendStrings(This, Strings) -> 'ok' when
 	This::wxControlWithItems(), Strings::[unicode:chardata()].
-appendStrings(#wx_ref{type=ThisT,ref=ThisRef},Strings)
+appendStrings(#wx_ref{type=ThisT}=This,Strings)
  when is_list(Strings) ->
   ?CLASS(ThisT,wxControlWithItems),
   Strings_UCA = [unicode:characters_to_binary([StringsTemp,0]) || 
               StringsTemp <- Strings],
-  wxe_util:cast(?wxControlWithItems_appendStrings_1,[ThisRef,Strings_UCA]).
+  wxe_util:queue_cmd(This,Strings_UCA,?get_env(),?wxControlWithItems_appendStrings_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsclear">external documentation</a>.
 -spec clear(This) -> 'ok' when
 	This::wxControlWithItems().
-clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
+clear(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:cast(?wxControlWithItems_Clear,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxControlWithItems_Clear).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsdelete">external documentation</a>.
 -spec delete(This, N) -> 'ok' when
 	This::wxControlWithItems(), N::integer().
-delete(#wx_ref{type=ThisT,ref=ThisRef},N)
+delete(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:cast(?wxControlWithItems_Delete,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxControlWithItems_Delete).
 
 %% @equiv findString(This,S, [])
 -spec findString(This, S) -> integer() when
@@ -138,115 +140,125 @@ findString(This,S)
 -spec findString(This, S, [Option]) -> integer() when
 	This::wxControlWithItems(), S::unicode:chardata(),
 	Option :: {'bCase', boolean()}.
-findString(#wx_ref{type=ThisT,ref=ThisRef},S, Options)
+findString(#wx_ref{type=ThisT}=This,S, Options)
  when ?is_chardata(S),is_list(Options) ->
   ?CLASS(ThisT,wxControlWithItems),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:call(?wxControlWithItems_FindString,[ThisRef,S_UC, Options]).
+  wxe_util:queue_cmd(This,S_UC, Options,?get_env(),?wxControlWithItems_FindString),
+  wxe_util:rec(?wxControlWithItems_FindString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsgetclientobject">external documentation</a>.
 -spec getClientData(This, N) -> term() when
 	This::wxControlWithItems(), N::integer().
-getClientData(#wx_ref{type=ThisT,ref=ThisRef},N)
+getClientData(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:call(?wxControlWithItems_getClientData,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxControlWithItems_getClientData),
+  wxe_util:rec(?wxControlWithItems_getClientData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemssetclientobject">external documentation</a>.
 -spec setClientData(This, N, ClientData) -> 'ok' when
 	This::wxControlWithItems(), N::integer(), ClientData::term().
-setClientData(#wx_ref{type=ThisT,ref=ThisRef},N,ClientData)
+setClientData(#wx_ref{type=ThisT}=This,N,ClientData)
  when is_integer(N) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:cast(?wxControlWithItems_setClientData,[ThisRef,N,ClientData]).
+  wxe_util:queue_cmd(This,N,ClientData,?get_env(),?wxControlWithItems_setClientData).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsgetcount">external documentation</a>.
 -spec getCount(This) -> integer() when
 	This::wxControlWithItems().
-getCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getCount(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:call(?wxControlWithItems_GetCount,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxControlWithItems_GetCount),
+  wxe_util:rec(?wxControlWithItems_GetCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxControlWithItems().
-getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:call(?wxControlWithItems_GetSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxControlWithItems_GetSelection),
+  wxe_util:rec(?wxControlWithItems_GetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsgetstring">external documentation</a>.
 -spec getString(This, N) -> unicode:charlist() when
 	This::wxControlWithItems(), N::integer().
-getString(#wx_ref{type=ThisT,ref=ThisRef},N)
+getString(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:call(?wxControlWithItems_GetString,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxControlWithItems_GetString),
+  wxe_util:rec(?wxControlWithItems_GetString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsgetstringselection">external documentation</a>.
 -spec getStringSelection(This) -> unicode:charlist() when
 	This::wxControlWithItems().
-getStringSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getStringSelection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:call(?wxControlWithItems_GetStringSelection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxControlWithItems_GetStringSelection),
+  wxe_util:rec(?wxControlWithItems_GetStringSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsinsert">external documentation</a>.
 -spec insert(This, Item, Pos) -> integer() when
 	This::wxControlWithItems(), Item::unicode:chardata(), Pos::integer().
-insert(#wx_ref{type=ThisT,ref=ThisRef},Item,Pos)
+insert(#wx_ref{type=ThisT}=This,Item,Pos)
  when ?is_chardata(Item),is_integer(Pos) ->
   ?CLASS(ThisT,wxControlWithItems),
   Item_UC = unicode:characters_to_binary([Item,0]),
-  wxe_util:call(?wxControlWithItems_Insert_2,[ThisRef,Item_UC,Pos]).
+  wxe_util:queue_cmd(This,Item_UC,Pos,?get_env(),?wxControlWithItems_Insert_2),
+  wxe_util:rec(?wxControlWithItems_Insert_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsinsert">external documentation</a>.
 -spec insert(This, Item, Pos, ClientData) -> integer() when
 	This::wxControlWithItems(), Item::unicode:chardata(), Pos::integer(), ClientData::term().
-insert(#wx_ref{type=ThisT,ref=ThisRef},Item,Pos,ClientData)
+insert(#wx_ref{type=ThisT}=This,Item,Pos,ClientData)
  when ?is_chardata(Item),is_integer(Pos) ->
   ?CLASS(ThisT,wxControlWithItems),
   Item_UC = unicode:characters_to_binary([Item,0]),
-  wxe_util:call(?wxControlWithItems_Insert_3,[ThisRef,Item_UC,Pos,ClientData]).
+  wxe_util:queue_cmd(This,Item_UC,Pos,ClientData,?get_env(),?wxControlWithItems_Insert_3),
+  wxe_util:rec(?wxControlWithItems_Insert_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsisempty">external documentation</a>.
 -spec isEmpty(This) -> boolean() when
 	This::wxControlWithItems().
-isEmpty(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isEmpty(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:call(?wxControlWithItems_IsEmpty,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxControlWithItems_IsEmpty),
+  wxe_util:rec(?wxControlWithItems_IsEmpty).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsselect">external documentation</a>.
 -spec select(This, N) -> 'ok' when
 	This::wxControlWithItems(), N::integer().
-select(#wx_ref{type=ThisT,ref=ThisRef},N)
+select(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:cast(?wxControlWithItems_Select,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxControlWithItems_Select).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemssetselection">external documentation</a>.
 -spec setSelection(This, N) -> 'ok' when
 	This::wxControlWithItems(), N::integer().
-setSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
+setSelection(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxControlWithItems),
-  wxe_util:cast(?wxControlWithItems_SetSelection,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxControlWithItems_SetSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemssetstring">external documentation</a>.
 -spec setString(This, N, S) -> 'ok' when
 	This::wxControlWithItems(), N::integer(), S::unicode:chardata().
-setString(#wx_ref{type=ThisT,ref=ThisRef},N,S)
+setString(#wx_ref{type=ThisT}=This,N,S)
  when is_integer(N),?is_chardata(S) ->
   ?CLASS(ThisT,wxControlWithItems),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxControlWithItems_SetString,[ThisRef,N,S_UC]).
+  wxe_util:queue_cmd(This,N,S_UC,?get_env(),?wxControlWithItems_SetString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemssetstringselection">external documentation</a>.
 -spec setStringSelection(This, S) -> boolean() when
 	This::wxControlWithItems(), S::unicode:chardata().
-setStringSelection(#wx_ref{type=ThisT,ref=ThisRef},S)
+setStringSelection(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxControlWithItems),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:call(?wxControlWithItems_SetStringSelection,[ThisRef,S_UC]).
+  wxe_util:queue_cmd(This,S_UC,?get_env(),?wxControlWithItems_SetStringSelection),
+  wxe_util:rec(?wxControlWithItems_SetStringSelection).
 
  %% From wxControl
 %% @hidden

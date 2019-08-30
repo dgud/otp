@@ -130,7 +130,7 @@ destroy() ->
 -spec get_env() -> wx_env().
 get_env() ->
     case get(?WXE_IDENTIFIER) of
-	undefined -> erlang:error({wxe,unknown_port});
+	undefined -> erlang:error({wx,unknown_env});
 	Env = #wx_env{} -> Env
     end.
 

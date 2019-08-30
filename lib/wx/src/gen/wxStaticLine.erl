@@ -84,7 +84,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticline.html#wxstaticlinewxstaticline">external documentation</a>.
 -spec new() -> wxStaticLine().
 new() ->
-  wxe_util:construct(?wxStaticLine_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxStaticLine_new_0),
+  wxe_util:rec(?wxStaticLine_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxStaticLine() when
@@ -101,10 +102,11 @@ new(Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxStaticLine_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxStaticLine_new_2),
+  wxe_util:rec(?wxStaticLine_new_2).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -121,23 +123,26 @@ create(This,Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStaticLine),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxStaticLine_Create,[ThisRef,ParentRef, Options]).
+  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxStaticLine_Create),
+  wxe_util:rec(?wxStaticLine_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticline.html#wxstaticlineisvertical">external documentation</a>.
 -spec isVertical(This) -> boolean() when
 	This::wxStaticLine().
-isVertical(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isVertical(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStaticLine),
-  wxe_util:call(?wxStaticLine_IsVertical,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStaticLine_IsVertical),
+  wxe_util:rec(?wxStaticLine_IsVertical).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticline.html#wxstaticlinegetdefaultsize">external documentation</a>.
 -spec getDefaultSize() -> integer().
 getDefaultSize() ->
-  wxe_util:call(?wxStaticLine_GetDefaultSize,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxStaticLine_GetDefaultSize),
+  wxe_util:rec(?wxStaticLine_GetDefaultSize).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticLine()) -> 'ok'.

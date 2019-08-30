@@ -9,7 +9,7 @@ void wxEvtHandler_Connect(WxeApp *app, wxeCommand& Ecmd)
   int skip;
   wxeErlTerm * userData;
   int fun_cb;
-  wxEvtHandler *This = (wxEvtHandler *) memenv->getPtr(env, argv[0]);
+  wxEvtHandler *This = (wxEvtHandler *) memenv->getPtr(env, argv[0], "This");
   if(!enif_get_int(env, argv[1], &winid)) Badarg(100,"Winid");
   if(!enif_get_int(env, argv[2], &lastid)) Badarg(100,"LastId");
   skip = enif_is_identical(argv[3], WXE_ATOM_true);
@@ -19,7 +19,7 @@ void wxEvtHandler_Connect(WxeApp *app, wxeCommand& Ecmd)
   int eventType = wxeEventTypeFromAtom(argv[6]);
   if(!enif_is_atom(env, argv[7])) Badarg(100,"ClassName");
 
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   if(eventType > 0 ) {
     wxeEvtListener * Evt_cb = new wxeEvtListener(Ecmd.caller,app->getRef(This, memenv),
                                                  argv[7], fun_cb, skip, userData, memenv);
@@ -42,13 +42,13 @@ void wxEvtHandler_Disconnect_2(WxeApp *app, wxeCommand& Ecmd)
   int winid;
   int lastid;
 
-  wxeEvtListener *Listener = (wxeEvtListener *) memenv->getPtr(env, argv[0]);
-  wxEvtHandler *This = (wxEvtHandler *) memenv->getPtr(env, argv[1]);
+  wxeEvtListener *Listener = (wxeEvtListener *) memenv->getPtr(env, argv[0], "Listener");
+  wxEvtHandler *This = (wxEvtHandler *) memenv->getPtr(env, argv[1],"This");
   if(!enif_get_int(env, argv[2], &winid)) Badarg(101,"Winid");
   if(!enif_get_int(env, argv[3], &lastid)) Badarg(101,"LastId");
   if(!enif_is_atom(env, argv[4])) Badarg(101,"EvType");
   int eventType = wxeEventTypeFromAtom(argv[4]);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
 
   if(eventType > 0) {
     if(app->recurse_level > 1) {

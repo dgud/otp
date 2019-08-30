@@ -51,9 +51,10 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdateevent.html#wxdateeventgetdate">external documentation</a>.
 -spec getDate(This) -> wx:wx_datetime() when
 	This::wxDateEvent().
-getDate(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDate(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDateEvent),
-  wxe_util:call(?wxDateEvent_GetDate,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDateEvent_GetDate),
+  wxe_util:rec(?wxDateEvent_GetDate).
 
  %% From wxCommandEvent
 %% @hidden

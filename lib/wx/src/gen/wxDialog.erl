@@ -90,7 +90,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogwxdialog">external documentation</a>.
 -spec new() -> wxDialog().
 new() ->
-  wxe_util:construct(?wxDialog_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxDialog_new_0),
+  wxe_util:rec(?wxDialog_new_0).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxDialog() when
@@ -106,11 +107,12 @@ new(Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:construct(?wxDialog_new_4,[ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxDialog_new_4),
+  wxe_util:rec(?wxDialog_new_4).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -126,73 +128,79 @@ create(This,Parent,Id,Title)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxDialog),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:call(?wxDialog_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxDialog_Create),
+  wxe_util:rec(?wxDialog_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogcreatebuttonsizer">external documentation</a>.
 -spec createButtonSizer(This, Flags) -> wxSizer:wxSizer() when
 	This::wxDialog(), Flags::integer().
-createButtonSizer(#wx_ref{type=ThisT,ref=ThisRef},Flags)
+createButtonSizer(#wx_ref{type=ThisT}=This,Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_CreateButtonSizer,[ThisRef,Flags]).
+  wxe_util:queue_cmd(This,Flags,?get_env(),?wxDialog_CreateButtonSizer),
+  wxe_util:rec(?wxDialog_CreateButtonSizer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogcreatestddialogbuttonsizer">external documentation</a>.
 -spec createStdDialogButtonSizer(This, Flags) -> wxStdDialogButtonSizer:wxStdDialogButtonSizer() when
 	This::wxDialog(), Flags::integer().
-createStdDialogButtonSizer(#wx_ref{type=ThisT,ref=ThisRef},Flags)
+createStdDialogButtonSizer(#wx_ref{type=ThisT}=This,Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_CreateStdDialogButtonSizer,[ThisRef,Flags]).
+  wxe_util:queue_cmd(This,Flags,?get_env(),?wxDialog_CreateStdDialogButtonSizer),
+  wxe_util:rec(?wxDialog_CreateStdDialogButtonSizer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogendmodal">external documentation</a>.
 -spec endModal(This, RetCode) -> 'ok' when
 	This::wxDialog(), RetCode::integer().
-endModal(#wx_ref{type=ThisT,ref=ThisRef},RetCode)
+endModal(#wx_ref{type=ThisT}=This,RetCode)
  when is_integer(RetCode) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:cast(?wxDialog_EndModal,[ThisRef,RetCode]).
+  wxe_util:queue_cmd(This,RetCode,?get_env(),?wxDialog_EndModal).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialoggetaffirmativeid">external documentation</a>.
 -spec getAffirmativeId(This) -> integer() when
 	This::wxDialog().
-getAffirmativeId(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getAffirmativeId(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_GetAffirmativeId,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDialog_GetAffirmativeId),
+  wxe_util:rec(?wxDialog_GetAffirmativeId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialoggetreturncode">external documentation</a>.
 -spec getReturnCode(This) -> integer() when
 	This::wxDialog().
-getReturnCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getReturnCode(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_GetReturnCode,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDialog_GetReturnCode),
+  wxe_util:rec(?wxDialog_GetReturnCode).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogismodal">external documentation</a>.
 -spec isModal(This) -> boolean() when
 	This::wxDialog().
-isModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isModal(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_IsModal,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDialog_IsModal),
+  wxe_util:rec(?wxDialog_IsModal).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogsetaffirmativeid">external documentation</a>.
 -spec setAffirmativeId(This, AffirmativeId) -> 'ok' when
 	This::wxDialog(), AffirmativeId::integer().
-setAffirmativeId(#wx_ref{type=ThisT,ref=ThisRef},AffirmativeId)
+setAffirmativeId(#wx_ref{type=ThisT}=This,AffirmativeId)
  when is_integer(AffirmativeId) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:cast(?wxDialog_SetAffirmativeId,[ThisRef,AffirmativeId]).
+  wxe_util:queue_cmd(This,AffirmativeId,?get_env(),?wxDialog_SetAffirmativeId).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogsetreturncode">external documentation</a>.
 -spec setReturnCode(This, ReturnCode) -> 'ok' when
 	This::wxDialog(), ReturnCode::integer().
-setReturnCode(#wx_ref{type=ThisT,ref=ThisRef},ReturnCode)
+setReturnCode(#wx_ref{type=ThisT}=This,ReturnCode)
  when is_integer(ReturnCode) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:cast(?wxDialog_SetReturnCode,[ThisRef,ReturnCode]).
+  wxe_util:queue_cmd(This,ReturnCode,?get_env(),?wxDialog_SetReturnCode).
 
 %% @equiv show(This, [])
 -spec show(This) -> boolean() when
@@ -206,17 +214,19 @@ show(This)
 -spec show(This, [Option]) -> boolean() when
 	This::wxDialog(),
 	Option :: {'show', boolean()}.
-show(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_Show,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxDialog_Show),
+  wxe_util:rec(?wxDialog_Show).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogshowmodal">external documentation</a>.
 -spec showModal(This) -> integer() when
 	This::wxDialog().
-showModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
+showModal(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_ShowModal,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxDialog_ShowModal),
+  wxe_util:rec(?wxDialog_ShowModal).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDialog()) -> 'ok'.

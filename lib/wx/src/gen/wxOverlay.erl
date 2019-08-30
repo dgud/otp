@@ -38,14 +38,15 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxoverlay.html#wxoverlaywxoverlay">external documentation</a>.
 -spec new() -> wxOverlay().
 new() ->
-  wxe_util:construct(?wxOverlay_new,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxOverlay_new),
+  wxe_util:rec(?wxOverlay_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxoverlay.html#wxoverlayreset">external documentation</a>.
 -spec reset(This) -> 'ok' when
 	This::wxOverlay().
-reset(#wx_ref{type=ThisT,ref=ThisRef}) ->
+reset(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxOverlay),
-  wxe_util:cast(?wxOverlay_Reset,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxOverlay_Reset).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxOverlay()) -> 'ok'.

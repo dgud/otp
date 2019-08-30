@@ -68,14 +68,16 @@ new(Cols)
 		 | {'hgap', integer()}.
 new(Cols, Options)
  when is_integer(Cols),is_list(Options) ->
-  wxe_util:construct(?wxFlexGridSizer_new_2,[Cols, Options]).
+  wxe_util:queue_cmd(Cols, Options,?get_env(),?wxFlexGridSizer_new_2),
+  wxe_util:rec(?wxFlexGridSizer_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizerwxflexgridsizer">external documentation</a>.
 -spec new(Rows, Cols, Vgap, Hgap) -> wxFlexGridSizer() when
 	Rows::integer(), Cols::integer(), Vgap::integer(), Hgap::integer().
 new(Rows,Cols,Vgap,Hgap)
  when is_integer(Rows),is_integer(Cols),is_integer(Vgap),is_integer(Hgap) ->
-  wxe_util:construct(?wxFlexGridSizer_new_4,[Rows,Cols,Vgap,Hgap]).
+  wxe_util:queue_cmd(Rows,Cols,Vgap,Hgap,?get_env(),?wxFlexGridSizer_new_4),
+  wxe_util:rec(?wxFlexGridSizer_new_4).
 
 %% @equiv addGrowableCol(This,Idx, [])
 -spec addGrowableCol(This, Idx) -> 'ok' when
@@ -89,10 +91,10 @@ addGrowableCol(This,Idx)
 -spec addGrowableCol(This, Idx, [Option]) -> 'ok' when
 	This::wxFlexGridSizer(), Idx::integer(),
 	Option :: {'proportion', integer()}.
-addGrowableCol(#wx_ref{type=ThisT,ref=ThisRef},Idx, Options)
+addGrowableCol(#wx_ref{type=ThisT}=This,Idx, Options)
  when is_integer(Idx),is_list(Options) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:cast(?wxFlexGridSizer_AddGrowableCol,[ThisRef,Idx, Options]).
+  wxe_util:queue_cmd(This,Idx, Options,?get_env(),?wxFlexGridSizer_AddGrowableCol).
 
 %% @equiv addGrowableRow(This,Idx, [])
 -spec addGrowableRow(This, Idx) -> 'ok' when
@@ -106,58 +108,60 @@ addGrowableRow(This,Idx)
 -spec addGrowableRow(This, Idx, [Option]) -> 'ok' when
 	This::wxFlexGridSizer(), Idx::integer(),
 	Option :: {'proportion', integer()}.
-addGrowableRow(#wx_ref{type=ThisT,ref=ThisRef},Idx, Options)
+addGrowableRow(#wx_ref{type=ThisT}=This,Idx, Options)
  when is_integer(Idx),is_list(Options) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:cast(?wxFlexGridSizer_AddGrowableRow,[ThisRef,Idx, Options]).
+  wxe_util:queue_cmd(This,Idx, Options,?get_env(),?wxFlexGridSizer_AddGrowableRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizergetflexibledirection">external documentation</a>.
 -spec getFlexibleDirection(This) -> integer() when
 	This::wxFlexGridSizer().
-getFlexibleDirection(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getFlexibleDirection(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:call(?wxFlexGridSizer_GetFlexibleDirection,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFlexGridSizer_GetFlexibleDirection),
+  wxe_util:rec(?wxFlexGridSizer_GetFlexibleDirection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizergetnonflexiblegrowmode">external documentation</a>.
 %%<br /> Res = ?wxFLEX_GROWMODE_NONE | ?wxFLEX_GROWMODE_SPECIFIED | ?wxFLEX_GROWMODE_ALL
 -spec getNonFlexibleGrowMode(This) -> wx:wx_enum() when
 	This::wxFlexGridSizer().
-getNonFlexibleGrowMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getNonFlexibleGrowMode(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:call(?wxFlexGridSizer_GetNonFlexibleGrowMode,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxFlexGridSizer_GetNonFlexibleGrowMode),
+  wxe_util:rec(?wxFlexGridSizer_GetNonFlexibleGrowMode).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizerremovegrowablecol">external documentation</a>.
 -spec removeGrowableCol(This, Idx) -> 'ok' when
 	This::wxFlexGridSizer(), Idx::integer().
-removeGrowableCol(#wx_ref{type=ThisT,ref=ThisRef},Idx)
+removeGrowableCol(#wx_ref{type=ThisT}=This,Idx)
  when is_integer(Idx) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:cast(?wxFlexGridSizer_RemoveGrowableCol,[ThisRef,Idx]).
+  wxe_util:queue_cmd(This,Idx,?get_env(),?wxFlexGridSizer_RemoveGrowableCol).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizerremovegrowablerow">external documentation</a>.
 -spec removeGrowableRow(This, Idx) -> 'ok' when
 	This::wxFlexGridSizer(), Idx::integer().
-removeGrowableRow(#wx_ref{type=ThisT,ref=ThisRef},Idx)
+removeGrowableRow(#wx_ref{type=ThisT}=This,Idx)
  when is_integer(Idx) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:cast(?wxFlexGridSizer_RemoveGrowableRow,[ThisRef,Idx]).
+  wxe_util:queue_cmd(This,Idx,?get_env(),?wxFlexGridSizer_RemoveGrowableRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizersetflexibledirection">external documentation</a>.
 -spec setFlexibleDirection(This, Direction) -> 'ok' when
 	This::wxFlexGridSizer(), Direction::integer().
-setFlexibleDirection(#wx_ref{type=ThisT,ref=ThisRef},Direction)
+setFlexibleDirection(#wx_ref{type=ThisT}=This,Direction)
  when is_integer(Direction) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:cast(?wxFlexGridSizer_SetFlexibleDirection,[ThisRef,Direction]).
+  wxe_util:queue_cmd(This,Direction,?get_env(),?wxFlexGridSizer_SetFlexibleDirection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizersetnonflexiblegrowmode">external documentation</a>.
 %%<br /> Mode = ?wxFLEX_GROWMODE_NONE | ?wxFLEX_GROWMODE_SPECIFIED | ?wxFLEX_GROWMODE_ALL
 -spec setNonFlexibleGrowMode(This, Mode) -> 'ok' when
 	This::wxFlexGridSizer(), Mode::wx:wx_enum().
-setNonFlexibleGrowMode(#wx_ref{type=ThisT,ref=ThisRef},Mode)
+setNonFlexibleGrowMode(#wx_ref{type=ThisT}=This,Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:cast(?wxFlexGridSizer_SetNonFlexibleGrowMode,[ThisRef,Mode]).
+  wxe_util:queue_cmd(This,Mode,?get_env(),?wxFlexGridSizer_SetNonFlexibleGrowMode).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFlexGridSizer()) -> 'ok'.

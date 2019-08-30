@@ -91,7 +91,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoice.html#wxchoicewxchoice">external documentation</a>.
 -spec new() -> wxChoice().
 new() ->
-  wxe_util:construct(?wxChoice_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxChoice_new_0),
+  wxe_util:rec(?wxChoice_new_0).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxChoice() when
@@ -109,10 +110,11 @@ new(Parent,Id)
 		 | {'choices', [unicode:chardata()]}
 		 | {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
+new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxChoice_new_3,[ParentRef,Id, Options]).
+  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxChoice_new_3),
+  wxe_util:rec(?wxChoice_new_3).
 
 %% @equiv create(This,Parent,Id,Pos,Size,Choices, [])
 -spec create(This, Parent, Id, Pos, Size, Choices) -> boolean() when
@@ -127,28 +129,30 @@ create(This,Parent,Id,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
 	This::wxChoice(), Parent::wxWindow:wxWindow(), Id::integer(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()],
 	Option :: {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxChoice),
   ?CLASS(ParentT,wxWindow),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  wxe_util:call(?wxChoice_Create,[ThisRef,ParentRef,Id,Pos,Size,Choices_UCA, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Pos,Size,Choices_UCA, Options,?get_env(),?wxChoice_Create),
+  wxe_util:rec(?wxChoice_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoice.html#wxchoicedelete">external documentation</a>.
 -spec delete(This, N) -> 'ok' when
 	This::wxChoice(), N::integer().
-delete(#wx_ref{type=ThisT,ref=ThisRef},N)
+delete(#wx_ref{type=ThisT}=This,N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoice),
-  wxe_util:cast(?wxChoice_Delete,[ThisRef,N]).
+  wxe_util:queue_cmd(This,N,?get_env(),?wxChoice_Delete).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoice.html#wxchoicegetcolumns">external documentation</a>.
 -spec getColumns(This) -> integer() when
 	This::wxChoice().
-getColumns(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getColumns(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxChoice),
-  wxe_util:call(?wxChoice_GetColumns,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxChoice_GetColumns),
+  wxe_util:rec(?wxChoice_GetColumns).
 
 %% @equiv setColumns(This, [])
 -spec setColumns(This) -> 'ok' when
@@ -162,10 +166,10 @@ setColumns(This)
 -spec setColumns(This, [Option]) -> 'ok' when
 	This::wxChoice(),
 	Option :: {'n', integer()}.
-setColumns(#wx_ref{type=ThisT,ref=ThisRef}, Options)
+setColumns(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxChoice),
-  wxe_util:cast(?wxChoice_SetColumns,[ThisRef, Options]).
+  wxe_util:queue_cmd(This, Options,?get_env(),?wxChoice_SetColumns).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxChoice()) -> 'ok'.

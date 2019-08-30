@@ -66,14 +66,16 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindowdc.html#wxwindowdcwxwindowdc">external documentation</a>.
 -spec new() -> wxWindowDC().
 new() ->
-  wxe_util:construct(?wxWindowDC_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxWindowDC_new_0),
+  wxe_util:rec(?wxWindowDC_new_0).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindowdc.html#wxwindowdcwxwindowdc">external documentation</a>.
 -spec new(Win) -> wxWindowDC() when
 	Win::wxWindow:wxWindow().
-new(#wx_ref{type=WinT,ref=WinRef}) ->
+new(#wx_ref{type=WinT}=Win) ->
   ?CLASS(WinT,wxWindow),
-  wxe_util:construct(?wxWindowDC_new_1,[WinRef]).
+  wxe_util:queue_cmd(Win,?get_env(),?wxWindowDC_new_1),
+  wxe_util:rec(?wxWindowDC_new_1).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxWindowDC()) -> 'ok'.

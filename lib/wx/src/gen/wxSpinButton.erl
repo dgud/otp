@@ -84,7 +84,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinbutton.html#wxspinbuttonwxspinbutton">external documentation</a>.
 -spec new() -> wxSpinButton().
 new() ->
-  wxe_util:construct(?wxSpinButton_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxSpinButton_new_0),
+  wxe_util:rec(?wxSpinButton_new_0).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxSpinButton() when
@@ -101,10 +102,11 @@ new(Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
+new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:construct(?wxSpinButton_new_2,[ParentRef, Options]).
+  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxSpinButton_new_2),
+  wxe_util:rec(?wxSpinButton_new_2).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -121,48 +123,52 @@ create(This,Parent)
 		 | {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSpinButton),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:call(?wxSpinButton_Create,[ThisRef,ParentRef, Options]).
+  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxSpinButton_Create),
+  wxe_util:rec(?wxSpinButton_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinbutton.html#wxspinbuttongetmax">external documentation</a>.
 -spec getMax(This) -> integer() when
 	This::wxSpinButton().
-getMax(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMax(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinButton),
-  wxe_util:call(?wxSpinButton_GetMax,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinButton_GetMax),
+  wxe_util:rec(?wxSpinButton_GetMax).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinbutton.html#wxspinbuttongetmin">external documentation</a>.
 -spec getMin(This) -> integer() when
 	This::wxSpinButton().
-getMin(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getMin(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinButton),
-  wxe_util:call(?wxSpinButton_GetMin,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinButton_GetMin),
+  wxe_util:rec(?wxSpinButton_GetMin).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinbutton.html#wxspinbuttongetvalue">external documentation</a>.
 -spec getValue(This) -> integer() when
 	This::wxSpinButton().
-getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getValue(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxSpinButton),
-  wxe_util:call(?wxSpinButton_GetValue,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxSpinButton_GetValue),
+  wxe_util:rec(?wxSpinButton_GetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinbutton.html#wxspinbuttonsetrange">external documentation</a>.
 -spec setRange(This, MinVal, MaxVal) -> 'ok' when
 	This::wxSpinButton(), MinVal::integer(), MaxVal::integer().
-setRange(#wx_ref{type=ThisT,ref=ThisRef},MinVal,MaxVal)
+setRange(#wx_ref{type=ThisT}=This,MinVal,MaxVal)
  when is_integer(MinVal),is_integer(MaxVal) ->
   ?CLASS(ThisT,wxSpinButton),
-  wxe_util:cast(?wxSpinButton_SetRange,[ThisRef,MinVal,MaxVal]).
+  wxe_util:queue_cmd(This,MinVal,MaxVal,?get_env(),?wxSpinButton_SetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinbutton.html#wxspinbuttonsetvalue">external documentation</a>.
 -spec setValue(This, Value) -> 'ok' when
 	This::wxSpinButton(), Value::integer().
-setValue(#wx_ref{type=ThisT,ref=ThisRef},Value)
+setValue(#wx_ref{type=ThisT}=This,Value)
  when is_integer(Value) ->
   ?CLASS(ThisT,wxSpinButton),
-  wxe_util:cast(?wxSpinButton_SetValue,[ThisRef,Value]).
+  wxe_util:queue_cmd(This,Value,?get_env(),?wxSpinButton_SetValue).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSpinButton()) -> 'ok'.

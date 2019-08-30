@@ -83,7 +83,8 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatictext.html#wxstatictextwxstatictext">external documentation</a>.
 -spec new() -> wxStaticText().
 new() ->
-  wxe_util:construct(?wxStaticText_new_0,[]).
+  wxe_util:queue_cmd(?get_env(), ?wxStaticText_new_0),
+  wxe_util:rec(?wxStaticText_new_0).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxStaticText() when
@@ -99,11 +100,12 @@ new(Parent,Id,Label)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:construct(?wxStaticText_new_4,[ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxStaticText_new_4),
+  wxe_util:rec(?wxStaticText_new_4).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -119,36 +121,38 @@ create(This,Parent,Id,Label)
 	Option :: {'pos', {X::integer(), Y::integer()}}
 		 | {'size', {W::integer(), H::integer()}}
 		 | {'style', integer()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
+create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxStaticText),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:call(?wxStaticText_Create,[ThisRef,ParentRef,Id,Label_UC, Options]).
+  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxStaticText_Create),
+  wxe_util:rec(?wxStaticText_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatictext.html#wxstatictextgetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxStaticText().
-getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getLabel(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxStaticText),
-  wxe_util:call(?wxStaticText_GetLabel,[ThisRef]).
+  wxe_util:queue_cmd(This,?get_env(),?wxStaticText_GetLabel),
+  wxe_util:rec(?wxStaticText_GetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatictext.html#wxstatictextsetlabel">external documentation</a>.
 -spec setLabel(This, Label) -> 'ok' when
 	This::wxStaticText(), Label::unicode:chardata().
-setLabel(#wx_ref{type=ThisT,ref=ThisRef},Label)
+setLabel(#wx_ref{type=ThisT}=This,Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxStaticText),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxStaticText_SetLabel,[ThisRef,Label_UC]).
+  wxe_util:queue_cmd(This,Label_UC,?get_env(),?wxStaticText_SetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatictext.html#wxstatictextwrap">external documentation</a>.
 -spec wrap(This, Width) -> 'ok' when
 	This::wxStaticText(), Width::integer().
-wrap(#wx_ref{type=ThisT,ref=ThisRef},Width)
+wrap(#wx_ref{type=ThisT}=This,Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxStaticText),
-  wxe_util:cast(?wxStaticText_Wrap,[ThisRef,Width]).
+  wxe_util:queue_cmd(This,Width,?get_env(),?wxStaticText_Wrap).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticText()) -> 'ok'.

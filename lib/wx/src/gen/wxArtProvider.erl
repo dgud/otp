@@ -51,7 +51,8 @@ getBitmap(Id)
 getBitmap(Id, Options)
  when ?is_chardata(Id),is_list(Options) ->
   Id_UC = unicode:characters_to_binary([Id,0]),
-  wxe_util:call(?wxArtProvider_GetBitmap,[Id_UC, Options]).
+  wxe_util:queue_cmd(Id_UC, Options,?get_env(),?wxArtProvider_GetBitmap),
+  wxe_util:rec(?wxArtProvider_GetBitmap).
 
 %% @equiv getIcon(Id, [])
 -spec getIcon(Id) -> wxIcon:wxIcon() when
@@ -69,5 +70,6 @@ getIcon(Id)
 getIcon(Id, Options)
  when ?is_chardata(Id),is_list(Options) ->
   Id_UC = unicode:characters_to_binary([Id,0]),
-  wxe_util:call(?wxArtProvider_GetIcon,[Id_UC, Options]).
+  wxe_util:queue_cmd(Id_UC, Options,?get_env(),?wxArtProvider_GetIcon),
+  wxe_util:rec(?wxArtProvider_GetIcon).
 
