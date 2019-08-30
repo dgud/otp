@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 getColour(#wx_ref{type=ThisT,ref=ThisRef},Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:call(?wxAuiDockArt_GetColour,
-  <<ThisRef:32/?UI,Id:32/?UI>>).
+  wxe_util:call(?wxAuiDockArt_GetColour,[ThisRef,Id]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartgetfont">external documentation</a>.
 -spec getFont(This, Id) -> wxFont:wxFont() when
@@ -50,8 +49,7 @@ getColour(#wx_ref{type=ThisT,ref=ThisRef},Id)
 getFont(#wx_ref{type=ThisT,ref=ThisRef},Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:call(?wxAuiDockArt_GetFont,
-  <<ThisRef:32/?UI,Id:32/?UI>>).
+  wxe_util:call(?wxAuiDockArt_GetFont,[ThisRef,Id]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartgetmetric">external documentation</a>.
 -spec getMetric(This, Id) -> integer() when
@@ -59,8 +57,7 @@ getFont(#wx_ref{type=ThisT,ref=ThisRef},Id)
 getMetric(#wx_ref{type=ThisT,ref=ThisRef},Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:call(?wxAuiDockArt_GetMetric,
-  <<ThisRef:32/?UI,Id:32/?UI>>).
+  wxe_util:call(?wxAuiDockArt_GetMetric,[ThisRef,Id]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartsetcolour">external documentation</a>.
 -spec setColour(This, Id, Colour) -> 'ok' when
@@ -68,8 +65,7 @@ getMetric(#wx_ref{type=ThisT,ref=ThisRef},Id)
 setColour(#wx_ref{type=ThisT,ref=ThisRef},Id,Colour)
  when is_integer(Id),tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:cast(?wxAuiDockArt_SetColour,
-  <<ThisRef:32/?UI,Id:32/?UI,(wxe_util:colour_bin(Colour)):16/binary>>).
+  wxe_util:cast(?wxAuiDockArt_SetColour,[ThisRef,Id,Colour]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartsetfont">external documentation</a>.
 -spec setFont(This, Id, Font) -> 'ok' when
@@ -78,8 +74,7 @@ setFont(#wx_ref{type=ThisT,ref=ThisRef},Id,#wx_ref{type=FontT,ref=FontRef})
  when is_integer(Id) ->
   ?CLASS(ThisT,wxAuiDockArt),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxAuiDockArt_SetFont,
-  <<ThisRef:32/?UI,Id:32/?UI,FontRef:32/?UI>>).
+  wxe_util:cast(?wxAuiDockArt_SetFont,[ThisRef,Id,FontRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauidockart.html#wxauidockartsetmetric">external documentation</a>.
 -spec setMetric(This, Id, New_val) -> 'ok' when
@@ -87,6 +82,5 @@ setFont(#wx_ref{type=ThisT,ref=ThisRef},Id,#wx_ref{type=FontT,ref=FontRef})
 setMetric(#wx_ref{type=ThisT,ref=ThisRef},Id,New_val)
  when is_integer(Id),is_integer(New_val) ->
   ?CLASS(ThisT,wxAuiDockArt),
-  wxe_util:cast(?wxAuiDockArt_SetMetric,
-  <<ThisRef:32/?UI,Id:32/?UI,New_val:32/?UI>>).
+  wxe_util:cast(?wxAuiDockArt_SetMetric,[ThisRef,Id,New_val]).
 

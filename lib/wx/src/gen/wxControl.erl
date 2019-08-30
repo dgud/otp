@@ -83,8 +83,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxControl().
 getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxControl),
-  wxe_util:call(?wxControl_GetLabel,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxControl_GetLabel,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrol.html#wxcontrolsetlabel">external documentation</a>.
 -spec setLabel(This, Label) -> 'ok' when
@@ -93,8 +92,7 @@ setLabel(#wx_ref{type=ThisT,ref=ThisRef},Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxControl),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxControl_SetLabel,
-  <<ThisRef:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxControl_SetLabel,[ThisRef,Label_UC]).
 
  %% From wxWindow
 %% @hidden

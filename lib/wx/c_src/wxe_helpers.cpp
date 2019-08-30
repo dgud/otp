@@ -107,7 +107,8 @@ int wxeFifo::Add(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, wx
   curr = &m_q[pos];
   curr->op  = op;
 
-  enif_self(env, &curr->pid);
+  enif_self(env, &curr->caller);
+
   for(i=0; i<argc; i++)
     curr->args[i] = enif_make_copy(curr->env, argv[i]);
 
@@ -136,7 +137,6 @@ void wxeFifo::Append(wxeCommand *orig)
   orig->env = curr->env;
   curr->env = temp;
 
-  curr->pid = orig->pid;
   for(int i=0; i < 16; i++) {
     curr->args[i] = orig->args[i];
   }

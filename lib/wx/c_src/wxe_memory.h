@@ -72,6 +72,7 @@ class wxeMemEnv {
 	next = 1;
 	max = 128;
         tmp_env = enif_alloc_env();
+        free.list = NULL;
     };
 
     ~wxeMemEnv() {
@@ -90,7 +91,7 @@ class wxeMemEnv {
     int  next;
     int  max;
     void ** ref2ptr;
-    intList  free;
+    intList   free;
     ErlNifPid owner;
     ErlNifPid cb_process;
     ErlNifEnv *tmp_env;

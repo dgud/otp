@@ -92,8 +92,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialogwxfontdialog">external documentation</a>.
 -spec new() -> wxFontDialog().
 new() ->
-  wxe_util:construct(?wxFontDialog_new_0,
-  <<>>).
+  wxe_util:construct(?wxFontDialog_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialogwxfontdialog">external documentation</a>.
 -spec new(Parent, Data) -> wxFontDialog() when
@@ -101,8 +100,7 @@ new() ->
 new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef}) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFontData),
-  wxe_util:construct(?wxFontDialog_new_2,
-  <<ParentRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:construct(?wxFontDialog_new_2,[ParentRef,DataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialogcreate">external documentation</a>.
 -spec create(This, Parent, Data) -> boolean() when
@@ -111,16 +109,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},#wx_r
   ?CLASS(ThisT,wxFontDialog),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFontData),
-  wxe_util:call(?wxFontDialog_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:call(?wxFontDialog_Create,[ThisRef,ParentRef,DataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfontdialog.html#wxfontdialoggetfontdata">external documentation</a>.
 -spec getFontData(This) -> wxFontData:wxFontData() when
 	This::wxFontDialog().
 getFontData(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFontDialog),
-  wxe_util:call(?wxFontDialog_GetFontData,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFontDialog_GetFontData,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFontDialog()) -> 'ok'.

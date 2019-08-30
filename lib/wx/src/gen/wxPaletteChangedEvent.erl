@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,16 +50,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 setChangedWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WinT,ref=WinRef}) ->
   ?CLASS(ThisT,wxPaletteChangedEvent),
   ?CLASS(WinT,wxWindow),
-  wxe_util:cast(?wxPaletteChangedEvent_SetChangedWindow,
-  <<ThisRef:32/?UI,WinRef:32/?UI>>).
+  wxe_util:cast(?wxPaletteChangedEvent_SetChangedWindow,[ThisRef,WinRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpalettechangedevent.html#wxpalettechangedeventgetchangedwindow">external documentation</a>.
 -spec getChangedWindow(This) -> wxWindow:wxWindow() when
 	This::wxPaletteChangedEvent().
 getChangedWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPaletteChangedEvent),
-  wxe_util:call(?wxPaletteChangedEvent_GetChangedWindow,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPaletteChangedEvent_GetChangedWindow,[ThisRef]).
 
  %% From wxEvent
 %% @hidden

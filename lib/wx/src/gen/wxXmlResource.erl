@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -52,12 +52,7 @@ new() ->
 		 | {'domain', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          ({domain, Domain}, Acc) ->   Domain_UC = unicode:characters_to_binary([Domain,0]),[<<2:32/?UI,(byte_size(Domain_UC)):32/?UI,(Domain_UC)/binary, 0:(((8- ((0+byte_size(Domain_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxXmlResource_new_1,
-  <<BinOpt/binary>>).
+  wxe_util:construct(?wxXmlResource_new_1,[Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourcewxxmlresource">external documentation</a>.
 -spec new(Filemask, [Option]) -> wxXmlResource() when
@@ -67,12 +62,7 @@ new(Options)
 new(Filemask, Options)
  when ?is_chardata(Filemask),is_list(Options) ->
   Filemask_UC = unicode:characters_to_binary([Filemask,0]),
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          ({domain, Domain}, Acc) ->   Domain_UC = unicode:characters_to_binary([Domain,0]),[<<2:32/?UI,(byte_size(Domain_UC)):32/?UI,(Domain_UC)/binary, 0:(((8- ((0+byte_size(Domain_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxXmlResource_new_2,
-  <<(byte_size(Filemask_UC)):32/?UI,(Filemask_UC)/binary, 0:(((8- ((4+byte_size(Filemask_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxXmlResource_new_2,[Filemask_UC, Options]).
 
 %% @equiv attachUnknownControl(This,Name,Control, [])
 -spec attachUnknownControl(This, Name, Control) -> boolean() when
@@ -91,19 +81,14 @@ attachUnknownControl(#wx_ref{type=ThisT,ref=ThisRef},Name,#wx_ref{type=ControlT,
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary([Name,0]),
   ?CLASS(ControlT,wxWindow),
-  MOpts = fun({parent, #wx_ref{type=ParentT,ref=ParentRef}}, Acc) ->   ?CLASS(ParentT,wxWindow),[<<1:32/?UI,ParentRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxXmlResource_AttachUnknownControl,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,ControlRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxXmlResource_AttachUnknownControl,[ThisRef,Name_UC,ControlRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceclearhandlers">external documentation</a>.
 -spec clearHandlers(This) -> 'ok' when
 	This::wxXmlResource().
 clearHandlers(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxXmlResource),
-  wxe_util:cast(?wxXmlResource_ClearHandlers,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxXmlResource_ClearHandlers,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourcecompareversion">external documentation</a>.
 -spec compareVersion(This, Major, Minor, Release, Revision) -> integer() when
@@ -111,30 +96,26 @@ clearHandlers(#wx_ref{type=ThisT,ref=ThisRef}) ->
 compareVersion(#wx_ref{type=ThisT,ref=ThisRef},Major,Minor,Release,Revision)
  when is_integer(Major),is_integer(Minor),is_integer(Release),is_integer(Revision) ->
   ?CLASS(ThisT,wxXmlResource),
-  wxe_util:call(?wxXmlResource_CompareVersion,
-  <<ThisRef:32/?UI,Major:32/?UI,Minor:32/?UI,Release:32/?UI,Revision:32/?UI>>).
+  wxe_util:call(?wxXmlResource_CompareVersion,[ThisRef,Major,Minor,Release,Revision]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceget">external documentation</a>.
 -spec get() -> wxXmlResource().
 get() ->
-  wxe_util:call(?wxXmlResource_Get,
-  <<>>).
+  wxe_util:call(?wxXmlResource_Get,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourcegetflags">external documentation</a>.
 -spec getFlags(This) -> integer() when
 	This::wxXmlResource().
 getFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxXmlResource),
-  wxe_util:call(?wxXmlResource_GetFlags,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxXmlResource_GetFlags,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourcegetversion">external documentation</a>.
 -spec getVersion(This) -> integer() when
 	This::wxXmlResource().
 getVersion(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxXmlResource),
-  wxe_util:call(?wxXmlResource_GetVersion,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxXmlResource_GetVersion,[ThisRef]).
 
 %% @equiv getXRCID(Str_id, [])
 -spec getXRCID(Str_id) -> integer() when
@@ -151,19 +132,14 @@ getXRCID(Str_id)
 getXRCID(Str_id, Options)
  when is_list(Str_id),is_list(Options) ->
   Str_id_UC = unicode:characters_to_binary([Str_id,0]),
-  MOpts = fun({value_if_not_found, Value_if_not_found}, Acc) -> [<<1:32/?UI,Value_if_not_found:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxXmlResource_GetXRCID,
-  <<(byte_size(Str_id_UC)):32/?UI,(Str_id_UC)/binary, 0:(((8- ((4+byte_size(Str_id_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxXmlResource_GetXRCID,[Str_id_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceinitallhandlers">external documentation</a>.
 -spec initAllHandlers(This) -> 'ok' when
 	This::wxXmlResource().
 initAllHandlers(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxXmlResource),
-  wxe_util:cast(?wxXmlResource_InitAllHandlers,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxXmlResource_InitAllHandlers,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceload">external documentation</a>.
 -spec load(This, Filemask) -> boolean() when
@@ -172,8 +148,7 @@ load(#wx_ref{type=ThisT,ref=ThisRef},Filemask)
  when ?is_chardata(Filemask) ->
   ?CLASS(ThisT,wxXmlResource),
   Filemask_UC = unicode:characters_to_binary([Filemask,0]),
-  wxe_util:call(?wxXmlResource_Load,
-  <<ThisRef:32/?UI,(byte_size(Filemask_UC)):32/?UI,(Filemask_UC)/binary, 0:(((8- ((0+byte_size(Filemask_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_Load,[ThisRef,Filemask_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadbitmap">external documentation</a>.
 -spec loadBitmap(This, Name) -> wxBitmap:wxBitmap() when
@@ -182,8 +157,7 @@ loadBitmap(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadBitmap,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadBitmap,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloaddialog">external documentation</a>.
 -spec loadDialog(This, Parent, Name) -> wxDialog:wxDialog() when
@@ -193,8 +167,7 @@ loadDialog(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},N
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadDialog_2,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadDialog_2,[ThisRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloaddialog">external documentation</a>.
 -spec loadDialog(This, Dlg, Parent, Name) -> boolean() when
@@ -205,8 +178,7 @@ loadDialog(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DlgT,ref=DlgRef},#wx_ref
   ?CLASS(DlgT,wxDialog),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadDialog_3,
-  <<ThisRef:32/?UI,DlgRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadDialog_3,[ThisRef,DlgRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadframe">external documentation</a>.
 -spec loadFrame(This, Parent, Name) -> wxFrame:wxFrame() when
@@ -216,8 +188,7 @@ loadFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Na
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadFrame_2,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadFrame_2,[ThisRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadframe">external documentation</a>.
 -spec loadFrame(This, Frame, Parent, Name) -> boolean() when
@@ -228,8 +199,7 @@ loadFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef},#wx_
   ?CLASS(FrameT,wxFrame),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadFrame_3,
-  <<ThisRef:32/?UI,FrameRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadFrame_3,[ThisRef,FrameRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadicon">external documentation</a>.
 -spec loadIcon(This, Name) -> wxIcon:wxIcon() when
@@ -238,8 +208,7 @@ loadIcon(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadIcon,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadIcon,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadmenu">external documentation</a>.
 -spec loadMenu(This, Name) -> wxMenu:wxMenu() when
@@ -248,8 +217,7 @@ loadMenu(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadMenu,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadMenu,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadmenubar">external documentation</a>.
 -spec loadMenuBar(This, Name) -> wxMenuBar:wxMenuBar() when
@@ -258,8 +226,7 @@ loadMenuBar(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadMenuBar_1,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadMenuBar_1,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadmenubar">external documentation</a>.
 -spec loadMenuBar(This, Parent, Name) -> wxMenuBar:wxMenuBar() when
@@ -269,8 +236,7 @@ loadMenuBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadMenuBar_2,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadMenuBar_2,[ThisRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadpanel">external documentation</a>.
 -spec loadPanel(This, Parent, Name) -> wxPanel:wxPanel() when
@@ -280,8 +246,7 @@ loadPanel(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Na
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadPanel_2,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadPanel_2,[ThisRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadpanel">external documentation</a>.
 -spec loadPanel(This, Panel, Parent, Name) -> boolean() when
@@ -292,8 +257,7 @@ loadPanel(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PanelT,ref=PanelRef},#wx_
   ?CLASS(PanelT,wxPanel),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadPanel_3,
-  <<ThisRef:32/?UI,PanelRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadPanel_3,[ThisRef,PanelRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceloadtoolbar">external documentation</a>.
 -spec loadToolBar(This, Parent, Name) -> wxToolBar:wxToolBar() when
@@ -303,16 +267,14 @@ loadToolBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxXmlResource_LoadToolBar,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_LoadToolBar,[ThisRef,ParentRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceset">external documentation</a>.
 -spec set(Res) -> wxXmlResource() when
 	Res::wxXmlResource().
 set(#wx_ref{type=ResT,ref=ResRef}) ->
   ?CLASS(ResT,wxXmlResource),
-  wxe_util:call(?wxXmlResource_Set,
-  <<ResRef:32/?UI>>).
+  wxe_util:call(?wxXmlResource_Set,[ResRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourcesetflags">external documentation</a>.
 -spec setFlags(This, Flags) -> 'ok' when
@@ -320,8 +282,7 @@ set(#wx_ref{type=ResT,ref=ResRef}) ->
 setFlags(#wx_ref{type=ThisT,ref=ThisRef},Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxXmlResource),
-  wxe_util:cast(?wxXmlResource_SetFlags,
-  <<ThisRef:32/?UI,Flags:32/?UI>>).
+  wxe_util:cast(?wxXmlResource_SetFlags,[ThisRef,Flags]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceunload">external documentation</a>.
 -spec unload(This, Filename) -> boolean() when
@@ -330,8 +291,7 @@ unload(#wx_ref{type=ThisT,ref=ThisRef},Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxXmlResource),
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:call(?wxXmlResource_Unload,
-  <<ThisRef:32/?UI,(byte_size(Filename_UC)):32/?UI,(Filename_UC)/binary, 0:(((8- ((0+byte_size(Filename_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxXmlResource_Unload,[ThisRef,Filename_UC]).
 
 
 %% @doc Looks up a control with Name in a window created with XML

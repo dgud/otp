@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -55,42 +55,31 @@ new() ->
 	Entry::wxAcceleratorEntry().
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          ({keyCode, KeyCode}, Acc) -> [<<2:32/?UI,KeyCode:32/?UI>>|Acc];
-          ({cmd, Cmd}, Acc) -> [<<3:32/?UI,Cmd:32/?UI>>|Acc];
-          ({item, #wx_ref{type=ItemT,ref=ItemRef}}, Acc) ->   ?CLASS(ItemT,wxMenuItem),[<<4:32/?UI,ItemRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxAcceleratorEntry_new_1_0,
-  <<BinOpt/binary>>);
+  wxe_util:construct(?wxAcceleratorEntry_new_1_0,[Options]);
 new(#wx_ref{type=EntryT,ref=EntryRef}) ->
   ?CLASS(EntryT,wxAcceleratorEntry),
-  wxe_util:construct(?wxAcceleratorEntry_new_1_1,
-  <<EntryRef:32/?UI>>).
+  wxe_util:construct(?wxAcceleratorEntry_new_1_1,[EntryRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratorentry.html#wxacceleratorentrygetcommand">external documentation</a>.
 -spec getCommand(This) -> integer() when
 	This::wxAcceleratorEntry().
 getCommand(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:call(?wxAcceleratorEntry_GetCommand,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAcceleratorEntry_GetCommand,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratorentry.html#wxacceleratorentrygetflags">external documentation</a>.
 -spec getFlags(This) -> integer() when
 	This::wxAcceleratorEntry().
 getFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:call(?wxAcceleratorEntry_GetFlags,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAcceleratorEntry_GetFlags,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxacceleratorentry.html#wxacceleratorentrygetkeycode">external documentation</a>.
 -spec getKeyCode(This) -> integer() when
 	This::wxAcceleratorEntry().
 getKeyCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  wxe_util:call(?wxAcceleratorEntry_GetKeyCode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAcceleratorEntry_GetKeyCode,[ThisRef]).
 
 %% @equiv set(This,Flags,KeyCode,Cmd, [])
 -spec set(This, Flags, KeyCode, Cmd) -> 'ok' when
@@ -107,11 +96,7 @@ set(This,Flags,KeyCode,Cmd)
 set(#wx_ref{type=ThisT,ref=ThisRef},Flags,KeyCode,Cmd, Options)
  when is_integer(Flags),is_integer(KeyCode),is_integer(Cmd),is_list(Options) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  MOpts = fun({item, #wx_ref{type=ItemT,ref=ItemRef}}, Acc) ->   ?CLASS(ItemT,wxMenuItem),[<<1:32/?UI,ItemRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxAcceleratorEntry_Set,
-  <<ThisRef:32/?UI,Flags:32/?UI,KeyCode:32/?UI,Cmd:32/?UI, BinOpt/binary>>).
+  wxe_util:cast(?wxAcceleratorEntry_Set,[ThisRef,Flags,KeyCode,Cmd, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxAcceleratorEntry()) -> 'ok'.

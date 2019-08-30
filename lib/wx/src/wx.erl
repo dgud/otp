@@ -112,8 +112,8 @@ new(Options) when is_list(Options) ->
     Debug = proplists:get_value(debug, Options, 0),
     SilentStart = proplists:get_value(silent_start, Options, false),
     Level = calc_level(Debug),
-    #wx_env{port=Port} = wxe_server:start(SilentStart andalso Level =:= 0),
-    put(opengl_port, Port),
+    #wx_env{} = wxe_server:start(SilentStart andalso Level =:= 0),
+    %% put(opengl_port, Port),
     set_debug(Level),
     null().
 
@@ -137,9 +137,9 @@ get_env() ->
 %% @doc Sets the process wx environment, allows this process to use
 %% another process wx environment.
 -spec set_env(wx_env()) -> 'ok'.
-set_env(#wx_env{sv=Pid, port=Port} = Env) ->
+set_env(#wx_env{sv=Pid} = Env) ->
     put(?WXE_IDENTIFIER, Env),
-    put(opengl_port, Port),
+%%    put(opengl_port, Port),
     %%    wxe_util:cast(?REGISTER_PID, <<>>),
     wxe_server:register_me(Pid),
     ok.
@@ -317,14 +317,13 @@ calc_level(Level) when is_integer(Level) ->
 
 set_debug(Level) when is_integer(Level) ->
     case get(?WXE_IDENTIFIER) of
-	undefined -> erlang:error({wxe,unknown_port});
+	undefined -> erlang:error({wxe,no_env});
 	#wx_env{debug=Old} when Old =:= Level -> ok;
-	Env = #wx_env{sv=Server, port=Port, debug=Old} ->
+	Env = #wx_env{sv=Server, debug=Old} ->
 	    if
 		Old > 16, Level > 16 -> ok;
 		Old < 16, Level < 16 -> ok;
-		true ->
-		    erlang:port_call(Port,?WXE_DEBUG_DRIVER, [Level bsr 4])
+		true -> wxe_util:debug_driver(Level bsr 4)
 	    end,
 	    put(?WXE_IDENTIFIER, Env#wx_env{debug=Level}),
 	    wxe_server:set_debug(Server,Level),

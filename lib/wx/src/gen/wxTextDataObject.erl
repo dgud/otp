@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,27 +50,21 @@ new() ->
 	Option :: {'text', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary([Text,0]),[<<1:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxTextDataObject_new,
-  <<BinOpt/binary>>).
+  wxe_util:construct(?wxTextDataObject_new,[Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectgettextlength">external documentation</a>.
 -spec getTextLength(This) -> integer() when
 	This::wxTextDataObject().
 getTextLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTextDataObject),
-  wxe_util:call(?wxTextDataObject_GetTextLength,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTextDataObject_GetTextLength,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxTextDataObject().
 getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTextDataObject),
-  wxe_util:call(?wxTextDataObject_GetText,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTextDataObject_GetText,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectsettext">external documentation</a>.
 -spec setText(This, Text) -> 'ok' when
@@ -79,8 +73,7 @@ setText(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxTextDataObject),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxTextDataObject_SetText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxTextDataObject_SetText,[ThisRef,Text_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxTextDataObject()) -> 'ok'.

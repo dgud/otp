@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -49,32 +49,28 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxSetCursorEvent().
 getCursor(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSetCursorEvent),
-  wxe_util:call(?wxSetCursorEvent_GetCursor,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSetCursorEvent_GetCursor,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsetcursorevent.html#wxsetcursoreventgetx">external documentation</a>.
 -spec getX(This) -> integer() when
 	This::wxSetCursorEvent().
 getX(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSetCursorEvent),
-  wxe_util:call(?wxSetCursorEvent_GetX,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSetCursorEvent_GetX,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsetcursorevent.html#wxsetcursoreventgety">external documentation</a>.
 -spec getY(This) -> integer() when
 	This::wxSetCursorEvent().
 getY(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSetCursorEvent),
-  wxe_util:call(?wxSetCursorEvent_GetY,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSetCursorEvent_GetY,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsetcursorevent.html#wxsetcursoreventhascursor">external documentation</a>.
 -spec hasCursor(This) -> boolean() when
 	This::wxSetCursorEvent().
 hasCursor(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSetCursorEvent),
-  wxe_util:call(?wxSetCursorEvent_HasCursor,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSetCursorEvent_HasCursor,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsetcursorevent.html#wxsetcursoreventsetcursor">external documentation</a>.
 -spec setCursor(This, Cursor) -> 'ok' when
@@ -82,8 +78,7 @@ hasCursor(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCursor(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CursorT,ref=CursorRef}) ->
   ?CLASS(ThisT,wxSetCursorEvent),
   ?CLASS(CursorT,wxCursor),
-  wxe_util:cast(?wxSetCursorEvent_SetCursor,
-  <<ThisRef:32/?UI,CursorRef:32/?UI>>).
+  wxe_util:cast(?wxSetCursorEvent_SetCursor,[ThisRef,CursorRef]).
 
  %% From wxEvent
 %% @hidden

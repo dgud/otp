@@ -84,8 +84,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticline.html#wxstaticlinewxstaticline">external documentation</a>.
 -spec new() -> wxStaticLine().
 new() ->
-  wxe_util:construct(?wxStaticLine_new_0,
-  <<>>).
+  wxe_util:construct(?wxStaticLine_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxStaticLine() when
@@ -105,14 +104,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxStaticLine_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxStaticLine_new_2,[ParentRef, Options]).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -133,28 +125,19 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
  when is_list(Options) ->
   ?CLASS(ThisT,wxStaticLine),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStaticLine_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxStaticLine_Create,[ThisRef,ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticline.html#wxstaticlineisvertical">external documentation</a>.
 -spec isVertical(This) -> boolean() when
 	This::wxStaticLine().
 isVertical(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStaticLine),
-  wxe_util:call(?wxStaticLine_IsVertical,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStaticLine_IsVertical,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticline.html#wxstaticlinegetdefaultsize">external documentation</a>.
 -spec getDefaultSize() -> integer().
 getDefaultSize() ->
-  wxe_util:call(?wxStaticLine_GetDefaultSize,
-  <<>>).
+  wxe_util:call(?wxStaticLine_GetDefaultSize,[]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticLine()) -> 'ok'.

@@ -85,8 +85,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxwxcheckbox">external documentation</a>.
 -spec new() -> wxCheckBox().
 new() ->
-  wxe_util:construct(?wxCheckBox_new_0,
-  <<>>).
+  wxe_util:construct(?wxCheckBox_new_0,[]).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxCheckBox() when
@@ -107,14 +106,7 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<4:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxCheckBox_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((4+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxCheckBox_new_4,[ParentRef,Id,Label_UC, Options]).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -136,22 +128,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,La
   ?CLASS(ThisT,wxCheckBox),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<4:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxCheckBox_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxCheckBox_Create,[ThisRef,ParentRef,Id,Label_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxgetvalue">external documentation</a>.
 -spec getValue(This) -> boolean() when
 	This::wxCheckBox().
 getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_GetValue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCheckBox_GetValue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxget3statevalue">external documentation</a>.
 %%<br /> Res = ?wxCHK_UNCHECKED | ?wxCHK_CHECKED | ?wxCHK_UNDETERMINED
@@ -159,32 +143,28 @@ getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxCheckBox().
 get3StateValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_Get3StateValue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCheckBox_Get3StateValue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxis3rdstateallowedforuser">external documentation</a>.
 -spec is3rdStateAllowedForUser(This) -> boolean() when
 	This::wxCheckBox().
 is3rdStateAllowedForUser(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_Is3rdStateAllowedForUser,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCheckBox_Is3rdStateAllowedForUser,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxis3state">external documentation</a>.
 -spec is3State(This) -> boolean() when
 	This::wxCheckBox().
 is3State(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_Is3State,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCheckBox_Is3State,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxischecked">external documentation</a>.
 -spec isChecked(This) -> boolean() when
 	This::wxCheckBox().
 isChecked(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:call(?wxCheckBox_IsChecked,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCheckBox_IsChecked,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxsetvalue">external documentation</a>.
 -spec setValue(This, State) -> 'ok' when
@@ -192,8 +172,7 @@ isChecked(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setValue(#wx_ref{type=ThisT,ref=ThisRef},State)
  when is_boolean(State) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:cast(?wxCheckBox_SetValue,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(State)):32/?UI>>).
+  wxe_util:cast(?wxCheckBox_SetValue,[ThisRef,State]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxset3statevalue">external documentation</a>.
 %%<br /> State = ?wxCHK_UNCHECKED | ?wxCHK_CHECKED | ?wxCHK_UNDETERMINED
@@ -202,8 +181,7 @@ setValue(#wx_ref{type=ThisT,ref=ThisRef},State)
 set3StateValue(#wx_ref{type=ThisT,ref=ThisRef},State)
  when is_integer(State) ->
   ?CLASS(ThisT,wxCheckBox),
-  wxe_util:cast(?wxCheckBox_Set3StateValue,
-  <<ThisRef:32/?UI,State:32/?UI>>).
+  wxe_util:cast(?wxCheckBox_Set3StateValue,[ThisRef,State]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCheckBox()) -> 'ok'.

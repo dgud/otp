@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlayoutalgorithm.html#wxlayoutalgorithmwxlayoutalgorithm">external documentation</a>.
 -spec new() -> wxLayoutAlgorithm().
 new() ->
-  wxe_util:construct(?wxLayoutAlgorithm_new,
-  <<>>).
+  wxe_util:construct(?wxLayoutAlgorithm_new,[]).
 
 %% @equiv layoutFrame(This,Frame, [])
 -spec layoutFrame(This, Frame) -> boolean() when
@@ -58,11 +57,7 @@ layoutFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}, O
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxFrame),
-  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT,ref=MainWindowRef}}, Acc) ->   ?CLASS(MainWindowT,wxWindow),[<<1:32/?UI,MainWindowRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxLayoutAlgorithm_LayoutFrame,
-  <<ThisRef:32/?UI,FrameRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxLayoutAlgorithm_LayoutFrame,[ThisRef,FrameRef, Options]).
 
 %% @equiv layoutMDIFrame(This,Frame, [])
 -spec layoutMDIFrame(This, Frame) -> boolean() when
@@ -80,11 +75,7 @@ layoutMDIFrame(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxMDIParentFrame),
-  MOpts = fun({rect, {RectX,RectY,RectW,RectH}}, Acc) -> [<<1:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxLayoutAlgorithm_LayoutMDIFrame,
-  <<ThisRef:32/?UI,FrameRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxLayoutAlgorithm_LayoutMDIFrame,[ThisRef,FrameRef, Options]).
 
 %% @equiv layoutWindow(This,Frame, [])
 -spec layoutWindow(This, Frame) -> boolean() when
@@ -102,11 +93,7 @@ layoutWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FrameT,ref=FrameRef}, 
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxWindow),
-  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT,ref=MainWindowRef}}, Acc) ->   ?CLASS(MainWindowT,wxWindow),[<<1:32/?UI,MainWindowRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxLayoutAlgorithm_LayoutWindow,
-  <<ThisRef:32/?UI,FrameRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxLayoutAlgorithm_LayoutWindow,[ThisRef,FrameRef, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxLayoutAlgorithm()) -> 'ok'.

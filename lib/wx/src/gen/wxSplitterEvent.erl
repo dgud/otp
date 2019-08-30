@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -55,32 +55,28 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxSplitterEvent().
 getSashPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSplitterEvent),
-  wxe_util:call(?wxSplitterEvent_GetSashPosition,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSplitterEvent_GetSashPosition,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterevent.html#wxsplittereventgetx">external documentation</a>.
 -spec getX(This) -> integer() when
 	This::wxSplitterEvent().
 getX(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSplitterEvent),
-  wxe_util:call(?wxSplitterEvent_GetX,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSplitterEvent_GetX,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterevent.html#wxsplittereventgety">external documentation</a>.
 -spec getY(This) -> integer() when
 	This::wxSplitterEvent().
 getY(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSplitterEvent),
-  wxe_util:call(?wxSplitterEvent_GetY,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSplitterEvent_GetY,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterevent.html#wxsplittereventgetwindowbeingremoved">external documentation</a>.
 -spec getWindowBeingRemoved(This) -> wxWindow:wxWindow() when
 	This::wxSplitterEvent().
 getWindowBeingRemoved(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSplitterEvent),
-  wxe_util:call(?wxSplitterEvent_GetWindowBeingRemoved,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSplitterEvent_GetWindowBeingRemoved,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterevent.html#wxsplittereventsetsashposition">external documentation</a>.
 -spec setSashPosition(This, Pos) -> 'ok' when
@@ -88,8 +84,7 @@ getWindowBeingRemoved(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSashPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxSplitterEvent),
-  wxe_util:cast(?wxSplitterEvent_SetSashPosition,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxSplitterEvent_SetSashPosition,[ThisRef,Pos]).
 
  %% From wxNotifyEvent
 %% @hidden

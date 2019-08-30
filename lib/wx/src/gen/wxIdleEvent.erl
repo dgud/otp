@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -51,15 +51,13 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Win::wxWindow:wxWindow().
 canSend(#wx_ref{type=WinT,ref=WinRef}) ->
   ?CLASS(WinT,wxWindow),
-  wxe_util:call(?wxIdleEvent_CanSend,
-  <<WinRef:32/?UI>>).
+  wxe_util:call(?wxIdleEvent_CanSend,[WinRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventgetmode">external documentation</a>.
 %%<br /> Res = ?wxIDLE_PROCESS_ALL | ?wxIDLE_PROCESS_SPECIFIED
 -spec getMode() -> wx:wx_enum().
 getMode() ->
-  wxe_util:call(?wxIdleEvent_GetMode,
-  <<>>).
+  wxe_util:call(?wxIdleEvent_GetMode,[]).
 
 %% @equiv requestMore(This, [])
 -spec requestMore(This) -> 'ok' when
@@ -76,19 +74,14 @@ requestMore(This)
 requestMore(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxIdleEvent),
-  MOpts = fun({needMore, NeedMore}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(NeedMore)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxIdleEvent_RequestMore,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxIdleEvent_RequestMore,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventmorerequested">external documentation</a>.
 -spec moreRequested(This) -> boolean() when
 	This::wxIdleEvent().
 moreRequested(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxIdleEvent),
-  wxe_util:call(?wxIdleEvent_MoreRequested,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxIdleEvent_MoreRequested,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxidleevent.html#wxidleeventsetmode">external documentation</a>.
 %%<br /> Mode = ?wxIDLE_PROCESS_ALL | ?wxIDLE_PROCESS_SPECIFIED
@@ -96,8 +89,7 @@ moreRequested(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	Mode::wx:wx_enum().
 setMode(Mode)
  when is_integer(Mode) ->
-  wxe_util:cast(?wxIdleEvent_SetMode,
-  <<Mode:32/?UI>>).
+  wxe_util:cast(?wxIdleEvent_SetMode,[Mode]).
 
  %% From wxEvent
 %% @hidden

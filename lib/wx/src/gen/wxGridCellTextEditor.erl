@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelltexteditor.html#wxgridcelltexteditorwxgridcelltexteditor">external documentation</a>.
 -spec new() -> wxGridCellTextEditor().
 new() ->
-  wxe_util:construct(?wxGridCellTextEditor_new,
-  <<>>).
+  wxe_util:construct(?wxGridCellTextEditor_new,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelltexteditor.html#wxgridcelltexteditorsetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
@@ -55,8 +54,7 @@ setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellTextEditor),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellTextEditor_SetParameters,
-  <<ThisRef:32/?UI,(byte_size(Params_UC)):32/?UI,(Params_UC)/binary, 0:(((8- ((0+byte_size(Params_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxGridCellTextEditor_SetParameters,[ThisRef,Params_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellTextEditor()) -> 'ok'.

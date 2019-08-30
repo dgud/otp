@@ -89,8 +89,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlwxdatepickerctrl">external documentation</a>.
 -spec new() -> wxDatePickerCtrl().
 new() ->
-  wxe_util:construct(?wxDatePickerCtrl_new_0,
-  <<>>).
+  wxe_util:construct(?wxDatePickerCtrl_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxDatePickerCtrl() when
@@ -111,15 +110,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({date, Date}, Acc) -> [<<1:32/?UI,(wxe_util:datetime_bin(Date)):24/binary,0:32>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxDatePickerCtrl_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxDatePickerCtrl_new_3,[ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlgetrange">external documentation</a>.
 -spec getRange(This, Dt1, Dt2) -> boolean() when
@@ -127,16 +118,14 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
 getRange(#wx_ref{type=ThisT,ref=ThisRef},Dt1,Dt2)
  when tuple_size(Dt1) =:= 2,tuple_size(Dt2) =:= 2 ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:call(?wxDatePickerCtrl_GetRange,
-  <<ThisRef:32/?UI,(wxe_util:datetime_bin(Dt1)):24/binary,(wxe_util:datetime_bin(Dt2)):24/binary>>).
+  wxe_util:call(?wxDatePickerCtrl_GetRange,[ThisRef,Dt1,Dt2]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlgetvalue">external documentation</a>.
 -spec getValue(This) -> wx:wx_datetime() when
 	This::wxDatePickerCtrl().
 getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:call(?wxDatePickerCtrl_GetValue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDatePickerCtrl_GetValue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlsetrange">external documentation</a>.
 -spec setRange(This, Dt1, Dt2) -> 'ok' when
@@ -144,8 +133,7 @@ getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setRange(#wx_ref{type=ThisT,ref=ThisRef},Dt1,Dt2)
  when tuple_size(Dt1) =:= 2,tuple_size(Dt2) =:= 2 ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:cast(?wxDatePickerCtrl_SetRange,
-  <<ThisRef:32/?UI,(wxe_util:datetime_bin(Dt1)):24/binary,(wxe_util:datetime_bin(Dt2)):24/binary>>).
+  wxe_util:cast(?wxDatePickerCtrl_SetRange,[ThisRef,Dt1,Dt2]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlsetvalue">external documentation</a>.
 -spec setValue(This, Date) -> 'ok' when
@@ -153,8 +141,7 @@ setRange(#wx_ref{type=ThisT,ref=ThisRef},Dt1,Dt2)
 setValue(#wx_ref{type=ThisT,ref=ThisRef},Date)
  when tuple_size(Date) =:= 2 ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:cast(?wxDatePickerCtrl_SetValue,
-  <<ThisRef:32/?UI,(wxe_util:datetime_bin(Date)):24/binary>>).
+  wxe_util:cast(?wxDatePickerCtrl_SetValue,[ThisRef,Date]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDatePickerCtrl()) -> 'ok'.

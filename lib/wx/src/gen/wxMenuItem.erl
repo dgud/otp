@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -55,16 +55,7 @@ new() ->
 		 | {'subMenu', wxMenu:wxMenu()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({parentMenu, #wx_ref{type=ParentMenuT,ref=ParentMenuRef}}, Acc) ->   ?CLASS(ParentMenuT,wxMenu),[<<1:32/?UI,ParentMenuRef:32/?UI>>|Acc];
-          ({id, Id}, Acc) -> [<<2:32/?UI,Id:32/?UI>>|Acc];
-          ({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary([Text,0]),[<<3:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary([Help,0]),[<<4:32/?UI,(byte_size(Help_UC)):32/?UI,(Help_UC)/binary, 0:(((8- ((0+byte_size(Help_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({kind, Kind}, Acc) -> [<<5:32/?UI,Kind:32/?UI>>|Acc];
-          ({subMenu, #wx_ref{type=SubMenuT,ref=SubMenuRef}}, Acc) ->   ?CLASS(SubMenuT,wxMenu),[<<6:32/?UI,SubMenuRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxMenuItem_new,
-  <<BinOpt/binary>>).
+  wxe_util:construct(?wxMenuItem_new,[Options]).
 
 %% @equiv check(This, [])
 -spec check(This) -> 'ok' when
@@ -81,11 +72,7 @@ check(This)
 check(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuItem),
-  MOpts = fun({check, Check}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Check)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxMenuItem_Check,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxMenuItem_Check,[ThisRef, Options]).
 
 %% @equiv enable(This, [])
 -spec enable(This) -> 'ok' when
@@ -102,35 +89,28 @@ enable(This)
 enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuItem),
-  MOpts = fun({enable, Enable}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Enable)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxMenuItem_Enable,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxMenuItem_Enable,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetbitmap">external documentation</a>.
 -spec getBitmap(This) -> wxBitmap:wxBitmap() when
 	This::wxMenuItem().
 getBitmap(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetBitmap,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetBitmap,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgethelp">external documentation</a>.
 -spec getHelp(This) -> unicode:charlist() when
 	This::wxMenuItem().
 getHelp(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetHelp,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetHelp,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetid">external documentation</a>.
 -spec getId(This) -> integer() when
 	This::wxMenuItem().
 getId(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetId,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetId,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetkind">external documentation</a>.
 %%<br /> Res = ?wxITEM_SEPARATOR | ?wxITEM_NORMAL | ?wxITEM_CHECK | ?wxITEM_RADIO | ?wxITEM_MAX
@@ -138,16 +118,14 @@ getId(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxMenuItem().
 getKind(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetKind,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetKind,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetlabel">external documentation</a>.
 -spec getLabel(This) -> unicode:charlist() when
 	This::wxMenuItem().
 getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetLabel,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetLabel,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetlabelfromtext">external documentation</a>.
 -spec getLabelFromText(Text) -> unicode:charlist() when
@@ -155,72 +133,63 @@ getLabel(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getLabelFromText(Text)
  when ?is_chardata(Text) ->
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxMenuItem_GetLabelFromText,
-  <<(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxMenuItem_GetLabelFromText,[Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetmenu">external documentation</a>.
 -spec getMenu(This) -> wxMenu:wxMenu() when
 	This::wxMenuItem().
 getMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetMenu,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetMenu,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxMenuItem().
 getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetText,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetText,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetsubmenu">external documentation</a>.
 -spec getSubMenu(This) -> wxMenu:wxMenu() when
 	This::wxMenuItem().
 getSubMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_GetSubMenu,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_GetSubMenu,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemischeckable">external documentation</a>.
 -spec isCheckable(This) -> boolean() when
 	This::wxMenuItem().
 isCheckable(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsCheckable,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_IsCheckable,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemischecked">external documentation</a>.
 -spec isChecked(This) -> boolean() when
 	This::wxMenuItem().
 isChecked(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsChecked,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_IsChecked,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemisenabled">external documentation</a>.
 -spec isEnabled(This) -> boolean() when
 	This::wxMenuItem().
 isEnabled(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsEnabled,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_IsEnabled,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemisseparator">external documentation</a>.
 -spec isSeparator(This) -> boolean() when
 	This::wxMenuItem().
 isSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsSeparator,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_IsSeparator,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemissubmenu">external documentation</a>.
 -spec isSubMenu(This) -> boolean() when
 	This::wxMenuItem().
 isSubMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMenuItem),
-  wxe_util:call(?wxMenuItem_IsSubMenu,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMenuItem_IsSubMenu,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetbitmap">external documentation</a>.
 -spec setBitmap(This, Bitmap) -> 'ok' when
@@ -228,8 +197,7 @@ isSubMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setBitmap(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
   ?CLASS(ThisT,wxMenuItem),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:cast(?wxMenuItem_SetBitmap,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI>>).
+  wxe_util:cast(?wxMenuItem_SetBitmap,[ThisRef,BitmapRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsethelp">external documentation</a>.
 -spec setHelp(This, Str) -> 'ok' when
@@ -238,8 +206,7 @@ setHelp(#wx_ref{type=ThisT,ref=ThisRef},Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxMenuItem),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxMenuItem_SetHelp,
-  <<ThisRef:32/?UI,(byte_size(Str_UC)):32/?UI,(Str_UC)/binary, 0:(((8- ((0+byte_size(Str_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxMenuItem_SetHelp,[ThisRef,Str_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetmenu">external documentation</a>.
 -spec setMenu(This, Menu) -> 'ok' when
@@ -247,8 +214,7 @@ setHelp(#wx_ref{type=ThisT,ref=ThisRef},Str)
 setMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
   ?CLASS(ThisT,wxMenuItem),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:cast(?wxMenuItem_SetMenu,
-  <<ThisRef:32/?UI,MenuRef:32/?UI>>).
+  wxe_util:cast(?wxMenuItem_SetMenu,[ThisRef,MenuRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetsubmenu">external documentation</a>.
 -spec setSubMenu(This, Menu) -> 'ok' when
@@ -256,8 +222,7 @@ setMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
 setSubMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
   ?CLASS(ThisT,wxMenuItem),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:cast(?wxMenuItem_SetSubMenu,
-  <<ThisRef:32/?UI,MenuRef:32/?UI>>).
+  wxe_util:cast(?wxMenuItem_SetSubMenu,[ThisRef,MenuRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsettext">external documentation</a>.
 -spec setText(This, Str) -> 'ok' when
@@ -266,8 +231,7 @@ setText(#wx_ref{type=ThisT,ref=ThisRef},Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxMenuItem),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxMenuItem_SetText,
-  <<ThisRef:32/?UI,(byte_size(Str_UC)):32/?UI,(Str_UC)/binary, 0:(((8- ((0+byte_size(Str_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxMenuItem_SetText,[ThisRef,Str_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMenuItem()) -> 'ok'.

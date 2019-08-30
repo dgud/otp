@@ -87,7 +87,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 -spec new(Parent, Id, Title, Pos, Size, Choices) -> wxRadioBox() when
 	Parent::wxWindow:wxWindow(), Id::integer(), Title::unicode:chardata(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()].
 
-new(Parent,Id,Title,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
+new(Parent,Id,Title,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
  when is_record(Parent, wx_ref),is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices) ->
   new(Parent,Id,Title,Pos,Size,Choices, []).
 
@@ -97,25 +97,19 @@ new(Parent,Id,Title,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
 	Option :: {'majorDim', integer()}
 		 | {'style', integer()}
 		 | {'val', wx:wx_object()}.
-new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title,{PosX,PosY},{SizeW,SizeH},Choices, Options)
+new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  MOpts = fun({majorDim, MajorDim}, Acc) -> [<<1:32/?UI,MajorDim:32/?UI>>|Acc];
-          ({style, Style}, Acc) -> [<<2:32/?UI,Style:32/?UI>>|Acc];
-          ({val, #wx_ref{type=ValT,ref=ValRef}}, Acc) ->   ?CLASS(ValT,wx),[<<3:32/?UI,ValRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxRadioBox_new,
-  <<ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((4+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8,PosX:32/?UI,PosY:32/?UI,SizeW:32/?UI,SizeH:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((4 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxRadioBox_new,[ParentRef,Id,Title_UC,Pos,Size,Choices_UCA, Options]).
 
 %% @equiv create(This,Parent,Id,Title,Pos,Size,Choices, [])
 -spec create(This, Parent, Id, Title, Pos, Size, Choices) -> boolean() when
 	This::wxRadioBox(), Parent::wxWindow:wxWindow(), Id::integer(), Title::unicode:chardata(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()].
 
-create(This,Parent,Id,Title,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
+create(This,Parent,Id,Title,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
  when is_record(This, wx_ref),is_record(Parent, wx_ref),is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices) ->
   create(This,Parent,Id,Title,Pos,Size,Choices, []).
 
@@ -125,20 +119,14 @@ create(This,Parent,Id,Title,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
 	Option :: {'majorDim', integer()}
 		 | {'style', integer()}
 		 | {'val', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title,{PosX,PosY},{SizeW,SizeH},Choices, Options)
+create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  MOpts = fun({majorDim, MajorDim}, Acc) -> [<<1:32/?UI,MajorDim:32/?UI>>|Acc];
-          ({style, Style}, Acc) -> [<<2:32/?UI,Style:32/?UI>>|Acc];
-          ({val, #wx_ref{type=ValT,ref=ValRef}}, Acc) ->   ?CLASS(ValT,wx),[<<3:32/?UI,ValRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxRadioBox_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((0+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8,PosX:32/?UI,PosY:32/?UI,SizeW:32/?UI,SizeH:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((4 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxRadioBox_Create,[ThisRef,ParentRef,Id,Title_UC,Pos,Size,Choices_UCA, Options]).
 
 %% @equiv enable(This, [])
 -spec enable(This) -> boolean() when
@@ -166,11 +154,7 @@ enable(This,N)
 enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({enable, Enable}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Enable)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxRadioBox_Enable_1,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxRadioBox_Enable_1,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxenable">external documentation</a>.
 -spec enable(This, N, [Option]) -> boolean() when
@@ -179,19 +163,14 @@ enable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 enable(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({enable, Enable}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Enable)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxRadioBox_Enable_2,
-  <<ThisRef:32/?UI,N:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxRadioBox_Enable_2,[ThisRef,N, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxRadioBox().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetstring">external documentation</a>.
 -spec getString(This, N) -> unicode:charlist() when
@@ -199,8 +178,7 @@ getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getString(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetString,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetString,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetselection">external documentation</a>.
 -spec setSelection(This, N) -> 'ok' when
@@ -208,8 +186,7 @@ getString(#wx_ref{type=ThisT,ref=ThisRef},N)
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:cast(?wxRadioBox_SetSelection,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:cast(?wxRadioBox_SetSelection,[ThisRef,N]).
 
 %% @equiv show(This, [])
 -spec show(This) -> boolean() when
@@ -237,11 +214,7 @@ show(This,N)
 show(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({show, Show}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxRadioBox_Show_1,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxRadioBox_Show_1,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxshow">external documentation</a>.
 -spec show(This, N, [Option]) -> boolean() when
@@ -250,19 +223,14 @@ show(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 show(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({show, Show}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxRadioBox_Show_2,
-  <<ThisRef:32/?UI,N:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxRadioBox_Show_2,[ThisRef,N, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetcolumncount">external documentation</a>.
 -spec getColumnCount(This) -> integer() when
 	This::wxRadioBox().
 getColumnCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetColumnCount,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetColumnCount,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetitemhelptext">external documentation</a>.
 -spec getItemHelpText(This, N) -> unicode:charlist() when
@@ -270,8 +238,7 @@ getColumnCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getItemHelpText(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetItemHelpText,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetItemHelpText,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetitemtooltip">external documentation</a>.
 -spec getItemToolTip(This, Item) -> wxToolTip:wxToolTip() when
@@ -279,25 +246,22 @@ getItemHelpText(#wx_ref{type=ThisT,ref=ThisRef},N)
 getItemToolTip(#wx_ref{type=ThisT,ref=ThisRef},Item)
  when is_integer(Item) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetItemToolTip,
-  <<ThisRef:32/?UI,Item:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetItemToolTip,[ThisRef,Item]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetitemfrompoint">external documentation</a>.
 -spec getItemFromPoint(This, Pt) -> integer() when
 	This::wxRadioBox(), Pt::{X::integer(), Y::integer()}.
-getItemFromPoint(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+getItemFromPoint(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetItemFromPoint,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetItemFromPoint,[ThisRef,Pt]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetrowcount">external documentation</a>.
 -spec getRowCount(This) -> integer() when
 	This::wxRadioBox().
 getRowCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_GetRowCount,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxRadioBox_GetRowCount,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxisitemenabled">external documentation</a>.
 -spec isItemEnabled(This, N) -> boolean() when
@@ -305,8 +269,7 @@ getRowCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
 isItemEnabled(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_IsItemEnabled,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxRadioBox_IsItemEnabled,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxisitemshown">external documentation</a>.
 -spec isItemShown(This, N) -> boolean() when
@@ -314,8 +277,7 @@ isItemEnabled(#wx_ref{type=ThisT,ref=ThisRef},N)
 isItemShown(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:call(?wxRadioBox_IsItemShown,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxRadioBox_IsItemShown,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetitemhelptext">external documentation</a>.
 -spec setItemHelpText(This, N, HelpText) -> 'ok' when
@@ -324,8 +286,7 @@ setItemHelpText(#wx_ref{type=ThisT,ref=ThisRef},N,HelpText)
  when is_integer(N),?is_chardata(HelpText) ->
   ?CLASS(ThisT,wxRadioBox),
   HelpText_UC = unicode:characters_to_binary([HelpText,0]),
-  wxe_util:cast(?wxRadioBox_SetItemHelpText,
-  <<ThisRef:32/?UI,N:32/?UI,(byte_size(HelpText_UC)):32/?UI,(HelpText_UC)/binary, 0:(((8- ((4+byte_size(HelpText_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxRadioBox_SetItemHelpText,[ThisRef,N,HelpText_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetitemtooltip">external documentation</a>.
 -spec setItemToolTip(This, Item, Text) -> 'ok' when
@@ -334,8 +295,7 @@ setItemToolTip(#wx_ref{type=ThisT,ref=ThisRef},Item,Text)
  when is_integer(Item),?is_chardata(Text) ->
   ?CLASS(ThisT,wxRadioBox),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxRadioBox_SetItemToolTip,
-  <<ThisRef:32/?UI,Item:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxRadioBox_SetItemToolTip,[ThisRef,Item,Text_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxRadioBox()) -> 'ok'.

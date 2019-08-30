@@ -84,8 +84,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugewxgauge">external documentation</a>.
 -spec new() -> wxGauge().
 new() ->
-  wxe_util:construct(?wxGauge_new_0,
-  <<>>).
+  wxe_util:construct(?wxGauge_new_0,[]).
 
 %% @equiv new(Parent,Id,Range, [])
 -spec new(Parent, Id, Range) -> wxGauge() when
@@ -105,14 +104,7 @@ new(Parent,Id,Range)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id,Range, Options)
  when is_integer(Id),is_integer(Range),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<4:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxGauge_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,Range:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxGauge_new_4,[ParentRef,Id,Range, Options]).
 
 %% @equiv create(This,Parent,Id,Range, [])
 -spec create(This, Parent, Id, Range) -> boolean() when
@@ -133,38 +125,28 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Ra
  when is_integer(Id),is_integer(Range),is_list(Options) ->
   ?CLASS(ThisT,wxGauge),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<4:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxGauge_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,Range:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxGauge_Create,[ThisRef,ParentRef,Id,Range, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugegetrange">external documentation</a>.
 -spec getRange(This) -> integer() when
 	This::wxGauge().
 getRange(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:call(?wxGauge_GetRange,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGauge_GetRange,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugegetvalue">external documentation</a>.
 -spec getValue(This) -> integer() when
 	This::wxGauge().
 getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:call(?wxGauge_GetValue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGauge_GetValue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugeisvertical">external documentation</a>.
 -spec isVertical(This) -> boolean() when
 	This::wxGauge().
 isVertical(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:call(?wxGauge_IsVertical,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGauge_IsVertical,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugesetrange">external documentation</a>.
 -spec setRange(This, R) -> 'ok' when
@@ -172,8 +154,7 @@ isVertical(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setRange(#wx_ref{type=ThisT,ref=ThisRef},R)
  when is_integer(R) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:cast(?wxGauge_SetRange,
-  <<ThisRef:32/?UI,R:32/?UI>>).
+  wxe_util:cast(?wxGauge_SetRange,[ThisRef,R]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugesetvalue">external documentation</a>.
 -spec setValue(This, Pos) -> 'ok' when
@@ -181,16 +162,14 @@ setRange(#wx_ref{type=ThisT,ref=ThisRef},R)
 setValue(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:cast(?wxGauge_SetValue,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxGauge_SetValue,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgauge.html#wxgaugepulse">external documentation</a>.
 -spec pulse(This) -> 'ok' when
 	This::wxGauge().
 pulse(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGauge),
-  wxe_util:cast(?wxGauge_Pulse,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxGauge_Pulse,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGauge()) -> 'ok'.

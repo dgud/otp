@@ -84,8 +84,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollbar.html#wxscrollbarwxscrollbar">external documentation</a>.
 -spec new() -> wxScrollBar().
 new() ->
-  wxe_util:construct(?wxScrollBar_new_0,
-  <<>>).
+  wxe_util:construct(?wxScrollBar_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxScrollBar() when
@@ -105,14 +104,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<4:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxScrollBar_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxScrollBar_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -133,46 +125,35 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxScrollBar),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<4:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxScrollBar_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxScrollBar_Create,[ThisRef,ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollbar.html#wxscrollbargetrange">external documentation</a>.
 -spec getRange(This) -> integer() when
 	This::wxScrollBar().
 getRange(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxScrollBar),
-  wxe_util:call(?wxScrollBar_GetRange,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxScrollBar_GetRange,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollbar.html#wxscrollbargetpagesize">external documentation</a>.
 -spec getPageSize(This) -> integer() when
 	This::wxScrollBar().
 getPageSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxScrollBar),
-  wxe_util:call(?wxScrollBar_GetPageSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxScrollBar_GetPageSize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollbar.html#wxscrollbargetthumbposition">external documentation</a>.
 -spec getThumbPosition(This) -> integer() when
 	This::wxScrollBar().
 getThumbPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxScrollBar),
-  wxe_util:call(?wxScrollBar_GetThumbPosition,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxScrollBar_GetThumbPosition,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollbar.html#wxscrollbargetthumbsize">external documentation</a>.
 -spec getThumbSize(This) -> integer() when
 	This::wxScrollBar().
 getThumbSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxScrollBar),
-  wxe_util:call(?wxScrollBar_GetThumbSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxScrollBar_GetThumbSize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrollbar.html#wxscrollbarsetthumbposition">external documentation</a>.
 -spec setThumbPosition(This, ViewStart) -> 'ok' when
@@ -180,8 +161,7 @@ getThumbSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setThumbPosition(#wx_ref{type=ThisT,ref=ThisRef},ViewStart)
  when is_integer(ViewStart) ->
   ?CLASS(ThisT,wxScrollBar),
-  wxe_util:cast(?wxScrollBar_SetThumbPosition,
-  <<ThisRef:32/?UI,ViewStart:32/?UI>>).
+  wxe_util:cast(?wxScrollBar_SetThumbPosition,[ThisRef,ViewStart]).
 
 %% @equiv setScrollbar(This,Position,ThumbSize,Range,PageSize, [])
 -spec setScrollbar(This, Position, ThumbSize, Range, PageSize) -> 'ok' when
@@ -198,11 +178,7 @@ setScrollbar(This,Position,ThumbSize,Range,PageSize)
 setScrollbar(#wx_ref{type=ThisT,ref=ThisRef},Position,ThumbSize,Range,PageSize, Options)
  when is_integer(Position),is_integer(ThumbSize),is_integer(Range),is_integer(PageSize),is_list(Options) ->
   ?CLASS(ThisT,wxScrollBar),
-  MOpts = fun({refresh, Refresh}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Refresh)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxScrollBar_SetScrollbar,
-  <<ThisRef:32/?UI,Position:32/?UI,ThumbSize:32/?UI,Range:32/?UI,PageSize:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxScrollBar_SetScrollbar,[ThisRef,Position,ThumbSize,Range,PageSize, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxScrollBar()) -> 'ok'.

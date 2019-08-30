@@ -66,12 +66,7 @@ wxeEvtListener::~wxeEvtListener() {
 
 void wxeEvtListener::forward(wxEvent& event)
 {
-#ifdef DEBUG
-  if(!sendevent(&event, memenv))
-    fprintf(stderr, "Couldn't send event!\r\n");
-#else
   sendevent(&event, memenv);
-#endif
 }
 
 /* *****************************************************************/

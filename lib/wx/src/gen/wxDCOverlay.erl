@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 new(#wx_ref{type=OverlayT,ref=OverlayRef},#wx_ref{type=DcT,ref=DcRef}) ->
   ?CLASS(OverlayT,wxOverlay),
   ?CLASS(DcT,wxWindowDC),
-  wxe_util:construct(?wxDCOverlay_new_2,
-  <<OverlayRef:32/?UI,DcRef:32/?UI>>).
+  wxe_util:construct(?wxDCOverlay_new_2,[OverlayRef,DcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdcoverlay.html#wxdcoverlaywxdcoverlay">external documentation</a>.
 -spec new(Overlay, Dc, X, Y, Width, Height) -> wxDCOverlay() when
@@ -51,16 +50,14 @@ new(#wx_ref{type=OverlayT,ref=OverlayRef},#wx_ref{type=DcT,ref=DcRef},X,Y,Width,
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height) ->
   ?CLASS(OverlayT,wxOverlay),
   ?CLASS(DcT,wxWindowDC),
-  wxe_util:construct(?wxDCOverlay_new_6,
-  <<OverlayRef:32/?UI,DcRef:32/?UI,X:32/?UI,Y:32/?UI,Width:32/?UI,Height:32/?UI>>).
+  wxe_util:construct(?wxDCOverlay_new_6,[OverlayRef,DcRef,X,Y,Width,Height]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdcoverlay.html#wxdcoverlayclear">external documentation</a>.
 -spec clear(This) -> 'ok' when
 	This::wxDCOverlay().
 clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDCOverlay),
-  wxe_util:cast(?wxDCOverlay_Clear,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxDCOverlay_Clear,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDCOverlay()) -> 'ok'.

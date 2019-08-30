@@ -95,16 +95,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 addControl(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ControlT,ref=ControlRef}) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(ControlT,wxControl),
-  wxe_util:call(?wxToolBar_AddControl,
-  <<ThisRef:32/?UI,ControlRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_AddControl,[ThisRef,ControlRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbaraddseparator">external documentation</a>.
 -spec addSeparator(This) -> wx:wx_object() when
 	This::wxToolBar().
 addSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_AddSeparator,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_AddSeparator,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbaraddtool">external documentation</a>.
 -spec addTool(This, Tool) -> wx:wx_object() when
@@ -112,8 +110,7 @@ addSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
 addTool(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ToolT,ref=ToolRef}) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(ToolT,wx),
-  wxe_util:call(?wxToolBar_AddTool_1,
-  <<ThisRef:32/?UI,ToolRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_AddTool_1,[ThisRef,ToolRef]).
 
 %% @equiv addTool(This,Toolid,Bitmap, [])
 -spec addTool(This, Toolid, Bitmap) -> wx:wx_object() when
@@ -153,12 +150,7 @@ addTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,#wx_ref{type=BitmapT,ref=BitmapRe
  when is_integer(Toolid),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({shortHelpString, ShortHelpString}, Acc) ->   ShortHelpString_UC = unicode:characters_to_binary([ShortHelpString,0]),[<<1:32/?UI,(byte_size(ShortHelpString_UC)):32/?UI,(ShortHelpString_UC)/binary, 0:(((8- ((0+byte_size(ShortHelpString_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelpString, LongHelpString}, Acc) ->   LongHelpString_UC = unicode:characters_to_binary([LongHelpString,0]),[<<2:32/?UI,(byte_size(LongHelpString_UC)):32/?UI,(LongHelpString_UC)/binary, 0:(((8- ((0+byte_size(LongHelpString_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddTool_3,
-  <<ThisRef:32/?UI,Toolid:32/?UI,BitmapRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_AddTool_3,[ThisRef,Toolid,BitmapRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbaraddtool">external documentation</a>.
 %% <br /> Also:<br />
@@ -195,25 +187,13 @@ addTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Label,#wx_ref{type=BitmapT,ref=Bi
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary([Label,0]),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<1:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({kind, Kind}, Acc) -> [<<2:32/?UI,Kind:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddTool_4_0,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((4+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8,BitmapRef:32/?UI, 0:32,BinOpt/binary>>);
+  wxe_util:call(?wxToolBar_AddTool_4_0,[ThisRef,Toolid,Label_UC,BitmapRef, Options]);
 addTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,#wx_ref{type=BitmapT,ref=BitmapRef},#wx_ref{type=BmpDisabledT,ref=BmpDisabledRef}, Options)
  when is_integer(Toolid),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
-  MOpts = fun({toggle, Toggle}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Toggle)):32/?UI>>|Acc];
-          ({clientData, #wx_ref{type=ClientDataT,ref=ClientDataRef}}, Acc) ->   ?CLASS(ClientDataT,wx),[<<2:32/?UI,ClientDataRef:32/?UI>>|Acc];
-          ({shortHelpString, ShortHelpString}, Acc) ->   ShortHelpString_UC = unicode:characters_to_binary([ShortHelpString,0]),[<<3:32/?UI,(byte_size(ShortHelpString_UC)):32/?UI,(ShortHelpString_UC)/binary, 0:(((8- ((0+byte_size(ShortHelpString_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelpString, LongHelpString}, Acc) ->   LongHelpString_UC = unicode:characters_to_binary([LongHelpString,0]),[<<4:32/?UI,(byte_size(LongHelpString_UC)):32/?UI,(LongHelpString_UC)/binary, 0:(((8- ((0+byte_size(LongHelpString_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddTool_4_1,
-  <<ThisRef:32/?UI,Toolid:32/?UI,BitmapRef:32/?UI,BmpDisabledRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_AddTool_4_1,[ThisRef,Toolid,BitmapRef,BmpDisabledRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbaraddtool">external documentation</a>.
 %% <br /> Also:<br />
@@ -243,14 +223,7 @@ addTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Label,#wx_ref{type=BitmapT,ref=Bi
   Label_UC = unicode:characters_to_binary([Label,0]),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
-  MOpts = fun({kind, Kind}, Acc) -> [<<1:32/?UI,Kind:32/?UI>>|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<2:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary([LongHelp,0]),[<<3:32/?UI,(byte_size(LongHelp_UC)):32/?UI,(LongHelp_UC)/binary, 0:(((8- ((0+byte_size(LongHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({data, #wx_ref{type=DataT,ref=DataRef}}, Acc) ->   ?CLASS(DataT,wx),[<<4:32/?UI,DataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddTool_5,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((4+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8,BitmapRef:32/?UI,BmpDisabledRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_AddTool_5,[ThisRef,Toolid,Label_UC,BitmapRef,BmpDisabledRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbaraddtool">external documentation</a>.
 -spec addTool(This, Toolid, Bitmap, BmpDisabled, Toggle, XPos, [Option]) -> wx:wx_object() when
@@ -264,14 +237,7 @@ addTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,#wx_ref{type=BitmapT,ref=BitmapRe
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
-  MOpts = fun({yPos, YPos}, Acc) -> [<<1:32/?UI,YPos:32/?UI>>|Acc];
-          ({clientData, #wx_ref{type=ClientDataT,ref=ClientDataRef}}, Acc) ->   ?CLASS(ClientDataT,wx),[<<2:32/?UI,ClientDataRef:32/?UI>>|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<3:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary([LongHelp,0]),[<<4:32/?UI,(byte_size(LongHelp_UC)):32/?UI,(LongHelp_UC)/binary, 0:(((8- ((0+byte_size(LongHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddTool_6,
-  <<ThisRef:32/?UI,Toolid:32/?UI,BitmapRef:32/?UI,BmpDisabledRef:32/?UI,(wxe_util:from_bool(Toggle)):32/?UI,XPos:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_AddTool_6,[ThisRef,Toolid,BitmapRef,BmpDisabledRef,Toggle,XPos, Options]).
 
 %% @equiv addCheckTool(This,Toolid,Label,Bitmap, [])
 -spec addCheckTool(This, Toolid, Label, Bitmap) -> wx:wx_object() when
@@ -293,14 +259,7 @@ addCheckTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Label,#wx_ref{type=BitmapT,r
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary([Label,0]),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT,ref=BmpDisabledRef}}, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[<<1:32/?UI,BmpDisabledRef:32/?UI>>|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<2:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary([LongHelp,0]),[<<3:32/?UI,(byte_size(LongHelp_UC)):32/?UI,(LongHelp_UC)/binary, 0:(((8- ((0+byte_size(LongHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({data, #wx_ref{type=DataT,ref=DataRef}}, Acc) ->   ?CLASS(DataT,wx),[<<4:32/?UI,DataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddCheckTool,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((4+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8,BitmapRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_AddCheckTool,[ThisRef,Toolid,Label_UC,BitmapRef, Options]).
 
 %% @equiv addRadioTool(This,Toolid,Label,Bitmap, [])
 -spec addRadioTool(This, Toolid, Label, Bitmap) -> wx:wx_object() when
@@ -322,22 +281,14 @@ addRadioTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Label,#wx_ref{type=BitmapT,r
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary([Label,0]),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT,ref=BmpDisabledRef}}, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[<<1:32/?UI,BmpDisabledRef:32/?UI>>|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<2:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary([LongHelp,0]),[<<3:32/?UI,(byte_size(LongHelp_UC)):32/?UI,(LongHelp_UC)/binary, 0:(((8- ((0+byte_size(LongHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({data, #wx_ref{type=DataT,ref=DataRef}}, Acc) ->   ?CLASS(DataT,wx),[<<4:32/?UI,DataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_AddRadioTool,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((4+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8,BitmapRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_AddRadioTool,[ThisRef,Toolid,Label_UC,BitmapRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbaraddstretchablespace">external documentation</a>.
 -spec addStretchableSpace(This) -> wx:wx_object() when
 	This::wxToolBar().
 addStretchableSpace(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_AddStretchableSpace,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_AddStretchableSpace,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarinsertstretchablespace">external documentation</a>.
 -spec insertStretchableSpace(This, Pos) -> wx:wx_object() when
@@ -345,8 +296,7 @@ addStretchableSpace(#wx_ref{type=ThisT,ref=ThisRef}) ->
 insertStretchableSpace(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_InsertStretchableSpace,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxToolBar_InsertStretchableSpace,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbardeletetool">external documentation</a>.
 -spec deleteTool(This, Toolid) -> boolean() when
@@ -354,8 +304,7 @@ insertStretchableSpace(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 deleteTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_DeleteTool,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_DeleteTool,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbardeletetoolbypos">external documentation</a>.
 -spec deleteToolByPos(This, Pos) -> boolean() when
@@ -363,8 +312,7 @@ deleteTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
 deleteToolByPos(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_DeleteToolByPos,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxToolBar_DeleteToolByPos,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarenabletool">external documentation</a>.
 -spec enableTool(This, Toolid, Enable) -> 'ok' when
@@ -372,8 +320,7 @@ deleteToolByPos(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 enableTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Enable)
  when is_integer(Toolid),is_boolean(Enable) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:cast(?wxToolBar_EnableTool,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(wxe_util:from_bool(Enable)):32/?UI>>).
+  wxe_util:cast(?wxToolBar_EnableTool,[ThisRef,Toolid,Enable]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarfindbyid">external documentation</a>.
 -spec findById(This, Toolid) -> wx:wx_object() when
@@ -381,8 +328,7 @@ enableTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Enable)
 findById(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_FindById,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_FindById,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarfindcontrol">external documentation</a>.
 -spec findControl(This, Toolid) -> wxControl:wxControl() when
@@ -390,8 +336,7 @@ findById(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
 findControl(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_FindControl,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_FindControl,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarfindtoolforposition">external documentation</a>.
 -spec findToolForPosition(This, X, Y) -> wx:wx_object() when
@@ -399,32 +344,28 @@ findControl(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
 findToolForPosition(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_FindToolForPosition,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxToolBar_FindToolForPosition,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolsize">external documentation</a>.
 -spec getToolSize(This) -> {W::integer(), H::integer()} when
 	This::wxToolBar().
 getToolSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolSize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolbitmapsize">external documentation</a>.
 -spec getToolBitmapSize(This) -> {W::integer(), H::integer()} when
 	This::wxToolBar().
 getToolBitmapSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolBitmapSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolBitmapSize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargetmargins">external documentation</a>.
 -spec getMargins(This) -> {W::integer(), H::integer()} when
 	This::wxToolBar().
 getMargins(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetMargins,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetMargins,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolenabled">external documentation</a>.
 -spec getToolEnabled(This, Toolid) -> boolean() when
@@ -432,8 +373,7 @@ getMargins(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getToolEnabled(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolEnabled,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolEnabled,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoollonghelp">external documentation</a>.
 -spec getToolLongHelp(This, Toolid) -> unicode:charlist() when
@@ -441,16 +381,14 @@ getToolEnabled(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
 getToolLongHelp(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolLongHelp,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolLongHelp,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolpacking">external documentation</a>.
 -spec getToolPacking(This) -> integer() when
 	This::wxToolBar().
 getToolPacking(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolPacking,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolPacking,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolpos">external documentation</a>.
 -spec getToolPos(This, Id) -> integer() when
@@ -458,16 +396,14 @@ getToolPacking(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getToolPos(#wx_ref{type=ThisT,ref=ThisRef},Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolPos,
-  <<ThisRef:32/?UI,Id:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolPos,[ThisRef,Id]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolseparation">external documentation</a>.
 -spec getToolSeparation(This) -> integer() when
 	This::wxToolBar().
 getToolSeparation(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolSeparation,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolSeparation,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolshorthelp">external documentation</a>.
 -spec getToolShortHelp(This, Toolid) -> unicode:charlist() when
@@ -475,8 +411,7 @@ getToolSeparation(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getToolShortHelp(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolShortHelp,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolShortHelp,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbargettoolstate">external documentation</a>.
 -spec getToolState(This, Toolid) -> boolean() when
@@ -484,8 +419,7 @@ getToolShortHelp(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
 getToolState(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_GetToolState,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_GetToolState,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarinsertcontrol">external documentation</a>.
 -spec insertControl(This, Pos, Control) -> wx:wx_object() when
@@ -494,8 +428,7 @@ insertControl(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=ControlT,ref=Cont
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(ControlT,wxControl),
-  wxe_util:call(?wxToolBar_InsertControl,
-  <<ThisRef:32/?UI,Pos:32/?UI,ControlRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_InsertControl,[ThisRef,Pos,ControlRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarinsertseparator">external documentation</a>.
 -spec insertSeparator(This, Pos) -> wx:wx_object() when
@@ -503,8 +436,7 @@ insertControl(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=ControlT,ref=Cont
 insertSeparator(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_InsertSeparator,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxToolBar_InsertSeparator,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarinserttool">external documentation</a>.
 -spec insertTool(This, Pos, Tool) -> wx:wx_object() when
@@ -513,8 +445,7 @@ insertTool(#wx_ref{type=ThisT,ref=ThisRef},Pos,#wx_ref{type=ToolT,ref=ToolRef})
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(ToolT,wx),
-  wxe_util:call(?wxToolBar_InsertTool_2,
-  <<ThisRef:32/?UI,Pos:32/?UI,ToolRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_InsertTool_2,[ThisRef,Pos,ToolRef]).
 
 %% @equiv insertTool(This,Pos,Toolid,Bitmap, [])
 -spec insertTool(This, Pos, Toolid, Bitmap) -> wx:wx_object() when
@@ -552,15 +483,7 @@ insertTool(#wx_ref{type=ThisT,ref=ThisRef},Pos,Toolid,#wx_ref{type=BitmapT,ref=B
  when is_integer(Pos),is_integer(Toolid),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT,ref=BmpDisabledRef}}, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[<<1:32/?UI,BmpDisabledRef:32/?UI>>|Acc];
-          ({toggle, Toggle}, Acc) -> [<<2:32/?UI,(wxe_util:from_bool(Toggle)):32/?UI>>|Acc];
-          ({clientData, #wx_ref{type=ClientDataT,ref=ClientDataRef}}, Acc) ->   ?CLASS(ClientDataT,wx),[<<3:32/?UI,ClientDataRef:32/?UI>>|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<4:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary([LongHelp,0]),[<<5:32/?UI,(byte_size(LongHelp_UC)):32/?UI,(LongHelp_UC)/binary, 0:(((8- ((0+byte_size(LongHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_InsertTool_4,
-  <<ThisRef:32/?UI,Pos:32/?UI,Toolid:32/?UI,BitmapRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_InsertTool_4,[ThisRef,Pos,Toolid,BitmapRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarinserttool">external documentation</a>.
 %%<br /> Kind = ?wxITEM_SEPARATOR | ?wxITEM_NORMAL | ?wxITEM_CHECK | ?wxITEM_RADIO | ?wxITEM_MAX
@@ -576,23 +499,14 @@ insertTool(#wx_ref{type=ThisT,ref=ThisRef},Pos,Toolid,Label,#wx_ref{type=BitmapT
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary([Label,0]),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT,ref=BmpDisabledRef}}, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[<<1:32/?UI,BmpDisabledRef:32/?UI>>|Acc];
-          ({kind, Kind}, Acc) -> [<<2:32/?UI,Kind:32/?UI>>|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary([ShortHelp,0]),[<<3:32/?UI,(byte_size(ShortHelp_UC)):32/?UI,(ShortHelp_UC)/binary, 0:(((8- ((0+byte_size(ShortHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary([LongHelp,0]),[<<4:32/?UI,(byte_size(LongHelp_UC)):32/?UI,(LongHelp_UC)/binary, 0:(((8- ((0+byte_size(LongHelp_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({clientData, #wx_ref{type=ClientDataT,ref=ClientDataRef}}, Acc) ->   ?CLASS(ClientDataT,wx),[<<5:32/?UI,ClientDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxToolBar_InsertTool_5,
-  <<ThisRef:32/?UI,Pos:32/?UI,Toolid:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8,BitmapRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxToolBar_InsertTool_5,[ThisRef,Pos,Toolid,Label_UC,BitmapRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarrealize">external documentation</a>.
 -spec realize(This) -> boolean() when
 	This::wxToolBar().
 realize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_Realize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolBar_Realize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarremovetool">external documentation</a>.
 -spec removeTool(This, Toolid) -> wx:wx_object() when
@@ -600,8 +514,7 @@ realize(#wx_ref{type=ThisT,ref=ThisRef}) ->
 removeTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
  when is_integer(Toolid) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:call(?wxToolBar_RemoveTool,
-  <<ThisRef:32/?UI,Toolid:32/?UI>>).
+  wxe_util:call(?wxToolBar_RemoveTool,[ThisRef,Toolid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsetmargins">external documentation</a>.
 -spec setMargins(This, X, Y) -> 'ok' when
@@ -609,17 +522,15 @@ removeTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid)
 setMargins(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:cast(?wxToolBar_SetMargins,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:cast(?wxToolBar_SetMargins,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoolbitmapsize">external documentation</a>.
 -spec setToolBitmapSize(This, Size) -> 'ok' when
 	This::wxToolBar(), Size::{W::integer(), H::integer()}.
-setToolBitmapSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
+setToolBitmapSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:cast(?wxToolBar_SetToolBitmapSize,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:cast(?wxToolBar_SetToolBitmapSize,[ThisRef,Size]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoollonghelp">external documentation</a>.
 -spec setToolLongHelp(This, Toolid, HelpString) -> 'ok' when
@@ -628,8 +539,7 @@ setToolLongHelp(#wx_ref{type=ThisT,ref=ThisRef},Toolid,HelpString)
  when is_integer(Toolid),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxToolBar),
   HelpString_UC = unicode:characters_to_binary([HelpString,0]),
-  wxe_util:cast(?wxToolBar_SetToolLongHelp,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(byte_size(HelpString_UC)):32/?UI,(HelpString_UC)/binary, 0:(((8- ((4+byte_size(HelpString_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxToolBar_SetToolLongHelp,[ThisRef,Toolid,HelpString_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoolpacking">external documentation</a>.
 -spec setToolPacking(This, Packing) -> 'ok' when
@@ -637,8 +547,7 @@ setToolLongHelp(#wx_ref{type=ThisT,ref=ThisRef},Toolid,HelpString)
 setToolPacking(#wx_ref{type=ThisT,ref=ThisRef},Packing)
  when is_integer(Packing) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:cast(?wxToolBar_SetToolPacking,
-  <<ThisRef:32/?UI,Packing:32/?UI>>).
+  wxe_util:cast(?wxToolBar_SetToolPacking,[ThisRef,Packing]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoolshorthelp">external documentation</a>.
 -spec setToolShortHelp(This, Id, HelpString) -> 'ok' when
@@ -647,8 +556,7 @@ setToolShortHelp(#wx_ref{type=ThisT,ref=ThisRef},Id,HelpString)
  when is_integer(Id),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxToolBar),
   HelpString_UC = unicode:characters_to_binary([HelpString,0]),
-  wxe_util:cast(?wxToolBar_SetToolShortHelp,
-  <<ThisRef:32/?UI,Id:32/?UI,(byte_size(HelpString_UC)):32/?UI,(HelpString_UC)/binary, 0:(((8- ((4+byte_size(HelpString_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxToolBar_SetToolShortHelp,[ThisRef,Id,HelpString_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoolseparation">external documentation</a>.
 -spec setToolSeparation(This, Separation) -> 'ok' when
@@ -656,8 +564,7 @@ setToolShortHelp(#wx_ref{type=ThisT,ref=ThisRef},Id,HelpString)
 setToolSeparation(#wx_ref{type=ThisT,ref=ThisRef},Separation)
  when is_integer(Separation) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:cast(?wxToolBar_SetToolSeparation,
-  <<ThisRef:32/?UI,Separation:32/?UI>>).
+  wxe_util:cast(?wxToolBar_SetToolSeparation,[ThisRef,Separation]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbartoggletool">external documentation</a>.
 -spec toggleTool(This, Toolid, Toggle) -> 'ok' when
@@ -665,8 +572,7 @@ setToolSeparation(#wx_ref{type=ThisT,ref=ThisRef},Separation)
 toggleTool(#wx_ref{type=ThisT,ref=ThisRef},Toolid,Toggle)
  when is_integer(Toolid),is_boolean(Toggle) ->
   ?CLASS(ThisT,wxToolBar),
-  wxe_util:cast(?wxToolBar_ToggleTool,
-  <<ThisRef:32/?UI,Toolid:32/?UI,(wxe_util:from_bool(Toggle)):32/?UI>>).
+  wxe_util:cast(?wxToolBar_ToggleTool,[ThisRef,Toolid,Toggle]).
 
  %% From wxControl
 %% @hidden

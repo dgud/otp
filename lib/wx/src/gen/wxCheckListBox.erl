@@ -92,8 +92,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchecklistbox.html#wxchecklistboxwxchecklistbox">external documentation</a>.
 -spec new() -> wxCheckListBox().
 new() ->
-  wxe_util:construct(?wxCheckListBox_new_0,
-  <<>>).
+  wxe_util:construct(?wxCheckListBox_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxCheckListBox() when
@@ -114,15 +113,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({choices, Choices}, Acc) ->   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) ||               ChoicesTemp <- Choices],[<<3:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxCheckListBox_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxCheckListBox_new_3,[ParentRef,Id, Options]).
 
 %% @equiv check(This,Index, [])
 -spec check(This, Index) -> 'ok' when
@@ -139,11 +130,7 @@ check(This,Index)
 check(#wx_ref{type=ThisT,ref=ThisRef},Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxCheckListBox),
-  MOpts = fun({check, Check}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Check)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxCheckListBox_Check,
-  <<ThisRef:32/?UI,Index:32/?UI, BinOpt/binary>>).
+  wxe_util:cast(?wxCheckListBox_Check,[ThisRef,Index, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchecklistbox.html#wxchecklistboxischecked">external documentation</a>.
 -spec isChecked(This, Index) -> boolean() when
@@ -151,8 +138,7 @@ check(#wx_ref{type=ThisT,ref=ThisRef},Index, Options)
 isChecked(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxCheckListBox),
-  wxe_util:call(?wxCheckListBox_IsChecked,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxCheckListBox_IsChecked,[ThisRef,Index]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCheckListBox()) -> 'ok'.

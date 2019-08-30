@@ -90,8 +90,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlwxcalendarctrl">external documentation</a>.
 -spec new() -> wxCalendarCtrl().
 new() ->
-  wxe_util:construct(?wxCalendarCtrl_new_0,
-  <<>>).
+  wxe_util:construct(?wxCalendarCtrl_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxCalendarCtrl() when
@@ -111,14 +110,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({date, Date}, Acc) -> [<<1:32/?UI,(wxe_util:datetime_bin(Date)):24/binary,0:32>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxCalendarCtrl_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxCalendarCtrl_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -139,14 +131,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({date, Date}, Acc) -> [<<1:32/?UI,(wxe_util:datetime_bin(Date)):24/binary,0:32>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxCalendarCtrl_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxCalendarCtrl_Create,[ThisRef,ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetdate">external documentation</a>.
 -spec setDate(This, Date) -> boolean() when
@@ -154,16 +139,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
 setDate(#wx_ref{type=ThisT,ref=ThisRef},Date)
  when tuple_size(Date) =:= 2 ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_SetDate,
-  <<ThisRef:32/?UI,(wxe_util:datetime_bin(Date)):24/binary>>).
+  wxe_util:call(?wxCalendarCtrl_SetDate,[ThisRef,Date]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetdate">external documentation</a>.
 -spec getDate(This) -> wx:wx_datetime() when
 	This::wxCalendarCtrl().
 getDate(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetDate,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetDate,[ThisRef]).
 
 %% @equiv enableYearChange(This, [])
 -spec enableYearChange(This) -> 'ok' when
@@ -180,11 +163,7 @@ enableYearChange(This)
 enableYearChange(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  MOpts = fun({enable, Enable}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Enable)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxCalendarCtrl_EnableYearChange,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxCalendarCtrl_EnableYearChange,[ThisRef, Options]).
 
 %% @equiv enableMonthChange(This, [])
 -spec enableMonthChange(This) -> 'ok' when
@@ -201,11 +180,7 @@ enableMonthChange(This)
 enableMonthChange(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  MOpts = fun({enable, Enable}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Enable)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxCalendarCtrl_EnableMonthChange,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxCalendarCtrl_EnableMonthChange,[ThisRef, Options]).
 
 %% @equiv enableHolidayDisplay(This, [])
 -spec enableHolidayDisplay(This) -> 'ok' when
@@ -222,11 +197,7 @@ enableHolidayDisplay(This)
 enableHolidayDisplay(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  MOpts = fun({display, Display}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Display)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxCalendarCtrl_EnableHolidayDisplay,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxCalendarCtrl_EnableHolidayDisplay,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetheadercolours">external documentation</a>.
 -spec setHeaderColours(This, ColFg, ColBg) -> 'ok' when
@@ -234,24 +205,21 @@ enableHolidayDisplay(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 setHeaderColours(#wx_ref{type=ThisT,ref=ThisRef},ColFg,ColBg)
  when tuple_size(ColFg) =:= 3; tuple_size(ColFg) =:= 4,tuple_size(ColBg) =:= 3; tuple_size(ColBg) =:= 4 ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:cast(?wxCalendarCtrl_SetHeaderColours,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColFg)):16/binary,(wxe_util:colour_bin(ColBg)):16/binary>>).
+  wxe_util:cast(?wxCalendarCtrl_SetHeaderColours,[ThisRef,ColFg,ColBg]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetheadercolourfg">external documentation</a>.
 -spec getHeaderColourFg(This) -> wx:wx_colour4() when
 	This::wxCalendarCtrl().
 getHeaderColourFg(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetHeaderColourFg,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetHeaderColourFg,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetheadercolourbg">external documentation</a>.
 -spec getHeaderColourBg(This) -> wx:wx_colour4() when
 	This::wxCalendarCtrl().
 getHeaderColourBg(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetHeaderColourBg,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetHeaderColourBg,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsethighlightcolours">external documentation</a>.
 -spec setHighlightColours(This, ColFg, ColBg) -> 'ok' when
@@ -259,24 +227,21 @@ getHeaderColourBg(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setHighlightColours(#wx_ref{type=ThisT,ref=ThisRef},ColFg,ColBg)
  when tuple_size(ColFg) =:= 3; tuple_size(ColFg) =:= 4,tuple_size(ColBg) =:= 3; tuple_size(ColBg) =:= 4 ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:cast(?wxCalendarCtrl_SetHighlightColours,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColFg)):16/binary,(wxe_util:colour_bin(ColBg)):16/binary>>).
+  wxe_util:cast(?wxCalendarCtrl_SetHighlightColours,[ThisRef,ColFg,ColBg]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgethighlightcolourfg">external documentation</a>.
 -spec getHighlightColourFg(This) -> wx:wx_colour4() when
 	This::wxCalendarCtrl().
 getHighlightColourFg(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetHighlightColourFg,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetHighlightColourFg,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgethighlightcolourbg">external documentation</a>.
 -spec getHighlightColourBg(This) -> wx:wx_colour4() when
 	This::wxCalendarCtrl().
 getHighlightColourBg(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetHighlightColourBg,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetHighlightColourBg,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetholidaycolours">external documentation</a>.
 -spec setHolidayColours(This, ColFg, ColBg) -> 'ok' when
@@ -284,24 +249,21 @@ getHighlightColourBg(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setHolidayColours(#wx_ref{type=ThisT,ref=ThisRef},ColFg,ColBg)
  when tuple_size(ColFg) =:= 3; tuple_size(ColFg) =:= 4,tuple_size(ColBg) =:= 3; tuple_size(ColBg) =:= 4 ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:cast(?wxCalendarCtrl_SetHolidayColours,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColFg)):16/binary,(wxe_util:colour_bin(ColBg)):16/binary>>).
+  wxe_util:cast(?wxCalendarCtrl_SetHolidayColours,[ThisRef,ColFg,ColBg]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetholidaycolourfg">external documentation</a>.
 -spec getHolidayColourFg(This) -> wx:wx_colour4() when
 	This::wxCalendarCtrl().
 getHolidayColourFg(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetHolidayColourFg,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetHolidayColourFg,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetholidaycolourbg">external documentation</a>.
 -spec getHolidayColourBg(This) -> wx:wx_colour4() when
 	This::wxCalendarCtrl().
 getHolidayColourBg(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetHolidayColourBg,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetHolidayColourBg,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetattr">external documentation</a>.
 -spec getAttr(This, Day) -> wxCalendarDateAttr:wxCalendarDateAttr() when
@@ -309,8 +271,7 @@ getHolidayColourBg(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getAttr(#wx_ref{type=ThisT,ref=ThisRef},Day)
  when is_integer(Day) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_GetAttr,
-  <<ThisRef:32/?UI,Day:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_GetAttr,[ThisRef,Day]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetattr">external documentation</a>.
 -spec setAttr(This, Day, Attr) -> 'ok' when
@@ -319,8 +280,7 @@ setAttr(#wx_ref{type=ThisT,ref=ThisRef},Day,#wx_ref{type=AttrT,ref=AttrRef})
  when is_integer(Day) ->
   ?CLASS(ThisT,wxCalendarCtrl),
   ?CLASS(AttrT,wxCalendarDateAttr),
-  wxe_util:cast(?wxCalendarCtrl_SetAttr,
-  <<ThisRef:32/?UI,Day:32/?UI,AttrRef:32/?UI>>).
+  wxe_util:cast(?wxCalendarCtrl_SetAttr,[ThisRef,Day,AttrRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetholiday">external documentation</a>.
 -spec setHoliday(This, Day) -> 'ok' when
@@ -328,8 +288,7 @@ setAttr(#wx_ref{type=ThisT,ref=ThisRef},Day,#wx_ref{type=AttrT,ref=AttrRef})
 setHoliday(#wx_ref{type=ThisT,ref=ThisRef},Day)
  when is_integer(Day) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:cast(?wxCalendarCtrl_SetHoliday,
-  <<ThisRef:32/?UI,Day:32/?UI>>).
+  wxe_util:cast(?wxCalendarCtrl_SetHoliday,[ThisRef,Day]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlresetattr">external documentation</a>.
 -spec resetAttr(This, Day) -> 'ok' when
@@ -337,8 +296,7 @@ setHoliday(#wx_ref{type=ThisT,ref=ThisRef},Day)
 resetAttr(#wx_ref{type=ThisT,ref=ThisRef},Day)
  when is_integer(Day) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:cast(?wxCalendarCtrl_ResetAttr,
-  <<ThisRef:32/?UI,Day:32/?UI>>).
+  wxe_util:cast(?wxCalendarCtrl_ResetAttr,[ThisRef,Day]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlhittest">external documentation</a>.
 %%<br /> Wd = ?wxDateTime_Sun | ?wxDateTime_Mon | ?wxDateTime_Tue | ?wxDateTime_Wed | ?wxDateTime_Thu | ?wxDateTime_Fri | ?wxDateTime_Sat | ?wxDateTime_Inv_WeekDay
@@ -346,11 +304,10 @@ resetAttr(#wx_ref{type=ThisT,ref=ThisRef},Day)
 -spec hitTest(This, Pos) -> Result when
 	Result ::{Res ::wx:wx_enum(), Date::wx:wx_datetime(), Wd::wx:wx_enum()},
 	This::wxCalendarCtrl(), Pos::{X::integer(), Y::integer()}.
-hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PosX,PosY})
+hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PosX,PosY} = Pos)
  when is_integer(PosX),is_integer(PosY) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:call(?wxCalendarCtrl_HitTest,
-  <<ThisRef:32/?UI,PosX:32/?UI,PosY:32/?UI>>).
+  wxe_util:call(?wxCalendarCtrl_HitTest,[ThisRef,Pos]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCalendarCtrl()) -> 'ok'.

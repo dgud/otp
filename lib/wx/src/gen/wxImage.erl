@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -56,8 +56,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 -spec new() -> wxImage().
 new() ->
-  wxe_util:construct(?wxImage_new_0,
-  <<>>).
+  wxe_util:construct(?wxImage_new_0,[]).
 
 %% @equiv new(Name, [])
 -spec new(Name) -> wxImage() when
@@ -87,12 +86,7 @@ new(Width,Height)
 new(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  MOpts = fun({type, Type}, Acc) -> [<<1:32/?UI,Type:32/?UI>>|Acc];
-          ({index, Index}, Acc) -> [<<2:32/?UI,Index:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxImage_new_2,
-  <<(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxImage_new_2,[Name_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 %% <br /> Also:<br />
@@ -117,20 +111,12 @@ new(Width,Height,Data)
   new(Width,Height,Data, []);
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  MOpts = fun({clear, Clear}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Clear)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxImage_new_3_0,
-  <<Width:32/?UI,Height:32/?UI, BinOpt/binary>>);
+  wxe_util:construct(?wxImage_new_3_0,[Width,Height, Options]);
 new(Name,Mimetype, Options)
  when ?is_chardata(Name),?is_chardata(Mimetype),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
   Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
-  MOpts = fun({index, Index}, Acc) -> [<<1:32/?UI,Index:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxImage_new_3_1,
-  <<(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,(byte_size(Mimetype_UC)):32/?UI,(Mimetype_UC)/binary, 0:(((8- ((4+byte_size(Mimetype_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxImage_new_3_1,[Name_UC,Mimetype_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 %% <br /> Also:<br />
@@ -149,12 +135,7 @@ new(Width,Height,Data,Alpha)
   new(Width,Height,Data,Alpha, []);
 new(Width,Height,Data, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_list(Options) ->
-  wxe_util:send_bin(Data),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxImage_new_4,
-  <<Width:32/?UI,Height:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxImage_new_4,[Width,Height,Data, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagewximage">external documentation</a>.
 -spec new(Width, Height, Data, Alpha, [Option]) -> wxImage() when
@@ -162,13 +143,7 @@ new(Width,Height,Data, Options)
 	Option :: {'static_data', boolean()}.
 new(Width,Height,Data,Alpha, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha),is_list(Options) ->
-  wxe_util:send_bin(Data),
-  wxe_util:send_bin(Alpha),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxImage_new_5,
-  <<Width:32/?UI,Height:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxImage_new_5,[Width,Height,Data,Alpha, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageblur">external documentation</a>.
 -spec blur(This, Radius) -> wxImage() when
@@ -176,8 +151,7 @@ new(Width,Height,Data,Alpha, Options)
 blur(#wx_ref{type=ThisT,ref=ThisRef},Radius)
  when is_integer(Radius) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Blur,
-  <<ThisRef:32/?UI,Radius:32/?UI>>).
+  wxe_util:call(?wxImage_Blur,[ThisRef,Radius]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageblurhorizontal">external documentation</a>.
 -spec blurHorizontal(This, Radius) -> wxImage() when
@@ -185,8 +159,7 @@ blur(#wx_ref{type=ThisT,ref=ThisRef},Radius)
 blurHorizontal(#wx_ref{type=ThisT,ref=ThisRef},Radius)
  when is_integer(Radius) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_BlurHorizontal,
-  <<ThisRef:32/?UI,Radius:32/?UI>>).
+  wxe_util:call(?wxImage_BlurHorizontal,[ThisRef,Radius]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageblurvertical">external documentation</a>.
 -spec blurVertical(This, Radius) -> wxImage() when
@@ -194,8 +167,7 @@ blurHorizontal(#wx_ref{type=ThisT,ref=ThisRef},Radius)
 blurVertical(#wx_ref{type=ThisT,ref=ThisRef},Radius)
  when is_integer(Radius) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_BlurVertical,
-  <<ThisRef:32/?UI,Radius:32/?UI>>).
+  wxe_util:call(?wxImage_BlurVertical,[ThisRef,Radius]).
 
 %% @equiv convertAlphaToMask(This, [])
 -spec convertAlphaToMask(This) -> boolean() when
@@ -212,11 +184,7 @@ convertAlphaToMask(This)
 convertAlphaToMask(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({threshold, Threshold}, Acc) -> [<<1:32/?UI,Threshold:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_ConvertAlphaToMask,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_ConvertAlphaToMask,[ThisRef, Options]).
 
 %% @equiv convertToGreyscale(This, [])
 -spec convertToGreyscale(This) -> wxImage() when
@@ -235,13 +203,7 @@ convertToGreyscale(This)
 convertToGreyscale(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({lr, Lr}, Acc) -> [<<1:32/?UI,0:32,Lr:64/?F>>|Acc];
-          ({lg, Lg}, Acc) -> [<<2:32/?UI,0:32,Lg:64/?F>>|Acc];
-          ({lb, Lb}, Acc) -> [<<3:32/?UI,0:32,Lb:64/?F>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_ConvertToGreyscale,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_ConvertToGreyscale,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageconverttomono">external documentation</a>.
 -spec convertToMono(This, R, G, B) -> wxImage() when
@@ -249,16 +211,14 @@ convertToGreyscale(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 convertToMono(#wx_ref{type=ThisT,ref=ThisRef},R,G,B)
  when is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_ConvertToMono,
-  <<ThisRef:32/?UI,R:32/?UI,G:32/?UI,B:32/?UI>>).
+  wxe_util:call(?wxImage_ConvertToMono,[ThisRef,R,G,B]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagecopy">external documentation</a>.
 -spec copy(This) -> wxImage() when
 	This::wxImage().
 copy(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Copy,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_Copy,[ThisRef]).
 
 %% @equiv create(This,Width,Height, [])
 -spec create(This, Width, Height) -> boolean() when
@@ -286,11 +246,7 @@ create(This,Width,Height,Data)
 create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({clear, Clear}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Clear)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Create_3,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Create_3,[ThisRef,Width,Height, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagecreate">external documentation</a>.
 %% <br /> Also:<br />
@@ -310,12 +266,7 @@ create(This,Width,Height,Data,Alpha)
 create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height,Data, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:send_bin(Data),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Create_4,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Create_4,[ThisRef,Width,Height,Data, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagecreate">external documentation</a>.
 -spec create(This, Width, Height, Data, Alpha, [Option]) -> boolean() when
@@ -324,21 +275,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height,Data, Options)
 create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height,Data,Alpha, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:send_bin(Data),
-  wxe_util:send_bin(Alpha),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Create_5,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Create_5,[ThisRef,Width,Height,Data,Alpha, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagedestroy">external documentation</a>.
 -spec 'Destroy'(This) -> 'ok' when
 	This::wxImage().
 'Destroy'(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_Destroy,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxImage_Destroy,[ThisRef]).
 
 %% @equiv findFirstUnusedColour(This, [])
 -spec findFirstUnusedColour(This) -> Result when
@@ -359,27 +303,19 @@ findFirstUnusedColour(This)
 findFirstUnusedColour(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({startR, StartR}, Acc) -> [<<1:32/?UI,StartR:32/?UI>>|Acc];
-          ({startG, StartG}, Acc) -> [<<2:32/?UI,StartG:32/?UI>>|Acc];
-          ({startB, StartB}, Acc) -> [<<3:32/?UI,StartB:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_FindFirstUnusedColour,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_FindFirstUnusedColour,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetimageextwildcard">external documentation</a>.
 -spec getImageExtWildcard() -> unicode:charlist().
 getImageExtWildcard() ->
-  wxe_util:call(?wxImage_GetImageExtWildcard,
-  <<>>).
+  wxe_util:call(?wxImage_GetImageExtWildcard,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetalpha">external documentation</a>.
 -spec getAlpha(This) -> binary() when
 	This::wxImage().
 getAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetAlpha_0,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetAlpha_0,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetalpha">external documentation</a>.
 -spec getAlpha(This, X, Y) -> integer() when
@@ -387,8 +323,7 @@ getAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getAlpha(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetAlpha_2,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxImage_GetAlpha_2,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetblue">external documentation</a>.
 -spec getBlue(This, X, Y) -> integer() when
@@ -396,16 +331,14 @@ getAlpha(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
 getBlue(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetBlue,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxImage_GetBlue,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetdata">external documentation</a>.
 -spec getData(This) -> binary() when
 	This::wxImage().
 getData(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetData,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetData,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetgreen">external documentation</a>.
 -spec getGreen(This, X, Y) -> integer() when
@@ -413,8 +346,7 @@ getData(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getGreen(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetGreen,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxImage_GetGreen,[ThisRef,X,Y]).
 
 %% @equiv getImageCount(Name, [])
 -spec getImageCount(Name) -> integer() when
@@ -432,43 +364,35 @@ getImageCount(Name)
 getImageCount(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  MOpts = fun({type, Type}, Acc) -> [<<1:32/?UI,Type:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_GetImageCount,
-  <<(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxImage_GetImageCount,[Name_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetheight">external documentation</a>.
 -spec getHeight(This) -> integer() when
 	This::wxImage().
 getHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetHeight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetHeight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetmaskblue">external documentation</a>.
 -spec getMaskBlue(This) -> integer() when
 	This::wxImage().
 getMaskBlue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetMaskBlue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetMaskBlue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetmaskgreen">external documentation</a>.
 -spec getMaskGreen(This) -> integer() when
 	This::wxImage().
 getMaskGreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetMaskGreen,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetMaskGreen,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetmaskred">external documentation</a>.
 -spec getMaskRed(This) -> integer() when
 	This::wxImage().
 getMaskRed(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetMaskRed,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetMaskRed,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetorfindmaskcolour">external documentation</a>.
 -spec getOrFindMaskColour(This) -> Result when
@@ -476,16 +400,14 @@ getMaskRed(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxImage().
 getOrFindMaskColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetOrFindMaskColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetOrFindMaskColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetpalette">external documentation</a>.
 -spec getPalette(This) -> wxPalette:wxPalette() when
 	This::wxImage().
 getPalette(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetPalette,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetPalette,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetred">external documentation</a>.
 -spec getRed(This, X, Y) -> integer() when
@@ -493,41 +415,36 @@ getPalette(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getRed(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetRed,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxImage_GetRed,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetsubimage">external documentation</a>.
 -spec getSubImage(This, Rect) -> wxImage() when
 	This::wxImage(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-getSubImage(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+getSubImage(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetSubImage,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:call(?wxImage_GetSubImage,[ThisRef,Rect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetwidth">external documentation</a>.
 -spec getWidth(This) -> integer() when
 	This::wxImage().
 getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_GetWidth,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_GetWidth,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagehasalpha">external documentation</a>.
 -spec hasAlpha(This) -> boolean() when
 	This::wxImage().
 hasAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_HasAlpha,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_HasAlpha,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagehasmask">external documentation</a>.
 -spec hasMask(This) -> boolean() when
 	This::wxImage().
 hasMask(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_HasMask,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_HasMask,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetoption">external documentation</a>.
 -spec getOption(This, Name) -> unicode:charlist() when
@@ -536,8 +453,7 @@ getOption(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_GetOption,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxImage_GetOption,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagegetoptionint">external documentation</a>.
 -spec getOptionInt(This, Name) -> integer() when
@@ -546,8 +462,7 @@ getOptionInt(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_GetOptionInt,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxImage_GetOptionInt,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagehasoption">external documentation</a>.
 -spec hasOption(This, Name) -> boolean() when
@@ -556,22 +471,19 @@ hasOption(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_HasOption,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxImage_HasOption,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageinitalpha">external documentation</a>.
 -spec initAlpha(This) -> 'ok' when
 	This::wxImage().
 initAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_InitAlpha,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxImage_InitAlpha,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageinitstandardhandlers">external documentation</a>.
 -spec initStandardHandlers() -> 'ok'.
 initStandardHandlers() ->
-  wxe_util:cast(?wxImage_InitStandardHandlers,
-  <<>>).
+  wxe_util:cast(?wxImage_InitStandardHandlers,[]).
 
 %% @equiv isTransparent(This,X,Y, [])
 -spec isTransparent(This, X, Y) -> boolean() when
@@ -588,11 +500,7 @@ isTransparent(This,X,Y)
 isTransparent(#wx_ref{type=ThisT,ref=ThisRef},X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({threshold, Threshold}, Acc) -> [<<1:32/?UI,Threshold:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_IsTransparent,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_IsTransparent,[ThisRef,X,Y, Options]).
 
 %% @equiv loadFile(This,Name, [])
 -spec loadFile(This, Name) -> boolean() when
@@ -611,12 +519,7 @@ loadFile(#wx_ref{type=ThisT,ref=ThisRef},Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  MOpts = fun({type, Type}, Acc) -> [<<1:32/?UI,Type:32/?UI>>|Acc];
-          ({index, Index}, Acc) -> [<<2:32/?UI,Index:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_LoadFile_2,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxImage_LoadFile_2,[ThisRef,Name_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageloadfile">external documentation</a>.
 -spec loadFile(This, Name, Mimetype, [Option]) -> boolean() when
@@ -627,19 +530,14 @@ loadFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Mimetype, Options)
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
   Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
-  MOpts = fun({index, Index}, Acc) -> [<<1:32/?UI,Index:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_LoadFile_3,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,(byte_size(Mimetype_UC)):32/?UI,(Mimetype_UC)/binary, 0:(((8- ((4+byte_size(Mimetype_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxImage_LoadFile_3,[ThisRef,Name_UC,Mimetype_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxImage().
 ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:call(?wxImage_Ok,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImage_Ok,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximageremovehandler">external documentation</a>.
 -spec removeHandler(Name) -> boolean() when
@@ -647,8 +545,7 @@ ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
 removeHandler(Name)
  when ?is_chardata(Name) ->
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_RemoveHandler,
-  <<(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((4+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxImage_RemoveHandler,[Name_UC]).
 
 %% @equiv mirror(This, [])
 -spec mirror(This) -> wxImage() when
@@ -665,11 +562,7 @@ mirror(This)
 mirror(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({horizontally, Horizontally}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Horizontally)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Mirror,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Mirror,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagereplace">external documentation</a>.
 -spec replace(This, R1, G1, B1, R2, G2, B2) -> 'ok' when
@@ -677,8 +570,7 @@ mirror(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 replace(#wx_ref{type=ThisT,ref=ThisRef},R1,G1,B1,R2,G2,B2)
  when is_integer(R1),is_integer(G1),is_integer(B1),is_integer(R2),is_integer(G2),is_integer(B2) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_Replace,
-  <<ThisRef:32/?UI,R1:32/?UI,G1:32/?UI,B1:32/?UI,R2:32/?UI,G2:32/?UI,B2:32/?UI>>).
+  wxe_util:cast(?wxImage_Replace,[ThisRef,R1,G1,B1,R2,G2,B2]).
 
 %% @equiv rescale(This,Width,Height, [])
 -spec rescale(This, Width, Height) -> wxImage() when
@@ -696,17 +588,13 @@ rescale(This,Width,Height)
 rescale(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({quality, Quality}, Acc) -> [<<1:32/?UI,Quality:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Rescale,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Rescale,[ThisRef,Width,Height, Options]).
 
 %% @equiv resize(This,Size,Pos, [])
 -spec resize(This, Size, Pos) -> wxImage() when
 	This::wxImage(), Size::{W::integer(), H::integer()}, Pos::{X::integer(), Y::integer()}.
 
-resize(This,Size={SizeW,SizeH},Pos={PosX,PosY})
+resize(This,Size={SizeW,SizeH} = Size,Pos={PosX,PosY} = Pos)
  when is_record(This, wx_ref),is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY) ->
   resize(This,Size,Pos, []).
 
@@ -716,22 +604,16 @@ resize(This,Size={SizeW,SizeH},Pos={PosX,PosY})
 	Option :: {'r', integer()}
 		 | {'g', integer()}
 		 | {'b', integer()}.
-resize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH},{PosX,PosY}, Options)
+resize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
  when is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({r, R}, Acc) -> [<<1:32/?UI,R:32/?UI>>|Acc];
-          ({g, G}, Acc) -> [<<2:32/?UI,G:32/?UI>>|Acc];
-          ({b, B}, Acc) -> [<<3:32/?UI,B:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Resize,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI,PosX:32/?UI,PosY:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Resize,[ThisRef,Size,Pos, Options]).
 
 %% @equiv rotate(This,Angle,Centre_of_rotation, [])
 -spec rotate(This, Angle, Centre_of_rotation) -> wxImage() when
 	This::wxImage(), Angle::number(), Centre_of_rotation::{X::integer(), Y::integer()}.
 
-rotate(This,Angle,Centre_of_rotation={Centre_of_rotationX,Centre_of_rotationY})
+rotate(This,Angle,Centre_of_rotation={Centre_of_rotationX,Centre_of_rotationY} = Centre_of_rotation)
  when is_record(This, wx_ref),is_number(Angle),is_integer(Centre_of_rotationX),is_integer(Centre_of_rotationY) ->
   rotate(This,Angle,Centre_of_rotation, []).
 
@@ -740,15 +622,10 @@ rotate(This,Angle,Centre_of_rotation={Centre_of_rotationX,Centre_of_rotationY})
 	This::wxImage(), Angle::number(), Centre_of_rotation::{X::integer(), Y::integer()},
 	Option :: {'interpolating', boolean()}
 		 | {'offset_after_rotation', {X::integer(), Y::integer()}}.
-rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle,{Centre_of_rotationX,Centre_of_rotationY}, Options)
+rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle,{Centre_of_rotationX,Centre_of_rotationY} = Centre_of_rotation, Options)
  when is_number(Angle),is_integer(Centre_of_rotationX),is_integer(Centre_of_rotationY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({interpolating, Interpolating}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Interpolating)):32/?UI>>|Acc];
-          ({offset_after_rotation, {Offset_after_rotationX,Offset_after_rotationY}}, Acc) -> [<<2:32/?UI,Offset_after_rotationX:32/?UI,Offset_after_rotationY:32/?UI,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Rotate,
-  <<ThisRef:32/?UI,0:32,Angle:64/?F,Centre_of_rotationX:32/?UI,Centre_of_rotationY:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxImage_Rotate,[ThisRef,Angle,Centre_of_rotation, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagerotatehue">external documentation</a>.
 -spec rotateHue(This, Angle) -> 'ok' when
@@ -756,8 +633,7 @@ rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle,{Centre_of_rotationX,Centre_of_rota
 rotateHue(#wx_ref{type=ThisT,ref=ThisRef},Angle)
  when is_number(Angle) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_RotateHue,
-  <<ThisRef:32/?UI,0:32,Angle:64/?F>>).
+  wxe_util:cast(?wxImage_RotateHue,[ThisRef,Angle]).
 
 %% @equiv rotate90(This, [])
 -spec rotate90(This) -> wxImage() when
@@ -774,11 +650,7 @@ rotate90(This)
 rotate90(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({clockwise, Clockwise}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Clockwise)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Rotate90,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Rotate90,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesavefile">external documentation</a>.
 -spec saveFile(This, Name) -> boolean() when
@@ -787,8 +659,7 @@ saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_SaveFile_1,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxImage_SaveFile_1,[ThisRef,Name_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesavefile">external documentation</a>.
 %% <br /> Also:<br />
@@ -803,15 +674,13 @@ saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Type)
  when ?is_chardata(Name),is_integer(Type) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:call(?wxImage_SaveFile_2_0,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,Type:32/?UI>>);
+  wxe_util:call(?wxImage_SaveFile_2_0,[ThisRef,Name_UC,Type]);
 saveFile(#wx_ref{type=ThisT,ref=ThisRef},Name,Mimetype)
  when ?is_chardata(Name),?is_chardata(Mimetype) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
   Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
-  wxe_util:call(?wxImage_SaveFile_2_1,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,(byte_size(Mimetype_UC)):32/?UI,(Mimetype_UC)/binary, 0:(((8- ((4+byte_size(Mimetype_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxImage_SaveFile_2_1,[ThisRef,Name_UC,Mimetype_UC]).
 
 %% @equiv scale(This,Width,Height, [])
 -spec scale(This, Width, Height) -> wxImage() when
@@ -829,17 +698,13 @@ scale(This,Width,Height)
 scale(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({quality, Quality}, Acc) -> [<<1:32/?UI,Quality:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Scale,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Scale,[ThisRef,Width,Height, Options]).
 
 %% @equiv size(This,Size,Pos, [])
 -spec size(This, Size, Pos) -> wxImage() when
 	This::wxImage(), Size::{W::integer(), H::integer()}, Pos::{X::integer(), Y::integer()}.
 
-size(This,Size={SizeW,SizeH},Pos={PosX,PosY})
+size(This,Size={SizeW,SizeH} = Size,Pos={PosX,PosY} = Pos)
  when is_record(This, wx_ref),is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY) ->
   size(This,Size,Pos, []).
 
@@ -849,16 +714,10 @@ size(This,Size={SizeW,SizeH},Pos={PosX,PosY})
 	Option :: {'r', integer()}
 		 | {'g', integer()}
 		 | {'b', integer()}.
-size(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH},{PosX,PosY}, Options)
+size(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
  when is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({r, R}, Acc) -> [<<1:32/?UI,R:32/?UI>>|Acc];
-          ({g, G}, Acc) -> [<<2:32/?UI,G:32/?UI>>|Acc];
-          ({b, B}, Acc) -> [<<3:32/?UI,B:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImage_Size,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI,PosX:32/?UI,PosY:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImage_Size,[ThisRef,Size,Pos, Options]).
 
 %% @equiv setAlpha(This,Alpha, [])
 -spec setAlpha(This, Alpha) -> 'ok' when
@@ -875,12 +734,7 @@ setAlpha(This,Alpha)
 setAlpha(#wx_ref{type=ThisT,ref=ThisRef},Alpha, Options)
  when is_binary(Alpha),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:send_bin(Alpha),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxImage_SetAlpha_2,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxImage_SetAlpha_2,[ThisRef,Alpha, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetalpha">external documentation</a>.
 -spec setAlpha(This, X, Y, Alpha) -> 'ok' when
@@ -888,8 +742,7 @@ setAlpha(#wx_ref{type=ThisT,ref=ThisRef},Alpha, Options)
 setAlpha(#wx_ref{type=ThisT,ref=ThisRef},X,Y,Alpha)
  when is_integer(X),is_integer(Y),is_integer(Alpha) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetAlpha_3,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,Alpha:32/?UI>>).
+  wxe_util:cast(?wxImage_SetAlpha_3,[ThisRef,X,Y,Alpha]).
 
 %% @equiv setData(This,Data, [])
 -spec setData(This, Data) -> 'ok' when
@@ -906,12 +759,7 @@ setData(This,Data)
 setData(#wx_ref{type=ThisT,ref=ThisRef},Data, Options)
  when is_binary(Data),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:send_bin(Data),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxImage_SetData_2,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxImage_SetData_2,[ThisRef,Data, Options]).
 
 %% @equiv setData(This,Data,New_width,New_height, [])
 -spec setData(This, Data, New_width, New_height) -> 'ok' when
@@ -928,12 +776,7 @@ setData(This,Data,New_width,New_height)
 setData(#wx_ref{type=ThisT,ref=ThisRef},Data,New_width,New_height, Options)
  when is_binary(Data),is_integer(New_width),is_integer(New_height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:send_bin(Data),
-  MOpts = fun({static_data, Static_data}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Static_data)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxImage_SetData_4,
-  <<ThisRef:32/?UI,New_width:32/?UI,New_height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxImage_SetData_4,[ThisRef,Data,New_width,New_height, Options]).
 
 %% @equiv setMask(This, [])
 -spec setMask(This) -> 'ok' when
@@ -950,11 +793,7 @@ setMask(This)
 setMask(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({mask, Mask}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Mask)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxImage_SetMask,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxImage_SetMask,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetmaskcolour">external documentation</a>.
 -spec setMaskColour(This, R, G, B) -> 'ok' when
@@ -962,8 +801,7 @@ setMask(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 setMaskColour(#wx_ref{type=ThisT,ref=ThisRef},R,G,B)
  when is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetMaskColour,
-  <<ThisRef:32/?UI,R:32/?UI,G:32/?UI,B:32/?UI>>).
+  wxe_util:cast(?wxImage_SetMaskColour,[ThisRef,R,G,B]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetmaskfromimage">external documentation</a>.
 -spec setMaskFromImage(This, Mask, Mr, Mg, Mb) -> boolean() when
@@ -972,8 +810,7 @@ setMaskFromImage(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MaskT,ref=MaskRef}
  when is_integer(Mr),is_integer(Mg),is_integer(Mb) ->
   ?CLASS(ThisT,wxImage),
   ?CLASS(MaskT,wxImage),
-  wxe_util:call(?wxImage_SetMaskFromImage,
-  <<ThisRef:32/?UI,MaskRef:32/?UI,Mr:32/?UI,Mg:32/?UI,Mb:32/?UI>>).
+  wxe_util:call(?wxImage_SetMaskFromImage,[ThisRef,MaskRef,Mr,Mg,Mb]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetoption">external documentation</a>.
 %% <br /> Also:<br />
@@ -988,15 +825,13 @@ setOption(#wx_ref{type=ThisT,ref=ThisRef},Name,Value)
  when ?is_chardata(Name),is_integer(Value) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
-  wxe_util:cast(?wxImage_SetOption_2_0,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,Value:32/?UI>>);
+  wxe_util:cast(?wxImage_SetOption_2_0,[ThisRef,Name_UC,Value]);
 setOption(#wx_ref{type=ThisT,ref=ThisRef},Name,Value)
  when ?is_chardata(Name),?is_chardata(Value) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary([Name,0]),
   Value_UC = unicode:characters_to_binary([Value,0]),
-  wxe_util:cast(?wxImage_SetOption_2_1,
-  <<ThisRef:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8,(byte_size(Value_UC)):32/?UI,(Value_UC)/binary, 0:(((8- ((4+byte_size(Value_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxImage_SetOption_2_1,[ThisRef,Name_UC,Value_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetpalette">external documentation</a>.
 -spec setPalette(This, Palette) -> 'ok' when
@@ -1004,17 +839,15 @@ setOption(#wx_ref{type=ThisT,ref=ThisRef},Name,Value)
 setPalette(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PaletteT,ref=PaletteRef}) ->
   ?CLASS(ThisT,wxImage),
   ?CLASS(PaletteT,wxPalette),
-  wxe_util:cast(?wxImage_SetPalette,
-  <<ThisRef:32/?UI,PaletteRef:32/?UI>>).
+  wxe_util:cast(?wxImage_SetPalette,[ThisRef,PaletteRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetrgb">external documentation</a>.
 -spec setRGB(This, Rect, R, G, B) -> 'ok' when
 	This::wxImage(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}, R::integer(), G::integer(), B::integer().
-setRGB(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH},R,G,B)
+setRGB(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect,R,G,B)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetRGB_4,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI,R:32/?UI,G:32/?UI,B:32/?UI>>).
+  wxe_util:cast(?wxImage_SetRGB_4,[ThisRef,Rect,R,G,B]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetrgb">external documentation</a>.
 -spec setRGB(This, X, Y, R, G, B) -> 'ok' when
@@ -1022,8 +855,7 @@ setRGB(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH},R,G,B)
 setRGB(#wx_ref{type=ThisT,ref=ThisRef},X,Y,R,G,B)
  when is_integer(X),is_integer(Y),is_integer(R),is_integer(G),is_integer(B) ->
   ?CLASS(ThisT,wxImage),
-  wxe_util:cast(?wxImage_SetRGB_5,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,R:32/?UI,G:32/?UI,B:32/?UI>>).
+  wxe_util:cast(?wxImage_SetRGB_5,[ThisRef,X,Y,R,G,B]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxImage()) -> 'ok'.

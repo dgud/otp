@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -67,8 +67,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 new(#wx_ref{type=DcT,ref=DcRef},Mirror)
  when is_boolean(Mirror) ->
   ?CLASS(DcT,wxDC),
-  wxe_util:construct(?wxMirrorDC_new,
-  <<DcRef:32/?UI,(wxe_util:from_bool(Mirror)):32/?UI>>).
+  wxe_util:construct(?wxMirrorDC_new,[DcRef,Mirror]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMirrorDC()) -> 'ok'.

@@ -88,8 +88,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookwxlistbook">external documentation</a>.
 -spec new() -> wxListbook().
 new() ->
-  wxe_util:construct(?wxListbook_new_0,
-  <<>>).
+  wxe_util:construct(?wxListbook_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxListbook() when
@@ -108,13 +107,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxListbook_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxListbook_new_3,[ParentRef,Id, Options]).
 
 %% @equiv addPage(This,Page,Text, [])
 -spec addPage(This, Page, Text) -> boolean() when
@@ -134,12 +127,7 @@ addPage(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PageT,ref=PageRef},Text, Op
   ?CLASS(ThisT,wxListbook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  MOpts = fun({bSelect, BSelect}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(BSelect)):32/?UI>>|Acc];
-          ({imageId, ImageId}, Acc) -> [<<2:32/?UI,ImageId:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxListbook_AddPage,
-  <<ThisRef:32/?UI,PageRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxListbook_AddPage,[ThisRef,PageRef,Text_UC, Options]).
 
 %% @equiv advanceSelection(This, [])
 -spec advanceSelection(This) -> 'ok' when
@@ -156,11 +144,7 @@ advanceSelection(This)
 advanceSelection(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxListbook),
-  MOpts = fun({forward, Forward}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Forward)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxListbook_AdvanceSelection,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxListbook_AdvanceSelection,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookassignimagelist">external documentation</a>.
 -spec assignImageList(This, ImageList) -> 'ok' when
@@ -168,8 +152,7 @@ advanceSelection(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 assignImageList(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ImageListT,ref=ImageListRef}) ->
   ?CLASS(ThisT,wxListbook),
   ?CLASS(ImageListT,wxImageList),
-  wxe_util:cast(?wxListbook_AssignImageList,
-  <<ThisRef:32/?UI,ImageListRef:32/?UI>>).
+  wxe_util:cast(?wxListbook_AssignImageList,[ThisRef,ImageListRef]).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -189,21 +172,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxListbook),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxListbook_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxListbook_Create,[ThisRef,ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookdeleteallpages">external documentation</a>.
 -spec deleteAllPages(This) -> boolean() when
 	This::wxListbook().
 deleteAllPages(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_DeleteAllPages,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListbook_DeleteAllPages,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookdeletepage">external documentation</a>.
 -spec deletePage(This, N) -> boolean() when
@@ -211,8 +187,7 @@ deleteAllPages(#wx_ref{type=ThisT,ref=ThisRef}) ->
 deletePage(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_DeletePage,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_DeletePage,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookremovepage">external documentation</a>.
 -spec removePage(This, N) -> boolean() when
@@ -220,24 +195,21 @@ deletePage(#wx_ref{type=ThisT,ref=ThisRef},N)
 removePage(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_RemovePage,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_RemovePage,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetcurrentpage">external documentation</a>.
 -spec getCurrentPage(This) -> wxWindow:wxWindow() when
 	This::wxListbook().
 getCurrentPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetCurrentPage,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListbook_GetCurrentPage,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetimagelist">external documentation</a>.
 -spec getImageList(This) -> wxImageList:wxImageList() when
 	This::wxListbook().
 getImageList(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetImageList,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListbook_GetImageList,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetpage">external documentation</a>.
 -spec getPage(This, N) -> wxWindow:wxWindow() when
@@ -245,16 +217,14 @@ getImageList(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getPage(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetPage,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_GetPage,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetpagecount">external documentation</a>.
 -spec getPageCount(This) -> integer() when
 	This::wxListbook().
 getPageCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetPageCount,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListbook_GetPageCount,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetpageimage">external documentation</a>.
 -spec getPageImage(This, N) -> integer() when
@@ -262,8 +232,7 @@ getPageCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getPageImage(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetPageImage,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_GetPageImage,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetpagetext">external documentation</a>.
 -spec getPageText(This, N) -> unicode:charlist() when
@@ -271,26 +240,23 @@ getPageImage(#wx_ref{type=ThisT,ref=ThisRef},N)
 getPageText(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetPageText,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_GetPageText,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxListbook().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListbook_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookhittest">external documentation</a>.
 -spec hitTest(This, Pt) -> Result when
 	Result ::{Res ::integer(), Flags::integer()},
 	This::wxListbook(), Pt::{X::integer(), Y::integer()}.
-hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_HitTest,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxListbook_HitTest,[ThisRef,Pt]).
 
 %% @equiv insertPage(This,N,Page,Text, [])
 -spec insertPage(This, N, Page, Text) -> boolean() when
@@ -310,12 +276,7 @@ insertPage(#wx_ref{type=ThisT,ref=ThisRef},N,#wx_ref{type=PageT,ref=PageRef},Tex
   ?CLASS(ThisT,wxListbook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  MOpts = fun({bSelect, BSelect}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(BSelect)):32/?UI>>|Acc];
-          ({imageId, ImageId}, Acc) -> [<<2:32/?UI,ImageId:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxListbook_InsertPage,
-  <<ThisRef:32/?UI,N:32/?UI,PageRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxListbook_InsertPage,[ThisRef,N,PageRef,Text_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbooksetimagelist">external documentation</a>.
 -spec setImageList(This, ImageList) -> 'ok' when
@@ -323,17 +284,15 @@ insertPage(#wx_ref{type=ThisT,ref=ThisRef},N,#wx_ref{type=PageT,ref=PageRef},Tex
 setImageList(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ImageListT,ref=ImageListRef}) ->
   ?CLASS(ThisT,wxListbook),
   ?CLASS(ImageListT,wxImageList),
-  wxe_util:cast(?wxListbook_SetImageList,
-  <<ThisRef:32/?UI,ImageListRef:32/?UI>>).
+  wxe_util:cast(?wxListbook_SetImageList,[ThisRef,ImageListRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbooksetpagesize">external documentation</a>.
 -spec setPageSize(This, Size) -> 'ok' when
 	This::wxListbook(), Size::{W::integer(), H::integer()}.
-setPageSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
+setPageSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:cast(?wxListbook_SetPageSize,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:cast(?wxListbook_SetPageSize,[ThisRef,Size]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbooksetpageimage">external documentation</a>.
 -spec setPageImage(This, N, ImageId) -> boolean() when
@@ -341,8 +300,7 @@ setPageSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
 setPageImage(#wx_ref{type=ThisT,ref=ThisRef},N,ImageId)
  when is_integer(N),is_integer(ImageId) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_SetPageImage,
-  <<ThisRef:32/?UI,N:32/?UI,ImageId:32/?UI>>).
+  wxe_util:call(?wxListbook_SetPageImage,[ThisRef,N,ImageId]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbooksetpagetext">external documentation</a>.
 -spec setPageText(This, N, StrText) -> boolean() when
@@ -351,8 +309,7 @@ setPageText(#wx_ref{type=ThisT,ref=ThisRef},N,StrText)
  when is_integer(N),?is_chardata(StrText) ->
   ?CLASS(ThisT,wxListbook),
   StrText_UC = unicode:characters_to_binary([StrText,0]),
-  wxe_util:call(?wxListbook_SetPageText,
-  <<ThisRef:32/?UI,N:32/?UI,(byte_size(StrText_UC)):32/?UI,(StrText_UC)/binary, 0:(((8- ((4+byte_size(StrText_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxListbook_SetPageText,[ThisRef,N,StrText_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbooksetselection">external documentation</a>.
 -spec setSelection(This, N) -> integer() when
@@ -360,8 +317,7 @@ setPageText(#wx_ref{type=ThisT,ref=ThisRef},N,StrText)
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_SetSelection,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_SetSelection,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbook.html#wxlistbookchangeselection">external documentation</a>.
 -spec changeSelection(This, N) -> integer() when
@@ -369,8 +325,7 @@ setSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
 changeSelection(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListbook),
-  wxe_util:call(?wxListbook_ChangeSelection,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListbook_ChangeSelection,[ThisRef,N]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxListbook()) -> 'ok'.

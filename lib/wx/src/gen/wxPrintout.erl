@@ -127,108 +127,95 @@ new(Title, OnPrintPage, Opts) when is_list(Title), is_function(OnPrintPage), is_
 	This::wxPrintout().
 getDC(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetDC,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetDC,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetpagesizemm">external documentation</a>.
 -spec getPageSizeMM(This) -> {W::integer(), H::integer()} when
 	This::wxPrintout().
 getPageSizeMM(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetPageSizeMM,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetPageSizeMM,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetpagesizepixels">external documentation</a>.
 -spec getPageSizePixels(This) -> {W::integer(), H::integer()} when
 	This::wxPrintout().
 getPageSizePixels(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetPageSizePixels,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetPageSizePixels,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetpaperrectpixels">external documentation</a>.
 -spec getPaperRectPixels(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxPrintout().
 getPaperRectPixels(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetPaperRectPixels,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetPaperRectPixels,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetppiprinter">external documentation</a>.
 -spec getPPIPrinter(This) -> {X::integer(), Y::integer()} when
 	This::wxPrintout().
 getPPIPrinter(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetPPIPrinter,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetPPIPrinter,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetppiscreen">external documentation</a>.
 -spec getPPIScreen(This) -> {X::integer(), Y::integer()} when
 	This::wxPrintout().
 getPPIScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetPPIScreen,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetPPIScreen,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgettitle">external documentation</a>.
 -spec getTitle(This) -> unicode:charlist() when
 	This::wxPrintout().
 getTitle(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetTitle,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetTitle,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutispreview">external documentation</a>.
 -spec isPreview(This) -> boolean() when
 	This::wxPrintout().
 isPreview(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_IsPreview,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_IsPreview,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutfitthissizetopaper">external documentation</a>.
 -spec fitThisSizeToPaper(This, ImageSize) -> 'ok' when
 	This::wxPrintout(), ImageSize::{W::integer(), H::integer()}.
-fitThisSizeToPaper(#wx_ref{type=ThisT,ref=ThisRef},{ImageSizeW,ImageSizeH})
+fitThisSizeToPaper(#wx_ref{type=ThisT,ref=ThisRef},{ImageSizeW,ImageSizeH} = ImageSize)
  when is_integer(ImageSizeW),is_integer(ImageSizeH) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_FitThisSizeToPaper,
-  <<ThisRef:32/?UI,ImageSizeW:32/?UI,ImageSizeH:32/?UI>>).
+  wxe_util:cast(?wxPrintout_FitThisSizeToPaper,[ThisRef,ImageSize]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutfitthissizetopage">external documentation</a>.
 -spec fitThisSizeToPage(This, ImageSize) -> 'ok' when
 	This::wxPrintout(), ImageSize::{W::integer(), H::integer()}.
-fitThisSizeToPage(#wx_ref{type=ThisT,ref=ThisRef},{ImageSizeW,ImageSizeH})
+fitThisSizeToPage(#wx_ref{type=ThisT,ref=ThisRef},{ImageSizeW,ImageSizeH} = ImageSize)
  when is_integer(ImageSizeW),is_integer(ImageSizeH) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_FitThisSizeToPage,
-  <<ThisRef:32/?UI,ImageSizeW:32/?UI,ImageSizeH:32/?UI>>).
+  wxe_util:cast(?wxPrintout_FitThisSizeToPage,[ThisRef,ImageSize]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutfitthissizetopagemargins">external documentation</a>.
 -spec fitThisSizeToPageMargins(This, ImageSize, PageSetupData) -> 'ok' when
 	This::wxPrintout(), ImageSize::{W::integer(), H::integer()}, PageSetupData::wxPageSetupDialogData:wxPageSetupDialogData().
-fitThisSizeToPageMargins(#wx_ref{type=ThisT,ref=ThisRef},{ImageSizeW,ImageSizeH},#wx_ref{type=PageSetupDataT,ref=PageSetupDataRef})
+fitThisSizeToPageMargins(#wx_ref{type=ThisT,ref=ThisRef},{ImageSizeW,ImageSizeH} = ImageSize,#wx_ref{type=PageSetupDataT,ref=PageSetupDataRef})
  when is_integer(ImageSizeW),is_integer(ImageSizeH) ->
   ?CLASS(ThisT,wxPrintout),
   ?CLASS(PageSetupDataT,wxPageSetupDialogData),
-  wxe_util:cast(?wxPrintout_FitThisSizeToPageMargins,
-  <<ThisRef:32/?UI,ImageSizeW:32/?UI,ImageSizeH:32/?UI,PageSetupDataRef:32/?UI>>).
+  wxe_util:cast(?wxPrintout_FitThisSizeToPageMargins,[ThisRef,ImageSize,PageSetupDataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutmapscreensizetopaper">external documentation</a>.
 -spec mapScreenSizeToPaper(This) -> 'ok' when
 	This::wxPrintout().
 mapScreenSizeToPaper(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_MapScreenSizeToPaper,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxPrintout_MapScreenSizeToPaper,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutmapscreensizetopage">external documentation</a>.
 -spec mapScreenSizeToPage(This) -> 'ok' when
 	This::wxPrintout().
 mapScreenSizeToPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_MapScreenSizeToPage,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxPrintout_MapScreenSizeToPage,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutmapscreensizetopagemargins">external documentation</a>.
 -spec mapScreenSizeToPageMargins(This, PageSetupData) -> 'ok' when
@@ -236,32 +223,28 @@ mapScreenSizeToPage(#wx_ref{type=ThisT,ref=ThisRef}) ->
 mapScreenSizeToPageMargins(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PageSetupDataT,ref=PageSetupDataRef}) ->
   ?CLASS(ThisT,wxPrintout),
   ?CLASS(PageSetupDataT,wxPageSetupDialogData),
-  wxe_util:cast(?wxPrintout_MapScreenSizeToPageMargins,
-  <<ThisRef:32/?UI,PageSetupDataRef:32/?UI>>).
+  wxe_util:cast(?wxPrintout_MapScreenSizeToPageMargins,[ThisRef,PageSetupDataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutmapscreensizetodevice">external documentation</a>.
 -spec mapScreenSizeToDevice(This) -> 'ok' when
 	This::wxPrintout().
 mapScreenSizeToDevice(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_MapScreenSizeToDevice,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxPrintout_MapScreenSizeToDevice,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetlogicalpaperrect">external documentation</a>.
 -spec getLogicalPaperRect(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxPrintout().
 getLogicalPaperRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetLogicalPaperRect,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetLogicalPaperRect,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetlogicalpagerect">external documentation</a>.
 -spec getLogicalPageRect(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxPrintout().
 getLogicalPageRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:call(?wxPrintout_GetLogicalPageRect,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetLogicalPageRect,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutgetlogicalpagemarginsrect">external documentation</a>.
 -spec getLogicalPageMarginsRect(This, PageSetupData) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
@@ -269,8 +252,7 @@ getLogicalPageRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getLogicalPageMarginsRect(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PageSetupDataT,ref=PageSetupDataRef}) ->
   ?CLASS(ThisT,wxPrintout),
   ?CLASS(PageSetupDataT,wxPageSetupDialogData),
-  wxe_util:call(?wxPrintout_GetLogicalPageMarginsRect,
-  <<ThisRef:32/?UI,PageSetupDataRef:32/?UI>>).
+  wxe_util:call(?wxPrintout_GetLogicalPageMarginsRect,[ThisRef,PageSetupDataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutsetlogicalorigin">external documentation</a>.
 -spec setLogicalOrigin(This, X, Y) -> 'ok' when
@@ -278,8 +260,7 @@ getLogicalPageMarginsRect(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PageSetup
 setLogicalOrigin(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_SetLogicalOrigin,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:cast(?wxPrintout_SetLogicalOrigin,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintout.html#wxprintoutoffsetlogicalorigin">external documentation</a>.
 -spec offsetLogicalOrigin(This, Xoff, Yoff) -> 'ok' when
@@ -287,8 +268,7 @@ setLogicalOrigin(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
 offsetLogicalOrigin(#wx_ref{type=ThisT,ref=ThisRef},Xoff,Yoff)
  when is_integer(Xoff),is_integer(Yoff) ->
   ?CLASS(ThisT,wxPrintout),
-  wxe_util:cast(?wxPrintout_OffsetLogicalOrigin,
-  <<ThisRef:32/?UI,Xoff:32/?UI,Yoff:32/?UI>>).
+  wxe_util:cast(?wxPrintout_OffsetLogicalOrigin,[ThisRef,Xoff,Yoff]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrintout()) -> 'ok'.

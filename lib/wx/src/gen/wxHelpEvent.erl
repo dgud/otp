@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,16 +50,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxHelpEvent().
 getOrigin(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxHelpEvent),
-  wxe_util:call(?wxHelpEvent_GetOrigin,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxHelpEvent_GetOrigin,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhelpevent.html#wxhelpeventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxHelpEvent().
 getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxHelpEvent),
-  wxe_util:call(?wxHelpEvent_GetPosition,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxHelpEvent_GetPosition,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhelpevent.html#wxhelpeventsetorigin">external documentation</a>.
 %%<br /> Origin = ?wxHelpEvent_Origin_Unknown | ?wxHelpEvent_Origin_Keyboard | ?wxHelpEvent_Origin_HelpButton
@@ -68,17 +66,15 @@ getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setOrigin(#wx_ref{type=ThisT,ref=ThisRef},Origin)
  when is_integer(Origin) ->
   ?CLASS(ThisT,wxHelpEvent),
-  wxe_util:cast(?wxHelpEvent_SetOrigin,
-  <<ThisRef:32/?UI,Origin:32/?UI>>).
+  wxe_util:cast(?wxHelpEvent_SetOrigin,[ThisRef,Origin]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhelpevent.html#wxhelpeventsetposition">external documentation</a>.
 -spec setPosition(This, Pos) -> 'ok' when
 	This::wxHelpEvent(), Pos::{X::integer(), Y::integer()}.
-setPosition(#wx_ref{type=ThisT,ref=ThisRef},{PosX,PosY})
+setPosition(#wx_ref{type=ThisT,ref=ThisRef},{PosX,PosY} = Pos)
  when is_integer(PosX),is_integer(PosY) ->
   ?CLASS(ThisT,wxHelpEvent),
-  wxe_util:cast(?wxHelpEvent_SetPosition,
-  <<ThisRef:32/?UI,PosX:32/?UI,PosY:32/?UI>>).
+  wxe_util:cast(?wxHelpEvent_SetPosition,[ThisRef,Pos]).
 
  %% From wxEvent
 %% @hidden

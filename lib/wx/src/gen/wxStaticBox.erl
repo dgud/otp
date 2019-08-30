@@ -83,8 +83,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticbox.html#wxstaticboxwxstaticbox">external documentation</a>.
 -spec new() -> wxStaticBox().
 new() ->
-  wxe_util:construct(?wxStaticBox_new_0,
-  <<>>).
+  wxe_util:construct(?wxStaticBox_new_0,[]).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxStaticBox() when
@@ -104,13 +103,7 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxStaticBox_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((4+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxStaticBox_new_4,[ParentRef,Id,Label_UC, Options]).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -131,13 +124,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,La
   ?CLASS(ThisT,wxStaticBox),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStaticBox_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxStaticBox_Create,[ThisRef,ParentRef,Id,Label_UC, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticBox()) -> 'ok'.

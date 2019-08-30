@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -65,8 +65,7 @@ new(Orient,Win)
 new(#wx_ref{type=BoxT,ref=BoxRef},Orient)
  when is_integer(Orient) ->
   ?CLASS(BoxT,wxStaticBox),
-  wxe_util:construct(?wxStaticBoxSizer_new_2,
-  <<BoxRef:32/?UI,Orient:32/?UI>>).
+  wxe_util:construct(?wxStaticBoxSizer_new_2,[BoxRef,Orient]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticboxsizer.html#wxstaticboxsizerwxstaticboxsizer">external documentation</a>.
 -spec new(Orient, Win, [Option]) -> wxStaticBoxSizer() when
@@ -75,19 +74,14 @@ new(#wx_ref{type=BoxT,ref=BoxRef},Orient)
 new(Orient,#wx_ref{type=WinT,ref=WinRef}, Options)
  when is_integer(Orient),is_list(Options) ->
   ?CLASS(WinT,wxWindow),
-  MOpts = fun({label, Label}, Acc) ->   Label_UC = unicode:characters_to_binary([Label,0]),[<<1:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxStaticBoxSizer_new_3,
-  <<Orient:32/?UI,WinRef:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxStaticBoxSizer_new_3,[Orient,WinRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticboxsizer.html#wxstaticboxsizergetstaticbox">external documentation</a>.
 -spec getStaticBox(This) -> wxStaticBox:wxStaticBox() when
 	This::wxStaticBoxSizer().
 getStaticBox(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStaticBoxSizer),
-  wxe_util:call(?wxStaticBoxSizer_GetStaticBox,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStaticBoxSizer_GetStaticBox,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticBoxSizer()) -> 'ok'.

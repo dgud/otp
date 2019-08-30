@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -40,16 +40,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Flag::boolean().
 enable(Flag)
  when is_boolean(Flag) ->
-  wxe_util:cast(?wxToolTip_Enable,
-  <<(wxe_util:from_bool(Flag)):32/?UI>>).
+  wxe_util:cast(?wxToolTip_Enable,[Flag]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtooltip.html#wxtooltipsetdelay">external documentation</a>.
 -spec setDelay(Msecs) -> 'ok' when
 	Msecs::integer().
 setDelay(Msecs)
  when is_integer(Msecs) ->
-  wxe_util:cast(?wxToolTip_SetDelay,
-  <<Msecs:32/?UI>>).
+  wxe_util:cast(?wxToolTip_SetDelay,[Msecs]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtooltip.html#wxtooltipwxtooltip">external documentation</a>.
 -spec new(Tip) -> wxToolTip() when
@@ -57,8 +55,7 @@ setDelay(Msecs)
 new(Tip)
  when ?is_chardata(Tip) ->
   Tip_UC = unicode:characters_to_binary([Tip,0]),
-  wxe_util:construct(?wxToolTip_new,
-  <<(byte_size(Tip_UC)):32/?UI,(Tip_UC)/binary, 0:(((8- ((4+byte_size(Tip_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:construct(?wxToolTip_new,[Tip_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtooltip.html#wxtooltipsettip">external documentation</a>.
 -spec setTip(This, Tip) -> 'ok' when
@@ -67,24 +64,21 @@ setTip(#wx_ref{type=ThisT,ref=ThisRef},Tip)
  when ?is_chardata(Tip) ->
   ?CLASS(ThisT,wxToolTip),
   Tip_UC = unicode:characters_to_binary([Tip,0]),
-  wxe_util:cast(?wxToolTip_SetTip,
-  <<ThisRef:32/?UI,(byte_size(Tip_UC)):32/?UI,(Tip_UC)/binary, 0:(((8- ((0+byte_size(Tip_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxToolTip_SetTip,[ThisRef,Tip_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtooltip.html#wxtooltipgettip">external documentation</a>.
 -spec getTip(This) -> unicode:charlist() when
 	This::wxToolTip().
 getTip(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolTip),
-  wxe_util:call(?wxToolTip_GetTip,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolTip_GetTip,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtooltip.html#wxtooltipgetwindow">external documentation</a>.
 -spec getWindow(This) -> wxWindow:wxWindow() when
 	This::wxToolTip().
 getWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxToolTip),
-  wxe_util:call(?wxToolTip_GetWindow,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxToolTip_GetWindow,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxToolTip()) -> 'ok'.

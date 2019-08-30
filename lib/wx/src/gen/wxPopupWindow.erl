@@ -81,8 +81,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpopupwindow.html#wxpopupwindowwxpopupwindow">external documentation</a>.
 -spec new() -> wxPopupWindow().
 new() ->
-  wxe_util:construct(?wxPopupWindow_new_0,
-  <<>>).
+  wxe_util:construct(?wxPopupWindow_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxPopupWindow() when
@@ -99,11 +98,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxPopupWindow_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxPopupWindow_new_2,[ParentRef, Options]).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -121,20 +116,15 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
  when is_list(Options) ->
   ?CLASS(ThisT,wxPopupWindow),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxPopupWindow_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxPopupWindow_Create,[ThisRef,ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpopupwindow.html#wxpopupwindowposition">external documentation</a>.
 -spec position(This, PtOrigin, Size) -> 'ok' when
 	This::wxPopupWindow(), PtOrigin::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}.
-position(#wx_ref{type=ThisT,ref=ThisRef},{PtOriginX,PtOriginY},{SizeW,SizeH})
+position(#wx_ref{type=ThisT,ref=ThisRef},{PtOriginX,PtOriginY} = PtOrigin,{SizeW,SizeH} = Size)
  when is_integer(PtOriginX),is_integer(PtOriginY),is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxPopupWindow),
-  wxe_util:cast(?wxPopupWindow_Position,
-  <<ThisRef:32/?UI,PtOriginX:32/?UI,PtOriginY:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:cast(?wxPopupWindow_Position,[ThisRef,PtOrigin,Size]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPopupWindow()) -> 'ok'.

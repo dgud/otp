@@ -89,16 +89,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 setInternalMargin(#wx_ref{type=ThisT,ref=ThisRef},Newmargin)
  when is_integer(Newmargin) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:cast(?wxPickerBase_SetInternalMargin,
-  <<ThisRef:32/?UI,Newmargin:32/?UI>>).
+  wxe_util:cast(?wxPickerBase_SetInternalMargin,[ThisRef,Newmargin]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasegetinternalmargin">external documentation</a>.
 -spec getInternalMargin(This) -> integer() when
 	This::wxPickerBase().
 getInternalMargin(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_GetInternalMargin,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_GetInternalMargin,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasesettextctrlproportion">external documentation</a>.
 -spec setTextCtrlProportion(This, Prop) -> 'ok' when
@@ -106,8 +104,7 @@ getInternalMargin(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setTextCtrlProportion(#wx_ref{type=ThisT,ref=ThisRef},Prop)
  when is_integer(Prop) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:cast(?wxPickerBase_SetTextCtrlProportion,
-  <<ThisRef:32/?UI,Prop:32/?UI>>).
+  wxe_util:cast(?wxPickerBase_SetTextCtrlProportion,[ThisRef,Prop]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasesetpickerctrlproportion">external documentation</a>.
 -spec setPickerCtrlProportion(This, Prop) -> 'ok' when
@@ -115,48 +112,42 @@ setTextCtrlProportion(#wx_ref{type=ThisT,ref=ThisRef},Prop)
 setPickerCtrlProportion(#wx_ref{type=ThisT,ref=ThisRef},Prop)
  when is_integer(Prop) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:cast(?wxPickerBase_SetPickerCtrlProportion,
-  <<ThisRef:32/?UI,Prop:32/?UI>>).
+  wxe_util:cast(?wxPickerBase_SetPickerCtrlProportion,[ThisRef,Prop]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasegettextctrlproportion">external documentation</a>.
 -spec getTextCtrlProportion(This) -> integer() when
 	This::wxPickerBase().
 getTextCtrlProportion(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_GetTextCtrlProportion,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_GetTextCtrlProportion,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasegetpickerctrlproportion">external documentation</a>.
 -spec getPickerCtrlProportion(This) -> integer() when
 	This::wxPickerBase().
 getPickerCtrlProportion(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_GetPickerCtrlProportion,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_GetPickerCtrlProportion,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasehastextctrl">external documentation</a>.
 -spec hasTextCtrl(This) -> boolean() when
 	This::wxPickerBase().
 hasTextCtrl(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_HasTextCtrl,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_HasTextCtrl,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbasegettextctrl">external documentation</a>.
 -spec getTextCtrl(This) -> wxTextCtrl:wxTextCtrl() when
 	This::wxPickerBase().
 getTextCtrl(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_GetTextCtrl,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_GetTextCtrl,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbaseistextctrlgrowable">external documentation</a>.
 -spec isTextCtrlGrowable(This) -> boolean() when
 	This::wxPickerBase().
 isTextCtrlGrowable(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_IsTextCtrlGrowable,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_IsTextCtrlGrowable,[ThisRef]).
 
 %% @equiv setPickerCtrlGrowable(This, [])
 -spec setPickerCtrlGrowable(This) -> 'ok' when
@@ -173,11 +164,7 @@ setPickerCtrlGrowable(This)
 setPickerCtrlGrowable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPickerBase),
-  MOpts = fun({grow, Grow}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Grow)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxPickerBase_SetPickerCtrlGrowable,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxPickerBase_SetPickerCtrlGrowable,[ThisRef, Options]).
 
 %% @equiv setTextCtrlGrowable(This, [])
 -spec setTextCtrlGrowable(This) -> 'ok' when
@@ -194,19 +181,14 @@ setTextCtrlGrowable(This)
 setTextCtrlGrowable(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPickerBase),
-  MOpts = fun({grow, Grow}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Grow)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxPickerBase_SetTextCtrlGrowable,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxPickerBase_SetTextCtrlGrowable,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbaseispickerctrlgrowable">external documentation</a>.
 -spec isPickerCtrlGrowable(This) -> boolean() when
 	This::wxPickerBase().
 isPickerCtrlGrowable(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:call(?wxPickerBase_IsPickerCtrlGrowable,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPickerBase_IsPickerCtrlGrowable,[ThisRef]).
 
  %% From wxControl
 %% @hidden

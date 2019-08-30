@@ -87,8 +87,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 clearColumnImage(#wx_ref{type=ThisT,ref=ThisRef},Col)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_ClearColumnImage,
-  <<ThisRef:32/?UI,Col:32/?UI>>).
+  wxe_util:cast(?wxListView_ClearColumnImage,[ThisRef,Col]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewfocus">external documentation</a>.
 -spec focus(This, Index) -> 'ok' when
@@ -96,24 +95,21 @@ clearColumnImage(#wx_ref{type=ThisT,ref=ThisRef},Col)
 focus(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_Focus,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:cast(?wxListView_Focus,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewgetfirstselected">external documentation</a>.
 -spec getFirstSelected(This) -> integer() when
 	This::wxListView().
 getFirstSelected(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_GetFirstSelected,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListView_GetFirstSelected,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewgetfocuseditem">external documentation</a>.
 -spec getFocusedItem(This) -> integer() when
 	This::wxListView().
 getFocusedItem(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_GetFocusedItem,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListView_GetFocusedItem,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewgetnextselected">external documentation</a>.
 -spec getNextSelected(This, Item) -> integer() when
@@ -121,8 +117,7 @@ getFocusedItem(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getNextSelected(#wx_ref{type=ThisT,ref=ThisRef},Item)
  when is_integer(Item) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_GetNextSelected,
-  <<ThisRef:32/?UI,Item:32/?UI>>).
+  wxe_util:call(?wxListView_GetNextSelected,[ThisRef,Item]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewisselected">external documentation</a>.
 -spec isSelected(This, Index) -> boolean() when
@@ -130,8 +125,7 @@ getNextSelected(#wx_ref{type=ThisT,ref=ThisRef},Item)
 isSelected(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:call(?wxListView_IsSelected,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxListView_IsSelected,[ThisRef,Index]).
 
 %% @equiv select(This,N, [])
 -spec select(This, N) -> 'ok' when
@@ -148,11 +142,7 @@ select(This,N)
 select(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxListView),
-  MOpts = fun({on, On}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(On)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxListView_Select,
-  <<ThisRef:32/?UI,N:32/?UI, BinOpt/binary>>).
+  wxe_util:cast(?wxListView_Select,[ThisRef,N, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewsetcolumnimage">external documentation</a>.
 -spec setColumnImage(This, Col, Image) -> 'ok' when
@@ -160,8 +150,7 @@ select(#wx_ref{type=ThisT,ref=ThisRef},N, Options)
 setColumnImage(#wx_ref{type=ThisT,ref=ThisRef},Col,Image)
  when is_integer(Col),is_integer(Image) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:cast(?wxListView_SetColumnImage,
-  <<ThisRef:32/?UI,Col:32/?UI,Image:32/?UI>>).
+  wxe_util:cast(?wxListView_SetColumnImage,[ThisRef,Col,Image]).
 
  %% From wxControl
 %% @hidden

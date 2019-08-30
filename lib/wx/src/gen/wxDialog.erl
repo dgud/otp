@@ -90,8 +90,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogwxdialog">external documentation</a>.
 -spec new() -> wxDialog().
 new() ->
-  wxe_util:construct(?wxDialog_new_0,
-  <<>>).
+  wxe_util:construct(?wxDialog_new_0,[]).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxDialog() when
@@ -111,13 +110,7 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxDialog_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((4+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxDialog_new_4,[ParentRef,Id,Title_UC, Options]).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -138,13 +131,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Ti
   ?CLASS(ThisT,wxDialog),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxDialog_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((0+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxDialog_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogcreatebuttonsizer">external documentation</a>.
 -spec createButtonSizer(This, Flags) -> wxSizer:wxSizer() when
@@ -152,8 +139,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Ti
 createButtonSizer(#wx_ref{type=ThisT,ref=ThisRef},Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_CreateButtonSizer,
-  <<ThisRef:32/?UI,Flags:32/?UI>>).
+  wxe_util:call(?wxDialog_CreateButtonSizer,[ThisRef,Flags]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogcreatestddialogbuttonsizer">external documentation</a>.
 -spec createStdDialogButtonSizer(This, Flags) -> wxStdDialogButtonSizer:wxStdDialogButtonSizer() when
@@ -161,8 +147,7 @@ createButtonSizer(#wx_ref{type=ThisT,ref=ThisRef},Flags)
 createStdDialogButtonSizer(#wx_ref{type=ThisT,ref=ThisRef},Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_CreateStdDialogButtonSizer,
-  <<ThisRef:32/?UI,Flags:32/?UI>>).
+  wxe_util:call(?wxDialog_CreateStdDialogButtonSizer,[ThisRef,Flags]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogendmodal">external documentation</a>.
 -spec endModal(This, RetCode) -> 'ok' when
@@ -170,32 +155,28 @@ createStdDialogButtonSizer(#wx_ref{type=ThisT,ref=ThisRef},Flags)
 endModal(#wx_ref{type=ThisT,ref=ThisRef},RetCode)
  when is_integer(RetCode) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:cast(?wxDialog_EndModal,
-  <<ThisRef:32/?UI,RetCode:32/?UI>>).
+  wxe_util:cast(?wxDialog_EndModal,[ThisRef,RetCode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialoggetaffirmativeid">external documentation</a>.
 -spec getAffirmativeId(This) -> integer() when
 	This::wxDialog().
 getAffirmativeId(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_GetAffirmativeId,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDialog_GetAffirmativeId,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialoggetreturncode">external documentation</a>.
 -spec getReturnCode(This) -> integer() when
 	This::wxDialog().
 getReturnCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_GetReturnCode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDialog_GetReturnCode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogismodal">external documentation</a>.
 -spec isModal(This) -> boolean() when
 	This::wxDialog().
 isModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_IsModal,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDialog_IsModal,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogsetaffirmativeid">external documentation</a>.
 -spec setAffirmativeId(This, AffirmativeId) -> 'ok' when
@@ -203,8 +184,7 @@ isModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setAffirmativeId(#wx_ref{type=ThisT,ref=ThisRef},AffirmativeId)
  when is_integer(AffirmativeId) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:cast(?wxDialog_SetAffirmativeId,
-  <<ThisRef:32/?UI,AffirmativeId:32/?UI>>).
+  wxe_util:cast(?wxDialog_SetAffirmativeId,[ThisRef,AffirmativeId]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogsetreturncode">external documentation</a>.
 -spec setReturnCode(This, ReturnCode) -> 'ok' when
@@ -212,8 +192,7 @@ setAffirmativeId(#wx_ref{type=ThisT,ref=ThisRef},AffirmativeId)
 setReturnCode(#wx_ref{type=ThisT,ref=ThisRef},ReturnCode)
  when is_integer(ReturnCode) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:cast(?wxDialog_SetReturnCode,
-  <<ThisRef:32/?UI,ReturnCode:32/?UI>>).
+  wxe_util:cast(?wxDialog_SetReturnCode,[ThisRef,ReturnCode]).
 
 %% @equiv show(This, [])
 -spec show(This) -> boolean() when
@@ -230,19 +209,14 @@ show(This)
 show(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxDialog),
-  MOpts = fun({show, Show}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxDialog_Show,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxDialog_Show,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdialog.html#wxdialogshowmodal">external documentation</a>.
 -spec showModal(This) -> integer() when
 	This::wxDialog().
 showModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDialog),
-  wxe_util:call(?wxDialog_ShowModal,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDialog_ShowModal,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDialog()) -> 'ok'.

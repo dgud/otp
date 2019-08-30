@@ -34,6 +34,8 @@ ERL_NIF_TERM WXE_ATOM_wx_ref;
 ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 
 ErlNifResourceType* wxeMemEnvRt = NULL;
+int wxe_debug = 0;
+
 extern void wxe_initOpenGL(void * fptr);
 
 // void destroyMemEnv(wxeMemEnv *memenv);
@@ -62,9 +64,11 @@ static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM ar
     void *ptr;
     if(!enif_get_int(env, argv[argc-1], &op))
         return enif_make_badarg(env);
-    if(argc < 2 || !enif_get_resource(env, argv[argc-2], wxeMemEnvRt, &ptr))
-        ptr = NULL;
-    push_nif(env, argc-2, argv, op, ptr);
+    if(argc < 2 || !enif_get_resource(env, argv[argc-2], wxeMemEnvRt, &ptr)) {
+        push_nif(env, argc-1, argv, op, NULL);
+    } else {
+        push_nif(env, argc-2, argv, op, ptr);
+    }
     return WXE_ATOM_ok;
 }
 
@@ -92,6 +96,17 @@ static ERL_NIF_TERM wxe_delete_env(ErlNifEnv* env, int argc, const ERL_NIF_TERM 
     return WXE_ATOM_ok;
 }
 
+static ERL_NIF_TERM wxe_debug_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    int debug;
+    if(enif_get_int(env, argv[0], &debug)) {
+        if(debug) wxe_debug = 1;
+        else wxe_debug = 0;
+    }
+    return enif_make_int(env, wxe_debug);
+}
+
+
 // Callback
 static void wxe_destroy_env(ErlNifEnv* env, void *obj)
 {
@@ -104,18 +119,6 @@ static void wxe_destroy_env(ErlNifEnv* env, void *obj)
 static void wxe_process_down(ErlNifEnv* env, void *obj, ErlNifPid *pid, ErlNifMonitor *mon)
 {
     meta_command(env, WXE_CB_DIED, obj);
-}
-
-static void wxe_badarg(ErlNifEnv* env, ErlNifPid *self, int op, char * argc) {
-    fprintf(stderr, "BADARG FIXME\r\n");
-    /* const char * func; */
-    /* func = gl_fns[op-GLE_LIB_START].name; */
-    /* enif_send(NULL, self, env, */
-    /*           enif_make_tuple3(env, WXE_ATOM_error, */
-    /*                            enif_make_tuple2(env, enif_make_int(env, op), */
-    /*                                             enif_make_string(env, func, ERL_NIF_LATIN1)), */
-    /*                            enif_make_tuple2(env, WXE_ATOM_badarg, */
-    /*                                             enif_make_string(env, argc, ERL_NIF_LATIN1)))); */
 }
 
 static ErlNifFunc nif_funcs[] =
@@ -135,7 +138,8 @@ static ErlNifFunc nif_funcs[] =
     {"queue_cmd",13, wx_setup_cmd},
     {"queue_cmd",14, wx_setup_cmd},
     {"init_opengl", 1, wx_init_opengl},
-    {"make_env", 0, wxe_make_env}
+    {"make_env", 0, wxe_make_env},
+    {"debug_driver", 1, wxe_debug_driver}
 };
 
 void wxe_init_atoms(ErlNifEnv *env) {
@@ -147,8 +151,8 @@ void wxe_init_atoms(ErlNifEnv *env) {
 
     WXE_ATOM_wx = enif_make_atom(env, "wx");
     WXE_ATOM_wx_ref = enif_make_atom(env, "wx_ref");
-    WXE_ATOM_reply = enif_make_atom(env, "_wx_result_");
-    WXE_ATOM_error = enif_make_atom(env, "_wx_error_");
+    WXE_ATOM_reply = enif_make_atom(env, "_wxe_result_");
+    WXE_ATOM_error = enif_make_atom(env, "_wxe_error_");
     WXE_ATOM__wx_invoke_cb_ = enif_make_atom(env, "_wx_invoke_cb_");
 }
 

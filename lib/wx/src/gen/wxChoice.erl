@@ -91,8 +91,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoice.html#wxchoicewxchoice">external documentation</a>.
 -spec new() -> wxChoice().
 new() ->
-  wxe_util:construct(?wxChoice_new_0,
-  <<>>).
+  wxe_util:construct(?wxChoice_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxChoice() when
@@ -113,21 +112,13 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({choices, Choices}, Acc) ->   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) ||               ChoicesTemp <- Choices],[<<3:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxChoice_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxChoice_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id,Pos,Size,Choices, [])
 -spec create(This, Parent, Id, Pos, Size, Choices) -> boolean() when
 	This::wxChoice(), Parent::wxWindow:wxWindow(), Id::integer(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()].
 
-create(This,Parent,Id,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
+create(This,Parent,Id,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
  when is_record(This, wx_ref),is_record(Parent, wx_ref),is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices) ->
   create(This,Parent,Id,Pos,Size,Choices, []).
 
@@ -136,18 +127,13 @@ create(This,Parent,Id,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
 	This::wxChoice(), Parent::wxWindow:wxWindow(), Id::integer(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()],
 	Option :: {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{PosX,PosY},{SizeW,SizeH},Choices, Options)
+create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxChoice),
   ?CLASS(ParentT,wxWindow),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<2:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxChoice_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,PosX:32/?UI,PosY:32/?UI,SizeW:32/?UI,SizeH:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxChoice_Create,[ThisRef,ParentRef,Id,Pos,Size,Choices_UCA, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoice.html#wxchoicedelete">external documentation</a>.
 -spec delete(This, N) -> 'ok' when
@@ -155,16 +141,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{P
 delete(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxChoice),
-  wxe_util:cast(?wxChoice_Delete,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:cast(?wxChoice_Delete,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoice.html#wxchoicegetcolumns">external documentation</a>.
 -spec getColumns(This) -> integer() when
 	This::wxChoice().
 getColumns(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxChoice),
-  wxe_util:call(?wxChoice_GetColumns,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxChoice_GetColumns,[ThisRef]).
 
 %% @equiv setColumns(This, [])
 -spec setColumns(This) -> 'ok' when
@@ -181,11 +165,7 @@ setColumns(This)
 setColumns(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxChoice),
-  MOpts = fun({n, N}, Acc) -> [<<1:32/?UI,N:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxChoice_SetColumns,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxChoice_SetColumns,[ThisRef, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxChoice()) -> 'ok'.

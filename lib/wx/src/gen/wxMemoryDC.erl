@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -64,8 +64,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmemorydc.html#wxmemorydcwxmemorydc">external documentation</a>.
 -spec new() -> wxMemoryDC().
 new() ->
-  wxe_util:construct(?wxMemoryDC_new_0,
-  <<>>).
+  wxe_util:construct(?wxMemoryDC_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmemorydc.html#wxmemorydcwxmemorydc">external documentation</a>.
 -spec new(Dc) -> wxMemoryDC() when
@@ -77,8 +76,7 @@ new(#wx_ref{type=DcT,ref=DcRef}) ->
      _ -> ?CLASS(DcT,wxBitmap),
        ?wxMemoryDC_new_1_0
      end,
-  wxe_util:construct(DcOP,
-  <<DcRef:32/?UI>>).
+  wxe_util:construct(DcOP,[DcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmemorydc.html#wxmemorydcselectobject">external documentation</a>.
 -spec selectObject(This, Bmp) -> 'ok' when
@@ -86,8 +84,7 @@ new(#wx_ref{type=DcT,ref=DcRef}) ->
 selectObject(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BmpT,ref=BmpRef}) ->
   ?CLASS(ThisT,wxMemoryDC),
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:cast(?wxMemoryDC_SelectObject,
-  <<ThisRef:32/?UI,BmpRef:32/?UI>>).
+  wxe_util:cast(?wxMemoryDC_SelectObject,[ThisRef,BmpRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmemorydc.html#wxmemorydcselectobjectassource">external documentation</a>.
 -spec selectObjectAsSource(This, Bmp) -> 'ok' when
@@ -95,8 +92,7 @@ selectObject(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BmpT,ref=BmpRef}) ->
 selectObjectAsSource(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BmpT,ref=BmpRef}) ->
   ?CLASS(ThisT,wxMemoryDC),
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:cast(?wxMemoryDC_SelectObjectAsSource,
-  <<ThisRef:32/?UI,BmpRef:32/?UI>>).
+  wxe_util:cast(?wxMemoryDC_SelectObjectAsSource,[ThisRef,BmpRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMemoryDC()) -> 'ok'.

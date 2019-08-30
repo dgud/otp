@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -51,112 +51,98 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxKeyEvent().
 altDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_AltDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_AltDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventcmddown">external documentation</a>.
 -spec cmdDown(This) -> boolean() when
 	This::wxKeyEvent().
 cmdDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_CmdDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_CmdDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventcontroldown">external documentation</a>.
 -spec controlDown(This) -> boolean() when
 	This::wxKeyEvent().
 controlDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_ControlDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_ControlDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetkeycode">external documentation</a>.
 -spec getKeyCode(This) -> integer() when
 	This::wxKeyEvent().
 getKeyCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetKeyCode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetKeyCode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetmodifiers">external documentation</a>.
 -spec getModifiers(This) -> integer() when
 	This::wxKeyEvent().
 getModifiers(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetModifiers,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetModifiers,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxKeyEvent().
 getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetPosition,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetPosition,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetrawkeycode">external documentation</a>.
 -spec getRawKeyCode(This) -> integer() when
 	This::wxKeyEvent().
 getRawKeyCode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetRawKeyCode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetRawKeyCode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetrawkeyflags">external documentation</a>.
 -spec getRawKeyFlags(This) -> integer() when
 	This::wxKeyEvent().
 getRawKeyFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetRawKeyFlags,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetRawKeyFlags,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetunicodekey">external documentation</a>.
 -spec getUnicodeKey(This) -> integer() when
 	This::wxKeyEvent().
 getUnicodeKey(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetUnicodeKey,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetUnicodeKey,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgetx">external documentation</a>.
 -spec getX(This) -> integer() when
 	This::wxKeyEvent().
 getX(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetX,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetX,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventgety">external documentation</a>.
 -spec getY(This) -> integer() when
 	This::wxKeyEvent().
 getY(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_GetY,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_GetY,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventhasmodifiers">external documentation</a>.
 -spec hasModifiers(This) -> boolean() when
 	This::wxKeyEvent().
 hasModifiers(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_HasModifiers,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_HasModifiers,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventmetadown">external documentation</a>.
 -spec metaDown(This) -> boolean() when
 	This::wxKeyEvent().
 metaDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_MetaDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_MetaDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxkeyevent.html#wxkeyeventshiftdown">external documentation</a>.
 -spec shiftDown(This) -> boolean() when
 	This::wxKeyEvent().
 shiftDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxKeyEvent),
-  wxe_util:call(?wxKeyEvent_ShiftDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxKeyEvent_ShiftDown,[ThisRef]).
 
  %% From wxEvent
 %% @hidden

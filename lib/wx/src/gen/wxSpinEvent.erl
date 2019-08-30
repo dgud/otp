@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -55,8 +55,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxSpinEvent().
 getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSpinEvent),
-  wxe_util:call(?wxSpinEvent_GetPosition,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSpinEvent_GetPosition,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinevent.html#wxspineventsetposition">external documentation</a>.
 -spec setPosition(This, Pos) -> 'ok' when
@@ -64,8 +63,7 @@ getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxSpinEvent),
-  wxe_util:cast(?wxSpinEvent_SetPosition,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxSpinEvent_SetPosition,[ThisRef,Pos]).
 
  %% From wxNotifyEvent
 %% @hidden

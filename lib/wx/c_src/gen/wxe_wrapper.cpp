@@ -111,7 +111,7 @@ void wxWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxWindow * Result = new EwxWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -161,7 +161,7 @@ void wxWindow_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxWindow * Result = new EwxWindow(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -331,7 +331,7 @@ void wxWindow_ClientToScreen_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(116,"y"); // int
   if(!This) throw wxe_badarg("This");
   This->ClientToScreen(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
@@ -357,7 +357,7 @@ void wxWindow_ClientToScreen_1(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->ClientToScreen(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -385,7 +385,7 @@ void wxWindow_Close(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Close(force);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -408,7 +408,7 @@ void wxWindow_ConvertDialogToPixels(WxeApp *app, wxeCommand& Ecmd)
   wxSize sz = wxSize(szW,szH);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->ConvertDialogToPixels(sz);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -431,7 +431,7 @@ void wxWindow_ConvertPixelsToDialog(WxeApp *app, wxeCommand& Ecmd)
   wxSize sz = wxSize(szW,szH);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->ConvertPixelsToDialog(sz);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -446,7 +446,7 @@ void wxWindow_Destroy(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Destroy();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -461,7 +461,7 @@ void wxWindow_DestroyChildren(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DestroyChildren();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -476,7 +476,7 @@ void wxWindow_Disable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Disable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -521,7 +521,7 @@ void wxWindow_Enable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Enable(enable);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -531,7 +531,7 @@ void wxWindow_FindFocus(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxWindow * Result = (wxWindow*)wxWindow::FindFocus();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -548,7 +548,7 @@ void wxWindow_FindWindow_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &winid)) Badarg(129,"winid");
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->FindWindow(winid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -563,11 +563,11 @@ void wxWindow_FindWindow_1_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(130,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(130,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->FindWindow(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -594,7 +594,7 @@ void wxWindow_FindWindowById(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(131,"Options");
   };
   wxWindow * Result = (wxWindow*)wxWindow::FindWindowById(winid,parent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -608,7 +608,7 @@ void wxWindow_FindWindowByName(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(132,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(132,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -623,7 +623,7 @@ void wxWindow_FindWindowByName(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(132,"Options");
   };
   wxWindow * Result = (wxWindow*)wxWindow::FindWindowByName(name,parent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -637,7 +637,7 @@ void wxWindow_FindWindowByLabel(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[0], &label_bin)) Badarg(133,"label");
+  if(!enif_inspect_binary(env, argv[0], &label_bin)) Badarg(133,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -652,7 +652,7 @@ void wxWindow_FindWindowByLabel(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(133,"Options");
   };
   wxWindow * Result = (wxWindow*)wxWindow::FindWindowByLabel(label,parent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -706,7 +706,7 @@ void wxWindow_GetAcceleratorTable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAcceleratorTable * Result = (wxAcceleratorTable*)This->GetAcceleratorTable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAcceleratorTable"));
 
 }
@@ -721,7 +721,7 @@ void wxWindow_GetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -736,7 +736,7 @@ void wxWindow_GetBackgroundStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetBackgroundStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -751,7 +751,7 @@ void wxWindow_GetBestSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetBestSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -766,7 +766,7 @@ void wxWindow_GetCaret(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCaret * Result = (wxCaret*)This->GetCaret();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCaret"));
 
 }
@@ -776,7 +776,7 @@ void wxWindow_GetCapture(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxWindow * Result = (wxWindow*)wxWindow::GetCapture();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -791,7 +791,7 @@ void wxWindow_GetCharHeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCharHeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -806,7 +806,7 @@ void wxWindow_GetCharWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCharWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -821,7 +821,7 @@ void wxWindow_GetChildren(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxWindowList Result = This->GetChildren();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_list_objs(Result, app, "wxWindow"));
 
 }
@@ -836,7 +836,7 @@ void wxWindow_GetClientSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetClientSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -851,7 +851,7 @@ void wxWindow_GetContainingSizer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizer * Result = (wxSizer*)This->GetContainingSizer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizer"));
 
 }
@@ -866,7 +866,7 @@ void wxWindow_GetCursor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxCursor * Result = &This->GetCursor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCursor"));
 
 }
@@ -881,7 +881,7 @@ void wxWindow_GetDropTarget(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxDropTarget * Result = (wxDropTarget*)This->GetDropTarget();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDropTarget"));
 
 }
@@ -896,7 +896,7 @@ void wxWindow_GetEventHandler(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxEvtHandler * Result = (wxEvtHandler*)This->GetEventHandler();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxEvtHandler"));
 
 }
@@ -911,7 +911,7 @@ void wxWindow_GetExtraStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetExtraStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -926,7 +926,7 @@ void wxWindow_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -941,7 +941,7 @@ void wxWindow_GetForegroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetForegroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -956,7 +956,7 @@ void wxWindow_GetGrandParent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetGrandParent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -971,7 +971,7 @@ void wxWindow_GetHandle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxUIntPtr * Result = (wxUIntPtr*)This->GetHandle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -986,7 +986,7 @@ void wxWindow_GetHelpText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetHelpText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1001,7 +1001,7 @@ void wxWindow_GetId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindowID Result = This->GetId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -1016,7 +1016,7 @@ void wxWindow_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1031,7 +1031,7 @@ void wxWindow_GetMaxSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetMaxSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1046,7 +1046,7 @@ void wxWindow_GetMinSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetMinSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1061,7 +1061,7 @@ void wxWindow_GetName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1076,7 +1076,7 @@ void wxWindow_GetParent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetParent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -1091,7 +1091,7 @@ void wxWindow_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1106,7 +1106,7 @@ void wxWindow_GetRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1121,7 +1121,7 @@ void wxWindow_GetScreenPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetScreenPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1136,7 +1136,7 @@ void wxWindow_GetScreenRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetScreenRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1153,7 +1153,7 @@ void wxWindow_GetScrollPos(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &orient)) Badarg(172,"orient"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetScrollPos(orient);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -1170,7 +1170,7 @@ void wxWindow_GetScrollRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &orient)) Badarg(173,"orient"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetScrollRange(orient);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -1187,7 +1187,7 @@ void wxWindow_GetScrollThumb(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &orient)) Badarg(174,"orient"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetScrollThumb(orient);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -1202,7 +1202,7 @@ void wxWindow_GetSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1217,7 +1217,7 @@ void wxWindow_GetSizer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizer * Result = (wxSizer*)This->GetSizer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizer"));
 
 }
@@ -1237,7 +1237,7 @@ void wxWindow_GetTextExtent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(178,"string");
+  if(!enif_inspect_binary(env, argv[1], &string_bin)) Badarg(178,"string");
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -1253,7 +1253,7 @@ void wxWindow_GetTextExtent(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   This->GetTextExtent(string,&x,&y,&descent,&externalLeading,theFont);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_int(x),
   rt.make_int(y),
@@ -1273,7 +1273,7 @@ void wxWindow_GetToolTip(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxToolTip * Result = (wxToolTip*)This->GetToolTip();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolTip"));
 
 }
@@ -1288,7 +1288,7 @@ void wxWindow_GetUpdateRegion(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxRegion * Result = &This->GetUpdateRegion();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRegion"));
 
 }
@@ -1303,7 +1303,7 @@ void wxWindow_GetVirtualSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetVirtualSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -1318,7 +1318,7 @@ void wxWindow_GetWindowStyleFlag(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetWindowStyleFlag();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -1333,7 +1333,7 @@ void wxWindow_GetWindowVariant(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWindowVariant();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -1348,7 +1348,7 @@ void wxWindow_HasCapture(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasCapture();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1365,7 +1365,7 @@ void wxWindow_HasScrollbar(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &orient)) Badarg(187,"orient"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasScrollbar(orient);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1380,7 +1380,7 @@ void wxWindow_HasTransparentBackground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasTransparentBackground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1395,7 +1395,7 @@ void wxWindow_Hide(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Hide();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1449,7 +1449,7 @@ void wxWindow_IsEnabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1468,7 +1468,7 @@ void wxWindow_IsExposed_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(194,"y"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsExposed(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1491,7 +1491,7 @@ void wxWindow_IsExposed_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &h)) Badarg(195,"h"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsExposed(x,y,w,h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1514,7 +1514,7 @@ void wxWindow_IsExposed_1_0(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsExposed(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1541,7 +1541,7 @@ void wxWindow_IsExposed_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsExposed(rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1556,7 +1556,7 @@ void wxWindow_IsRetained(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsRetained();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1571,7 +1571,7 @@ void wxWindow_IsShown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsShown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1586,7 +1586,7 @@ void wxWindow_IsTopLevel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsTopLevel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1601,7 +1601,7 @@ void wxWindow_Layout(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Layout();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1616,7 +1616,7 @@ void wxWindow_LineDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LineDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1631,7 +1631,7 @@ void wxWindow_LineUp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LineUp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1792,7 +1792,7 @@ void wxWindow_Navigate(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Navigate(flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1807,7 +1807,7 @@ void wxWindow_PageDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->PageDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1822,7 +1822,7 @@ void wxWindow_PageUp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->PageUp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1850,7 +1850,7 @@ void wxWindow_PopEventHandler(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxEvtHandler * Result = (wxEvtHandler*)This->PopEventHandler(deleteHandler);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxEvtHandler"));
 
 }
@@ -1887,7 +1887,7 @@ void wxWindow_PopupMenu_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->PopupMenu(menu,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -1908,7 +1908,7 @@ void wxWindow_PopupMenu_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &y)) Badarg(215,"y"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->PopupMenu(menu,x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2044,7 +2044,7 @@ void wxWindow_Reparent(WxeApp *app, wxeCommand& Ecmd)
   newParent = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Reparent(newParent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2061,7 +2061,7 @@ void wxWindow_ScreenToClient_2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->ScreenToClient(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
@@ -2087,7 +2087,7 @@ void wxWindow_ScreenToClient_1(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->ScreenToClient(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -2104,7 +2104,7 @@ void wxWindow_ScrollLines(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &lines)) Badarg(225,"lines"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->ScrollLines(lines);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2121,7 +2121,7 @@ void wxWindow_ScrollPages(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pages)) Badarg(227,"pages"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->ScrollPages(pages);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2219,7 +2219,7 @@ void wxWindow_SetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   wxColour colour = wxColour(colourR,colourG,colourB,colourA);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetBackgroundColour(colour);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2236,7 +2236,7 @@ void wxWindow_SetBackgroundStyle(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], (int *) &style)) Badarg(232,"style"); // enum
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetBackgroundStyle(style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2346,7 +2346,7 @@ void wxWindow_SetCursor(WxeApp *app, wxeCommand& Ecmd)
   cursor = (wxCursor *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetCursor(*cursor);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2526,7 +2526,7 @@ void wxWindow_SetFont(WxeApp *app, wxeCommand& Ecmd)
   font = (wxFont *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetFont(*font);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2553,7 +2553,7 @@ void wxWindow_SetForegroundColour(WxeApp *app, wxeCommand& Ecmd)
   wxColour colour = wxColour(colourR,colourG,colourB,colourA);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetForegroundColour(colour);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -2568,7 +2568,7 @@ void wxWindow_SetHelpText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(250,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(250,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetHelpText(text);
@@ -2600,7 +2600,7 @@ void wxWindow_SetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(253,"label");
+  if(!enif_inspect_binary(env, argv[1], &label_bin)) Badarg(253,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(label);
@@ -2617,7 +2617,7 @@ void wxWindow_SetName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(254,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(254,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetName(name);
@@ -2984,7 +2984,7 @@ void wxWindow_SetToolTip_1_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary tip_bin;
   wxString tip;
-  if(enif_inspect_binary(env, argv[1], &tip_bin)) Badarg(267,"tip");
+  if(!enif_inspect_binary(env, argv[1], &tip_bin)) Badarg(267,"tip");
   tip = wxString(tip_bin.data, wxConvUTF8, tip_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetToolTip(tip);
@@ -3173,7 +3173,7 @@ void wxWindow_ShouldInheritColours(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ShouldInheritColours();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3201,7 +3201,7 @@ void wxWindow_Show(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(show);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3229,7 +3229,7 @@ void wxWindow_TransferDataFromWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->TransferDataFromWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3244,7 +3244,7 @@ void wxWindow_TransferDataToWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->TransferDataToWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3298,7 +3298,7 @@ void wxWindow_Validate(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Validate();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3333,7 +3333,7 @@ void wxWindow_SetTransparent(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &alpha)) Badarg(285,"alpha"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetTransparent(alpha);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3350,7 +3350,7 @@ void wxWindow_CanSetTransparent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanSetTransparent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3367,7 +3367,7 @@ void wxWindow_IsDoubleBuffered(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsDoubleBuffered();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3401,7 +3401,7 @@ void wxWindow_GetContentScaleFactor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   double Result = This->GetContentScaleFactor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_double(Result));
 
 }
@@ -3417,7 +3417,7 @@ void wxTopLevelWindow_GetIcon(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxIcon * Result = new EwxIcon(This->GetIcon()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -3432,7 +3432,7 @@ void wxTopLevelWindow_GetIcons(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxIconBundle * Result = &This->GetIcons();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIconBundle"));
 
 }
@@ -3447,7 +3447,7 @@ void wxTopLevelWindow_GetTitle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetTitle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -3462,7 +3462,7 @@ void wxTopLevelWindow_IsActive(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsActive();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3503,7 +3503,7 @@ void wxTopLevelWindow_IsFullScreen(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsFullScreen();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3518,7 +3518,7 @@ void wxTopLevelWindow_IsIconized(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsIconized();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3533,7 +3533,7 @@ void wxTopLevelWindow_IsMaximized(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsMaximized();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3684,7 +3684,7 @@ void wxTopLevelWindow_SetShape(WxeApp *app, wxeCommand& Ecmd)
   region = (wxRegion *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetShape(*region);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3699,7 +3699,7 @@ void wxTopLevelWindow_SetTitle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTopLevelWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[1], &title_bin)) Badarg(306,"title");
+  if(!enif_inspect_binary(env, argv[1], &title_bin)) Badarg(306,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetTitle(title);
@@ -3731,7 +3731,7 @@ void wxTopLevelWindow_ShowFullScreen(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ShowFullScreen(show,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3751,7 +3751,7 @@ void wxFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(309,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(309,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(309,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -3785,7 +3785,7 @@ void wxFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFrame * Result = new EwxFrame(parent,id,title,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFrame"));
 
 }
@@ -3796,7 +3796,7 @@ void wxFrame_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFrame * Result = new EwxFrame();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFrame"));
 
 }
@@ -3818,7 +3818,7 @@ void wxFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(313,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(313,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(313,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -3852,7 +3852,7 @@ void wxFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,title,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -3886,7 +3886,7 @@ void wxFrame_CreateStatusBar(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxStatusBar * Result = (wxStatusBar*)This->CreateStatusBar(number,style,id);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStatusBar"));
 
 }
@@ -3917,7 +3917,7 @@ void wxFrame_CreateToolBar(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxToolBar * Result = (wxToolBar*)This->CreateToolBar(style,id);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolBar"));
 
 }
@@ -3932,7 +3932,7 @@ void wxFrame_GetClientAreaOrigin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetClientAreaOrigin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -3947,7 +3947,7 @@ void wxFrame_GetMenuBar(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMenuBar * Result = (wxMenuBar*)This->GetMenuBar();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuBar"));
 
 }
@@ -3962,7 +3962,7 @@ void wxFrame_GetStatusBar(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxStatusBar * Result = (wxStatusBar*)This->GetStatusBar();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStatusBar"));
 
 }
@@ -3977,7 +3977,7 @@ void wxFrame_GetStatusBarPane(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStatusBarPane();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -3992,7 +3992,7 @@ void wxFrame_GetToolBar(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxToolBar * Result = (wxToolBar*)This->GetToolBar();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolBar"));
 
 }
@@ -4009,7 +4009,7 @@ void wxFrame_ProcessCommand(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &winid)) Badarg(321,"winid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->ProcessCommand(winid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -4083,7 +4083,7 @@ void wxFrame_SetStatusText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFrame *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(326,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(326,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -4152,7 +4152,7 @@ void wxMiniFrame_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMiniFrame * Result = new EwxMiniFrame();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMiniFrame"));
 
 }
@@ -4172,7 +4172,7 @@ void wxMiniFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(330,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(330,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(330,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -4206,7 +4206,7 @@ void wxMiniFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMiniFrame * Result = new EwxMiniFrame(parent,id,title,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMiniFrame"));
 
 }
@@ -4228,7 +4228,7 @@ void wxMiniFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(331,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(331,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(331,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -4262,7 +4262,7 @@ void wxMiniFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,title,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -4273,7 +4273,7 @@ void wxSplashScreen_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSplashScreen * Result = new EwxSplashScreen();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSplashScreen"));
 
 }
@@ -4329,7 +4329,7 @@ void wxSplashScreen_new_6(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSplashScreen * Result = new EwxSplashScreen(*bitmap,splashStyle,milliseconds,parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSplashScreen"));
 
 }
@@ -4344,7 +4344,7 @@ void wxSplashScreen_GetSplashStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplashScreen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetSplashStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -4359,7 +4359,7 @@ void wxSplashScreen_GetTimeout(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplashScreen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetTimeout();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -4370,7 +4370,7 @@ void wxPanel_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPanel * Result = new EwxPanel();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPanel"));
 
 }
@@ -4406,7 +4406,7 @@ void wxPanel_new_6(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPanel * Result = new EwxPanel(parent,x,y,width,height,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPanel"));
 
 }
@@ -4457,7 +4457,7 @@ void wxPanel_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPanel * Result = new EwxPanel(parent,winid,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPanel"));
 
 }
@@ -4494,7 +4494,7 @@ void wxScrolledWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxScrolledWindow * Result = new EwxScrolledWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxScrolledWindow"));
 
 }
@@ -4545,7 +4545,7 @@ void wxScrolledWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxScrolledWindow * Result = new EwxScrolledWindow(parent,winid,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxScrolledWindow"));
 
 }
@@ -4566,7 +4566,7 @@ void wxScrolledWindow_CalcScrolledPosition_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(347,"y"); // int
   if(!This) throw wxe_badarg("This");
   This->CalcScrolledPosition(x,y,&xx,&yy);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(xx),
   rt.make_int(yy));
@@ -4592,7 +4592,7 @@ void wxScrolledWindow_CalcScrolledPosition_1(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->CalcScrolledPosition(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -4613,7 +4613,7 @@ void wxScrolledWindow_CalcUnscrolledPosition_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(349,"y"); // int
   if(!This) throw wxe_badarg("This");
   This->CalcUnscrolledPosition(x,y,&xx,&yy);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(xx),
   rt.make_int(yy));
@@ -4639,7 +4639,7 @@ void wxScrolledWindow_CalcUnscrolledPosition_1(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->CalcUnscrolledPosition(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -4673,7 +4673,7 @@ void wxScrolledWindow_GetScrollPixelsPerUnit(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrolledWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetScrollPixelsPerUnit(&pixelsPerUnitX,&pixelsPerUnitY);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(pixelsPerUnitX),
   rt.make_int(pixelsPerUnitY));
@@ -4693,7 +4693,7 @@ void wxScrolledWindow_GetViewStart(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrolledWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetViewStart(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
@@ -4826,7 +4826,7 @@ void wxSashWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSashWindow * Result = new EwxSashWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSashWindow"));
 
 }
@@ -4877,7 +4877,7 @@ void wxSashWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSashWindow * Result = new EwxSashWindow(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSashWindow"));
 
 }
@@ -4894,7 +4894,7 @@ void wxSashWindow_GetSashVisible(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], (int *) &edge)) Badarg(363,"edge"); // enum
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSashVisible(edge);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -4909,7 +4909,7 @@ void wxSashWindow_GetMaximumSizeX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMaximumSizeX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -4924,7 +4924,7 @@ void wxSashWindow_GetMaximumSizeY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMaximumSizeY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -4939,7 +4939,7 @@ void wxSashWindow_GetMinimumSizeX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMinimumSizeX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -4954,7 +4954,7 @@ void wxSashWindow_GetMinimumSizeY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMinimumSizeY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -5042,7 +5042,7 @@ void wxSashLayoutWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSashLayoutWindow * Result = new EwxSashLayoutWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSashLayoutWindow"));
 
 }
@@ -5093,7 +5093,7 @@ void wxSashLayoutWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSashLayoutWindow * Result = new EwxSashLayoutWindow(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSashLayoutWindow"));
 
 }
@@ -5146,7 +5146,7 @@ void wxSashLayoutWindow_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5161,7 +5161,7 @@ void wxSashLayoutWindow_GetAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashLayoutWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetAlignment();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -5176,7 +5176,7 @@ void wxSashLayoutWindow_GetOrientation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashLayoutWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOrientation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -5238,7 +5238,7 @@ void wxGrid_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGrid * Result = new EwxGrid();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGrid"));
 
 }
@@ -5288,7 +5288,7 @@ void wxGrid_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGrid * Result = new EwxGrid(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGrid"));
 
 }
@@ -5326,7 +5326,7 @@ void wxGrid_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGrid * Result = new EwxGrid(parent,x,y,w,h,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGrid"));
 
 }
@@ -5357,7 +5357,7 @@ void wxGrid_AppendCols(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AppendCols(numCols,updateLabels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5388,7 +5388,7 @@ void wxGrid_AppendRows(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AppendRows(numRows,updateLabels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5553,7 +5553,7 @@ void wxGrid_BlockToDeviceRect(WxeApp *app, wxeCommand& Ecmd)
   wxGridCellCoords bottomRight = wxGridCellCoords(bottomRightR,bottomRightC);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->BlockToDeviceRect(topLeft,bottomRight);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -5568,7 +5568,7 @@ void wxGrid_CanDragColSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanDragColSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5583,7 +5583,7 @@ void wxGrid_CanDragRowSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanDragRowSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5598,7 +5598,7 @@ void wxGrid_CanDragGridSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanDragGridSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5613,7 +5613,7 @@ void wxGrid_CanEnableCellControl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanEnableCellControl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5632,7 +5632,7 @@ void wxGrid_CellToRect_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(399,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->CellToRect(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -5655,7 +5655,7 @@ void wxGrid_CellToRect_1(WxeApp *app, wxeCommand& Ecmd)
   wxGridCellCoords coords = wxGridCellCoords(coordsR,coordsC);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->CellToRect(coords);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -5713,7 +5713,7 @@ void wxGrid_CreateGrid(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->CreateGrid(numRows,numCols,selmode);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5747,7 +5747,7 @@ void wxGrid_DeleteCols(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteCols(pos,numCols,updateLabels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -5781,7 +5781,7 @@ void wxGrid_DeleteRows(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteRows(pos,numRows,updateLabels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -6032,7 +6032,7 @@ void wxGrid_GetBatchCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetBatchCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6053,7 +6053,7 @@ void wxGrid_GetCellAlignment(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(420,"col"); // int
   if(!This) throw wxe_badarg("This");
   This->GetCellAlignment(row,col,&horiz,&vert);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
@@ -6075,7 +6075,7 @@ void wxGrid_GetCellBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(421,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetCellBackgroundColour(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6094,7 +6094,7 @@ void wxGrid_GetCellEditor(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(422,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetCellEditor(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellEditor"));
 
 }
@@ -6113,7 +6113,7 @@ void wxGrid_GetCellFont(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(423,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetCellFont(row,col)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -6132,7 +6132,7 @@ void wxGrid_GetCellRenderer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(424,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellRenderer * Result = (wxGridCellRenderer*)This->GetCellRenderer(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellRenderer"));
 
 }
@@ -6151,7 +6151,7 @@ void wxGrid_GetCellTextColour(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(425,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetCellTextColour(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6170,7 +6170,7 @@ void wxGrid_GetCellValue_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(426,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetCellValue(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6193,7 +6193,7 @@ void wxGrid_GetCellValue_1(WxeApp *app, wxeCommand& Ecmd)
   wxGridCellCoords coords = wxGridCellCoords(coordsR,coordsC);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetCellValue(coords);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6210,7 +6210,7 @@ void wxGrid_GetColLabelAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetColLabelAlignment(&horiz,&vert);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
@@ -6228,7 +6228,7 @@ void wxGrid_GetColLabelSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColLabelSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6245,7 +6245,7 @@ void wxGrid_GetColLabelValue(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(430,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetColLabelValue(col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6260,7 +6260,7 @@ void wxGrid_GetColMinimalAcceptableWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColMinimalAcceptableWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6277,7 +6277,7 @@ void wxGrid_GetDefaultCellAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetDefaultCellAlignment(&horiz,&vert);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
@@ -6295,7 +6295,7 @@ void wxGrid_GetDefaultCellBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetDefaultCellBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6310,7 +6310,7 @@ void wxGrid_GetDefaultCellFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetDefaultCellFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -6325,7 +6325,7 @@ void wxGrid_GetDefaultCellTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetDefaultCellTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6340,7 +6340,7 @@ void wxGrid_GetDefaultColLabelSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDefaultColLabelSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6355,7 +6355,7 @@ void wxGrid_GetDefaultColSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDefaultColSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6370,7 +6370,7 @@ void wxGrid_GetDefaultEditor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetDefaultEditor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellEditor"));
 
 }
@@ -6389,7 +6389,7 @@ void wxGrid_GetDefaultEditorForCell_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(439,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetDefaultEditorForCell(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellEditor"));
 
 }
@@ -6412,7 +6412,7 @@ void wxGrid_GetDefaultEditorForCell_1(WxeApp *app, wxeCommand& Ecmd)
   wxGridCellCoords c = wxGridCellCoords(cR,cC);
   if(!This) throw wxe_badarg("This");
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetDefaultEditorForCell(c);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellEditor"));
 
 }
@@ -6427,11 +6427,11 @@ void wxGrid_GetDefaultEditorForType(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(441,"typeName");
+  if(!enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(441,"typeName");
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   if(!This) throw wxe_badarg("This");
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetDefaultEditorForType(typeName);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellEditor"));
 
 }
@@ -6446,7 +6446,7 @@ void wxGrid_GetDefaultRenderer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGridCellRenderer * Result = (wxGridCellRenderer*)This->GetDefaultRenderer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellRenderer"));
 
 }
@@ -6465,7 +6465,7 @@ void wxGrid_GetDefaultRendererForCell(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(443,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellRenderer * Result = (wxGridCellRenderer*)This->GetDefaultRendererForCell(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellRenderer"));
 
 }
@@ -6480,11 +6480,11 @@ void wxGrid_GetDefaultRendererForType(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(444,"typeName");
+  if(!enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(444,"typeName");
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   if(!This) throw wxe_badarg("This");
   wxGridCellRenderer * Result = (wxGridCellRenderer*)This->GetDefaultRendererForType(typeName);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellRenderer"));
 
 }
@@ -6499,7 +6499,7 @@ void wxGrid_GetDefaultRowLabelSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDefaultRowLabelSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6514,7 +6514,7 @@ void wxGrid_GetDefaultRowSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDefaultRowSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6529,7 +6529,7 @@ void wxGrid_GetGridCursorCol(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetGridCursorCol();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6544,7 +6544,7 @@ void wxGrid_GetGridCursorRow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetGridCursorRow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6559,7 +6559,7 @@ void wxGrid_GetGridLineColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetGridLineColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6574,7 +6574,7 @@ void wxGrid_GridLinesEnabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GridLinesEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -6589,7 +6589,7 @@ void wxGrid_GetLabelBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetLabelBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6604,7 +6604,7 @@ void wxGrid_GetLabelFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetLabelFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -6619,7 +6619,7 @@ void wxGrid_GetLabelTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetLabelTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6634,7 +6634,7 @@ void wxGrid_GetNumberCols(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNumberCols();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6649,7 +6649,7 @@ void wxGrid_GetNumberRows(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNumberRows();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6668,7 +6668,7 @@ void wxGrid_GetOrCreateCellAttr(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(456,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellAttr * Result = (wxGridCellAttr*)This->GetOrCreateCellAttr(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellAttr"));
 
 }
@@ -6683,7 +6683,7 @@ void wxGrid_GetRowMinimalAcceptableHeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRowMinimalAcceptableHeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6700,7 +6700,7 @@ void wxGrid_GetRowLabelAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetRowLabelAlignment(&horiz,&vert);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(horiz),
   rt.make_int(vert));
@@ -6718,7 +6718,7 @@ void wxGrid_GetRowLabelSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRowLabelSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6735,7 +6735,7 @@ void wxGrid_GetRowLabelValue(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &row)) Badarg(460,"row"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetRowLabelValue(row);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6752,7 +6752,7 @@ void wxGrid_GetRowSize(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &row)) Badarg(461,"row"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRowSize(row);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6767,7 +6767,7 @@ void wxGrid_GetScrollLineX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetScrollLineX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6782,7 +6782,7 @@ void wxGrid_GetScrollLineY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetScrollLineY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6797,7 +6797,7 @@ void wxGrid_GetSelectedCells(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGridCellCoordsArray Result = This->GetSelectedCells();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_array_objs(Result));
 
 }
@@ -6812,7 +6812,7 @@ void wxGrid_GetSelectedCols(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxArrayInt Result = This->GetSelectedCols();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6827,7 +6827,7 @@ void wxGrid_GetSelectedRows(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxArrayInt Result = This->GetSelectedRows();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6842,7 +6842,7 @@ void wxGrid_GetSelectionBackground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetSelectionBackground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6857,7 +6857,7 @@ void wxGrid_GetSelectionBlockTopLeft(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGridCellCoordsArray Result = This->GetSelectionBlockTopLeft();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_array_objs(Result));
 
 }
@@ -6872,7 +6872,7 @@ void wxGrid_GetSelectionBlockBottomRight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGridCellCoordsArray Result = This->GetSelectionBlockBottomRight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_array_objs(Result));
 
 }
@@ -6887,7 +6887,7 @@ void wxGrid_GetSelectionForeground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetSelectionForeground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -6902,7 +6902,7 @@ void wxGrid_GetViewWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetViewWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -6917,7 +6917,7 @@ void wxGrid_GetGridWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetGridWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -6932,7 +6932,7 @@ void wxGrid_GetGridRowLabelWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetGridRowLabelWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -6947,7 +6947,7 @@ void wxGrid_GetGridColLabelWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetGridColLabelWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -6962,7 +6962,7 @@ void wxGrid_GetGridCornerLabelWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetGridCornerLabelWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -7009,7 +7009,7 @@ void wxGrid_InsertCols(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertCols(pos,numCols,updateLabels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7043,7 +7043,7 @@ void wxGrid_InsertRows(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertRows(pos,numRows,updateLabels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7058,7 +7058,7 @@ void wxGrid_IsCellEditControlEnabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsCellEditControlEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7073,7 +7073,7 @@ void wxGrid_IsCurrentCellReadOnly(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsCurrentCellReadOnly();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7088,7 +7088,7 @@ void wxGrid_IsEditable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEditable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7107,7 +7107,7 @@ void wxGrid_IsInSelection_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(482,"col"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsInSelection(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7130,7 +7130,7 @@ void wxGrid_IsInSelection_1(WxeApp *app, wxeCommand& Ecmd)
   wxGridCellCoords coords = wxGridCellCoords(coordsR,coordsC);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsInSelection(coords);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7149,7 +7149,7 @@ void wxGrid_IsReadOnly(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(484,"col"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsReadOnly(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7164,7 +7164,7 @@ void wxGrid_IsSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7196,7 +7196,7 @@ void wxGrid_IsVisible_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsVisible(row,col,wholeCellVisible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7232,7 +7232,7 @@ void wxGrid_IsVisible_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsVisible(coords,wholeCellVisible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7287,7 +7287,7 @@ void wxGrid_MoveCursorDown(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorDown(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7304,7 +7304,7 @@ void wxGrid_MoveCursorLeft(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorLeft(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7321,7 +7321,7 @@ void wxGrid_MoveCursorRight(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorRight(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7338,7 +7338,7 @@ void wxGrid_MoveCursorUp(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorUp(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7355,7 +7355,7 @@ void wxGrid_MoveCursorDownBlock(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorDownBlock(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7372,7 +7372,7 @@ void wxGrid_MoveCursorLeftBlock(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorLeftBlock(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7389,7 +7389,7 @@ void wxGrid_MoveCursorRightBlock(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorRightBlock(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7406,7 +7406,7 @@ void wxGrid_MoveCursorUpBlock(WxeApp *app, wxeCommand& Ecmd)
   expandSelection = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoveCursorUpBlock(expandSelection);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7421,7 +7421,7 @@ void wxGrid_MovePageDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MovePageDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7436,7 +7436,7 @@ void wxGrid_MovePageUp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MovePageUp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -7451,7 +7451,7 @@ void wxGrid_RegisterDataType(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(500,"typeName");
+  if(!enif_inspect_binary(env, argv[1], &typeName_bin)) Badarg(500,"typeName");
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   wxGridCellRenderer *renderer;
   renderer = (wxGridCellRenderer *) memenv->getPtr(env, argv[2]);
@@ -7912,7 +7912,7 @@ void wxGrid_SetCellValue_3_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(519,"col"); // int
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[3], &s_bin)) Badarg(519,"s");
+  if(!enif_inspect_binary(env, argv[3], &s_bin)) Badarg(519,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetCellValue(row,col,s);
@@ -7937,7 +7937,7 @@ void wxGrid_SetCellValue_2(WxeApp *app, wxeCommand& Ecmd)
   wxGridCellCoords coords = wxGridCellCoords(coordsR,coordsC);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[2], &s_bin)) Badarg(520,"s");
+  if(!enif_inspect_binary(env, argv[2], &s_bin)) Badarg(520,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetCellValue(coords,s);
@@ -7954,7 +7954,7 @@ void wxGrid_SetCellValue_3_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGrid *) memenv->getPtr(env, argv[0]);
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[1], &val_bin)) Badarg(521,"val");
+  if(!enif_inspect_binary(env, argv[1], &val_bin)) Badarg(521,"val");
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   int row;
   if(!enif_get_int(env, argv[2], &row)) Badarg(521,"row"); // int
@@ -8055,7 +8055,7 @@ void wxGrid_SetColFormatCustom(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(526,"col"); // int
   ErlNifBinary typeName_bin;
   wxString typeName;
-  if(enif_inspect_binary(env, argv[2], &typeName_bin)) Badarg(526,"typeName");
+  if(!enif_inspect_binary(env, argv[2], &typeName_bin)) Badarg(526,"typeName");
   typeName = wxString(typeName_bin.data, wxConvUTF8, typeName_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetColFormatCustom(col,typeName);
@@ -8106,7 +8106,7 @@ void wxGrid_SetColLabelValue(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(529,"col"); // int
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[2], &val_bin)) Badarg(529,"val");
+  if(!enif_inspect_binary(env, argv[2], &val_bin)) Badarg(529,"val");
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetColLabelValue(col,val);
@@ -8545,7 +8545,7 @@ void wxGrid_SetRowLabelValue(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &row)) Badarg(551,"row"); // int
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[2], &val_bin)) Badarg(551,"val");
+  if(!enif_inspect_binary(env, argv[2], &val_bin)) Badarg(551,"val");
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetRowLabelValue(row,val);
@@ -8734,7 +8734,7 @@ void wxGrid_XToCol(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   int Result = This->XToCol(x,clipToMinMax);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -8751,7 +8751,7 @@ void wxGrid_XToEdgeOfCol(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &x)) Badarg(562,"x"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->XToEdgeOfCol(x);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -8768,7 +8768,7 @@ void wxGrid_YToEdgeOfRow(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &y)) Badarg(563,"y"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->YToEdgeOfRow(y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -8785,7 +8785,7 @@ void wxGrid_YToRow(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &y)) Badarg(564,"y"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->YToRow(y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -8847,7 +8847,7 @@ void wxGridCellRenderer_GetBestSize(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[5], &col)) Badarg(566,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetBestSize(*grid,*attr,*dc,row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -8881,7 +8881,7 @@ void wxGridCellEditor_IsCreated(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellEditor *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsCreated();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9004,7 +9004,7 @@ void wxGridCellEditor_EndEdit(WxeApp *app, wxeCommand& Ecmd)
   grid = (wxGrid *) memenv->getPtr(env, argv[3]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->EndEdit(row,col,grid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9072,7 +9072,7 @@ void wxGridCellBoolRenderer_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGridCellBoolRenderer * Result = new wxGridCellBoolRenderer();
   app->newPtr((void *) Result, 24, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellBoolRenderer"));
 
 }
@@ -9095,7 +9095,7 @@ void wxGridCellBoolEditor_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGridCellBoolEditor * Result = new wxGridCellBoolEditor();
   app->newPtr((void *) Result, 25, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellBoolEditor"));
 
 }
@@ -9108,10 +9108,10 @@ void wxGridCellBoolEditor_IsTrueValue(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[0], &value_bin)) Badarg(581,"value");
+  if(!enif_inspect_binary(env, argv[0], &value_bin)) Badarg(581,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   bool Result = wxGridCellBoolEditor::IsTrueValue(value);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9134,11 +9134,11 @@ void wxGridCellBoolEditor_UseStringValues(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(582,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "valueTrue"))) {
   ErlNifBinary valueTrue_bin;
-  if(enif_inspect_binary(env, tpl[1], &valueTrue_bin)) Badarg(582,"valueTrue");
+  if(!enif_inspect_binary(env, tpl[1], &valueTrue_bin)) Badarg(582,"valueTrue");
   valueTrue = wxString(valueTrue_bin.data, wxConvUTF8, valueTrue_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "valueFalse"))) {
   ErlNifBinary valueFalse_bin;
-  if(enif_inspect_binary(env, tpl[1], &valueFalse_bin)) Badarg(582,"valueFalse");
+  if(!enif_inspect_binary(env, tpl[1], &valueFalse_bin)) Badarg(582,"valueFalse");
   valueFalse = wxString(valueFalse_bin.data, wxConvUTF8, valueFalse_bin.size);
     } else        Badarg(582,"Options");
   };
@@ -9182,7 +9182,7 @@ void wxGridCellFloatRenderer_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGridCellFloatRenderer * Result = new wxGridCellFloatRenderer(width,precision);
   app->newPtr((void *) Result, 26, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellFloatRenderer"));
 
 }
@@ -9197,7 +9197,7 @@ void wxGridCellFloatRenderer_GetPrecision(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellFloatRenderer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPrecision();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -9212,7 +9212,7 @@ void wxGridCellFloatRenderer_GetWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellFloatRenderer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -9227,7 +9227,7 @@ void wxGridCellFloatRenderer_SetParameters(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellFloatRenderer *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(587,"params");
+  if(!enif_inspect_binary(env, argv[1], &params_bin)) Badarg(587,"params");
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetParameters(params);
@@ -9300,7 +9300,7 @@ void wxGridCellFloatEditor_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGridCellFloatEditor * Result = new wxGridCellFloatEditor(width,precision);
   app->newPtr((void *) Result, 27, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellFloatEditor"));
 
 }
@@ -9315,7 +9315,7 @@ void wxGridCellFloatEditor_SetParameters(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellFloatEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(592,"params");
+  if(!enif_inspect_binary(env, argv[1], &params_bin)) Badarg(592,"params");
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetParameters(params);
@@ -9340,7 +9340,7 @@ void wxGridCellStringRenderer_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGridCellStringRenderer * Result = new wxGridCellStringRenderer();
   app->newPtr((void *) Result, 28, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellStringRenderer"));
 
 }
@@ -9363,7 +9363,7 @@ void wxGridCellTextEditor_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGridCellTextEditor * Result = new wxGridCellTextEditor();
   app->newPtr((void *) Result, 29, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellTextEditor"));
 
 }
@@ -9378,7 +9378,7 @@ void wxGridCellTextEditor_SetParameters(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellTextEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(597,"params");
+  if(!enif_inspect_binary(env, argv[1], &params_bin)) Badarg(597,"params");
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetParameters(params);
@@ -9427,7 +9427,7 @@ void wxGridCellChoiceEditor_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGridCellChoiceEditor * Result = new wxGridCellChoiceEditor(choices,allowOthers);
   app->newPtr((void *) Result, 30, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellChoiceEditor"));
 
 }
@@ -9442,7 +9442,7 @@ void wxGridCellChoiceEditor_SetParameters(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellChoiceEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(601,"params");
+  if(!enif_inspect_binary(env, argv[1], &params_bin)) Badarg(601,"params");
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetParameters(params);
@@ -9467,7 +9467,7 @@ void wxGridCellNumberRenderer_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGridCellNumberRenderer * Result = new wxGridCellNumberRenderer();
   app->newPtr((void *) Result, 31, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellNumberRenderer"));
 
 }
@@ -9508,7 +9508,7 @@ void wxGridCellNumberEditor_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGridCellNumberEditor * Result = new wxGridCellNumberEditor(min,max);
   app->newPtr((void *) Result, 32, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellNumberEditor"));
 
 }
@@ -9523,7 +9523,7 @@ void wxGridCellNumberEditor_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellNumberEditor *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -9538,7 +9538,7 @@ void wxGridCellNumberEditor_SetParameters(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellNumberEditor *) memenv->getPtr(env, argv[0]);
   ErlNifBinary params_bin;
   wxString params;
-  if(enif_inspect_binary(env, argv[1], &params_bin)) Badarg(607,"params");
+  if(!enif_inspect_binary(env, argv[1], &params_bin)) Badarg(607,"params");
   params = wxString(params_bin.data, wxConvUTF8, params_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetParameters(params);
@@ -9705,7 +9705,7 @@ void wxGridCellAttr_HasTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9720,7 +9720,7 @@ void wxGridCellAttr_HasBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9735,7 +9735,7 @@ void wxGridCellAttr_HasFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9750,7 +9750,7 @@ void wxGridCellAttr_HasAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasAlignment();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9765,7 +9765,7 @@ void wxGridCellAttr_HasRenderer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasRenderer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9780,7 +9780,7 @@ void wxGridCellAttr_HasEditor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasEditor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9795,7 +9795,7 @@ void wxGridCellAttr_GetTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -9810,7 +9810,7 @@ void wxGridCellAttr_GetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -9825,7 +9825,7 @@ void wxGridCellAttr_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFont * Result = &This->GetFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -9842,7 +9842,7 @@ void wxGridCellAttr_GetAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetAlignment(&hAlign,&vAlign);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(hAlign),
   rt.make_int(vAlign));
@@ -9866,7 +9866,7 @@ void wxGridCellAttr_GetRenderer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &col)) Badarg(626,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellRenderer * Result = (wxGridCellRenderer*)This->GetRenderer(grid,row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellRenderer"));
 
 }
@@ -9887,7 +9887,7 @@ void wxGridCellAttr_GetEditor(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &col)) Badarg(627,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxGridCellEditor * Result = (wxGridCellEditor*)This->GetEditor(grid,row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridCellEditor"));
 
 }
@@ -9902,7 +9902,7 @@ void wxGridCellAttr_IsReadOnly(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridCellAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsReadOnly();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -9984,7 +9984,7 @@ void wxDC_Blit(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Blit(destPt,sz,source,srcPt,rop,useMask,srcPtMask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -10080,7 +10080,7 @@ void wxDC_DeviceToLogicalX(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &x)) Badarg(636,"x"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->DeviceToLogicalX(x);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10097,7 +10097,7 @@ void wxDC_DeviceToLogicalXRel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &x)) Badarg(637,"x"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->DeviceToLogicalXRel(x);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10114,7 +10114,7 @@ void wxDC_DeviceToLogicalY(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &y)) Badarg(638,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->DeviceToLogicalY(y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10131,7 +10131,7 @@ void wxDC_DeviceToLogicalYRel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &y)) Badarg(639,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->DeviceToLogicalYRel(y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10379,7 +10379,7 @@ void wxDC_DrawLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(649,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(649,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   const ERL_NIF_TERM *rect_t;
   int rect_sz;
@@ -10625,7 +10625,7 @@ void wxDC_DrawRotatedText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(659,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(659,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   const ERL_NIF_TERM *pt_t;
   int pt_sz;
@@ -10710,7 +10710,7 @@ void wxDC_DrawText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(663,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(663,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   const ERL_NIF_TERM *pt_t;
   int pt_sz;
@@ -10794,7 +10794,7 @@ void wxDC_FloodFill(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->FloodFill(pt,col,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -10809,7 +10809,7 @@ void wxDC_GetBackground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBrush * Result = &This->GetBackground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBrush"));
 
 }
@@ -10824,7 +10824,7 @@ void wxDC_GetBackgroundMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetBackgroundMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10839,7 +10839,7 @@ void wxDC_GetBrush(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBrush * Result = &This->GetBrush();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBrush"));
 
 }
@@ -10854,7 +10854,7 @@ void wxDC_GetCharHeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetCharHeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10869,7 +10869,7 @@ void wxDC_GetCharWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetCharWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10888,7 +10888,7 @@ void wxDC_GetClippingBox(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetClippingBox(&x,&y,&w,&h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_int(x),
   rt.make_int(y),
@@ -10908,7 +10908,7 @@ void wxDC_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFont * Result = &This->GetFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -10923,7 +10923,7 @@ void wxDC_GetLayoutDirection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLayoutDirection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10938,7 +10938,7 @@ void wxDC_GetLogicalFunction(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLogicalFunction();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10953,7 +10953,7 @@ void wxDC_GetMapMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMapMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -10972,7 +10972,7 @@ void wxDC_GetMultiLineTextExtent_4(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(678,"string");
+  if(!enif_inspect_binary(env, argv[1], &string_bin)) Badarg(678,"string");
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -10988,7 +10988,7 @@ void wxDC_GetMultiLineTextExtent_4(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   This->GetMultiLineTextExtent(string,&width,&height,&heightLine,font);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
   rt.make_int(width),
   rt.make_int(height),
@@ -11007,11 +11007,11 @@ void wxDC_GetMultiLineTextExtent_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(679,"string");
+  if(!enif_inspect_binary(env, argv[1], &string_bin)) Badarg(679,"string");
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetMultiLineTextExtent(string);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -11027,11 +11027,11 @@ void wxDC_GetPartialTextExtents(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(680,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(680,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetPartialTextExtents(text,widths);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_bool(Result),
     rt.make(widths));
@@ -11049,7 +11049,7 @@ void wxDC_GetPen(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxPen * Result = &This->GetPen();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPen"));
 
 }
@@ -11073,7 +11073,7 @@ void wxDC_GetPixel(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetPixel(pt,&col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_bool(Result),
     rt.make(col));
@@ -11091,7 +11091,7 @@ void wxDC_GetPPI(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetPPI();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -11106,7 +11106,7 @@ void wxDC_GetSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -11121,7 +11121,7 @@ void wxDC_GetSizeMM(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSizeMM();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -11136,7 +11136,7 @@ void wxDC_GetTextBackground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetTextBackground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -11156,7 +11156,7 @@ void wxDC_GetTextExtent_4(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(689,"string");
+  if(!enif_inspect_binary(env, argv[1], &string_bin)) Badarg(689,"string");
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -11172,7 +11172,7 @@ void wxDC_GetTextExtent_4(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   This->GetTextExtent(string,&x,&y,&descent,&externalLeading,theFont);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_int(x),
   rt.make_int(y),
@@ -11192,11 +11192,11 @@ void wxDC_GetTextExtent_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary string_bin;
   wxString string;
-  if(enif_inspect_binary(env, argv[1], &string_bin)) Badarg(690,"string");
+  if(!enif_inspect_binary(env, argv[1], &string_bin)) Badarg(690,"string");
   string = wxString(string_bin.data, wxConvUTF8, string_bin.size);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetTextExtent(string);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -11211,7 +11211,7 @@ void wxDC_GetTextForeground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetTextForeground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -11228,7 +11228,7 @@ void wxDC_GetUserScale(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetUserScale(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_double(x),
   rt.make_double(y));
@@ -11416,7 +11416,7 @@ void wxDC_LogicalToDeviceX(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &x)) Badarg(697,"x"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->LogicalToDeviceX(x);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11433,7 +11433,7 @@ void wxDC_LogicalToDeviceXRel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &x)) Badarg(698,"x"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->LogicalToDeviceXRel(x);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11450,7 +11450,7 @@ void wxDC_LogicalToDeviceY(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &y)) Badarg(699,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->LogicalToDeviceY(y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11467,7 +11467,7 @@ void wxDC_LogicalToDeviceYRel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &y)) Badarg(700,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->LogicalToDeviceYRel(y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11482,7 +11482,7 @@ void wxDC_MaxX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->MaxX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11497,7 +11497,7 @@ void wxDC_MaxY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->MaxY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11512,7 +11512,7 @@ void wxDC_MinX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->MinX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11527,7 +11527,7 @@ void wxDC_MinY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->MinY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11542,7 +11542,7 @@ void wxDC_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -11875,11 +11875,11 @@ void wxDC_StartDoc(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDC *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(725,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(725,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->StartDoc(message);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -11909,7 +11909,7 @@ void wxMirrorDC_new(WxeApp *app, wxeCommand& Ecmd)
   mirror = enif_is_identical(argv[1], WXE_ATOM_true);
   wxMirrorDC * Result = new EwxMirrorDC(*dc,mirror);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMirrorDC"));
 
 }
@@ -11920,7 +11920,7 @@ void wxScreenDC_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxScreenDC * Result = new EwxScreenDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxScreenDC"));
 
 }
@@ -11932,7 +11932,7 @@ void wxPostScriptDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPostScriptDC * Result = new EwxPostScriptDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPostScriptDC"));
 
 }
@@ -11947,7 +11947,7 @@ void wxPostScriptDC_new_1(WxeApp *app, wxeCommand& Ecmd)
   printData = (wxPrintData *) memenv->getPtr(env, argv[0]);
   wxPostScriptDC * Result = new EwxPostScriptDC(*printData);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPostScriptDC"));
 
 }
@@ -11972,7 +11972,7 @@ void wxPostScriptDC_GetResolution(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxPostScriptDC::GetResolution();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -11986,7 +11986,7 @@ void wxWindowDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxWindowDC * Result = new EwxWindowDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindowDC"));
 
 }
@@ -12002,7 +12002,7 @@ void wxWindowDC_new_1(WxeApp *app, wxeCommand& Ecmd)
   win = (wxWindow *) memenv->getPtr(env, argv[0]);
   wxWindowDC * Result = new EwxWindowDC(win);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindowDC"));
 
 }
@@ -12014,7 +12014,7 @@ void wxClientDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxClientDC * Result = new EwxClientDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxClientDC"));
 
 }
@@ -12030,7 +12030,7 @@ void wxClientDC_new_1(WxeApp *app, wxeCommand& Ecmd)
   win = (wxWindow *) memenv->getPtr(env, argv[0]);
   wxClientDC * Result = new EwxClientDC(win);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxClientDC"));
 
 }
@@ -12042,7 +12042,7 @@ void wxPaintDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPaintDC * Result = new EwxPaintDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPaintDC"));
 
 }
@@ -12058,7 +12058,7 @@ void wxPaintDC_new_1(WxeApp *app, wxeCommand& Ecmd)
   win = (wxWindow *) memenv->getPtr(env, argv[0]);
   wxPaintDC * Result = new EwxPaintDC(win);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPaintDC"));
 
 }
@@ -12073,7 +12073,7 @@ void wxMemoryDC_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[0]);
   wxMemoryDC * Result = new EwxMemoryDC(*bitmap);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMemoryDC"));
 
 }
@@ -12087,7 +12087,7 @@ void wxMemoryDC_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxDC * dc = (wxDC *) memenv->getPtr(env, argv[0]);
   wxMemoryDC * Result = new EwxMemoryDC(dc);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMemoryDC"));
 
 }
@@ -12098,7 +12098,7 @@ void wxMemoryDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMemoryDC * Result = new EwxMemoryDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMemoryDC"));
 
 }
@@ -12139,7 +12139,7 @@ void wxBufferedDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxBufferedDC * Result = new EwxBufferedDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBufferedDC"));
 
 }
@@ -12170,7 +12170,7 @@ void wxBufferedDC_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBufferedDC * Result = new EwxBufferedDC(dc,*buffer,style);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBufferedDC"));
 
 }
@@ -12206,7 +12206,7 @@ void wxBufferedDC_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBufferedDC * Result = new EwxBufferedDC(dc,area,style);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBufferedDC"));
 
 }
@@ -12303,7 +12303,7 @@ void wxBufferedPaintDC_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBufferedPaintDC * Result = new EwxBufferedPaintDC(window,*buffer,style);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBufferedPaintDC"));
 
 }
@@ -12331,7 +12331,7 @@ void wxBufferedPaintDC_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBufferedPaintDC * Result = new EwxBufferedPaintDC(window,style);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBufferedPaintDC"));
 
 }
@@ -12347,7 +12347,7 @@ void wxGraphicsObject_GetRenderer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsObject *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsRenderer * Result = (wxGraphicsRenderer*)This->GetRenderer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsRenderer"));
 
 }
@@ -12362,7 +12362,7 @@ void wxGraphicsObject_IsNull(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsObject *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsNull();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -12377,7 +12377,7 @@ void wxGraphicsContext_Create_1_1(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   wxWindowDC * dc = (wxWindowDC *) memenv->getPtr(env, argv[0]);
   wxGraphicsContext * Result = (wxGraphicsContext*)wxGraphicsContext::Create(*dc);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
 );
 
@@ -12392,7 +12392,7 @@ void wxGraphicsContext_Create_1_0(WxeApp *app, wxeCommand& Ecmd)
   wxWindow *window;
   window = (wxWindow *) memenv->getPtr(env, argv[0]);
   wxGraphicsContext * Result = (wxGraphicsContext*)wxGraphicsContext::Create(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
 );
 
@@ -12403,7 +12403,7 @@ void wxGraphicsContext_Create_0(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGraphicsContext * Result = (wxGraphicsContext*)wxGraphicsContext::Create();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
 );
 
@@ -12421,7 +12421,7 @@ void wxGraphicsContext_CreatePen(WxeApp *app, wxeCommand& Ecmd)
   pen = (wxPen *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsPen * Result = new wxGraphicsPen(This->CreatePen(*pen)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsPen"));
 
 }
@@ -12438,7 +12438,7 @@ void wxGraphicsContext_CreateBrush(WxeApp *app, wxeCommand& Ecmd)
   brush = (wxBrush *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsBrush * Result = new wxGraphicsBrush(This->CreateBrush(*brush)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsBrush"));
 
 }
@@ -12487,7 +12487,7 @@ void wxGraphicsContext_CreateRadialGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxColour cColor = wxColour(cColorR,cColorG,cColorB,cColorA);
   if(!This) throw wxe_badarg("This");
   wxGraphicsBrush * Result = new wxGraphicsBrush(This->CreateRadialGradientBrush(xo,yo,xc,yc,radius,oColor,cColor)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsBrush"));
 
 }
@@ -12534,7 +12534,7 @@ void wxGraphicsContext_CreateLinearGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxColour c2 = wxColour(c2R,c2G,c2B,c2A);
   if(!This) throw wxe_badarg("This");
   wxGraphicsBrush * Result = new wxGraphicsBrush(This->CreateLinearGradientBrush(x1,y1,x2,y2,c1,c2)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsBrush"));
 
 }
@@ -12575,7 +12575,7 @@ void wxGraphicsContext_CreateFont(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxGraphicsFont * Result = new wxGraphicsFont(This->CreateFont(*font,col)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsFont"));
 
 }
@@ -12618,7 +12618,7 @@ void wxGraphicsContext_CreateMatrix(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxGraphicsMatrix * Result = new wxGraphicsMatrix(This->CreateMatrix(a,b,c,d,tx,ty)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsMatrix"));
 
 }
@@ -12633,7 +12633,7 @@ void wxGraphicsContext_CreatePath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsPath * Result = new wxGraphicsPath(This->CreatePath()); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsPath"));
 
 }
@@ -12881,7 +12881,7 @@ void wxGraphicsContext_DrawText_3(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(786,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(786,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(786,"x");
@@ -12902,7 +12902,7 @@ void wxGraphicsContext_DrawText_4_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(787,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(787,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(787,"x");
@@ -12925,7 +12925,7 @@ void wxGraphicsContext_DrawText_4_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(788,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(788,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(788,"x");
@@ -12948,7 +12948,7 @@ void wxGraphicsContext_DrawText_5(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(789,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(789,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
   if(!enif_get_double(env, argv[2], &x)) Badarg(789,"x");
@@ -13017,11 +13017,11 @@ void wxGraphicsContext_GetPartialTextExtents(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(792,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(792,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->GetPartialTextExtents(text,widths);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(widths));
 
 }
@@ -13040,11 +13040,11 @@ void wxGraphicsContext_GetTextExtent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(793,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(793,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->GetTextExtent(text,&width,&height,&descent,&externalLeading);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_double(width),
   rt.make_double(height),
@@ -13113,7 +13113,7 @@ void wxGraphicsContext_GetTransform(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsMatrix * Result = new wxGraphicsMatrix(This->GetTransform()); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsMatrix"));
 
 }
@@ -13334,7 +13334,7 @@ void wxGraphicsMatrix_Get(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->Get(&a,&b,&c,&d,&tx,&ty);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple6(rt.env,
   rt.make_double(a),
   rt.make_double(b),
@@ -13371,7 +13371,7 @@ void wxGraphicsMatrix_IsEqual(WxeApp *app, wxeCommand& Ecmd)
   t = (wxGraphicsMatrix *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEqual(t);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -13386,7 +13386,7 @@ void wxGraphicsMatrix_IsIdentity(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsIdentity();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -13493,7 +13493,7 @@ void wxGraphicsMatrix_TransformPoint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->TransformPoint(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_double(x),
   rt.make_double(y));
@@ -13513,7 +13513,7 @@ void wxGraphicsMatrix_TransformDistance(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->TransformDistance(&dx,&dy);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_double(dx),
   rt.make_double(dy));
@@ -13898,7 +13898,7 @@ void wxGraphicsPath_Contains_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Contains(x,y,fillStyle);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -13934,7 +13934,7 @@ void wxGraphicsPath_Contains_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Contains(c,fillStyle);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -13949,7 +13949,7 @@ void wxGraphicsPath_GetBox(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect2DDouble Result = This->GetBox();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -13964,7 +13964,7 @@ void wxGraphicsPath_GetCurrentPoint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint2DDouble Result = This->GetCurrentPoint();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -13991,7 +13991,7 @@ void wxGraphicsRenderer_GetDefaultRenderer(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGraphicsRenderer * Result = (wxGraphicsRenderer*)wxGraphicsRenderer::GetDefaultRenderer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsRenderer"));
 
 }
@@ -14007,7 +14007,7 @@ void wxGraphicsRenderer_CreateContext_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxWindowDC * dc = (wxWindowDC *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsContext * Result = (wxGraphicsContext*)This->CreateContext(*dc);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
 );
 
@@ -14025,7 +14025,7 @@ void wxGraphicsRenderer_CreateContext_1_0(WxeApp *app, wxeCommand& Ecmd)
   window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsContext * Result = (wxGraphicsContext*)This->CreateContext(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
 );
 
@@ -14086,7 +14086,7 @@ void wxGraphicsRenderer_CreateBrush(WxeApp *app, wxeCommand& Ecmd)
   brush = (wxBrush *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsBrush * Result = new wxGraphicsBrush(This->CreateBrush(*brush)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsBrush"));
 
 }
@@ -14134,7 +14134,7 @@ void wxGraphicsRenderer_CreateLinearGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxColour c2 = wxColour(c2R,c2G,c2B,c2A);
   if(!This) throw wxe_badarg("This");
   wxGraphicsBrush * Result = new wxGraphicsBrush(This->CreateLinearGradientBrush(x1,y1,x2,y2,c1,c2)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsBrush"));
 
 }
@@ -14185,7 +14185,7 @@ void wxGraphicsRenderer_CreateRadialGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxColour cColor = wxColour(cColorR,cColorG,cColorB,cColorA);
   if(!This) throw wxe_badarg("This");
   wxGraphicsBrush * Result = new wxGraphicsBrush(This->CreateRadialGradientBrush(xo,yo,xc,yc,radius,oColor,cColor)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsBrush"));
 
 }
@@ -14227,7 +14227,7 @@ void wxGraphicsRenderer_CreateFont(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxGraphicsFont * Result = new wxGraphicsFont(This->CreateFont(*font,col)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsFont"));
 
 }
@@ -14270,7 +14270,7 @@ void wxGraphicsRenderer_CreateMatrix(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxGraphicsMatrix * Result = new wxGraphicsMatrix(This->CreateMatrix(a,b,c,d,tx,ty)); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsMatrix"));
 
 }
@@ -14285,7 +14285,7 @@ void wxGraphicsRenderer_CreatePath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGraphicsRenderer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsPath * Result = new wxGraphicsPath(This->CreatePath()); app->newPtr((void *) Result,4, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGraphicsPath"));
 
 }
@@ -14307,7 +14307,7 @@ void wxMenuBar_new_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[0], &style)) Badarg(856,"style");
   wxMenuBar * Result = new EwxMenuBar(style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuBar"));
 
 }
@@ -14318,7 +14318,7 @@ void wxMenuBar_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMenuBar * Result = new EwxMenuBar();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuBar"));
 
 }
@@ -14335,11 +14335,11 @@ void wxMenuBar_Append(WxeApp *app, wxeCommand& Ecmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[1]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(861,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(861,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Append(menu,title);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -14401,7 +14401,7 @@ void wxMenuBar_Enable_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Enable(enable);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -14433,11 +14433,11 @@ void wxMenuBar_FindMenu(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[1], &title_bin)) Badarg(866,"title");
+  if(!enif_inspect_binary(env, argv[1], &title_bin)) Badarg(866,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->FindMenu(title);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14452,15 +14452,15 @@ void wxMenuBar_FindMenuItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary menuString_bin;
   wxString menuString;
-  if(enif_inspect_binary(env, argv[1], &menuString_bin)) Badarg(867,"menuString");
+  if(!enif_inspect_binary(env, argv[1], &menuString_bin)) Badarg(867,"menuString");
   menuString = wxString(menuString_bin.data, wxConvUTF8, menuString_bin.size);
   ErlNifBinary itemString_bin;
   wxString itemString;
-  if(enif_inspect_binary(env, argv[2], &itemString_bin)) Badarg(867,"itemString");
+  if(!enif_inspect_binary(env, argv[2], &itemString_bin)) Badarg(867,"itemString");
   itemString = wxString(itemString_bin.data, wxConvUTF8, itemString_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->FindMenuItem(menuString,itemString);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14478,7 +14478,7 @@ void wxMenuBar_FindItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(868,"id"); // int
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->FindItem(id,menu);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -14495,7 +14495,7 @@ void wxMenuBar_GetHelpString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(869,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetHelpString(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -14512,7 +14512,7 @@ void wxMenuBar_GetLabel_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(870,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -14527,7 +14527,7 @@ void wxMenuBar_GetLabel_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -14544,7 +14544,7 @@ void wxMenuBar_GetLabelTop(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(872,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabelTop(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -14561,7 +14561,7 @@ void wxMenuBar_GetMenu(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(873,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->GetMenu(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -14576,7 +14576,7 @@ void wxMenuBar_GetMenuCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetMenuCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14595,11 +14595,11 @@ void wxMenuBar_Insert(WxeApp *app, wxeCommand& Ecmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[2]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(875,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(875,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Insert(pos,menu,title);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -14616,7 +14616,7 @@ void wxMenuBar_IsChecked(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(876,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsChecked(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -14633,7 +14633,7 @@ void wxMenuBar_IsEnabled_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(877,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEnabled(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -14648,7 +14648,7 @@ void wxMenuBar_IsEnabled_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -14665,7 +14665,7 @@ void wxMenuBar_Remove(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(879,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->Remove(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -14684,11 +14684,11 @@ void wxMenuBar_Replace(WxeApp *app, wxeCommand& Ecmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[2]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(880,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(880,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->Replace(pos,menu,title);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -14705,7 +14705,7 @@ void wxMenuBar_SetHelpString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(881,"itemid"); // int
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(881,"helpString");
+  if(!enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(881,"helpString");
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetHelpString(itemid,helpString);
@@ -14724,7 +14724,7 @@ void wxMenuBar_SetLabel_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(882,"itemid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(882,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(882,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(itemid,label);
@@ -14741,7 +14741,7 @@ void wxMenuBar_SetLabel_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(883,"s");
+  if(!enif_inspect_binary(env, argv[1], &s_bin)) Badarg(883,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(s);
@@ -14760,7 +14760,7 @@ void wxMenuBar_SetLabelTop(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(884,"pos"); // "size_t"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(884,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(884,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabelTop(pos,label);
@@ -14777,7 +14777,7 @@ void wxControl_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -14792,7 +14792,7 @@ void wxControl_SetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(886,"label");
+  if(!enif_inspect_binary(env, argv[1], &label_bin)) Badarg(886,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(label);
@@ -14809,11 +14809,11 @@ void wxControlWithItems_Append_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(887,"item");
+  if(!enif_inspect_binary(env, argv[1], &item_bin)) Badarg(887,"item");
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->Append(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14828,13 +14828,13 @@ void wxControlWithItems_Append_2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(888,"item");
+  if(!enif_inspect_binary(env, argv[1], &item_bin)) Badarg(888,"item");
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   wxeErlTerm * clientData;
   clientData = new wxeErlTerm(argv[2]);
   if(!This) throw wxe_badarg("This");
   int Result = This->Append(item,clientData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14900,7 +14900,7 @@ void wxControlWithItems_FindString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(892,"s");
+  if(!enif_inspect_binary(env, argv[1], &s_bin)) Badarg(892,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -14916,7 +14916,7 @@ void wxControlWithItems_FindString(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   int Result = This->FindString(s,bCase);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14933,7 +14933,7 @@ void wxControlWithItems_getClientData(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(893,"n");
   if(!This) throw wxe_badarg("This");
   wxeErlTerm * Result = (wxeErlTerm*)This->GetClientObject(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ext2term(Result));
 
 }
@@ -14965,7 +14965,7 @@ void wxControlWithItems_GetCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -14980,7 +14980,7 @@ void wxControlWithItems_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -14997,7 +14997,7 @@ void wxControlWithItems_GetString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(897,"n");
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetString(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -15012,7 +15012,7 @@ void wxControlWithItems_GetStringSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetStringSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -15027,13 +15027,13 @@ void wxControlWithItems_Insert_2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(899,"item");
+  if(!enif_inspect_binary(env, argv[1], &item_bin)) Badarg(899,"item");
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   unsigned int pos;
   if(!enif_get_uint(env, argv[2], &pos)) Badarg(899,"pos");
   if(!This) throw wxe_badarg("This");
   int Result = This->Insert(item,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -15048,7 +15048,7 @@ void wxControlWithItems_Insert_3(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(900,"item");
+  if(!enif_inspect_binary(env, argv[1], &item_bin)) Badarg(900,"item");
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   unsigned int pos;
   if(!enif_get_uint(env, argv[2], &pos)) Badarg(900,"pos");
@@ -15056,7 +15056,7 @@ void wxControlWithItems_Insert_3(WxeApp *app, wxeCommand& Ecmd)
   clientData = new wxeErlTerm(argv[3]);
   if(!This) throw wxe_badarg("This");
   int Result = This->Insert(item,pos,clientData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -15071,7 +15071,7 @@ void wxControlWithItems_IsEmpty(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEmpty();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15118,7 +15118,7 @@ void wxControlWithItems_SetString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(904,"n");
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[2], &s_bin)) Badarg(904,"s");
+  if(!enif_inspect_binary(env, argv[2], &s_bin)) Badarg(904,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetString(n,s);
@@ -15135,11 +15135,11 @@ void wxControlWithItems_SetStringSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxControlWithItems *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(905,"s");
+  if(!enif_inspect_binary(env, argv[1], &s_bin)) Badarg(905,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetStringSelection(s);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15153,7 +15153,7 @@ void wxMenu_new_2(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[0], &title_bin)) Badarg(908,"title");
+  if(!enif_inspect_binary(env, argv[0], &title_bin)) Badarg(908,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -15169,7 +15169,7 @@ void wxMenu_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMenu * Result = new EwxMenu(title,style);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -15195,7 +15195,7 @@ void wxMenu_new_1(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMenu * Result = new EwxMenu(style);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -15214,7 +15214,7 @@ void wxMenu_Append_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(912,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(912,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(912,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -15226,7 +15226,7 @@ void wxMenu_Append_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(912,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(912,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(912,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(912,"kind"); // enum
@@ -15234,7 +15234,7 @@ void wxMenu_Append_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Append(itemid,text,help,kind);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15251,7 +15251,7 @@ void wxMenu_Append_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxMenuItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Append(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15268,11 +15268,11 @@ void wxMenu_Append_4_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(914,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(914,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(914,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ErlNifBinary help_bin;
   wxString help;
-  if(enif_inspect_binary(env, argv[3], &help_bin)) Badarg(914,"help");
+  if(!enif_inspect_binary(env, argv[3], &help_bin)) Badarg(914,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
   bool isCheckable;
   isCheckable = enif_is_identical(argv[4], WXE_ATOM_true);
@@ -15294,7 +15294,7 @@ void wxMenu_Append_4_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(915,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(915,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(915,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxMenu *submenu;
   submenu = (wxMenu *) memenv->getPtr(env, argv[3]);
@@ -15308,13 +15308,13 @@ void wxMenu_Append_4_1(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(915,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(915,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(915,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(915,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Append(itemid,text,submenu,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15332,7 +15332,7 @@ void wxMenu_AppendCheckItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(916,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(916,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(916,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -15344,13 +15344,13 @@ void wxMenu_AppendCheckItem(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(916,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(916,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(916,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(916,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->AppendCheckItem(itemid,text,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15368,7 +15368,7 @@ void wxMenu_AppendRadioItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(917,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(917,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(917,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -15380,13 +15380,13 @@ void wxMenu_AppendRadioItem(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(917,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(917,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(917,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(917,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->AppendRadioItem(itemid,text,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15401,7 +15401,7 @@ void wxMenu_AppendSeparator(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->AppendSeparator();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15448,7 +15448,7 @@ void wxMenu_Delete_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(921,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Delete(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15465,7 +15465,7 @@ void wxMenu_Delete_1_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxMenuItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Delete(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15482,7 +15482,7 @@ void wxMenu_Destroy_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(923,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Destroy(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15499,7 +15499,7 @@ void wxMenu_Destroy_1_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxMenuItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Destroy(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15531,11 +15531,11 @@ void wxMenu_FindItem_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   ErlNifBinary item_bin;
   wxString item;
-  if(enif_inspect_binary(env, argv[1], &item_bin)) Badarg(926,"item");
+  if(!enif_inspect_binary(env, argv[1], &item_bin)) Badarg(926,"item");
   item = wxString(item_bin.data, wxConvUTF8, item_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->FindItem(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -15553,7 +15553,7 @@ void wxMenu_FindItem_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(927,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->FindItem(itemid,menu);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15570,7 +15570,7 @@ void wxMenu_FindItemByPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &position)) Badarg(928,"position"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->FindItemByPosition(position);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15587,7 +15587,7 @@ void wxMenu_GetHelpString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(929,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetHelpString(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -15604,7 +15604,7 @@ void wxMenu_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(930,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -15619,7 +15619,7 @@ void wxMenu_GetMenuItemCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetMenuItemCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -15634,7 +15634,7 @@ void wxMenu_GetMenuItems(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxMenuItemList Result = This->GetMenuItems();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_list_objs(Result, app, "wxMenuItem"));
 
 }
@@ -15649,7 +15649,7 @@ void wxMenu_GetTitle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString Result = This->GetTitle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -15668,7 +15668,7 @@ void wxMenu_Insert_2(WxeApp *app, wxeCommand& Ecmd)
   item = (wxMenuItem *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Insert(pos,item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15698,11 +15698,11 @@ void wxMenu_Insert_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(936,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(936,"text");
+  if(!enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(936,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(936,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(936,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(936,"kind"); // enum
@@ -15710,7 +15710,7 @@ void wxMenu_Insert_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Insert(pos,itemid,text,help,kind);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15730,7 +15730,7 @@ void wxMenu_Insert_5_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(937,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(937,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(937,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxMenu *submenu;
   submenu = (wxMenu *) memenv->getPtr(env, argv[4]);
@@ -15744,13 +15744,13 @@ void wxMenu_Insert_5_1(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(937,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(937,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(937,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(937,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Insert(pos,itemid,text,submenu,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15769,11 +15769,11 @@ void wxMenu_Insert_5_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(938,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(938,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(938,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ErlNifBinary help_bin;
   wxString help;
-  if(enif_inspect_binary(env, argv[4], &help_bin)) Badarg(938,"help");
+  if(!enif_inspect_binary(env, argv[4], &help_bin)) Badarg(938,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
   bool isCheckable;
   isCheckable = enif_is_identical(argv[5], WXE_ATOM_true);
@@ -15797,7 +15797,7 @@ void wxMenu_InsertCheckItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(939,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(939,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(939,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -15809,13 +15809,13 @@ void wxMenu_InsertCheckItem(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(939,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(939,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(939,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(939,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->InsertCheckItem(pos,itemid,text,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15835,7 +15835,7 @@ void wxMenu_InsertRadioItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &itemid)) Badarg(940,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(940,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(940,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -15847,13 +15847,13 @@ void wxMenu_InsertRadioItem(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(940,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(940,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(940,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(940,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->InsertRadioItem(pos,itemid,text,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15870,7 +15870,7 @@ void wxMenu_InsertSeparator(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(941,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->InsertSeparator(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15887,7 +15887,7 @@ void wxMenu_IsChecked(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(942,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsChecked(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15904,7 +15904,7 @@ void wxMenu_IsEnabled(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(943,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEnabled(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -15921,7 +15921,7 @@ void wxMenu_Prepend_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxMenuItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Prepend(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15949,11 +15949,11 @@ void wxMenu_Prepend_2(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(945,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(945,"text");
+  if(!enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(945,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(945,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(945,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(945,"kind"); // enum
@@ -15961,7 +15961,7 @@ void wxMenu_Prepend_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Prepend(itemid,text,help,kind);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -15979,7 +15979,7 @@ void wxMenu_Prepend_4_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(946,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(946,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(946,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxMenu *submenu;
   submenu = (wxMenu *) memenv->getPtr(env, argv[3]);
@@ -15993,13 +15993,13 @@ void wxMenu_Prepend_4_1(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(946,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(946,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(946,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(946,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Prepend(itemid,text,submenu,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16016,11 +16016,11 @@ void wxMenu_Prepend_4_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(947,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(947,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(947,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ErlNifBinary help_bin;
   wxString help;
-  if(enif_inspect_binary(env, argv[3], &help_bin)) Badarg(947,"help");
+  if(!enif_inspect_binary(env, argv[3], &help_bin)) Badarg(947,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
   bool isCheckable;
   isCheckable = enif_is_identical(argv[4], WXE_ATOM_true);
@@ -16042,7 +16042,7 @@ void wxMenu_PrependCheckItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(948,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(948,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(948,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -16054,13 +16054,13 @@ void wxMenu_PrependCheckItem(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(948,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(948,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(948,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(948,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->PrependCheckItem(itemid,text,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16078,7 +16078,7 @@ void wxMenu_PrependRadioItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(949,"itemid"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(949,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(949,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -16090,13 +16090,13 @@ void wxMenu_PrependRadioItem(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(949,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(949,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(949,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else        Badarg(949,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->PrependRadioItem(itemid,text,help);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16111,7 +16111,7 @@ void wxMenu_PrependSeparator(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->PrependSeparator();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16128,7 +16128,7 @@ void wxMenu_Remove_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(951,"itemid"); // int
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Remove(itemid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16145,7 +16145,7 @@ void wxMenu_Remove_1_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxMenuItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxMenuItem * Result = (wxMenuItem*)This->Remove(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16162,7 +16162,7 @@ void wxMenu_SetHelpString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(953,"itemid"); // int
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(953,"helpString");
+  if(!enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(953,"helpString");
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetHelpString(itemid,helpString);
@@ -16181,7 +16181,7 @@ void wxMenu_SetLabel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &itemid)) Badarg(954,"itemid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(954,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(954,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(itemid,label);
@@ -16198,7 +16198,7 @@ void wxMenu_SetTitle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenu *) memenv->getPtr(env, argv[0]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[1], &title_bin)) Badarg(955,"title");
+  if(!enif_inspect_binary(env, argv[1], &title_bin)) Badarg(955,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetTitle(title);
@@ -16231,11 +16231,11 @@ void wxMenuItem_new(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(956,"id"); // int
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(956,"text");
+  if(!enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(956,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "help"))) {
   ErlNifBinary help_bin;
-  if(enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(956,"help");
+  if(!enif_inspect_binary(env, tpl[1], &help_bin)) Badarg(956,"help");
   help = wxString(help_bin.data, wxConvUTF8, help_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(956,"kind"); // enum
@@ -16245,7 +16245,7 @@ void wxMenuItem_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMenuItem * Result = new EwxMenuItem(parentMenu,id,text,help,kind,subMenu);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuItem"));
 
 }
@@ -16312,7 +16312,7 @@ void wxMenuItem_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBitmap * Result = &This->GetBitmap();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -16327,7 +16327,7 @@ void wxMenuItem_GetHelp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetHelp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -16342,7 +16342,7 @@ void wxMenuItem_GetId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -16357,7 +16357,7 @@ void wxMenuItem_GetKind(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetKind();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -16372,7 +16372,7 @@ void wxMenuItem_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -16385,10 +16385,10 @@ void wxMenuItem_GetLabelFromText(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[0], &text_bin)) Badarg(966,"text");
+  if(!enif_inspect_binary(env, argv[0], &text_bin)) Badarg(966,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   wxString Result = wxMenuItem::GetLabelFromText(text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -16403,7 +16403,7 @@ void wxMenuItem_GetMenu(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->GetMenu();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -16418,7 +16418,7 @@ void wxMenuItem_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -16433,7 +16433,7 @@ void wxMenuItem_GetSubMenu(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->GetSubMenu();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -16448,7 +16448,7 @@ void wxMenuItem_IsCheckable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsCheckable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -16463,7 +16463,7 @@ void wxMenuItem_IsChecked(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsChecked();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -16478,7 +16478,7 @@ void wxMenuItem_IsEnabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -16493,7 +16493,7 @@ void wxMenuItem_IsSeparator(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSeparator();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -16508,7 +16508,7 @@ void wxMenuItem_IsSubMenu(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSubMenu();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -16538,7 +16538,7 @@ void wxMenuItem_SetHelp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(976,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(976,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetHelp(str);
@@ -16585,7 +16585,7 @@ void wxMenuItem_SetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuItem *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(979,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(979,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetText(str);
@@ -16604,7 +16604,7 @@ void wxToolBar_AddControl(WxeApp *app, wxeCommand& Ecmd)
   control = (wxControl *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddControl(control);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16619,7 +16619,7 @@ void wxToolBar_AddSeparator(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddSeparator();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16640,7 +16640,7 @@ void wxToolBar_AddTool_5(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(982,"toolid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(982,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(982,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16658,11 +16658,11 @@ void wxToolBar_AddTool_5(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(982,"kind"); // enum
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(982,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(982,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(982,"longHelp");
+  if(!enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(982,"longHelp");
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "data"))) {
   data = (wxObject *) memenv->getPtr(env, tpl[1]);
@@ -16670,7 +16670,7 @@ void wxToolBar_AddTool_5(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddTool(toolid,label,*bitmap,*bmpDisabled,kind,shortHelp,longHelp,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16689,7 +16689,7 @@ void wxToolBar_AddTool_4_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(983,"toolid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(983,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(983,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16703,7 +16703,7 @@ void wxToolBar_AddTool_4_0(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(983,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(983,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(983,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "kind"))) {
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(983,"kind"); // enum
@@ -16711,7 +16711,7 @@ void wxToolBar_AddTool_4_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddTool(toolid,label,*bitmap,shortHelp,kind);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16728,7 +16728,7 @@ void wxToolBar_AddTool_1(WxeApp *app, wxeCommand& Ecmd)
   tool = (wxToolBarToolBase *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddTool(tool);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16765,17 +16765,17 @@ void wxToolBar_AddTool_4_1(WxeApp *app, wxeCommand& Ecmd)
   clientData = (wxObject *) memenv->getPtr(env, tpl[1]);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelpString"))) {
   ErlNifBinary shortHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelpString_bin)) Badarg(985,"shortHelpString");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelpString_bin)) Badarg(985,"shortHelpString");
   shortHelpString = wxString(shortHelpString_bin.data, wxConvUTF8, shortHelpString_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelpString"))) {
   ErlNifBinary longHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelpString_bin)) Badarg(985,"longHelpString");
+  if(!enif_inspect_binary(env, tpl[1], &longHelpString_bin)) Badarg(985,"longHelpString");
   longHelpString = wxString(longHelpString_bin.data, wxConvUTF8, longHelpString_bin.size);
     } else        Badarg(985,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddTool(toolid,*bitmap,*bmpDisabled,toggle,clientData,shortHelpString,longHelpString);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16804,17 +16804,17 @@ void wxToolBar_AddTool_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(986,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelpString"))) {
   ErlNifBinary shortHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelpString_bin)) Badarg(986,"shortHelpString");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelpString_bin)) Badarg(986,"shortHelpString");
   shortHelpString = wxString(shortHelpString_bin.data, wxConvUTF8, shortHelpString_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelpString"))) {
   ErlNifBinary longHelpString_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelpString_bin)) Badarg(986,"longHelpString");
+  if(!enif_inspect_binary(env, tpl[1], &longHelpString_bin)) Badarg(986,"longHelpString");
   longHelpString = wxString(longHelpString_bin.data, wxConvUTF8, longHelpString_bin.size);
     } else        Badarg(986,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddTool(toolid,*bitmap,shortHelpString,longHelpString);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16855,17 +16855,17 @@ void wxToolBar_AddTool_6(WxeApp *app, wxeCommand& Ecmd)
   clientData = (wxObject *) memenv->getPtr(env, tpl[1]);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(987,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(987,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(987,"longHelp");
+  if(!enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(987,"longHelp");
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else        Badarg(987,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddTool(toolid,*bitmap,*bmpDisabled,toggle,xPos,yPos,clientData,shortHelp,longHelp);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16886,7 +16886,7 @@ void wxToolBar_AddCheckTool(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(988,"toolid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(988,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(988,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16902,11 +16902,11 @@ void wxToolBar_AddCheckTool(WxeApp *app, wxeCommand& Ecmd)
   bmpDisabled = (wxBitmap *) memenv->getPtr(env, tpl[1]);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(988,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(988,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(988,"longHelp");
+  if(!enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(988,"longHelp");
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "data"))) {
   data = (wxObject *) memenv->getPtr(env, tpl[1]);
@@ -16914,7 +16914,7 @@ void wxToolBar_AddCheckTool(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddCheckTool(toolid,label,*bitmap,*bmpDisabled,shortHelp,longHelp,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16935,7 +16935,7 @@ void wxToolBar_AddRadioTool(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(989,"toolid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(989,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(989,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[3]);
@@ -16951,11 +16951,11 @@ void wxToolBar_AddRadioTool(WxeApp *app, wxeCommand& Ecmd)
   bmpDisabled = (wxBitmap *) memenv->getPtr(env, tpl[1]);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(989,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(989,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(989,"longHelp");
+  if(!enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(989,"longHelp");
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "data"))) {
   data = (wxObject *) memenv->getPtr(env, tpl[1]);
@@ -16963,7 +16963,7 @@ void wxToolBar_AddRadioTool(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddRadioTool(toolid,label,*bitmap,*bmpDisabled,shortHelp,longHelp,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16979,7 +16979,7 @@ void wxToolBar_AddStretchableSpace(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->AddStretchableSpace();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -16998,7 +16998,7 @@ void wxToolBar_InsertStretchableSpace(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(991,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->InsertStretchableSpace(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17016,7 +17016,7 @@ void wxToolBar_DeleteTool(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(992,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteTool(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -17033,7 +17033,7 @@ void wxToolBar_DeleteToolByPos(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(993,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteToolByPos(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -17067,7 +17067,7 @@ void wxToolBar_FindById(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(995,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->FindById(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17084,7 +17084,7 @@ void wxToolBar_FindControl(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(996,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   wxControl * Result = (wxControl*)This->FindControl(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxControl"));
 
 }
@@ -17103,7 +17103,7 @@ void wxToolBar_FindToolForPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(997,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->FindToolForPosition(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17118,7 +17118,7 @@ void wxToolBar_GetToolSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetToolSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -17133,7 +17133,7 @@ void wxToolBar_GetToolBitmapSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetToolBitmapSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -17148,7 +17148,7 @@ void wxToolBar_GetMargins(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetMargins();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -17165,7 +17165,7 @@ void wxToolBar_GetToolEnabled(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1001,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetToolEnabled(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -17182,7 +17182,7 @@ void wxToolBar_GetToolLongHelp(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1002,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetToolLongHelp(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -17197,7 +17197,7 @@ void wxToolBar_GetToolPacking(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetToolPacking();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -17214,7 +17214,7 @@ void wxToolBar_GetToolPos(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1004,"id"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetToolPos(id);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -17229,7 +17229,7 @@ void wxToolBar_GetToolSeparation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetToolSeparation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -17246,7 +17246,7 @@ void wxToolBar_GetToolShortHelp(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1006,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetToolShortHelp(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -17263,7 +17263,7 @@ void wxToolBar_GetToolState(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1007,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetToolState(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -17282,7 +17282,7 @@ void wxToolBar_InsertControl(WxeApp *app, wxeCommand& Ecmd)
   control = (wxControl *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->InsertControl(pos,control);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17299,7 +17299,7 @@ void wxToolBar_InsertSeparator(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(1009,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->InsertSeparator(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17323,7 +17323,7 @@ void wxToolBar_InsertTool_5(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &toolid)) Badarg(1010,"toolid"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1010,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1010,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   wxBitmap *bitmap;
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[4]);
@@ -17341,11 +17341,11 @@ void wxToolBar_InsertTool_5(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], (int *) &kind)) Badarg(1010,"kind"); // enum
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(1010,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(1010,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(1010,"longHelp");
+  if(!enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(1010,"longHelp");
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "clientData"))) {
   clientData = (wxObject *) memenv->getPtr(env, tpl[1]);
@@ -17353,7 +17353,7 @@ void wxToolBar_InsertTool_5(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->InsertTool(pos,toolid,label,*bitmap,*bmpDisabled,kind,shortHelp,longHelp,clientData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17372,7 +17372,7 @@ void wxToolBar_InsertTool_2(WxeApp *app, wxeCommand& Ecmd)
   tool = (wxToolBarToolBase *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->InsertTool(pos,tool);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17412,17 +17412,17 @@ void wxToolBar_InsertTool_4(WxeApp *app, wxeCommand& Ecmd)
   clientData = (wxObject *) memenv->getPtr(env, tpl[1]);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "shortHelp"))) {
   ErlNifBinary shortHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(1012,"shortHelp");
+  if(!enif_inspect_binary(env, tpl[1], &shortHelp_bin)) Badarg(1012,"shortHelp");
   shortHelp = wxString(shortHelp_bin.data, wxConvUTF8, shortHelp_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "longHelp"))) {
   ErlNifBinary longHelp_bin;
-  if(enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(1012,"longHelp");
+  if(!enif_inspect_binary(env, tpl[1], &longHelp_bin)) Badarg(1012,"longHelp");
   longHelp = wxString(longHelp_bin.data, wxConvUTF8, longHelp_bin.size);
     } else        Badarg(1012,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->InsertTool(pos,toolid,*bitmap,*bmpDisabled,toggle,clientData,shortHelp,longHelp);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17437,7 +17437,7 @@ void wxToolBar_Realize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Realize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -17454,7 +17454,7 @@ void wxToolBar_RemoveTool(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1014,"toolid"); // int
   if(!This) throw wxe_badarg("This");
   wxToolBarToolBase * Result = (wxToolBarToolBase*)This->RemoveTool(toolid);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -17509,7 +17509,7 @@ void wxToolBar_SetToolLongHelp(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &toolid)) Badarg(1017,"toolid"); // int
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(1017,"helpString");
+  if(!enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(1017,"helpString");
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetToolLongHelp(toolid,helpString);
@@ -17543,7 +17543,7 @@ void wxToolBar_SetToolShortHelp(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1019,"id"); // int
   ErlNifBinary helpString_bin;
   wxString helpString;
-  if(enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(1019,"helpString");
+  if(!enif_inspect_binary(env, argv[2], &helpString_bin)) Badarg(1019,"helpString");
   helpString = wxString(helpString_bin.data, wxConvUTF8, helpString_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetToolShortHelp(id,helpString);
@@ -17588,7 +17588,7 @@ void wxStatusBar_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStatusBar * Result = new EwxStatusBar();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStatusBar"));
 
 }
@@ -17619,7 +17619,7 @@ void wxStatusBar_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxStatusBar * Result = new EwxStatusBar(parent,winid,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStatusBar"));
 
 }
@@ -17652,7 +17652,7 @@ void wxStatusBar_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,winid,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -17670,7 +17670,7 @@ void wxStatusBar_GetFieldRect(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &i)) Badarg(1028,"i"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetFieldRect(i,rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_bool(Result),
     rt.make(rect));
@@ -17688,7 +17688,7 @@ void wxStatusBar_GetFieldsCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStatusBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFieldsCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -17716,7 +17716,7 @@ void wxStatusBar_GetStatusText(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetStatusText(number);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -17758,7 +17758,7 @@ void wxStatusBar_PushStatusText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStatusBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1032,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1032,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -17845,7 +17845,7 @@ void wxStatusBar_SetStatusText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStatusBar *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1035,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1035,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -17928,7 +17928,7 @@ void wxBitmap_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxBitmap * Result = new EwxBitmap();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -17958,7 +17958,7 @@ void wxBitmap_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBitmap * Result = new EwxBitmap(width,height,depth);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -17992,7 +17992,7 @@ void wxBitmap_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBitmap * Result = new EwxBitmap(bits,width,height,depth);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -18006,7 +18006,7 @@ void wxBitmap_new_2_0(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[0], &filename_bin)) Badarg(1041,"filename");
+  if(!enif_inspect_binary(env, argv[0], &filename_bin)) Badarg(1041,"filename");
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -18022,7 +18022,7 @@ void wxBitmap_new_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBitmap * Result = new EwxBitmap(filename,type);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -18050,7 +18050,7 @@ void wxBitmap_new_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBitmap * Result = new EwxBitmap(*image,depth);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -18065,7 +18065,7 @@ void wxBitmap_ConvertToImage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->ConvertToImage()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -18082,7 +18082,7 @@ void wxBitmap_CopyFromIcon(WxeApp *app, wxeCommand& Ecmd)
   icon = (wxIcon *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CopyFromIcon(*icon);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18114,7 +18114,7 @@ void wxBitmap_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(width,height,depth);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18129,7 +18129,7 @@ void wxBitmap_GetDepth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDepth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -18144,7 +18144,7 @@ void wxBitmap_GetHeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetHeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -18159,7 +18159,7 @@ void wxBitmap_GetPalette(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPalette * Result = (wxPalette*)This->GetPalette();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPalette"));
 
 }
@@ -18174,7 +18174,7 @@ void wxBitmap_GetMask(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMask * Result = (wxMask*)This->GetMask();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMask"));
 
 }
@@ -18189,7 +18189,7 @@ void wxBitmap_GetWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -18216,7 +18216,7 @@ void wxBitmap_GetSubBitmap(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->GetSubBitmap(rect)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -18232,7 +18232,7 @@ void wxBitmap_LoadFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1053,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1053,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -18248,7 +18248,7 @@ void wxBitmap_LoadFile(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFile(name,type);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18263,7 +18263,7 @@ void wxBitmap_Ok(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Ok();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18279,7 +18279,7 @@ void wxBitmap_SaveFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmap *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1055,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1055,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   wxBitmapType type;
   if(!enif_get_int(env, argv[2], (int *) &type)) Badarg(1055,"type"); // enum
@@ -18297,7 +18297,7 @@ void wxBitmap_SaveFile(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->SaveFile(name,type,palette);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18383,7 +18383,7 @@ void wxIcon_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxIcon * Result = new EwxIcon();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -18399,7 +18399,7 @@ void wxIcon_new_2(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[0], &filename_bin)) Badarg(1062,"filename");
+  if(!enif_inspect_binary(env, argv[0], &filename_bin)) Badarg(1062,"filename");
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -18419,7 +18419,7 @@ void wxIcon_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxIcon * Result = new EwxIcon(filename,type,desiredWidth,desiredHeight);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -18434,7 +18434,7 @@ void wxIcon_new_1(WxeApp *app, wxeCommand& Ecmd)
   loc = (wxIconLocation *) memenv->getPtr(env, argv[0]);
   wxIcon * Result = new EwxIcon(*loc);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -18460,7 +18460,7 @@ void wxIconBundle_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxIconBundle * Result = new wxIconBundle();
   app->newPtr((void *) Result, 61, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIconBundle"));
 
 }
@@ -18473,13 +18473,13 @@ void wxIconBundle_new_2(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary file_bin;
   wxString file;
-  if(enif_inspect_binary(env, argv[0], &file_bin)) Badarg(1067,"file");
+  if(!enif_inspect_binary(env, argv[0], &file_bin)) Badarg(1067,"file");
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
   long type;
   if(!enif_get_long(env, argv[1], &type)) Badarg(1067,"type");
   wxIconBundle * Result = new wxIconBundle(file,type);
   app->newPtr((void *) Result, 61, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIconBundle"));
 
 }
@@ -18494,7 +18494,7 @@ void wxIconBundle_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   icon = (wxIcon *) memenv->getPtr(env, argv[0]);
   wxIconBundle * Result = new wxIconBundle(*icon);
   app->newPtr((void *) Result, 61, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIconBundle"));
 
 }
@@ -18508,7 +18508,7 @@ void wxIconBundle_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxIconBundle * ic = (wxIconBundle *) memenv->getPtr(env, argv[0]);
   wxIconBundle * Result = new wxIconBundle(*ic);
   app->newPtr((void *) Result, 61, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIconBundle"));
 
 }
@@ -18535,7 +18535,7 @@ void wxIconBundle_AddIcon_2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxIconBundle *) memenv->getPtr(env, argv[0]);
   ErlNifBinary file_bin;
   wxString file;
-  if(enif_inspect_binary(env, argv[1], &file_bin)) Badarg(1071,"file");
+  if(!enif_inspect_binary(env, argv[1], &file_bin)) Badarg(1071,"file");
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
   long type;
   if(!enif_get_long(env, argv[2], &type)) Badarg(1071,"type");
@@ -18577,7 +18577,7 @@ void wxIconBundle_GetIcon_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   const wxIcon * Result = new EwxIcon(This->GetIcon(size)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -18605,7 +18605,7 @@ void wxIconBundle_GetIcon_1_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   const wxIcon * Result = new EwxIcon(This->GetIcon(size)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -18616,7 +18616,7 @@ void wxCursor_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxCursor * Result = new EwxCursor();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCursor"));
 
 }
@@ -18631,7 +18631,7 @@ void wxCursor_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[0], &cursorId)) Badarg(1076,"cursorId"); // int
   wxCursor * Result = new EwxCursor(cursorId);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCursor"));
 
 }
@@ -18646,7 +18646,7 @@ void wxCursor_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   image = (wxImage *) memenv->getPtr(env, argv[0]);
   wxCursor * Result = new EwxCursor(*image);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCursor"));
 
 }
@@ -18684,7 +18684,7 @@ void wxCursor_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxCursor * Result = new EwxCursor(bits,width,height,hotSpotX,hotSpotY);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCursor"));
 
 }
@@ -18700,7 +18700,7 @@ void wxCursor_Ok(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCursor *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Ok();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18711,7 +18711,7 @@ void wxMask_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMask * Result = new EwxMask();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMask"));
 
 }
@@ -18738,7 +18738,7 @@ void wxMask_new_2_1(WxeApp *app, wxeCommand& Ecmd)
   wxColour colour = wxColour(colourR,colourG,colourB,colourA);
   wxMask * Result = new EwxMask(*bitmap,colour);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMask"));
 
 }
@@ -18755,7 +18755,7 @@ void wxMask_new_2_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &paletteIndex)) Badarg(1083,"paletteIndex"); // int
   wxMask * Result = new EwxMask(*bitmap,paletteIndex);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMask"));
 
 }
@@ -18770,7 +18770,7 @@ void wxMask_new_1(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[0]);
   wxMask * Result = new EwxMask(*bitmap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMask"));
 
 }
@@ -18799,7 +18799,7 @@ void wxMask_Create_2_1(WxeApp *app, wxeCommand& Ecmd)
   wxColour colour = wxColour(colourR,colourG,colourB,colourA);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(*bitmap,colour);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18818,7 +18818,7 @@ void wxMask_Create_2_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &paletteIndex)) Badarg(1087,"paletteIndex"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(*bitmap,paletteIndex);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18835,7 +18835,7 @@ void wxMask_Create_1(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(*bitmap);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -18846,7 +18846,7 @@ void wxImage_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxImage * Result = new EwxImage();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -18876,7 +18876,7 @@ void wxImage_new_3_0(WxeApp *app, wxeCommand& Ecmd)
   };
   wxImage * Result = new EwxImage(width,height,clear);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -18914,7 +18914,7 @@ void wxImage_new_4(WxeApp *app, wxeCommand& Ecmd)
 ;
   wxImage * Result = new EwxImage(width,height,data,static_data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -18958,7 +18958,7 @@ void wxImage_new_5(WxeApp *app, wxeCommand& Ecmd)
 ;
   wxImage * Result = new EwxImage(width,height,data,alpha,static_data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -18973,7 +18973,7 @@ void wxImage_new_2(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1093,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1093,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -18991,7 +18991,7 @@ void wxImage_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxImage * Result = new EwxImage(name,type,index);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19005,11 +19005,11 @@ void wxImage_new_3_1(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1094,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1094,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary mimetype_bin;
   wxString mimetype;
-  if(enif_inspect_binary(env, argv[1], &mimetype_bin)) Badarg(1094,"mimetype");
+  if(!enif_inspect_binary(env, argv[1], &mimetype_bin)) Badarg(1094,"mimetype");
   mimetype = wxString(mimetype_bin.data, wxConvUTF8, mimetype_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -19025,7 +19025,7 @@ void wxImage_new_3_1(WxeApp *app, wxeCommand& Ecmd)
   };
   wxImage * Result = new EwxImage(name,mimetype,index);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19042,7 +19042,7 @@ void wxImage_Blur(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &radius)) Badarg(1095,"radius"); // int
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Blur(radius)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19059,7 +19059,7 @@ void wxImage_BlurHorizontal(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &radius)) Badarg(1096,"radius"); // int
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->BlurHorizontal(radius)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19076,7 +19076,7 @@ void wxImage_BlurVertical(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &radius)) Badarg(1097,"radius"); // int
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->BlurVertical(radius)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19104,7 +19104,7 @@ void wxImage_ConvertAlphaToMask(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ConvertAlphaToMask(threshold);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19138,7 +19138,7 @@ void wxImage_ConvertToGreyscale(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->ConvertToGreyscale(lr,lg,lb)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19159,7 +19159,7 @@ void wxImage_ConvertToMono(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[3], &b)) Badarg(1100,"b");
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->ConvertToMono(r,g,b)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19174,7 +19174,7 @@ void wxImage_Copy(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Copy()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19206,7 +19206,7 @@ void wxImage_Create_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(width,height,clear);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19246,7 +19246,7 @@ void wxImage_Create_4(WxeApp *app, wxeCommand& Ecmd)
 ;
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(width,height,data,static_data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19292,7 +19292,7 @@ void wxImage_Create_5(WxeApp *app, wxeCommand& Ecmd)
 ;
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(width,height,data,alpha,static_data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19342,7 +19342,7 @@ void wxImage_FindFirstUnusedColour(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->FindFirstUnusedColour(&r,&g,&b,startR,startG,startB);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_bool(Result),
     rt.make_uint(r),
@@ -19357,7 +19357,7 @@ void wxImage_GetImageExtWildcard(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxString Result = wxImage::GetImageExtWildcard();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -19376,7 +19376,7 @@ void wxImage_GetAlpha_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(1108,"y"); // int
   if(!This) throw wxe_badarg("This");
   char Result = This->GetAlpha(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19391,7 +19391,7 @@ void wxImage_GetAlpha_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char * Result = (char*)This->GetAlpha();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_binary(Result, (This->GetWidth()*This->GetHeight())));
 
 }
@@ -19410,7 +19410,7 @@ void wxImage_GetBlue(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(1110,"y"); // int
   if(!This) throw wxe_badarg("This");
   char Result = This->GetBlue(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19425,7 +19425,7 @@ void wxImage_GetData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char * Result = (char*)This->GetData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_binary(Result, (This->GetWidth()*This->GetHeight()*3)));
 
 }
@@ -19444,7 +19444,7 @@ void wxImage_GetGreen(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(1112,"y"); // int
   if(!This) throw wxe_badarg("This");
   char Result = This->GetGreen(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19458,7 +19458,7 @@ void wxImage_GetImageCount(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1113,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1113,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -19473,7 +19473,7 @@ void wxImage_GetImageCount(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(1113,"Options");
   };
   int Result = wxImage::GetImageCount(name,type);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -19488,7 +19488,7 @@ void wxImage_GetHeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetHeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -19503,7 +19503,7 @@ void wxImage_GetMaskBlue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char Result = This->GetMaskBlue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19518,7 +19518,7 @@ void wxImage_GetMaskGreen(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char Result = This->GetMaskGreen();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19533,7 +19533,7 @@ void wxImage_GetMaskRed(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char Result = This->GetMaskRed();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19551,7 +19551,7 @@ void wxImage_GetOrFindMaskColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetOrFindMaskColour(&r,&g,&b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_bool(Result),
     rt.make_uint(r),
@@ -19571,7 +19571,7 @@ void wxImage_GetPalette(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxPalette * Result = &This->GetPalette();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPalette"));
 
 }
@@ -19590,7 +19590,7 @@ void wxImage_GetRed(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(1120,"y"); // int
   if(!This) throw wxe_badarg("This");
   char Result = This->GetRed(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -19617,7 +19617,7 @@ void wxImage_GetSubImage(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->GetSubImage(rect)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19632,7 +19632,7 @@ void wxImage_GetWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -19647,7 +19647,7 @@ void wxImage_HasAlpha(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasAlpha();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19662,7 +19662,7 @@ void wxImage_HasMask(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasMask();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19677,11 +19677,11 @@ void wxImage_GetOption(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1125,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1125,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetOption(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -19696,11 +19696,11 @@ void wxImage_GetOptionInt(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1126,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1126,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOptionInt(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -19715,11 +19715,11 @@ void wxImage_HasOption(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1127,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1127,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasOption(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19772,7 +19772,7 @@ void wxImage_IsTransparent(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsTransparent(x,y,threshold);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19789,7 +19789,7 @@ void wxImage_LoadFile_2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1131,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1131,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -19807,7 +19807,7 @@ void wxImage_LoadFile_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFile(name,type,index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19823,11 +19823,11 @@ void wxImage_LoadFile_3(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1132,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1132,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary mimetype_bin;
   wxString mimetype;
-  if(enif_inspect_binary(env, argv[2], &mimetype_bin)) Badarg(1132,"mimetype");
+  if(!enif_inspect_binary(env, argv[2], &mimetype_bin)) Badarg(1132,"mimetype");
   mimetype = wxString(mimetype_bin.data, wxConvUTF8, mimetype_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -19843,7 +19843,7 @@ void wxImage_LoadFile_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFile(name,mimetype,index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19858,7 +19858,7 @@ void wxImage_Ok(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Ok();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19871,10 +19871,10 @@ void wxImage_RemoveHandler(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1134,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(1134,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   bool Result = wxImage::RemoveHandler(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -19902,7 +19902,7 @@ void wxImage_Mirror(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Mirror(horizontally)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -19959,7 +19959,7 @@ void wxImage_Rescale(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = &This->Rescale(width,height,quality);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -20009,7 +20009,7 @@ void wxImage_Resize(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = &This->Resize(size,pos,r,g,b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -20057,7 +20057,7 @@ void wxImage_Rotate(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Rotate(angle,centre_of_rotation,interpolating,offset_after_rotation)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -20100,7 +20100,7 @@ void wxImage_Rotate90(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Rotate90(clockwise)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -20115,11 +20115,11 @@ void wxImage_SaveFile_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1142,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1142,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SaveFile(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -20134,13 +20134,13 @@ void wxImage_SaveFile_2_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1143,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1143,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int type;
   if(!enif_get_int(env, argv[2], &type)) Badarg(1143,"type"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SaveFile(name,type);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -20155,15 +20155,15 @@ void wxImage_SaveFile_2_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1144,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1144,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary mimetype_bin;
   wxString mimetype;
-  if(enif_inspect_binary(env, argv[2], &mimetype_bin)) Badarg(1144,"mimetype");
+  if(!enif_inspect_binary(env, argv[2], &mimetype_bin)) Badarg(1144,"mimetype");
   mimetype = wxString(mimetype_bin.data, wxConvUTF8, mimetype_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SaveFile(name,mimetype);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -20195,7 +20195,7 @@ void wxImage_Scale(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Scale(width,height,quality)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -20245,7 +20245,7 @@ void wxImage_Size(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxImage * Result = new EwxImage(This->Size(size,pos,r,g,b)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImage"));
 
 }
@@ -20438,7 +20438,7 @@ void wxImage_SetMaskFromImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[4], &mb)) Badarg(1153,"mb");
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetMaskFromImage(*mask,mr,mg,mb);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -20453,11 +20453,11 @@ void wxImage_SetOption_2_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1154,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1154,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[2], &value_bin)) Badarg(1154,"value");
+  if(!enif_inspect_binary(env, argv[2], &value_bin)) Badarg(1154,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetOption(name,value);
@@ -20474,7 +20474,7 @@ void wxImage_SetOption_2_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImage *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1155,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(1155,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int value;
   if(!enif_get_int(env, argv[2], &value)) Badarg(1155,"value"); // int
@@ -20558,7 +20558,7 @@ void wxBrush_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxBrush * Result = new EwxBrush();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBrush"));
 
 }
@@ -20596,7 +20596,7 @@ void wxBrush_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBrush * Result = new EwxBrush(colour,style);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBrush"));
 
 }
@@ -20611,7 +20611,7 @@ void wxBrush_new_1(WxeApp *app, wxeCommand& Ecmd)
   stippleBitmap = (wxBitmap *) memenv->getPtr(env, argv[0]);
   wxBrush * Result = new EwxBrush(*stippleBitmap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBrush"));
 
 }
@@ -20626,7 +20626,7 @@ void wxBrush_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBrush *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -20641,7 +20641,7 @@ void wxBrush_GetStipple(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBrush *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = (wxBitmap*)This->GetStipple();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -20656,7 +20656,7 @@ void wxBrush_GetStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBrush *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -20671,7 +20671,7 @@ void wxBrush_IsHatch(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBrush *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsHatch();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -20686,7 +20686,7 @@ void wxBrush_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBrush *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -20771,7 +20771,7 @@ void wxPen_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPen * Result = new EwxPen();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPen"));
 
 }
@@ -20812,7 +20812,7 @@ void wxPen_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPen * Result = new EwxPen(colour,width,style);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPen"));
 
 }
@@ -20827,7 +20827,7 @@ void wxPen_GetCap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCap();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -20842,7 +20842,7 @@ void wxPen_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -20857,7 +20857,7 @@ void wxPen_GetJoin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetJoin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -20872,7 +20872,7 @@ void wxPen_GetStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -20887,7 +20887,7 @@ void wxPen_GetWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -20902,7 +20902,7 @@ void wxPen_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPen *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21017,7 +21017,7 @@ void wxRegion_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxRegion * Result = new EwxRegion();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRegion"));
 
 }
@@ -21038,7 +21038,7 @@ void wxRegion_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &h)) Badarg(1190,"h"); // "wxCoord"
   wxRegion * Result = new EwxRegion(x,y,w,h);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRegion"));
 
 }
@@ -21067,7 +21067,7 @@ void wxRegion_new_2(WxeApp *app, wxeCommand& Ecmd)
   wxPoint bottomRight = wxPoint(bottomRightX,bottomRightY);
   wxRegion * Result = new EwxRegion(topLeft,bottomRight);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRegion"));
 
 }
@@ -21092,7 +21092,7 @@ void wxRegion_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   wxRegion * Result = new EwxRegion(rect);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRegion"));
 
 }
@@ -21107,7 +21107,7 @@ void wxRegion_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   bmp = (wxBitmap *) memenv->getPtr(env, argv[0]);
   wxRegion * Result = new EwxRegion(*bmp);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRegion"));
 
 }
@@ -21139,7 +21139,7 @@ void wxRegion_Contains_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(1198,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   int Result = This->Contains(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21162,7 +21162,7 @@ void wxRegion_Contains_1_0(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->Contains(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21185,7 +21185,7 @@ void wxRegion_Contains_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &h)) Badarg(1200,"h"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   int Result = This->Contains(x,y,w,h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21212,7 +21212,7 @@ void wxRegion_Contains_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   int Result = This->Contains(rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21227,7 +21227,7 @@ void wxRegion_ConvertToBitmap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRegion *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->ConvertToBitmap()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -21242,7 +21242,7 @@ void wxRegion_GetBox(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRegion *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetBox();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -21265,7 +21265,7 @@ void wxRegion_Intersect_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &h)) Badarg(1204,"h"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   bool Result = This->Intersect(x,y,w,h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21292,7 +21292,7 @@ void wxRegion_Intersect_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Intersect(rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21309,7 +21309,7 @@ void wxRegion_Intersect_1_0(WxeApp *app, wxeCommand& Ecmd)
   region = (wxRegion *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Intersect(*region);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21324,7 +21324,7 @@ void wxRegion_IsEmpty(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRegion *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEmpty();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21347,7 +21347,7 @@ void wxRegion_Subtract_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &h)) Badarg(1208,"h"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   bool Result = This->Subtract(x,y,w,h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21374,7 +21374,7 @@ void wxRegion_Subtract_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Subtract(rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21391,7 +21391,7 @@ void wxRegion_Subtract_1_0(WxeApp *app, wxeCommand& Ecmd)
   region = (wxRegion *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Subtract(*region);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21410,7 +21410,7 @@ void wxRegion_Offset_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(1211,"y"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   bool Result = This->Offset(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21433,7 +21433,7 @@ void wxRegion_Offset_1(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Offset(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21456,7 +21456,7 @@ void wxRegion_Union_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &h)) Badarg(1213,"h"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   bool Result = This->Union(x,y,w,h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21483,7 +21483,7 @@ void wxRegion_Union_1_2(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Union(rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21499,7 +21499,7 @@ void wxRegion_Union_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRegion * region = (wxRegion *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Union(*region);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21516,7 +21516,7 @@ void wxRegion_Union_1_0(WxeApp *app, wxeCommand& Ecmd)
   bmp = (wxBitmap *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Union(*bmp);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21558,7 +21558,7 @@ void wxRegion_Union_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Union(*bmp,transp,tolerance);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21581,7 +21581,7 @@ void wxRegion_Xor_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &h)) Badarg(1218,"h"); // "wxCoord"
   if(!This) throw wxe_badarg("This");
   bool Result = This->Xor(x,y,w,h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21608,7 +21608,7 @@ void wxRegion_Xor_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxRect rect = wxRect(rectX,rectY,rectW,rectH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Xor(rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21625,7 +21625,7 @@ void wxRegion_Xor_1_0(WxeApp *app, wxeCommand& Ecmd)
   region = (wxRegion *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Xor(*region);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21636,7 +21636,7 @@ void wxAcceleratorTable_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxAcceleratorTable * Result = new EwxAcceleratorTable();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAcceleratorTable"));
 
 }
@@ -21664,7 +21664,7 @@ void wxAcceleratorTable_new_2(WxeApp *app, wxeCommand& Ecmd)
   wxAcceleratorTable * Result = new EwxAcceleratorTable(n,entries);
   app->newPtr((void *) Result, 1, memenv);
   enif_free(entries);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAcceleratorTable"));
 
 }
@@ -21679,7 +21679,7 @@ void wxAcceleratorTable_Ok(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAcceleratorTable *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Ok();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21714,7 +21714,7 @@ void wxAcceleratorEntry_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   };
   wxAcceleratorEntry * Result = new wxAcceleratorEntry(flags,keyCode,cmd,item);
   app->newPtr((void *) Result, 69, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAcceleratorEntry"));
 
 }
@@ -21729,7 +21729,7 @@ void wxAcceleratorEntry_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   entry = (wxAcceleratorEntry *) memenv->getPtr(env, argv[0]);
   wxAcceleratorEntry * Result = new wxAcceleratorEntry(*entry);
   app->newPtr((void *) Result, 69, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAcceleratorEntry"));
 
 }
@@ -21744,7 +21744,7 @@ void wxAcceleratorEntry_GetCommand(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAcceleratorEntry *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCommand();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21759,7 +21759,7 @@ void wxAcceleratorEntry_GetFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAcceleratorEntry *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21774,7 +21774,7 @@ void wxAcceleratorEntry_GetKeyCode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAcceleratorEntry *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetKeyCode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21837,7 +21837,7 @@ void wxCaret_new_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &height)) Badarg(1236,"height"); // int
   wxCaret * Result = new EwxCaret(window,width,height);
   app->newPtr((void *) Result, 70, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCaret"));
 
 }
@@ -21860,7 +21860,7 @@ void wxCaret_new_2(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   wxCaret * Result = new EwxCaret(window,size);
   app->newPtr((void *) Result, 70, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCaret"));
 
 }
@@ -21893,7 +21893,7 @@ void wxCaret_Create_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &height)) Badarg(1240,"height"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(window,width,height);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21918,7 +21918,7 @@ void wxCaret_Create_2(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(window,size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -21928,7 +21928,7 @@ void wxCaret_GetBlinkTime(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxCaret::GetBlinkTime();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -21943,7 +21943,7 @@ void wxCaret_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCaret *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -21958,7 +21958,7 @@ void wxCaret_GetSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCaret *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -21973,7 +21973,7 @@ void wxCaret_GetWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCaret *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -22001,7 +22001,7 @@ void wxCaret_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCaret *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22016,7 +22016,7 @@ void wxCaret_IsVisible(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCaret *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsVisible();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22168,7 +22168,7 @@ void wxSizer_Add_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(window,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22207,7 +22207,7 @@ void wxSizer_Add_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(sizer,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22248,7 +22248,7 @@ void wxSizer_Add_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(width,height,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22266,7 +22266,7 @@ void wxSizer_Add_2_3(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(window,*flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22285,7 +22285,7 @@ void wxSizer_Add_2_2(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(sizer,*flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22302,7 +22302,7 @@ void wxSizer_AddSpacer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &size)) Badarg(1262,"size"); // int
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->AddSpacer(size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22330,7 +22330,7 @@ void wxSizer_AddStretchSpacer(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->AddStretchSpacer(prop);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22345,7 +22345,7 @@ void wxSizer_CalcMin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->CalcMin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -22387,7 +22387,7 @@ void wxSizer_Detach_1_2(WxeApp *app, wxeCommand& Ecmd)
   wxWindow * window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Detach(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22404,7 +22404,7 @@ void wxSizer_Detach_1_1(WxeApp *app, wxeCommand& Ecmd)
   sizer = (wxSizer *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Detach(sizer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22421,7 +22421,7 @@ void wxSizer_Detach_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1268,"index"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Detach(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22438,7 +22438,7 @@ void wxSizer_Fit(WxeApp *app, wxeCommand& Ecmd)
   window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->Fit(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -22468,7 +22468,7 @@ void wxSizer_GetChildren(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizerItemList Result = This->GetChildren();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_list_objs(Result, app, "wxSizerItem"));
 
 }
@@ -22497,7 +22497,7 @@ void wxSizer_GetItem_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->GetItem(window,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22527,7 +22527,7 @@ void wxSizer_GetItem_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->GetItem(sizer,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22544,7 +22544,7 @@ void wxSizer_GetItem_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1274,"index"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->GetItem(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22559,7 +22559,7 @@ void wxSizer_GetSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -22574,7 +22574,7 @@ void wxSizer_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -22589,7 +22589,7 @@ void wxSizer_GetMinSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetMinSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -22619,7 +22619,7 @@ void wxSizer_Hide_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Hide(sizer,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22648,7 +22648,7 @@ void wxSizer_Hide_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Hide(window,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22665,7 +22665,7 @@ void wxSizer_Hide_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1280,"index"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->Hide(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22705,7 +22705,7 @@ void wxSizer_Insert_3_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Insert(index,window,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22746,7 +22746,7 @@ void wxSizer_Insert_3_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Insert(index,sizer,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22789,7 +22789,7 @@ void wxSizer_Insert_4(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Insert(index,width,height,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22809,7 +22809,7 @@ void wxSizer_Insert_3_3(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[3]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Insert(index,window,*flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22830,7 +22830,7 @@ void wxSizer_Insert_3_2(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[3]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Insert(index,sizer,*flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22849,7 +22849,7 @@ void wxSizer_Insert_2(WxeApp *app, wxeCommand& Ecmd)
   item = (wxSizerItem *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Insert(index,item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22868,7 +22868,7 @@ void wxSizer_InsertSpacer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &size)) Badarg(1287,"size"); // int
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->InsertSpacer(index,size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22898,7 +22898,7 @@ void wxSizer_InsertStretchSpacer(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->InsertStretchSpacer(index,prop);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -22914,7 +22914,7 @@ void wxSizer_IsShown_1_2(WxeApp *app, wxeCommand& Ecmd)
   wxWindow * window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsShown(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22931,7 +22931,7 @@ void wxSizer_IsShown_1_1(WxeApp *app, wxeCommand& Ecmd)
   sizer = (wxSizer *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsShown(sizer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22948,7 +22948,7 @@ void wxSizer_IsShown_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1291,"index"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsShown(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -22999,7 +22999,7 @@ void wxSizer_Prepend_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Prepend(window,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23038,7 +23038,7 @@ void wxSizer_Prepend_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Prepend(sizer,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23079,7 +23079,7 @@ void wxSizer_Prepend_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Prepend(width,height,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23097,7 +23097,7 @@ void wxSizer_Prepend_2_3(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Prepend(window,*flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23116,7 +23116,7 @@ void wxSizer_Prepend_2_2(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Prepend(sizer,*flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23133,7 +23133,7 @@ void wxSizer_Prepend_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxSizerItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Prepend(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23150,7 +23150,7 @@ void wxSizer_PrependSpacer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &size)) Badarg(1299,"size"); // int
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->PrependSpacer(size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23178,7 +23178,7 @@ void wxSizer_PrependStretchSpacer(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->PrependStretchSpacer(prop);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23208,7 +23208,7 @@ void wxSizer_Remove_1_1(WxeApp *app, wxeCommand& Ecmd)
   sizer = (wxSizer *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Remove(sizer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23225,7 +23225,7 @@ void wxSizer_Remove_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1303,"index"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Remove(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23255,7 +23255,7 @@ void wxSizer_Replace_3_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Replace(oldwin,newwin,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23287,7 +23287,7 @@ void wxSizer_Replace_3_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Replace(oldsz,newsz,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23306,7 +23306,7 @@ void wxSizer_Replace_2(WxeApp *app, wxeCommand& Ecmd)
   newitem = (wxSizerItem *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Replace(index,newitem);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23385,7 +23385,7 @@ void wxSizer_SetItemMinSize_3_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &height)) Badarg(1310,"height"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemMinSize(window,width,height);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23409,7 +23409,7 @@ void wxSizer_SetItemMinSize_2_2(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemMinSize(window,size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23430,7 +23430,7 @@ void wxSizer_SetItemMinSize_3_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &height)) Badarg(1312,"height"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemMinSize(sizer,width,height);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23455,7 +23455,7 @@ void wxSizer_SetItemMinSize_2_1(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemMinSize(sizer,size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23476,7 +23476,7 @@ void wxSizer_SetItemMinSize_3_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &height)) Badarg(1314,"height"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemMinSize(index,width,height);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23501,7 +23501,7 @@ void wxSizer_SetItemMinSize_2_0(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemMinSize(index,size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23563,7 +23563,7 @@ void wxSizer_Show_2_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(window,show,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23596,7 +23596,7 @@ void wxSizer_Show_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(sizer,show,recursive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23626,7 +23626,7 @@ void wxSizer_Show_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(index,show);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -23667,7 +23667,7 @@ void wxSizerFlags_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSizerFlags * Result = new wxSizerFlags(proportion);
   app->newPtr((void *) Result, 72, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23684,7 +23684,7 @@ void wxSizerFlags_Align(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &alignment)) Badarg(1323,"alignment"); // int
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Align(alignment);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23703,7 +23703,7 @@ void wxSizerFlags_Border_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &borderInPixels)) Badarg(1324,"borderInPixels"); // int
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Border(direction,borderInPixels);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23731,7 +23731,7 @@ void wxSizerFlags_Border_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Border(direction);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23746,7 +23746,7 @@ void wxSizerFlags_Center(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerFlags *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Center();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23761,7 +23761,7 @@ void wxSizerFlags_Centre(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerFlags *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Centre();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23776,7 +23776,7 @@ void wxSizerFlags_Expand(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerFlags *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Expand();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23791,7 +23791,7 @@ void wxSizerFlags_Left(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerFlags *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Left();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23808,7 +23808,7 @@ void wxSizerFlags_Proportion(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &proportion)) Badarg(1330,"proportion"); // int
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Proportion(proportion);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23823,7 +23823,7 @@ void wxSizerFlags_Right(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerFlags *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizerFlags * Result = &This->Right();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerFlags"));
 
 }
@@ -23857,7 +23857,7 @@ void wxSizerItem_new_5_1(WxeApp *app, wxeCommand& Ecmd)
   userData = (wxObject *) memenv->getPtr(env, argv[4]);
   wxSizerItem * Result = new EwxSizerItem(window,proportion,flag,border,userData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23873,7 +23873,7 @@ void wxSizerItem_new_2_1(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[1]);
   wxSizerItem * Result = new EwxSizerItem(window,*flags);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23896,7 +23896,7 @@ void wxSizerItem_new_5_0(WxeApp *app, wxeCommand& Ecmd)
   userData = (wxObject *) memenv->getPtr(env, argv[4]);
   wxSizerItem * Result = new EwxSizerItem(sizer,proportion,flag,border,userData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23913,7 +23913,7 @@ void wxSizerItem_new_2_0(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[1]);
   wxSizerItem * Result = new EwxSizerItem(sizer,*flags);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23938,7 +23938,7 @@ void wxSizerItem_new_6(WxeApp *app, wxeCommand& Ecmd)
   userData = (wxObject *) memenv->getPtr(env, argv[5]);
   wxSizerItem * Result = new EwxSizerItem(width,height,proportion,flag,border,userData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23957,7 +23957,7 @@ void wxSizerItem_new_3(WxeApp *app, wxeCommand& Ecmd)
   flags = (wxSizerFlags *) memenv->getPtr(env, argv[2]);
   wxSizerItem * Result = new EwxSizerItem(width,height,*flags);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23968,7 +23968,7 @@ void wxSizerItem_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSizerItem * Result = new EwxSizerItem();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -23983,7 +23983,7 @@ void wxSizerItem_CalcMin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->CalcMin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -24024,7 +24024,7 @@ void wxSizerItem_GetBorder(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetBorder();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24039,7 +24039,7 @@ void wxSizerItem_GetFlag(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFlag();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24054,7 +24054,7 @@ void wxSizerItem_GetMinSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetMinSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -24069,7 +24069,7 @@ void wxSizerItem_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -24084,7 +24084,7 @@ void wxSizerItem_GetProportion(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetProportion();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24099,7 +24099,7 @@ void wxSizerItem_GetRatio(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   float Result = This->GetRatio();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_double(Result));
 
 }
@@ -24114,7 +24114,7 @@ void wxSizerItem_GetRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -24129,7 +24129,7 @@ void wxSizerItem_GetSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -24144,7 +24144,7 @@ void wxSizerItem_GetSizer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSizer * Result = (wxSizer*)This->GetSizer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizer"));
 
 }
@@ -24159,7 +24159,7 @@ void wxSizerItem_GetSpacer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSpacer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -24174,7 +24174,7 @@ void wxSizerItem_GetUserData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxObject * Result = (wxObject*)This->GetUserData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wx"));
 
 }
@@ -24189,7 +24189,7 @@ void wxSizerItem_GetWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -24204,7 +24204,7 @@ void wxSizerItem_IsSizer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSizer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -24219,7 +24219,7 @@ void wxSizerItem_IsShown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsShown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -24234,7 +24234,7 @@ void wxSizerItem_IsSpacer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSpacer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -24249,7 +24249,7 @@ void wxSizerItem_IsWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizerItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -24529,7 +24529,7 @@ void wxBoxSizer_new(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[0], &orient)) Badarg(1375,"orient"); // int
   wxBoxSizer * Result = new EwxBoxSizer(orient);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBoxSizer"));
 
 }
@@ -24544,7 +24544,7 @@ void wxBoxSizer_GetOrientation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBoxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOrientation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24561,7 +24561,7 @@ void wxStaticBoxSizer_new_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &orient)) Badarg(1378,"orient"); // int
   wxStaticBoxSizer * Result = new EwxStaticBoxSizer(box,orient);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBoxSizer"));
 
 }
@@ -24587,13 +24587,13 @@ void wxStaticBoxSizer_new_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1379,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "label"))) {
   ErlNifBinary label_bin;
-  if(enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1379,"label");
+  if(!enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1379,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
     } else        Badarg(1379,"Options");
   };
   wxStaticBoxSizer * Result = new EwxStaticBoxSizer(orient,win,label);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBoxSizer"));
 
 }
@@ -24608,7 +24608,7 @@ void wxStaticBoxSizer_GetStaticBox(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStaticBoxSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxStaticBox * Result = (wxStaticBox*)This->GetStaticBox();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBox"));
 
 }
@@ -24629,7 +24629,7 @@ void wxGridSizer_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &hgap)) Badarg(1382,"hgap"); // int
   wxGridSizer * Result = new EwxGridSizer(rows,cols,vgap,hgap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridSizer"));
 
 }
@@ -24660,7 +24660,7 @@ void wxGridSizer_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGridSizer * Result = new EwxGridSizer(cols,vgap,hgap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridSizer"));
 
 }
@@ -24675,7 +24675,7 @@ void wxGridSizer_GetCols(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCols();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24690,7 +24690,7 @@ void wxGridSizer_GetHGap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetHGap();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24705,7 +24705,7 @@ void wxGridSizer_GetRows(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRows();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24720,7 +24720,7 @@ void wxGridSizer_GetVGap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetVGap();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24801,7 +24801,7 @@ void wxFlexGridSizer_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &hgap)) Badarg(1393,"hgap"); // int
   wxFlexGridSizer * Result = new EwxFlexGridSizer(rows,cols,vgap,hgap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFlexGridSizer"));
 
 }
@@ -24832,7 +24832,7 @@ void wxFlexGridSizer_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFlexGridSizer * Result = new EwxFlexGridSizer(cols,vgap,hgap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFlexGridSizer"));
 
 }
@@ -24903,7 +24903,7 @@ void wxFlexGridSizer_GetFlexibleDirection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFlexGridSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFlexibleDirection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -24918,7 +24918,7 @@ void wxFlexGridSizer_GetNonFlexibleGrowMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFlexGridSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNonFlexibleGrowMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -25007,7 +25007,7 @@ void wxGridBagSizer_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGridBagSizer * Result = new EwxGridBagSizer(vgap,hgap);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGridBagSizer"));
 
 }
@@ -25060,7 +25060,7 @@ void wxGridBagSizer_Add_3_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(window,pos,span,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25114,7 +25114,7 @@ void wxGridBagSizer_Add_3_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(sizer,pos,span,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25170,7 +25170,7 @@ void wxGridBagSizer_Add_4(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(width,height,pos,span,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25187,7 +25187,7 @@ void wxGridBagSizer_Add_1_0(WxeApp *app, wxeCommand& Ecmd)
   item = (wxGBSizerItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25225,7 +25225,7 @@ void wxGridBagSizer_Add_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(window,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25264,7 +25264,7 @@ void wxGridBagSizer_Add_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(sizer,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25305,7 +25305,7 @@ void wxGridBagSizer_Add_3_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(width,height,proportion,flag,border,userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25321,7 +25321,7 @@ void wxGridBagSizer_Add_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxSizerItem * item = (wxSizerItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxSizerItem * Result = (wxSizerItem*)This->Add(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizerItem"));
 
 }
@@ -25336,7 +25336,7 @@ void wxGridBagSizer_CalcMin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridBagSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->CalcMin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25366,7 +25366,7 @@ void wxGridBagSizer_CheckForIntersection_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->CheckForIntersection(item,excludeItem);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25410,7 +25410,7 @@ void wxGridBagSizer_CheckForIntersection_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->CheckForIntersection(pos,span,excludeItem);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25426,7 +25426,7 @@ void wxGridBagSizer_FindItem_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxWindow * window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBSizerItem * Result = (wxGBSizerItem*)This->FindItem(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGBSizerItem"));
 
 }
@@ -25443,7 +25443,7 @@ void wxGridBagSizer_FindItem_1_0(WxeApp *app, wxeCommand& Ecmd)
   sizer = (wxSizer *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBSizerItem * Result = (wxGBSizerItem*)This->FindItem(sizer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGBSizerItem"));
 
 }
@@ -25466,7 +25466,7 @@ void wxGridBagSizer_FindItemAtPoint(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   wxGBSizerItem * Result = (wxGBSizerItem*)This->FindItemAtPoint(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGBSizerItem"));
 
 }
@@ -25489,7 +25489,7 @@ void wxGridBagSizer_FindItemAtPosition(WxeApp *app, wxeCommand& Ecmd)
   wxGBPosition pos = wxGBPosition(posR,posC);
   if(!This) throw wxe_badarg("This");
   wxGBSizerItem * Result = (wxGBSizerItem*)This->FindItemAtPosition(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGBSizerItem"));
 
 }
@@ -25506,7 +25506,7 @@ void wxGridBagSizer_FindItemWithData(WxeApp *app, wxeCommand& Ecmd)
   userData = (wxObject *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBSizerItem * Result = (wxGBSizerItem*)This->FindItemWithData(userData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGBSizerItem"));
 
 }
@@ -25525,7 +25525,7 @@ void wxGridBagSizer_GetCellSize(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(1421,"col"); // int
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetCellSize(row,col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25540,7 +25540,7 @@ void wxGridBagSizer_GetEmptyCellSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridBagSizer *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetEmptyCellSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25556,7 +25556,7 @@ void wxGridBagSizer_GetItemPosition_1_2(WxeApp *app, wxeCommand& Ecmd)
   wxWindow * window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBPosition Result = This->GetItemPosition(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25573,7 +25573,7 @@ void wxGridBagSizer_GetItemPosition_1_1(WxeApp *app, wxeCommand& Ecmd)
   sizer = (wxSizer *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBPosition Result = This->GetItemPosition(sizer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25590,7 +25590,7 @@ void wxGridBagSizer_GetItemPosition_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1425,"index"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxGBPosition Result = This->GetItemPosition(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25606,7 +25606,7 @@ void wxGridBagSizer_GetItemSpan_1_2(WxeApp *app, wxeCommand& Ecmd)
   wxWindow * window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBSpan Result = This->GetItemSpan(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25623,7 +25623,7 @@ void wxGridBagSizer_GetItemSpan_1_1(WxeApp *app, wxeCommand& Ecmd)
   sizer = (wxSizer *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxGBSpan Result = This->GetItemSpan(sizer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25640,7 +25640,7 @@ void wxGridBagSizer_GetItemSpan_1_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1428,"index"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxGBSpan Result = This->GetItemSpan(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -25685,7 +25685,7 @@ void wxGridBagSizer_SetItemPosition_2_2(WxeApp *app, wxeCommand& Ecmd)
   wxGBPosition pos = wxGBPosition(posR,posC);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemPosition(window,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25710,7 +25710,7 @@ void wxGridBagSizer_SetItemPosition_2_1(WxeApp *app, wxeCommand& Ecmd)
   wxGBPosition pos = wxGBPosition(posR,posC);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemPosition(sizer,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25735,7 +25735,7 @@ void wxGridBagSizer_SetItemPosition_2_0(WxeApp *app, wxeCommand& Ecmd)
   wxGBPosition pos = wxGBPosition(posR,posC);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemPosition(index,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25759,7 +25759,7 @@ void wxGridBagSizer_SetItemSpan_2_2(WxeApp *app, wxeCommand& Ecmd)
   wxGBSpan span = wxGBSpan(spanRS,spanCS);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemSpan(window,span);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25784,7 +25784,7 @@ void wxGridBagSizer_SetItemSpan_2_1(WxeApp *app, wxeCommand& Ecmd)
   wxGBSpan span = wxGBSpan(spanRS,spanCS);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemSpan(sizer,span);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25809,7 +25809,7 @@ void wxGridBagSizer_SetItemSpan_2_0(WxeApp *app, wxeCommand& Ecmd)
   wxGBSpan span = wxGBSpan(spanRS,spanCS);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemSpan(index,span);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25820,7 +25820,7 @@ void wxStdDialogButtonSizer_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStdDialogButtonSizer * Result = new EwxStdDialogButtonSizer();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStdDialogButtonSizer"));
 
 }
@@ -25904,7 +25904,7 @@ void wxFont_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFont * Result = new EwxFont();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -25917,11 +25917,11 @@ void wxFont_new_1(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary fontname_bin;
   wxString fontname;
-  if(enif_inspect_binary(env, argv[0], &fontname_bin)) Badarg(1445,"fontname");
+  if(!enif_inspect_binary(env, argv[0], &fontname_bin)) Badarg(1445,"fontname");
   fontname = wxString(fontname_bin.data, wxConvUTF8, fontname_bin.size);
   wxFont * Result = new EwxFont(fontname);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -25955,7 +25955,7 @@ void wxFont_new_5(WxeApp *app, wxeCommand& Ecmd)
   underlined = enif_is_identical(tpl[1], WXE_ATOM_true);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "face"))) {
   ErlNifBinary face_bin;
-  if(enif_inspect_binary(env, tpl[1], &face_bin)) Badarg(1446,"face");
+  if(!enif_inspect_binary(env, tpl[1], &face_bin)) Badarg(1446,"face");
   face = wxString(face_bin.data, wxConvUTF8, face_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "encoding"))) {
   if(!enif_get_int(env, tpl[1], (int *) &encoding)) Badarg(1446,"encoding"); // enum
@@ -25963,7 +25963,7 @@ void wxFont_new_5(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFont * Result = new EwxFont(size,family,style,weight,underlined,face,encoding);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -25978,7 +25978,7 @@ void wxFont_IsFixedWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsFixedWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -25988,7 +25988,7 @@ void wxFont_GetDefaultEncoding(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxFont::GetDefaultEncoding();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -26003,7 +26003,7 @@ void wxFont_GetFaceName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetFaceName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -26018,7 +26018,7 @@ void wxFont_GetFamily(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFamily();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -26033,7 +26033,7 @@ void wxFont_GetNativeFontInfoDesc(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetNativeFontInfoDesc();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -26048,7 +26048,7 @@ void wxFont_GetNativeFontInfoUserDesc(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetNativeFontInfoUserDesc();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -26063,7 +26063,7 @@ void wxFont_GetPointSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPointSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -26078,7 +26078,7 @@ void wxFont_GetStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -26093,7 +26093,7 @@ void wxFont_GetUnderlined(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetUnderlined();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26108,7 +26108,7 @@ void wxFont_GetWeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -26123,7 +26123,7 @@ void wxFont_Ok(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Ok();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26150,11 +26150,11 @@ void wxFont_SetFaceName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFont *) memenv->getPtr(env, argv[0]);
   ErlNifBinary faceName_bin;
   wxString faceName;
-  if(enif_inspect_binary(env, argv[1], &faceName_bin)) Badarg(1461,"faceName");
+  if(!enif_inspect_binary(env, argv[1], &faceName_bin)) Badarg(1461,"faceName");
   faceName = wxString(faceName_bin.data, wxConvUTF8, faceName_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetFaceName(faceName);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26266,11 +26266,11 @@ void wxToolTip_new(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary tip_bin;
   wxString tip;
-  if(enif_inspect_binary(env, argv[0], &tip_bin)) Badarg(1469,"tip");
+  if(!enif_inspect_binary(env, argv[0], &tip_bin)) Badarg(1469,"tip");
   tip = wxString(tip_bin.data, wxConvUTF8, tip_bin.size);
   wxToolTip * Result = new EwxToolTip(tip);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolTip"));
 
 }
@@ -26285,7 +26285,7 @@ void wxToolTip_SetTip(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolTip *) memenv->getPtr(env, argv[0]);
   ErlNifBinary tip_bin;
   wxString tip;
-  if(enif_inspect_binary(env, argv[1], &tip_bin)) Badarg(1470,"tip");
+  if(!enif_inspect_binary(env, argv[1], &tip_bin)) Badarg(1470,"tip");
   tip = wxString(tip_bin.data, wxConvUTF8, tip_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetTip(tip);
@@ -26302,7 +26302,7 @@ void wxToolTip_GetTip(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolTip *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetTip();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -26317,7 +26317,7 @@ void wxToolTip_GetWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolTip *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -26347,7 +26347,7 @@ void wxButton_new_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1475,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "label"))) {
   ErlNifBinary label_bin;
-  if(enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1475,"label");
+  if(!enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1475,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -26375,7 +26375,7 @@ void wxButton_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxButton * Result = new EwxButton(parent,id,label,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxButton"));
 
 }
@@ -26386,7 +26386,7 @@ void wxButton_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxButton * Result = new EwxButton();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxButton"));
 
 }
@@ -26418,7 +26418,7 @@ void wxButton_Create(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1478,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "label"))) {
   ErlNifBinary label_bin;
-  if(enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1478,"label");
+  if(!enif_inspect_binary(env, tpl[1], &label_bin)) Badarg(1478,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -26446,7 +26446,7 @@ void wxButton_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,label,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26456,7 +26456,7 @@ void wxButton_GetDefaultSize(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSize Result = wxButton::GetDefaultSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -26484,7 +26484,7 @@ void wxButton_SetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxButton *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(1481,"label");
+  if(!enif_inspect_binary(env, argv[1], &label_bin)) Badarg(1481,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(label);
@@ -26541,7 +26541,7 @@ void wxBitmapButton_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBitmapButton * Result = new EwxBitmapButton(parent,id,*bitmap,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmapButton"));
 
 }
@@ -26552,7 +26552,7 @@ void wxBitmapButton_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxBitmapButton * Result = new EwxBitmapButton();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmapButton"));
 
 }
@@ -26609,7 +26609,7 @@ void wxBitmapButton_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,*bitmap,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26624,7 +26624,7 @@ void wxBitmapButton_GetBitmapDisabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmapButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBitmap * Result = new EwxBitmap(This->GetBitmapDisabled()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -26639,7 +26639,7 @@ void wxBitmapButton_GetBitmapFocus(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmapButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBitmap * Result = new EwxBitmap(This->GetBitmapFocus()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -26654,7 +26654,7 @@ void wxBitmapButton_GetBitmapLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmapButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBitmap * Result = new EwxBitmap(This->GetBitmapLabel()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -26669,7 +26669,7 @@ void wxBitmapButton_GetBitmapSelected(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmapButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxBitmap * Result = new EwxBitmap(This->GetBitmapSelected()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -26740,7 +26740,7 @@ void wxToggleButton_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxToggleButton * Result = new EwxToggleButton();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToggleButton"));
 
 }
@@ -26761,7 +26761,7 @@ void wxToggleButton_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1500,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1500,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1500,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -26797,7 +26797,7 @@ void wxToggleButton_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxToggleButton * Result = new EwxToggleButton(parent,id,label,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToggleButton"));
 
 }
@@ -26820,7 +26820,7 @@ void wxToggleButton_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1501,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1501,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1501,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -26856,7 +26856,7 @@ void wxToggleButton_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,label,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26871,7 +26871,7 @@ void wxToggleButton_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToggleButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -26897,7 +26897,7 @@ void wxCalendarCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxCalendarCtrl * Result = new EwxCalendarCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCalendarCtrl"));
 
 }
@@ -26965,7 +26965,7 @@ void wxCalendarCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxCalendarCtrl * Result = new EwxCalendarCtrl(parent,id,date,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCalendarCtrl"));
 
 }
@@ -27035,7 +27035,7 @@ void wxCalendarCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,date,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27066,7 +27066,7 @@ void wxCalendarCtrl_SetDate(WxeApp *app, wxeCommand& Ecmd)
  wxDateTime date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) dateMo,dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetDate(date);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27081,7 +27081,7 @@ void wxCalendarCtrl_GetDate(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxDateTime Result = This->GetDate();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -27213,7 +27213,7 @@ void wxCalendarCtrl_GetHeaderColourFg(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetHeaderColourFg();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27228,7 +27228,7 @@ void wxCalendarCtrl_GetHeaderColourBg(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetHeaderColourBg();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27280,7 +27280,7 @@ void wxCalendarCtrl_GetHighlightColourFg(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetHighlightColourFg();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27295,7 +27295,7 @@ void wxCalendarCtrl_GetHighlightColourBg(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetHighlightColourBg();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27347,7 +27347,7 @@ void wxCalendarCtrl_GetHolidayColourFg(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetHolidayColourFg();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27362,7 +27362,7 @@ void wxCalendarCtrl_GetHolidayColourBg(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetHolidayColourBg();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27379,7 +27379,7 @@ void wxCalendarCtrl_GetAttr(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &day)) Badarg(1523,"day"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxCalendarDateAttr * Result = (wxCalendarDateAttr*)This->GetAttr(day);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCalendarDateAttr"));
 
 }
@@ -27451,7 +27451,7 @@ void wxCalendarCtrl_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pos = wxPoint(posX,posY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(pos,&date,&wd);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
   rt.make_int(Result),
     rt.make(date),
@@ -27466,7 +27466,7 @@ void wxCalendarDateAttr_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxCalendarDateAttr * Result = new wxCalendarDateAttr();
   app->newPtr((void *) Result, 88, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCalendarDateAttr"));
 
 }
@@ -27535,7 +27535,7 @@ void wxCalendarDateAttr_new_2_1(WxeApp *app, wxeCommand& Ecmd)
   };
   wxCalendarDateAttr * Result = new wxCalendarDateAttr(colText,colBack,colBorder,*font,border);
   app->newPtr((void *) Result, 88, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCalendarDateAttr"));
 
 }
@@ -27574,7 +27574,7 @@ void wxCalendarDateAttr_new_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   wxCalendarDateAttr * Result = new wxCalendarDateAttr(border,colBorder);
   app->newPtr((void *) Result, 88, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCalendarDateAttr"));
 
 }
@@ -27709,7 +27709,7 @@ void wxCalendarDateAttr_HasTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27724,7 +27724,7 @@ void wxCalendarDateAttr_HasBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27739,7 +27739,7 @@ void wxCalendarDateAttr_HasBorderColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBorderColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27754,7 +27754,7 @@ void wxCalendarDateAttr_HasFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27769,7 +27769,7 @@ void wxCalendarDateAttr_HasBorder(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBorder();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27784,7 +27784,7 @@ void wxCalendarDateAttr_IsHoliday(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsHoliday();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -27799,7 +27799,7 @@ void wxCalendarDateAttr_GetTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27814,7 +27814,7 @@ void wxCalendarDateAttr_GetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27829,7 +27829,7 @@ void wxCalendarDateAttr_GetBorderColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetBorderColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -27844,7 +27844,7 @@ void wxCalendarDateAttr_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFont * Result = &This->GetFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -27859,7 +27859,7 @@ void wxCalendarDateAttr_GetBorder(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarDateAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetBorder();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -27892,7 +27892,7 @@ void wxCheckBox_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1550,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1550,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1550,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -27928,7 +27928,7 @@ void wxCheckBox_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxCheckBox * Result = new EwxCheckBox(parent,id,label,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCheckBox"));
 
 }
@@ -27939,7 +27939,7 @@ void wxCheckBox_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxCheckBox * Result = new EwxCheckBox();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCheckBox"));
 
 }
@@ -27962,7 +27962,7 @@ void wxCheckBox_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1552,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1552,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1552,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -27998,7 +27998,7 @@ void wxCheckBox_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,label,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28013,7 +28013,7 @@ void wxCheckBox_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCheckBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28028,7 +28028,7 @@ void wxCheckBox_Get3StateValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCheckBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->Get3StateValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -28043,7 +28043,7 @@ void wxCheckBox_Is3rdStateAllowedForUser(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCheckBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Is3rdStateAllowedForUser();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28058,7 +28058,7 @@ void wxCheckBox_Is3State(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCheckBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Is3State();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28073,7 +28073,7 @@ void wxCheckBox_IsChecked(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCheckBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsChecked();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28114,7 +28114,7 @@ void wxCheckListBox_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxCheckListBox * Result = new EwxCheckListBox();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCheckListBox"));
 
 }
@@ -28177,7 +28177,7 @@ void wxCheckListBox_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxCheckListBox * Result = new EwxCheckListBox(parent,id,pos,size,choices,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCheckListBox"));
 
 }
@@ -28222,7 +28222,7 @@ void wxCheckListBox_IsChecked(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &index)) Badarg(1565,"index");
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsChecked(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28285,7 +28285,7 @@ void wxChoice_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxChoice * Result = new EwxChoice(parent,id,pos,size,choices,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxChoice"));
 
 }
@@ -28296,7 +28296,7 @@ void wxChoice_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxChoice * Result = new EwxChoice();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxChoice"));
 
 }
@@ -28356,7 +28356,7 @@ void wxChoice_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,choices,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28386,7 +28386,7 @@ void wxChoice_GetColumns(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChoice *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumns();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -28423,7 +28423,7 @@ void wxComboBox_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxComboBox * Result = new EwxComboBox();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxComboBox"));
 
 }
@@ -28454,7 +28454,7 @@ void wxComboBox_new_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1580,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1580,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1580,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -28491,7 +28491,7 @@ void wxComboBox_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxComboBox * Result = new EwxComboBox(parent,id,value,pos,size,choices,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxComboBox"));
 
 }
@@ -28512,7 +28512,7 @@ void wxComboBox_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1583,"id"); // "wxWindowID"
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1583,"value");
+  if(!enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1583,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -28555,7 +28555,7 @@ void wxComboBox_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,value,pos,size,choices,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28570,7 +28570,7 @@ void wxComboBox_CanCopy(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanCopy();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28585,7 +28585,7 @@ void wxComboBox_CanCut(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanCut();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28600,7 +28600,7 @@ void wxComboBox_CanPaste(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanPaste();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28615,7 +28615,7 @@ void wxComboBox_CanRedo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanRedo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28630,7 +28630,7 @@ void wxComboBox_CanUndo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanUndo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28671,7 +28671,7 @@ void wxComboBox_GetInsertionPoint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetInsertionPoint();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -28686,7 +28686,7 @@ void wxComboBox_GetLastPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTextPos Result = This->GetLastPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -28701,7 +28701,7 @@ void wxComboBox_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -28746,7 +28746,7 @@ void wxComboBox_Replace(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &to)) Badarg(1596,"to");
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1596,"value");
+  if(!enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1596,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->Replace(from,to,value);
@@ -28840,7 +28840,7 @@ void wxComboBox_SetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxComboBox *) memenv->getPtr(env, argv[0]);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1602,"value");
+  if(!enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1602,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetValue(value);
@@ -28866,7 +28866,7 @@ void wxGauge_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGauge * Result = new EwxGauge();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGauge"));
 
 }
@@ -28921,7 +28921,7 @@ void wxGauge_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGauge * Result = new EwxGauge(parent,id,range,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGauge"));
 
 }
@@ -28978,7 +28978,7 @@ void wxGauge_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,range,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -28993,7 +28993,7 @@ void wxGauge_GetRange(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGauge *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRange();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -29008,7 +29008,7 @@ void wxGauge_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGauge *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -29023,7 +29023,7 @@ void wxGauge_IsVertical(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGauge *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsVertical();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29077,7 +29077,7 @@ void wxGenericDirCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGenericDirCtrl * Result = new EwxGenericDirCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGenericDirCtrl"));
 
 }
@@ -29109,7 +29109,7 @@ void wxGenericDirCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(1615,"id"); // "wxWindowID"
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "dir"))) {
   ErlNifBinary dir_bin;
-  if(enif_inspect_binary(env, tpl[1], &dir_bin)) Badarg(1615,"dir");
+  if(!enif_inspect_binary(env, tpl[1], &dir_bin)) Badarg(1615,"dir");
   dir = wxString(dir_bin.data, wxConvUTF8, dir_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -29133,7 +29133,7 @@ void wxGenericDirCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, tpl[1], &style)) Badarg(1615,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "filter"))) {
   ErlNifBinary filter_bin;
-  if(enif_inspect_binary(env, tpl[1], &filter_bin)) Badarg(1615,"filter");
+  if(!enif_inspect_binary(env, tpl[1], &filter_bin)) Badarg(1615,"filter");
   filter = wxString(filter_bin.data, wxConvUTF8, filter_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultFilter"))) {
   if(!enif_get_int(env, tpl[1], &defaultFilter)) Badarg(1615,"defaultFilter"); // int
@@ -29141,7 +29141,7 @@ void wxGenericDirCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxGenericDirCtrl * Result = new EwxGenericDirCtrl(parent,id,dir,pos,size,style,filter,defaultFilter);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGenericDirCtrl"));
 
 }
@@ -29175,7 +29175,7 @@ void wxGenericDirCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(1617,"id"); // "wxWindowID"
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "dir"))) {
   ErlNifBinary dir_bin;
-  if(enif_inspect_binary(env, tpl[1], &dir_bin)) Badarg(1617,"dir");
+  if(!enif_inspect_binary(env, tpl[1], &dir_bin)) Badarg(1617,"dir");
   dir = wxString(dir_bin.data, wxConvUTF8, dir_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -29199,7 +29199,7 @@ void wxGenericDirCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, tpl[1], &style)) Badarg(1617,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "filter"))) {
   ErlNifBinary filter_bin;
-  if(enif_inspect_binary(env, tpl[1], &filter_bin)) Badarg(1617,"filter");
+  if(!enif_inspect_binary(env, tpl[1], &filter_bin)) Badarg(1617,"filter");
   filter = wxString(filter_bin.data, wxConvUTF8, filter_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultFilter"))) {
   if(!enif_get_int(env, tpl[1], &defaultFilter)) Badarg(1617,"defaultFilter"); // int
@@ -29207,7 +29207,7 @@ void wxGenericDirCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,dir,pos,size,style,filter,defaultFilter);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29248,11 +29248,11 @@ void wxGenericDirCtrl_ExpandPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1620,"path");
+  if(!enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1620,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ExpandPath(path);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29267,7 +29267,7 @@ void wxGenericDirCtrl_GetDefaultPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetDefaultPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -29282,7 +29282,7 @@ void wxGenericDirCtrl_GetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -29297,7 +29297,7 @@ void wxGenericDirCtrl_GetFilePath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetFilePath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -29312,7 +29312,7 @@ void wxGenericDirCtrl_GetFilter(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetFilter();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -29327,7 +29327,7 @@ void wxGenericDirCtrl_GetFilterIndex(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFilterIndex();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -29342,7 +29342,7 @@ void wxGenericDirCtrl_GetRootId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetRootId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -29357,7 +29357,7 @@ void wxGenericDirCtrl_GetTreeCtrl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeCtrl * Result = (wxTreeCtrl*)This->GetTreeCtrl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTreeCtrl"));
 
 }
@@ -29385,7 +29385,7 @@ void wxGenericDirCtrl_SetDefaultPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1629,"path");
+  if(!enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1629,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetDefaultPath(path);
@@ -29402,7 +29402,7 @@ void wxGenericDirCtrl_SetFilter(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filter_bin;
   wxString filter;
-  if(enif_inspect_binary(env, argv[1], &filter_bin)) Badarg(1630,"filter");
+  if(!enif_inspect_binary(env, argv[1], &filter_bin)) Badarg(1630,"filter");
   filter = wxString(filter_bin.data, wxConvUTF8, filter_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetFilter(filter);
@@ -29434,7 +29434,7 @@ void wxGenericDirCtrl_SetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGenericDirCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1632,"path");
+  if(!enif_inspect_binary(env, argv[1], &path_bin)) Badarg(1632,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetPath(path);
@@ -29456,7 +29456,7 @@ void wxStaticBox_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(1634,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1634,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1634,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -29490,7 +29490,7 @@ void wxStaticBox_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxStaticBox * Result = new EwxStaticBox(parent,id,label,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBox"));
 
 }
@@ -29501,7 +29501,7 @@ void wxStaticBox_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStaticBox * Result = new EwxStaticBox();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBox"));
 
 }
@@ -29523,7 +29523,7 @@ void wxStaticBox_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(1636,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1636,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1636,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -29557,7 +29557,7 @@ void wxStaticBox_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,label,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29608,7 +29608,7 @@ void wxStaticLine_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxStaticLine * Result = new EwxStaticLine(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticLine"));
 
 }
@@ -29619,7 +29619,7 @@ void wxStaticLine_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStaticLine * Result = new EwxStaticLine();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticLine"));
 
 }
@@ -29672,7 +29672,7 @@ void wxStaticLine_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29687,7 +29687,7 @@ void wxStaticLine_IsVertical(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStaticLine *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsVertical();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29697,7 +29697,7 @@ void wxStaticLine_GetDefaultSize(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxStaticLine::GetDefaultSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -29760,7 +29760,7 @@ void wxListBox_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxListBox * Result = new EwxListBox(parent,id,pos,size,choices,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListBox"));
 
 }
@@ -29771,7 +29771,7 @@ void wxListBox_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxListBox * Result = new EwxListBox();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListBox"));
 
 }
@@ -29831,7 +29831,7 @@ void wxListBox_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,choices,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29862,7 +29862,7 @@ void wxListBox_GetSelections(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelections(aSelections);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make(aSelections));
@@ -29906,7 +29906,7 @@ void wxListBox_IsSelected(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1656,"n"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSelected(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -29951,7 +29951,7 @@ void wxListBox_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint point = wxPoint(pointX,pointY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(point);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -29981,7 +29981,7 @@ void wxListBox_SetFirstItem_1_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListBox *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(1660,"s");
+  if(!enif_inspect_binary(env, argv[1], &s_bin)) Badarg(1660,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetFirstItem(s);
@@ -30023,7 +30023,7 @@ void wxListCtrl_Arrange(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Arrange(flag);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30140,7 +30140,7 @@ void wxListCtrl_DeleteAllItems(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteAllItems();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30157,7 +30157,7 @@ void wxListCtrl_DeleteColumn(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(1668,"col"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteColumn(col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30174,7 +30174,7 @@ void wxListCtrl_DeleteItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1669,"item");
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteItem(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30191,7 +30191,7 @@ void wxListCtrl_EditLabel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1670,"item");
   if(!This) throw wxe_badarg("This");
   wxTextCtrl * Result = (wxTextCtrl*)This->EditLabel(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -30208,7 +30208,7 @@ void wxListCtrl_EnsureVisible(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1671,"item");
   if(!This) throw wxe_badarg("This");
   bool Result = This->EnsureVisible(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30226,7 +30226,7 @@ void wxListCtrl_FindItem_3_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &start)) Badarg(1672,"start");
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[2], &str_bin)) Badarg(1672,"str");
+  if(!enif_inspect_binary(env, argv[2], &str_bin)) Badarg(1672,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -30242,7 +30242,7 @@ void wxListCtrl_FindItem_3_0(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   long Result = This->FindItem(start,str,partial);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30269,7 +30269,7 @@ void wxListCtrl_FindItem_3_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &direction)) Badarg(1673,"direction"); // int
   if(!This) throw wxe_badarg("This");
   long Result = This->FindItem(start,pt,direction);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30288,7 +30288,7 @@ void wxListCtrl_GetColumn(WxeApp *app, wxeCommand& Ecmd)
   item = (wxListItem *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetColumn(col,*item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30303,7 +30303,7 @@ void wxListCtrl_GetColumnCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumnCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30320,7 +30320,7 @@ void wxListCtrl_GetColumnWidth(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &col)) Badarg(1676,"col"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumnWidth(col);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30335,7 +30335,7 @@ void wxListCtrl_GetCountPerPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCountPerPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30350,7 +30350,7 @@ void wxListCtrl_GetEditControl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTextCtrl * Result = (wxTextCtrl*)This->GetEditControl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -30367,7 +30367,7 @@ void wxListCtrl_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &which)) Badarg(1679,"which"); // int
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList(which);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -30384,7 +30384,7 @@ void wxListCtrl_GetItem(WxeApp *app, wxeCommand& Ecmd)
   info = (wxListItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetItem(*info);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30401,7 +30401,7 @@ void wxListCtrl_GetItemBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1681,"item");
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetItemBackgroundColour(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -30416,7 +30416,7 @@ void wxListCtrl_GetItemCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetItemCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30433,7 +30433,7 @@ void wxListCtrl_GetItemData(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1683,"item");
   if(!This) throw wxe_badarg("This");
   wxUIntPtr Result = This->GetItemData(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30450,7 +30450,7 @@ void wxListCtrl_GetItemFont(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1684,"item");
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetItemFont(item)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -30468,7 +30468,7 @@ void wxListCtrl_GetItemPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1685,"item");
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetItemPosition(item,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_bool(Result),
     rt.make(pos));
@@ -30502,7 +30502,7 @@ void wxListCtrl_GetItemRect(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetItemRect(item,rect,code);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_bool(Result),
     rt.make(rect));
@@ -30520,7 +30520,7 @@ void wxListCtrl_GetItemSpacing(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetItemSpacing();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -30539,7 +30539,7 @@ void wxListCtrl_GetItemState(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &stateMask)) Badarg(1688,"stateMask");
   if(!This) throw wxe_badarg("This");
   int Result = This->GetItemState(item,stateMask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30556,7 +30556,7 @@ void wxListCtrl_GetItemText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1689,"item");
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetItemText(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -30573,7 +30573,7 @@ void wxListCtrl_GetItemTextColour(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1690,"item");
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetItemTextColour(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -30606,7 +30606,7 @@ void wxListCtrl_GetNextItem(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   long Result = This->GetNextItem(item,geometry,state);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30621,7 +30621,7 @@ void wxListCtrl_GetSelectedItemCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelectedItemCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30636,7 +30636,7 @@ void wxListCtrl_GetTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -30651,7 +30651,7 @@ void wxListCtrl_GetTopItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetTopItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30666,7 +30666,7 @@ void wxListCtrl_GetViewRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetViewRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -30691,7 +30691,7 @@ void wxListCtrl_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint point = wxPoint(pointX,pointY);
   if(!This) throw wxe_badarg("This");
   long Result = This->HitTest(point,flags,&pSubItem);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
   rt.make_int(Result),
     rt.make_int(flags),
@@ -30714,7 +30714,7 @@ void wxListCtrl_InsertColumn_2(WxeApp *app, wxeCommand& Ecmd)
   info = (wxListItem *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   long Result = This->InsertColumn(col,*info);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30733,7 +30733,7 @@ void wxListCtrl_InsertColumn_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &col)) Badarg(1698,"col");
   ErlNifBinary heading_bin;
   wxString heading;
-  if(enif_inspect_binary(env, argv[2], &heading_bin)) Badarg(1698,"heading");
+  if(!enif_inspect_binary(env, argv[2], &heading_bin)) Badarg(1698,"heading");
   heading = wxString(heading_bin.data, wxConvUTF8, heading_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -30751,7 +30751,7 @@ void wxListCtrl_InsertColumn_3(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   long Result = This->InsertColumn(col,heading,format,width);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30768,7 +30768,7 @@ void wxListCtrl_InsertItem_1(WxeApp *app, wxeCommand& Ecmd)
   info = (wxListItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   long Result = This->InsertItem(*info);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30785,11 +30785,11 @@ void wxListCtrl_InsertItem_2_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &index)) Badarg(1700,"index");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1700,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1700,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   long Result = This->InsertItem(index,label);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30808,7 +30808,7 @@ void wxListCtrl_InsertItem_2_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &imageIndex)) Badarg(1701,"imageIndex"); // int
   if(!This) throw wxe_badarg("This");
   long Result = This->InsertItem(index,imageIndex);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30825,13 +30825,13 @@ void wxListCtrl_InsertItem_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &index)) Badarg(1702,"index");
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1702,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(1702,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   int imageIndex;
   if(!enif_get_int(env, argv[3], &imageIndex)) Badarg(1702,"imageIndex"); // int
   if(!This) throw wxe_badarg("This");
   long Result = This->InsertItem(index,label,imageIndex);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -30882,7 +30882,7 @@ void wxListCtrl_ScrollList(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &dy)) Badarg(1705,"dy"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->ScrollList(dx,dy);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30909,7 +30909,7 @@ void wxListCtrl_SetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   wxColour colour = wxColour(colourR,colourG,colourB,colourA);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetBackgroundColour(colour);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30928,7 +30928,7 @@ void wxListCtrl_SetColumn(WxeApp *app, wxeCommand& Ecmd)
   item = (wxListItem *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetColumn(col,*item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30947,7 +30947,7 @@ void wxListCtrl_SetColumnWidth(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &width)) Badarg(1708,"width"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetColumnWidth(col,width);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -30981,7 +30981,7 @@ void wxListCtrl_SetItem_1(WxeApp *app, wxeCommand& Ecmd)
   info = (wxListItem *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItem(*info);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31001,7 +31001,7 @@ void wxListCtrl_SetItem_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &col)) Badarg(1711,"col"); // int
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1711,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(1711,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -31017,7 +31017,7 @@ void wxListCtrl_SetItem_4(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   long Result = This->SetItem(index,col,label,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31078,7 +31078,7 @@ void wxListCtrl_SetItemData(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &data)) Badarg(1714,"data");
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemData(item,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31127,7 +31127,7 @@ void wxListCtrl_SetItemImage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemImage(item,image,selImage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31148,7 +31148,7 @@ void wxListCtrl_SetItemColumnImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], &image)) Badarg(1717,"image"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemColumnImage(item,column,image);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31173,7 +31173,7 @@ void wxListCtrl_SetItemPosition(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pos = wxPoint(posX,posY);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemPosition(item,pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31194,7 +31194,7 @@ void wxListCtrl_SetItemState(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[3], &stateMask)) Badarg(1719,"stateMask");
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetItemState(item,state,stateMask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31211,7 +31211,7 @@ void wxListCtrl_SetItemText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1720,"item");
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[2], &str_bin)) Badarg(1720,"str");
+  if(!enif_inspect_binary(env, argv[2], &str_bin)) Badarg(1720,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetItemText(item,str);
@@ -31378,7 +31378,7 @@ void wxListView_GetFirstSelected(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListView *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetFirstSelected();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31393,7 +31393,7 @@ void wxListView_GetFocusedItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListView *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetFocusedItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31410,7 +31410,7 @@ void wxListView_GetNextSelected(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &item)) Badarg(1731,"item");
   if(!This) throw wxe_badarg("This");
   long Result = This->GetNextSelected(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31427,7 +31427,7 @@ void wxListView_IsSelected(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &index)) Badarg(1732,"index");
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSelected(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31483,7 +31483,7 @@ void wxListItem_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxListItem * Result = new EwxListItem();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListItem"));
 
 }
@@ -31498,7 +31498,7 @@ void wxListItem_new_1(WxeApp *app, wxeCommand& Ecmd)
   item = (wxListItem *) memenv->getPtr(env, argv[0]);
   wxListItem * Result = new EwxListItem(*item);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListItem"));
 
 }
@@ -31526,7 +31526,7 @@ void wxListItem_GetAlign(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetAlign();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31541,7 +31541,7 @@ void wxListItem_GetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -31556,7 +31556,7 @@ void wxListItem_GetColumn(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumn();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31571,7 +31571,7 @@ void wxListItem_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -31586,7 +31586,7 @@ void wxListItem_GetId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31601,7 +31601,7 @@ void wxListItem_GetImage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetImage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31616,7 +31616,7 @@ void wxListItem_GetMask(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetMask();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31631,7 +31631,7 @@ void wxListItem_GetState(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetState();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31646,7 +31646,7 @@ void wxListItem_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -31661,7 +31661,7 @@ void wxListItem_GetTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -31676,7 +31676,7 @@ void wxListItem_GetWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -31836,7 +31836,7 @@ void wxListItem_SetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItem *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1759,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1759,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetText(text);
@@ -31889,7 +31889,7 @@ void wxListItemAttr_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxListItemAttr * Result = new wxListItemAttr();
   app->newPtr((void *) Result, 101, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListItemAttr"));
 
 }
@@ -31928,7 +31928,7 @@ void wxListItemAttr_new_3(WxeApp *app, wxeCommand& Ecmd)
   font = (wxFont *) memenv->getPtr(env, argv[2]);
   wxListItemAttr * Result = new wxListItemAttr(colText,colBack,*font);
   app->newPtr((void *) Result, 101, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListItemAttr"));
 
 }
@@ -31943,7 +31943,7 @@ void wxListItemAttr_GetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItemAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -31958,7 +31958,7 @@ void wxListItemAttr_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItemAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFont * Result = &This->GetFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -31973,7 +31973,7 @@ void wxListItemAttr_GetTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItemAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -31988,7 +31988,7 @@ void wxListItemAttr_HasBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItemAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32003,7 +32003,7 @@ void wxListItemAttr_HasFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItemAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32018,7 +32018,7 @@ void wxListItemAttr_HasTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListItemAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32106,7 +32106,7 @@ void wxImageList_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxImageList * Result = new EwxImageList();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -32139,7 +32139,7 @@ void wxImageList_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxImageList * Result = new EwxImageList(width,height,mask,initialCount);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -32156,7 +32156,7 @@ void wxImageList_Add_1(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   int Result = This->Add(*bitmap);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32175,7 +32175,7 @@ void wxImageList_Add_2_0(WxeApp *app, wxeCommand& Ecmd)
   mask = (wxBitmap *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   int Result = This->Add(*bitmap,*mask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32204,7 +32204,7 @@ void wxImageList_Add_2_1(WxeApp *app, wxeCommand& Ecmd)
   wxColour maskColour = wxColour(maskColourR,maskColourG,maskColourB,maskColourA);
   if(!This) throw wxe_badarg("This");
   int Result = This->Add(*bitmap,maskColour);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32239,7 +32239,7 @@ void wxImageList_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(width,height,mask,initialCount);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32278,7 +32278,7 @@ void wxImageList_Draw(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Draw(index,*dc,x,y,flags,solidBackground);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32295,7 +32295,7 @@ void wxImageList_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1782,"index"); // int
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->GetBitmap(index)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -32312,7 +32312,7 @@ void wxImageList_GetIcon(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1783,"index"); // int
   if(!This) throw wxe_badarg("This");
   wxIcon * Result = new EwxIcon(This->GetIcon(index)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -32327,7 +32327,7 @@ void wxImageList_GetImageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImageList *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetImageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32346,7 +32346,7 @@ void wxImageList_GetSize(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1785,"index"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSize(index,width,height);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
   rt.make_bool(Result),
     rt.make_int(width),
@@ -32367,7 +32367,7 @@ void wxImageList_Remove(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &index)) Badarg(1786,"index"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Remove(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32382,7 +32382,7 @@ void wxImageList_RemoveAll(WxeApp *app, wxeCommand& Ecmd)
   This = (wxImageList *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemoveAll();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32401,7 +32401,7 @@ void wxImageList_Replace_2(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Replace(index,*bitmap);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32422,7 +32422,7 @@ void wxImageList_Replace_3(WxeApp *app, wxeCommand& Ecmd)
   mask = (wxBitmap *) memenv->getPtr(env, argv[3]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Replace(index,*bitmap,*mask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32433,7 +32433,7 @@ void wxTextAttr_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxTextAttr * Result = new wxTextAttr();
   app->newPtr((void *) Result, 103, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextAttr"));
 
 }
@@ -32488,7 +32488,7 @@ void wxTextAttr_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxTextAttr * Result = new wxTextAttr(colText,colBack,*font,alignment);
   app->newPtr((void *) Result, 103, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextAttr"));
 
 }
@@ -32503,7 +32503,7 @@ void wxTextAttr_GetAlignment(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetAlignment();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32518,7 +32518,7 @@ void wxTextAttr_GetBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -32533,7 +32533,7 @@ void wxTextAttr_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFont * Result = new EwxFont(This->GetFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -32548,7 +32548,7 @@ void wxTextAttr_GetLeftIndent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetLeftIndent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32563,7 +32563,7 @@ void wxTextAttr_GetLeftSubIndent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetLeftSubIndent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32578,7 +32578,7 @@ void wxTextAttr_GetRightIndent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetRightIndent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32593,7 +32593,7 @@ void wxTextAttr_GetTabs(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxArrayInt Result = This->GetTabs();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -32608,7 +32608,7 @@ void wxTextAttr_GetTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -32623,7 +32623,7 @@ void wxTextAttr_HasBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32638,7 +32638,7 @@ void wxTextAttr_HasFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasFont();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32653,7 +32653,7 @@ void wxTextAttr_HasTextColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasTextColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32668,7 +32668,7 @@ void wxTextAttr_GetFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -32683,7 +32683,7 @@ void wxTextAttr_IsDefault(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextAttr *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsDefault();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32898,7 +32898,7 @@ void wxTextCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1816,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1816,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1816,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -32926,7 +32926,7 @@ void wxTextCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxTextCtrl * Result = new EwxTextCtrl(parent,id,value,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -32937,7 +32937,7 @@ void wxTextCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxTextCtrl * Result = new EwxTextCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -32952,7 +32952,7 @@ void wxTextCtrl_AppendText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1820,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1820,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AppendText(text);
@@ -32969,7 +32969,7 @@ void wxTextCtrl_CanCopy(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanCopy();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32984,7 +32984,7 @@ void wxTextCtrl_CanCut(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanCut();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -32999,7 +32999,7 @@ void wxTextCtrl_CanPaste(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanPaste();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33014,7 +33014,7 @@ void wxTextCtrl_CanRedo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanRedo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33029,7 +33029,7 @@ void wxTextCtrl_CanUndo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanUndo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33087,7 +33087,7 @@ void wxTextCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1828,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1828,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(1828,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -33115,7 +33115,7 @@ void wxTextCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,value,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33156,7 +33156,7 @@ void wxTextCtrl_ChangeValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1831,"value");
+  if(!enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1831,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->ChangeValue(value);
@@ -33175,7 +33175,7 @@ void wxTextCtrl_EmulateKeyPress(WxeApp *app, wxeCommand& Ecmd)
   event = (wxKeyEvent *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->EmulateKeyPress(*event);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33190,7 +33190,7 @@ void wxTextCtrl_GetDefaultStyle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxTextAttr * Result = &This->GetDefaultStyle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextAttr"));
 
 }
@@ -33205,7 +33205,7 @@ void wxTextCtrl_GetInsertionPoint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetInsertionPoint();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -33220,7 +33220,7 @@ void wxTextCtrl_GetLastPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTextPos Result = This->GetLastPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -33237,7 +33237,7 @@ void wxTextCtrl_GetLineLength(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &lineNo)) Badarg(1836,"lineNo");
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineLength(lineNo);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -33254,7 +33254,7 @@ void wxTextCtrl_GetLineText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &lineNo)) Badarg(1837,"lineNo");
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLineText(lineNo);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -33269,7 +33269,7 @@ void wxTextCtrl_GetNumberOfLines(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNumberOfLines();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -33288,7 +33288,7 @@ void wxTextCtrl_GetRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &to)) Badarg(1839,"to");
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetRange(from,to);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -33305,7 +33305,7 @@ void wxTextCtrl_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetSelection(&from,&to);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(from),
   rt.make_int(to));
@@ -33323,7 +33323,7 @@ void wxTextCtrl_GetStringSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetStringSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -33342,7 +33342,7 @@ void wxTextCtrl_GetStyle(WxeApp *app, wxeCommand& Ecmd)
   style = (wxTextAttr *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetStyle(position,*style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33357,7 +33357,7 @@ void wxTextCtrl_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -33372,7 +33372,7 @@ void wxTextCtrl_IsEditable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEditable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33387,7 +33387,7 @@ void wxTextCtrl_IsModified(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsModified();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33402,7 +33402,7 @@ void wxTextCtrl_IsMultiLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsMultiLine();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33417,7 +33417,7 @@ void wxTextCtrl_IsSingleLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSingleLine();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33433,7 +33433,7 @@ void wxTextCtrl_LoadFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary file_bin;
   wxString file;
-  if(enif_inspect_binary(env, argv[1], &file_bin)) Badarg(1848,"file");
+  if(!enif_inspect_binary(env, argv[1], &file_bin)) Badarg(1848,"file");
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -33449,7 +33449,7 @@ void wxTextCtrl_LoadFile(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFile(file,fileType);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33494,7 +33494,7 @@ void wxTextCtrl_PositionToXY(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &pos)) Badarg(1851,"pos");
   if(!This) throw wxe_badarg("This");
   bool Result = This->PositionToXY(pos,&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple3(rt.env,
   rt.make_bool(Result),
     rt.make_int(x),
@@ -33547,7 +33547,7 @@ void wxTextCtrl_Replace(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &to)) Badarg(1854,"to");
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1854,"value");
+  if(!enif_inspect_binary(env, argv[3], &value_bin)) Badarg(1854,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->Replace(from,to,value);
@@ -33574,7 +33574,7 @@ void wxTextCtrl_SaveFile(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1855,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "file"))) {
   ErlNifBinary file_bin;
-  if(enif_inspect_binary(env, tpl[1], &file_bin)) Badarg(1855,"file");
+  if(!enif_inspect_binary(env, tpl[1], &file_bin)) Badarg(1855,"file");
   file = wxString(file_bin.data, wxConvUTF8, file_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "fileType"))) {
   if(!enif_get_int(env, tpl[1], &fileType)) Badarg(1855,"fileType"); // int
@@ -33582,7 +33582,7 @@ void wxTextCtrl_SaveFile(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->SaveFile(file,fileType);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33599,7 +33599,7 @@ void wxTextCtrl_SetDefaultStyle(WxeApp *app, wxeCommand& Ecmd)
   style = (wxTextAttr *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetDefaultStyle(*style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33695,7 +33695,7 @@ void wxTextCtrl_SetStyle(WxeApp *app, wxeCommand& Ecmd)
   style = (wxTextAttr *) memenv->getPtr(env, argv[3]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetStyle(start,end,*style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33710,7 +33710,7 @@ void wxTextCtrl_SetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1864,"value");
+  if(!enif_inspect_binary(env, argv[1], &value_bin)) Badarg(1864,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetValue(value);
@@ -33755,7 +33755,7 @@ void wxTextCtrl_WriteText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1867,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(1867,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->WriteText(text);
@@ -33776,7 +33776,7 @@ void wxTextCtrl_XYToPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &y)) Badarg(1868,"y");
   if(!This) throw wxe_badarg("This");
   long Result = This->XYToPosition(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -33787,7 +33787,7 @@ void wxNotebook_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxNotebook * Result = new EwxNotebook();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxNotebook"));
 
 }
@@ -33837,7 +33837,7 @@ void wxNotebook_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxNotebook * Result = new EwxNotebook(parent,winid,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxNotebook"));
 
 }
@@ -33856,7 +33856,7 @@ void wxNotebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1874,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1874,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -33874,7 +33874,7 @@ void wxNotebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPage(page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33967,7 +33967,7 @@ void wxNotebook_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33982,7 +33982,7 @@ void wxNotebook_DeleteAllPages(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteAllPages();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -33999,7 +33999,7 @@ void wxNotebook_DeletePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1879,"nPage"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeletePage(nPage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34016,7 +34016,7 @@ void wxNotebook_RemovePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1880,"nPage"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemovePage(nPage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34031,7 +34031,7 @@ void wxNotebook_GetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCurrentPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -34046,7 +34046,7 @@ void wxNotebook_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -34063,7 +34063,7 @@ void wxNotebook_GetPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1884,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetPage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -34078,7 +34078,7 @@ void wxNotebook_GetPageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetPageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34095,7 +34095,7 @@ void wxNotebook_GetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1886,"nPage"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageImage(nPage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34112,7 +34112,7 @@ void wxNotebook_GetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1887,"nPage"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPageText(nPage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -34127,7 +34127,7 @@ void wxNotebook_GetRowCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRowCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34142,7 +34142,7 @@ void wxNotebook_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34157,7 +34157,7 @@ void wxNotebook_GetThemeBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetThemeBackgroundColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -34181,7 +34181,7 @@ void wxNotebook_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(pt,&flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make_int(flags));
@@ -34205,7 +34205,7 @@ void wxNotebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   win = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[3], &strText_bin)) Badarg(1894,"strText");
+  if(!enif_inspect_binary(env, argv[3], &strText_bin)) Badarg(1894,"strText");
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -34223,7 +34223,7 @@ void wxNotebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPage(position,win,strText,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34299,7 +34299,7 @@ void wxNotebook_SetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &nImage)) Badarg(1898,"nImage"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageImage(nPage,nImage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34316,11 +34316,11 @@ void wxNotebook_SetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1899,"nPage"); // "size_t"
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1899,"strText");
+  if(!enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1899,"strText");
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageText(nPage,strText);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34337,7 +34337,7 @@ void wxNotebook_SetSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1900,"nPage"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->SetSelection(nPage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34354,7 +34354,7 @@ void wxNotebook_ChangeSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &nPage)) Badarg(1901,"nPage"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->ChangeSelection(nPage);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34365,7 +34365,7 @@ void wxChoicebook_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxChoicebook * Result = new EwxChoicebook();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxChoicebook"));
 
 }
@@ -34415,7 +34415,7 @@ void wxChoicebook_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxChoicebook * Result = new EwxChoicebook(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxChoicebook"));
 
 }
@@ -34434,7 +34434,7 @@ void wxChoicebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1904,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1904,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -34452,7 +34452,7 @@ void wxChoicebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPage(page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34545,7 +34545,7 @@ void wxChoicebook_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34560,7 +34560,7 @@ void wxChoicebook_DeleteAllPages(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChoicebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteAllPages();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34577,7 +34577,7 @@ void wxChoicebook_DeletePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1909,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeletePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34594,7 +34594,7 @@ void wxChoicebook_RemovePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1910,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemovePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34609,7 +34609,7 @@ void wxChoicebook_GetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChoicebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCurrentPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -34624,7 +34624,7 @@ void wxChoicebook_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChoicebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -34641,7 +34641,7 @@ void wxChoicebook_GetPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1914,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetPage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -34656,7 +34656,7 @@ void wxChoicebook_GetPageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChoicebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetPageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34673,7 +34673,7 @@ void wxChoicebook_GetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1916,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageImage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34690,7 +34690,7 @@ void wxChoicebook_GetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1917,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPageText(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -34705,7 +34705,7 @@ void wxChoicebook_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChoicebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34729,7 +34729,7 @@ void wxChoicebook_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(pt,&flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make_int(flags));
@@ -34753,7 +34753,7 @@ void wxChoicebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1920,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1920,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -34771,7 +34771,7 @@ void wxChoicebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPage(n,page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34826,7 +34826,7 @@ void wxChoicebook_SetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &imageId)) Badarg(1923,"imageId"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageImage(n,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34843,11 +34843,11 @@ void wxChoicebook_SetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1924,"n"); // "size_t"
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1924,"strText");
+  if(!enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1924,"strText");
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageText(n,strText);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -34864,7 +34864,7 @@ void wxChoicebook_SetSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1925,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->SetSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34881,7 +34881,7 @@ void wxChoicebook_ChangeSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1926,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->ChangeSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -34892,7 +34892,7 @@ void wxToolbook_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxToolbook * Result = new EwxToolbook();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolbook"));
 
 }
@@ -34942,7 +34942,7 @@ void wxToolbook_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxToolbook * Result = new EwxToolbook(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolbook"));
 
 }
@@ -34961,7 +34961,7 @@ void wxToolbook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1930,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1930,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -34979,7 +34979,7 @@ void wxToolbook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPage(page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35072,7 +35072,7 @@ void wxToolbook_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35087,7 +35087,7 @@ void wxToolbook_DeleteAllPages(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteAllPages();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35104,7 +35104,7 @@ void wxToolbook_DeletePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1935,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeletePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35121,7 +35121,7 @@ void wxToolbook_RemovePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1936,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemovePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35136,7 +35136,7 @@ void wxToolbook_GetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCurrentPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -35151,7 +35151,7 @@ void wxToolbook_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -35168,7 +35168,7 @@ void wxToolbook_GetPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1940,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetPage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -35183,7 +35183,7 @@ void wxToolbook_GetPageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetPageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35200,7 +35200,7 @@ void wxToolbook_GetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1942,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageImage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35217,7 +35217,7 @@ void wxToolbook_GetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1943,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPageText(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -35232,7 +35232,7 @@ void wxToolbook_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxToolbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35256,7 +35256,7 @@ void wxToolbook_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(pt,&flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make_int(flags));
@@ -35280,7 +35280,7 @@ void wxToolbook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1947,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1947,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -35298,7 +35298,7 @@ void wxToolbook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPage(n,page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35353,7 +35353,7 @@ void wxToolbook_SetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &imageId)) Badarg(1950,"imageId"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageImage(n,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35370,11 +35370,11 @@ void wxToolbook_SetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1951,"n"); // "size_t"
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1951,"strText");
+  if(!enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1951,"strText");
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageText(n,strText);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35391,7 +35391,7 @@ void wxToolbook_SetSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1952,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->SetSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35408,7 +35408,7 @@ void wxToolbook_ChangeSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1953,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->ChangeSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35419,7 +35419,7 @@ void wxListbook_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxListbook * Result = new EwxListbook();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListbook"));
 
 }
@@ -35469,7 +35469,7 @@ void wxListbook_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxListbook * Result = new EwxListbook(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListbook"));
 
 }
@@ -35488,7 +35488,7 @@ void wxListbook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1957,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1957,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -35506,7 +35506,7 @@ void wxListbook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPage(page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35599,7 +35599,7 @@ void wxListbook_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35614,7 +35614,7 @@ void wxListbook_DeleteAllPages(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteAllPages();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35631,7 +35631,7 @@ void wxListbook_DeletePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1962,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeletePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35648,7 +35648,7 @@ void wxListbook_RemovePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1963,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemovePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35663,7 +35663,7 @@ void wxListbook_GetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCurrentPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -35678,7 +35678,7 @@ void wxListbook_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -35695,7 +35695,7 @@ void wxListbook_GetPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1967,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetPage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -35710,7 +35710,7 @@ void wxListbook_GetPageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetPageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35727,7 +35727,7 @@ void wxListbook_GetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1969,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageImage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35744,7 +35744,7 @@ void wxListbook_GetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1970,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPageText(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -35759,7 +35759,7 @@ void wxListbook_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListbook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35783,7 +35783,7 @@ void wxListbook_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(pt,&flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make_int(flags));
@@ -35807,7 +35807,7 @@ void wxListbook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1974,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(1974,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -35825,7 +35825,7 @@ void wxListbook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPage(n,page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35880,7 +35880,7 @@ void wxListbook_SetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &imageId)) Badarg(1977,"imageId"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageImage(n,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35897,11 +35897,11 @@ void wxListbook_SetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1978,"n"); // "size_t"
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1978,"strText");
+  if(!enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(1978,"strText");
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageText(n,strText);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -35918,7 +35918,7 @@ void wxListbook_SetSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1979,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->SetSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35935,7 +35935,7 @@ void wxListbook_ChangeSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1980,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->ChangeSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -35946,7 +35946,7 @@ void wxTreebook_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxTreebook * Result = new EwxTreebook();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTreebook"));
 
 }
@@ -35996,7 +35996,7 @@ void wxTreebook_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxTreebook * Result = new EwxTreebook(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTreebook"));
 
 }
@@ -36015,7 +36015,7 @@ void wxTreebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1984,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(1984,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -36033,7 +36033,7 @@ void wxTreebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPage(page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36126,7 +36126,7 @@ void wxTreebook_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36141,7 +36141,7 @@ void wxTreebook_DeleteAllPages(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeleteAllPages();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36158,7 +36158,7 @@ void wxTreebook_DeletePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(1989,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeletePage(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36175,7 +36175,7 @@ void wxTreebook_RemovePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1990,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemovePage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36190,7 +36190,7 @@ void wxTreebook_GetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCurrentPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -36205,7 +36205,7 @@ void wxTreebook_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -36222,7 +36222,7 @@ void wxTreebook_GetPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1994,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetPage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -36237,7 +36237,7 @@ void wxTreebook_GetPageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetPageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -36254,7 +36254,7 @@ void wxTreebook_GetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1996,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageImage(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -36271,7 +36271,7 @@ void wxTreebook_GetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(1997,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPageText(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -36286,7 +36286,7 @@ void wxTreebook_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -36316,7 +36316,7 @@ void wxTreebook_ExpandNode(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ExpandNode(pos,expand);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36333,7 +36333,7 @@ void wxTreebook_IsNodeExpanded(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(2000,"pos"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsNodeExpanded(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36357,7 +36357,7 @@ void wxTreebook_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->HitTest(pt,&flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make_int(flags));
@@ -36381,7 +36381,7 @@ void wxTreebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2003,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2003,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -36399,7 +36399,7 @@ void wxTreebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPage(pos,page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36420,7 +36420,7 @@ void wxTreebook_InsertSubPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2004,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2004,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -36438,7 +36438,7 @@ void wxTreebook_InsertSubPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertSubPage(pos,page,text,bSelect,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36493,7 +36493,7 @@ void wxTreebook_SetPageImage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &imageId)) Badarg(2007,"imageId"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageImage(n,imageId);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36510,11 +36510,11 @@ void wxTreebook_SetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(2008,"n"); // "size_t"
   ErlNifBinary strText_bin;
   wxString strText;
-  if(enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(2008,"strText");
+  if(!enif_inspect_binary(env, argv[2], &strText_bin)) Badarg(2008,"strText");
   strText = wxString(strText_bin.data, wxConvUTF8, strText_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageText(n,strText);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36531,7 +36531,7 @@ void wxTreebook_SetSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(2009,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->SetSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -36548,7 +36548,7 @@ void wxTreebook_ChangeSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &n)) Badarg(2010,"n"); // "size_t"
   if(!This) throw wxe_badarg("This");
   int Result = This->ChangeSelection(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -36602,7 +36602,7 @@ void wxTreeCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxTreeCtrl * Result = new EwxTreeCtrl(parent,id,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTreeCtrl"));
 
 }
@@ -36613,7 +36613,7 @@ void wxTreeCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxTreeCtrl * Result = new EwxTreeCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTreeCtrl"));
 
 }
@@ -36631,7 +36631,7 @@ void wxTreeCtrl_AddRoot(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2018,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2018,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -36651,7 +36651,7 @@ void wxTreeCtrl_AddRoot(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->AddRoot(text,image,selectedImage,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -36672,7 +36672,7 @@ void wxTreeCtrl_AppendItem(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId parent = wxTreeItemId((void *) (wxUint64) parent_tmp);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2019,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2019,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -36692,7 +36692,7 @@ void wxTreeCtrl_AppendItem(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->AppendItem(parent,text,image,selectedImage,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -36810,7 +36810,7 @@ void wxTreeCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -36873,7 +36873,7 @@ void wxTreeCtrl_EditLabel(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTextCtrl * Result = (wxTextCtrl*)This->EditLabel(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -36937,7 +36937,7 @@ void wxTreeCtrl_GetBoundingRect(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetBoundingRect(item,rect,textOnly);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_bool(Result),
     rt.make(rect));
@@ -36971,7 +36971,7 @@ void wxTreeCtrl_GetChildrenCount(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetChildrenCount(item,recursively);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -36986,7 +36986,7 @@ void wxTreeCtrl_GetCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -37001,7 +37001,7 @@ void wxTreeCtrl_GetEditControl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTextCtrl * Result = (wxTextCtrl*)This->GetEditControl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -37020,7 +37020,7 @@ void wxTreeCtrl_GetFirstChild(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetFirstChild(item,cookie);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make((wxUIntPtr *) Result.m_pItem),
     rt.make((wxUIntPtr *) cookie));
@@ -37044,7 +37044,7 @@ void wxTreeCtrl_GetNextChild(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemIdValue cookie = (wxTreeItemIdValue) cookie_tmp;
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetNextChild(item,cookie);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make((wxUIntPtr *) Result.m_pItem),
     rt.make((wxUIntPtr *) cookie));
@@ -37062,7 +37062,7 @@ void wxTreeCtrl_GetFirstVisibleItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetFirstVisibleItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37077,7 +37077,7 @@ void wxTreeCtrl_GetImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -37092,7 +37092,7 @@ void wxTreeCtrl_GetIndent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetIndent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -37110,7 +37110,7 @@ void wxTreeCtrl_GetItemBackgroundColour(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetItemBackgroundColour(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -37128,7 +37128,7 @@ void wxTreeCtrl_GetItemData(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxETreeItemData * Result = (wxETreeItemData*)This->GetItemData(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ext2term(Result));
 
 }
@@ -37146,7 +37146,7 @@ void wxTreeCtrl_GetItemFont(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetItemFont(item)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -37164,7 +37164,7 @@ void wxTreeCtrl_GetItemImage_1(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetItemImage(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -37195,7 +37195,7 @@ void wxTreeCtrl_GetItemImage_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   int Result = This->GetItemImage(item,which);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -37213,7 +37213,7 @@ void wxTreeCtrl_GetItemText(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetItemText(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -37231,7 +37231,7 @@ void wxTreeCtrl_GetItemTextColour(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetItemTextColour(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -37249,7 +37249,7 @@ void wxTreeCtrl_GetLastChild(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetLastChild(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37267,7 +37267,7 @@ void wxTreeCtrl_GetNextSibling(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetNextSibling(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37285,7 +37285,7 @@ void wxTreeCtrl_GetNextVisible(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetNextVisible(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37303,7 +37303,7 @@ void wxTreeCtrl_GetItemParent(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetItemParent(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37321,7 +37321,7 @@ void wxTreeCtrl_GetPrevSibling(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetPrevSibling(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37339,7 +37339,7 @@ void wxTreeCtrl_GetPrevVisible(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetPrevVisible(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37354,7 +37354,7 @@ void wxTreeCtrl_GetRootItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetRootItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37369,7 +37369,7 @@ void wxTreeCtrl_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37385,7 +37385,7 @@ void wxTreeCtrl_GetSelections(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetSelections(val);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(Result),
     rt.make_array_objs(val));
@@ -37403,7 +37403,7 @@ void wxTreeCtrl_GetStateImageList(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxImageList * Result = (wxImageList*)This->GetStateImageList();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxImageList"));
 
 }
@@ -37427,7 +37427,7 @@ void wxTreeCtrl_HitTest(WxeApp *app, wxeCommand& Ecmd)
   wxPoint point = wxPoint(pointX,pointY);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->HitTest(point,flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make((wxUIntPtr *) Result.m_pItem),
     rt.make_int(flags));
@@ -37453,7 +37453,7 @@ void wxTreeCtrl_InsertItem(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &pos)) Badarg(2060,"pos"); // "size_t"
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2060,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(2060,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -37473,7 +37473,7 @@ void wxTreeCtrl_InsertItem(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->InsertItem(parent,pos,text,image,selImage,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37491,7 +37491,7 @@ void wxTreeCtrl_IsBold(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsBold(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -37509,7 +37509,7 @@ void wxTreeCtrl_IsExpanded(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsExpanded(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -37527,7 +37527,7 @@ void wxTreeCtrl_IsSelected(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSelected(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -37545,7 +37545,7 @@ void wxTreeCtrl_IsVisible(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsVisible(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -37563,7 +37563,7 @@ void wxTreeCtrl_ItemHasChildren(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ItemHasChildren(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -37596,7 +37596,7 @@ void wxTreeCtrl_PrependItem(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId parent = wxTreeItemId((void *) (wxUint64) parent_tmp);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2067,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2067,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -37616,7 +37616,7 @@ void wxTreeCtrl_PrependItem(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->PrependItem(parent,text,image,selectedImage,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -37925,7 +37925,7 @@ void wxTreeCtrl_SetItemText(WxeApp *app, wxeCommand& Ecmd)
   wxTreeItemId item = wxTreeItemId((void *) (wxUint64) item_tmp);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2081,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2081,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetItemText(item,text);
@@ -38086,7 +38086,7 @@ void wxScrollBar_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxScrollBar * Result = new EwxScrollBar();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxScrollBar"));
 
 }
@@ -38139,7 +38139,7 @@ void wxScrollBar_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxScrollBar * Result = new EwxScrollBar(parent,id,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxScrollBar"));
 
 }
@@ -38194,7 +38194,7 @@ void wxScrollBar_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -38209,7 +38209,7 @@ void wxScrollBar_GetRange(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRange();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38224,7 +38224,7 @@ void wxScrollBar_GetPageSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38239,7 +38239,7 @@ void wxScrollBar_GetThumbPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetThumbPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38254,7 +38254,7 @@ void wxScrollBar_GetThumbSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetThumbSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38354,7 +38354,7 @@ void wxSpinButton_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSpinButton * Result = new EwxSpinButton(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSpinButton"));
 
 }
@@ -38365,7 +38365,7 @@ void wxSpinButton_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSpinButton * Result = new EwxSpinButton();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSpinButton"));
 
 }
@@ -38418,7 +38418,7 @@ void wxSpinButton_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -38433,7 +38433,7 @@ void wxSpinButton_GetMax(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMax();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38448,7 +38448,7 @@ void wxSpinButton_GetMin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38463,7 +38463,7 @@ void wxSpinButton_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38506,7 +38506,7 @@ void wxSpinCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSpinCtrl * Result = new EwxSpinCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSpinCtrl"));
 
 }
@@ -38539,7 +38539,7 @@ void wxSpinCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(2112,"id"); // "wxWindowID"
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2112,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2112,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -38571,7 +38571,7 @@ void wxSpinCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSpinCtrl * Result = new EwxSpinCtrl(parent,id,value,pos,size,style,min,max,initial);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSpinCtrl"));
 
 }
@@ -38606,7 +38606,7 @@ void wxSpinCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &id)) Badarg(2114,"id"); // "wxWindowID"
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2114,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2114,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -38638,7 +38638,7 @@ void wxSpinCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,value,pos,size,style,min,max,initial);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -38653,7 +38653,7 @@ void wxSpinCtrl_SetValue_1_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2117,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2117,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetValue(text);
@@ -38685,7 +38685,7 @@ void wxSpinCtrl_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38734,7 +38734,7 @@ void wxSpinCtrl_GetMin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38749,7 +38749,7 @@ void wxSpinCtrl_GetMax(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMax();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -38760,7 +38760,7 @@ void wxStaticText_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStaticText * Result = new EwxStaticText();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticText"));
 
 }
@@ -38780,7 +38780,7 @@ void wxStaticText_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2130,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(2130,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(2130,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -38814,7 +38814,7 @@ void wxStaticText_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxStaticText * Result = new EwxStaticText(parent,id,label,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticText"));
 
 }
@@ -38836,7 +38836,7 @@ void wxStaticText_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2131,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(2131,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(2131,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -38870,7 +38870,7 @@ void wxStaticText_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,label,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -38885,7 +38885,7 @@ void wxStaticText_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStaticText *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -38900,7 +38900,7 @@ void wxStaticText_SetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStaticText *) memenv->getPtr(env, argv[0]);
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[1], &label_bin)) Badarg(2133,"label");
+  if(!enif_inspect_binary(env, argv[1], &label_bin)) Badarg(2133,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLabel(label);
@@ -38928,7 +38928,7 @@ void wxStaticBitmap_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStaticBitmap * Result = new EwxStaticBitmap();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBitmap"));
 
 }
@@ -38980,7 +38980,7 @@ void wxStaticBitmap_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxStaticBitmap * Result = new EwxStaticBitmap(parent,id,*label,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStaticBitmap"));
 
 }
@@ -39034,7 +39034,7 @@ void wxStaticBitmap_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,*label,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39049,7 +39049,7 @@ void wxStaticBitmap_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStaticBitmap *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->GetBitmap()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -39084,7 +39084,7 @@ void wxRadioBox_new(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2142,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2142,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2142,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -39129,7 +39129,7 @@ void wxRadioBox_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxRadioBox * Result = new EwxRadioBox(parent,id,title,pos,size,choices,majorDim,style,*val);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRadioBox"));
 
 }
@@ -39151,7 +39151,7 @@ void wxRadioBox_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2145,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2145,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2145,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -39196,7 +39196,7 @@ void wxRadioBox_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,title,pos,size,choices,majorDim,style,*val);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39226,7 +39226,7 @@ void wxRadioBox_Enable_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Enable(n,enable);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39254,7 +39254,7 @@ void wxRadioBox_Enable_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Enable(enable);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39269,7 +39269,7 @@ void wxRadioBox_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRadioBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39286,7 +39286,7 @@ void wxRadioBox_GetString(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(2149,"n");
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetString(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -39331,7 +39331,7 @@ void wxRadioBox_Show_2(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(n,show);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39359,7 +39359,7 @@ void wxRadioBox_Show_1(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(show);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39374,7 +39374,7 @@ void wxRadioBox_GetColumnCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRadioBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumnCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -39391,7 +39391,7 @@ void wxRadioBox_GetItemHelpText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(2154,"n");
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetItemHelpText(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -39408,7 +39408,7 @@ void wxRadioBox_GetItemToolTip(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &item)) Badarg(2155,"item");
   if(!This) throw wxe_badarg("This");
   wxToolTip * Result = (wxToolTip*)This->GetItemToolTip(item);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolTip"));
 
 }
@@ -39431,7 +39431,7 @@ void wxRadioBox_GetItemFromPoint(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetItemFromPoint(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39446,7 +39446,7 @@ void wxRadioBox_GetRowCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRadioBox *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRowCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -39463,7 +39463,7 @@ void wxRadioBox_IsItemEnabled(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(2159,"n");
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsItemEnabled(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39480,7 +39480,7 @@ void wxRadioBox_IsItemShown(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(2160,"n");
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsItemShown(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39497,7 +39497,7 @@ void wxRadioBox_SetItemHelpText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &n)) Badarg(2161,"n");
   ErlNifBinary helpText_bin;
   wxString helpText;
-  if(enif_inspect_binary(env, argv[2], &helpText_bin)) Badarg(2161,"helpText");
+  if(!enif_inspect_binary(env, argv[2], &helpText_bin)) Badarg(2161,"helpText");
   helpText = wxString(helpText_bin.data, wxConvUTF8, helpText_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetItemHelpText(n,helpText);
@@ -39516,7 +39516,7 @@ void wxRadioBox_SetItemToolTip(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &item)) Badarg(2162,"item");
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2162,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2162,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetItemToolTip(item,text);
@@ -39529,7 +39529,7 @@ void wxRadioButton_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxRadioButton * Result = new EwxRadioButton();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRadioButton"));
 
 }
@@ -39550,7 +39550,7 @@ void wxRadioButton_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2164,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[2], &label_bin)) Badarg(2164,"label");
+  if(!enif_inspect_binary(env, argv[2], &label_bin)) Badarg(2164,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -39586,7 +39586,7 @@ void wxRadioButton_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxRadioButton * Result = new EwxRadioButton(parent,id,label,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxRadioButton"));
 
 }
@@ -39609,7 +39609,7 @@ void wxRadioButton_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2165,"id"); // "wxWindowID"
   ErlNifBinary label_bin;
   wxString label;
-  if(enif_inspect_binary(env, argv[3], &label_bin)) Badarg(2165,"label");
+  if(!enif_inspect_binary(env, argv[3], &label_bin)) Badarg(2165,"label");
   label = wxString(label_bin.data, wxConvUTF8, label_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -39645,7 +39645,7 @@ void wxRadioButton_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,label,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39660,7 +39660,7 @@ void wxRadioButton_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxRadioButton *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39734,7 +39734,7 @@ void wxSlider_new_6(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSlider * Result = new EwxSlider(parent,id,value,minValue,maxValue,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSlider"));
 
 }
@@ -39745,7 +39745,7 @@ void wxSlider_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSlider * Result = new EwxSlider();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSlider"));
 
 }
@@ -39806,7 +39806,7 @@ void wxSlider_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,value,minValue,maxValue,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -39821,7 +39821,7 @@ void wxSlider_GetLineSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSlider *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39836,7 +39836,7 @@ void wxSlider_GetMax(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSlider *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMax();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39851,7 +39851,7 @@ void wxSlider_GetMin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSlider *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39866,7 +39866,7 @@ void wxSlider_GetPageSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSlider *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39881,7 +39881,7 @@ void wxSlider_GetThumbLength(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSlider *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetThumbLength();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39896,7 +39896,7 @@ void wxSlider_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSlider *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -39993,7 +39993,7 @@ void wxDialog_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2186,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2186,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2186,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -40027,7 +40027,7 @@ void wxDialog_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxDialog * Result = new EwxDialog(parent,id,title,pos,size,style);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDialog"));
 
 }
@@ -40038,7 +40038,7 @@ void wxDialog_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxDialog * Result = new EwxDialog();
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDialog"));
 
 }
@@ -40060,7 +40060,7 @@ void wxDialog_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2190,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2190,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2190,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -40094,7 +40094,7 @@ void wxDialog_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,title,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40111,7 +40111,7 @@ void wxDialog_CreateButtonSizer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &flags)) Badarg(2191,"flags");
   if(!This) throw wxe_badarg("This");
   wxSizer * Result = (wxSizer*)This->CreateButtonSizer(flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSizer"));
 
 }
@@ -40128,7 +40128,7 @@ void wxDialog_CreateStdDialogButtonSizer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[1], &flags)) Badarg(2192,"flags");
   if(!This) throw wxe_badarg("This");
   wxStdDialogButtonSizer * Result = (wxStdDialogButtonSizer*)This->CreateStdDialogButtonSizer(flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStdDialogButtonSizer"));
 
 }
@@ -40158,7 +40158,7 @@ void wxDialog_GetAffirmativeId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetAffirmativeId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -40173,7 +40173,7 @@ void wxDialog_GetReturnCode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetReturnCode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -40188,7 +40188,7 @@ void wxDialog_IsModal(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsModal();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40246,7 +40246,7 @@ void wxDialog_Show(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Show(show);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40261,7 +40261,7 @@ void wxDialog_ShowModal(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->ShowModal();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -40272,7 +40272,7 @@ void wxColourDialog_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxColourDialog * Result = new EwxColourDialog();
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourDialog"));
 
 }
@@ -40300,7 +40300,7 @@ void wxColourDialog_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxColourDialog * Result = new EwxColourDialog(parent,data);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourDialog"));
 
 }
@@ -40330,7 +40330,7 @@ void wxColourDialog_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40345,7 +40345,7 @@ void wxColourDialog_GetColourData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxColourDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColourData * Result = &This->GetColourData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourData"));
 
 }
@@ -40356,7 +40356,7 @@ void wxColourData_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxColourData * Result = new EwxColourData();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourData"));
 
 }
@@ -40371,7 +40371,7 @@ void wxColourData_new_1(WxeApp *app, wxeCommand& Ecmd)
   data = (wxColourData *) memenv->getPtr(env, argv[0]);
   wxColourData * Result = new EwxColourData(*data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourData"));
 
 }
@@ -40386,7 +40386,7 @@ void wxColourData_GetChooseFull(WxeApp *app, wxeCommand& Ecmd)
   This = (wxColourData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetChooseFull();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40401,7 +40401,7 @@ void wxColourData_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxColourData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -40418,7 +40418,7 @@ void wxColourData_GetCustomColour(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &i)) Badarg(2212,"i"); // int
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetCustomColour(i);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40496,7 +40496,7 @@ void wxPalette_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPalette * Result = new EwxPalette();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPalette"));
 
 }
@@ -40521,7 +40521,7 @@ void wxPalette_new_4(WxeApp *app, wxeCommand& Ecmd)
   blue = (const unsigned char*) blue_bin.data;
   wxPalette * Result = new EwxPalette(red_bin.size,red,green,blue);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPalette"));
 
 }
@@ -40548,7 +40548,7 @@ void wxPalette_Create(WxeApp *app, wxeCommand& Ecmd)
   blue = (const unsigned char*) blue_bin.data;
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(red_bin.size,red,green,blue);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40563,7 +40563,7 @@ void wxPalette_GetColoursCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPalette *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColoursCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -40584,7 +40584,7 @@ void wxPalette_GetPixel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[3], &blue)) Badarg(2222,"blue");
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPixel(red,green,blue);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -40604,7 +40604,7 @@ void wxPalette_GetRGB(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pixel)) Badarg(2223,"pixel"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetRGB(pixel,&red,&green,&blue);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple4(rt.env,
   rt.make_bool(Result),
     rt.make_uint(red),
@@ -40624,7 +40624,7 @@ void wxPalette_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPalette *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -40652,11 +40652,11 @@ void wxDirDialog_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2228,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "title"))) {
   ErlNifBinary title_bin;
-  if(enif_inspect_binary(env, tpl[1], &title_bin)) Badarg(2228,"title");
+  if(!enif_inspect_binary(env, tpl[1], &title_bin)) Badarg(2228,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultPath"))) {
   ErlNifBinary defaultPath_bin;
-  if(enif_inspect_binary(env, tpl[1], &defaultPath_bin)) Badarg(2228,"defaultPath");
+  if(!enif_inspect_binary(env, tpl[1], &defaultPath_bin)) Badarg(2228,"defaultPath");
   defaultPath = wxString(defaultPath_bin.data, wxConvUTF8, defaultPath_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2228,"style");
@@ -40682,7 +40682,7 @@ void wxDirDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxDirDialog * Result = new EwxDirDialog(parent,title,defaultPath,style,pos,sz);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDirDialog"));
 
 }
@@ -40697,7 +40697,7 @@ void wxDirDialog_GetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDirDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40712,7 +40712,7 @@ void wxDirDialog_GetMessage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDirDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetMessage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40727,7 +40727,7 @@ void wxDirDialog_SetMessage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDirDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2232,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2232,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetMessage(message);
@@ -40744,7 +40744,7 @@ void wxDirDialog_SetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDirDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(2233,"path");
+  if(!enif_inspect_binary(env, argv[1], &path_bin)) Badarg(2233,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetPath(path);
@@ -40776,19 +40776,19 @@ void wxFileDialog_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2237,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2237,"message");
+  if(!enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2237,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultDir"))) {
   ErlNifBinary defaultDir_bin;
-  if(enif_inspect_binary(env, tpl[1], &defaultDir_bin)) Badarg(2237,"defaultDir");
+  if(!enif_inspect_binary(env, tpl[1], &defaultDir_bin)) Badarg(2237,"defaultDir");
   defaultDir = wxString(defaultDir_bin.data, wxConvUTF8, defaultDir_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "defaultFile"))) {
   ErlNifBinary defaultFile_bin;
-  if(enif_inspect_binary(env, tpl[1], &defaultFile_bin)) Badarg(2237,"defaultFile");
+  if(!enif_inspect_binary(env, tpl[1], &defaultFile_bin)) Badarg(2237,"defaultFile");
   defaultFile = wxString(defaultFile_bin.data, wxConvUTF8, defaultFile_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "wildCard"))) {
   ErlNifBinary wildCard_bin;
-  if(enif_inspect_binary(env, tpl[1], &wildCard_bin)) Badarg(2237,"wildCard");
+  if(!enif_inspect_binary(env, tpl[1], &wildCard_bin)) Badarg(2237,"wildCard");
   wildCard = wxString(wildCard_bin.data, wxConvUTF8, wildCard_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2237,"style");
@@ -40814,7 +40814,7 @@ void wxFileDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFileDialog * Result = new EwxFileDialog(parent,message,defaultDir,defaultFile,wildCard,style,pos,sz);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFileDialog"));
 
 }
@@ -40829,7 +40829,7 @@ void wxFileDialog_GetDirectory(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetDirectory();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40844,7 +40844,7 @@ void wxFileDialog_GetFilename(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetFilename();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40860,7 +40860,7 @@ void wxFileDialog_GetFilenames(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetFilenames(files);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(files));
 
 }
@@ -40875,7 +40875,7 @@ void wxFileDialog_GetFilterIndex(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFilterIndex();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -40890,7 +40890,7 @@ void wxFileDialog_GetMessage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetMessage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40905,7 +40905,7 @@ void wxFileDialog_GetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40921,7 +40921,7 @@ void wxFileDialog_GetPaths(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetPaths(paths);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(paths));
 
 }
@@ -40936,7 +40936,7 @@ void wxFileDialog_GetWildcard(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetWildcard();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -40951,7 +40951,7 @@ void wxFileDialog_SetDirectory(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary dir_bin;
   wxString dir;
-  if(enif_inspect_binary(env, argv[1], &dir_bin)) Badarg(2247,"dir");
+  if(!enif_inspect_binary(env, argv[1], &dir_bin)) Badarg(2247,"dir");
   dir = wxString(dir_bin.data, wxConvUTF8, dir_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetDirectory(dir);
@@ -40968,7 +40968,7 @@ void wxFileDialog_SetFilename(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2248,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2248,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetFilename(name);
@@ -41000,7 +41000,7 @@ void wxFileDialog_SetMessage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2250,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2250,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetMessage(message);
@@ -41017,7 +41017,7 @@ void wxFileDialog_SetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary path_bin;
   wxString path;
-  if(enif_inspect_binary(env, argv[1], &path_bin)) Badarg(2251,"path");
+  if(!enif_inspect_binary(env, argv[1], &path_bin)) Badarg(2251,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetPath(path);
@@ -41034,7 +41034,7 @@ void wxFileDialog_SetWildcard(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary wildCard_bin;
   wxString wildCard;
-  if(enif_inspect_binary(env, argv[1], &wildCard_bin)) Badarg(2252,"wildCard");
+  if(!enif_inspect_binary(env, argv[1], &wildCard_bin)) Badarg(2252,"wildCard");
   wildCard = wxString(wildCard_bin.data, wxConvUTF8, wildCard_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetWildcard(wildCard);
@@ -41066,7 +41066,7 @@ void wxPickerBase_GetInternalMargin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetInternalMargin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -41111,7 +41111,7 @@ void wxPickerBase_GetTextCtrlProportion(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetTextCtrlProportion();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -41126,7 +41126,7 @@ void wxPickerBase_GetPickerCtrlProportion(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPickerCtrlProportion();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -41141,7 +41141,7 @@ void wxPickerBase_HasTextCtrl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasTextCtrl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41156,7 +41156,7 @@ void wxPickerBase_GetTextCtrl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTextCtrl * Result = (wxTextCtrl*)This->GetTextCtrl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextCtrl"));
 
 }
@@ -41171,7 +41171,7 @@ void wxPickerBase_IsTextCtrlGrowable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsTextCtrlGrowable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41238,7 +41238,7 @@ void wxPickerBase_IsPickerCtrlGrowable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPickerBase *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsPickerCtrlGrowable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41249,7 +41249,7 @@ void wxFilePickerCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFilePickerCtrl * Result = new EwxFilePickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFilePickerCtrl"));
 
 }
@@ -41281,15 +41281,15 @@ void wxFilePickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2266,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2266,"path");
+  if(!enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2266,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2266,"message");
+  if(!enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2266,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "wildcard"))) {
   ErlNifBinary wildcard_bin;
-  if(enif_inspect_binary(env, tpl[1], &wildcard_bin)) Badarg(2266,"wildcard");
+  if(!enif_inspect_binary(env, tpl[1], &wildcard_bin)) Badarg(2266,"wildcard");
   wildcard = wxString(wildcard_bin.data, wxConvUTF8, wildcard_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41317,7 +41317,7 @@ void wxFilePickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFilePickerCtrl * Result = new EwxFilePickerCtrl(parent,id,path,message,wildcard,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFilePickerCtrl"));
 
 }
@@ -41351,15 +41351,15 @@ void wxFilePickerCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2267,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2267,"path");
+  if(!enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2267,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2267,"message");
+  if(!enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2267,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "wildcard"))) {
   ErlNifBinary wildcard_bin;
-  if(enif_inspect_binary(env, tpl[1], &wildcard_bin)) Badarg(2267,"wildcard");
+  if(!enif_inspect_binary(env, tpl[1], &wildcard_bin)) Badarg(2267,"wildcard");
   wildcard = wxString(wildcard_bin.data, wxConvUTF8, wildcard_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41387,7 +41387,7 @@ void wxFilePickerCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,path,message,wildcard,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41402,7 +41402,7 @@ void wxFilePickerCtrl_GetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFilePickerCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -41417,7 +41417,7 @@ void wxFilePickerCtrl_SetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFilePickerCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2269,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2269,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetPath(str);
@@ -41430,7 +41430,7 @@ void wxDirPickerCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxDirPickerCtrl * Result = new EwxDirPickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDirPickerCtrl"));
 
 }
@@ -41461,11 +41461,11 @@ void wxDirPickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2272,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2272,"path");
+  if(!enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2272,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2272,"message");
+  if(!enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2272,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41493,7 +41493,7 @@ void wxDirPickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxDirPickerCtrl * Result = new EwxDirPickerCtrl(parent,id,path,message,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDirPickerCtrl"));
 
 }
@@ -41526,11 +41526,11 @@ void wxDirPickerCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2273,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "path"))) {
   ErlNifBinary path_bin;
-  if(enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2273,"path");
+  if(!enif_inspect_binary(env, tpl[1], &path_bin)) Badarg(2273,"path");
   path = wxString(path_bin.data, wxConvUTF8, path_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "message"))) {
   ErlNifBinary message_bin;
-  if(enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2273,"message");
+  if(!enif_inspect_binary(env, tpl[1], &message_bin)) Badarg(2273,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -41558,7 +41558,7 @@ void wxDirPickerCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,path,message,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41573,7 +41573,7 @@ void wxDirPickerCtrl_GetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDirPickerCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -41588,7 +41588,7 @@ void wxDirPickerCtrl_SetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDirPickerCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2275,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2275,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetPath(str);
@@ -41601,7 +41601,7 @@ void wxColourPickerCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxColourPickerCtrl * Result = new EwxColourPickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourPickerCtrl"));
 
 }
@@ -41668,7 +41668,7 @@ void wxColourPickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxColourPickerCtrl * Result = new EwxColourPickerCtrl(parent,id,col,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxColourPickerCtrl"));
 
 }
@@ -41737,7 +41737,7 @@ void wxColourPickerCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,col,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41752,7 +41752,7 @@ void wxColourPickerCtrl_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxColourPickerCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -41792,11 +41792,11 @@ void wxColourPickerCtrl_SetColour_1_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxColourPickerCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2282,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2282,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetColour(text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41807,7 +41807,7 @@ void wxDatePickerCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxDatePickerCtrl * Result = new EwxDatePickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDatePickerCtrl"));
 
 }
@@ -41878,7 +41878,7 @@ void wxDatePickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxDatePickerCtrl * Result = new EwxDatePickerCtrl(parent,id,date,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDatePickerCtrl"));
 
 }
@@ -41925,7 +41925,7 @@ void wxDatePickerCtrl_GetRange(WxeApp *app, wxeCommand& Ecmd)
  wxDateTime dt2 = wxDateTime((wxDateTime::wxDateTime_t) dt2D,(wxDateTime::Month) dt2Mo,dt2Y,(wxDateTime::wxDateTime_t) dt2H,(wxDateTime::wxDateTime_t) dt2Mi,(wxDateTime::wxDateTime_t) dt2S);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetRange(&dt1,&dt2);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -41940,7 +41940,7 @@ void wxDatePickerCtrl_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDatePickerCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxDateTime Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -42025,7 +42025,7 @@ void wxFontPickerCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFontPickerCtrl * Result = new EwxFontPickerCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontPickerCtrl"));
 
 }
@@ -42081,7 +42081,7 @@ void wxFontPickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFontPickerCtrl * Result = new EwxFontPickerCtrl(parent,id,*initial,pos,size,style,*validator);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontPickerCtrl"));
 
 }
@@ -42139,7 +42139,7 @@ void wxFontPickerCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,*initial,pos,size,style,*validator);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -42154,7 +42154,7 @@ void wxFontPickerCtrl_GetSelectedFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontPickerCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetSelectedFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -42184,7 +42184,7 @@ void wxFontPickerCtrl_GetMaxPointSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontPickerCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMaxPointSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -42210,7 +42210,7 @@ void wxFindReplaceDialog_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFindReplaceDialog * Result = new EwxFindReplaceDialog();
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFindReplaceDialog"));
 
 }
@@ -42228,7 +42228,7 @@ void wxFindReplaceDialog_new_4(WxeApp *app, wxeCommand& Ecmd)
   data = (wxFindReplaceData *) memenv->getPtr(env, argv[1]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2302,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2302,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -42244,7 +42244,7 @@ void wxFindReplaceDialog_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxFindReplaceDialog * Result = new EwxFindReplaceDialog(parent,data,title,style);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFindReplaceDialog"));
 
 }
@@ -42264,7 +42264,7 @@ void wxFindReplaceDialog_Create(WxeApp *app, wxeCommand& Ecmd)
   data = (wxFindReplaceData *) memenv->getPtr(env, argv[2]);
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2304,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2304,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -42280,7 +42280,7 @@ void wxFindReplaceDialog_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,data,title,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -42295,7 +42295,7 @@ void wxFindReplaceDialog_GetData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFindReplaceDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFindReplaceData * Result = (wxFindReplaceData*)This->GetData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFindReplaceData"));
 
 }
@@ -42306,7 +42306,7 @@ void wxFindReplaceData_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFindReplaceData * Result = new EwxFindReplaceData();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFindReplaceData"));
 
 }
@@ -42321,7 +42321,7 @@ void wxFindReplaceData_new_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[0], &flags)) Badarg(2307,"flags");
   wxFindReplaceData * Result = new EwxFindReplaceData(flags);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFindReplaceData"));
 
 }
@@ -42336,7 +42336,7 @@ void wxFindReplaceData_GetFindString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetFindString();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -42351,7 +42351,7 @@ void wxFindReplaceData_GetReplaceString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetReplaceString();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -42366,7 +42366,7 @@ void wxFindReplaceData_GetFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -42396,7 +42396,7 @@ void wxFindReplaceData_SetFindString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2312,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2312,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetFindString(str);
@@ -42413,7 +42413,7 @@ void wxFindReplaceData_SetReplaceString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFindReplaceData *) memenv->getPtr(env, argv[0]);
   ErlNifBinary str_bin;
   wxString str;
-  if(enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2313,"str");
+  if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(2313,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetReplaceString(str);
@@ -42426,7 +42426,7 @@ void wxMultiChoiceDialog_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMultiChoiceDialog * Result = new EwxMultiChoiceDialog();
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMultiChoiceDialog"));
 
 }
@@ -42443,11 +42443,11 @@ void wxMultiChoiceDialog_new_5(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2317,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2317,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2317,"caption");
+  if(!enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2317,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM choicesHead, choicesTail;
   ErlNifBinary choices_bin;
@@ -42481,7 +42481,7 @@ void wxMultiChoiceDialog_new_5(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMultiChoiceDialog * Result = new EwxMultiChoiceDialog(parent,message,caption,choices,style,pos);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMultiChoiceDialog"));
 
 }
@@ -42496,7 +42496,7 @@ void wxMultiChoiceDialog_GetSelections(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMultiChoiceDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxArrayInt Result = This->GetSelections();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -42529,7 +42529,7 @@ void wxSingleChoiceDialog_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSingleChoiceDialog * Result = new EwxSingleChoiceDialog();
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSingleChoiceDialog"));
 
 }
@@ -42547,11 +42547,11 @@ void wxSingleChoiceDialog_new_5(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2323,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2323,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2323,"caption");
+  if(!enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2323,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM choicesHead, choicesTail;
   ErlNifBinary choices_bin;
@@ -42585,7 +42585,7 @@ void wxSingleChoiceDialog_new_5(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSingleChoiceDialog * Result = new EwxSingleChoiceDialog(parent,message,caption,choices,clientData,style,pos);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSingleChoiceDialog"));
 
 }
@@ -42600,7 +42600,7 @@ void wxSingleChoiceDialog_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSingleChoiceDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -42615,7 +42615,7 @@ void wxSingleChoiceDialog_GetStringSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSingleChoiceDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetStringSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -42649,7 +42649,7 @@ void wxTextEntryDialog_new(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2328,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2328,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -42661,11 +42661,11 @@ void wxTextEntryDialog_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2328,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2328,"caption");
+  if(!enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2328,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2328,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2328,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2328,"style");
@@ -42682,7 +42682,7 @@ void wxTextEntryDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxTextEntryDialog * Result = new EwxTextEntryDialog(parent,message,caption,value,style,pos);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextEntryDialog"));
 
 }
@@ -42697,7 +42697,7 @@ void wxTextEntryDialog_GetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextEntryDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetValue();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -42712,7 +42712,7 @@ void wxTextEntryDialog_SetValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextEntryDialog *) memenv->getPtr(env, argv[0]);
   ErlNifBinary val_bin;
   wxString val;
-  if(enif_inspect_binary(env, argv[1], &val_bin)) Badarg(2330,"val");
+  if(!enif_inspect_binary(env, argv[1], &val_bin)) Badarg(2330,"val");
   val = wxString(val_bin.data, wxConvUTF8, val_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetValue(val);
@@ -42733,7 +42733,7 @@ void wxPasswordEntryDialog_new(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2332,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2332,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -42745,11 +42745,11 @@ void wxPasswordEntryDialog_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2332,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2332,"caption");
+  if(!enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2332,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "value"))) {
   ErlNifBinary value_bin;
-  if(enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2332,"value");
+  if(!enif_inspect_binary(env, tpl[1], &value_bin)) Badarg(2332,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2332,"style");
@@ -42766,7 +42766,7 @@ void wxPasswordEntryDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPasswordEntryDialog * Result = new EwxPasswordEntryDialog(parent,message,caption,value,style,pos);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPasswordEntryDialog"));
 
 }
@@ -42777,7 +42777,7 @@ void wxFontData_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFontData * Result = new EwxFontData();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontData"));
 
 }
@@ -42792,7 +42792,7 @@ void wxFontData_new_1(WxeApp *app, wxeCommand& Ecmd)
   data = (wxFontData *) memenv->getPtr(env, argv[0]);
   wxFontData * Result = new EwxFontData(*data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontData"));
 
 }
@@ -42822,7 +42822,7 @@ void wxFontData_GetAllowSymbols(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetAllowSymbols();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -42837,7 +42837,7 @@ void wxFontData_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxColour * Result = &This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -42852,7 +42852,7 @@ void wxFontData_GetChosenFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetChosenFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -42867,7 +42867,7 @@ void wxFontData_GetEnableEffects(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnableEffects();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -42882,7 +42882,7 @@ void wxFontData_GetInitialFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetInitialFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -42897,7 +42897,7 @@ void wxFontData_GetShowHelp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetShowHelp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43010,7 +43010,7 @@ void wxFontDialog_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFontDialog * Result = new EwxFontDialog();
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontDialog"));
 
 }
@@ -43027,7 +43027,7 @@ void wxFontDialog_new_2(WxeApp *app, wxeCommand& Ecmd)
   data = (wxFontData *) memenv->getPtr(env, argv[1]);
   wxFontDialog * Result = new EwxFontDialog(parent,*data);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontDialog"));
 
 }
@@ -43046,7 +43046,7 @@ void wxFontDialog_Create(WxeApp *app, wxeCommand& Ecmd)
   data = (wxFontData *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,*data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43061,7 +43061,7 @@ void wxFontDialog_GetFontData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxFontData * Result = &This->GetFontData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFontData"));
 
 }
@@ -43077,11 +43077,11 @@ void wxProgressDialog_new(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[0], &title_bin)) Badarg(2361,"title");
+  if(!enif_inspect_binary(env, argv[0], &title_bin)) Badarg(2361,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2361,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2361,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -43101,7 +43101,7 @@ void wxProgressDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxProgressDialog * Result = new EwxProgressDialog(title,message,maximum,parent,style);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxProgressDialog"));
 
 }
@@ -43140,13 +43140,13 @@ void wxProgressDialog_Update_2(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2364,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "newmsg"))) {
   ErlNifBinary newmsg_bin;
-  if(enif_inspect_binary(env, tpl[1], &newmsg_bin)) Badarg(2364,"newmsg");
+  if(!enif_inspect_binary(env, tpl[1], &newmsg_bin)) Badarg(2364,"newmsg");
   newmsg = wxString(newmsg_bin.data, wxConvUTF8, newmsg_bin.size);
     } else        Badarg(2364,"Options");
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Update(value,newmsg);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43177,7 +43177,7 @@ void wxMessageDialog_new(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2366,"message");
+  if(!enif_inspect_binary(env, argv[1], &message_bin)) Badarg(2366,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -43189,7 +43189,7 @@ void wxMessageDialog_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2366,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2366,"caption");
+  if(!enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2366,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2366,"style");
@@ -43206,7 +43206,7 @@ void wxMessageDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMessageDialog * Result = new EwxMessageDialog(parent,message,caption,style,pos);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMessageDialog"));
 
 }
@@ -43234,7 +43234,7 @@ void wxPageSetupDialog_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPageSetupDialog * Result = new EwxPageSetupDialog(parent,data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPageSetupDialog"));
 
 }
@@ -43249,7 +43249,7 @@ void wxPageSetupDialog_GetPageSetupData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPageSetupDialogData * Result = &This->GetPageSetupData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPageSetupDialogData"));
 
 }
@@ -43264,7 +43264,7 @@ void wxPageSetupDialog_ShowModal(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->ShowModal();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -43275,7 +43275,7 @@ void wxPageSetupDialogData_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPageSetupDialogData * Result = new EwxPageSetupDialogData();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPageSetupDialogData"));
 
 }
@@ -43290,7 +43290,7 @@ void wxPageSetupDialogData_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   dialogData = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   wxPageSetupDialogData * Result = new EwxPageSetupDialogData(*dialogData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPageSetupDialogData"));
 
 }
@@ -43304,7 +43304,7 @@ void wxPageSetupDialogData_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxPrintData * printData = (wxPrintData *) memenv->getPtr(env, argv[0]);
   wxPageSetupDialogData * Result = new EwxPageSetupDialogData(*printData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPageSetupDialogData"));
 
 }
@@ -43394,7 +43394,7 @@ void wxPageSetupDialogData_GetDefaultMinMargins(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetDefaultMinMargins();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43409,7 +43409,7 @@ void wxPageSetupDialogData_GetEnableMargins(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnableMargins();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43424,7 +43424,7 @@ void wxPageSetupDialogData_GetEnableOrientation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnableOrientation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43439,7 +43439,7 @@ void wxPageSetupDialogData_GetEnablePaper(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnablePaper();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43454,7 +43454,7 @@ void wxPageSetupDialogData_GetEnablePrinter(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnablePrinter();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43469,7 +43469,7 @@ void wxPageSetupDialogData_GetEnableHelp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnableHelp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43484,7 +43484,7 @@ void wxPageSetupDialogData_GetDefaultInfo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetDefaultInfo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43499,7 +43499,7 @@ void wxPageSetupDialogData_GetMarginTopLeft(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetMarginTopLeft();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -43514,7 +43514,7 @@ void wxPageSetupDialogData_GetMarginBottomRight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetMarginBottomRight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -43529,7 +43529,7 @@ void wxPageSetupDialogData_GetMinMarginTopLeft(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetMinMarginTopLeft();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -43544,7 +43544,7 @@ void wxPageSetupDialogData_GetMinMarginBottomRight(WxeApp *app, wxeCommand& Ecmd
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetMinMarginBottomRight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -43559,7 +43559,7 @@ void wxPageSetupDialogData_GetPaperId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPaperId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -43574,7 +43574,7 @@ void wxPageSetupDialogData_GetPaperSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetPaperSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -43589,7 +43589,7 @@ void wxPageSetupDialogData_GetPrintData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxPrintData * Result = &This->GetPrintData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintData"));
 
 }
@@ -43604,7 +43604,7 @@ void wxPageSetupDialogData_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPageSetupDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43812,7 +43812,7 @@ void wxPrintDialog_new_2_0(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPrintDialog * Result = new EwxPrintDialog(parent,data);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialog"));
 
 }
@@ -43829,7 +43829,7 @@ void wxPrintDialog_new_2_1(WxeApp *app, wxeCommand& Ecmd)
   data = (wxPrintData *) memenv->getPtr(env, argv[1]);
   wxPrintDialog * Result = new EwxPrintDialog(parent,data);
   app->newPtr((void *) Result, 2, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialog"));
 
 }
@@ -43844,7 +43844,7 @@ void wxPrintDialog_GetPrintDialogData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintDialogData * Result = &This->GetPrintDialogData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialogData"));
 
 }
@@ -43859,7 +43859,7 @@ void wxPrintDialog_GetPrintDC(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialog *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxDC * Result = (wxDC*)This->GetPrintDC();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDC"));
 
 }
@@ -43870,7 +43870,7 @@ void wxPrintDialogData_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPrintDialogData * Result = new EwxPrintDialogData();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialogData"));
 
 }
@@ -43884,7 +43884,7 @@ void wxPrintDialogData_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   wxPrintDialogData * dialogData = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   wxPrintDialogData * Result = new EwxPrintDialogData(*dialogData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialogData"));
 
 }
@@ -43899,7 +43899,7 @@ void wxPrintDialogData_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   printData = (wxPrintData *) memenv->getPtr(env, argv[0]);
   wxPrintDialogData * Result = new EwxPrintDialogData(*printData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialogData"));
 
 }
@@ -43974,7 +43974,7 @@ void wxPrintDialogData_GetAllPages(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetAllPages();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -43989,7 +43989,7 @@ void wxPrintDialogData_GetCollate(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetCollate();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44004,7 +44004,7 @@ void wxPrintDialogData_GetFromPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFromPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44019,7 +44019,7 @@ void wxPrintDialogData_GetMaxPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMaxPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44034,7 +44034,7 @@ void wxPrintDialogData_GetMinPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMinPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44049,7 +44049,7 @@ void wxPrintDialogData_GetNoCopies(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNoCopies();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44064,7 +44064,7 @@ void wxPrintDialogData_GetPrintData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintData * Result = &This->GetPrintData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintData"));
 
 }
@@ -44079,7 +44079,7 @@ void wxPrintDialogData_GetPrintToFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetPrintToFile();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44094,7 +44094,7 @@ void wxPrintDialogData_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44109,7 +44109,7 @@ void wxPrintDialogData_GetToPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetToPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44124,7 +44124,7 @@ void wxPrintDialogData_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintDialogData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44270,7 +44270,7 @@ void wxPrintData_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPrintData * Result = new EwxPrintData();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintData"));
 
 }
@@ -44285,7 +44285,7 @@ void wxPrintData_new_1(WxeApp *app, wxeCommand& Ecmd)
   printData = (wxPrintData *) memenv->getPtr(env, argv[0]);
   wxPrintData * Result = new EwxPrintData(*printData);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintData"));
 
 }
@@ -44300,7 +44300,7 @@ void wxPrintData_GetCollate(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetCollate();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44315,7 +44315,7 @@ void wxPrintData_GetBin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetBin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44330,7 +44330,7 @@ void wxPrintData_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44345,7 +44345,7 @@ void wxPrintData_GetDuplex(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDuplex();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44360,7 +44360,7 @@ void wxPrintData_GetNoCopies(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNoCopies();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44375,7 +44375,7 @@ void wxPrintData_GetOrientation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOrientation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44390,7 +44390,7 @@ void wxPrintData_GetPaperId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPaperId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44405,7 +44405,7 @@ void wxPrintData_GetPrinterName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetPrinterName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -44420,7 +44420,7 @@ void wxPrintData_GetQuality(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintQuality Result = This->GetQuality();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44435,7 +44435,7 @@ void wxPrintData_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44555,7 +44555,7 @@ void wxPrintData_SetPrinterName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintData *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2460,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2460,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetPrinterName(name);
@@ -44603,7 +44603,7 @@ void wxPrintPreview_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPrintPreview * Result = new EwxPrintPreview(printout,printoutForPrinting,data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintPreview"));
 
 }
@@ -44622,7 +44622,7 @@ void wxPrintPreview_new_3(WxeApp *app, wxeCommand& Ecmd)
   data = (wxPrintData *) memenv->getPtr(env, argv[2]);
   wxPrintPreview * Result = new EwxPrintPreview(printout,printoutForPrinting,data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintPreview"));
 
 }
@@ -44637,7 +44637,7 @@ void wxPrintPreview_GetCanvas(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPreviewCanvas * Result = (wxPreviewCanvas*)This->GetCanvas();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPreviewCanvas"));
 
 }
@@ -44652,7 +44652,7 @@ void wxPrintPreview_GetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCurrentPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44667,7 +44667,7 @@ void wxPrintPreview_GetFrame(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFrame * Result = (wxFrame*)This->GetFrame();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFrame"));
 
 }
@@ -44682,7 +44682,7 @@ void wxPrintPreview_GetMaxPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMaxPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44697,7 +44697,7 @@ void wxPrintPreview_GetMinPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMinPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -44712,7 +44712,7 @@ void wxPrintPreview_GetPrintout(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintout * Result = (wxPrintout*)This->GetPrintout();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintout"));
 
 }
@@ -44727,7 +44727,7 @@ void wxPrintPreview_GetPrintoutForPrinting(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintout * Result = (wxPrintout*)This->GetPrintoutForPrinting();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintout"));
 
 }
@@ -44742,7 +44742,7 @@ void wxPrintPreview_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintPreview *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44761,7 +44761,7 @@ void wxPrintPreview_PaintPage(WxeApp *app, wxeCommand& Ecmd)
   dc = (wxDC *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->PaintPage(canvas,*dc);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44778,7 +44778,7 @@ void wxPrintPreview_Print(WxeApp *app, wxeCommand& Ecmd)
   interactive = enif_is_identical(argv[1], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Print(interactive);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44795,7 +44795,7 @@ void wxPrintPreview_RenderPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pageNum)) Badarg(2478,"pageNum"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->RenderPage(pageNum);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44827,7 +44827,7 @@ void wxPrintPreview_SetCurrentPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pageNum)) Badarg(2480,"pageNum"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetCurrentPage(pageNum);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -44901,7 +44901,7 @@ void wxPreviewFrame_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2484,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "title"))) {
   ErlNifBinary title_bin;
-  if(enif_inspect_binary(env, tpl[1], &title_bin)) Badarg(2484,"title");
+  if(!enif_inspect_binary(env, tpl[1], &title_bin)) Badarg(2484,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
@@ -44927,7 +44927,7 @@ void wxPreviewFrame_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPreviewFrame * Result = new EwxPreviewFrame(preview,parent,title,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPreviewFrame"));
 
 }
@@ -45033,7 +45033,7 @@ void wxPreviewControlBar_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPreviewControlBar * Result = new EwxPreviewControlBar(preview,buttons,parent,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPreviewControlBar"));
 
 }
@@ -45061,7 +45061,7 @@ void wxPreviewControlBar_GetPrintPreview(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPreviewControlBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintPreview * Result = (wxPrintPreview*)This->GetPrintPreview();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintPreview"));
 
 }
@@ -45076,7 +45076,7 @@ void wxPreviewControlBar_GetZoomControl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPreviewControlBar *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetZoomControl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -45117,7 +45117,7 @@ void wxPrinter_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPrinter * Result = new EwxPrinter(data);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrinter"));
 
 }
@@ -45136,7 +45136,7 @@ void wxPrinter_CreateAbortWindow(WxeApp *app, wxeCommand& Ecmd)
   printout = (wxPrintout *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->CreateAbortWindow(parent,printout);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -45151,7 +45151,7 @@ void wxPrinter_GetAbort(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrinter *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetAbort();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45161,7 +45161,7 @@ void wxPrinter_GetLastError(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxPrinter::GetLastError();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -45176,7 +45176,7 @@ void wxPrinter_GetPrintDialogData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrinter *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintDialogData * Result = &This->GetPrintDialogData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintDialogData"));
 
 }
@@ -45208,7 +45208,7 @@ void wxPrinter_Print(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Print(parent,printout,prompt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45225,7 +45225,7 @@ void wxPrinter_PrintDialog(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxDC * Result = (wxDC*)This->PrintDialog(parent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDC"));
 
 }
@@ -45244,7 +45244,7 @@ void wxPrinter_ReportError(WxeApp *app, wxeCommand& Ecmd)
   printout = (wxPrintout *) memenv->getPtr(env, argv[2]);
   ErlNifBinary message_bin;
   wxString message;
-  if(enif_inspect_binary(env, argv[3], &message_bin)) Badarg(2504,"message");
+  if(!enif_inspect_binary(env, argv[3], &message_bin)) Badarg(2504,"message");
   message = wxString(message_bin.data, wxConvUTF8, message_bin.size);
   if(!This) throw wxe_badarg("This");
   This->ReportError(parent,printout,message);
@@ -45263,7 +45263,7 @@ void wxPrinter_Setup(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Setup(parent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45288,13 +45288,13 @@ void wxXmlResource_new_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &flags)) Badarg(2507,"flags"); // int
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "domain"))) {
   ErlNifBinary domain_bin;
-  if(enif_inspect_binary(env, tpl[1], &domain_bin)) Badarg(2507,"domain");
+  if(!enif_inspect_binary(env, tpl[1], &domain_bin)) Badarg(2507,"domain");
   domain = wxString(domain_bin.data, wxConvUTF8, domain_bin.size);
     } else        Badarg(2507,"Options");
   };
   wxXmlResource * Result = new EwxXmlResource(flags,domain);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxXmlResource"));
 
 }
@@ -45309,7 +45309,7 @@ void wxXmlResource_new_2(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary filemask_bin;
   wxString filemask;
-  if(enif_inspect_binary(env, argv[0], &filemask_bin)) Badarg(2508,"filemask");
+  if(!enif_inspect_binary(env, argv[0], &filemask_bin)) Badarg(2508,"filemask");
   filemask = wxString(filemask_bin.data, wxConvUTF8, filemask_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -45323,13 +45323,13 @@ void wxXmlResource_new_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &flags)) Badarg(2508,"flags"); // int
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "domain"))) {
   ErlNifBinary domain_bin;
-  if(enif_inspect_binary(env, tpl[1], &domain_bin)) Badarg(2508,"domain");
+  if(!enif_inspect_binary(env, tpl[1], &domain_bin)) Badarg(2508,"domain");
   domain = wxString(domain_bin.data, wxConvUTF8, domain_bin.size);
     } else        Badarg(2508,"Options");
   };
   wxXmlResource * Result = new EwxXmlResource(filemask,flags,domain);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxXmlResource"));
 
 }
@@ -45345,7 +45345,7 @@ void wxXmlResource_AttachUnknownControl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2510,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2510,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   wxWindow *control;
   control = (wxWindow *) memenv->getPtr(env, argv[2]);
@@ -45363,7 +45363,7 @@ void wxXmlResource_AttachUnknownControl(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AttachUnknownControl(name,control,parent);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45399,7 +45399,7 @@ void wxXmlResource_CompareVersion(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[4], &revision)) Badarg(2512,"revision"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->CompareVersion(major,minor,release,revision);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -45409,7 +45409,7 @@ void wxXmlResource_Get(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxXmlResource * Result = (wxXmlResource*)wxXmlResource::Get();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxXmlResource"));
 
 }
@@ -45424,7 +45424,7 @@ void wxXmlResource_GetFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -45439,7 +45439,7 @@ void wxXmlResource_GetVersion(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetVersion();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -45480,7 +45480,7 @@ void wxXmlResource_GetXRCID(WxeApp *app, wxeCommand& Ecmd)
   };
   int Result = wxXmlResource::GetXRCID(str_id,value_if_not_found);
   enif_free(str_id);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -45508,11 +45508,11 @@ void wxXmlResource_Load(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filemask_bin;
   wxString filemask;
-  if(enif_inspect_binary(env, argv[1], &filemask_bin)) Badarg(2518,"filemask");
+  if(!enif_inspect_binary(env, argv[1], &filemask_bin)) Badarg(2518,"filemask");
   filemask = wxString(filemask_bin.data, wxConvUTF8, filemask_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Load(filemask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45527,11 +45527,11 @@ void wxXmlResource_LoadBitmap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2519,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2519,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->LoadBitmap(name)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -45548,11 +45548,11 @@ void wxXmlResource_LoadDialog_2(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2520,"name");
+  if(!enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2520,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxDialog * Result = (wxDialog*)This->LoadDialog(parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDialog"));
 
 }
@@ -45571,11 +45571,11 @@ void wxXmlResource_LoadDialog_3(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2521,"name");
+  if(!enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2521,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadDialog(dlg,parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45592,11 +45592,11 @@ void wxXmlResource_LoadFrame_2(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2522,"name");
+  if(!enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2522,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxFrame * Result = (wxFrame*)This->LoadFrame(parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFrame"));
 
 }
@@ -45615,11 +45615,11 @@ void wxXmlResource_LoadFrame_3(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2523,"name");
+  if(!enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2523,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFrame(frame,parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45634,11 +45634,11 @@ void wxXmlResource_LoadIcon(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2524,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2524,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxIcon * Result = new EwxIcon(This->LoadIcon(name)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -45653,11 +45653,11 @@ void wxXmlResource_LoadMenu(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2525,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2525,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->LoadMenu(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -45674,11 +45674,11 @@ void wxXmlResource_LoadMenuBar_2(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2526,"name");
+  if(!enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2526,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxMenuBar * Result = (wxMenuBar*)This->LoadMenuBar(parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuBar"));
 
 }
@@ -45693,11 +45693,11 @@ void wxXmlResource_LoadMenuBar_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2527,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2527,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxMenuBar * Result = (wxMenuBar*)This->LoadMenuBar(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenuBar"));
 
 }
@@ -45714,11 +45714,11 @@ void wxXmlResource_LoadPanel_2(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2528,"name");
+  if(!enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2528,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxPanel * Result = (wxPanel*)This->LoadPanel(parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPanel"));
 
 }
@@ -45737,11 +45737,11 @@ void wxXmlResource_LoadPanel_3(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2529,"name");
+  if(!enif_inspect_binary(env, argv[3], &name_bin)) Badarg(2529,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadPanel(panel,parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45758,11 +45758,11 @@ void wxXmlResource_LoadToolBar(WxeApp *app, wxeCommand& Ecmd)
   parent = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2530,"name");
+  if(!enif_inspect_binary(env, argv[2], &name_bin)) Badarg(2530,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxToolBar * Result = (wxToolBar*)This->LoadToolBar(parent,name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxToolBar"));
 
 }
@@ -45776,7 +45776,7 @@ void wxXmlResource_Set(WxeApp *app, wxeCommand& Ecmd)
   wxXmlResource *res;
   res = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   wxXmlResource * Result = (wxXmlResource*)wxXmlResource::Set(res);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxXmlResource"));
 
 }
@@ -45806,11 +45806,11 @@ void wxXmlResource_Unload(WxeApp *app, wxeCommand& Ecmd)
   This = (wxXmlResource *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(2533,"filename");
+  if(!enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(2533,"filename");
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Unload(filename);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45835,7 +45835,7 @@ void wxHtmlEasyPrinting_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2535,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2535,"name");
+  if(!enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2535,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "parentWindow"))) {
   parentWindow = (wxWindow *) memenv->getPtr(env, tpl[1]);
@@ -45843,7 +45843,7 @@ void wxHtmlEasyPrinting_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxHtmlEasyPrinting * Result = new EwxHtmlEasyPrinting(name,parentWindow);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxHtmlEasyPrinting"));
 
 }
@@ -45858,7 +45858,7 @@ void wxHtmlEasyPrinting_GetPrintData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPrintData * Result = (wxPrintData*)This->GetPrintData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPrintData"));
 
 }
@@ -45873,7 +45873,7 @@ void wxHtmlEasyPrinting_GetPageSetupData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPageSetupDialogData * Result = (wxPageSetupDialogData*)This->GetPageSetupData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPageSetupDialogData"));
 
 }
@@ -45888,11 +45888,11 @@ void wxHtmlEasyPrinting_PreviewFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmlfile_bin;
   wxString htmlfile;
-  if(enif_inspect_binary(env, argv[1], &htmlfile_bin)) Badarg(2539,"htmlfile");
+  if(!enif_inspect_binary(env, argv[1], &htmlfile_bin)) Badarg(2539,"htmlfile");
   htmlfile = wxString(htmlfile_bin.data, wxConvUTF8, htmlfile_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->PreviewFile(htmlfile);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45908,7 +45908,7 @@ void wxHtmlEasyPrinting_PreviewText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmltext_bin;
   wxString htmltext;
-  if(enif_inspect_binary(env, argv[1], &htmltext_bin)) Badarg(2540,"htmltext");
+  if(!enif_inspect_binary(env, argv[1], &htmltext_bin)) Badarg(2540,"htmltext");
   htmltext = wxString(htmltext_bin.data, wxConvUTF8, htmltext_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -45920,13 +45920,13 @@ void wxHtmlEasyPrinting_PreviewText(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2540,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "basepath"))) {
   ErlNifBinary basepath_bin;
-  if(enif_inspect_binary(env, tpl[1], &basepath_bin)) Badarg(2540,"basepath");
+  if(!enif_inspect_binary(env, tpl[1], &basepath_bin)) Badarg(2540,"basepath");
   basepath = wxString(basepath_bin.data, wxConvUTF8, basepath_bin.size);
     } else        Badarg(2540,"Options");
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->PreviewText(htmltext,basepath);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45941,11 +45941,11 @@ void wxHtmlEasyPrinting_PrintFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmlfile_bin;
   wxString htmlfile;
-  if(enif_inspect_binary(env, argv[1], &htmlfile_bin)) Badarg(2541,"htmlfile");
+  if(!enif_inspect_binary(env, argv[1], &htmlfile_bin)) Badarg(2541,"htmlfile");
   htmlfile = wxString(htmlfile_bin.data, wxConvUTF8, htmlfile_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->PrintFile(htmlfile);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -45961,7 +45961,7 @@ void wxHtmlEasyPrinting_PrintText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary htmltext_bin;
   wxString htmltext;
-  if(enif_inspect_binary(env, argv[1], &htmltext_bin)) Badarg(2542,"htmltext");
+  if(!enif_inspect_binary(env, argv[1], &htmltext_bin)) Badarg(2542,"htmltext");
   htmltext = wxString(htmltext_bin.data, wxConvUTF8, htmltext_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -45973,13 +45973,13 @@ void wxHtmlEasyPrinting_PrintText(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2542,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "basepath"))) {
   ErlNifBinary basepath_bin;
-  if(enif_inspect_binary(env, tpl[1], &basepath_bin)) Badarg(2542,"basepath");
+  if(!enif_inspect_binary(env, tpl[1], &basepath_bin)) Badarg(2542,"basepath");
   basepath = wxString(basepath_bin.data, wxConvUTF8, basepath_bin.size);
     } else        Badarg(2542,"Options");
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->PrintText(htmltext,basepath);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46009,11 +46009,11 @@ void wxHtmlEasyPrinting_SetFonts(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary normal_face_bin;
   wxString normal_face;
-  if(enif_inspect_binary(env, argv[1], &normal_face_bin)) Badarg(2544,"normal_face");
+  if(!enif_inspect_binary(env, argv[1], &normal_face_bin)) Badarg(2544,"normal_face");
   normal_face = wxString(normal_face_bin.data, wxConvUTF8, normal_face_bin.size);
   ErlNifBinary fixed_face_bin;
   wxString fixed_face;
-  if(enif_inspect_binary(env, argv[2], &fixed_face_bin)) Badarg(2544,"fixed_face");
+  if(!enif_inspect_binary(env, argv[2], &fixed_face_bin)) Badarg(2544,"fixed_face");
   fixed_face = wxString(fixed_face_bin.data, wxConvUTF8, fixed_face_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -46056,7 +46056,7 @@ void wxHtmlEasyPrinting_SetHeader(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary header_bin;
   wxString header;
-  if(enif_inspect_binary(env, argv[1], &header_bin)) Badarg(2545,"header");
+  if(!enif_inspect_binary(env, argv[1], &header_bin)) Badarg(2545,"header");
   header = wxString(header_bin.data, wxConvUTF8, header_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -46086,7 +46086,7 @@ void wxHtmlEasyPrinting_SetFooter(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlEasyPrinting *) memenv->getPtr(env, argv[0]);
   ErlNifBinary footer_bin;
   wxString footer;
-  if(enif_inspect_binary(env, argv[1], &footer_bin)) Badarg(2546,"footer");
+  if(!enif_inspect_binary(env, argv[1], &footer_bin)) Badarg(2546,"footer");
   footer = wxString(footer_bin.data, wxConvUTF8, footer_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -46153,7 +46153,7 @@ void wxGLCanvas_new_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2548,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2548,"name");
+  if(!enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2548,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "attribList"))) {
   int * attribList_ptr;
@@ -46176,7 +46176,7 @@ void wxGLCanvas_new_2(WxeApp *app, wxeCommand& Ecmd)
   wxGLCanvas * Result = new EwxGLCanvas(parent,id,pos,size,style,name,attribList,*palette);
   app->newPtr((void *) Result, 0, memenv);
   enif_free(attribList);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGLCanvas"));
 
 }
@@ -46230,7 +46230,7 @@ void wxGLCanvas_new_3_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2549,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2549,"name");
+  if(!enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2549,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "attribList"))) {
   int * attribList_ptr;
@@ -46253,7 +46253,7 @@ void wxGLCanvas_new_3_1(WxeApp *app, wxeCommand& Ecmd)
   wxGLCanvas * Result = new EwxGLCanvas(parent,shared,id,pos,size,style,name,attribList,*palette);
   app->newPtr((void *) Result, 0, memenv);
   enif_free(attribList);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGLCanvas"));
 
 }
@@ -46308,7 +46308,7 @@ void wxGLCanvas_new_3_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, tpl[1], &style)) Badarg(2550,"style");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "name"))) {
   ErlNifBinary name_bin;
-  if(enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2550,"name");
+  if(!enif_inspect_binary(env, tpl[1], &name_bin)) Badarg(2550,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "attribList"))) {
   int * attribList_ptr;
@@ -46331,7 +46331,7 @@ void wxGLCanvas_new_3_0(WxeApp *app, wxeCommand& Ecmd)
   wxGLCanvas * Result = new EwxGLCanvas(parent,shared,id,pos,size,style,name,attribList,*palette);
   app->newPtr((void *) Result, 0, memenv);
   enif_free(attribList);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGLCanvas"));
 
 }
@@ -46346,7 +46346,7 @@ void wxGLCanvas_GetContext(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGLCanvas *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGLContext * Result = (wxGLContext*)This->GetContext();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGLContext"));
 
 }
@@ -46403,7 +46403,7 @@ void wxAuiManager_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxAuiManager * Result = new EwxAuiManager(managed_wnd,flags);
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiManager"));
 
 }
@@ -46422,7 +46422,7 @@ void wxAuiManager_AddPane_2_1(WxeApp *app, wxeCommand& Ecmd)
   pane_info = (wxAuiPaneInfo *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPane(window,*pane_info);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46449,7 +46449,7 @@ void wxAuiManager_AddPane_3(WxeApp *app, wxeCommand& Ecmd)
   wxPoint drop_pos = wxPoint(drop_posX,drop_posY);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPane(window,*pane_info,drop_pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46478,13 +46478,13 @@ void wxAuiManager_AddPane_2_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, tpl[1], &direction)) Badarg(2560,"direction"); // int
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "caption"))) {
   ErlNifBinary caption_bin;
-  if(enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2560,"caption");
+  if(!enif_inspect_binary(env, tpl[1], &caption_bin)) Badarg(2560,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
     } else        Badarg(2560,"Options");
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPane(window,direction,caption);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46501,7 +46501,7 @@ void wxAuiManager_DetachPane(WxeApp *app, wxeCommand& Ecmd)
   window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DetachPane(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46516,7 +46516,7 @@ void wxAuiManager_GetAllPanes(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfoArray Result = This->GetAllPanes();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_array_objs(Result, app, "wxAuiPaneInfo"));
 
 }
@@ -46531,7 +46531,7 @@ void wxAuiManager_GetArtProvider(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiDockArt * Result = (wxAuiDockArt*)This->GetArtProvider();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiDockArt"));
 
 }
@@ -46548,7 +46548,7 @@ void wxAuiManager_GetDockSizeConstraint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetDockSizeConstraint(&width_pct,&height_pct);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_double(width_pct),
   rt.make_double(height_pct));
@@ -46566,7 +46566,7 @@ void wxAuiManager_GetFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -46581,7 +46581,7 @@ void wxAuiManager_GetManagedWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetManagedWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -46595,7 +46595,7 @@ void wxAuiManager_GetManager(WxeApp *app, wxeCommand& Ecmd)
   wxWindow *window;
   window = (wxWindow *) memenv->getPtr(env, argv[0]);
   wxAuiManager * Result = (wxAuiManager*)wxAuiManager::GetManager(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiManager"));
 
 }
@@ -46612,7 +46612,7 @@ void wxAuiManager_GetPane_1_1(WxeApp *app, wxeCommand& Ecmd)
   window = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->GetPane(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46627,11 +46627,11 @@ void wxAuiManager_GetPane_1_0(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2569,"name");
+  if(!enif_inspect_binary(env, argv[1], &name_bin)) Badarg(2569,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->GetPane(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46676,7 +46676,7 @@ void wxAuiManager_InsertPane(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPane(window,*insert_location,insert_level);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46691,7 +46691,7 @@ void wxAuiManager_LoadPaneInfo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   ErlNifBinary pane_part_bin;
   wxString pane_part;
-  if(enif_inspect_binary(env, argv[1], &pane_part_bin)) Badarg(2572,"pane_part");
+  if(!enif_inspect_binary(env, argv[1], &pane_part_bin)) Badarg(2572,"pane_part");
   pane_part = wxString(pane_part_bin.data, wxConvUTF8, pane_part_bin.size);
   wxAuiPaneInfo *pane;
   pane = (wxAuiPaneInfo *) memenv->getPtr(env, argv[2]);
@@ -46711,7 +46711,7 @@ void wxAuiManager_LoadPerspective(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   ErlNifBinary perspective_bin;
   wxString perspective;
-  if(enif_inspect_binary(env, argv[1], &perspective_bin)) Badarg(2573,"perspective");
+  if(!enif_inspect_binary(env, argv[1], &perspective_bin)) Badarg(2573,"perspective");
   perspective = wxString(perspective_bin.data, wxConvUTF8, perspective_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -46727,7 +46727,7 @@ void wxAuiManager_LoadPerspective(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadPerspective(perspective,update);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -46744,7 +46744,7 @@ void wxAuiManager_SavePaneInfo(WxeApp *app, wxeCommand& Ecmd)
   pane = (wxAuiPaneInfo *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->SavePaneInfo(*pane);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -46759,7 +46759,7 @@ void wxAuiManager_SavePerspective(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManager *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->SavePerspective();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -46885,7 +46885,7 @@ void wxAuiPaneInfo_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxAuiPaneInfo * Result = new wxAuiPaneInfo();
   app->newPtr((void *) Result, 155, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46900,7 +46900,7 @@ void wxAuiPaneInfo_new_1(WxeApp *app, wxeCommand& Ecmd)
   c = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   wxAuiPaneInfo * Result = new wxAuiPaneInfo(*c);
   app->newPtr((void *) Result, 155, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46935,7 +46935,7 @@ void wxAuiPaneInfo_BestSize_1(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->BestSize(size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46954,7 +46954,7 @@ void wxAuiPaneInfo_BestSize_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(2587,"y"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->BestSize(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46969,7 +46969,7 @@ void wxAuiPaneInfo_Bottom(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Bottom();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -46997,7 +46997,7 @@ void wxAuiPaneInfo_BottomDockable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->BottomDockable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47012,11 +47012,11 @@ void wxAuiPaneInfo_Caption(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   ErlNifBinary c_bin;
   wxString c;
-  if(enif_inspect_binary(env, argv[1], &c_bin)) Badarg(2590,"c");
+  if(!enif_inspect_binary(env, argv[1], &c_bin)) Badarg(2590,"c");
   c = wxString(c_bin.data, wxConvUTF8, c_bin.size);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Caption(c);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47044,7 +47044,7 @@ void wxAuiPaneInfo_CaptionVisible(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->CaptionVisible(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47059,7 +47059,7 @@ void wxAuiPaneInfo_Centre(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Centre();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47074,7 +47074,7 @@ void wxAuiPaneInfo_CentrePane(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->CentrePane();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47102,7 +47102,7 @@ void wxAuiPaneInfo_CloseButton(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->CloseButton(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47117,7 +47117,7 @@ void wxAuiPaneInfo_DefaultPane(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->DefaultPane();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47145,7 +47145,7 @@ void wxAuiPaneInfo_DestroyOnClose(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->DestroyOnClose(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47162,7 +47162,7 @@ void wxAuiPaneInfo_Direction(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &direction)) Badarg(2597,"direction"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Direction(direction);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47177,7 +47177,7 @@ void wxAuiPaneInfo_Dock(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Dock();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47205,7 +47205,7 @@ void wxAuiPaneInfo_Dockable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Dockable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47220,7 +47220,7 @@ void wxAuiPaneInfo_Fixed(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Fixed();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47235,7 +47235,7 @@ void wxAuiPaneInfo_Float(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Float();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47263,7 +47263,7 @@ void wxAuiPaneInfo_Floatable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Floatable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47286,7 +47286,7 @@ void wxAuiPaneInfo_FloatingPosition_1(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pos = wxPoint(posX,posY);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->FloatingPosition(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47305,7 +47305,7 @@ void wxAuiPaneInfo_FloatingPosition_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(2604,"y"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->FloatingPosition(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47328,7 +47328,7 @@ void wxAuiPaneInfo_FloatingSize_1(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->FloatingSize(size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47347,7 +47347,7 @@ void wxAuiPaneInfo_FloatingSize_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(2606,"y"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->FloatingSize(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47375,7 +47375,7 @@ void wxAuiPaneInfo_Gripper(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Gripper(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47403,7 +47403,7 @@ void wxAuiPaneInfo_GripperTop(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->GripperTop(attop);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47418,7 +47418,7 @@ void wxAuiPaneInfo_HasBorder(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasBorder();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47433,7 +47433,7 @@ void wxAuiPaneInfo_HasCaption(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasCaption();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47448,7 +47448,7 @@ void wxAuiPaneInfo_HasCloseButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasCloseButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47465,7 +47465,7 @@ void wxAuiPaneInfo_HasFlag(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_uint(env, argv[1], &flag)) Badarg(2612,"flag");
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasFlag(flag);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47480,7 +47480,7 @@ void wxAuiPaneInfo_HasGripper(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasGripper();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47495,7 +47495,7 @@ void wxAuiPaneInfo_HasGripperTop(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasGripperTop();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47510,7 +47510,7 @@ void wxAuiPaneInfo_HasMaximizeButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasMaximizeButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47525,7 +47525,7 @@ void wxAuiPaneInfo_HasMinimizeButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasMinimizeButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47540,7 +47540,7 @@ void wxAuiPaneInfo_HasPinButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasPinButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47555,7 +47555,7 @@ void wxAuiPaneInfo_Hide(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Hide();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47570,7 +47570,7 @@ void wxAuiPaneInfo_IsBottomDockable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsBottomDockable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47585,7 +47585,7 @@ void wxAuiPaneInfo_IsDocked(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsDocked();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47600,7 +47600,7 @@ void wxAuiPaneInfo_IsFixed(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsFixed();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47615,7 +47615,7 @@ void wxAuiPaneInfo_IsFloatable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsFloatable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47630,7 +47630,7 @@ void wxAuiPaneInfo_IsFloating(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsFloating();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47645,7 +47645,7 @@ void wxAuiPaneInfo_IsLeftDockable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsLeftDockable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47660,7 +47660,7 @@ void wxAuiPaneInfo_IsMovable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsMovable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47675,7 +47675,7 @@ void wxAuiPaneInfo_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47690,7 +47690,7 @@ void wxAuiPaneInfo_IsResizable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsResizable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47705,7 +47705,7 @@ void wxAuiPaneInfo_IsRightDockable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsRightDockable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47720,7 +47720,7 @@ void wxAuiPaneInfo_IsShown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsShown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47735,7 +47735,7 @@ void wxAuiPaneInfo_IsToolbar(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsToolbar();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47750,7 +47750,7 @@ void wxAuiPaneInfo_IsTopDockable(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsTopDockable();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -47767,7 +47767,7 @@ void wxAuiPaneInfo_Layer(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &layer)) Badarg(2632,"layer"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Layer(layer);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47782,7 +47782,7 @@ void wxAuiPaneInfo_Left(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Left();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47810,7 +47810,7 @@ void wxAuiPaneInfo_LeftDockable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->LeftDockable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47833,7 +47833,7 @@ void wxAuiPaneInfo_MaxSize_1(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->MaxSize(size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47852,7 +47852,7 @@ void wxAuiPaneInfo_MaxSize_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(2636,"y"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->MaxSize(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47880,7 +47880,7 @@ void wxAuiPaneInfo_MaximizeButton(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->MaximizeButton(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47903,7 +47903,7 @@ void wxAuiPaneInfo_MinSize_1(WxeApp *app, wxeCommand& Ecmd)
   wxSize size = wxSize(sizeW,sizeH);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->MinSize(size);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47922,7 +47922,7 @@ void wxAuiPaneInfo_MinSize_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(2639,"y"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->MinSize(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47950,7 +47950,7 @@ void wxAuiPaneInfo_MinimizeButton(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->MinimizeButton(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47978,7 +47978,7 @@ void wxAuiPaneInfo_Movable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Movable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -47993,11 +47993,11 @@ void wxAuiPaneInfo_Name(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   ErlNifBinary n_bin;
   wxString n;
-  if(enif_inspect_binary(env, argv[1], &n_bin)) Badarg(2642,"n");
+  if(!enif_inspect_binary(env, argv[1], &n_bin)) Badarg(2642,"n");
   n = wxString(n_bin.data, wxConvUTF8, n_bin.size);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Name(n);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48025,7 +48025,7 @@ void wxAuiPaneInfo_PaneBorder(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->PaneBorder(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48053,7 +48053,7 @@ void wxAuiPaneInfo_PinButton(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->PinButton(visible);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48070,7 +48070,7 @@ void wxAuiPaneInfo_Position(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(2645,"pos"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Position(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48098,7 +48098,7 @@ void wxAuiPaneInfo_Resizable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Resizable(resizable);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48113,7 +48113,7 @@ void wxAuiPaneInfo_Right(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Right();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48141,7 +48141,7 @@ void wxAuiPaneInfo_RightDockable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->RightDockable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48158,7 +48158,7 @@ void wxAuiPaneInfo_Row(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &row)) Badarg(2649,"row"); // int
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Row(row);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48192,7 +48192,7 @@ void wxAuiPaneInfo_SetFlag(WxeApp *app, wxeCommand& Ecmd)
   option_state = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->SetFlag(flag,option_state);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48220,7 +48220,7 @@ void wxAuiPaneInfo_Show(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Show(show);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48235,7 +48235,7 @@ void wxAuiPaneInfo_ToolbarPane(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->ToolbarPane();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48250,7 +48250,7 @@ void wxAuiPaneInfo_Top(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiPaneInfo *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Top();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48278,7 +48278,7 @@ void wxAuiPaneInfo_TopDockable(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->TopDockable(b);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48295,7 +48295,7 @@ void wxAuiPaneInfo_Window(WxeApp *app, wxeCommand& Ecmd)
   w = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = &This->Window(w);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -48315,7 +48315,7 @@ void wxAuiPaneInfo_GetWindow(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  wxWindow* Result = This->window;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -48335,7 +48335,7 @@ void wxAuiPaneInfo_GetFrame(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  wxFrame* Result = This->frame;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFrame"));
 
 }
@@ -48355,7 +48355,7 @@ void wxAuiPaneInfo_GetDirection(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  int Result = This->dock_direction;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48375,7 +48375,7 @@ void wxAuiPaneInfo_GetLayer(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  int Result = This->dock_layer;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48395,7 +48395,7 @@ void wxAuiPaneInfo_GetRow(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  int Result = This->dock_row;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48415,7 +48415,7 @@ void wxAuiPaneInfo_GetPosition(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  int Result = This->dock_pos;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48435,7 +48435,7 @@ void wxAuiPaneInfo_GetFloatingPosition(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  wxPoint Result = This->floating_pos;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -48455,7 +48455,7 @@ void wxAuiPaneInfo_GetFloatingSize(WxeApp *app, wxeCommand& Ecmd)
  #endif
  if(!This) throw wxe_badarg(0);
  wxSize Result = This->floating_size;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -48468,7 +48468,7 @@ void wxAuiNotebook_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxAuiNotebook * Result = new EwxAuiNotebook();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiNotebook"));
 
 }
@@ -48519,7 +48519,7 @@ void wxAuiNotebook_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxAuiNotebook * Result = new EwxAuiNotebook(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiNotebook"));
 
 }
@@ -48538,7 +48538,7 @@ void wxAuiNotebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[1]);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2667,"caption");
+  if(!enif_inspect_binary(env, argv[2], &caption_bin)) Badarg(2667,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -48556,7 +48556,7 @@ void wxAuiNotebook_AddPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddPage(page,caption,select,*bitmap);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48609,7 +48609,7 @@ void wxAuiNotebook_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48626,7 +48626,7 @@ void wxAuiNotebook_DeletePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &page)) Badarg(2669,"page"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->DeletePage(page);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48641,7 +48641,7 @@ void wxAuiNotebook_GetArtProvider(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiTabArt * Result = (wxAuiTabArt*)This->GetArtProvider();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiTabArt"));
 
 }
@@ -48658,7 +48658,7 @@ void wxAuiNotebook_GetPage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &page_idx)) Badarg(2671,"page_idx"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetPage(page_idx);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -48675,7 +48675,7 @@ void wxAuiNotebook_GetPageBitmap(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &page_idx)) Badarg(2672,"page_idx"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->GetPageBitmap(page_idx)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -48690,7 +48690,7 @@ void wxAuiNotebook_GetPageCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetPageCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48707,7 +48707,7 @@ void wxAuiNotebook_GetPageIndex(WxeApp *app, wxeCommand& Ecmd)
   page_wnd = (wxWindow *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPageIndex(page_wnd);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48724,7 +48724,7 @@ void wxAuiNotebook_GetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &page_idx)) Badarg(2675,"page_idx"); // "size_t"
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPageText(page_idx);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -48739,7 +48739,7 @@ void wxAuiNotebook_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiNotebook *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -48760,7 +48760,7 @@ void wxAuiNotebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   page = (wxWindow *) memenv->getPtr(env, argv[2]);
   ErlNifBinary caption_bin;
   wxString caption;
-  if(enif_inspect_binary(env, argv[3], &caption_bin)) Badarg(2677,"caption");
+  if(!enif_inspect_binary(env, argv[3], &caption_bin)) Badarg(2677,"caption");
   caption = wxString(caption_bin.data, wxConvUTF8, caption_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -48778,7 +48778,7 @@ void wxAuiNotebook_InsertPage(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->InsertPage(page_idx,page,caption,select,*bitmap);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48795,7 +48795,7 @@ void wxAuiNotebook_RemovePage(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &page)) Badarg(2678,"page"); // "size_t"
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemovePage(page);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48827,7 +48827,7 @@ void wxAuiNotebook_SetFont(WxeApp *app, wxeCommand& Ecmd)
   font = (wxFont *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetFont(*font);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48846,7 +48846,7 @@ void wxAuiNotebook_SetPageBitmap(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageBitmap(page,*bitmap);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48863,11 +48863,11 @@ void wxAuiNotebook_SetPageText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &page)) Badarg(2682,"page"); // "size_t"
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2682,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2682,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPageText(page,text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -48884,7 +48884,7 @@ void wxAuiNotebook_SetSelection(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &new_page)) Badarg(2683,"new_page"); // "size_t"
   if(!This) throw wxe_badarg("This");
   size_t Result = This->SetSelection(new_page);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49055,7 +49055,7 @@ void wxAuiDockArt_GetColour(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2693,"id"); // int
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetColour(id);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -49072,7 +49072,7 @@ void wxAuiDockArt_GetFont(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2694,"id"); // int
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetFont(id)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -49089,7 +49089,7 @@ void wxAuiDockArt_GetMetric(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2695,"id"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMetric(id);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49163,7 +49163,7 @@ void wxAuiSimpleTabArt_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxAuiSimpleTabArt * Result = new wxAuiSimpleTabArt();
   app->newPtr((void *) Result, 159, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiSimpleTabArt"));
 
 }
@@ -49187,7 +49187,7 @@ void wxMDIParentFrame_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMDIParentFrame * Result = new EwxMDIParentFrame();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIParentFrame"));
 
 }
@@ -49207,7 +49207,7 @@ void wxMDIParentFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2702,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2702,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2702,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -49241,7 +49241,7 @@ void wxMDIParentFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMDIParentFrame * Result = new EwxMDIParentFrame(parent,id,title,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIParentFrame"));
 
 }
@@ -49315,7 +49315,7 @@ void wxMDIParentFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2708,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2708,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2708,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -49349,7 +49349,7 @@ void wxMDIParentFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,title,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49364,7 +49364,7 @@ void wxMDIParentFrame_GetActiveChild(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMDIParentFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMDIChildFrame * Result = (wxMDIChildFrame*)This->GetActiveChild();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIChildFrame"));
 
 }
@@ -49379,7 +49379,7 @@ void wxMDIParentFrame_GetClientWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMDIParentFrame *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMDIClientWindow * Result = (wxMDIClientWindow*)This->GetClientWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIClientWindow"));
 
 }
@@ -49416,7 +49416,7 @@ void wxMDIChildFrame_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMDIChildFrame * Result = new EwxMDIChildFrame();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIChildFrame"));
 
 }
@@ -49436,7 +49436,7 @@ void wxMDIChildFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &id)) Badarg(2713,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2713,"title");
+  if(!enif_inspect_binary(env, argv[2], &title_bin)) Badarg(2713,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -49470,7 +49470,7 @@ void wxMDIChildFrame_new_4(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMDIChildFrame * Result = new EwxMDIChildFrame(parent,id,title,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIChildFrame"));
 
 }
@@ -49505,7 +49505,7 @@ void wxMDIChildFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &id)) Badarg(2716,"id"); // "wxWindowID"
   ErlNifBinary title_bin;
   wxString title;
-  if(enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2716,"title");
+  if(!enif_inspect_binary(env, argv[3], &title_bin)) Badarg(2716,"title");
   title = wxString(title_bin.data, wxConvUTF8, title_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -49539,7 +49539,7 @@ void wxMDIChildFrame_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,title,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49589,7 +49589,7 @@ void wxMDIClientWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMDIClientWindow * Result = new EwxMDIClientWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIClientWindow"));
 
 }
@@ -49618,7 +49618,7 @@ void wxMDIClientWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxMDIClientWindow * Result = new EwxMDIClientWindow(parent,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMDIClientWindow"));
 
 }
@@ -49649,7 +49649,7 @@ void wxMDIClientWindow_CreateClient(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->CreateClient(parent,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49660,7 +49660,7 @@ void wxLayoutAlgorithm_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxLayoutAlgorithm * Result = new EwxLayoutAlgorithm();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxLayoutAlgorithm"));
 
 }
@@ -49690,7 +49690,7 @@ void wxLayoutAlgorithm_LayoutFrame(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LayoutFrame(frame,mainWindow);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49731,7 +49731,7 @@ void wxLayoutAlgorithm_LayoutMDIFrame(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LayoutMDIFrame(frame,rect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49761,7 +49761,7 @@ void wxLayoutAlgorithm_LayoutWindow(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->LayoutWindow(frame,mainWindow);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49776,7 +49776,7 @@ void wxEvent_GetId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49791,7 +49791,7 @@ void wxEvent_GetSkipped(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSkipped();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49806,7 +49806,7 @@ void wxEvent_GetTimestamp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetTimestamp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -49821,7 +49821,7 @@ void wxEvent_IsCommandEvent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsCommandEvent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49851,7 +49851,7 @@ void wxEvent_ShouldPropagate(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ShouldPropagate();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49892,7 +49892,7 @@ void wxEvent_StopPropagation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->StopPropagation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49907,7 +49907,7 @@ void wxCommandEvent_getClientData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxeErlTerm * Result = (wxeErlTerm*)This->GetClientObject();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ext2term(Result));
 
 }
@@ -49922,7 +49922,7 @@ void wxCommandEvent_GetExtraLong(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetExtraLong();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49937,7 +49937,7 @@ void wxCommandEvent_GetInt(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetInt();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49952,7 +49952,7 @@ void wxCommandEvent_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -49967,7 +49967,7 @@ void wxCommandEvent_GetString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetString();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -49982,7 +49982,7 @@ void wxCommandEvent_IsChecked(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsChecked();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -49997,7 +49997,7 @@ void wxCommandEvent_IsSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50027,7 +50027,7 @@ void wxCommandEvent_SetString(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCommandEvent *) memenv->getPtr(env, argv[0]);
   ErlNifBinary s_bin;
   wxString s;
-  if(enif_inspect_binary(env, argv[1], &s_bin)) Badarg(2744,"s");
+  if(!enif_inspect_binary(env, argv[1], &s_bin)) Badarg(2744,"s");
   s = wxString(s_bin.data, wxConvUTF8, s_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetString(s);
@@ -50044,7 +50044,7 @@ void wxScrollEvent_GetOrientation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOrientation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50059,7 +50059,7 @@ void wxScrollEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50074,7 +50074,7 @@ void wxScrollWinEvent_GetOrientation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollWinEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOrientation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50089,7 +50089,7 @@ void wxScrollWinEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxScrollWinEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50104,7 +50104,7 @@ void wxMouseEvent_AltDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AltDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50121,7 +50121,7 @@ void wxMouseEvent_Button(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &but)) Badarg(2750,"but"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->Button(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50149,7 +50149,7 @@ void wxMouseEvent_ButtonDClick(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ButtonDClick(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50177,7 +50177,7 @@ void wxMouseEvent_ButtonDown(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ButtonDown(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50205,7 +50205,7 @@ void wxMouseEvent_ButtonUp(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ButtonUp(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50220,7 +50220,7 @@ void wxMouseEvent_CmdDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CmdDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50235,7 +50235,7 @@ void wxMouseEvent_ControlDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ControlDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50250,7 +50250,7 @@ void wxMouseEvent_Dragging(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Dragging();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50265,7 +50265,7 @@ void wxMouseEvent_Entering(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Entering();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50280,7 +50280,7 @@ void wxMouseEvent_GetButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50295,7 +50295,7 @@ void wxMouseEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -50312,7 +50312,7 @@ void wxMouseEvent_GetLogicalPosition(WxeApp *app, wxeCommand& Ecmd)
   dc = (wxDC *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetLogicalPosition(*dc);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -50327,7 +50327,7 @@ void wxMouseEvent_GetLinesPerAction(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLinesPerAction();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50342,7 +50342,7 @@ void wxMouseEvent_GetWheelRotation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWheelRotation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50357,7 +50357,7 @@ void wxMouseEvent_GetWheelDelta(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWheelDelta();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50372,7 +50372,7 @@ void wxMouseEvent_GetX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50387,7 +50387,7 @@ void wxMouseEvent_GetY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50402,7 +50402,7 @@ void wxMouseEvent_IsButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50417,7 +50417,7 @@ void wxMouseEvent_IsPageScroll(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsPageScroll();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50432,7 +50432,7 @@ void wxMouseEvent_Leaving(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Leaving();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50447,7 +50447,7 @@ void wxMouseEvent_LeftDClick(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LeftDClick();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50462,7 +50462,7 @@ void wxMouseEvent_LeftDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LeftDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50477,7 +50477,7 @@ void wxMouseEvent_LeftIsDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LeftIsDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50492,7 +50492,7 @@ void wxMouseEvent_LeftUp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LeftUp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50507,7 +50507,7 @@ void wxMouseEvent_MetaDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MetaDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50522,7 +50522,7 @@ void wxMouseEvent_MiddleDClick(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MiddleDClick();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50537,7 +50537,7 @@ void wxMouseEvent_MiddleDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MiddleDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50552,7 +50552,7 @@ void wxMouseEvent_MiddleIsDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MiddleIsDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50567,7 +50567,7 @@ void wxMouseEvent_MiddleUp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MiddleUp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50582,7 +50582,7 @@ void wxMouseEvent_Moving(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Moving();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50597,7 +50597,7 @@ void wxMouseEvent_RightDClick(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->RightDClick();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50612,7 +50612,7 @@ void wxMouseEvent_RightDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->RightDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50627,7 +50627,7 @@ void wxMouseEvent_RightIsDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->RightIsDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50642,7 +50642,7 @@ void wxMouseEvent_RightUp(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->RightUp();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50657,7 +50657,7 @@ void wxMouseEvent_ShiftDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ShiftDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50672,7 +50672,7 @@ void wxSetCursorEvent_GetCursor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSetCursorEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxCursor * Result = &This->GetCursor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxCursor"));
 
 }
@@ -50687,7 +50687,7 @@ void wxSetCursorEvent_GetX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSetCursorEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50702,7 +50702,7 @@ void wxSetCursorEvent_GetY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSetCursorEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50717,7 +50717,7 @@ void wxSetCursorEvent_HasCursor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSetCursorEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasCursor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50747,7 +50747,7 @@ void wxKeyEvent_AltDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AltDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50762,7 +50762,7 @@ void wxKeyEvent_CmdDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CmdDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50777,7 +50777,7 @@ void wxKeyEvent_ControlDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ControlDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50792,7 +50792,7 @@ void wxKeyEvent_GetKeyCode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetKeyCode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50807,7 +50807,7 @@ void wxKeyEvent_GetModifiers(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetModifiers();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50822,7 +50822,7 @@ void wxKeyEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -50837,7 +50837,7 @@ void wxKeyEvent_GetRawKeyCode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRawKeyCode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -50852,7 +50852,7 @@ void wxKeyEvent_GetRawKeyFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRawKeyFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -50867,7 +50867,7 @@ void wxKeyEvent_GetUnicodeKey(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxChar Result = This->GetUnicodeKey();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50882,7 +50882,7 @@ void wxKeyEvent_GetX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50897,7 +50897,7 @@ void wxKeyEvent_GetY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxCoord Result = This->GetY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -50912,7 +50912,7 @@ void wxKeyEvent_HasModifiers(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HasModifiers();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50927,7 +50927,7 @@ void wxKeyEvent_MetaDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MetaDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50942,7 +50942,7 @@ void wxKeyEvent_ShiftDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ShiftDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -50957,7 +50957,7 @@ void wxSizeEvent_GetSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSizeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -50972,7 +50972,7 @@ void wxMoveEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMoveEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -50987,7 +50987,7 @@ void wxEraseEvent_GetDC(WxeApp *app, wxeCommand& Ecmd)
   This = (wxEraseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxDC * Result = (wxDC*)This->GetDC();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDC"));
 
 }
@@ -51002,7 +51002,7 @@ void wxFocusEvent_GetWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFocusEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -51017,7 +51017,7 @@ void wxChildFocusEvent_GetWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxChildFocusEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -51032,7 +51032,7 @@ void wxMenuEvent_GetMenu(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxMenu * Result = (wxMenu*)This->GetMenu();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMenu"));
 
 }
@@ -51047,7 +51047,7 @@ void wxMenuEvent_GetMenuId(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMenuId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51062,7 +51062,7 @@ void wxMenuEvent_IsPopup(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMenuEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsPopup();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51077,7 +51077,7 @@ void wxCloseEvent_CanVeto(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCloseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanVeto();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51092,7 +51092,7 @@ void wxCloseEvent_GetLoggingOff(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCloseEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetLoggingOff();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51178,7 +51178,7 @@ void wxShowEvent_GetShow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxShowEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetShow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51193,7 +51193,7 @@ void wxIconizeEvent_Iconized(WxeApp *app, wxeCommand& Ecmd)
   This = (wxIconizeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Iconized();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51221,7 +51221,7 @@ void wxJoystickEvent_ButtonDown(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ButtonDown(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51249,7 +51249,7 @@ void wxJoystickEvent_ButtonIsDown(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ButtonIsDown(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51277,7 +51277,7 @@ void wxJoystickEvent_ButtonUp(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->ButtonUp(but);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51292,7 +51292,7 @@ void wxJoystickEvent_GetButtonChange(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetButtonChange();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51307,7 +51307,7 @@ void wxJoystickEvent_GetButtonState(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetButtonState();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51322,7 +51322,7 @@ void wxJoystickEvent_GetJoystick(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetJoystick();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51337,7 +51337,7 @@ void wxJoystickEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -51352,7 +51352,7 @@ void wxJoystickEvent_GetZPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetZPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51367,7 +51367,7 @@ void wxJoystickEvent_IsButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51382,7 +51382,7 @@ void wxJoystickEvent_IsMove(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsMove();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51397,7 +51397,7 @@ void wxJoystickEvent_IsZMove(WxeApp *app, wxeCommand& Ecmd)
   This = (wxJoystickEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsZMove();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51411,7 +51411,7 @@ void wxUpdateUIEvent_CanUpdate(WxeApp *app, wxeCommand& Ecmd)
   wxWindow *win;
   win = (wxWindow *) memenv->getPtr(env, argv[0]);
   bool Result = wxUpdateUIEvent::CanUpdate(win);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51471,7 +51471,7 @@ void wxUpdateUIEvent_GetChecked(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetChecked();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51486,7 +51486,7 @@ void wxUpdateUIEvent_GetEnabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51501,7 +51501,7 @@ void wxUpdateUIEvent_GetShown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetShown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51516,7 +51516,7 @@ void wxUpdateUIEvent_GetSetChecked(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSetChecked();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51531,7 +51531,7 @@ void wxUpdateUIEvent_GetSetEnabled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSetEnabled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51546,7 +51546,7 @@ void wxUpdateUIEvent_GetSetShown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSetShown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51561,7 +51561,7 @@ void wxUpdateUIEvent_GetSetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51576,7 +51576,7 @@ void wxUpdateUIEvent_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -51586,7 +51586,7 @@ void wxUpdateUIEvent_GetMode(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxUpdateUIEvent::GetMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51596,7 +51596,7 @@ void wxUpdateUIEvent_GetUpdateInterval(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   long Result = wxUpdateUIEvent::GetUpdateInterval();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51631,7 +51631,7 @@ void wxUpdateUIEvent_SetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxUpdateUIEvent *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2850,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2850,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetText(text);
@@ -51660,7 +51660,7 @@ void wxMouseCaptureChangedEvent_GetCapturedWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxMouseCaptureChangedEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCapturedWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -51690,7 +51690,7 @@ void wxPaletteChangedEvent_GetChangedWindow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPaletteChangedEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetChangedWindow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -51720,7 +51720,7 @@ void wxQueryNewPaletteEvent_GetPaletteRealized(WxeApp *app, wxeCommand& Ecmd)
   This = (wxQueryNewPaletteEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetPaletteRealized();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51735,7 +51735,7 @@ void wxNavigationKeyEvent_GetDirection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetDirection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51765,7 +51765,7 @@ void wxNavigationKeyEvent_IsWindowChange(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsWindowChange();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51795,7 +51795,7 @@ void wxNavigationKeyEvent_IsFromTab(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsFromTab();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51825,7 +51825,7 @@ void wxNavigationKeyEvent_GetCurrentFocus(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNavigationKeyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetCurrentFocus();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -51855,7 +51855,7 @@ void wxHelpEvent_GetOrigin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHelpEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOrigin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -51870,7 +51870,7 @@ void wxHelpEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHelpEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxPoint * Result = &This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -51921,7 +51921,7 @@ void wxContextMenuEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxContextMenuEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxPoint * Result = &This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -51957,7 +51957,7 @@ void wxIdleEvent_CanSend(WxeApp *app, wxeCommand& Ecmd)
   wxWindow *win;
   win = (wxWindow *) memenv->getPtr(env, argv[0]);
   bool Result = wxIdleEvent::CanSend(win);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -51968,7 +51968,7 @@ void wxIdleEvent_GetMode(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxIdleEvent::GetMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52009,7 +52009,7 @@ void wxIdleEvent_MoreRequested(WxeApp *app, wxeCommand& Ecmd)
   This = (wxIdleEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MoreRequested();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52036,7 +52036,7 @@ void wxGridEvent_AltDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AltDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52051,7 +52051,7 @@ void wxGridEvent_ControlDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ControlDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52066,7 +52066,7 @@ void wxGridEvent_GetCol(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCol();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52081,7 +52081,7 @@ void wxGridEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52096,7 +52096,7 @@ void wxGridEvent_GetRow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetRow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52111,7 +52111,7 @@ void wxGridEvent_MetaDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->MetaDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52126,7 +52126,7 @@ void wxGridEvent_Selecting(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Selecting();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52141,7 +52141,7 @@ void wxGridEvent_ShiftDown(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGridEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ShiftDown();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52169,7 +52169,7 @@ void wxNotifyEvent_IsAllowed(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotifyEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsAllowed();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52197,7 +52197,7 @@ void wxSashEvent_GetEdge(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetEdge();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52212,7 +52212,7 @@ void wxSashEvent_GetDragRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetDragRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52227,7 +52227,7 @@ void wxSashEvent_GetDragStatus(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSashEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDragStatus();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52242,7 +52242,7 @@ void wxListEvent_GetCacheFrom(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetCacheFrom();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52257,7 +52257,7 @@ void wxListEvent_GetCacheTo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetCacheTo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52272,7 +52272,7 @@ void wxListEvent_GetKeyCode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetKeyCode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52287,7 +52287,7 @@ void wxListEvent_GetIndex(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetIndex();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52302,7 +52302,7 @@ void wxListEvent_GetColumn(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumn();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52317,7 +52317,7 @@ void wxListEvent_GetPoint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPoint();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52332,7 +52332,7 @@ void wxListEvent_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52347,7 +52347,7 @@ void wxListEvent_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52362,7 +52362,7 @@ void wxListEvent_GetImage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetImage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52377,7 +52377,7 @@ void wxListEvent_GetData(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetData();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52392,7 +52392,7 @@ void wxListEvent_GetMask(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   long Result = This->GetMask();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52407,7 +52407,7 @@ void wxListEvent_GetItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxListItem * Result = &This->GetItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListItem"));
 
 }
@@ -52422,7 +52422,7 @@ void wxListEvent_IsEditCancelled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxListEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEditCancelled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52437,7 +52437,7 @@ void wxDateEvent_GetDate(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDateEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxDateTime * Result = &This->GetDate();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((*Result)));
 
 }
@@ -52452,7 +52452,7 @@ void wxCalendarEvent_GetWeekDay(WxeApp *app, wxeCommand& Ecmd)
   This = (wxCalendarEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWeekDay();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52467,7 +52467,7 @@ void wxFileDirPickerEvent_GetPath(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDirPickerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetPath();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52482,7 +52482,7 @@ void wxColourPickerEvent_GetColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxColourPickerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52497,7 +52497,7 @@ void wxFontPickerEvent_GetFont(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFontPickerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFont * Result = new EwxFont(This->GetFont()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -52512,7 +52512,7 @@ void wxStyledTextEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52527,7 +52527,7 @@ void wxStyledTextEvent_GetKey(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetKey();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52542,7 +52542,7 @@ void wxStyledTextEvent_GetModifiers(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetModifiers();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52557,7 +52557,7 @@ void wxStyledTextEvent_GetModificationType(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetModificationType();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52572,7 +52572,7 @@ void wxStyledTextEvent_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52587,7 +52587,7 @@ void wxStyledTextEvent_GetLength(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLength();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52602,7 +52602,7 @@ void wxStyledTextEvent_GetLinesAdded(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLinesAdded();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52617,7 +52617,7 @@ void wxStyledTextEvent_GetLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLine();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52632,7 +52632,7 @@ void wxStyledTextEvent_GetFoldLevelNow(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFoldLevelNow();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52647,7 +52647,7 @@ void wxStyledTextEvent_GetFoldLevelPrev(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFoldLevelPrev();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52662,7 +52662,7 @@ void wxStyledTextEvent_GetMargin(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMargin();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52677,7 +52677,7 @@ void wxStyledTextEvent_GetMessage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMessage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52692,7 +52692,7 @@ void wxStyledTextEvent_GetWParam(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWParam();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52707,7 +52707,7 @@ void wxStyledTextEvent_GetLParam(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLParam();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52722,7 +52722,7 @@ void wxStyledTextEvent_GetListType(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetListType();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52737,7 +52737,7 @@ void wxStyledTextEvent_GetX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52752,7 +52752,7 @@ void wxStyledTextEvent_GetY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52767,7 +52767,7 @@ void wxStyledTextEvent_GetDragText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetDragText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52782,7 +52782,7 @@ void wxStyledTextEvent_GetDragAllowMove(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetDragAllowMove();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52797,7 +52797,7 @@ void wxStyledTextEvent_GetDragResult(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetDragResult();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52812,7 +52812,7 @@ void wxStyledTextEvent_GetShift(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetShift();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52827,7 +52827,7 @@ void wxStyledTextEvent_GetControl(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetControl();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52842,7 +52842,7 @@ void wxStyledTextEvent_GetAlt(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetAlt();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52856,7 +52856,7 @@ void utils_wxGetKeyState(WxeApp *app, wxeCommand& Ecmd)
   wxKeyCode key;
   if(!enif_get_int(env, argv[0], (int *) &key)) Badarg(2931,"key"); // enum
   bool Result = ::wxGetKeyState(key);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52868,7 +52868,7 @@ void utils_wxGetMousePosition(WxeApp *app, wxeCommand& Ecmd)
   int y;
   wxeMemEnv *memenv = Ecmd.memenv;
   ::wxGetMousePosition(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
@@ -52881,7 +52881,7 @@ void utils_wxGetMouseState(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxMouseState Result = ::wxGetMouseState();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -52895,7 +52895,7 @@ void utils_wxSetDetectableAutoRepeat(WxeApp *app, wxeCommand& Ecmd)
   bool flag;
   flag = enif_is_identical(argv[0], WXE_ATOM_true);
   bool Result = ::wxSetDetectableAutoRepeat(flag);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -52918,14 +52918,14 @@ void utils_wxFindMenuItemId(WxeApp *app, wxeCommand& Ecmd)
   frame = (wxFrame *) memenv->getPtr(env, argv[0]);
   ErlNifBinary menuString_bin;
   wxString menuString;
-  if(enif_inspect_binary(env, argv[1], &menuString_bin)) Badarg(2936,"menuString");
+  if(!enif_inspect_binary(env, argv[1], &menuString_bin)) Badarg(2936,"menuString");
   menuString = wxString(menuString_bin.data, wxConvUTF8, menuString_bin.size);
   ErlNifBinary itemString_bin;
   wxString itemString;
-  if(enif_inspect_binary(env, argv[2], &itemString_bin)) Badarg(2936,"itemString");
+  if(!enif_inspect_binary(env, argv[2], &itemString_bin)) Badarg(2936,"itemString");
   itemString = wxString(itemString_bin.data, wxConvUTF8, itemString_bin.size);
   int Result = ::wxFindMenuItemId(frame,menuString,itemString);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -52945,7 +52945,7 @@ void utils_wxGenericFindWindowAtPoint(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, pt_t[1], &ptY)) Badarg(2937,"pt");
   wxPoint pt = wxPoint(ptX,ptY);
   wxWindow * Result = (wxWindow*)::wxGenericFindWindowAtPoint(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -52965,7 +52965,7 @@ void utils_wxFindWindowAtPoint(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, pt_t[1], &ptY)) Badarg(2938,"pt");
   wxPoint pt = wxPoint(ptX,ptY);
   wxWindow * Result = (wxWindow*)::wxFindWindowAtPoint(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -53006,7 +53006,7 @@ void utils_wxIsBusy(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   bool Result = ::wxIsBusy();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53020,7 +53020,7 @@ void utils_wxShutdown(WxeApp *app, wxeCommand& Ecmd)
   wxShutdownFlags wFlags;
   if(!enif_get_int(env, argv[0], (int *) &wFlags)) Badarg(2942,"wFlags"); // enum
   bool Result = ::wxShutdown(wFlags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53042,12 +53042,12 @@ void utils_wxShell(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(2943,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "command"))) {
   ErlNifBinary command_bin;
-  if(enif_inspect_binary(env, tpl[1], &command_bin)) Badarg(2943,"command");
+  if(!enif_inspect_binary(env, tpl[1], &command_bin)) Badarg(2943,"command");
   command = wxString(command_bin.data, wxConvUTF8, command_bin.size);
     } else        Badarg(2943,"Options");
   };
   bool Result = ::wxShell(command);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53061,7 +53061,7 @@ void utils_wxLaunchDefaultBrowser(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary url_bin;
   wxString url;
-  if(enif_inspect_binary(env, argv[0], &url_bin)) Badarg(2944,"url");
+  if(!enif_inspect_binary(env, argv[0], &url_bin)) Badarg(2944,"url");
   url = wxString(url_bin.data, wxConvUTF8, url_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -53076,7 +53076,7 @@ void utils_wxLaunchDefaultBrowser(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(2944,"Options");
   };
   bool Result = ::wxLaunchDefaultBrowser(url,flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53086,7 +53086,7 @@ void utils_wxGetEmailAddress(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxString Result = ::wxGetEmailAddress();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53096,7 +53096,7 @@ void utils_wxGetUserId(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxString Result = ::wxGetUserId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53106,7 +53106,7 @@ void utils_wxGetHomeDir(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxString Result = ::wxGetHomeDir();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53116,7 +53116,7 @@ void utils_wxNewId(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   long Result = ::wxNewId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53138,7 +53138,7 @@ void utils_wxGetCurrentId(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   long Result = ::wxGetCurrentId();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53148,7 +53148,7 @@ void utils_wxGetOsDescription(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxString Result = ::wxGetOsDescription();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53158,7 +53158,7 @@ void utils_wxIsPlatformLittleEndian(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   bool Result = ::wxIsPlatformLittleEndian();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53168,7 +53168,7 @@ void utils_wxIsPlatform64Bit(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   bool Result = ::wxIsPlatform64Bit();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53180,7 +53180,7 @@ void gdicmn_wxDisplaySize(WxeApp *app, wxeCommand& Ecmd)
   int height;
   wxeMemEnv *memenv = Ecmd.memenv;
   ::wxDisplaySize(&width,&height);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(width),
   rt.make_int(height));
@@ -53264,7 +53264,7 @@ void wxPrintout_GetDC(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxDC * Result = (wxDC*)This->GetDC();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDC"));
 
 }
@@ -53281,7 +53281,7 @@ void wxPrintout_GetPageSizeMM(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetPageSizeMM(&w,&h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(w),
   rt.make_int(h));
@@ -53301,7 +53301,7 @@ void wxPrintout_GetPageSizePixels(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetPageSizePixels(&w,&h);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(w),
   rt.make_int(h));
@@ -53319,7 +53319,7 @@ void wxPrintout_GetPaperRectPixels(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetPaperRectPixels();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53336,7 +53336,7 @@ void wxPrintout_GetPPIPrinter(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetPPIPrinter(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
@@ -53356,7 +53356,7 @@ void wxPrintout_GetPPIScreen(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetPPIScreen(&x,&y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(x),
   rt.make_int(y));
@@ -53374,7 +53374,7 @@ void wxPrintout_GetTitle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetTitle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53389,7 +53389,7 @@ void wxPrintout_IsPreview(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsPreview();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53523,7 +53523,7 @@ void wxPrintout_GetLogicalPaperRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetLogicalPaperRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53538,7 +53538,7 @@ void wxPrintout_GetLogicalPageRect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxPrintout *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetLogicalPageRect();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53555,7 +53555,7 @@ void wxPrintout_GetLogicalPageMarginsRect(WxeApp *app, wxeCommand& Ecmd)
   pageSetupData = (wxPageSetupDialogData *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetLogicalPageMarginsRect(*pageSetupData);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -53640,7 +53640,7 @@ void wxStyledTextCtrl_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxStyledTextCtrl * Result = new EwxStyledTextCtrl(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStyledTextCtrl"));
 
 }
@@ -53651,7 +53651,7 @@ void wxStyledTextCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxStyledTextCtrl * Result = new EwxStyledTextCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxStyledTextCtrl"));
 
 }
@@ -53704,7 +53704,7 @@ void wxStyledTextCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53719,7 +53719,7 @@ void wxStyledTextCtrl_AddText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2982,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(2982,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AddText(text);
@@ -53753,7 +53753,7 @@ void wxStyledTextCtrl_InsertText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(2984,"pos"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2984,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(2984,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->InsertText(pos,text);
@@ -53796,7 +53796,7 @@ void wxStyledTextCtrl_GetLength(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLength();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53813,7 +53813,7 @@ void wxStyledTextCtrl_GetCharAt(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(2988,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCharAt(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53828,7 +53828,7 @@ void wxStyledTextCtrl_GetCurrentPos(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCurrentPos();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53843,7 +53843,7 @@ void wxStyledTextCtrl_GetAnchor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetAnchor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53860,7 +53860,7 @@ void wxStyledTextCtrl_GetStyleAt(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(2991,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStyleAt(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53933,7 +53933,7 @@ void wxStyledTextCtrl_GetStyledText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &endPos)) Badarg(2996,"endPos"); // int
   if(!This) throw wxe_badarg("This");
   wxMemoryBuffer * Result = new wxMemoryBuffer(This->GetStyledText(startPos,endPos)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxMemoryBuffer"));
 
 }
@@ -53948,7 +53948,7 @@ void wxStyledTextCtrl_CanRedo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanRedo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -53965,7 +53965,7 @@ void wxStyledTextCtrl_MarkerLineFromHandle(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &handle)) Badarg(2998,"handle"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->MarkerLineFromHandle(handle);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -53995,7 +53995,7 @@ void wxStyledTextCtrl_GetUndoCollection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetUndoCollection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -54010,7 +54010,7 @@ void wxStyledTextCtrl_GetViewWhiteSpace(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetViewWhiteSpace();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54048,7 +54048,7 @@ void wxStyledTextCtrl_PositionFromPoint(WxeApp *app, wxeCommand& Ecmd)
   wxPoint pt = wxPoint(ptX,ptY);
   if(!This) throw wxe_badarg("This");
   int Result = This->PositionFromPoint(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54067,7 +54067,7 @@ void wxStyledTextCtrl_PositionFromPointClose(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &y)) Badarg(3004,"y"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->PositionFromPointClose(x,y);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54128,7 +54128,7 @@ void wxStyledTextCtrl_GetCurLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetCurLine(&linePos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make(Result),
     rt.make_int(linePos));
@@ -54146,7 +54146,7 @@ void wxStyledTextCtrl_GetEndStyled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetEndStyled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54176,7 +54176,7 @@ void wxStyledTextCtrl_GetEOLMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetEOLMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54240,7 +54240,7 @@ void wxStyledTextCtrl_GetBufferedDraw(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetBufferedDraw();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -54285,7 +54285,7 @@ void wxStyledTextCtrl_GetTabWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetTabWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54428,7 +54428,7 @@ void wxStyledTextCtrl_MarkerAdd(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &markerNumber)) Badarg(3023,"markerNumber"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->MarkerAdd(line,markerNumber);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54477,7 +54477,7 @@ void wxStyledTextCtrl_MarkerGet(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3026,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->MarkerGet(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54496,7 +54496,7 @@ void wxStyledTextCtrl_MarkerNext(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &markerMask)) Badarg(3027,"markerMask"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->MarkerNext(lineStart,markerMask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54515,7 +54515,7 @@ void wxStyledTextCtrl_MarkerPrevious(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &markerMask)) Badarg(3028,"markerMask"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->MarkerPrevious(lineStart,markerMask);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54600,7 +54600,7 @@ void wxStyledTextCtrl_GetMarginType(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &margin)) Badarg(3033,"margin"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMarginType(margin);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54634,7 +54634,7 @@ void wxStyledTextCtrl_GetMarginWidth(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &margin)) Badarg(3035,"margin"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMarginWidth(margin);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54668,7 +54668,7 @@ void wxStyledTextCtrl_GetMarginMask(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &margin)) Badarg(3037,"margin"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMarginMask(margin);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -54702,7 +54702,7 @@ void wxStyledTextCtrl_GetMarginSensitive(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &margin)) Badarg(3039,"margin"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetMarginSensitive(margin);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -54837,7 +54837,7 @@ void wxStyledTextCtrl_StyleSetFaceName(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &style)) Badarg(3046,"style"); // int
   ErlNifBinary fontName_bin;
   wxString fontName;
-  if(enif_inspect_binary(env, argv[2], &fontName_bin)) Badarg(3046,"fontName");
+  if(!enif_inspect_binary(env, argv[2], &fontName_bin)) Badarg(3046,"fontName");
   fontName = wxString(fontName_bin.data, wxConvUTF8, fontName_bin.size);
   if(!This) throw wxe_badarg("This");
   This->StyleSetFaceName(style,fontName);
@@ -54989,7 +54989,7 @@ void wxStyledTextCtrl_GetSelAlpha(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelAlpha();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55096,7 +55096,7 @@ void wxStyledTextCtrl_SetStyleBytes(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &length)) Badarg(3060,"length"); // int
   if(!This) throw wxe_badarg("This");
   This->SetStyleBytes(length,&styleBytes);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(styleBytes));
 
 }
@@ -55128,7 +55128,7 @@ void wxStyledTextCtrl_GetCaretPeriod(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCaretPeriod();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55158,7 +55158,7 @@ void wxStyledTextCtrl_SetWordChars(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characters_bin;
   wxString characters;
-  if(enif_inspect_binary(env, argv[1], &characters_bin)) Badarg(3064,"characters");
+  if(!enif_inspect_binary(env, argv[1], &characters_bin)) Badarg(3064,"characters");
   characters = wxString(characters_bin.data, wxConvUTF8, characters_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetWordChars(characters);
@@ -55220,7 +55220,7 @@ void wxStyledTextCtrl_IndicatorGetStyle(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &indic)) Badarg(3068,"indic"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->IndicatorGetStyle(indic);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55264,7 +55264,7 @@ void wxStyledTextCtrl_IndicatorGetForeground(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &indic)) Badarg(3070,"indic"); // int
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->IndicatorGetForeground(indic);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -55333,7 +55333,7 @@ void wxStyledTextCtrl_GetStyleBits(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStyleBits();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55367,7 +55367,7 @@ void wxStyledTextCtrl_GetLineState(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3075,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineState(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55382,7 +55382,7 @@ void wxStyledTextCtrl_GetMaxLineState(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMaxLineState();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55397,7 +55397,7 @@ void wxStyledTextCtrl_GetCaretLineVisible(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetCaretLineVisible();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55427,7 +55427,7 @@ void wxStyledTextCtrl_GetCaretLineBackground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetCaretLineBackground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -55469,7 +55469,7 @@ void wxStyledTextCtrl_AutoCompShow(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &lenEntered)) Badarg(3081,"lenEntered"); // int
   ErlNifBinary itemList_bin;
   wxString itemList;
-  if(enif_inspect_binary(env, argv[2], &itemList_bin)) Badarg(3081,"itemList");
+  if(!enif_inspect_binary(env, argv[2], &itemList_bin)) Badarg(3081,"itemList");
   itemList = wxString(itemList_bin.data, wxConvUTF8, itemList_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AutoCompShow(lenEntered,itemList);
@@ -55499,7 +55499,7 @@ void wxStyledTextCtrl_AutoCompActive(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AutoCompActive();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55514,7 +55514,7 @@ void wxStyledTextCtrl_AutoCompPosStart(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->AutoCompPosStart();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55542,7 +55542,7 @@ void wxStyledTextCtrl_AutoCompStops(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characterSet_bin;
   wxString characterSet;
-  if(enif_inspect_binary(env, argv[1], &characterSet_bin)) Badarg(3086,"characterSet");
+  if(!enif_inspect_binary(env, argv[1], &characterSet_bin)) Badarg(3086,"characterSet");
   characterSet = wxString(characterSet_bin.data, wxConvUTF8, characterSet_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AutoCompStops(characterSet);
@@ -55574,7 +55574,7 @@ void wxStyledTextCtrl_AutoCompGetSeparator(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->AutoCompGetSeparator();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55589,7 +55589,7 @@ void wxStyledTextCtrl_AutoCompSelect(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3089,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3089,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AutoCompSelect(text);
@@ -55621,7 +55621,7 @@ void wxStyledTextCtrl_AutoCompGetCancelAtStart(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AutoCompGetCancelAtStart();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55636,7 +55636,7 @@ void wxStyledTextCtrl_AutoCompSetFillUps(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characterSet_bin;
   wxString characterSet;
-  if(enif_inspect_binary(env, argv[1], &characterSet_bin)) Badarg(3092,"characterSet");
+  if(!enif_inspect_binary(env, argv[1], &characterSet_bin)) Badarg(3092,"characterSet");
   characterSet = wxString(characterSet_bin.data, wxConvUTF8, characterSet_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AutoCompSetFillUps(characterSet);
@@ -55668,7 +55668,7 @@ void wxStyledTextCtrl_AutoCompGetChooseSingle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AutoCompGetChooseSingle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55698,7 +55698,7 @@ void wxStyledTextCtrl_AutoCompGetIgnoreCase(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AutoCompGetIgnoreCase();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55715,7 +55715,7 @@ void wxStyledTextCtrl_UserListShow(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &listType)) Badarg(3097,"listType"); // int
   ErlNifBinary itemList_bin;
   wxString itemList;
-  if(enif_inspect_binary(env, argv[2], &itemList_bin)) Badarg(3097,"itemList");
+  if(!enif_inspect_binary(env, argv[2], &itemList_bin)) Badarg(3097,"itemList");
   itemList = wxString(itemList_bin.data, wxConvUTF8, itemList_bin.size);
   if(!This) throw wxe_badarg("This");
   This->UserListShow(listType,itemList);
@@ -55747,7 +55747,7 @@ void wxStyledTextCtrl_AutoCompGetAutoHide(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AutoCompGetAutoHide();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55777,7 +55777,7 @@ void wxStyledTextCtrl_AutoCompGetDropRestOfWord(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AutoCompGetDropRestOfWord();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55822,7 +55822,7 @@ void wxStyledTextCtrl_AutoCompGetTypeSeparator(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->AutoCompGetTypeSeparator();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55867,7 +55867,7 @@ void wxStyledTextCtrl_AutoCompGetMaxWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->AutoCompGetMaxWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55897,7 +55897,7 @@ void wxStyledTextCtrl_AutoCompGetMaxHeight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->AutoCompGetMaxHeight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55927,7 +55927,7 @@ void wxStyledTextCtrl_GetIndent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetIndent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -55957,7 +55957,7 @@ void wxStyledTextCtrl_GetUseTabs(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetUseTabs();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -55991,7 +55991,7 @@ void wxStyledTextCtrl_GetLineIndentation(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3115,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineIndentation(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56008,7 +56008,7 @@ void wxStyledTextCtrl_GetLineIndentPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3116,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineIndentPosition(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56025,7 +56025,7 @@ void wxStyledTextCtrl_GetColumn(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3117,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetColumn(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56055,7 +56055,7 @@ void wxStyledTextCtrl_GetUseHorizontalScrollBar(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetUseHorizontalScrollBar();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56085,7 +56085,7 @@ void wxStyledTextCtrl_GetIndentationGuides(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetIndentationGuides();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56115,7 +56115,7 @@ void wxStyledTextCtrl_GetHighlightGuide(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetHighlightGuide();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56132,7 +56132,7 @@ void wxStyledTextCtrl_GetLineEndPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3124,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineEndPosition(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56147,7 +56147,7 @@ void wxStyledTextCtrl_GetCodePage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCodePage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56162,7 +56162,7 @@ void wxStyledTextCtrl_GetCaretForeground(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetCaretForeground();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -56177,7 +56177,7 @@ void wxStyledTextCtrl_GetReadOnly(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetReadOnly();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56222,7 +56222,7 @@ void wxStyledTextCtrl_GetSelectionStart(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelectionStart();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56252,7 +56252,7 @@ void wxStyledTextCtrl_GetSelectionEnd(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelectionEnd();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56282,7 +56282,7 @@ void wxStyledTextCtrl_GetPrintMagnification(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPrintMagnification();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56312,7 +56312,7 @@ void wxStyledTextCtrl_GetPrintColourMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPrintColourMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56332,7 +56332,7 @@ void wxStyledTextCtrl_FindText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &maxPos)) Badarg(3137,"maxPos"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[3], &text_bin)) Badarg(3137,"text");
+  if(!enif_inspect_binary(env, argv[3], &text_bin)) Badarg(3137,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[4];
@@ -56348,7 +56348,7 @@ void wxStyledTextCtrl_FindText(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   int Result = This->FindText(minPos,maxPos,text,flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56397,7 +56397,7 @@ void wxStyledTextCtrl_FormatRange(WxeApp *app, wxeCommand& Ecmd)
   wxRect pageRect = wxRect(pageRectX,pageRectY,pageRectW,pageRectH);
   if(!This) throw wxe_badarg("This");
   int Result = This->FormatRange(doDraw,startPos,endPos,draw,target,renderRect,pageRect);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56412,7 +56412,7 @@ void wxStyledTextCtrl_GetFirstVisibleLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFirstVisibleLine();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56429,7 +56429,7 @@ void wxStyledTextCtrl_GetLine(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3140,"line"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetLine(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -56444,7 +56444,7 @@ void wxStyledTextCtrl_GetLineCount(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLineCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56474,7 +56474,7 @@ void wxStyledTextCtrl_GetMarginLeft(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMarginLeft();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56504,7 +56504,7 @@ void wxStyledTextCtrl_GetMarginRight(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMarginRight();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56519,7 +56519,7 @@ void wxStyledTextCtrl_GetModify(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetModify();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56551,7 +56551,7 @@ void wxStyledTextCtrl_GetSelectedText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetSelectedText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -56570,7 +56570,7 @@ void wxStyledTextCtrl_GetTextRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &endPos)) Badarg(3149,"endPos"); // int
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetTextRange(startPos,endPos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -56602,7 +56602,7 @@ void wxStyledTextCtrl_LineFromPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3151,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->LineFromPosition(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56619,7 +56619,7 @@ void wxStyledTextCtrl_PositionFromLine(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3152,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->PositionFromLine(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56664,7 +56664,7 @@ void wxStyledTextCtrl_ReplaceSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3155,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3155,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->ReplaceSelection(text);
@@ -56696,7 +56696,7 @@ void wxStyledTextCtrl_CanPaste(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanPaste();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56711,7 +56711,7 @@ void wxStyledTextCtrl_CanUndo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanUndo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56804,7 +56804,7 @@ void wxStyledTextCtrl_SetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3165,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3165,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetText(text);
@@ -56821,7 +56821,7 @@ void wxStyledTextCtrl_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -56836,7 +56836,7 @@ void wxStyledTextCtrl_GetTextLength(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetTextLength();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56851,7 +56851,7 @@ void wxStyledTextCtrl_GetOvertype(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetOvertype();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -56881,7 +56881,7 @@ void wxStyledTextCtrl_GetCaretWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCaretWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56911,7 +56911,7 @@ void wxStyledTextCtrl_GetTargetStart(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetTargetStart();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56941,7 +56941,7 @@ void wxStyledTextCtrl_GetTargetEnd(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetTargetEnd();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56956,11 +56956,11 @@ void wxStyledTextCtrl_ReplaceTarget(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3175,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3175,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->ReplaceTarget(text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -56975,11 +56975,11 @@ void wxStyledTextCtrl_SearchInTarget(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3176,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3176,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->SearchInTarget(text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57009,7 +57009,7 @@ void wxStyledTextCtrl_GetSearchFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSearchFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57026,7 +57026,7 @@ void wxStyledTextCtrl_CallTipShow(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3179,"pos"); // int
   ErlNifBinary definition_bin;
   wxString definition;
-  if(enif_inspect_binary(env, argv[2], &definition_bin)) Badarg(3179,"definition");
+  if(!enif_inspect_binary(env, argv[2], &definition_bin)) Badarg(3179,"definition");
   definition = wxString(definition_bin.data, wxConvUTF8, definition_bin.size);
   if(!This) throw wxe_badarg("This");
   This->CallTipShow(pos,definition);
@@ -57056,7 +57056,7 @@ void wxStyledTextCtrl_CallTipActive(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CallTipActive();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57071,7 +57071,7 @@ void wxStyledTextCtrl_CallTipPosAtStart(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->CallTipPosAtStart();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57195,7 +57195,7 @@ void wxStyledTextCtrl_VisibleFromDocLine(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3188,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->VisibleFromDocLine(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57212,7 +57212,7 @@ void wxStyledTextCtrl_DocLineFromVisible(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &lineDisplay)) Badarg(3189,"lineDisplay"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->DocLineFromVisible(lineDisplay);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57229,7 +57229,7 @@ void wxStyledTextCtrl_WrapCount(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3190,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->WrapCount(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57263,7 +57263,7 @@ void wxStyledTextCtrl_GetFoldLevel(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3192,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFoldLevel(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57282,7 +57282,7 @@ void wxStyledTextCtrl_GetLastChild(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &level)) Badarg(3193,"level"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLastChild(line,level);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57299,7 +57299,7 @@ void wxStyledTextCtrl_GetFoldParent(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3194,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->GetFoldParent(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57350,7 +57350,7 @@ void wxStyledTextCtrl_GetLineVisible(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3197,"line"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetLineVisible(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57384,7 +57384,7 @@ void wxStyledTextCtrl_GetFoldExpanded(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3199,"line"); // int
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetFoldExpanded(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57474,7 +57474,7 @@ void wxStyledTextCtrl_GetTabIndents(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetTabIndents();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57504,7 +57504,7 @@ void wxStyledTextCtrl_GetBackSpaceUnIndents(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetBackSpaceUnIndents();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57534,7 +57534,7 @@ void wxStyledTextCtrl_GetMouseDwellTime(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMouseDwellTime();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57553,7 +57553,7 @@ void wxStyledTextCtrl_WordStartPosition(WxeApp *app, wxeCommand& Ecmd)
   onlyWordCharacters = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   int Result = This->WordStartPosition(pos,onlyWordCharacters);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57572,7 +57572,7 @@ void wxStyledTextCtrl_WordEndPosition(WxeApp *app, wxeCommand& Ecmd)
   onlyWordCharacters = enif_is_identical(argv[2], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
   int Result = This->WordEndPosition(pos,onlyWordCharacters);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57602,7 +57602,7 @@ void wxStyledTextCtrl_GetWrapMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWrapMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57632,7 +57632,7 @@ void wxStyledTextCtrl_GetWrapVisualFlags(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWrapVisualFlags();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57662,7 +57662,7 @@ void wxStyledTextCtrl_GetWrapVisualFlagsLocation(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWrapVisualFlagsLocation();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57692,7 +57692,7 @@ void wxStyledTextCtrl_GetWrapStartIndent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetWrapStartIndent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57722,7 +57722,7 @@ void wxStyledTextCtrl_GetLayoutCache(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLayoutCache();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57752,7 +57752,7 @@ void wxStyledTextCtrl_GetScrollWidth(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetScrollWidth();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57769,11 +57769,11 @@ void wxStyledTextCtrl_TextWidth(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &style)) Badarg(3224,"style"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3224,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3224,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->TextWidth(style,text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57788,7 +57788,7 @@ void wxStyledTextCtrl_GetEndAtLastLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetEndAtLastLine();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57805,7 +57805,7 @@ void wxStyledTextCtrl_TextHeight(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3226,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->TextHeight(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -57835,7 +57835,7 @@ void wxStyledTextCtrl_GetUseVerticalScrollBar(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetUseVerticalScrollBar();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -57850,7 +57850,7 @@ void wxStyledTextCtrl_AppendText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3229,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3229,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AppendText(text);
@@ -57867,7 +57867,7 @@ void wxStyledTextCtrl_GetTwoPhaseDraw(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetTwoPhaseDraw();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -58735,7 +58735,7 @@ void wxStyledTextCtrl_LineLength(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3294,"line"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->LineLength(line);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -58784,7 +58784,7 @@ void wxStyledTextCtrl_BraceMatch(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3297,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->BraceMatch(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -58799,7 +58799,7 @@ void wxStyledTextCtrl_GetViewEOL(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetViewEOL();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -58844,7 +58844,7 @@ void wxStyledTextCtrl_GetEdgeColumn(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetEdgeColumn();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -58889,7 +58889,7 @@ void wxStyledTextCtrl_GetEdgeMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetEdgeMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -58904,7 +58904,7 @@ void wxStyledTextCtrl_GetEdgeColour(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxColour Result = This->GetEdgeColour();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -58959,11 +58959,11 @@ void wxStyledTextCtrl_SearchNext(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &flags)) Badarg(3308,"flags"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3308,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3308,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->SearchNext(flags,text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -58980,11 +58980,11 @@ void wxStyledTextCtrl_SearchPrev(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &flags)) Badarg(3309,"flags"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3309,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3309,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   int Result = This->SearchPrev(flags,text);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -58999,7 +58999,7 @@ void wxStyledTextCtrl_LinesOnScreen(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->LinesOnScreen();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59029,7 +59029,7 @@ void wxStyledTextCtrl_SelectionIsRectangle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SelectionIsRectangle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -59059,7 +59059,7 @@ void wxStyledTextCtrl_GetZoom(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetZoom();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59074,7 +59074,7 @@ void wxStyledTextCtrl_GetModEventMask(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetModEventMask();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59104,7 +59104,7 @@ void wxStyledTextCtrl_GetSTCFocus(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetSTCFocus();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -59134,7 +59134,7 @@ void wxStyledTextCtrl_GetStatus(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStatus();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59164,7 +59164,7 @@ void wxStyledTextCtrl_GetMouseDownCaptures(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetMouseDownCaptures();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -59194,7 +59194,7 @@ void wxStyledTextCtrl_GetSTCCursor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSTCCursor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59224,7 +59224,7 @@ void wxStyledTextCtrl_GetControlCharSymbol(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetControlCharSymbol();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59334,7 +59334,7 @@ void wxStyledTextCtrl_GetXOffset(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetXOffset();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59396,7 +59396,7 @@ void wxStyledTextCtrl_GetPrintWrapMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPrintWrapMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59536,7 +59536,7 @@ void wxStyledTextCtrl_PositionBefore(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3345,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->PositionBefore(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59553,7 +59553,7 @@ void wxStyledTextCtrl_PositionAfter(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3346,"pos"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->PositionAfter(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59587,7 +59587,7 @@ void wxStyledTextCtrl_CopyText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &length)) Badarg(3348,"length"); // int
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3348,"text");
+  if(!enif_inspect_binary(env, argv[2], &text_bin)) Badarg(3348,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->CopyText(length,text);
@@ -59619,7 +59619,7 @@ void wxStyledTextCtrl_GetSelectionMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelectionMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59855,7 +59855,7 @@ void wxStyledTextCtrl_SetWhitespaceChars(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary characters_bin;
   wxString characters;
-  if(enif_inspect_binary(env, argv[1], &characters_bin)) Badarg(3368,"characters");
+  if(!enif_inspect_binary(env, argv[1], &characters_bin)) Badarg(3368,"characters");
   characters = wxString(characters_bin.data, wxConvUTF8, characters_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetWhitespaceChars(characters);
@@ -59885,7 +59885,7 @@ void wxStyledTextCtrl_AutoCompGetCurrent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->AutoCompGetCurrent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59919,7 +59919,7 @@ void wxStyledTextCtrl_FindColumn(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &column)) Badarg(3372,"column"); // int
   if(!This) throw wxe_badarg("This");
   int Result = This->FindColumn(line,column);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -59934,7 +59934,7 @@ void wxStyledTextCtrl_GetCaretSticky(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetCaretSticky();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -59992,7 +59992,7 @@ void wxStyledTextCtrl_GetPasteConvertEndings(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetPasteConvertEndings();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60035,7 +60035,7 @@ void wxStyledTextCtrl_GetCaretLineBackAlpha(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCaretLineBackAlpha();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60091,7 +60091,7 @@ void wxStyledTextCtrl_GetLexer(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLexer();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60123,11 +60123,11 @@ void wxStyledTextCtrl_SetProperty(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary key_bin;
   wxString key;
-  if(enif_inspect_binary(env, argv[1], &key_bin)) Badarg(3386,"key");
+  if(!enif_inspect_binary(env, argv[1], &key_bin)) Badarg(3386,"key");
   key = wxString(key_bin.data, wxConvUTF8, key_bin.size);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[2], &value_bin)) Badarg(3386,"value");
+  if(!enif_inspect_binary(env, argv[2], &value_bin)) Badarg(3386,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetProperty(key,value);
@@ -60146,7 +60146,7 @@ void wxStyledTextCtrl_SetKeyWords(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &keywordSet)) Badarg(3387,"keywordSet"); // int
   ErlNifBinary keyWords_bin;
   wxString keyWords;
-  if(enif_inspect_binary(env, argv[2], &keyWords_bin)) Badarg(3387,"keyWords");
+  if(!enif_inspect_binary(env, argv[2], &keyWords_bin)) Badarg(3387,"keyWords");
   keyWords = wxString(keyWords_bin.data, wxConvUTF8, keyWords_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetKeyWords(keywordSet,keyWords);
@@ -60163,7 +60163,7 @@ void wxStyledTextCtrl_SetLexerLanguage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary language_bin;
   wxString language;
-  if(enif_inspect_binary(env, argv[1], &language_bin)) Badarg(3388,"language");
+  if(!enif_inspect_binary(env, argv[1], &language_bin)) Badarg(3388,"language");
   language = wxString(language_bin.data, wxConvUTF8, language_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetLexerLanguage(language);
@@ -60180,11 +60180,11 @@ void wxStyledTextCtrl_GetProperty(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary key_bin;
   wxString key;
-  if(enif_inspect_binary(env, argv[1], &key_bin)) Badarg(3389,"key");
+  if(!enif_inspect_binary(env, argv[1], &key_bin)) Badarg(3389,"key");
   key = wxString(key_bin.data, wxConvUTF8, key_bin.size);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetProperty(key);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -60199,7 +60199,7 @@ void wxStyledTextCtrl_GetStyleBitsNeeded(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetStyleBitsNeeded();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60214,7 +60214,7 @@ void wxStyledTextCtrl_GetCurrentLine(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetCurrentLine();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60231,7 +60231,7 @@ void wxStyledTextCtrl_StyleSetSpec(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &styleNum)) Badarg(3392,"styleNum"); // int
   ErlNifBinary spec_bin;
   wxString spec;
-  if(enif_inspect_binary(env, argv[2], &spec_bin)) Badarg(3392,"spec");
+  if(!enif_inspect_binary(env, argv[2], &spec_bin)) Badarg(3392,"spec");
   spec = wxString(spec_bin.data, wxConvUTF8, spec_bin.size);
   if(!This) throw wxe_badarg("This");
   This->StyleSetSpec(styleNum,spec);
@@ -60270,7 +60270,7 @@ void wxStyledTextCtrl_StyleSetFontAttr(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &size)) Badarg(3394,"size"); // int
   ErlNifBinary faceName_bin;
   wxString faceName;
-  if(enif_inspect_binary(env, argv[3], &faceName_bin)) Badarg(3394,"faceName");
+  if(!enif_inspect_binary(env, argv[3], &faceName_bin)) Badarg(3394,"faceName");
   faceName = wxString(faceName_bin.data, wxConvUTF8, faceName_bin.size);
   bool bold;
   bold = enif_is_identical(argv[4], WXE_ATOM_true);
@@ -60373,7 +60373,7 @@ void wxStyledTextCtrl_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   This->GetSelection(&startPos,&endPos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_int(startPos),
   rt.make_int(endPos));
@@ -60393,7 +60393,7 @@ void wxStyledTextCtrl_PointFromPosition(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &pos)) Badarg(3400,"pos"); // int
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->PointFromPosition(pos);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -60468,7 +60468,7 @@ void wxStyledTextCtrl_GetLastKeydownProcessed(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetLastKeydownProcessed();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60498,11 +60498,11 @@ void wxStyledTextCtrl_SaveFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3407,"filename");
+  if(!enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3407,"filename");
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SaveFile(filename);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60517,11 +60517,11 @@ void wxStyledTextCtrl_LoadFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3408,"filename");
+  if(!enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3408,"filename");
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFile(filename);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60542,7 +60542,7 @@ void wxStyledTextCtrl_DoDragOver(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[3], (int *) &def)) Badarg(3409,"def"); // enum
   if(!This) throw wxe_badarg("This");
   int Result = This->DoDragOver(x,y,def);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60561,11 +60561,11 @@ void wxStyledTextCtrl_DoDropText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_long(env, argv[2], &y)) Badarg(3410,"y");
   ErlNifBinary data_bin;
   wxString data;
-  if(enif_inspect_binary(env, argv[3], &data_bin)) Badarg(3410,"data");
+  if(!enif_inspect_binary(env, argv[3], &data_bin)) Badarg(3410,"data");
   data = wxString(data_bin.data, wxConvUTF8, data_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->DoDropText(x,y,data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60580,7 +60580,7 @@ void wxStyledTextCtrl_GetUseAntiAliasing(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetUseAntiAliasing();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60632,7 +60632,7 @@ void wxStyledTextCtrl_GetCurLineRaw(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char * Result = This->GetCurLineRaw(&linePos).data();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
   rt.make_binary(Result, strlen(Result)),
     rt.make_int(linePos));
@@ -60652,7 +60652,7 @@ void wxStyledTextCtrl_GetLineRaw(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], &line)) Badarg(3415,"line"); // int
   if(!This) throw wxe_badarg("This");
   char * Result = This->GetLineRaw(line).data();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_binary(Result, strlen(Result)));
 
 }
@@ -60667,7 +60667,7 @@ void wxStyledTextCtrl_GetSelectedTextRaw(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char * Result = This->GetSelectedTextRaw().data();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_binary(Result, strlen(Result)));
 
 }
@@ -60686,7 +60686,7 @@ void wxStyledTextCtrl_GetTextRangeRaw(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[2], &endPos)) Badarg(3417,"endPos"); // int
   if(!This) throw wxe_badarg("This");
   char * Result = This->GetTextRangeRaw(startPos,endPos).data();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_binary(Result, strlen(Result)));
 
 }
@@ -60718,7 +60718,7 @@ void wxStyledTextCtrl_GetTextRaw(WxeApp *app, wxeCommand& Ecmd)
   This = (wxStyledTextCtrl *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   char * Result = This->GetTextRaw().data();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_binary(Result, strlen(Result)));
 
 }
@@ -60750,7 +60750,7 @@ void wxArtProvider_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary id_bin;
   wxString id;
-  if(enif_inspect_binary(env, argv[0], &id_bin)) Badarg(3421,"id");
+  if(!enif_inspect_binary(env, argv[0], &id_bin)) Badarg(3421,"id");
   id = wxString(id_bin.data, wxConvUTF8, id_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -60762,7 +60762,7 @@ void wxArtProvider_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3421,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "client"))) {
   ErlNifBinary client_bin;
-  if(enif_inspect_binary(env, tpl[1], &client_bin)) Badarg(3421,"client");
+  if(!enif_inspect_binary(env, tpl[1], &client_bin)) Badarg(3421,"client");
   client = wxString(client_bin.data, wxConvUTF8, client_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "size"))) {
   const ERL_NIF_TERM *size_t;
@@ -60776,7 +60776,7 @@ void wxArtProvider_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(3421,"Options");
   };
   wxBitmap * Result = new EwxBitmap(wxArtProvider::GetBitmap(id,client,size)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -60791,7 +60791,7 @@ void wxArtProvider_GetIcon(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary id_bin;
   wxString id;
-  if(enif_inspect_binary(env, argv[0], &id_bin)) Badarg(3422,"id");
+  if(!enif_inspect_binary(env, argv[0], &id_bin)) Badarg(3422,"id");
   id = wxString(id_bin.data, wxConvUTF8, id_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[1];
@@ -60803,7 +60803,7 @@ void wxArtProvider_GetIcon(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3422,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "client"))) {
   ErlNifBinary client_bin;
-  if(enif_inspect_binary(env, tpl[1], &client_bin)) Badarg(3422,"client");
+  if(!enif_inspect_binary(env, tpl[1], &client_bin)) Badarg(3422,"client");
   client = wxString(client_bin.data, wxConvUTF8, client_bin.size);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "size"))) {
   const ERL_NIF_TERM *size_t;
@@ -60817,7 +60817,7 @@ void wxArtProvider_GetIcon(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(3422,"Options");
   };
   wxIcon * Result = new EwxIcon(wxArtProvider::GetIcon(id,client,size)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxIcon"));
 
 }
@@ -60832,7 +60832,7 @@ void wxTreeEvent_GetKeyCode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetKeyCode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60847,7 +60847,7 @@ void wxTreeEvent_GetItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -60862,7 +60862,7 @@ void wxTreeEvent_GetKeyEvent(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxKeyEvent * Result = &This->GetKeyEvent();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxKeyEvent"));
 
 }
@@ -60877,7 +60877,7 @@ void wxTreeEvent_GetLabel(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetLabel();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -60892,7 +60892,7 @@ void wxTreeEvent_GetOldItem(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxTreeItemId Result = This->GetOldItem();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make((wxUIntPtr *) Result.m_pItem));
 
 }
@@ -60907,7 +60907,7 @@ void wxTreeEvent_GetPoint(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPoint();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -60922,7 +60922,7 @@ void wxTreeEvent_IsEditCancelled(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsEditCancelled();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -60937,7 +60937,7 @@ void wxTreeEvent_SetToolTip(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTreeEvent *) memenv->getPtr(env, argv[0]);
   ErlNifBinary toolTip_bin;
   wxString toolTip;
-  if(enif_inspect_binary(env, argv[1], &toolTip_bin)) Badarg(3430,"toolTip");
+  if(!enif_inspect_binary(env, argv[1], &toolTip_bin)) Badarg(3430,"toolTip");
   toolTip = wxString(toolTip_bin.data, wxConvUTF8, toolTip_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetToolTip(toolTip);
@@ -60954,7 +60954,7 @@ void wxNotebookEvent_GetOldSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebookEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOldSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -60969,7 +60969,7 @@ void wxNotebookEvent_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxNotebookEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61010,7 +61010,7 @@ void wxFileDataObject_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxFileDataObject * Result = new wxFileDataObject();
   app->newPtr((void *) Result, 213, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFileDataObject"));
 
 }
@@ -61025,7 +61025,7 @@ void wxFileDataObject_AddFile(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDataObject *) memenv->getPtr(env, argv[0]);
   ErlNifBinary filename_bin;
   wxString filename;
-  if(enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3436,"filename");
+  if(!enif_inspect_binary(env, argv[1], &filename_bin)) Badarg(3436,"filename");
   filename = wxString(filename_bin.data, wxConvUTF8, filename_bin.size);
   if(!This) throw wxe_badarg("This");
   This->AddFile(filename);
@@ -61042,7 +61042,7 @@ void wxFileDataObject_GetFilenames(WxeApp *app, wxeCommand& Ecmd)
   This = (wxFileDataObject *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxArrayString Result = This->GetFilenames();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -61076,13 +61076,13 @@ void wxTextDataObject_new(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3439,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "text"))) {
   ErlNifBinary text_bin;
-  if(enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(3439,"text");
+  if(!enif_inspect_binary(env, tpl[1], &text_bin)) Badarg(3439,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
     } else        Badarg(3439,"Options");
   };
   wxTextDataObject * Result = new wxTextDataObject(text);
   app->newPtr((void *) Result, 214, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTextDataObject"));
 
 }
@@ -61097,7 +61097,7 @@ void wxTextDataObject_GetTextLength(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextDataObject *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   size_t Result = This->GetTextLength();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61112,7 +61112,7 @@ void wxTextDataObject_GetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextDataObject *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -61127,7 +61127,7 @@ void wxTextDataObject_SetText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTextDataObject *) memenv->getPtr(env, argv[0]);
   ErlNifBinary text_bin;
   wxString text;
-  if(enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3442,"text");
+  if(!enif_inspect_binary(env, argv[1], &text_bin)) Badarg(3442,"text");
   text = wxString(text_bin.data, wxConvUTF8, text_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetText(text);
@@ -61156,7 +61156,7 @@ void wxBitmapDataObject_new_1_1(WxeApp *app, wxeCommand& Ecmd)
   bitmap = (wxBitmap *) memenv->getPtr(env, argv[0]);
   wxBitmapDataObject * Result = new wxBitmapDataObject(*bitmap);
   app->newPtr((void *) Result, 215, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmapDataObject"));
 
 }
@@ -61182,7 +61182,7 @@ void wxBitmapDataObject_new_1_0(WxeApp *app, wxeCommand& Ecmd)
   };
   wxBitmapDataObject * Result = new wxBitmapDataObject(*bitmap);
   app->newPtr((void *) Result, 215, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmapDataObject"));
 
 }
@@ -61197,7 +61197,7 @@ void wxBitmapDataObject_GetBitmap(WxeApp *app, wxeCommand& Ecmd)
   This = (wxBitmapDataObject *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxBitmap * Result = new EwxBitmap(This->GetBitmap()); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxBitmap"));
 
 }
@@ -61235,7 +61235,7 @@ void wxClipboard_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxClipboard * Result = new EwxClipboard();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxClipboard"));
 
 }
@@ -61252,7 +61252,7 @@ void wxClipboard_AddData(WxeApp *app, wxeCommand& Ecmd)
   data = (wxDataObject *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddData(data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61293,7 +61293,7 @@ void wxClipboard_Flush(WxeApp *app, wxeCommand& Ecmd)
   This = (wxClipboard *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Flush();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61310,7 +61310,7 @@ void wxClipboard_GetData(WxeApp *app, wxeCommand& Ecmd)
   data = (wxDataObject *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetData(*data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61325,7 +61325,7 @@ void wxClipboard_IsOpened(WxeApp *app, wxeCommand& Ecmd)
   This = (wxClipboard *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOpened();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61340,7 +61340,7 @@ void wxClipboard_Open(WxeApp *app, wxeCommand& Ecmd)
   This = (wxClipboard *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->Open();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61357,7 +61357,7 @@ void wxClipboard_SetData(WxeApp *app, wxeCommand& Ecmd)
   data = (wxDataObject *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetData(data);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61400,7 +61400,7 @@ void wxClipboard_IsSupported(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[1], (int *) &format)) Badarg(3462,"format"); // enum
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSupported(format);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61410,7 +61410,7 @@ void wxClipboard_Get(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxClipboard * Result = (wxClipboard*)wxClipboard::Get();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxClipboard"));
 
 }
@@ -61425,7 +61425,7 @@ void wxSpinEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSpinEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61451,7 +61451,7 @@ void wxSplitterWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxSplitterWindow * Result = new EwxSplitterWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSplitterWindow"));
 
 }
@@ -61502,7 +61502,7 @@ void wxSplitterWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxSplitterWindow * Result = new EwxSplitterWindow(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxSplitterWindow"));
 
 }
@@ -61555,7 +61555,7 @@ void wxSplitterWindow_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,id,pos,size,style);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61570,7 +61570,7 @@ void wxSplitterWindow_GetMinimumPaneSize(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetMinimumPaneSize();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61585,7 +61585,7 @@ void wxSplitterWindow_GetSashGravity(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   double Result = This->GetSashGravity();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_double(Result));
 
 }
@@ -61600,7 +61600,7 @@ void wxSplitterWindow_GetSashPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSashPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61615,7 +61615,7 @@ void wxSplitterWindow_GetSplitMode(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSplitMode();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61630,7 +61630,7 @@ void wxSplitterWindow_GetWindow1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow1();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -61645,7 +61645,7 @@ void wxSplitterWindow_GetWindow2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindow2();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -61675,7 +61675,7 @@ void wxSplitterWindow_IsSplit(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsSplit();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61694,7 +61694,7 @@ void wxSplitterWindow_ReplaceWindow(WxeApp *app, wxeCommand& Ecmd)
   winNew = (wxWindow *) memenv->getPtr(env, argv[2]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->ReplaceWindow(winOld,winNew);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61814,7 +61814,7 @@ void wxSplitterWindow_SplitHorizontally(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->SplitHorizontally(window1,window2,sashPosition);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61846,7 +61846,7 @@ void wxSplitterWindow_SplitVertically(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->SplitVertically(window1,window2,sashPosition);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61874,7 +61874,7 @@ void wxSplitterWindow_Unsplit(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Unsplit(toRemove);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -61902,7 +61902,7 @@ void wxSplitterEvent_GetSashPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSashPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61917,7 +61917,7 @@ void wxSplitterEvent_GetX(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetX();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61932,7 +61932,7 @@ void wxSplitterEvent_GetY(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetY();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -61947,7 +61947,7 @@ void wxSplitterEvent_GetWindowBeingRemoved(WxeApp *app, wxeCommand& Ecmd)
   This = (wxSplitterEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxWindow * Result = (wxWindow*)This->GetWindowBeingRemoved();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxWindow"));
 
 }
@@ -61973,7 +61973,7 @@ void wxHtmlWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxHtmlWindow * Result = new EwxHtmlWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxHtmlWindow"));
 
 }
@@ -62024,7 +62024,7 @@ void wxHtmlWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxHtmlWindow * Result = new EwxHtmlWindow(parent,id,pos,size,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxHtmlWindow"));
 
 }
@@ -62039,11 +62039,11 @@ void wxHtmlWindow_AppendToPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary source_bin;
   wxString source;
-  if(enif_inspect_binary(env, argv[1], &source_bin)) Badarg(3495,"source");
+  if(!enif_inspect_binary(env, argv[1], &source_bin)) Badarg(3495,"source");
   source = wxString(source_bin.data, wxConvUTF8, source_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AppendToPage(source);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62058,7 +62058,7 @@ void wxHtmlWindow_GetOpenedAnchor(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetOpenedAnchor();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62073,7 +62073,7 @@ void wxHtmlWindow_GetOpenedPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetOpenedPage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62088,7 +62088,7 @@ void wxHtmlWindow_GetOpenedPageTitle(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetOpenedPageTitle();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62103,7 +62103,7 @@ void wxHtmlWindow_GetRelatedFrame(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxFrame * Result = (wxFrame*)This->GetRelatedFrame();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFrame"));
 
 }
@@ -62118,7 +62118,7 @@ void wxHtmlWindow_HistoryBack(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HistoryBack();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62133,7 +62133,7 @@ void wxHtmlWindow_HistoryCanBack(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HistoryCanBack();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62148,7 +62148,7 @@ void wxHtmlWindow_HistoryCanForward(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HistoryCanForward();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62176,7 +62176,7 @@ void wxHtmlWindow_HistoryForward(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->HistoryForward();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62196,7 +62196,7 @@ void wxHtmlWindow_LoadFile(WxeApp *app, wxeCommand& Ecmd)
   wxFileName  filename = wxFileName(filenameStr);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadFile(filename);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62211,11 +62211,11 @@ void wxHtmlWindow_LoadPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary location_bin;
   wxString location;
-  if(enif_inspect_binary(env, argv[1], &location_bin)) Badarg(3506,"location");
+  if(!enif_inspect_binary(env, argv[1], &location_bin)) Badarg(3506,"location");
   location = wxString(location_bin.data, wxConvUTF8, location_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->LoadPage(location);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62243,7 +62243,7 @@ void wxHtmlWindow_SelectionToText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->SelectionToText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62317,11 +62317,11 @@ void wxHtmlWindow_SetFonts(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary normal_face_bin;
   wxString normal_face;
-  if(enif_inspect_binary(env, argv[1], &normal_face_bin)) Badarg(3512,"normal_face");
+  if(!enif_inspect_binary(env, argv[1], &normal_face_bin)) Badarg(3512,"normal_face");
   normal_face = wxString(normal_face_bin.data, wxConvUTF8, normal_face_bin.size);
   ErlNifBinary fixed_face_bin;
   wxString fixed_face;
-  if(enif_inspect_binary(env, argv[2], &fixed_face_bin)) Badarg(3512,"fixed_face");
+  if(!enif_inspect_binary(env, argv[2], &fixed_face_bin)) Badarg(3512,"fixed_face");
   fixed_face = wxString(fixed_face_bin.data, wxConvUTF8, fixed_face_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
@@ -62363,11 +62363,11 @@ void wxHtmlWindow_SetPage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   ErlNifBinary source_bin;
   wxString source;
-  if(enif_inspect_binary(env, argv[1], &source_bin)) Badarg(3513,"source");
+  if(!enif_inspect_binary(env, argv[1], &source_bin)) Badarg(3513,"source");
   source = wxString(source_bin.data, wxConvUTF8, source_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetPage(source);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62384,7 +62384,7 @@ void wxHtmlWindow_SetRelatedFrame(WxeApp *app, wxeCommand& Ecmd)
   frame = (wxFrame *) memenv->getPtr(env, argv[1]);
   ErlNifBinary format_bin;
   wxString format;
-  if(enif_inspect_binary(env, argv[2], &format_bin)) Badarg(3514,"format");
+  if(!enif_inspect_binary(env, argv[2], &format_bin)) Badarg(3514,"format");
   format = wxString(format_bin.data, wxConvUTF8, format_bin.size);
   if(!This) throw wxe_badarg("This");
   This->SetRelatedFrame(frame,format);
@@ -62416,7 +62416,7 @@ void wxHtmlWindow_ToText(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlWindow *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->ToText();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62431,7 +62431,7 @@ void wxHtmlLinkEvent_GetLinkInfo(WxeApp *app, wxeCommand& Ecmd)
   This = (wxHtmlLinkEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxHtmlLinkInfo * Result = &This->GetLinkInfo();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62445,7 +62445,7 @@ void wxSystemSettings_GetColour(WxeApp *app, wxeCommand& Ecmd)
   wxSystemColour index;
   if(!enif_get_int(env, argv[0], (int *) &index)) Badarg(3519,"index"); // enum
   wxColour Result = wxSystemSettings::GetColour(index);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62459,7 +62459,7 @@ void wxSystemSettings_GetFont(WxeApp *app, wxeCommand& Ecmd)
   wxSystemFont index;
   if(!enif_get_int(env, argv[0], (int *) &index)) Badarg(3520,"index"); // enum
   wxFont * Result = new EwxFont(wxSystemSettings::GetFont(index)); app->newPtr((void *) Result,3, memenv);;
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxFont"));
 
 }
@@ -62486,7 +62486,7 @@ void wxSystemSettings_GetMetric(WxeApp *app, wxeCommand& Ecmd)
     } else        Badarg(3521,"Options");
   };
   int Result = wxSystemSettings::GetMetric(index,win);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -62496,7 +62496,7 @@ void wxSystemSettings_GetScreenType(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxSystemSettings::GetScreenType();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -62509,10 +62509,10 @@ void wxSystemOptions_GetOption(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3523,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3523,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   wxString Result = wxSystemOptions::GetOption(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -62525,10 +62525,10 @@ void wxSystemOptions_GetOptionInt(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3524,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3524,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int Result = wxSystemOptions::GetOptionInt(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -62541,10 +62541,10 @@ void wxSystemOptions_HasOption(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3525,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3525,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   bool Result = wxSystemOptions::HasOption(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62557,10 +62557,10 @@ void wxSystemOptions_IsFalse(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3526,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3526,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   bool Result = wxSystemOptions::IsFalse(name);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62573,11 +62573,11 @@ void wxSystemOptions_SetOption_2_1(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3527,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3527,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   ErlNifBinary value_bin;
   wxString value;
-  if(enif_inspect_binary(env, argv[1], &value_bin)) Badarg(3527,"value");
+  if(!enif_inspect_binary(env, argv[1], &value_bin)) Badarg(3527,"value");
   value = wxString(value_bin.data, wxConvUTF8, value_bin.size);
   wxSystemOptions::SetOption(name,value);
 
@@ -62591,7 +62591,7 @@ void wxSystemOptions_SetOption_2_0(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
   wxString name;
-  if(enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3528,"name");
+  if(!enif_inspect_binary(env, argv[0], &name_bin)) Badarg(3528,"name");
   name = wxString(name_bin.data, wxConvUTF8, name_bin.size);
   int value;
   if(!enif_get_int(env, argv[1], &value)) Badarg(3528,"value"); // int
@@ -62624,7 +62624,7 @@ void wxAuiNotebookEvent_GetSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiNotebookEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -62654,7 +62654,7 @@ void wxAuiNotebookEvent_GetOldSelection(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiNotebookEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetOldSelection();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -62684,7 +62684,7 @@ void wxAuiNotebookEvent_GetDragSource(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiNotebookEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiNotebook * Result = (wxAuiNotebook*)This->GetDragSource();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiNotebook"));
 
 }
@@ -62714,7 +62714,7 @@ void wxAuiManagerEvent_GetManager(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiManager * Result = (wxAuiManager*)This->GetManager();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiManager"));
 
 }
@@ -62744,7 +62744,7 @@ void wxAuiManagerEvent_GetPane(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxAuiPaneInfo * Result = (wxAuiPaneInfo*)This->GetPane();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxAuiPaneInfo"));
 
 }
@@ -62774,7 +62774,7 @@ void wxAuiManagerEvent_GetButton(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetButton();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -62804,7 +62804,7 @@ void wxAuiManagerEvent_GetDC(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxDC * Result = (wxDC*)This->GetDC();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDC"));
 
 }
@@ -62845,7 +62845,7 @@ void wxAuiManagerEvent_GetVeto(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetVeto();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62875,7 +62875,7 @@ void wxAuiManagerEvent_CanVeto(WxeApp *app, wxeCommand& Ecmd)
   This = (wxAuiManagerEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->CanVeto();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62886,7 +62886,7 @@ void wxLogNull_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxLogNull * Result = new wxLogNull();
   app->newPtr((void *) Result, 227, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxLogNull"));
 
 }
@@ -62909,7 +62909,7 @@ void wxTaskBarIcon_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxTaskBarIcon * Result = new EwxTaskBarIcon();
   app->newPtr((void *) Result, 1, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxTaskBarIcon"));
 
 }
@@ -62926,7 +62926,7 @@ void wxTaskBarIcon_PopupMenu(WxeApp *app, wxeCommand& Ecmd)
   menu = (wxMenu *) memenv->getPtr(env, argv[1]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->PopupMenu(menu);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62941,7 +62941,7 @@ void wxTaskBarIcon_RemoveIcon(WxeApp *app, wxeCommand& Ecmd)
   This = (wxTaskBarIcon *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->RemoveIcon();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62967,13 +62967,13 @@ void wxTaskBarIcon_SetIcon(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3553,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "tooltip"))) {
   ErlNifBinary tooltip_bin;
-  if(enif_inspect_binary(env, tpl[1], &tooltip_bin)) Badarg(3553,"tooltip");
+  if(!enif_inspect_binary(env, tpl[1], &tooltip_bin)) Badarg(3553,"tooltip");
   tooltip = wxString(tooltip_bin.data, wxConvUTF8, tooltip_bin.size);
     } else        Badarg(3553,"Options");
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetIcon(*icon,tooltip);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -62984,7 +62984,7 @@ void wxLocale_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxLocale * Result = new EwxLocale();
   app->newPtr((void *) Result, 231, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxLocale"));
 
 }
@@ -63012,7 +63012,7 @@ void wxLocale_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxLocale * Result = new EwxLocale(language,flags);
   app->newPtr((void *) Result, 231, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxLocale"));
 
 }
@@ -63055,7 +63055,7 @@ void wxLocale_Init(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Init(language,flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63070,11 +63070,11 @@ void wxLocale_AddCatalog_1(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szDomain_bin;
   wxString szDomain;
-  if(enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3560,"szDomain");
+  if(!enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3560,"szDomain");
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddCatalog(szDomain);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63089,17 +63089,17 @@ void wxLocale_AddCatalog_3(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szDomain_bin;
   wxString szDomain;
-  if(enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3561,"szDomain");
+  if(!enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3561,"szDomain");
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
   wxLanguage msgIdLanguage;
   if(!enif_get_int(env, argv[2], (int *) &msgIdLanguage)) Badarg(3561,"msgIdLanguage"); // enum
   ErlNifBinary msgIdCharset_bin;
   wxString msgIdCharset;
-  if(enif_inspect_binary(env, argv[3], &msgIdCharset_bin)) Badarg(3561,"msgIdCharset");
+  if(!enif_inspect_binary(env, argv[3], &msgIdCharset_bin)) Badarg(3561,"msgIdCharset");
   msgIdCharset = wxString(msgIdCharset_bin.data, wxConvUTF8, msgIdCharset_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->AddCatalog(szDomain,msgIdLanguage,msgIdCharset);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63112,7 +63112,7 @@ void wxLocale_AddCatalogLookupPathPrefix(WxeApp *app, wxeCommand& Ecmd)
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary prefix_bin;
   wxString prefix;
-  if(enif_inspect_binary(env, argv[0], &prefix_bin)) Badarg(3562,"prefix");
+  if(!enif_inspect_binary(env, argv[0], &prefix_bin)) Badarg(3562,"prefix");
   prefix = wxString(prefix_bin.data, wxConvUTF8, prefix_bin.size);
   wxLocale::AddCatalogLookupPathPrefix(prefix);
 
@@ -63128,7 +63128,7 @@ void wxLocale_GetCanonicalName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetCanonicalName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63143,7 +63143,7 @@ void wxLocale_GetLanguage(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetLanguage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -63157,7 +63157,7 @@ void wxLocale_GetLanguageName(WxeApp *app, wxeCommand& Ecmd)
   int lang;
   if(!enif_get_int(env, argv[0], &lang)) Badarg(3565,"lang"); // int
   wxString Result = wxLocale::GetLanguageName(lang);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63172,7 +63172,7 @@ void wxLocale_GetLocale(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxeLocaleC Result = This->GetLocale();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(wxeLocaleC2String(Result)));
 
 }
@@ -63187,7 +63187,7 @@ void wxLocale_GetName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   const wxString * Result = &This->GetName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63203,7 +63203,7 @@ void wxLocale_GetString_2(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szOrigString_bin;
   wxString szOrigString;
-  if(enif_inspect_binary(env, argv[1], &szOrigString_bin)) Badarg(3568,"szOrigString");
+  if(!enif_inspect_binary(env, argv[1], &szOrigString_bin)) Badarg(3568,"szOrigString");
   szOrigString = wxString(szOrigString_bin.data, wxConvUTF8, szOrigString_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -63215,13 +63215,13 @@ void wxLocale_GetString_2(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3568,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "szDomain"))) {
   ErlNifBinary szDomain_bin;
-  if(enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3568,"szDomain");
+  if(!enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3568,"szDomain");
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
     } else        Badarg(3568,"Options");
   };
   if(!This) throw wxe_badarg("This");
   const wxeLocaleC Result = This->GetString(szOrigString,szDomain);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(wxeLocaleC2String(Result)));
 
 }
@@ -63237,11 +63237,11 @@ void wxLocale_GetString_4(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szOrigString_bin;
   wxString szOrigString;
-  if(enif_inspect_binary(env, argv[1], &szOrigString_bin)) Badarg(3569,"szOrigString");
+  if(!enif_inspect_binary(env, argv[1], &szOrigString_bin)) Badarg(3569,"szOrigString");
   szOrigString = wxString(szOrigString_bin.data, wxConvUTF8, szOrigString_bin.size);
   ErlNifBinary szOrigString2_bin;
   wxString szOrigString2;
-  if(enif_inspect_binary(env, argv[2], &szOrigString2_bin)) Badarg(3569,"szOrigString2");
+  if(!enif_inspect_binary(env, argv[2], &szOrigString2_bin)) Badarg(3569,"szOrigString2");
   szOrigString2 = wxString(szOrigString2_bin.data, wxConvUTF8, szOrigString2_bin.size);
   int n;
   if(!enif_get_int(env, argv[3], &n)) Badarg(3569,"n"); // "size_t"
@@ -63255,13 +63255,13 @@ void wxLocale_GetString_4(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3569,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "szDomain"))) {
   ErlNifBinary szDomain_bin;
-  if(enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3569,"szDomain");
+  if(!enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3569,"szDomain");
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
     } else        Badarg(3569,"Options");
   };
   if(!This) throw wxe_badarg("This");
   const wxeLocaleC Result = This->GetString(szOrigString,szOrigString2,n,szDomain);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(wxeLocaleC2String(Result)));
 
 }
@@ -63277,7 +63277,7 @@ void wxLocale_GetHeaderValue(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szHeader_bin;
   wxString szHeader;
-  if(enif_inspect_binary(env, argv[1], &szHeader_bin)) Badarg(3570,"szHeader");
+  if(!enif_inspect_binary(env, argv[1], &szHeader_bin)) Badarg(3570,"szHeader");
   szHeader = wxString(szHeader_bin.data, wxConvUTF8, szHeader_bin.size);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -63289,13 +63289,13 @@ void wxLocale_GetHeaderValue(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(3570,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "szDomain"))) {
   ErlNifBinary szDomain_bin;
-  if(enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3570,"szDomain");
+  if(!enif_inspect_binary(env, tpl[1], &szDomain_bin)) Badarg(3570,"szDomain");
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
     } else        Badarg(3570,"Options");
   };
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetHeaderValue(szHeader,szDomain);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63310,7 +63310,7 @@ void wxLocale_GetSysName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetSysName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63320,7 +63320,7 @@ void wxLocale_GetSystemEncoding(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxLocale::GetSystemEncoding();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -63330,7 +63330,7 @@ void wxLocale_GetSystemEncodingName(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   wxString Result = wxLocale::GetSystemEncodingName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63340,7 +63340,7 @@ void wxLocale_GetSystemLanguage(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxLocale::GetSystemLanguage();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -63355,11 +63355,11 @@ void wxLocale_IsLoaded(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   ErlNifBinary szDomain_bin;
   wxString szDomain;
-  if(enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3575,"szDomain");
+  if(!enif_inspect_binary(env, argv[1], &szDomain_bin)) Badarg(3575,"szDomain");
   szDomain = wxString(szDomain_bin.data, wxConvUTF8, szDomain_bin.size);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsLoaded(szDomain);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63374,7 +63374,7 @@ void wxLocale_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxLocale *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63389,7 +63389,7 @@ void wxActivateEvent_GetActive(WxeApp *app, wxeCommand& Ecmd)
   This = (wxActivateEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetActive();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63418,7 +63418,7 @@ void wxPopupWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPopupWindow * Result = new EwxPopupWindow(parent,flags);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPopupWindow"));
 
 }
@@ -63429,7 +63429,7 @@ void wxPopupWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPopupWindow * Result = new EwxPopupWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPopupWindow"));
 
 }
@@ -63459,7 +63459,7 @@ void wxPopupWindow_Create(WxeApp *app, wxeCommand& Ecmd)
   };
   if(!This) throw wxe_badarg("This");
   bool Result = This->Create(parent,flags);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63501,7 +63501,7 @@ void wxPopupTransientWindow_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxPopupTransientWindow * Result = new EwxPopupTransientWindow();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPopupTransientWindow"));
 
 }
@@ -63529,7 +63529,7 @@ void wxPopupTransientWindow_new_2(WxeApp *app, wxeCommand& Ecmd)
   };
   wxPopupTransientWindow * Result = new EwxPopupTransientWindow(parent,style);
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxPopupTransientWindow"));
 
 }
@@ -63580,7 +63580,7 @@ void wxOverlay_new(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxOverlay * Result = new wxOverlay();
   app->newPtr((void *) Result, 236, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxOverlay"));
 
 }
@@ -63630,7 +63630,7 @@ void wxDCOverlay_new_6(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, argv[5], &height)) Badarg(3593,"height"); // int
   wxDCOverlay * Result = new EwxDCOverlay(*overlay,dc,x,y,width,height);
   app->newPtr((void *) Result, 237, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDCOverlay"));
 
 }
@@ -63647,7 +63647,7 @@ void wxDCOverlay_new_2(WxeApp *app, wxeCommand& Ecmd)
   dc = (wxWindowDC *) memenv->getPtr(env, argv[1]);
   wxDCOverlay * Result = new EwxDCOverlay(*overlay,dc);
   app->newPtr((void *) Result, 237, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDCOverlay"));
 
 }
@@ -63687,7 +63687,7 @@ void wxDropFilesEvent_GetPosition(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDropFilesEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxPoint Result = This->GetPosition();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63702,7 +63702,7 @@ void wxDropFilesEvent_GetNumberOfFiles(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDropFilesEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   int Result = This->GetNumberOfFiles();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -63717,7 +63717,7 @@ void wxDropFilesEvent_GetFiles(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDropFilesEvent *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString * Result = (wxString*)This->GetFiles();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_list_strings(This->m_noFiles, Result)
 );
 
@@ -63745,7 +63745,7 @@ void wxDisplay_new(WxeApp *app, wxeCommand& Ecmd)
   };
   wxDisplay * Result = new wxDisplay(n);
   app->newPtr((void *) Result, 239, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxDisplay"));
 
 }
@@ -63772,7 +63772,7 @@ void wxDisplay_IsOk(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDisplay *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsOk();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63788,7 +63788,7 @@ void wxDisplay_GetClientArea(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDisplay *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetClientArea();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63804,7 +63804,7 @@ void wxDisplay_GetGeometry(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDisplay *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxRect Result = This->GetGeometry();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63819,7 +63819,7 @@ void wxDisplay_GetName(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDisplay *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxString Result = This->GetName();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63834,7 +63834,7 @@ void wxDisplay_IsPrimary(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDisplay *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   bool Result = This->IsPrimary();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -63844,7 +63844,7 @@ void wxDisplay_GetCount(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
   int Result = wxDisplay::GetCount();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_uint(Result));
 
 }
@@ -63864,7 +63864,7 @@ void wxDisplay_GetFromPoint(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, pt_t[1], &ptY)) Badarg(3608,"pt");
   wxPoint pt = wxPoint(ptX,ptY);
   int Result = wxDisplay::GetFromPoint(pt);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -63878,7 +63878,7 @@ void wxDisplay_GetFromWindow(WxeApp *app, wxeCommand& Ecmd)
   wxWindow *window;
   window = (wxWindow *) memenv->getPtr(env, argv[0]);
   int Result = wxDisplay::GetFromWindow(window);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_int(Result));
 
 }
@@ -63894,7 +63894,7 @@ void wxDisplay_GetPPI(WxeApp *app, wxeCommand& Ecmd)
   This = (wxDisplay *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxSize Result = This->GetPPI();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make(Result));
 
 }
@@ -63912,7 +63912,7 @@ void wxGCDC_new_1(WxeApp *app, wxeCommand& Ecmd)
   dc = (wxWindowDC *) memenv->getPtr(env, argv[0]);
   wxGCDC * Result = new EwxGCDC(*dc);
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGCDC"));
 
 }
@@ -63923,7 +63923,7 @@ void wxGCDC_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxGCDC * Result = new EwxGCDC();
   app->newPtr((void *) Result, 8, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxGCDC"));
 
 }
@@ -63938,7 +63938,7 @@ void wxGCDC_GetGraphicsContext(WxeApp *app, wxeCommand& Ecmd)
   This = (wxGCDC *) memenv->getPtr(env, argv[0]);
   if(!This) throw wxe_badarg("This");
   wxGraphicsContext * Result = (wxGraphicsContext*)This->GetGraphicsContext();
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv,8), "wxGraphicsContext")
 );
 

@@ -84,8 +84,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarwxstatusbar">external documentation</a>.
 -spec new() -> wxStatusBar().
 new() ->
-  wxe_util:construct(?wxStatusBar_new_0,
-  <<>>).
+  wxe_util:construct(?wxStatusBar_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxStatusBar() when
@@ -103,12 +102,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({winid, Winid}, Acc) -> [<<1:32/?UI,Winid:32/?UI>>|Acc];
-          ({style, Style}, Acc) -> [<<2:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxStatusBar_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxStatusBar_new_2,[ParentRef, Options]).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -127,12 +121,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({winid, Winid}, Acc) -> [<<1:32/?UI,Winid:32/?UI>>|Acc];
-          ({style, Style}, Acc) -> [<<2:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStatusBar_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxStatusBar_Create,[ThisRef,ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbargetfieldrect">external documentation</a>.
 -spec getFieldRect(This, I) -> Result when
@@ -141,16 +130,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
 getFieldRect(#wx_ref{type=ThisT,ref=ThisRef},I)
  when is_integer(I) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:call(?wxStatusBar_GetFieldRect,
-  <<ThisRef:32/?UI,I:32/?UI>>).
+  wxe_util:call(?wxStatusBar_GetFieldRect,[ThisRef,I]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbargetfieldscount">external documentation</a>.
 -spec getFieldsCount(This) -> integer() when
 	This::wxStatusBar().
 getFieldsCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:call(?wxStatusBar_GetFieldsCount,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStatusBar_GetFieldsCount,[ThisRef]).
 
 %% @equiv getStatusText(This, [])
 -spec getStatusText(This) -> unicode:charlist() when
@@ -167,11 +154,7 @@ getStatusText(This)
 getStatusText(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  MOpts = fun({number, Number}, Acc) -> [<<1:32/?UI,Number:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStatusBar_GetStatusText,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxStatusBar_GetStatusText,[ThisRef, Options]).
 
 %% @equiv popStatusText(This, [])
 -spec popStatusText(This) -> 'ok' when
@@ -188,11 +171,7 @@ popStatusText(This)
 popStatusText(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  MOpts = fun({number, Number}, Acc) -> [<<1:32/?UI,Number:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxStatusBar_PopStatusText,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxStatusBar_PopStatusText,[ThisRef, Options]).
 
 %% @equiv pushStatusText(This,Text, [])
 -spec pushStatusText(This, Text) -> 'ok' when
@@ -210,11 +189,7 @@ pushStatusText(#wx_ref{type=ThisT,ref=ThisRef},Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  MOpts = fun({number, Number}, Acc) -> [<<1:32/?UI,Number:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxStatusBar_PushStatusText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:cast(?wxStatusBar_PushStatusText,[ThisRef,Text_UC, Options]).
 
 %% @equiv setFieldsCount(This,Number, [])
 -spec setFieldsCount(This, Number) -> 'ok' when
@@ -231,12 +206,7 @@ setFieldsCount(This,Number)
 setFieldsCount(#wx_ref{type=ThisT,ref=ThisRef},Number, Options)
  when is_integer(Number),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  MOpts = fun({widths, Widths}, Acc) -> [<<1:32/?UI,(length(Widths)):32/?UI,
-        (<< <<C:32/?I>> || C <- Widths>>)/binary, 0:(((0+length(Widths)) rem 2)*32)>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxStatusBar_SetFieldsCount,
-  <<ThisRef:32/?UI,Number:32/?UI, BinOpt/binary>>).
+  wxe_util:cast(?wxStatusBar_SetFieldsCount,[ThisRef,Number, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetminheight">external documentation</a>.
 -spec setMinHeight(This, Height) -> 'ok' when
@@ -244,8 +214,7 @@ setFieldsCount(#wx_ref{type=ThisT,ref=ThisRef},Number, Options)
 setMinHeight(#wx_ref{type=ThisT,ref=ThisRef},Height)
  when is_integer(Height) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:cast(?wxStatusBar_SetMinHeight,
-  <<ThisRef:32/?UI,Height:32/?UI>>).
+  wxe_util:cast(?wxStatusBar_SetMinHeight,[ThisRef,Height]).
 
 %% @equiv setStatusText(This,Text, [])
 -spec setStatusText(This, Text) -> 'ok' when
@@ -263,11 +232,7 @@ setStatusText(#wx_ref{type=ThisT,ref=ThisRef},Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  MOpts = fun({number, Number}, Acc) -> [<<1:32/?UI,Number:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxStatusBar_SetStatusText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:cast(?wxStatusBar_SetStatusText,[ThisRef,Text_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetstatuswidths">external documentation</a>.
 -spec setStatusWidths(This, Widths_field) -> 'ok' when
@@ -275,9 +240,7 @@ setStatusText(#wx_ref{type=ThisT,ref=ThisRef},Text, Options)
 setStatusWidths(#wx_ref{type=ThisT,ref=ThisRef},Widths_field)
  when is_list(Widths_field) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:cast(?wxStatusBar_SetStatusWidths,
-  <<ThisRef:32/?UI,(length(Widths_field)):32/?UI,
-        (<< <<C:32/?I>> || C <- Widths_field>>)/binary, 0:(((0+length(Widths_field)) rem 2)*32)>>).
+  wxe_util:cast(?wxStatusBar_SetStatusWidths,[ThisRef,Widths_field]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetstatusstyles">external documentation</a>.
 -spec setStatusStyles(This, Styles) -> 'ok' when
@@ -285,9 +248,7 @@ setStatusWidths(#wx_ref{type=ThisT,ref=ThisRef},Widths_field)
 setStatusStyles(#wx_ref{type=ThisT,ref=ThisRef},Styles)
  when is_list(Styles) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:cast(?wxStatusBar_SetStatusStyles,
-  <<ThisRef:32/?UI,(length(Styles)):32/?UI,
-        (<< <<C:32/?I>> || C <- Styles>>)/binary, 0:(((0+length(Styles)) rem 2)*32)>>).
+  wxe_util:cast(?wxStatusBar_SetStatusStyles,[ThisRef,Styles]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStatusBar()) -> 'ok'.

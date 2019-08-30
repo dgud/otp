@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -55,16 +55,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxNotebookEvent().
 getOldSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:call(?wxNotebookEvent_GetOldSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxNotebookEvent_GetOldSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxNotebookEvent().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:call(?wxNotebookEvent_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxNotebookEvent_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventsetoldselection">external documentation</a>.
 -spec setOldSelection(This, NOldSel) -> 'ok' when
@@ -72,8 +70,7 @@ getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setOldSelection(#wx_ref{type=ThisT,ref=ThisRef},NOldSel)
  when is_integer(NOldSel) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:cast(?wxNotebookEvent_SetOldSelection,
-  <<ThisRef:32/?UI,NOldSel:32/?UI>>).
+  wxe_util:cast(?wxNotebookEvent_SetOldSelection,[ThisRef,NOldSel]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxnotebookevent.html#wxnotebookeventsetselection">external documentation</a>.
 -spec setSelection(This, NSel) -> 'ok' when
@@ -81,8 +78,7 @@ setOldSelection(#wx_ref{type=ThisT,ref=ThisRef},NOldSel)
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},NSel)
  when is_integer(NSel) ->
   ?CLASS(ThisT,wxNotebookEvent),
-  wxe_util:cast(?wxNotebookEvent_SetSelection,
-  <<ThisRef:32/?UI,NSel:32/?UI>>).
+  wxe_util:cast(?wxNotebookEvent_SetSelection,[ThisRef,NSel]).
 
  %% From wxNotifyEvent
 %% @hidden

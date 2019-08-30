@@ -269,8 +269,7 @@ gen_export(#class{name=Class,abstract=Abs},Ms0) ->
     case Res of
 	[] -> [];
 	[M=#method{where=taylormade}|_] ->
-	    try
-		[deprecated(M, taylormade_export(Class, M))]
+	    try	[deprecated(M, taylormade_export(Class, M))]
 	    catch error:{badmatch, {error, enoent}} ->
 		    lists:map(GetF, Res)
 	    end;
@@ -329,8 +328,8 @@ gen_method2(M=#method{name=N,alias=A,params=Ps,type=T,method_type=MT,id=MethodId
     {Args, Optional} = split_optional(Ps),
     gen_function_clause(erl_func_name(N,A),MT, Args, Optional, []),
     MId = arg_type_tests(Args, "?" ++ get_unique_name(MethodId)),
-    {MArgs,Align} = marshal_args(Args),
-    MOpts = marshal_opts(Optional, Align, Args),
+    MArgs = marshal_args(Args),
+    MOpts = marshal_opts(Optional, Args),
     case gen_util:get_hook(erl, M#method.pre_hook) of
 	ignore -> skip;
 	Pre -> w("  ~s~n", [Pre])
@@ -343,11 +342,11 @@ gen_method2(M=#method{name=N,alias=A,params=Ps,type=T,method_type=MT,id=MethodId
 
     case have_return_vals(T, Ps) of
 	_ when MT =:= constructor ->
-	    w("  wxe_util:construct(~s,~n  <<~s~s>>)", [MId, MArgs,MOpts]);
+	    w("  wxe_util:construct(~s,[~s~s])", [MId, MArgs,MOpts]);
 	true ->
-	    w("  wxe_util:call(~s,~n  <<~s~s>>)", [MId, MArgs,MOpts]);
+	    w("  wxe_util:call(~s,[~s~s])", [MId, MArgs,MOpts]);
 	false ->
-	    w("  wxe_util:cast(~s,~n  <<~s~s>>)", [MId, MArgs,MOpts])
+	    w("  wxe_util:cast(~s,[~s~s])", [MId, MArgs,MOpts])
     end,
     case gen_util:get_hook(erl, M#method.post_hook) of
 	ignore -> skip;
@@ -501,18 +500,18 @@ arg_type_test(#param{name=Name0,def=none,in=In,
 		  Ps21),
     w("?~s\n     end,~s",[get_unique_name(M2),EOS]),
     Opname;
-arg_type_test(#param{name=Name0, type=#type{base=eventType}}, EOS, Acc) ->
-    Name = erl_arg_name(Name0),
-    w("  ~sBin = list_to_binary([atom_to_list(~s)|[0]]),~s", [Name,Name,EOS]),
-    w("  ThisTypeBin = list_to_binary([atom_to_list(ThisT)|[0]]),~s", [EOS]),
+arg_type_test(#param{name=_Name0, type=#type{base=eventType}}, _EOS, Acc) ->
+    %% Name = erl_arg_name(Name0),
+    %% w("  ~sBin = list_to_binary([atom_to_list(~s)|[0]]),~s", [Name,Name,EOS]),
+    %% w("  ThisTypeBin = list_to_binary([atom_to_list(ThisT)|[0]]),~s", [EOS]),
     Acc;
-arg_type_test(#param{name=Name0,def=none,type=#type{base={term,_}}}, EOS, Acc) ->
-    Name = erl_arg_name(Name0),
-    w("  wxe_util:send_bin(term_to_binary(~s)),~s", [Name,EOS]),
+arg_type_test(#param{name=_Name0,def=none,type=#type{base={term,_}}}, _EOS, Acc) ->
+    %% Name = erl_arg_name(Name0),
+    %% w("  wxe_util:send_bin(term_to_binary(~s)),~s", [Name,EOS]),
     Acc;
-arg_type_test(#param{name=Name0,type=#type{base=binary}},EOS,Acc) ->
-    Name = erl_arg_name(Name0),
-    w("  wxe_util:send_bin(~s),~s", [Name,EOS]),
+arg_type_test(#param{name=_Name0,type=#type{base=binary}},_EOS,Acc) ->
+    %% Name = erl_arg_name(Name0),
+    %% w("  wxe_util:send_bin(~s),~s", [Name,EOS]),
     Acc;
 arg_type_test(#param{name=Name0,type=#type{name=Type,base=Base,single=Single}},EOS,Acc) ->
     if
@@ -639,7 +638,7 @@ func_arg(#param{name=Name,type=#type{name="wxArtClient", single=true}}) ->
 func_arg(#param{name=Name,type=#type{base={comp,_,Tup}, single=true}}) ->
     N = erl_arg_name(Name),
     Doc = fun({_,V}) -> erl_arg_name(N)++V end,
-    "{" ++ args(Doc, ",", Tup) ++ "}";
+    "{" ++ args(Doc, ",", Tup) ++ "} = " ++ N;
 func_arg(#param{name=Name}) ->
     erl_arg_name(Name).
 
@@ -917,158 +916,172 @@ check_name("xor") -> "'Xor'";
 check_name("~" ++ _Name) -> "destroy";
 check_name(Name) -> Name.
 
-marshal_opts([], _,_) -> "";     %% No opts skip this!
-marshal_opts(Opts, Align, Args) ->
-    w("  MOpts = fun", []),
-    marshal_opts1(Opts,1),
-    w(";~n          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,~n", []),
-    w("  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),~n", []),
-    {Str, _} = align(64, Align, "BinOpt/binary"),
-    case Args of
-	[] -> Str;   % All Args are optional
-	_ ->    ", " ++ Str
-    end.
+marshal_opts([],_) -> "";     %% No opts skip this!
+marshal_opts(_Opts, []) ->
+    "Options";
+marshal_opts(_Opts, _) ->
+    ", Options".
 
-marshal_opts1([P],N) ->
-    marshal_opt(P,N);
-marshal_opts1([P|R],N) ->
-    marshal_opt(P,N),
-    w(";~n          ", []),
-    marshal_opts1(R,N+1).
+%%     w("  MOpts = fun", []),
+%%     marshal_opts1(Opts,1),
+%%     w(";~n          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,~n", []),
+%%     w("  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),~n", []),
+%%     {Str, _} = align(64, Align, "BinOpt/binary"),
+%%     case Args of
+%% 	[] -> Str;   % All Args are optional
+%% 	_ ->    ", " ++ Str
+%%     end.
 
-marshal_opt(P0=#param{name=Name,type=Type},N) ->
-    P = P0#param{def=none},
-    {Arg,Align} = marshal_arg(Type,erl_arg_name(Name),1),
-    AStr = if Align =:= 0 -> "";
-	      Align =:= 1 -> ",0:32"
-	   end,
-    w("({~s, ~s}, Acc) -> ", [erl_option_name(Name), func_arg(P)]),
-    arg_type_test(P,"",[]),
-    case Arg of
-	skip ->
-	    w("[<<~p:32/?UI~s>>|Acc]", [N, AStr]);
-	_ ->
-	    w("[<<~p:32/?UI,~s~s>>|Acc]", [N, Arg,AStr])
-    end.
+%% marshal_opts1([P],N) ->
+%%     marshal_opt(P,N);
+%% marshal_opts1([P|R],N) ->
+%%     marshal_opt(P,N),
+%%     w(";~n          ", []),
+%%     marshal_opts1(R,N+1).
+
+%% marshal_opt(P0=#param{name=Name,type=Type},N) ->
+%%     P = P0#param{def=none},
+%%     {Arg,Align} = marshal_arg(Type,erl_arg_name(Name),1),
+%%     AStr = if Align =:= 0 -> "";
+%% 	      Align =:= 1 -> ",0:32"
+%% 	   end,
+%%     w("({~s, ~s}, Acc) -> ", [erl_option_name(Name), func_arg(P)]),
+%%     arg_type_test(P,"",[]),
+%%     case Arg of
+%% 	skip ->
+%% 	    w("[<<~p:32/?UI~s>>|Acc]", [N, AStr]);
+%% 	_ ->
+%% 	    w("[<<~p:32/?UI,~s~s>>|Acc]", [N, Arg,AStr])
+%%     end.
+
 marshal_args(Ps) ->
-    marshal_args(Ps, [], 0).
+    marshal_args(Ps, []).
 
-marshal_args([#param{where=erl}|Ps], Margs, Align) ->
-    marshal_args(Ps, Margs, Align);
-marshal_args([#param{name=_N,where=c}|Ps], Margs, Align) ->
+marshal_args([#param{where=erl}|Ps], Margs) ->
+    marshal_args(Ps, Margs);
+marshal_args([#param{name=_N,where=c}|Ps], Margs) ->
     %% io:format("~p:~p: skip ~p~n",[get(current_class),get(current_func),_N]),
-    marshal_args(Ps, Margs, Align);
-marshal_args([#param{in=false}|Ps], Margs, Align) ->
-    marshal_args(Ps, Margs, Align);
-marshal_args([#param{def=Def}|Ps], Margs, Align) when Def =/= none ->
-    marshal_args(Ps, Margs, Align);
-marshal_args([#param{name=Name, type=Type}|Ps], Margs, Align0) ->
-    {Arg,Align} = marshal_arg(Type,erl_arg_name(Name),Align0),
-    marshal_args(Ps, [Arg|Margs], Align);
-marshal_args([],Margs, Align) ->
-    {args(fun(Str) -> Str end, ",", reverse(Margs)), Align}.
+    marshal_args(Ps, Margs);
+marshal_args([#param{in=false}|Ps], Margs) ->
+    marshal_args(Ps, Margs);
+marshal_args([#param{def=Def}|Ps], Margs) when Def =/= none ->
+    marshal_args(Ps, Margs);
+marshal_args([#param{name=Name, type=Type}|Ps], Margs) ->
+    Arg = marshal_arg(Type, erl_arg_name(Name)),
+    marshal_args(Ps, [Arg|Margs]);
+marshal_args([],Margs) ->
+    args(fun(Str) -> Str end, ",", reverse(Margs)).
 
-marshal_arg(#type{base={class,_}, single=true}, Name, Align) ->
-    align(32, Align, Name ++ "Ref:32/?UI");
-marshal_arg({merged,_,#type{base={class,_},single=true},_,_,_,_},Name,Align) ->
-    align(32, Align, Name ++ "Ref:32/?UI");
-marshal_arg(#type{base={ref,_}, single=true}, Name, Align) ->
-    align(32, Align, Name ++ "Ref:32/?UI");
-marshal_arg(#type{single=true,base=long}, Name, Align) ->
-    align(64, Align, Name ++ ":64/?UI");
-marshal_arg(#type{single=true,base=float}, Name, Align) ->
-    align(32, Align, Name ++ ":32/?F");
-marshal_arg(#type{single=true,base=double}, Name, Align) ->
-    align(64, Align, Name ++ ":64/?F");
-marshal_arg(#type{single=true,base=int64}, Name, Align) ->
-    align(64, Align, Name ++ ":64/?UI");
-marshal_arg(#type{single=true,base=int}, Name, Align) ->
-    align(32, Align, Name ++ ":32/?UI");
-marshal_arg(#type{single=true,base={enum,_Enum}}, Name, Align) ->
-    align(32, Align, Name ++ ":32/?UI");
-
-marshal_arg(#type{single=true,base=bool}, Name, Align) ->
-    align(32, Align, "(wxe_util:from_bool(" ++ Name ++ ")):32/?UI");
-marshal_arg(#type{name="wxChar", single=Single}, Name, Align0)
+marshal_arg(#type{base={class,_}, single=true}, Name) ->
+    Name ++ "Ref";
+marshal_arg({merged,_,#type{base={class,_},single=true},_,_,_,_},Name) ->
+    Name ++ "Ref";
+marshal_arg(#type{base={ref,_}, single=true}, Name) ->
+    Name ++ "Ref";
+marshal_arg(#type{name="wxChar", single=Single}, Name)
   when Single =/= true ->
-    {Str,Align} =
-	align(32,Align0, "(byte_size("++Name++"_UC)):32/?UI,(" ++ Name ++ "_UC)/binary"),
-    MsgSize = "(" ++ integer_to_list(Align*4)++"+byte_size("++Name++"_UC))",
-    {Str++", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",0};
-marshal_arg(#type{base=string}, Name, Align0) ->
-    {Str,Align} =
-	align(32,Align0, "(byte_size("++Name++"_UC)):32/?UI,(" ++ Name ++ "_UC)/binary"),
-    MsgSize = "(" ++ integer_to_list(Align*4)++"+byte_size("++Name++"_UC))",
-    {Str++", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",0};
-marshal_arg(#type{name="wxArrayString"}, Name, Align0) ->
-    InnerBin  = "<<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>",
-    Outer =  "(<< " ++ InnerBin ++ "|| UC_Str <- "++ Name ++"_UCA>>)/binary",
-    Str0  =  "(length("++Name++"_UCA)):32/?UI, " ++ Outer,
-    {Str,Align} = align(32,Align0,Str0),
-    MsgSize = "("++integer_to_list(Align*4) ++
-	" + lists:sum([byte_size(S)+4||S<-" ++ Name ++"_UCA]))",
-    AStr = ", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",
-    {Str ++ AStr, 0};
-marshal_arg(#type{single=true,base={comp,"wxColour",_Comp}}, Name, Align0) ->
-    Str = "(wxe_util:colour_bin(" ++ Name ++ ")):16/binary",
-    {Str,Align0};
-marshal_arg(#type{single=true,base={comp,"wxDateTime",_Comp}}, Name, Align) ->
-    {"(wxe_util:datetime_bin(" ++ Name ++ ")):24/binary", Align};
-marshal_arg(#type{single=true,base={comp,_,Comp}}, Name, Align0) ->
-    case hd(Comp) of
-	{int,_} ->
-	    A = [Name++Spec++":32/?UI" || {int,Spec} <- Comp],
-	    Str = args(fun(Str) -> Str end, ",", A),
-	    {Str,(Align0 + length(Comp)) rem 2};
-	{double,_} ->
-	    A = [Name++Spec++":64/?F" || {double,Spec} <- Comp],
-	    Str = args(fun(Str) -> Str end, ",", A),
-	    align(64,Align0,Str)
-    end;
-marshal_arg(#type{base={term,_}}, _Name, Align0) ->
-    {skip,Align0};
-marshal_arg(#type{base=binary}, _Name, Align0) ->
-    {skip,Align0};
-marshal_arg(#type{base=Base, single=Single}, Name, Align0)
-  when Single =/= true ->
-    case Base of
-	int ->
-	    Str0 = "(length("++Name++")):32/?UI,\n"
-		"        (<< <<C:32/?I>> || C <- "++Name++">>)/binary",
-	    {Str,Align} = align(32,Align0, Str0),
-	    {Str ++ ", 0:((("++integer_to_list(Align)++"+length("++Name++ ")) rem 2)*32)", 0};
-	{ObjRef,_} when ObjRef =:= class; ObjRef =:= ref ->
-	    Str0 = "(length("++Name++")):32/?UI,",
-	    Str1 = "\n     (<< <<(C#wx_ref.ref):32/?UI>> || C <- "++Name++">>)/binary",
-	    {Str2,Align} = align(32, Align0, Str1),
-	    AlignStr = ", 0:((("++integer_to_list(Align)++"+length("++Name++ ")) rem 2)*32)",
-	    {Str0 ++ Str2 ++ AlignStr, 0};
-	{comp, "wxPoint", _} ->
-	    Str0 = "(length("++Name++")):32/?UI,\n"
-		"        (<< <<X:32/?I,Y:32/?I>> || {X,Y} <- "++Name++">>)/binary",
-	    align(32,Align0, Str0);
-	{comp, "wxPoint2DDouble", _} ->
-	    Str0 = "(length("++Name++")):32/?UI,\n",
-	    Str1 = "    (<< <<X:64/?F,Y:64/?F>> || {X,Y} <- "++Name++">>)/binary",
-	    {Str,_Align} = align(64,Align0+1, Str1),
-	    {Str0 ++ Str, 0};
-	double ->
-	    Str0 = "(length("++Name++")):32/?UI,\n",
-	    Str1 = "  (<< <<C:64/?F>> || C <- "++Name++">>)/binary",
-	    {Str,_Align} = align(64,Align0+1, Str1),
-	    {Str0 ++ Str, 0};
-	_ ->
-	    ?error({unhandled_array_type, Base})
-    end;
-marshal_arg(T=#type{name=_wxString}, Name, _Align) ->
-    ?error({unhandled_type, {Name,T}}).
+    Name ++ "_UC";
+marshal_arg(#type{base=string}, Name) ->
+    Name ++ "_UC";
+marshal_arg(#type{name="wxArrayString"}, Name) ->
+    Name ++ "_UCA";
+marshal_arg(_, Name) ->
+    Name.
 
+%% marshal_arg(#type{base={class,_}, single=true}, Name, Align) ->
+%%     align(32, Align, Name ++ "Ref:32/?UI");
+%% marshal_arg({merged,_,#type{base={class,_},single=true},_,_,_,_},Name,Align) ->
+%%     align(32, Align, Name ++ "Ref:32/?UI");
+%% marshal_arg(#type{base={ref,_}, single=true}, Name, Align) ->
+%%     align(32, Align, Name ++ "Ref:32/?UI");
+%% marshal_arg(#type{single=true,base=long}, Name, Align) ->
+%%     align(64, Align, Name ++ ":64/?UI");
+%% marshal_arg(#type{single=true,base=float}, Name, Align) ->
+%%     align(32, Align, Name ++ ":32/?F");
+%% marshal_arg(#type{single=true,base=double}, Name, Align) ->
+%%     align(64, Align, Name ++ ":64/?F");
+%% marshal_arg(#type{single=true,base=int64}, Name, Align) ->
+%%     align(64, Align, Name ++ ":64/?UI");
+%% marshal_arg(#type{single=true,base=int}, Name, Align) ->
+%%     align(32, Align, Name ++ ":32/?UI");
+%% marshal_arg(#type{single=true,base={enum,_Enum}}, Name, Align) ->
+%%     align(32, Align, Name ++ ":32/?UI");
 
-align(32, 0, Str) -> {Str, 1};
-align(32, 1, Str) -> {Str, 0};
-align(64, 0, Str) -> {Str, 0};
-align(64, 1, Str) -> {"0:32," ++ Str,0};
-align(Sz, W, Str) -> align(Sz, W rem 2, Str).
+%% marshal_arg(#type{single=true,base=bool}, Name, Align) ->
+%%     align(32, Align, "(wxe_util:from_bool(" ++ Name ++ ")):32/?UI");
+%% marshal_arg(#type{name="wxChar", single=Single}, Name, Align0)
+%%   when Single =/= true ->
+%%     {Str,Align} =
+%% 	align(32,Align0, "(byte_size("++Name++"_UC)):32/?UI,(" ++ Name ++ "_UC)/binary"),
+%%     MsgSize = "(" ++ integer_to_list(Align*4)++"+byte_size("++Name++"_UC))",
+%%     {Str++", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",0};
+%% marshal_arg(#type{base=string}, Name, Align0) ->
+%%     {Str,Align} =
+%% 	align(32,Align0, "(byte_size("++Name++"_UC)):32/?UI,(" ++ Name ++ "_UC)/binary"),
+%%     MsgSize = "(" ++ integer_to_list(Align*4)++"+byte_size("++Name++"_UC))",
+%%     {Str++", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",0};
+%% marshal_arg(#type{name="wxArrayString"}, Name, Align0) ->
+%%     InnerBin  = "<<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>",
+%%     Outer =  "(<< " ++ InnerBin ++ "|| UC_Str <- "++ Name ++"_UCA>>)/binary",
+%%     Str0  =  "(length("++Name++"_UCA)):32/?UI, " ++ Outer,
+%%     {Str,Align} = align(32,Align0,Str0),
+%%     MsgSize = "("++integer_to_list(Align*4) ++
+%% 	" + lists:sum([byte_size(S)+4||S<-" ++ Name ++"_UCA]))",
+%%     AStr = ", 0:(((8- (" ++ MsgSize ++" band 16#7)) band 16#7))/unit:8",
+%%     {Str ++ AStr, 0};
+%% marshal_arg(#type{single=true,base={comp,"wxColour",_Comp}}, Name, Align0) ->
+%%     Str = "(wxe_util:colour_bin(" ++ Name ++ ")):16/binary",
+%%     {Str,Align0};
+%% marshal_arg(#type{single=true,base={comp,"wxDateTime",_Comp}}, Name, Align) ->
+%%     {"(wxe_util:datetime_bin(" ++ Name ++ ")):24/binary", Align};
+%% marshal_arg(#type{single=true,base={comp,_,Comp}}, Name, Align0) ->
+%%     case hd(Comp) of
+%% 	{int,_} ->
+%% 	    A = [Name++Spec++":32/?UI" || {int,Spec} <- Comp],
+%% 	    Str = args(fun(Str) -> Str end, ",", A),
+%% 	    {Str,(Align0 + length(Comp)) rem 2};
+%% 	{double,_} ->
+%% 	    A = [Name++Spec++":64/?F" || {double,Spec} <- Comp],
+%% 	    Str = args(fun(Str) -> Str end, ",", A),
+%% 	    align(64,Align0,Str)
+%%     end;
+%% marshal_arg(#type{base={term,_}}, _Name, Align0) ->
+%%     {skip,Align0};
+%% marshal_arg(#type{base=binary}, _Name, Align0) ->
+%%     {skip,Align0};
+%% marshal_arg(#type{base=Base, single=Single}, Name, Align0)
+%%   when Single =/= true ->
+%%     case Base of
+%% 	int ->
+%% 	    Str0 = "(length("++Name++")):32/?UI,\n"
+%% 		"        (<< <<C:32/?I>> || C <- "++Name++">>)/binary",
+%% 	    {Str,Align} = align(32,Align0, Str0),
+%% 	    {Str ++ ", 0:((("++integer_to_list(Align)++"+length("++Name++ ")) rem 2)*32)", 0};
+%% 	{ObjRef,_} when ObjRef =:= class; ObjRef =:= ref ->
+%% 	    Str0 = "(length("++Name++")):32/?UI,",
+%% 	    Str1 = "\n     (<< <<(C#wx_ref.ref):32/?UI>> || C <- "++Name++">>)/binary",
+%% 	    {Str2,Align} = align(32, Align0, Str1),
+%% 	    AlignStr = ", 0:((("++integer_to_list(Align)++"+length("++Name++ ")) rem 2)*32)",
+%% 	    {Str0 ++ Str2 ++ AlignStr, 0};
+%% 	{comp, "wxPoint", _} ->
+%% 	    Str0 = "(length("++Name++")):32/?UI,\n"
+%% 		"        (<< <<X:32/?I,Y:32/?I>> || {X,Y} <- "++Name++">>)/binary",
+%% 	    align(32,Align0, Str0);
+%% 	{comp, "wxPoint2DDouble", _} ->
+%% 	    Str0 = "(length("++Name++")):32/?UI,\n",
+%% 	    Str1 = "    (<< <<X:64/?F,Y:64/?F>> || {X,Y} <- "++Name++">>)/binary",
+%% 	    {Str,_Align} = align(64,Align0+1, Str1),
+%% 	    {Str0 ++ Str, 0};
+%% 	double ->
+%% 	    Str0 = "(length("++Name++")):32/?UI,\n",
+%% 	    Str1 = "  (<< <<C:64/?F>> || C <- "++Name++">>)/binary",
+%% 	    {Str,_Align} = align(64,Align0+1, Str1),
+%% 	    {Str0 ++ Str, 0};
+%% 	_ ->
+%% 	    ?error({unhandled_array_type, Base})
+%%     end;
+%% marshal_arg(T=#type{name=_wxString}, Name, _Align) ->
+%%     ?error({unhandled_type, {Name,T}}).
 
 enum_name(Name) ->
     case enum_split(Name) of

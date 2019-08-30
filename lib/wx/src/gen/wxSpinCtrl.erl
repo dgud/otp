@@ -84,8 +84,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlwxspinctrl">external documentation</a>.
 -spec new() -> wxSpinCtrl().
 new() ->
-  wxe_util:construct(?wxSpinCtrl_new_0,
-  <<>>).
+  wxe_util:construct(?wxSpinCtrl_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxSpinCtrl() when
@@ -109,18 +108,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary([Value,0]),[<<2:32/?UI,(byte_size(Value_UC)):32/?UI,(Value_UC)/binary, 0:(((8- ((0+byte_size(Value_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<3:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<4:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<5:32/?UI,Style:32/?UI>>|Acc];
-          ({min, Min}, Acc) -> [<<6:32/?UI,Min:32/?UI>>|Acc];
-          ({max, Max}, Acc) -> [<<7:32/?UI,Max:32/?UI>>|Acc];
-          ({initial, Initial}, Acc) -> [<<8:32/?UI,Initial:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxSpinCtrl_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxSpinCtrl_new_2,[ParentRef, Options]).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -145,18 +133,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
  when is_list(Options) ->
   ?CLASS(ThisT,wxSpinCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary([Value,0]),[<<2:32/?UI,(byte_size(Value_UC)):32/?UI,(Value_UC)/binary, 0:(((8- ((0+byte_size(Value_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<3:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<4:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<5:32/?UI,Style:32/?UI>>|Acc];
-          ({min, Min}, Acc) -> [<<6:32/?UI,Min:32/?UI>>|Acc];
-          ({max, Max}, Acc) -> [<<7:32/?UI,Max:32/?UI>>|Acc];
-          ({initial, Initial}, Acc) -> [<<8:32/?UI,Initial:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSpinCtrl_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxSpinCtrl_Create,[ThisRef,ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlsetvalue">external documentation</a>.
 %% <br /> Also:<br />
@@ -170,22 +147,19 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
 setValue(#wx_ref{type=ThisT,ref=ThisRef},Value)
  when is_integer(Value) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:cast(?wxSpinCtrl_SetValue_1_0,
-  <<ThisRef:32/?UI,Value:32/?UI>>);
+  wxe_util:cast(?wxSpinCtrl_SetValue_1_0,[ThisRef,Value]);
 setValue(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxSpinCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxSpinCtrl_SetValue_1_1,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxSpinCtrl_SetValue_1_1,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetvalue">external documentation</a>.
 -spec getValue(This) -> integer() when
 	This::wxSpinCtrl().
 getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:call(?wxSpinCtrl_GetValue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSpinCtrl_GetValue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlsetrange">external documentation</a>.
 -spec setRange(This, MinVal, MaxVal) -> 'ok' when
@@ -193,8 +167,7 @@ getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setRange(#wx_ref{type=ThisT,ref=ThisRef},MinVal,MaxVal)
  when is_integer(MinVal),is_integer(MaxVal) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:cast(?wxSpinCtrl_SetRange,
-  <<ThisRef:32/?UI,MinVal:32/?UI,MaxVal:32/?UI>>).
+  wxe_util:cast(?wxSpinCtrl_SetRange,[ThisRef,MinVal,MaxVal]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlsetselection">external documentation</a>.
 -spec setSelection(This, From, To) -> 'ok' when
@@ -202,24 +175,21 @@ setRange(#wx_ref{type=ThisT,ref=ThisRef},MinVal,MaxVal)
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},From,To)
  when is_integer(From),is_integer(To) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:cast(?wxSpinCtrl_SetSelection,
-  <<ThisRef:32/?UI,From:32/?UI,To:32/?UI>>).
+  wxe_util:cast(?wxSpinCtrl_SetSelection,[ThisRef,From,To]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetmin">external documentation</a>.
 -spec getMin(This) -> integer() when
 	This::wxSpinCtrl().
 getMin(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:call(?wxSpinCtrl_GetMin,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSpinCtrl_GetMin,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetmax">external documentation</a>.
 -spec getMax(This) -> integer() when
 	This::wxSpinCtrl().
 getMax(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  wxe_util:call(?wxSpinCtrl_GetMax,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSpinCtrl_GetMax,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSpinCtrl()) -> 'ok'.

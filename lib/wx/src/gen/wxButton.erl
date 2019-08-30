@@ -84,8 +84,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbutton.html#wxbuttonwxbutton">external documentation</a>.
 -spec new() -> wxButton().
 new() ->
-  wxe_util:construct(?wxButton_new_0,
-  <<>>).
+  wxe_util:construct(?wxButton_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxButton() when
@@ -106,15 +105,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({label, Label}, Acc) ->   Label_UC = unicode:characters_to_binary([Label,0]),[<<1:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxButton_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxButton_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -136,29 +127,19 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxButton),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({label, Label}, Acc) ->   Label_UC = unicode:characters_to_binary([Label,0]),[<<1:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxButton_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxButton_Create,[ThisRef,ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbutton.html#wxbuttongetdefaultsize">external documentation</a>.
 -spec getDefaultSize() -> {W::integer(), H::integer()}.
 getDefaultSize() ->
-  wxe_util:call(?wxButton_GetDefaultSize,
-  <<>>).
+  wxe_util:call(?wxButton_GetDefaultSize,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbutton.html#wxbuttonsetdefault">external documentation</a>.
 -spec setDefault(This) -> 'ok' when
 	This::wxButton().
 setDefault(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxButton),
-  wxe_util:cast(?wxButton_SetDefault,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxButton_SetDefault,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbutton.html#wxbuttonsetlabel">external documentation</a>.
 -spec setLabel(This, Label) -> 'ok' when
@@ -167,8 +148,7 @@ setLabel(#wx_ref{type=ThisT,ref=ThisRef},Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxButton),
   Label_UC = unicode:characters_to_binary([Label,0]),
-  wxe_util:cast(?wxButton_SetLabel,
-  <<ThisRef:32/?UI,(byte_size(Label_UC)):32/?UI,(Label_UC)/binary, 0:(((8- ((0+byte_size(Label_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxButton_SetLabel,[ThisRef,Label_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxButton()) -> 'ok'.

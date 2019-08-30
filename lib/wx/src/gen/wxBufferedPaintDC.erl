@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -92,11 +92,7 @@ new(Window,Buffer)
 new(#wx_ref{type=WindowT,ref=WindowRef}, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxBufferedPaintDC_new_2,
-  <<WindowRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxBufferedPaintDC_new_2,[WindowRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbufferedpaintdc.html#wxbufferedpaintdcwxbufferedpaintdc">external documentation</a>.
 -spec new(Window, Buffer, [Option]) -> wxBufferedPaintDC() when
@@ -106,11 +102,7 @@ new(#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{type=BufferT,ref=BufferRef}, Opt
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
   ?CLASS(BufferT,wxBitmap),
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxBufferedPaintDC_new_3,
-  <<WindowRef:32/?UI,BufferRef:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxBufferedPaintDC_new_3,[WindowRef,BufferRef, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBufferedPaintDC()) -> 'ok'.

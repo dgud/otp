@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -38,8 +38,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundlewxiconbundle">external documentation</a>.
 -spec new() -> wxIconBundle().
 new() ->
-  wxe_util:construct(?wxIconBundle_new_0,
-  <<>>).
+  wxe_util:construct(?wxIconBundle_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundlewxiconbundle">external documentation</a>.
 -spec new(Ic) -> wxIconBundle() when
@@ -51,8 +50,7 @@ new(#wx_ref{type=IcT,ref=IcRef}) ->
      _ -> ?CLASS(IcT,wxIcon),
        ?wxIconBundle_new_1_0
      end,
-  wxe_util:construct(IcOP,
-  <<IcRef:32/?UI>>).
+  wxe_util:construct(IcOP,[IcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundlewxiconbundle">external documentation</a>.
 -spec new(File, Type) -> wxIconBundle() when
@@ -60,8 +58,7 @@ new(#wx_ref{type=IcT,ref=IcRef}) ->
 new(File,Type)
  when ?is_chardata(File),is_integer(Type) ->
   File_UC = unicode:characters_to_binary([File,0]),
-  wxe_util:construct(?wxIconBundle_new_2,
-  <<(byte_size(File_UC)):32/?UI,(File_UC)/binary, 0:(((8- ((4+byte_size(File_UC)) band 16#7)) band 16#7))/unit:8,Type:32/?UI>>).
+  wxe_util:construct(?wxIconBundle_new_2,[File_UC,Type]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundleaddicon">external documentation</a>.
 -spec addIcon(This, Icon) -> 'ok' when
@@ -69,8 +66,7 @@ new(File,Type)
 addIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}) ->
   ?CLASS(ThisT,wxIconBundle),
   ?CLASS(IconT,wxIcon),
-  wxe_util:cast(?wxIconBundle_AddIcon_1,
-  <<ThisRef:32/?UI,IconRef:32/?UI>>).
+  wxe_util:cast(?wxIconBundle_AddIcon_1,[ThisRef,IconRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxiconbundle.html#wxiconbundleaddicon">external documentation</a>.
 -spec addIcon(This, File, Type) -> 'ok' when
@@ -79,8 +75,7 @@ addIcon(#wx_ref{type=ThisT,ref=ThisRef},File,Type)
  when ?is_chardata(File),is_integer(Type) ->
   ?CLASS(ThisT,wxIconBundle),
   File_UC = unicode:characters_to_binary([File,0]),
-  wxe_util:cast(?wxIconBundle_AddIcon_2,
-  <<ThisRef:32/?UI,(byte_size(File_UC)):32/?UI,(File_UC)/binary, 0:(((8- ((0+byte_size(File_UC)) band 16#7)) band 16#7))/unit:8,Type:32/?UI>>).
+  wxe_util:cast(?wxIconBundle_AddIcon_2,[ThisRef,File_UC,Type]).
 
 %% @equiv getIcon(This, [])
 -spec getIcon(This) -> wxIcon:wxIcon() when
@@ -103,16 +98,11 @@ getIcon(This)
 getIcon(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxIconBundle),
-  MOpts = fun({size, Size}, Acc) -> [<<1:32/?UI,Size:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxIconBundle_GetIcon_1_0,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>);
-getIcon(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
+  wxe_util:call(?wxIconBundle_GetIcon_1_0,[ThisRef, Options]);
+getIcon(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxIconBundle),
-  wxe_util:call(?wxIconBundle_GetIcon_1_1,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:call(?wxIconBundle_GetIcon_1_1,[ThisRef,Size]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxIconBundle()) -> 'ok'.

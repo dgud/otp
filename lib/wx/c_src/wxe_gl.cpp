@@ -83,7 +83,7 @@ void gl_dispatch(wxeCommand *event) {
   //     }
   //     gl_active = caller;
   } else {
-    enif_send(NULL, &event->pid, event->env,
+    enif_send(NULL, &event->caller, event->env,
               enif_make_tuple3(event->env,
                                enif_make_atom(event->env, "_egl_error_"),
                                enif_make_int(event->env, event->op),
@@ -93,9 +93,9 @@ void gl_dispatch(wxeCommand *event) {
     return ;
   }
   if((fptr = (WXE_GL_FUNC) wxe_gl_lookup_func(event->op))) {
-    fptr(event->env, &event->pid, event->args);
+    fptr(event->env, &event->caller, event->args);
   } else {
-    enif_send(NULL, &event->pid, event->env,
+    enif_send(NULL, &event->caller, event->env,
               enif_make_tuple3(event->env,
                                enif_make_atom(event->env, "_egl_error_"),
                                enif_make_int(event->env, event->op),

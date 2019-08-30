@@ -91,8 +91,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxwxlistbox">external documentation</a>.
 -spec new() -> wxListBox().
 new() ->
-  wxe_util:construct(?wxListBox_new_0,
-  <<>>).
+  wxe_util:construct(?wxListBox_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxListBox() when
@@ -113,21 +112,13 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({choices, Choices}, Acc) ->   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) ||               ChoicesTemp <- Choices],[<<3:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxListBox_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxListBox_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id,Pos,Size,Choices, [])
 -spec create(This, Parent, Id, Pos, Size, Choices) -> boolean() when
 	This::wxListBox(), Parent::wxWindow:wxWindow(), Id::integer(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()].
 
-create(This,Parent,Id,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
+create(This,Parent,Id,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
  when is_record(This, wx_ref),is_record(Parent, wx_ref),is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices) ->
   create(This,Parent,Id,Pos,Size,Choices, []).
 
@@ -136,18 +127,13 @@ create(This,Parent,Id,Pos={PosX,PosY},Size={SizeW,SizeH},Choices)
 	This::wxListBox(), Parent::wxWindow:wxWindow(), Id::integer(), Pos::{X::integer(), Y::integer()}, Size::{W::integer(), H::integer()}, Choices::[unicode:chardata()],
 	Option :: {'style', integer()}
 		 | {'validator', wx:wx_object()}.
-create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{PosX,PosY},{SizeW,SizeH},Choices, Options)
+create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxListBox),
   ?CLASS(ParentT,wxWindow),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<2:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxListBox_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,PosX:32/?UI,PosY:32/?UI,SizeW:32/?UI,SizeH:32/?UI,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxListBox_Create,[ThisRef,ParentRef,Id,Pos,Size,Choices_UCA, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxdeselect">external documentation</a>.
 -spec deselect(This, N) -> 'ok' when
@@ -155,8 +141,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,{P
 deselect(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:cast(?wxListBox_Deselect,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:cast(?wxListBox_Deselect,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxgetselections">external documentation</a>.
 -spec getSelections(This) -> Result when
@@ -164,8 +149,7 @@ deselect(#wx_ref{type=ThisT,ref=ThisRef},N)
 	This::wxListBox().
 getSelections(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:call(?wxListBox_GetSelections,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListBox_GetSelections,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxinsertitems">external documentation</a>.
 -spec insertItems(This, Items, Pos) -> 'ok' when
@@ -175,8 +159,7 @@ insertItems(#wx_ref{type=ThisT,ref=ThisRef},Items,Pos)
   ?CLASS(ThisT,wxListBox),
   Items_UCA = [unicode:characters_to_binary([ItemsTemp,0]) || 
               ItemsTemp <- Items],
-  wxe_util:cast(?wxListBox_InsertItems,
-  <<ThisRef:32/?UI,(length(Items_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Items_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Items_UCA])) band 16#7)) band 16#7))/unit:8,Pos:32/?UI>>).
+  wxe_util:cast(?wxListBox_InsertItems,[ThisRef,Items_UCA,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxisselected">external documentation</a>.
 -spec isSelected(This, N) -> boolean() when
@@ -184,8 +167,7 @@ insertItems(#wx_ref{type=ThisT,ref=ThisRef},Items,Pos)
 isSelected(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:call(?wxListBox_IsSelected,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:call(?wxListBox_IsSelected,[ThisRef,N]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxset">external documentation</a>.
 -spec set(This, Items) -> 'ok' when
@@ -195,17 +177,15 @@ set(#wx_ref{type=ThisT,ref=ThisRef},Items)
   ?CLASS(ThisT,wxListBox),
   Items_UCA = [unicode:characters_to_binary([ItemsTemp,0]) || 
               ItemsTemp <- Items],
-  wxe_util:cast(?wxListBox_Set,
-  <<ThisRef:32/?UI,(length(Items_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Items_UCA>>)/binary, 0:(((8- ((0 + lists:sum([byte_size(S)+4||S<-Items_UCA])) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxListBox_Set,[ThisRef,Items_UCA]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxhittest">external documentation</a>.
 -spec hitTest(This, Point) -> integer() when
 	This::wxListBox(), Point::{X::integer(), Y::integer()}.
-hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PointX,PointY})
+hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PointX,PointY} = Point)
  when is_integer(PointX),is_integer(PointY) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:call(?wxListBox_HitTest,
-  <<ThisRef:32/?UI,PointX:32/?UI,PointY:32/?UI>>).
+  wxe_util:call(?wxListBox_HitTest,[ThisRef,Point]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxsetfirstitem">external documentation</a>.
 %% <br /> Also:<br />
@@ -219,14 +199,12 @@ hitTest(#wx_ref{type=ThisT,ref=ThisRef},{PointX,PointY})
 setFirstItem(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxListBox),
-  wxe_util:cast(?wxListBox_SetFirstItem_1_0,
-  <<ThisRef:32/?UI,N:32/?UI>>);
+  wxe_util:cast(?wxListBox_SetFirstItem_1_0,[ThisRef,N]);
 setFirstItem(#wx_ref{type=ThisT,ref=ThisRef},S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxListBox),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxListBox_SetFirstItem_1_1,
-  <<ThisRef:32/?UI,(byte_size(S_UC)):32/?UI,(S_UC)/binary, 0:(((8- ((0+byte_size(S_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxListBox_SetFirstItem_1_1,[ThisRef,S_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxListBox()) -> 'ok'.

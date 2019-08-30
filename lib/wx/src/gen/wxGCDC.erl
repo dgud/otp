@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2018. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -64,24 +64,21 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcwxgcdc">external documentation</a>.
 -spec new() -> wxGCDC().
 new() ->
-  wxe_util:construct(?wxGCDC_new_0,
-  <<>>).
+  wxe_util:construct(?wxGCDC_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcwxgcdc">external documentation</a>.
 -spec new(Dc) -> wxGCDC() when
 	Dc::wxWindowDC:wxWindowDC().
 new(#wx_ref{type=DcT,ref=DcRef}) ->
   ?CLASS(DcT,wxWindowDC),
-  wxe_util:construct(?wxGCDC_new_1,
-  <<DcRef:32/?UI>>).
+  wxe_util:construct(?wxGCDC_new_1,[DcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcgetgraphicscontext">external documentation</a>.
 -spec getGraphicsContext(This) -> wxGraphicsContext:wxGraphicsContext() when
 	This::wxGCDC().
 getGraphicsContext(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGCDC),
-  wxe_util:call(?wxGCDC_GetGraphicsContext,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGCDC_GetGraphicsContext,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgcdc.html#wxgcdcsetgraphicscontext">external documentation</a>.
 -spec setGraphicsContext(This, Ctx) -> 'ok' when
@@ -89,8 +86,7 @@ getGraphicsContext(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setGraphicsContext(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=CtxT,ref=CtxRef}) ->
   ?CLASS(ThisT,wxGCDC),
   ?CLASS(CtxT,wxGraphicsContext),
-  wxe_util:cast(?wxGCDC_SetGraphicsContext,
-  <<ThisRef:32/?UI,CtxRef:32/?UI>>).
+  wxe_util:cast(?wxGCDC_SetGraphicsContext,[ThisRef,CtxRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGCDC()) -> 'ok'.

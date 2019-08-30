@@ -83,8 +83,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowwxsashwindow">external documentation</a>.
 -spec new() -> wxSashWindow().
 new() ->
-  wxe_util:construct(?wxSashWindow_new_0,
-  <<>>).
+  wxe_util:construct(?wxSashWindow_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxSashWindow() when
@@ -104,14 +103,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxSashWindow_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxSashWindow_new_2,[ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowgetsashvisible">external documentation</a>.
 %%<br /> Edge = ?wxSASH_TOP | ?wxSASH_RIGHT | ?wxSASH_BOTTOM | ?wxSASH_LEFT | ?wxSASH_NONE
@@ -120,40 +112,35 @@ new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
 getSashVisible(#wx_ref{type=ThisT,ref=ThisRef},Edge)
  when is_integer(Edge) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:call(?wxSashWindow_GetSashVisible,
-  <<ThisRef:32/?UI,Edge:32/?UI>>).
+  wxe_util:call(?wxSashWindow_GetSashVisible,[ThisRef,Edge]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowgetmaximumsizex">external documentation</a>.
 -spec getMaximumSizeX(This) -> integer() when
 	This::wxSashWindow().
 getMaximumSizeX(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:call(?wxSashWindow_GetMaximumSizeX,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashWindow_GetMaximumSizeX,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowgetmaximumsizey">external documentation</a>.
 -spec getMaximumSizeY(This) -> integer() when
 	This::wxSashWindow().
 getMaximumSizeY(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:call(?wxSashWindow_GetMaximumSizeY,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashWindow_GetMaximumSizeY,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowgetminimumsizex">external documentation</a>.
 -spec getMinimumSizeX(This) -> integer() when
 	This::wxSashWindow().
 getMinimumSizeX(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:call(?wxSashWindow_GetMinimumSizeX,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashWindow_GetMinimumSizeX,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowgetminimumsizey">external documentation</a>.
 -spec getMinimumSizeY(This) -> integer() when
 	This::wxSashWindow().
 getMinimumSizeY(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:call(?wxSashWindow_GetMinimumSizeY,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashWindow_GetMinimumSizeY,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowsetmaximumsizex">external documentation</a>.
 -spec setMaximumSizeX(This, Max) -> 'ok' when
@@ -161,8 +148,7 @@ getMinimumSizeY(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setMaximumSizeX(#wx_ref{type=ThisT,ref=ThisRef},Max)
  when is_integer(Max) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:cast(?wxSashWindow_SetMaximumSizeX,
-  <<ThisRef:32/?UI,Max:32/?UI>>).
+  wxe_util:cast(?wxSashWindow_SetMaximumSizeX,[ThisRef,Max]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowsetmaximumsizey">external documentation</a>.
 -spec setMaximumSizeY(This, Max) -> 'ok' when
@@ -170,8 +156,7 @@ setMaximumSizeX(#wx_ref{type=ThisT,ref=ThisRef},Max)
 setMaximumSizeY(#wx_ref{type=ThisT,ref=ThisRef},Max)
  when is_integer(Max) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:cast(?wxSashWindow_SetMaximumSizeY,
-  <<ThisRef:32/?UI,Max:32/?UI>>).
+  wxe_util:cast(?wxSashWindow_SetMaximumSizeY,[ThisRef,Max]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowsetminimumsizex">external documentation</a>.
 -spec setMinimumSizeX(This, Min) -> 'ok' when
@@ -179,8 +164,7 @@ setMaximumSizeY(#wx_ref{type=ThisT,ref=ThisRef},Max)
 setMinimumSizeX(#wx_ref{type=ThisT,ref=ThisRef},Min)
  when is_integer(Min) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:cast(?wxSashWindow_SetMinimumSizeX,
-  <<ThisRef:32/?UI,Min:32/?UI>>).
+  wxe_util:cast(?wxSashWindow_SetMinimumSizeX,[ThisRef,Min]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowsetminimumsizey">external documentation</a>.
 -spec setMinimumSizeY(This, Min) -> 'ok' when
@@ -188,8 +172,7 @@ setMinimumSizeX(#wx_ref{type=ThisT,ref=ThisRef},Min)
 setMinimumSizeY(#wx_ref{type=ThisT,ref=ThisRef},Min)
  when is_integer(Min) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:cast(?wxSashWindow_SetMinimumSizeY,
-  <<ThisRef:32/?UI,Min:32/?UI>>).
+  wxe_util:cast(?wxSashWindow_SetMinimumSizeY,[ThisRef,Min]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashwindow.html#wxsashwindowsetsashvisible">external documentation</a>.
 %%<br /> Edge = ?wxSASH_TOP | ?wxSASH_RIGHT | ?wxSASH_BOTTOM | ?wxSASH_LEFT | ?wxSASH_NONE
@@ -198,8 +181,7 @@ setMinimumSizeY(#wx_ref{type=ThisT,ref=ThisRef},Min)
 setSashVisible(#wx_ref{type=ThisT,ref=ThisRef},Edge,Sash)
  when is_integer(Edge),is_boolean(Sash) ->
   ?CLASS(ThisT,wxSashWindow),
-  wxe_util:cast(?wxSashWindow_SetSashVisible,
-  <<ThisRef:32/?UI,Edge:32/?UI,(wxe_util:from_bool(Sash)):32/?UI>>).
+  wxe_util:cast(?wxSashWindow_SetSashVisible,[ThisRef,Edge,Sash]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSashWindow()) -> 'ok'.

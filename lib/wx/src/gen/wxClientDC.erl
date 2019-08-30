@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -68,16 +68,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclientdc.html#wxclientdcwxclientdc">external documentation</a>.
 -spec new() -> wxClientDC().
 new() ->
-  wxe_util:construct(?wxClientDC_new_0,
-  <<>>).
+  wxe_util:construct(?wxClientDC_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclientdc.html#wxclientdcwxclientdc">external documentation</a>.
 -spec new(Win) -> wxClientDC() when
 	Win::wxWindow:wxWindow().
 new(#wx_ref{type=WinT,ref=WinRef}) ->
   ?CLASS(WinT,wxWindow),
-  wxe_util:construct(?wxClientDC_new_1,
-  <<WinRef:32/?UI>>).
+  wxe_util:construct(?wxClientDC_new_1,[WinRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxClientDC()) -> 'ok'.

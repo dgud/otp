@@ -83,8 +83,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticbitmap.html#wxstaticbitmapwxstaticbitmap">external documentation</a>.
 -spec new() -> wxStaticBitmap().
 new() ->
-  wxe_util:construct(?wxStaticBitmap_new_0,
-  <<>>).
+  wxe_util:construct(?wxStaticBitmap_new_0,[]).
 
 %% @equiv new(Parent,Id,Label, [])
 -spec new(Parent, Id, Label) -> wxStaticBitmap() when
@@ -104,13 +103,7 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id,#wx_ref{type=LabelT,ref=LabelRef}, Op
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(LabelT,wxBitmap),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxStaticBitmap_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,LabelRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxStaticBitmap_new_4,[ParentRef,Id,LabelRef, Options]).
 
 %% @equiv create(This,Parent,Id,Label, [])
 -spec create(This, Parent, Id, Label) -> boolean() when
@@ -131,21 +124,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,#w
   ?CLASS(ThisT,wxStaticBitmap),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(LabelT,wxBitmap),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStaticBitmap_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,LabelRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxStaticBitmap_Create,[ThisRef,ParentRef,Id,LabelRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticbitmap.html#wxstaticbitmapgetbitmap">external documentation</a>.
 -spec getBitmap(This) -> wxBitmap:wxBitmap() when
 	This::wxStaticBitmap().
 getBitmap(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStaticBitmap),
-  wxe_util:call(?wxStaticBitmap_GetBitmap,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStaticBitmap_GetBitmap,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticbitmap.html#wxstaticbitmapsetbitmap">external documentation</a>.
 -spec setBitmap(This, Bitmap) -> 'ok' when
@@ -153,8 +139,7 @@ getBitmap(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setBitmap(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
   ?CLASS(ThisT,wxStaticBitmap),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:cast(?wxStaticBitmap_SetBitmap,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI>>).
+  wxe_util:cast(?wxStaticBitmap_SetBitmap,[ThisRef,BitmapRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStaticBitmap()) -> 'ok'.

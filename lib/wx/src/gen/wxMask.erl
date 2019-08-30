@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -38,16 +38,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmask.html#wxmaskwxmask">external documentation</a>.
 -spec new() -> wxMask().
 new() ->
-  wxe_util:construct(?wxMask_new_0,
-  <<>>).
+  wxe_util:construct(?wxMask_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmask.html#wxmaskwxmask">external documentation</a>.
 -spec new(Bitmap) -> wxMask() when
 	Bitmap::wxBitmap:wxBitmap().
 new(#wx_ref{type=BitmapT,ref=BitmapRef}) ->
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:construct(?wxMask_new_1,
-  <<BitmapRef:32/?UI>>).
+  wxe_util:construct(?wxMask_new_1,[BitmapRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmask.html#wxmaskwxmask">external documentation</a>.
 %% <br /> Also:<br />
@@ -61,13 +59,11 @@ new(#wx_ref{type=BitmapT,ref=BitmapRef}) ->
 new(#wx_ref{type=BitmapT,ref=BitmapRef},PaletteIndex)
  when is_integer(PaletteIndex) ->
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:construct(?wxMask_new_2_0,
-  <<BitmapRef:32/?UI,PaletteIndex:32/?UI>>);
+  wxe_util:construct(?wxMask_new_2_0,[BitmapRef,PaletteIndex]);
 new(#wx_ref{type=BitmapT,ref=BitmapRef},Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:construct(?wxMask_new_2_1,
-  <<BitmapRef:32/?UI,(wxe_util:colour_bin(Colour)):16/binary>>).
+  wxe_util:construct(?wxMask_new_2_1,[BitmapRef,Colour]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmask.html#wxmaskcreate">external documentation</a>.
 -spec create(This, Bitmap) -> boolean() when
@@ -75,8 +71,7 @@ new(#wx_ref{type=BitmapT,ref=BitmapRef},Colour)
 create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
   ?CLASS(ThisT,wxMask),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxMask_Create_1,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI>>).
+  wxe_util:call(?wxMask_Create_1,[ThisRef,BitmapRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmask.html#wxmaskcreate">external documentation</a>.
 %% <br /> Also:<br />
@@ -91,14 +86,12 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef},Palet
  when is_integer(PaletteIndex) ->
   ?CLASS(ThisT,wxMask),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxMask_Create_2_0,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI,PaletteIndex:32/?UI>>);
+  wxe_util:call(?wxMask_Create_2_0,[ThisRef,BitmapRef,PaletteIndex]);
 create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef},Colour)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4 ->
   ?CLASS(ThisT,wxMask),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxMask_Create_2_1,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI,(wxe_util:colour_bin(Colour)):16/binary>>).
+  wxe_util:call(?wxMask_Create_2_1,[ThisRef,BitmapRef,Colour]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMask()) -> 'ok'.

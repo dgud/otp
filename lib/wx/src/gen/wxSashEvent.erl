@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -54,16 +54,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxSashEvent().
 getEdge(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashEvent),
-  wxe_util:call(?wxSashEvent_GetEdge,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashEvent_GetEdge,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashevent.html#wxsasheventgetdragrect">external documentation</a>.
 -spec getDragRect(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxSashEvent().
 getDragRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashEvent),
-  wxe_util:call(?wxSashEvent_GetDragRect,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashEvent_GetDragRect,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashevent.html#wxsasheventgetdragstatus">external documentation</a>.
 %%<br /> Res = ?wxSASH_STATUS_OK | ?wxSASH_STATUS_OUT_OF_RANGE
@@ -71,8 +69,7 @@ getDragRect(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxSashEvent().
 getDragStatus(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashEvent),
-  wxe_util:call(?wxSashEvent_GetDragStatus,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashEvent_GetDragStatus,[ThisRef]).
 
  %% From wxCommandEvent
 %% @hidden

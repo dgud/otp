@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -58,11 +58,7 @@ new(Choices, Options)
  when is_list(Choices),is_list(Options) ->
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  MOpts = fun({allowOthers, AllowOthers}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(AllowOthers)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxGridCellChoiceEditor_new,
-  <<(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((4 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxGridCellChoiceEditor_new,[Choices_UCA, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditorsetparameters">external documentation</a>.
 -spec setParameters(This, Params) -> 'ok' when
@@ -71,8 +67,7 @@ setParameters(#wx_ref{type=ThisT,ref=ThisRef},Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellChoiceEditor),
   Params_UC = unicode:characters_to_binary([Params,0]),
-  wxe_util:cast(?wxGridCellChoiceEditor_SetParameters,
-  <<ThisRef:32/?UI,(byte_size(Params_UC)):32/?UI,(Params_UC)/binary, 0:(((8- ((0+byte_size(Params_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxGridCellChoiceEditor_SetParameters,[ThisRef,Params_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellChoiceEditor()) -> 'ok'.

@@ -108,22 +108,14 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Message, Options)
  when ?is_chardata(Message),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  MOpts = fun({caption, Caption}, Acc) ->   Caption_UC = unicode:characters_to_binary([Caption,0]),[<<1:32/?UI,(byte_size(Caption_UC)):32/?UI,(Caption_UC)/binary, 0:(((8- ((0+byte_size(Caption_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary([Value,0]),[<<2:32/?UI,(byte_size(Value_UC)):32/?UI,(Value_UC)/binary, 0:(((8- ((0+byte_size(Value_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<4:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxTextEntryDialog_new,
-  <<ParentRef:32/?UI,(byte_size(Message_UC)):32/?UI,(Message_UC)/binary, 0:(((8- ((0+byte_size(Message_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxTextEntryDialog_new,[ParentRef,Message_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextentrydialog.html#wxtextentrydialoggetvalue">external documentation</a>.
 -spec getValue(This) -> unicode:charlist() when
 	This::wxTextEntryDialog().
 getValue(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTextEntryDialog),
-  wxe_util:call(?wxTextEntryDialog_GetValue,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTextEntryDialog_GetValue,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextentrydialog.html#wxtextentrydialogsetvalue">external documentation</a>.
 -spec setValue(This, Val) -> 'ok' when
@@ -132,8 +124,7 @@ setValue(#wx_ref{type=ThisT,ref=ThisRef},Val)
  when ?is_chardata(Val) ->
   ?CLASS(ThisT,wxTextEntryDialog),
   Val_UC = unicode:characters_to_binary([Val,0]),
-  wxe_util:cast(?wxTextEntryDialog_SetValue,
-  <<ThisRef:32/?UI,(byte_size(Val_UC)):32/?UI,(Val_UC)/binary, 0:(((8- ((0+byte_size(Val_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxTextEntryDialog_SetValue,[ThisRef,Val_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxTextEntryDialog()) -> 'ok'.

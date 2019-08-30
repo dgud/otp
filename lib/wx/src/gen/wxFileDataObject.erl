@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectwxfiledataobject">external documentation</a>.
 -spec new() -> wxFileDataObject().
 new() ->
-  wxe_util:construct(?wxFileDataObject_new,
-  <<>>).
+  wxe_util:construct(?wxFileDataObject_new,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectaddfile">external documentation</a>.
 -spec addFile(This, Filename) -> 'ok' when
@@ -52,16 +51,14 @@ addFile(#wx_ref{type=ThisT,ref=ThisRef},Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxFileDataObject),
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:cast(?wxFileDataObject_AddFile,
-  <<ThisRef:32/?UI,(byte_size(Filename_UC)):32/?UI,(Filename_UC)/binary, 0:(((8- ((0+byte_size(Filename_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxFileDataObject_AddFile,[ThisRef,Filename_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectgetfilenames">external documentation</a>.
 -spec getFilenames(This) -> [unicode:charlist()] when
 	This::wxFileDataObject().
 getFilenames(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFileDataObject),
-  wxe_util:call(?wxFileDataObject_GetFilenames,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFileDataObject_GetFilenames,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFileDataObject()) -> 'ok'.

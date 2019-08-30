@@ -42,11 +42,20 @@ wxeReturn::~wxeReturn () {
 }
 
 int wxeReturn::send(ERL_NIF_TERM msg) {
-  int res = enif_send(NULL, &caller, env, msg);
+  int res;
+  if(isResult) {
+    res = enif_send(NULL, &caller, env,
+                    enif_make_tuple2(env, WXE_ATOM_reply, msg));
+  } else {
+    res = enif_send(NULL, &caller, env, msg);
+  }
+  if(wxe_debug)
+    enif_fprintf(stderr, "send(%d) %T msg %T\r\n", res, caller, msg);
 
 #ifdef DEBUG
   if(res == 0) {
-    fprintf(stderr, "Failed to send return or event msg\r\n");
+    enif_fprintf(stderr, "Failed to send return or event msg to (%T) msg: %T\r\n",
+                 caller, msg);
   }
 #endif
 

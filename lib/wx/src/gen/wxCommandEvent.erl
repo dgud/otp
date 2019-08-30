@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,56 +50,49 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxCommandEvent().
 getClientData(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_getClientData,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_getClientData,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventgetextralong">external documentation</a>.
 -spec getExtraLong(This) -> integer() when
 	This::wxCommandEvent().
 getExtraLong(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_GetExtraLong,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_GetExtraLong,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventgetint">external documentation</a>.
 -spec getInt(This) -> integer() when
 	This::wxCommandEvent().
 getInt(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_GetInt,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_GetInt,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxCommandEvent().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventgetstring">external documentation</a>.
 -spec getString(This) -> unicode:charlist() when
 	This::wxCommandEvent().
 getString(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_GetString,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_GetString,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventischecked">external documentation</a>.
 -spec isChecked(This) -> boolean() when
 	This::wxCommandEvent().
 isChecked(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_IsChecked,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_IsChecked,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventisselection">external documentation</a>.
 -spec isSelection(This) -> boolean() when
 	This::wxCommandEvent().
 isSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:call(?wxCommandEvent_IsSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCommandEvent_IsSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventsetint">external documentation</a>.
 -spec setInt(This, I) -> 'ok' when
@@ -107,8 +100,7 @@ isSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setInt(#wx_ref{type=ThisT,ref=ThisRef},I)
  when is_integer(I) ->
   ?CLASS(ThisT,wxCommandEvent),
-  wxe_util:cast(?wxCommandEvent_SetInt,
-  <<ThisRef:32/?UI,I:32/?UI>>).
+  wxe_util:cast(?wxCommandEvent_SetInt,[ThisRef,I]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcommandevent.html#wxcommandeventsetstring">external documentation</a>.
 -spec setString(This, S) -> 'ok' when
@@ -117,8 +109,7 @@ setString(#wx_ref{type=ThisT,ref=ThisRef},S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxCommandEvent),
   S_UC = unicode:characters_to_binary([S,0]),
-  wxe_util:cast(?wxCommandEvent_SetString,
-  <<ThisRef:32/?UI,(byte_size(S_UC)):32/?UI,(S_UC)/binary, 0:(((8- ((0+byte_size(S_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxCommandEvent_SetString,[ThisRef,S_UC]).
 
  %% From wxEvent
 %% @hidden

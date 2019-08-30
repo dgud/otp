@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Index::wx:wx_enum().
 getColour(Index)
  when is_integer(Index) ->
-  wxe_util:call(?wxSystemSettings_GetColour,
-  <<Index:32/?UI>>).
+  wxe_util:call(?wxSystemSettings_GetColour,[Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemsettings.html#wxsystemsettingsgetfont">external documentation</a>.
 %%<br /> Index = ?wxSYS_OEM_FIXED_FONT | ?wxSYS_ANSI_FIXED_FONT | ?wxSYS_ANSI_VAR_FONT | ?wxSYS_SYSTEM_FONT | ?wxSYS_DEVICE_DEFAULT_FONT | ?wxSYS_DEFAULT_PALETTE | ?wxSYS_SYSTEM_FIXED_FONT | ?wxSYS_DEFAULT_GUI_FONT | ?wxSYS_ICONTITLE_FONT
@@ -50,8 +49,7 @@ getColour(Index)
 	Index::wx:wx_enum().
 getFont(Index)
  when is_integer(Index) ->
-  wxe_util:call(?wxSystemSettings_GetFont,
-  <<Index:32/?UI>>).
+  wxe_util:call(?wxSystemSettings_GetFont,[Index]).
 
 %% @equiv getMetric(Index, [])
 -spec getMetric(Index) -> integer() when
@@ -68,16 +66,11 @@ getMetric(Index)
 	Option :: {'win', wxWindow:wxWindow()}.
 getMetric(Index, Options)
  when is_integer(Index),is_list(Options) ->
-  MOpts = fun({win, #wx_ref{type=WinT,ref=WinRef}}, Acc) ->   ?CLASS(WinT,wxWindow),[<<1:32/?UI,WinRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSystemSettings_GetMetric,
-  <<Index:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxSystemSettings_GetMetric,[Index, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemsettings.html#wxsystemsettingsgetscreentype">external documentation</a>.
 %%<br /> Res = ?wxSYS_SCREEN_NONE | ?wxSYS_SCREEN_TINY | ?wxSYS_SCREEN_PDA | ?wxSYS_SCREEN_SMALL | ?wxSYS_SCREEN_DESKTOP
 -spec getScreenType() -> wx:wx_enum().
 getScreenType() ->
-  wxe_util:call(?wxSystemSettings_GetScreenType,
-  <<>>).
+  wxe_util:call(?wxSystemSettings_GetScreenType,[]).
 

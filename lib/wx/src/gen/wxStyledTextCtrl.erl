@@ -184,8 +184,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwxstyledtextctrl">external documentation</a>.
 -spec new() -> wxStyledTextCtrl().
 new() ->
-  wxe_util:construct(?wxStyledTextCtrl_new_0,
-  <<>>).
+  wxe_util:construct(?wxStyledTextCtrl_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxStyledTextCtrl() when
@@ -205,14 +204,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxStyledTextCtrl_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxStyledTextCtrl_new_2,[ParentRef, Options]).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -233,14 +225,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
  when is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStyledTextCtrl_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxStyledTextCtrl_Create,[ThisRef,ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrladdtext">external documentation</a>.
 -spec addText(This, Text) -> 'ok' when
@@ -249,8 +234,7 @@ addText(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_AddText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_AddText,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrladdstyledtext">external documentation</a>.
 -spec addStyledText(This, Data) -> 'ok' when
@@ -258,8 +242,7 @@ addText(#wx_ref{type=ThisT,ref=ThisRef},Text)
 addStyledText(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DataT,ref=DataRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(DataT,wxMemoryBuffer),
-  wxe_util:cast(?wxStyledTextCtrl_AddStyledText,
-  <<ThisRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AddStyledText,[ThisRef,DataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlinserttext">external documentation</a>.
 -spec insertText(This, Pos, Text) -> 'ok' when
@@ -268,32 +251,28 @@ insertText(#wx_ref{type=ThisT,ref=ThisRef},Pos,Text)
  when is_integer(Pos),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_InsertText,
-  <<ThisRef:32/?UI,Pos:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_InsertText,[ThisRef,Pos,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlclearall">external documentation</a>.
 -spec clearAll(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 clearAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ClearAll,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ClearAll,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcleardocumentstyle">external documentation</a>.
 -spec clearDocumentStyle(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 clearDocumentStyle(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ClearDocumentStyle,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ClearDocumentStyle,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlength">external documentation</a>.
 -spec getLength(This) -> integer() when
 	This::wxStyledTextCtrl().
 getLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLength,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLength,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcharat">external documentation</a>.
 -spec getCharAt(This, Pos) -> integer() when
@@ -301,24 +280,21 @@ getLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getCharAt(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCharAt,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCharAt,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcurrentpos">external documentation</a>.
 -spec getCurrentPos(This) -> integer() when
 	This::wxStyledTextCtrl().
 getCurrentPos(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCurrentPos,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCurrentPos,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetanchor">external documentation</a>.
 -spec getAnchor(This) -> integer() when
 	This::wxStyledTextCtrl().
 getAnchor(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetAnchor,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetAnchor,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstyleat">external documentation</a>.
 -spec getStyleAt(This, Pos) -> integer() when
@@ -326,16 +302,14 @@ getAnchor(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getStyleAt(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetStyleAt,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetStyleAt,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlredo">external documentation</a>.
 -spec redo(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 redo(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Redo,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Redo,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetundocollection">external documentation</a>.
 -spec setUndoCollection(This, CollectUndo) -> 'ok' when
@@ -343,24 +317,21 @@ redo(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setUndoCollection(#wx_ref{type=ThisT,ref=ThisRef},CollectUndo)
  when is_boolean(CollectUndo) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetUndoCollection,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(CollectUndo)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetUndoCollection,[ThisRef,CollectUndo]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlselectall">external documentation</a>.
 -spec selectAll(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 selectAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SelectAll,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SelectAll,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetsavepoint">external documentation</a>.
 -spec setSavePoint(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 setSavePoint(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSavePoint,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSavePoint,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstyledtext">external documentation</a>.
 -spec getStyledText(This, StartPos, EndPos) -> wx:wx_object() when
@@ -368,16 +339,14 @@ setSavePoint(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getStyledText(#wx_ref{type=ThisT,ref=ThisRef},StartPos,EndPos)
  when is_integer(StartPos),is_integer(EndPos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetStyledText,
-  <<ThisRef:32/?UI,StartPos:32/?UI,EndPos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetStyledText,[ThisRef,StartPos,EndPos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcanredo">external documentation</a>.
 -spec canRedo(This) -> boolean() when
 	This::wxStyledTextCtrl().
 canRedo(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_CanRedo,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_CanRedo,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerlinefromhandle">external documentation</a>.
 -spec markerLineFromHandle(This, Handle) -> integer() when
@@ -385,8 +354,7 @@ canRedo(#wx_ref{type=ThisT,ref=ThisRef}) ->
 markerLineFromHandle(#wx_ref{type=ThisT,ref=ThisRef},Handle)
  when is_integer(Handle) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_MarkerLineFromHandle,
-  <<ThisRef:32/?UI,Handle:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_MarkerLineFromHandle,[ThisRef,Handle]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerdeletehandle">external documentation</a>.
 -spec markerDeleteHandle(This, Handle) -> 'ok' when
@@ -394,24 +362,21 @@ markerLineFromHandle(#wx_ref{type=ThisT,ref=ThisRef},Handle)
 markerDeleteHandle(#wx_ref{type=ThisT,ref=ThisRef},Handle)
  when is_integer(Handle) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerDeleteHandle,
-  <<ThisRef:32/?UI,Handle:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerDeleteHandle,[ThisRef,Handle]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetundocollection">external documentation</a>.
 -spec getUndoCollection(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getUndoCollection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetUndoCollection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetUndoCollection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetviewwhitespace">external documentation</a>.
 -spec getViewWhiteSpace(This) -> integer() when
 	This::wxStyledTextCtrl().
 getViewWhiteSpace(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetViewWhiteSpace,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetViewWhiteSpace,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetviewwhitespace">external documentation</a>.
 -spec setViewWhiteSpace(This, ViewWS) -> 'ok' when
@@ -419,17 +384,15 @@ getViewWhiteSpace(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setViewWhiteSpace(#wx_ref{type=ThisT,ref=ThisRef},ViewWS)
  when is_integer(ViewWS) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetViewWhiteSpace,
-  <<ThisRef:32/?UI,ViewWS:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetViewWhiteSpace,[ThisRef,ViewWS]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpositionfrompoint">external documentation</a>.
 -spec positionFromPoint(This, Pt) -> integer() when
 	This::wxStyledTextCtrl(), Pt::{X::integer(), Y::integer()}.
-positionFromPoint(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+positionFromPoint(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_PositionFromPoint,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_PositionFromPoint,[ThisRef,Pt]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpositionfrompointclose">external documentation</a>.
 -spec positionFromPointClose(This, X, Y) -> integer() when
@@ -437,8 +400,7 @@ positionFromPoint(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
 positionFromPointClose(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_PositionFromPointClose,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_PositionFromPointClose,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgotoline">external documentation</a>.
 -spec gotoLine(This, Line) -> 'ok' when
@@ -446,8 +408,7 @@ positionFromPointClose(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
 gotoLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_GotoLine,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_GotoLine,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgotopos">external documentation</a>.
 -spec gotoPos(This, Pos) -> 'ok' when
@@ -455,8 +416,7 @@ gotoLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
 gotoPos(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_GotoPos,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_GotoPos,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetanchor">external documentation</a>.
 -spec setAnchor(This, PosAnchor) -> 'ok' when
@@ -464,8 +424,7 @@ gotoPos(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 setAnchor(#wx_ref{type=ThisT,ref=ThisRef},PosAnchor)
  when is_integer(PosAnchor) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetAnchor,
-  <<ThisRef:32/?UI,PosAnchor:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetAnchor,[ThisRef,PosAnchor]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcurline">external documentation</a>.
 -spec getCurLine(This) -> Result when
@@ -473,16 +432,14 @@ setAnchor(#wx_ref{type=ThisT,ref=ThisRef},PosAnchor)
 	This::wxStyledTextCtrl().
 getCurLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCurLine,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCurLine,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetendstyled">external documentation</a>.
 -spec getEndStyled(This) -> integer() when
 	This::wxStyledTextCtrl().
 getEndStyled(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetEndStyled,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetEndStyled,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlconverteols">external documentation</a>.
 -spec convertEOLs(This, EolMode) -> 'ok' when
@@ -490,16 +447,14 @@ getEndStyled(#wx_ref{type=ThisT,ref=ThisRef}) ->
 convertEOLs(#wx_ref{type=ThisT,ref=ThisRef},EolMode)
  when is_integer(EolMode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ConvertEOLs,
-  <<ThisRef:32/?UI,EolMode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ConvertEOLs,[ThisRef,EolMode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgeteolmode">external documentation</a>.
 -spec getEOLMode(This) -> integer() when
 	This::wxStyledTextCtrl().
 getEOLMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetEOLMode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetEOLMode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlseteolmode">external documentation</a>.
 -spec setEOLMode(This, EolMode) -> 'ok' when
@@ -507,8 +462,7 @@ getEOLMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setEOLMode(#wx_ref{type=ThisT,ref=ThisRef},EolMode)
  when is_integer(EolMode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetEOLMode,
-  <<ThisRef:32/?UI,EolMode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetEOLMode,[ThisRef,EolMode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstartstyling">external documentation</a>.
 -spec startStyling(This, Pos, Mask) -> 'ok' when
@@ -516,8 +470,7 @@ setEOLMode(#wx_ref{type=ThisT,ref=ThisRef},EolMode)
 startStyling(#wx_ref{type=ThisT,ref=ThisRef},Pos,Mask)
  when is_integer(Pos),is_integer(Mask) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StartStyling,
-  <<ThisRef:32/?UI,Pos:32/?UI,Mask:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StartStyling,[ThisRef,Pos,Mask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetstyling">external documentation</a>.
 -spec setStyling(This, Length, Style) -> 'ok' when
@@ -525,16 +478,14 @@ startStyling(#wx_ref{type=ThisT,ref=ThisRef},Pos,Mask)
 setStyling(#wx_ref{type=ThisT,ref=ThisRef},Length,Style)
  when is_integer(Length),is_integer(Style) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetStyling,
-  <<ThisRef:32/?UI,Length:32/?UI,Style:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetStyling,[ThisRef,Length,Style]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetbuffereddraw">external documentation</a>.
 -spec getBufferedDraw(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getBufferedDraw(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetBufferedDraw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetBufferedDraw,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetbuffereddraw">external documentation</a>.
 -spec setBufferedDraw(This, Buffered) -> 'ok' when
@@ -542,8 +493,7 @@ getBufferedDraw(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setBufferedDraw(#wx_ref{type=ThisT,ref=ThisRef},Buffered)
  when is_boolean(Buffered) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetBufferedDraw,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Buffered)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetBufferedDraw,[ThisRef,Buffered]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettabwidth">external documentation</a>.
 -spec setTabWidth(This, TabWidth) -> 'ok' when
@@ -551,16 +501,14 @@ setBufferedDraw(#wx_ref{type=ThisT,ref=ThisRef},Buffered)
 setTabWidth(#wx_ref{type=ThisT,ref=ThisRef},TabWidth)
  when is_integer(TabWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetTabWidth,
-  <<ThisRef:32/?UI,TabWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetTabWidth,[ThisRef,TabWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettabwidth">external documentation</a>.
 -spec getTabWidth(This) -> integer() when
 	This::wxStyledTextCtrl().
 getTabWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTabWidth,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTabWidth,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcodepage">external documentation</a>.
 -spec setCodePage(This, CodePage) -> 'ok' when
@@ -568,8 +516,7 @@ getTabWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCodePage(#wx_ref{type=ThisT,ref=ThisRef},CodePage)
  when is_integer(CodePage) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCodePage,
-  <<ThisRef:32/?UI,CodePage:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCodePage,[ThisRef,CodePage]).
 
 %% @equiv markerDefine(This,MarkerNumber,MarkerSymbol, [])
 -spec markerDefine(This, MarkerNumber, MarkerSymbol) -> 'ok' when
@@ -587,12 +534,7 @@ markerDefine(This,MarkerNumber,MarkerSymbol)
 markerDefine(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,MarkerSymbol, Options)
  when is_integer(MarkerNumber),is_integer(MarkerSymbol),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  MOpts = fun({foreground, Foreground}, Acc) -> [<<1:32/?UI,(wxe_util:colour_bin(Foreground)):16/binary,0:32>>|Acc];
-          ({background, Background}, Acc) -> [<<2:32/?UI,(wxe_util:colour_bin(Background)):16/binary,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerDefine,
-  <<ThisRef:32/?UI,MarkerNumber:32/?UI,MarkerSymbol:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerDefine,[ThisRef,MarkerNumber,MarkerSymbol, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkersetforeground">external documentation</a>.
 -spec markerSetForeground(This, MarkerNumber, Fore) -> 'ok' when
@@ -600,8 +542,7 @@ markerDefine(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,MarkerSymbol, Options)
 markerSetForeground(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,Fore)
  when is_integer(MarkerNumber),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerSetForeground,
-  <<ThisRef:32/?UI,MarkerNumber:32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerSetForeground,[ThisRef,MarkerNumber,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkersetbackground">external documentation</a>.
 -spec markerSetBackground(This, MarkerNumber, Back) -> 'ok' when
@@ -609,8 +550,7 @@ markerSetForeground(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,Fore)
 markerSetBackground(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,Back)
  when is_integer(MarkerNumber),tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerSetBackground,
-  <<ThisRef:32/?UI,MarkerNumber:32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerSetBackground,[ThisRef,MarkerNumber,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkeradd">external documentation</a>.
 -spec markerAdd(This, Line, MarkerNumber) -> integer() when
@@ -618,8 +558,7 @@ markerSetBackground(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,Back)
 markerAdd(#wx_ref{type=ThisT,ref=ThisRef},Line,MarkerNumber)
  when is_integer(Line),is_integer(MarkerNumber) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_MarkerAdd,
-  <<ThisRef:32/?UI,Line:32/?UI,MarkerNumber:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_MarkerAdd,[ThisRef,Line,MarkerNumber]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerdelete">external documentation</a>.
 -spec markerDelete(This, Line, MarkerNumber) -> 'ok' when
@@ -627,8 +566,7 @@ markerAdd(#wx_ref{type=ThisT,ref=ThisRef},Line,MarkerNumber)
 markerDelete(#wx_ref{type=ThisT,ref=ThisRef},Line,MarkerNumber)
  when is_integer(Line),is_integer(MarkerNumber) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerDelete,
-  <<ThisRef:32/?UI,Line:32/?UI,MarkerNumber:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerDelete,[ThisRef,Line,MarkerNumber]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerdeleteall">external documentation</a>.
 -spec markerDeleteAll(This, MarkerNumber) -> 'ok' when
@@ -636,8 +574,7 @@ markerDelete(#wx_ref{type=ThisT,ref=ThisRef},Line,MarkerNumber)
 markerDeleteAll(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber)
  when is_integer(MarkerNumber) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerDeleteAll,
-  <<ThisRef:32/?UI,MarkerNumber:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerDeleteAll,[ThisRef,MarkerNumber]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerget">external documentation</a>.
 -spec markerGet(This, Line) -> integer() when
@@ -645,8 +582,7 @@ markerDeleteAll(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber)
 markerGet(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_MarkerGet,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_MarkerGet,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkernext">external documentation</a>.
 -spec markerNext(This, LineStart, MarkerMask) -> integer() when
@@ -654,8 +590,7 @@ markerGet(#wx_ref{type=ThisT,ref=ThisRef},Line)
 markerNext(#wx_ref{type=ThisT,ref=ThisRef},LineStart,MarkerMask)
  when is_integer(LineStart),is_integer(MarkerMask) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_MarkerNext,
-  <<ThisRef:32/?UI,LineStart:32/?UI,MarkerMask:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_MarkerNext,[ThisRef,LineStart,MarkerMask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerprevious">external documentation</a>.
 -spec markerPrevious(This, LineStart, MarkerMask) -> integer() when
@@ -663,8 +598,7 @@ markerNext(#wx_ref{type=ThisT,ref=ThisRef},LineStart,MarkerMask)
 markerPrevious(#wx_ref{type=ThisT,ref=ThisRef},LineStart,MarkerMask)
  when is_integer(LineStart),is_integer(MarkerMask) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_MarkerPrevious,
-  <<ThisRef:32/?UI,LineStart:32/?UI,MarkerMask:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_MarkerPrevious,[ThisRef,LineStart,MarkerMask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkerdefinebitmap">external documentation</a>.
 -spec markerDefineBitmap(This, MarkerNumber, Bmp) -> 'ok' when
@@ -673,8 +607,7 @@ markerDefineBitmap(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,#wx_ref{type=Bmp
  when is_integer(MarkerNumber) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerDefineBitmap,
-  <<ThisRef:32/?UI,MarkerNumber:32/?UI,BmpRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerDefineBitmap,[ThisRef,MarkerNumber,BmpRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkeraddset">external documentation</a>.
 -spec markerAddSet(This, Line, Set) -> 'ok' when
@@ -682,8 +615,7 @@ markerDefineBitmap(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,#wx_ref{type=Bmp
 markerAddSet(#wx_ref{type=ThisT,ref=ThisRef},Line,Set)
  when is_integer(Line),is_integer(Set) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerAddSet,
-  <<ThisRef:32/?UI,Line:32/?UI,Set:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerAddSet,[ThisRef,Line,Set]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkersetalpha">external documentation</a>.
 -spec markerSetAlpha(This, MarkerNumber, Alpha) -> 'ok' when
@@ -691,8 +623,7 @@ markerAddSet(#wx_ref{type=ThisT,ref=ThisRef},Line,Set)
 markerSetAlpha(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,Alpha)
  when is_integer(MarkerNumber),is_integer(Alpha) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MarkerSetAlpha,
-  <<ThisRef:32/?UI,MarkerNumber:32/?UI,Alpha:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MarkerSetAlpha,[ThisRef,MarkerNumber,Alpha]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmargintype">external documentation</a>.
 -spec setMarginType(This, Margin, MarginType) -> 'ok' when
@@ -700,8 +631,7 @@ markerSetAlpha(#wx_ref{type=ThisT,ref=ThisRef},MarkerNumber,Alpha)
 setMarginType(#wx_ref{type=ThisT,ref=ThisRef},Margin,MarginType)
  when is_integer(Margin),is_integer(MarginType) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMarginType,
-  <<ThisRef:32/?UI,Margin:32/?UI,MarginType:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMarginType,[ThisRef,Margin,MarginType]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmargintype">external documentation</a>.
 -spec getMarginType(This, Margin) -> integer() when
@@ -709,8 +639,7 @@ setMarginType(#wx_ref{type=ThisT,ref=ThisRef},Margin,MarginType)
 getMarginType(#wx_ref{type=ThisT,ref=ThisRef},Margin)
  when is_integer(Margin) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMarginType,
-  <<ThisRef:32/?UI,Margin:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMarginType,[ThisRef,Margin]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmarginwidth">external documentation</a>.
 -spec setMarginWidth(This, Margin, PixelWidth) -> 'ok' when
@@ -718,8 +647,7 @@ getMarginType(#wx_ref{type=ThisT,ref=ThisRef},Margin)
 setMarginWidth(#wx_ref{type=ThisT,ref=ThisRef},Margin,PixelWidth)
  when is_integer(Margin),is_integer(PixelWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMarginWidth,
-  <<ThisRef:32/?UI,Margin:32/?UI,PixelWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMarginWidth,[ThisRef,Margin,PixelWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmarginwidth">external documentation</a>.
 -spec getMarginWidth(This, Margin) -> integer() when
@@ -727,8 +655,7 @@ setMarginWidth(#wx_ref{type=ThisT,ref=ThisRef},Margin,PixelWidth)
 getMarginWidth(#wx_ref{type=ThisT,ref=ThisRef},Margin)
  when is_integer(Margin) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMarginWidth,
-  <<ThisRef:32/?UI,Margin:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMarginWidth,[ThisRef,Margin]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmarginmask">external documentation</a>.
 -spec setMarginMask(This, Margin, Mask) -> 'ok' when
@@ -736,8 +663,7 @@ getMarginWidth(#wx_ref{type=ThisT,ref=ThisRef},Margin)
 setMarginMask(#wx_ref{type=ThisT,ref=ThisRef},Margin,Mask)
  when is_integer(Margin),is_integer(Mask) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMarginMask,
-  <<ThisRef:32/?UI,Margin:32/?UI,Mask:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMarginMask,[ThisRef,Margin,Mask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmarginmask">external documentation</a>.
 -spec getMarginMask(This, Margin) -> integer() when
@@ -745,8 +671,7 @@ setMarginMask(#wx_ref{type=ThisT,ref=ThisRef},Margin,Mask)
 getMarginMask(#wx_ref{type=ThisT,ref=ThisRef},Margin)
  when is_integer(Margin) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMarginMask,
-  <<ThisRef:32/?UI,Margin:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMarginMask,[ThisRef,Margin]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmarginsensitive">external documentation</a>.
 -spec setMarginSensitive(This, Margin, Sensitive) -> 'ok' when
@@ -754,8 +679,7 @@ getMarginMask(#wx_ref{type=ThisT,ref=ThisRef},Margin)
 setMarginSensitive(#wx_ref{type=ThisT,ref=ThisRef},Margin,Sensitive)
  when is_integer(Margin),is_boolean(Sensitive) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMarginSensitive,
-  <<ThisRef:32/?UI,Margin:32/?UI,(wxe_util:from_bool(Sensitive)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMarginSensitive,[ThisRef,Margin,Sensitive]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmarginsensitive">external documentation</a>.
 -spec getMarginSensitive(This, Margin) -> boolean() when
@@ -763,16 +687,14 @@ setMarginSensitive(#wx_ref{type=ThisT,ref=ThisRef},Margin,Sensitive)
 getMarginSensitive(#wx_ref{type=ThisT,ref=ThisRef},Margin)
  when is_integer(Margin) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMarginSensitive,
-  <<ThisRef:32/?UI,Margin:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMarginSensitive,[ThisRef,Margin]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstyleclearall">external documentation</a>.
 -spec styleClearAll(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 styleClearAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleClearAll,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleClearAll,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetforeground">external documentation</a>.
 -spec styleSetForeground(This, Style, Fore) -> 'ok' when
@@ -780,8 +702,7 @@ styleClearAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
 styleSetForeground(#wx_ref{type=ThisT,ref=ThisRef},Style,Fore)
  when is_integer(Style),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetForeground,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetForeground,[ThisRef,Style,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetbackground">external documentation</a>.
 -spec styleSetBackground(This, Style, Back) -> 'ok' when
@@ -789,8 +710,7 @@ styleSetForeground(#wx_ref{type=ThisT,ref=ThisRef},Style,Fore)
 styleSetBackground(#wx_ref{type=ThisT,ref=ThisRef},Style,Back)
  when is_integer(Style),tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetBackground,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetBackground,[ThisRef,Style,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetbold">external documentation</a>.
 -spec styleSetBold(This, Style, Bold) -> 'ok' when
@@ -798,8 +718,7 @@ styleSetBackground(#wx_ref{type=ThisT,ref=ThisRef},Style,Back)
 styleSetBold(#wx_ref{type=ThisT,ref=ThisRef},Style,Bold)
  when is_integer(Style),is_boolean(Bold) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetBold,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:from_bool(Bold)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetBold,[ThisRef,Style,Bold]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetitalic">external documentation</a>.
 -spec styleSetItalic(This, Style, Italic) -> 'ok' when
@@ -807,8 +726,7 @@ styleSetBold(#wx_ref{type=ThisT,ref=ThisRef},Style,Bold)
 styleSetItalic(#wx_ref{type=ThisT,ref=ThisRef},Style,Italic)
  when is_integer(Style),is_boolean(Italic) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetItalic,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:from_bool(Italic)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetItalic,[ThisRef,Style,Italic]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetsize">external documentation</a>.
 -spec styleSetSize(This, Style, SizePoints) -> 'ok' when
@@ -816,8 +734,7 @@ styleSetItalic(#wx_ref{type=ThisT,ref=ThisRef},Style,Italic)
 styleSetSize(#wx_ref{type=ThisT,ref=ThisRef},Style,SizePoints)
  when is_integer(Style),is_integer(SizePoints) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetSize,
-  <<ThisRef:32/?UI,Style:32/?UI,SizePoints:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetSize,[ThisRef,Style,SizePoints]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetfacename">external documentation</a>.
 -spec styleSetFaceName(This, Style, FontName) -> 'ok' when
@@ -826,8 +743,7 @@ styleSetFaceName(#wx_ref{type=ThisT,ref=ThisRef},Style,FontName)
  when is_integer(Style),?is_chardata(FontName) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   FontName_UC = unicode:characters_to_binary([FontName,0]),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetFaceName,
-  <<ThisRef:32/?UI,Style:32/?UI,(byte_size(FontName_UC)):32/?UI,(FontName_UC)/binary, 0:(((8- ((4+byte_size(FontName_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetFaceName,[ThisRef,Style,FontName_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstyleseteolfilled">external documentation</a>.
 -spec styleSetEOLFilled(This, Style, Filled) -> 'ok' when
@@ -835,16 +751,14 @@ styleSetFaceName(#wx_ref{type=ThisT,ref=ThisRef},Style,FontName)
 styleSetEOLFilled(#wx_ref{type=ThisT,ref=ThisRef},Style,Filled)
  when is_integer(Style),is_boolean(Filled) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetEOLFilled,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:from_bool(Filled)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetEOLFilled,[ThisRef,Style,Filled]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstyleresetdefault">external documentation</a>.
 -spec styleResetDefault(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 styleResetDefault(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleResetDefault,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleResetDefault,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetunderline">external documentation</a>.
 -spec styleSetUnderline(This, Style, Underline) -> 'ok' when
@@ -852,8 +766,7 @@ styleResetDefault(#wx_ref{type=ThisT,ref=ThisRef}) ->
 styleSetUnderline(#wx_ref{type=ThisT,ref=ThisRef},Style,Underline)
  when is_integer(Style),is_boolean(Underline) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetUnderline,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:from_bool(Underline)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetUnderline,[ThisRef,Style,Underline]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetcase">external documentation</a>.
 -spec styleSetCase(This, Style, CaseForce) -> 'ok' when
@@ -861,8 +774,7 @@ styleSetUnderline(#wx_ref{type=ThisT,ref=ThisRef},Style,Underline)
 styleSetCase(#wx_ref{type=ThisT,ref=ThisRef},Style,CaseForce)
  when is_integer(Style),is_integer(CaseForce) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetCase,
-  <<ThisRef:32/?UI,Style:32/?UI,CaseForce:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetCase,[ThisRef,Style,CaseForce]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesethotspot">external documentation</a>.
 -spec styleSetHotSpot(This, Style, Hotspot) -> 'ok' when
@@ -870,8 +782,7 @@ styleSetCase(#wx_ref{type=ThisT,ref=ThisRef},Style,CaseForce)
 styleSetHotSpot(#wx_ref{type=ThisT,ref=ThisRef},Style,Hotspot)
  when is_integer(Style),is_boolean(Hotspot) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetHotSpot,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:from_bool(Hotspot)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetHotSpot,[ThisRef,Style,Hotspot]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselforeground">external documentation</a>.
 -spec setSelForeground(This, UseSetting, Fore) -> 'ok' when
@@ -879,8 +790,7 @@ styleSetHotSpot(#wx_ref{type=ThisT,ref=ThisRef},Style,Hotspot)
 setSelForeground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
  when is_boolean(UseSetting),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelForeground,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelForeground,[ThisRef,UseSetting,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselbackground">external documentation</a>.
 -spec setSelBackground(This, UseSetting, Back) -> 'ok' when
@@ -888,16 +798,14 @@ setSelForeground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
 setSelBackground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Back)
  when is_boolean(UseSetting),tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelBackground,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelBackground,[ThisRef,UseSetting,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselalpha">external documentation</a>.
 -spec getSelAlpha(This) -> integer() when
 	This::wxStyledTextCtrl().
 getSelAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelAlpha,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelAlpha,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselalpha">external documentation</a>.
 -spec setSelAlpha(This, Alpha) -> 'ok' when
@@ -905,8 +813,7 @@ getSelAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSelAlpha(#wx_ref{type=ThisT,ref=ThisRef},Alpha)
  when is_integer(Alpha) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelAlpha,
-  <<ThisRef:32/?UI,Alpha:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelAlpha,[ThisRef,Alpha]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretforeground">external documentation</a>.
 -spec setCaretForeground(This, Fore) -> 'ok' when
@@ -914,8 +821,7 @@ setSelAlpha(#wx_ref{type=ThisT,ref=ThisRef},Alpha)
 setCaretForeground(#wx_ref{type=ThisT,ref=ThisRef},Fore)
  when tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretForeground,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretForeground,[ThisRef,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcmdkeyassign">external documentation</a>.
 -spec cmdKeyAssign(This, Key, Modifiers, Cmd) -> 'ok' when
@@ -923,8 +829,7 @@ setCaretForeground(#wx_ref{type=ThisT,ref=ThisRef},Fore)
 cmdKeyAssign(#wx_ref{type=ThisT,ref=ThisRef},Key,Modifiers,Cmd)
  when is_integer(Key),is_integer(Modifiers),is_integer(Cmd) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CmdKeyAssign,
-  <<ThisRef:32/?UI,Key:32/?UI,Modifiers:32/?UI,Cmd:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CmdKeyAssign,[ThisRef,Key,Modifiers,Cmd]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcmdkeyclear">external documentation</a>.
 -spec cmdKeyClear(This, Key, Modifiers) -> 'ok' when
@@ -932,16 +837,14 @@ cmdKeyAssign(#wx_ref{type=ThisT,ref=ThisRef},Key,Modifiers,Cmd)
 cmdKeyClear(#wx_ref{type=ThisT,ref=ThisRef},Key,Modifiers)
  when is_integer(Key),is_integer(Modifiers) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CmdKeyClear,
-  <<ThisRef:32/?UI,Key:32/?UI,Modifiers:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CmdKeyClear,[ThisRef,Key,Modifiers]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcmdkeyclearall">external documentation</a>.
 -spec cmdKeyClearAll(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 cmdKeyClearAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CmdKeyClearAll,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CmdKeyClearAll,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetstylebytes">external documentation</a>.
 -spec setStyleBytes(This, Length) -> integer() when
@@ -949,8 +852,7 @@ cmdKeyClearAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setStyleBytes(#wx_ref{type=ThisT,ref=ThisRef},Length)
  when is_integer(Length) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_SetStyleBytes,
-  <<ThisRef:32/?UI,Length:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_SetStyleBytes,[ThisRef,Length]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetvisible">external documentation</a>.
 -spec styleSetVisible(This, Style, Visible) -> 'ok' when
@@ -958,16 +860,14 @@ setStyleBytes(#wx_ref{type=ThisT,ref=ThisRef},Length)
 styleSetVisible(#wx_ref{type=ThisT,ref=ThisRef},Style,Visible)
  when is_integer(Style),is_boolean(Visible) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetVisible,
-  <<ThisRef:32/?UI,Style:32/?UI,(wxe_util:from_bool(Visible)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetVisible,[ThisRef,Style,Visible]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretperiod">external documentation</a>.
 -spec getCaretPeriod(This) -> integer() when
 	This::wxStyledTextCtrl().
 getCaretPeriod(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretPeriod,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretPeriod,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretperiod">external documentation</a>.
 -spec setCaretPeriod(This, PeriodMilliseconds) -> 'ok' when
@@ -975,8 +875,7 @@ getCaretPeriod(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCaretPeriod(#wx_ref{type=ThisT,ref=ThisRef},PeriodMilliseconds)
  when is_integer(PeriodMilliseconds) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretPeriod,
-  <<ThisRef:32/?UI,PeriodMilliseconds:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretPeriod,[ThisRef,PeriodMilliseconds]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwordchars">external documentation</a>.
 -spec setWordChars(This, Characters) -> 'ok' when
@@ -985,24 +884,21 @@ setWordChars(#wx_ref{type=ThisT,ref=ThisRef},Characters)
  when ?is_chardata(Characters) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Characters_UC = unicode:characters_to_binary([Characters,0]),
-  wxe_util:cast(?wxStyledTextCtrl_SetWordChars,
-  <<ThisRef:32/?UI,(byte_size(Characters_UC)):32/?UI,(Characters_UC)/binary, 0:(((8- ((0+byte_size(Characters_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWordChars,[ThisRef,Characters_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlbeginundoaction">external documentation</a>.
 -spec beginUndoAction(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 beginUndoAction(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_BeginUndoAction,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_BeginUndoAction,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlendundoaction">external documentation</a>.
 -spec endUndoAction(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 endUndoAction(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_EndUndoAction,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_EndUndoAction,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlindicatorsetstyle">external documentation</a>.
 -spec indicatorSetStyle(This, Indic, Style) -> 'ok' when
@@ -1010,8 +906,7 @@ endUndoAction(#wx_ref{type=ThisT,ref=ThisRef}) ->
 indicatorSetStyle(#wx_ref{type=ThisT,ref=ThisRef},Indic,Style)
  when is_integer(Indic),is_integer(Style) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_IndicatorSetStyle,
-  <<ThisRef:32/?UI,Indic:32/?UI,Style:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_IndicatorSetStyle,[ThisRef,Indic,Style]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlindicatorgetstyle">external documentation</a>.
 -spec indicatorGetStyle(This, Indic) -> integer() when
@@ -1019,8 +914,7 @@ indicatorSetStyle(#wx_ref{type=ThisT,ref=ThisRef},Indic,Style)
 indicatorGetStyle(#wx_ref{type=ThisT,ref=ThisRef},Indic)
  when is_integer(Indic) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_IndicatorGetStyle,
-  <<ThisRef:32/?UI,Indic:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_IndicatorGetStyle,[ThisRef,Indic]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlindicatorsetforeground">external documentation</a>.
 -spec indicatorSetForeground(This, Indic, Fore) -> 'ok' when
@@ -1028,8 +922,7 @@ indicatorGetStyle(#wx_ref{type=ThisT,ref=ThisRef},Indic)
 indicatorSetForeground(#wx_ref{type=ThisT,ref=ThisRef},Indic,Fore)
  when is_integer(Indic),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_IndicatorSetForeground,
-  <<ThisRef:32/?UI,Indic:32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_IndicatorSetForeground,[ThisRef,Indic,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlindicatorgetforeground">external documentation</a>.
 -spec indicatorGetForeground(This, Indic) -> wx:wx_colour4() when
@@ -1037,8 +930,7 @@ indicatorSetForeground(#wx_ref{type=ThisT,ref=ThisRef},Indic,Fore)
 indicatorGetForeground(#wx_ref{type=ThisT,ref=ThisRef},Indic)
  when is_integer(Indic) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_IndicatorGetForeground,
-  <<ThisRef:32/?UI,Indic:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_IndicatorGetForeground,[ThisRef,Indic]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwhitespaceforeground">external documentation</a>.
 -spec setWhitespaceForeground(This, UseSetting, Fore) -> 'ok' when
@@ -1046,8 +938,7 @@ indicatorGetForeground(#wx_ref{type=ThisT,ref=ThisRef},Indic)
 setWhitespaceForeground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
  when is_boolean(UseSetting),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetWhitespaceForeground,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWhitespaceForeground,[ThisRef,UseSetting,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwhitespacebackground">external documentation</a>.
 -spec setWhitespaceBackground(This, UseSetting, Back) -> 'ok' when
@@ -1055,16 +946,14 @@ setWhitespaceForeground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
 setWhitespaceBackground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Back)
  when is_boolean(UseSetting),tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetWhitespaceBackground,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWhitespaceBackground,[ThisRef,UseSetting,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstylebits">external documentation</a>.
 -spec getStyleBits(This) -> integer() when
 	This::wxStyledTextCtrl().
 getStyleBits(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetStyleBits,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetStyleBits,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlinestate">external documentation</a>.
 -spec setLineState(This, Line, State) -> 'ok' when
@@ -1072,8 +961,7 @@ getStyleBits(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setLineState(#wx_ref{type=ThisT,ref=ThisRef},Line,State)
  when is_integer(Line),is_integer(State) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetLineState,
-  <<ThisRef:32/?UI,Line:32/?UI,State:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetLineState,[ThisRef,Line,State]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlinestate">external documentation</a>.
 -spec getLineState(This, Line) -> integer() when
@@ -1081,24 +969,21 @@ setLineState(#wx_ref{type=ThisT,ref=ThisRef},Line,State)
 getLineState(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineState,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineState,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmaxlinestate">external documentation</a>.
 -spec getMaxLineState(This) -> integer() when
 	This::wxStyledTextCtrl().
 getMaxLineState(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMaxLineState,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMaxLineState,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretlinevisible">external documentation</a>.
 -spec getCaretLineVisible(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getCaretLineVisible(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretLineVisible,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretLineVisible,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretlinevisible">external documentation</a>.
 -spec setCaretLineVisible(This, Show) -> 'ok' when
@@ -1106,16 +991,14 @@ getCaretLineVisible(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCaretLineVisible(#wx_ref{type=ThisT,ref=ThisRef},Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretLineVisible,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretLineVisible,[ThisRef,Show]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretlinebackground">external documentation</a>.
 -spec getCaretLineBackground(This) -> wx:wx_colour4() when
 	This::wxStyledTextCtrl().
 getCaretLineBackground(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretLineBackground,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretLineBackground,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretlinebackground">external documentation</a>.
 -spec setCaretLineBackground(This, Back) -> 'ok' when
@@ -1123,8 +1006,7 @@ getCaretLineBackground(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCaretLineBackground(#wx_ref{type=ThisT,ref=ThisRef},Back)
  when tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretLineBackground,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretLineBackground,[ThisRef,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompshow">external documentation</a>.
 -spec autoCompShow(This, LenEntered, ItemList) -> 'ok' when
@@ -1133,40 +1015,35 @@ autoCompShow(#wx_ref{type=ThisT,ref=ThisRef},LenEntered,ItemList)
  when is_integer(LenEntered),?is_chardata(ItemList) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ItemList_UC = unicode:characters_to_binary([ItemList,0]),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompShow,
-  <<ThisRef:32/?UI,LenEntered:32/?UI,(byte_size(ItemList_UC)):32/?UI,(ItemList_UC)/binary, 0:(((8- ((4+byte_size(ItemList_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompShow,[ThisRef,LenEntered,ItemList_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompcancel">external documentation</a>.
 -spec autoCompCancel(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 autoCompCancel(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompCancel,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompCancel,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompactive">external documentation</a>.
 -spec autoCompActive(This) -> boolean() when
 	This::wxStyledTextCtrl().
 autoCompActive(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompActive,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompActive,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompposstart">external documentation</a>.
 -spec autoCompPosStart(This) -> integer() when
 	This::wxStyledTextCtrl().
 autoCompPosStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompPosStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompPosStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompcomplete">external documentation</a>.
 -spec autoCompComplete(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 autoCompComplete(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompComplete,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompComplete,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompstops">external documentation</a>.
 -spec autoCompStops(This, CharacterSet) -> 'ok' when
@@ -1175,8 +1052,7 @@ autoCompStops(#wx_ref{type=ThisT,ref=ThisRef},CharacterSet)
  when ?is_chardata(CharacterSet) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   CharacterSet_UC = unicode:characters_to_binary([CharacterSet,0]),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompStops,
-  <<ThisRef:32/?UI,(byte_size(CharacterSet_UC)):32/?UI,(CharacterSet_UC)/binary, 0:(((8- ((0+byte_size(CharacterSet_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompStops,[ThisRef,CharacterSet_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetseparator">external documentation</a>.
 -spec autoCompSetSeparator(This, SeparatorCharacter) -> 'ok' when
@@ -1184,16 +1060,14 @@ autoCompStops(#wx_ref{type=ThisT,ref=ThisRef},CharacterSet)
 autoCompSetSeparator(#wx_ref{type=ThisT,ref=ThisRef},SeparatorCharacter)
  when is_integer(SeparatorCharacter) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetSeparator,
-  <<ThisRef:32/?UI,SeparatorCharacter:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetSeparator,[ThisRef,SeparatorCharacter]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetseparator">external documentation</a>.
 -spec autoCompGetSeparator(This) -> integer() when
 	This::wxStyledTextCtrl().
 autoCompGetSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetSeparator,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetSeparator,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompselect">external documentation</a>.
 -spec autoCompSelect(This, Text) -> 'ok' when
@@ -1202,8 +1076,7 @@ autoCompSelect(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSelect,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSelect,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetcancelatstart">external documentation</a>.
 -spec autoCompSetCancelAtStart(This, Cancel) -> 'ok' when
@@ -1211,16 +1084,14 @@ autoCompSelect(#wx_ref{type=ThisT,ref=ThisRef},Text)
 autoCompSetCancelAtStart(#wx_ref{type=ThisT,ref=ThisRef},Cancel)
  when is_boolean(Cancel) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetCancelAtStart,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Cancel)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetCancelAtStart,[ThisRef,Cancel]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetcancelatstart">external documentation</a>.
 -spec autoCompGetCancelAtStart(This) -> boolean() when
 	This::wxStyledTextCtrl().
 autoCompGetCancelAtStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetCancelAtStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetCancelAtStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetfillups">external documentation</a>.
 -spec autoCompSetFillUps(This, CharacterSet) -> 'ok' when
@@ -1229,8 +1100,7 @@ autoCompSetFillUps(#wx_ref{type=ThisT,ref=ThisRef},CharacterSet)
  when ?is_chardata(CharacterSet) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   CharacterSet_UC = unicode:characters_to_binary([CharacterSet,0]),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetFillUps,
-  <<ThisRef:32/?UI,(byte_size(CharacterSet_UC)):32/?UI,(CharacterSet_UC)/binary, 0:(((8- ((0+byte_size(CharacterSet_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetFillUps,[ThisRef,CharacterSet_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetchoosesingle">external documentation</a>.
 -spec autoCompSetChooseSingle(This, ChooseSingle) -> 'ok' when
@@ -1238,16 +1108,14 @@ autoCompSetFillUps(#wx_ref{type=ThisT,ref=ThisRef},CharacterSet)
 autoCompSetChooseSingle(#wx_ref{type=ThisT,ref=ThisRef},ChooseSingle)
  when is_boolean(ChooseSingle) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetChooseSingle,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(ChooseSingle)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetChooseSingle,[ThisRef,ChooseSingle]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetchoosesingle">external documentation</a>.
 -spec autoCompGetChooseSingle(This) -> boolean() when
 	This::wxStyledTextCtrl().
 autoCompGetChooseSingle(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetChooseSingle,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetChooseSingle,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetignorecase">external documentation</a>.
 -spec autoCompSetIgnoreCase(This, IgnoreCase) -> 'ok' when
@@ -1255,16 +1123,14 @@ autoCompGetChooseSingle(#wx_ref{type=ThisT,ref=ThisRef}) ->
 autoCompSetIgnoreCase(#wx_ref{type=ThisT,ref=ThisRef},IgnoreCase)
  when is_boolean(IgnoreCase) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetIgnoreCase,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(IgnoreCase)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetIgnoreCase,[ThisRef,IgnoreCase]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetignorecase">external documentation</a>.
 -spec autoCompGetIgnoreCase(This) -> boolean() when
 	This::wxStyledTextCtrl().
 autoCompGetIgnoreCase(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetIgnoreCase,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetIgnoreCase,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrluserlistshow">external documentation</a>.
 -spec userListShow(This, ListType, ItemList) -> 'ok' when
@@ -1273,8 +1139,7 @@ userListShow(#wx_ref{type=ThisT,ref=ThisRef},ListType,ItemList)
  when is_integer(ListType),?is_chardata(ItemList) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ItemList_UC = unicode:characters_to_binary([ItemList,0]),
-  wxe_util:cast(?wxStyledTextCtrl_UserListShow,
-  <<ThisRef:32/?UI,ListType:32/?UI,(byte_size(ItemList_UC)):32/?UI,(ItemList_UC)/binary, 0:(((8- ((4+byte_size(ItemList_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_UserListShow,[ThisRef,ListType,ItemList_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetautohide">external documentation</a>.
 -spec autoCompSetAutoHide(This, AutoHide) -> 'ok' when
@@ -1282,16 +1147,14 @@ userListShow(#wx_ref{type=ThisT,ref=ThisRef},ListType,ItemList)
 autoCompSetAutoHide(#wx_ref{type=ThisT,ref=ThisRef},AutoHide)
  when is_boolean(AutoHide) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetAutoHide,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(AutoHide)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetAutoHide,[ThisRef,AutoHide]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetautohide">external documentation</a>.
 -spec autoCompGetAutoHide(This) -> boolean() when
 	This::wxStyledTextCtrl().
 autoCompGetAutoHide(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetAutoHide,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetAutoHide,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetdroprestofword">external documentation</a>.
 -spec autoCompSetDropRestOfWord(This, DropRestOfWord) -> 'ok' when
@@ -1299,16 +1162,14 @@ autoCompGetAutoHide(#wx_ref{type=ThisT,ref=ThisRef}) ->
 autoCompSetDropRestOfWord(#wx_ref{type=ThisT,ref=ThisRef},DropRestOfWord)
  when is_boolean(DropRestOfWord) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetDropRestOfWord,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(DropRestOfWord)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetDropRestOfWord,[ThisRef,DropRestOfWord]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetdroprestofword">external documentation</a>.
 -spec autoCompGetDropRestOfWord(This) -> boolean() when
 	This::wxStyledTextCtrl().
 autoCompGetDropRestOfWord(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetDropRestOfWord,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetDropRestOfWord,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlregisterimage">external documentation</a>.
 -spec registerImage(This, Type, Bmp) -> 'ok' when
@@ -1317,24 +1178,21 @@ registerImage(#wx_ref{type=ThisT,ref=ThisRef},Type,#wx_ref{type=BmpT,ref=BmpRef}
  when is_integer(Type) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:cast(?wxStyledTextCtrl_RegisterImage,
-  <<ThisRef:32/?UI,Type:32/?UI,BmpRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_RegisterImage,[ThisRef,Type,BmpRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlclearregisteredimages">external documentation</a>.
 -spec clearRegisteredImages(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 clearRegisteredImages(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ClearRegisteredImages,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ClearRegisteredImages,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgettypeseparator">external documentation</a>.
 -spec autoCompGetTypeSeparator(This) -> integer() when
 	This::wxStyledTextCtrl().
 autoCompGetTypeSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetTypeSeparator,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetTypeSeparator,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsettypeseparator">external documentation</a>.
 -spec autoCompSetTypeSeparator(This, SeparatorCharacter) -> 'ok' when
@@ -1342,8 +1200,7 @@ autoCompGetTypeSeparator(#wx_ref{type=ThisT,ref=ThisRef}) ->
 autoCompSetTypeSeparator(#wx_ref{type=ThisT,ref=ThisRef},SeparatorCharacter)
  when is_integer(SeparatorCharacter) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetTypeSeparator,
-  <<ThisRef:32/?UI,SeparatorCharacter:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetTypeSeparator,[ThisRef,SeparatorCharacter]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetmaxwidth">external documentation</a>.
 -spec autoCompSetMaxWidth(This, CharacterCount) -> 'ok' when
@@ -1351,16 +1208,14 @@ autoCompSetTypeSeparator(#wx_ref{type=ThisT,ref=ThisRef},SeparatorCharacter)
 autoCompSetMaxWidth(#wx_ref{type=ThisT,ref=ThisRef},CharacterCount)
  when is_integer(CharacterCount) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetMaxWidth,
-  <<ThisRef:32/?UI,CharacterCount:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetMaxWidth,[ThisRef,CharacterCount]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetmaxwidth">external documentation</a>.
 -spec autoCompGetMaxWidth(This) -> integer() when
 	This::wxStyledTextCtrl().
 autoCompGetMaxWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetMaxWidth,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetMaxWidth,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetmaxheight">external documentation</a>.
 -spec autoCompSetMaxHeight(This, RowCount) -> 'ok' when
@@ -1368,16 +1223,14 @@ autoCompGetMaxWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
 autoCompSetMaxHeight(#wx_ref{type=ThisT,ref=ThisRef},RowCount)
  when is_integer(RowCount) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetMaxHeight,
-  <<ThisRef:32/?UI,RowCount:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AutoCompSetMaxHeight,[ThisRef,RowCount]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetmaxheight">external documentation</a>.
 -spec autoCompGetMaxHeight(This) -> integer() when
 	This::wxStyledTextCtrl().
 autoCompGetMaxHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetMaxHeight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetMaxHeight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetindent">external documentation</a>.
 -spec setIndent(This, IndentSize) -> 'ok' when
@@ -1385,16 +1238,14 @@ autoCompGetMaxHeight(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setIndent(#wx_ref{type=ThisT,ref=ThisRef},IndentSize)
  when is_integer(IndentSize) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetIndent,
-  <<ThisRef:32/?UI,IndentSize:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetIndent,[ThisRef,IndentSize]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetindent">external documentation</a>.
 -spec getIndent(This) -> integer() when
 	This::wxStyledTextCtrl().
 getIndent(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetIndent,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetIndent,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetusetabs">external documentation</a>.
 -spec setUseTabs(This, UseTabs) -> 'ok' when
@@ -1402,16 +1253,14 @@ getIndent(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setUseTabs(#wx_ref{type=ThisT,ref=ThisRef},UseTabs)
  when is_boolean(UseTabs) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetUseTabs,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseTabs)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetUseTabs,[ThisRef,UseTabs]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetusetabs">external documentation</a>.
 -spec getUseTabs(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getUseTabs(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetUseTabs,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetUseTabs,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlineindentation">external documentation</a>.
 -spec setLineIndentation(This, Line, IndentSize) -> 'ok' when
@@ -1419,8 +1268,7 @@ getUseTabs(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setLineIndentation(#wx_ref{type=ThisT,ref=ThisRef},Line,IndentSize)
  when is_integer(Line),is_integer(IndentSize) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetLineIndentation,
-  <<ThisRef:32/?UI,Line:32/?UI,IndentSize:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetLineIndentation,[ThisRef,Line,IndentSize]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlineindentation">external documentation</a>.
 -spec getLineIndentation(This, Line) -> integer() when
@@ -1428,8 +1276,7 @@ setLineIndentation(#wx_ref{type=ThisT,ref=ThisRef},Line,IndentSize)
 getLineIndentation(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineIndentation,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineIndentation,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlineindentposition">external documentation</a>.
 -spec getLineIndentPosition(This, Line) -> integer() when
@@ -1437,8 +1284,7 @@ getLineIndentation(#wx_ref{type=ThisT,ref=ThisRef},Line)
 getLineIndentPosition(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineIndentPosition,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineIndentPosition,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcolumn">external documentation</a>.
 -spec getColumn(This, Pos) -> integer() when
@@ -1446,8 +1292,7 @@ getLineIndentPosition(#wx_ref{type=ThisT,ref=ThisRef},Line)
 getColumn(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetColumn,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetColumn,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetusehorizontalscrollbar">external documentation</a>.
 -spec setUseHorizontalScrollBar(This, Show) -> 'ok' when
@@ -1455,16 +1300,14 @@ getColumn(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 setUseHorizontalScrollBar(#wx_ref{type=ThisT,ref=ThisRef},Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetUseHorizontalScrollBar,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetUseHorizontalScrollBar,[ThisRef,Show]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetusehorizontalscrollbar">external documentation</a>.
 -spec getUseHorizontalScrollBar(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getUseHorizontalScrollBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetUseHorizontalScrollBar,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetUseHorizontalScrollBar,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetindentationguides">external documentation</a>.
 -spec setIndentationGuides(This, Show) -> 'ok' when
@@ -1472,16 +1315,14 @@ getUseHorizontalScrollBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setIndentationGuides(#wx_ref{type=ThisT,ref=ThisRef},Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetIndentationGuides,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetIndentationGuides,[ThisRef,Show]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetindentationguides">external documentation</a>.
 -spec getIndentationGuides(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getIndentationGuides(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetIndentationGuides,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetIndentationGuides,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsethighlightguide">external documentation</a>.
 -spec setHighlightGuide(This, Column) -> 'ok' when
@@ -1489,16 +1330,14 @@ getIndentationGuides(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setHighlightGuide(#wx_ref{type=ThisT,ref=ThisRef},Column)
  when is_integer(Column) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetHighlightGuide,
-  <<ThisRef:32/?UI,Column:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetHighlightGuide,[ThisRef,Column]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgethighlightguide">external documentation</a>.
 -spec getHighlightGuide(This) -> integer() when
 	This::wxStyledTextCtrl().
 getHighlightGuide(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetHighlightGuide,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetHighlightGuide,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlineendposition">external documentation</a>.
 -spec getLineEndPosition(This, Line) -> integer() when
@@ -1506,32 +1345,28 @@ getHighlightGuide(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getLineEndPosition(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineEndPosition,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineEndPosition,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcodepage">external documentation</a>.
 -spec getCodePage(This) -> integer() when
 	This::wxStyledTextCtrl().
 getCodePage(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCodePage,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCodePage,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretforeground">external documentation</a>.
 -spec getCaretForeground(This) -> wx:wx_colour4() when
 	This::wxStyledTextCtrl().
 getCaretForeground(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretForeground,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretForeground,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetreadonly">external documentation</a>.
 -spec getReadOnly(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getReadOnly(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetReadOnly,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetReadOnly,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcurrentpos">external documentation</a>.
 -spec setCurrentPos(This, Pos) -> 'ok' when
@@ -1539,8 +1374,7 @@ getReadOnly(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCurrentPos(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCurrentPos,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCurrentPos,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselectionstart">external documentation</a>.
 -spec setSelectionStart(This, Pos) -> 'ok' when
@@ -1548,16 +1382,14 @@ setCurrentPos(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 setSelectionStart(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelectionStart,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelectionStart,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselectionstart">external documentation</a>.
 -spec getSelectionStart(This) -> integer() when
 	This::wxStyledTextCtrl().
 getSelectionStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelectionStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelectionStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselectionend">external documentation</a>.
 -spec setSelectionEnd(This, Pos) -> 'ok' when
@@ -1565,16 +1397,14 @@ getSelectionStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSelectionEnd(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelectionEnd,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelectionEnd,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselectionend">external documentation</a>.
 -spec getSelectionEnd(This) -> integer() when
 	This::wxStyledTextCtrl().
 getSelectionEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelectionEnd,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelectionEnd,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetprintmagnification">external documentation</a>.
 -spec setPrintMagnification(This, Magnification) -> 'ok' when
@@ -1582,16 +1412,14 @@ getSelectionEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setPrintMagnification(#wx_ref{type=ThisT,ref=ThisRef},Magnification)
  when is_integer(Magnification) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetPrintMagnification,
-  <<ThisRef:32/?UI,Magnification:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetPrintMagnification,[ThisRef,Magnification]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetprintmagnification">external documentation</a>.
 -spec getPrintMagnification(This) -> integer() when
 	This::wxStyledTextCtrl().
 getPrintMagnification(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetPrintMagnification,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetPrintMagnification,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetprintcolourmode">external documentation</a>.
 -spec setPrintColourMode(This, Mode) -> 'ok' when
@@ -1599,16 +1427,14 @@ getPrintMagnification(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setPrintColourMode(#wx_ref{type=ThisT,ref=ThisRef},Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetPrintColourMode,
-  <<ThisRef:32/?UI,Mode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetPrintColourMode,[ThisRef,Mode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetprintcolourmode">external documentation</a>.
 -spec getPrintColourMode(This) -> integer() when
 	This::wxStyledTextCtrl().
 getPrintColourMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetPrintColourMode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetPrintColourMode,[ThisRef]).
 
 %% @equiv findText(This,MinPos,MaxPos,Text, [])
 -spec findText(This, MinPos, MaxPos, Text) -> integer() when
@@ -1626,30 +1452,24 @@ findText(#wx_ref{type=ThisT,ref=ThisRef},MinPos,MaxPos,Text, Options)
  when is_integer(MinPos),is_integer(MaxPos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxStyledTextCtrl_FindText,
-  <<ThisRef:32/?UI,MinPos:32/?UI,MaxPos:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxStyledTextCtrl_FindText,[ThisRef,MinPos,MaxPos,Text_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlformatrange">external documentation</a>.
 -spec formatRange(This, DoDraw, StartPos, EndPos, Draw, Target, RenderRect, PageRect) -> integer() when
 	This::wxStyledTextCtrl(), DoDraw::boolean(), StartPos::integer(), EndPos::integer(), Draw::wxDC:wxDC(), Target::wxDC:wxDC(), RenderRect::{X::integer(), Y::integer(), W::integer(), H::integer()}, PageRect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-formatRange(#wx_ref{type=ThisT,ref=ThisRef},DoDraw,StartPos,EndPos,#wx_ref{type=DrawT,ref=DrawRef},#wx_ref{type=TargetT,ref=TargetRef},{RenderRectX,RenderRectY,RenderRectW,RenderRectH},{PageRectX,PageRectY,PageRectW,PageRectH})
+formatRange(#wx_ref{type=ThisT,ref=ThisRef},DoDraw,StartPos,EndPos,#wx_ref{type=DrawT,ref=DrawRef},#wx_ref{type=TargetT,ref=TargetRef},{RenderRectX,RenderRectY,RenderRectW,RenderRectH} = RenderRect,{PageRectX,PageRectY,PageRectW,PageRectH} = PageRect)
  when is_boolean(DoDraw),is_integer(StartPos),is_integer(EndPos),is_integer(RenderRectX),is_integer(RenderRectY),is_integer(RenderRectW),is_integer(RenderRectH),is_integer(PageRectX),is_integer(PageRectY),is_integer(PageRectW),is_integer(PageRectH) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(DrawT,wxDC),
   ?CLASS(TargetT,wxDC),
-  wxe_util:call(?wxStyledTextCtrl_FormatRange,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(DoDraw)):32/?UI,StartPos:32/?UI,EndPos:32/?UI,DrawRef:32/?UI,TargetRef:32/?UI,RenderRectX:32/?UI,RenderRectY:32/?UI,RenderRectW:32/?UI,RenderRectH:32/?UI,PageRectX:32/?UI,PageRectY:32/?UI,PageRectW:32/?UI,PageRectH:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_FormatRange,[ThisRef,DoDraw,StartPos,EndPos,DrawRef,TargetRef,RenderRect,PageRect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetfirstvisibleline">external documentation</a>.
 -spec getFirstVisibleLine(This) -> integer() when
 	This::wxStyledTextCtrl().
 getFirstVisibleLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetFirstVisibleLine,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetFirstVisibleLine,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetline">external documentation</a>.
 -spec getLine(This, Line) -> unicode:charlist() when
@@ -1657,16 +1477,14 @@ getFirstVisibleLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLine,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLine,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlinecount">external documentation</a>.
 -spec getLineCount(This) -> integer() when
 	This::wxStyledTextCtrl().
 getLineCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineCount,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineCount,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmarginleft">external documentation</a>.
 -spec setMarginLeft(This, PixelWidth) -> 'ok' when
@@ -1674,16 +1492,14 @@ getLineCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setMarginLeft(#wx_ref{type=ThisT,ref=ThisRef},PixelWidth)
  when is_integer(PixelWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMarginLeft,
-  <<ThisRef:32/?UI,PixelWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMarginLeft,[ThisRef,PixelWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmarginleft">external documentation</a>.
 -spec getMarginLeft(This) -> integer() when
 	This::wxStyledTextCtrl().
 getMarginLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMarginLeft,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMarginLeft,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmarginright">external documentation</a>.
 -spec setMarginRight(This, PixelWidth) -> 'ok' when
@@ -1691,24 +1507,21 @@ getMarginLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setMarginRight(#wx_ref{type=ThisT,ref=ThisRef},PixelWidth)
  when is_integer(PixelWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMarginRight,
-  <<ThisRef:32/?UI,PixelWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMarginRight,[ThisRef,PixelWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmarginright">external documentation</a>.
 -spec getMarginRight(This) -> integer() when
 	This::wxStyledTextCtrl().
 getMarginRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMarginRight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMarginRight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmodify">external documentation</a>.
 -spec getModify(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getModify(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetModify,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetModify,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselection">external documentation</a>.
 -spec setSelection(This, Start, End) -> 'ok' when
@@ -1716,16 +1529,14 @@ getModify(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},Start,End)
  when is_integer(Start),is_integer(End) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelection,
-  <<ThisRef:32/?UI,Start:32/?UI,End:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelection,[ThisRef,Start,End]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselectedtext">external documentation</a>.
 -spec getSelectedText(This) -> unicode:charlist() when
 	This::wxStyledTextCtrl().
 getSelectedText(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelectedText,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelectedText,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettextrange">external documentation</a>.
 -spec getTextRange(This, StartPos, EndPos) -> unicode:charlist() when
@@ -1733,8 +1544,7 @@ getSelectedText(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getTextRange(#wx_ref{type=ThisT,ref=ThisRef},StartPos,EndPos)
  when is_integer(StartPos),is_integer(EndPos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTextRange,
-  <<ThisRef:32/?UI,StartPos:32/?UI,EndPos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTextRange,[ThisRef,StartPos,EndPos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhideselection">external documentation</a>.
 -spec hideSelection(This, Normal) -> 'ok' when
@@ -1742,8 +1552,7 @@ getTextRange(#wx_ref{type=ThisT,ref=ThisRef},StartPos,EndPos)
 hideSelection(#wx_ref{type=ThisT,ref=ThisRef},Normal)
  when is_boolean(Normal) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HideSelection,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Normal)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HideSelection,[ThisRef,Normal]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinefromposition">external documentation</a>.
 -spec lineFromPosition(This, Pos) -> integer() when
@@ -1751,8 +1560,7 @@ hideSelection(#wx_ref{type=ThisT,ref=ThisRef},Normal)
 lineFromPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_LineFromPosition,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_LineFromPosition,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpositionfromline">external documentation</a>.
 -spec positionFromLine(This, Line) -> integer() when
@@ -1760,8 +1568,7 @@ lineFromPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 positionFromLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_PositionFromLine,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_PositionFromLine,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinescroll">external documentation</a>.
 -spec lineScroll(This, Columns, Lines) -> 'ok' when
@@ -1769,16 +1576,14 @@ positionFromLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
 lineScroll(#wx_ref{type=ThisT,ref=ThisRef},Columns,Lines)
  when is_integer(Columns),is_integer(Lines) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineScroll,
-  <<ThisRef:32/?UI,Columns:32/?UI,Lines:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineScroll,[ThisRef,Columns,Lines]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlensurecaretvisible">external documentation</a>.
 -spec ensureCaretVisible(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 ensureCaretVisible(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_EnsureCaretVisible,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_EnsureCaretVisible,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlreplaceselection">external documentation</a>.
 -spec replaceSelection(This, Text) -> 'ok' when
@@ -1787,8 +1592,7 @@ replaceSelection(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_ReplaceSelection,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_ReplaceSelection,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetreadonly">external documentation</a>.
 -spec setReadOnly(This, ReadOnly) -> 'ok' when
@@ -1796,72 +1600,63 @@ replaceSelection(#wx_ref{type=ThisT,ref=ThisRef},Text)
 setReadOnly(#wx_ref{type=ThisT,ref=ThisRef},ReadOnly)
  when is_boolean(ReadOnly) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetReadOnly,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(ReadOnly)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetReadOnly,[ThisRef,ReadOnly]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcanpaste">external documentation</a>.
 -spec canPaste(This) -> boolean() when
 	This::wxStyledTextCtrl().
 canPaste(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_CanPaste,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_CanPaste,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcanundo">external documentation</a>.
 -spec canUndo(This) -> boolean() when
 	This::wxStyledTextCtrl().
 canUndo(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_CanUndo,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_CanUndo,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlemptyundobuffer">external documentation</a>.
 -spec emptyUndoBuffer(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 emptyUndoBuffer(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_EmptyUndoBuffer,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_EmptyUndoBuffer,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlundo">external documentation</a>.
 -spec undo(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 undo(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Undo,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Undo,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcut">external documentation</a>.
 -spec cut(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 cut(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Cut,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Cut,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcopy">external documentation</a>.
 -spec copy(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 copy(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Copy,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Copy,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpaste">external documentation</a>.
 -spec paste(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 paste(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Paste,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Paste,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlclear">external documentation</a>.
 -spec clear(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Clear,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Clear,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettext">external documentation</a>.
 -spec setText(This, Text) -> 'ok' when
@@ -1870,32 +1665,28 @@ setText(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_SetText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetText,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxStyledTextCtrl().
 getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetText,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetText,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettextlength">external documentation</a>.
 -spec getTextLength(This) -> integer() when
 	This::wxStyledTextCtrl().
 getTextLength(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTextLength,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTextLength,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetovertype">external documentation</a>.
 -spec getOvertype(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getOvertype(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetOvertype,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetOvertype,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretwidth">external documentation</a>.
 -spec setCaretWidth(This, PixelWidth) -> 'ok' when
@@ -1903,16 +1694,14 @@ getOvertype(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCaretWidth(#wx_ref{type=ThisT,ref=ThisRef},PixelWidth)
  when is_integer(PixelWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretWidth,
-  <<ThisRef:32/?UI,PixelWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretWidth,[ThisRef,PixelWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretwidth">external documentation</a>.
 -spec getCaretWidth(This) -> integer() when
 	This::wxStyledTextCtrl().
 getCaretWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretWidth,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretWidth,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettargetstart">external documentation</a>.
 -spec setTargetStart(This, Pos) -> 'ok' when
@@ -1920,16 +1709,14 @@ getCaretWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setTargetStart(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetTargetStart,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetTargetStart,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettargetstart">external documentation</a>.
 -spec getTargetStart(This) -> integer() when
 	This::wxStyledTextCtrl().
 getTargetStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTargetStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTargetStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettargetend">external documentation</a>.
 -spec setTargetEnd(This, Pos) -> 'ok' when
@@ -1937,16 +1724,14 @@ getTargetStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setTargetEnd(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetTargetEnd,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetTargetEnd,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettargetend">external documentation</a>.
 -spec getTargetEnd(This) -> integer() when
 	This::wxStyledTextCtrl().
 getTargetEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTargetEnd,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTargetEnd,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlreplacetarget">external documentation</a>.
 -spec replaceTarget(This, Text) -> integer() when
@@ -1955,8 +1740,7 @@ replaceTarget(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxStyledTextCtrl_ReplaceTarget,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_ReplaceTarget,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsearchintarget">external documentation</a>.
 -spec searchInTarget(This, Text) -> integer() when
@@ -1965,8 +1749,7 @@ searchInTarget(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxStyledTextCtrl_SearchInTarget,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_SearchInTarget,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetsearchflags">external documentation</a>.
 -spec setSearchFlags(This, Flags) -> 'ok' when
@@ -1974,16 +1757,14 @@ searchInTarget(#wx_ref{type=ThisT,ref=ThisRef},Text)
 setSearchFlags(#wx_ref{type=ThisT,ref=ThisRef},Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSearchFlags,
-  <<ThisRef:32/?UI,Flags:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSearchFlags,[ThisRef,Flags]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetsearchflags">external documentation</a>.
 -spec getSearchFlags(This) -> integer() when
 	This::wxStyledTextCtrl().
 getSearchFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSearchFlags,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSearchFlags,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipshow">external documentation</a>.
 -spec callTipShow(This, Pos, Definition) -> 'ok' when
@@ -1992,32 +1773,28 @@ callTipShow(#wx_ref{type=ThisT,ref=ThisRef},Pos,Definition)
  when is_integer(Pos),?is_chardata(Definition) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Definition_UC = unicode:characters_to_binary([Definition,0]),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipShow,
-  <<ThisRef:32/?UI,Pos:32/?UI,(byte_size(Definition_UC)):32/?UI,(Definition_UC)/binary, 0:(((8- ((4+byte_size(Definition_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipShow,[ThisRef,Pos,Definition_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipcancel">external documentation</a>.
 -spec callTipCancel(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 callTipCancel(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipCancel,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipCancel,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipactive">external documentation</a>.
 -spec callTipActive(This) -> boolean() when
 	This::wxStyledTextCtrl().
 callTipActive(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_CallTipActive,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_CallTipActive,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipposatstart">external documentation</a>.
 -spec callTipPosAtStart(This) -> integer() when
 	This::wxStyledTextCtrl().
 callTipPosAtStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_CallTipPosAtStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_CallTipPosAtStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipsethighlight">external documentation</a>.
 -spec callTipSetHighlight(This, Start, End) -> 'ok' when
@@ -2025,8 +1802,7 @@ callTipPosAtStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
 callTipSetHighlight(#wx_ref{type=ThisT,ref=ThisRef},Start,End)
  when is_integer(Start),is_integer(End) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipSetHighlight,
-  <<ThisRef:32/?UI,Start:32/?UI,End:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipSetHighlight,[ThisRef,Start,End]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipsetbackground">external documentation</a>.
 -spec callTipSetBackground(This, Back) -> 'ok' when
@@ -2034,8 +1810,7 @@ callTipSetHighlight(#wx_ref{type=ThisT,ref=ThisRef},Start,End)
 callTipSetBackground(#wx_ref{type=ThisT,ref=ThisRef},Back)
  when tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipSetBackground,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipSetBackground,[ThisRef,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipsetforeground">external documentation</a>.
 -spec callTipSetForeground(This, Fore) -> 'ok' when
@@ -2043,8 +1818,7 @@ callTipSetBackground(#wx_ref{type=ThisT,ref=ThisRef},Back)
 callTipSetForeground(#wx_ref{type=ThisT,ref=ThisRef},Fore)
  when tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipSetForeground,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipSetForeground,[ThisRef,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipsetforegroundhighlight">external documentation</a>.
 -spec callTipSetForegroundHighlight(This, Fore) -> 'ok' when
@@ -2052,8 +1826,7 @@ callTipSetForeground(#wx_ref{type=ThisT,ref=ThisRef},Fore)
 callTipSetForegroundHighlight(#wx_ref{type=ThisT,ref=ThisRef},Fore)
  when tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipSetForegroundHighlight,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipSetForegroundHighlight,[ThisRef,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipusestyle">external documentation</a>.
 -spec callTipUseStyle(This, TabSize) -> 'ok' when
@@ -2061,8 +1834,7 @@ callTipSetForegroundHighlight(#wx_ref{type=ThisT,ref=ThisRef},Fore)
 callTipUseStyle(#wx_ref{type=ThisT,ref=ThisRef},TabSize)
  when is_integer(TabSize) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CallTipUseStyle,
-  <<ThisRef:32/?UI,TabSize:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CallTipUseStyle,[ThisRef,TabSize]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlvisiblefromdocline">external documentation</a>.
 -spec visibleFromDocLine(This, Line) -> integer() when
@@ -2070,8 +1842,7 @@ callTipUseStyle(#wx_ref{type=ThisT,ref=ThisRef},TabSize)
 visibleFromDocLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_VisibleFromDocLine,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_VisibleFromDocLine,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldoclinefromvisible">external documentation</a>.
 -spec docLineFromVisible(This, LineDisplay) -> integer() when
@@ -2079,8 +1850,7 @@ visibleFromDocLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
 docLineFromVisible(#wx_ref{type=ThisT,ref=ThisRef},LineDisplay)
  when is_integer(LineDisplay) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_DocLineFromVisible,
-  <<ThisRef:32/?UI,LineDisplay:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_DocLineFromVisible,[ThisRef,LineDisplay]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwrapcount">external documentation</a>.
 -spec wrapCount(This, Line) -> integer() when
@@ -2088,8 +1858,7 @@ docLineFromVisible(#wx_ref{type=ThisT,ref=ThisRef},LineDisplay)
 wrapCount(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_WrapCount,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_WrapCount,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetfoldlevel">external documentation</a>.
 -spec setFoldLevel(This, Line, Level) -> 'ok' when
@@ -2097,8 +1866,7 @@ wrapCount(#wx_ref{type=ThisT,ref=ThisRef},Line)
 setFoldLevel(#wx_ref{type=ThisT,ref=ThisRef},Line,Level)
  when is_integer(Line),is_integer(Level) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetFoldLevel,
-  <<ThisRef:32/?UI,Line:32/?UI,Level:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetFoldLevel,[ThisRef,Line,Level]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetfoldlevel">external documentation</a>.
 -spec getFoldLevel(This, Line) -> integer() when
@@ -2106,8 +1874,7 @@ setFoldLevel(#wx_ref{type=ThisT,ref=ThisRef},Line,Level)
 getFoldLevel(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetFoldLevel,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetFoldLevel,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlastchild">external documentation</a>.
 -spec getLastChild(This, Line, Level) -> integer() when
@@ -2115,8 +1882,7 @@ getFoldLevel(#wx_ref{type=ThisT,ref=ThisRef},Line)
 getLastChild(#wx_ref{type=ThisT,ref=ThisRef},Line,Level)
  when is_integer(Line),is_integer(Level) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLastChild,
-  <<ThisRef:32/?UI,Line:32/?UI,Level:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLastChild,[ThisRef,Line,Level]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetfoldparent">external documentation</a>.
 -spec getFoldParent(This, Line) -> integer() when
@@ -2124,8 +1890,7 @@ getLastChild(#wx_ref{type=ThisT,ref=ThisRef},Line,Level)
 getFoldParent(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetFoldParent,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetFoldParent,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlshowlines">external documentation</a>.
 -spec showLines(This, LineStart, LineEnd) -> 'ok' when
@@ -2133,8 +1898,7 @@ getFoldParent(#wx_ref{type=ThisT,ref=ThisRef},Line)
 showLines(#wx_ref{type=ThisT,ref=ThisRef},LineStart,LineEnd)
  when is_integer(LineStart),is_integer(LineEnd) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ShowLines,
-  <<ThisRef:32/?UI,LineStart:32/?UI,LineEnd:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ShowLines,[ThisRef,LineStart,LineEnd]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhidelines">external documentation</a>.
 -spec hideLines(This, LineStart, LineEnd) -> 'ok' when
@@ -2142,8 +1906,7 @@ showLines(#wx_ref{type=ThisT,ref=ThisRef},LineStart,LineEnd)
 hideLines(#wx_ref{type=ThisT,ref=ThisRef},LineStart,LineEnd)
  when is_integer(LineStart),is_integer(LineEnd) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HideLines,
-  <<ThisRef:32/?UI,LineStart:32/?UI,LineEnd:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HideLines,[ThisRef,LineStart,LineEnd]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlinevisible">external documentation</a>.
 -spec getLineVisible(This, Line) -> boolean() when
@@ -2151,8 +1914,7 @@ hideLines(#wx_ref{type=ThisT,ref=ThisRef},LineStart,LineEnd)
 getLineVisible(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineVisible,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineVisible,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetfoldexpanded">external documentation</a>.
 -spec setFoldExpanded(This, Line, Expanded) -> 'ok' when
@@ -2160,8 +1922,7 @@ getLineVisible(#wx_ref{type=ThisT,ref=ThisRef},Line)
 setFoldExpanded(#wx_ref{type=ThisT,ref=ThisRef},Line,Expanded)
  when is_integer(Line),is_boolean(Expanded) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetFoldExpanded,
-  <<ThisRef:32/?UI,Line:32/?UI,(wxe_util:from_bool(Expanded)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetFoldExpanded,[ThisRef,Line,Expanded]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetfoldexpanded">external documentation</a>.
 -spec getFoldExpanded(This, Line) -> boolean() when
@@ -2169,8 +1930,7 @@ setFoldExpanded(#wx_ref{type=ThisT,ref=ThisRef},Line,Expanded)
 getFoldExpanded(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetFoldExpanded,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetFoldExpanded,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrltogglefold">external documentation</a>.
 -spec toggleFold(This, Line) -> 'ok' when
@@ -2178,8 +1938,7 @@ getFoldExpanded(#wx_ref{type=ThisT,ref=ThisRef},Line)
 toggleFold(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ToggleFold,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ToggleFold,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlensurevisible">external documentation</a>.
 -spec ensureVisible(This, Line) -> 'ok' when
@@ -2187,8 +1946,7 @@ toggleFold(#wx_ref{type=ThisT,ref=ThisRef},Line)
 ensureVisible(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_EnsureVisible,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_EnsureVisible,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetfoldflags">external documentation</a>.
 -spec setFoldFlags(This, Flags) -> 'ok' when
@@ -2196,8 +1954,7 @@ ensureVisible(#wx_ref{type=ThisT,ref=ThisRef},Line)
 setFoldFlags(#wx_ref{type=ThisT,ref=ThisRef},Flags)
  when is_integer(Flags) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetFoldFlags,
-  <<ThisRef:32/?UI,Flags:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetFoldFlags,[ThisRef,Flags]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlensurevisibleenforcepolicy">external documentation</a>.
 -spec ensureVisibleEnforcePolicy(This, Line) -> 'ok' when
@@ -2205,8 +1962,7 @@ setFoldFlags(#wx_ref{type=ThisT,ref=ThisRef},Flags)
 ensureVisibleEnforcePolicy(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_EnsureVisibleEnforcePolicy,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_EnsureVisibleEnforcePolicy,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettabindents">external documentation</a>.
 -spec setTabIndents(This, TabIndents) -> 'ok' when
@@ -2214,16 +1970,14 @@ ensureVisibleEnforcePolicy(#wx_ref{type=ThisT,ref=ThisRef},Line)
 setTabIndents(#wx_ref{type=ThisT,ref=ThisRef},TabIndents)
  when is_boolean(TabIndents) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetTabIndents,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(TabIndents)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetTabIndents,[ThisRef,TabIndents]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettabindents">external documentation</a>.
 -spec getTabIndents(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getTabIndents(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTabIndents,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTabIndents,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetbackspaceunindents">external documentation</a>.
 -spec setBackSpaceUnIndents(This, BsUnIndents) -> 'ok' when
@@ -2231,16 +1985,14 @@ getTabIndents(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setBackSpaceUnIndents(#wx_ref{type=ThisT,ref=ThisRef},BsUnIndents)
  when is_boolean(BsUnIndents) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetBackSpaceUnIndents,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(BsUnIndents)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetBackSpaceUnIndents,[ThisRef,BsUnIndents]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetbackspaceunindents">external documentation</a>.
 -spec getBackSpaceUnIndents(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getBackSpaceUnIndents(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetBackSpaceUnIndents,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetBackSpaceUnIndents,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmousedwelltime">external documentation</a>.
 -spec setMouseDwellTime(This, PeriodMilliseconds) -> 'ok' when
@@ -2248,16 +2000,14 @@ getBackSpaceUnIndents(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setMouseDwellTime(#wx_ref{type=ThisT,ref=ThisRef},PeriodMilliseconds)
  when is_integer(PeriodMilliseconds) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMouseDwellTime,
-  <<ThisRef:32/?UI,PeriodMilliseconds:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMouseDwellTime,[ThisRef,PeriodMilliseconds]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmousedwelltime">external documentation</a>.
 -spec getMouseDwellTime(This) -> integer() when
 	This::wxStyledTextCtrl().
 getMouseDwellTime(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMouseDwellTime,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMouseDwellTime,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordstartposition">external documentation</a>.
 -spec wordStartPosition(This, Pos, OnlyWordCharacters) -> integer() when
@@ -2265,8 +2015,7 @@ getMouseDwellTime(#wx_ref{type=ThisT,ref=ThisRef}) ->
 wordStartPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos,OnlyWordCharacters)
  when is_integer(Pos),is_boolean(OnlyWordCharacters) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_WordStartPosition,
-  <<ThisRef:32/?UI,Pos:32/?UI,(wxe_util:from_bool(OnlyWordCharacters)):32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_WordStartPosition,[ThisRef,Pos,OnlyWordCharacters]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordendposition">external documentation</a>.
 -spec wordEndPosition(This, Pos, OnlyWordCharacters) -> integer() when
@@ -2274,8 +2023,7 @@ wordStartPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos,OnlyWordCharacters)
 wordEndPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos,OnlyWordCharacters)
  when is_integer(Pos),is_boolean(OnlyWordCharacters) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_WordEndPosition,
-  <<ThisRef:32/?UI,Pos:32/?UI,(wxe_util:from_bool(OnlyWordCharacters)):32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_WordEndPosition,[ThisRef,Pos,OnlyWordCharacters]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwrapmode">external documentation</a>.
 -spec setWrapMode(This, Mode) -> 'ok' when
@@ -2283,16 +2031,14 @@ wordEndPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos,OnlyWordCharacters)
 setWrapMode(#wx_ref{type=ThisT,ref=ThisRef},Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetWrapMode,
-  <<ThisRef:32/?UI,Mode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWrapMode,[ThisRef,Mode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetwrapmode">external documentation</a>.
 -spec getWrapMode(This) -> integer() when
 	This::wxStyledTextCtrl().
 getWrapMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetWrapMode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetWrapMode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwrapvisualflags">external documentation</a>.
 -spec setWrapVisualFlags(This, WrapVisualFlags) -> 'ok' when
@@ -2300,16 +2046,14 @@ getWrapMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setWrapVisualFlags(#wx_ref{type=ThisT,ref=ThisRef},WrapVisualFlags)
  when is_integer(WrapVisualFlags) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetWrapVisualFlags,
-  <<ThisRef:32/?UI,WrapVisualFlags:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWrapVisualFlags,[ThisRef,WrapVisualFlags]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetwrapvisualflags">external documentation</a>.
 -spec getWrapVisualFlags(This) -> integer() when
 	This::wxStyledTextCtrl().
 getWrapVisualFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetWrapVisualFlags,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetWrapVisualFlags,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwrapvisualflagslocation">external documentation</a>.
 -spec setWrapVisualFlagsLocation(This, WrapVisualFlagsLocation) -> 'ok' when
@@ -2317,16 +2061,14 @@ getWrapVisualFlags(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setWrapVisualFlagsLocation(#wx_ref{type=ThisT,ref=ThisRef},WrapVisualFlagsLocation)
  when is_integer(WrapVisualFlagsLocation) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetWrapVisualFlagsLocation,
-  <<ThisRef:32/?UI,WrapVisualFlagsLocation:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWrapVisualFlagsLocation,[ThisRef,WrapVisualFlagsLocation]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetwrapvisualflagslocation">external documentation</a>.
 -spec getWrapVisualFlagsLocation(This) -> integer() when
 	This::wxStyledTextCtrl().
 getWrapVisualFlagsLocation(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetWrapVisualFlagsLocation,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetWrapVisualFlagsLocation,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwrapstartindent">external documentation</a>.
 -spec setWrapStartIndent(This, Indent) -> 'ok' when
@@ -2334,16 +2076,14 @@ getWrapVisualFlagsLocation(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setWrapStartIndent(#wx_ref{type=ThisT,ref=ThisRef},Indent)
  when is_integer(Indent) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetWrapStartIndent,
-  <<ThisRef:32/?UI,Indent:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWrapStartIndent,[ThisRef,Indent]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetwrapstartindent">external documentation</a>.
 -spec getWrapStartIndent(This) -> integer() when
 	This::wxStyledTextCtrl().
 getWrapStartIndent(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetWrapStartIndent,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetWrapStartIndent,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlayoutcache">external documentation</a>.
 -spec setLayoutCache(This, Mode) -> 'ok' when
@@ -2351,16 +2091,14 @@ getWrapStartIndent(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setLayoutCache(#wx_ref{type=ThisT,ref=ThisRef},Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetLayoutCache,
-  <<ThisRef:32/?UI,Mode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetLayoutCache,[ThisRef,Mode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlayoutcache">external documentation</a>.
 -spec getLayoutCache(This) -> integer() when
 	This::wxStyledTextCtrl().
 getLayoutCache(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLayoutCache,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLayoutCache,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetscrollwidth">external documentation</a>.
 -spec setScrollWidth(This, PixelWidth) -> 'ok' when
@@ -2368,16 +2106,14 @@ getLayoutCache(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setScrollWidth(#wx_ref{type=ThisT,ref=ThisRef},PixelWidth)
  when is_integer(PixelWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetScrollWidth,
-  <<ThisRef:32/?UI,PixelWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetScrollWidth,[ThisRef,PixelWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetscrollwidth">external documentation</a>.
 -spec getScrollWidth(This) -> integer() when
 	This::wxStyledTextCtrl().
 getScrollWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetScrollWidth,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetScrollWidth,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrltextwidth">external documentation</a>.
 -spec textWidth(This, Style, Text) -> integer() when
@@ -2386,16 +2122,14 @@ textWidth(#wx_ref{type=ThisT,ref=ThisRef},Style,Text)
  when is_integer(Style),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxStyledTextCtrl_TextWidth,
-  <<ThisRef:32/?UI,Style:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_TextWidth,[ThisRef,Style,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetendatlastline">external documentation</a>.
 -spec getEndAtLastLine(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getEndAtLastLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetEndAtLastLine,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetEndAtLastLine,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrltextheight">external documentation</a>.
 -spec textHeight(This, Line) -> integer() when
@@ -2403,8 +2137,7 @@ getEndAtLastLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
 textHeight(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_TextHeight,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_TextHeight,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetuseverticalscrollbar">external documentation</a>.
 -spec setUseVerticalScrollBar(This, Show) -> 'ok' when
@@ -2412,16 +2145,14 @@ textHeight(#wx_ref{type=ThisT,ref=ThisRef},Line)
 setUseVerticalScrollBar(#wx_ref{type=ThisT,ref=ThisRef},Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetUseVerticalScrollBar,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetUseVerticalScrollBar,[ThisRef,Show]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetuseverticalscrollbar">external documentation</a>.
 -spec getUseVerticalScrollBar(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getUseVerticalScrollBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetUseVerticalScrollBar,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetUseVerticalScrollBar,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlappendtext">external documentation</a>.
 -spec appendText(This, Text) -> 'ok' when
@@ -2430,16 +2161,14 @@ appendText(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_AppendText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_AppendText,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettwophasedraw">external documentation</a>.
 -spec getTwoPhaseDraw(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getTwoPhaseDraw(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTwoPhaseDraw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTwoPhaseDraw,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettwophasedraw">external documentation</a>.
 -spec setTwoPhaseDraw(This, TwoPhase) -> 'ok' when
@@ -2447,24 +2176,21 @@ getTwoPhaseDraw(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setTwoPhaseDraw(#wx_ref{type=ThisT,ref=ThisRef},TwoPhase)
  when is_boolean(TwoPhase) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetTwoPhaseDraw,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(TwoPhase)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetTwoPhaseDraw,[ThisRef,TwoPhase]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrltargetfromselection">external documentation</a>.
 -spec targetFromSelection(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 targetFromSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_TargetFromSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_TargetFromSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinesjoin">external documentation</a>.
 -spec linesJoin(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 linesJoin(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LinesJoin,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LinesJoin,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinessplit">external documentation</a>.
 -spec linesSplit(This, PixelWidth) -> 'ok' when
@@ -2472,8 +2198,7 @@ linesJoin(#wx_ref{type=ThisT,ref=ThisRef}) ->
 linesSplit(#wx_ref{type=ThisT,ref=ThisRef},PixelWidth)
  when is_integer(PixelWidth) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LinesSplit,
-  <<ThisRef:32/?UI,PixelWidth:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LinesSplit,[ThisRef,PixelWidth]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetfoldmargincolour">external documentation</a>.
 -spec setFoldMarginColour(This, UseSetting, Back) -> 'ok' when
@@ -2481,8 +2206,7 @@ linesSplit(#wx_ref{type=ThisT,ref=ThisRef},PixelWidth)
 setFoldMarginColour(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Back)
  when is_boolean(UseSetting),tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetFoldMarginColour,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetFoldMarginColour,[ThisRef,UseSetting,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetfoldmarginhicolour">external documentation</a>.
 -spec setFoldMarginHiColour(This, UseSetting, Fore) -> 'ok' when
@@ -2490,464 +2214,406 @@ setFoldMarginColour(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Back)
 setFoldMarginHiColour(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
  when is_boolean(UseSetting),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetFoldMarginHiColour,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetFoldMarginHiColour,[ThisRef,UseSetting,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinedown">external documentation</a>.
 -spec lineDown(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinedownextend">external documentation</a>.
 -spec lineDownExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineDownExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineDownExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineDownExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineup">external documentation</a>.
 -spec lineUp(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineUp,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineUp,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineupextend">external documentation</a>.
 -spec lineUpExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineUpExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineUpExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineUpExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcharleft">external documentation</a>.
 -spec charLeft(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 charLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CharLeft,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CharLeft,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcharleftextend">external documentation</a>.
 -spec charLeftExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 charLeftExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CharLeftExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CharLeftExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcharright">external documentation</a>.
 -spec charRight(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 charRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CharRight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CharRight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcharrightextend">external documentation</a>.
 -spec charRightExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 charRightExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CharRightExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CharRightExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordleft">external documentation</a>.
 -spec wordLeft(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordLeft,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordLeft,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordleftextend">external documentation</a>.
 -spec wordLeftExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordLeftExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordLeftExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordLeftExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordright">external documentation</a>.
 -spec wordRight(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordRight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordRight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordrightextend">external documentation</a>.
 -spec wordRightExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordRightExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordRightExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordRightExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhome">external documentation</a>.
 -spec home(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 home(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Home,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Home,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhomeextend">external documentation</a>.
 -spec homeExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 homeExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HomeExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HomeExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineend">external documentation</a>.
 -spec lineEnd(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEnd,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEnd,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineendextend">external documentation</a>.
 -spec lineEndExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEndExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEndExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEndExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldocumentstart">external documentation</a>.
 -spec documentStart(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 documentStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DocumentStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DocumentStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldocumentstartextend">external documentation</a>.
 -spec documentStartExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 documentStartExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DocumentStartExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DocumentStartExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldocumentend">external documentation</a>.
 -spec documentEnd(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 documentEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DocumentEnd,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DocumentEnd,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldocumentendextend">external documentation</a>.
 -spec documentEndExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 documentEndExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DocumentEndExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DocumentEndExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpageup">external documentation</a>.
 -spec pageUp(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 pageUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_PageUp,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_PageUp,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpageupextend">external documentation</a>.
 -spec pageUpExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 pageUpExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_PageUpExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_PageUpExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpagedown">external documentation</a>.
 -spec pageDown(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 pageDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_PageDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_PageDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpagedownextend">external documentation</a>.
 -spec pageDownExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 pageDownExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_PageDownExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_PageDownExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrledittoggleovertype">external documentation</a>.
 -spec editToggleOvertype(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 editToggleOvertype(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_EditToggleOvertype,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_EditToggleOvertype,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcancel">external documentation</a>.
 -spec cancel(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 cancel(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Cancel,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Cancel,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldeleteback">external documentation</a>.
 -spec deleteBack(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 deleteBack(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DeleteBack,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DeleteBack,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrltab">external documentation</a>.
 -spec tab(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 tab(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Tab,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Tab,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlbacktab">external documentation</a>.
 -spec backTab(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 backTab(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_BackTab,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_BackTab,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlnewline">external documentation</a>.
 -spec newLine(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 newLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_NewLine,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_NewLine,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlformfeed">external documentation</a>.
 -spec formFeed(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 formFeed(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_FormFeed,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_FormFeed,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlvchome">external documentation</a>.
 -spec vCHome(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 vCHome(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_VCHome,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_VCHome,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlvchomeextend">external documentation</a>.
 -spec vCHomeExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 vCHomeExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_VCHomeExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_VCHomeExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlzoomin">external documentation</a>.
 -spec zoomIn(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 zoomIn(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ZoomIn,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ZoomIn,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlzoomout">external documentation</a>.
 -spec zoomOut(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 zoomOut(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ZoomOut,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ZoomOut,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldelwordleft">external documentation</a>.
 -spec delWordLeft(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 delWordLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DelWordLeft,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DelWordLeft,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldelwordright">external documentation</a>.
 -spec delWordRight(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 delWordRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DelWordRight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DelWordRight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinecut">external documentation</a>.
 -spec lineCut(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineCut(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineCut,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineCut,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinedelete">external documentation</a>.
 -spec lineDelete(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineDelete(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineDelete,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineDelete,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinetranspose">external documentation</a>.
 -spec lineTranspose(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineTranspose(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineTranspose,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineTranspose,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineduplicate">external documentation</a>.
 -spec lineDuplicate(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineDuplicate(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineDuplicate,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineDuplicate,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllowercase">external documentation</a>.
 -spec lowerCase(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lowerCase(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LowerCase,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LowerCase,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrluppercase">external documentation</a>.
 -spec upperCase(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 upperCase(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_UpperCase,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_UpperCase,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinescrolldown">external documentation</a>.
 -spec lineScrollDown(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineScrollDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineScrollDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineScrollDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinescrollup">external documentation</a>.
 -spec lineScrollUp(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineScrollUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineScrollUp,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineScrollUp,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldeletebacknotline">external documentation</a>.
 -spec deleteBackNotLine(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 deleteBackNotLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DeleteBackNotLine,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DeleteBackNotLine,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhomedisplay">external documentation</a>.
 -spec homeDisplay(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 homeDisplay(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HomeDisplay,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HomeDisplay,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhomedisplayextend">external documentation</a>.
 -spec homeDisplayExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 homeDisplayExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HomeDisplayExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HomeDisplayExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineenddisplay">external documentation</a>.
 -spec lineEndDisplay(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEndDisplay(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEndDisplay,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEndDisplay,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineenddisplayextend">external documentation</a>.
 -spec lineEndDisplayExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEndDisplayExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEndDisplayExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEndDisplayExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhomewrapextend">external documentation</a>.
 -spec homeWrapExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 homeWrapExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HomeWrapExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HomeWrapExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineendwrap">external documentation</a>.
 -spec lineEndWrap(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEndWrap(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEndWrap,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEndWrap,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineendwrapextend">external documentation</a>.
 -spec lineEndWrapExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEndWrapExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEndWrapExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEndWrapExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlvchomewrap">external documentation</a>.
 -spec vCHomeWrap(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 vCHomeWrap(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_VCHomeWrap,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_VCHomeWrap,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlvchomewrapextend">external documentation</a>.
 -spec vCHomeWrapExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 vCHomeWrapExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_VCHomeWrapExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_VCHomeWrapExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinecopy">external documentation</a>.
 -spec lineCopy(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineCopy(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineCopy,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineCopy,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmovecaretinsideview">external documentation</a>.
 -spec moveCaretInsideView(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 moveCaretInsideView(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_MoveCaretInsideView,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_MoveCaretInsideView,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinelength">external documentation</a>.
 -spec lineLength(This, Line) -> integer() when
@@ -2955,8 +2621,7 @@ moveCaretInsideView(#wx_ref{type=ThisT,ref=ThisRef}) ->
 lineLength(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_LineLength,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_LineLength,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlbracehighlight">external documentation</a>.
 -spec braceHighlight(This, Pos1, Pos2) -> 'ok' when
@@ -2964,8 +2629,7 @@ lineLength(#wx_ref{type=ThisT,ref=ThisRef},Line)
 braceHighlight(#wx_ref{type=ThisT,ref=ThisRef},Pos1,Pos2)
  when is_integer(Pos1),is_integer(Pos2) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_BraceHighlight,
-  <<ThisRef:32/?UI,Pos1:32/?UI,Pos2:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_BraceHighlight,[ThisRef,Pos1,Pos2]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlbracebadlight">external documentation</a>.
 -spec braceBadLight(This, Pos) -> 'ok' when
@@ -2973,8 +2637,7 @@ braceHighlight(#wx_ref{type=ThisT,ref=ThisRef},Pos1,Pos2)
 braceBadLight(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_BraceBadLight,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_BraceBadLight,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlbracematch">external documentation</a>.
 -spec braceMatch(This, Pos) -> integer() when
@@ -2982,16 +2645,14 @@ braceBadLight(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 braceMatch(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_BraceMatch,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_BraceMatch,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetvieweol">external documentation</a>.
 -spec getViewEOL(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getViewEOL(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetViewEOL,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetViewEOL,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetvieweol">external documentation</a>.
 -spec setViewEOL(This, Visible) -> 'ok' when
@@ -2999,8 +2660,7 @@ getViewEOL(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setViewEOL(#wx_ref{type=ThisT,ref=ThisRef},Visible)
  when is_boolean(Visible) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetViewEOL,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Visible)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetViewEOL,[ThisRef,Visible]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmodeventmask">external documentation</a>.
 -spec setModEventMask(This, Mask) -> 'ok' when
@@ -3008,16 +2668,14 @@ setViewEOL(#wx_ref{type=ThisT,ref=ThisRef},Visible)
 setModEventMask(#wx_ref{type=ThisT,ref=ThisRef},Mask)
  when is_integer(Mask) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetModEventMask,
-  <<ThisRef:32/?UI,Mask:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetModEventMask,[ThisRef,Mask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetedgecolumn">external documentation</a>.
 -spec getEdgeColumn(This) -> integer() when
 	This::wxStyledTextCtrl().
 getEdgeColumn(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetEdgeColumn,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetEdgeColumn,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetedgecolumn">external documentation</a>.
 -spec setEdgeColumn(This, Column) -> 'ok' when
@@ -3025,8 +2683,7 @@ getEdgeColumn(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setEdgeColumn(#wx_ref{type=ThisT,ref=ThisRef},Column)
  when is_integer(Column) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetEdgeColumn,
-  <<ThisRef:32/?UI,Column:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetEdgeColumn,[ThisRef,Column]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetedgemode">external documentation</a>.
 -spec setEdgeMode(This, Mode) -> 'ok' when
@@ -3034,24 +2691,21 @@ setEdgeColumn(#wx_ref{type=ThisT,ref=ThisRef},Column)
 setEdgeMode(#wx_ref{type=ThisT,ref=ThisRef},Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetEdgeMode,
-  <<ThisRef:32/?UI,Mode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetEdgeMode,[ThisRef,Mode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetedgemode">external documentation</a>.
 -spec getEdgeMode(This) -> integer() when
 	This::wxStyledTextCtrl().
 getEdgeMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetEdgeMode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetEdgeMode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetedgecolour">external documentation</a>.
 -spec getEdgeColour(This) -> wx:wx_colour4() when
 	This::wxStyledTextCtrl().
 getEdgeColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetEdgeColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetEdgeColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetedgecolour">external documentation</a>.
 -spec setEdgeColour(This, EdgeColour) -> 'ok' when
@@ -3059,16 +2713,14 @@ getEdgeColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setEdgeColour(#wx_ref{type=ThisT,ref=ThisRef},EdgeColour)
  when tuple_size(EdgeColour) =:= 3; tuple_size(EdgeColour) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetEdgeColour,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(EdgeColour)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetEdgeColour,[ThisRef,EdgeColour]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsearchanchor">external documentation</a>.
 -spec searchAnchor(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 searchAnchor(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SearchAnchor,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SearchAnchor,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsearchnext">external documentation</a>.
 -spec searchNext(This, Flags, Text) -> integer() when
@@ -3077,8 +2729,7 @@ searchNext(#wx_ref{type=ThisT,ref=ThisRef},Flags,Text)
  when is_integer(Flags),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxStyledTextCtrl_SearchNext,
-  <<ThisRef:32/?UI,Flags:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_SearchNext,[ThisRef,Flags,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsearchprev">external documentation</a>.
 -spec searchPrev(This, Flags, Text) -> integer() when
@@ -3087,16 +2738,14 @@ searchPrev(#wx_ref{type=ThisT,ref=ThisRef},Flags,Text)
  when is_integer(Flags),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxStyledTextCtrl_SearchPrev,
-  <<ThisRef:32/?UI,Flags:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_SearchPrev,[ThisRef,Flags,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinesonscreen">external documentation</a>.
 -spec linesOnScreen(This) -> integer() when
 	This::wxStyledTextCtrl().
 linesOnScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_LinesOnScreen,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_LinesOnScreen,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlusepopup">external documentation</a>.
 -spec usePopUp(This, AllowPopUp) -> 'ok' when
@@ -3104,16 +2753,14 @@ linesOnScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
 usePopUp(#wx_ref{type=ThisT,ref=ThisRef},AllowPopUp)
  when is_boolean(AllowPopUp) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_UsePopUp,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(AllowPopUp)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_UsePopUp,[ThisRef,AllowPopUp]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlselectionisrectangle">external documentation</a>.
 -spec selectionIsRectangle(This) -> boolean() when
 	This::wxStyledTextCtrl().
 selectionIsRectangle(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_SelectionIsRectangle,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_SelectionIsRectangle,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetzoom">external documentation</a>.
 -spec setZoom(This, Zoom) -> 'ok' when
@@ -3121,24 +2768,21 @@ selectionIsRectangle(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setZoom(#wx_ref{type=ThisT,ref=ThisRef},Zoom)
  when is_integer(Zoom) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetZoom,
-  <<ThisRef:32/?UI,Zoom:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetZoom,[ThisRef,Zoom]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetzoom">external documentation</a>.
 -spec getZoom(This) -> integer() when
 	This::wxStyledTextCtrl().
 getZoom(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetZoom,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetZoom,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmodeventmask">external documentation</a>.
 -spec getModEventMask(This) -> integer() when
 	This::wxStyledTextCtrl().
 getModEventMask(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetModEventMask,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetModEventMask,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetstcfocus">external documentation</a>.
 -spec setSTCFocus(This, Focus) -> 'ok' when
@@ -3146,16 +2790,14 @@ getModEventMask(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSTCFocus(#wx_ref{type=ThisT,ref=ThisRef},Focus)
  when is_boolean(Focus) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSTCFocus,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Focus)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSTCFocus,[ThisRef,Focus]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstcfocus">external documentation</a>.
 -spec getSTCFocus(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getSTCFocus(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSTCFocus,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSTCFocus,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetstatus">external documentation</a>.
 -spec setStatus(This, StatusCode) -> 'ok' when
@@ -3163,16 +2805,14 @@ getSTCFocus(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setStatus(#wx_ref{type=ThisT,ref=ThisRef},StatusCode)
  when is_integer(StatusCode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetStatus,
-  <<ThisRef:32/?UI,StatusCode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetStatus,[ThisRef,StatusCode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstatus">external documentation</a>.
 -spec getStatus(This) -> integer() when
 	This::wxStyledTextCtrl().
 getStatus(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetStatus,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetStatus,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmousedowncaptures">external documentation</a>.
 -spec setMouseDownCaptures(This, Captures) -> 'ok' when
@@ -3180,16 +2820,14 @@ getStatus(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setMouseDownCaptures(#wx_ref{type=ThisT,ref=ThisRef},Captures)
  when is_boolean(Captures) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMouseDownCaptures,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Captures)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMouseDownCaptures,[ThisRef,Captures]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetmousedowncaptures">external documentation</a>.
 -spec getMouseDownCaptures(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getMouseDownCaptures(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetMouseDownCaptures,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetMouseDownCaptures,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetstccursor">external documentation</a>.
 -spec setSTCCursor(This, CursorType) -> 'ok' when
@@ -3197,16 +2835,14 @@ getMouseDownCaptures(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSTCCursor(#wx_ref{type=ThisT,ref=ThisRef},CursorType)
  when is_integer(CursorType) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSTCCursor,
-  <<ThisRef:32/?UI,CursorType:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSTCCursor,[ThisRef,CursorType]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstccursor">external documentation</a>.
 -spec getSTCCursor(This) -> integer() when
 	This::wxStyledTextCtrl().
 getSTCCursor(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSTCCursor,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSTCCursor,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcontrolcharsymbol">external documentation</a>.
 -spec setControlCharSymbol(This, Symbol) -> 'ok' when
@@ -3214,48 +2850,42 @@ getSTCCursor(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setControlCharSymbol(#wx_ref{type=ThisT,ref=ThisRef},Symbol)
  when is_integer(Symbol) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetControlCharSymbol,
-  <<ThisRef:32/?UI,Symbol:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetControlCharSymbol,[ThisRef,Symbol]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcontrolcharsymbol">external documentation</a>.
 -spec getControlCharSymbol(This) -> integer() when
 	This::wxStyledTextCtrl().
 getControlCharSymbol(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetControlCharSymbol,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetControlCharSymbol,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordpartleft">external documentation</a>.
 -spec wordPartLeft(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordPartLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordPartLeft,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordPartLeft,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordpartleftextend">external documentation</a>.
 -spec wordPartLeftExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordPartLeftExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordPartLeftExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordPartLeftExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordpartright">external documentation</a>.
 -spec wordPartRight(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordPartRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordPartRight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordPartRight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordpartrightextend">external documentation</a>.
 -spec wordPartRightExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordPartRightExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordPartRightExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordPartRightExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetvisiblepolicy">external documentation</a>.
 -spec setVisiblePolicy(This, VisiblePolicy, VisibleSlop) -> 'ok' when
@@ -3263,40 +2893,35 @@ wordPartRightExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setVisiblePolicy(#wx_ref{type=ThisT,ref=ThisRef},VisiblePolicy,VisibleSlop)
  when is_integer(VisiblePolicy),is_integer(VisibleSlop) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetVisiblePolicy,
-  <<ThisRef:32/?UI,VisiblePolicy:32/?UI,VisibleSlop:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetVisiblePolicy,[ThisRef,VisiblePolicy,VisibleSlop]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldellineleft">external documentation</a>.
 -spec delLineLeft(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 delLineLeft(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DelLineLeft,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DelLineLeft,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldellineright">external documentation</a>.
 -spec delLineRight(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 delLineRight(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_DelLineRight,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_DelLineRight,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetxoffset">external documentation</a>.
 -spec getXOffset(This) -> integer() when
 	This::wxStyledTextCtrl().
 getXOffset(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetXOffset,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetXOffset,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlchoosecaretx">external documentation</a>.
 -spec chooseCaretX(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 chooseCaretX(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ChooseCaretX,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ChooseCaretX,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetxcaretpolicy">external documentation</a>.
 -spec setXCaretPolicy(This, CaretPolicy, CaretSlop) -> 'ok' when
@@ -3304,8 +2929,7 @@ chooseCaretX(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setXCaretPolicy(#wx_ref{type=ThisT,ref=ThisRef},CaretPolicy,CaretSlop)
  when is_integer(CaretPolicy),is_integer(CaretSlop) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetXCaretPolicy,
-  <<ThisRef:32/?UI,CaretPolicy:32/?UI,CaretSlop:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetXCaretPolicy,[ThisRef,CaretPolicy,CaretSlop]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetycaretpolicy">external documentation</a>.
 -spec setYCaretPolicy(This, CaretPolicy, CaretSlop) -> 'ok' when
@@ -3313,16 +2937,14 @@ setXCaretPolicy(#wx_ref{type=ThisT,ref=ThisRef},CaretPolicy,CaretSlop)
 setYCaretPolicy(#wx_ref{type=ThisT,ref=ThisRef},CaretPolicy,CaretSlop)
  when is_integer(CaretPolicy),is_integer(CaretSlop) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetYCaretPolicy,
-  <<ThisRef:32/?UI,CaretPolicy:32/?UI,CaretSlop:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetYCaretPolicy,[ThisRef,CaretPolicy,CaretSlop]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetprintwrapmode">external documentation</a>.
 -spec getPrintWrapMode(This) -> integer() when
 	This::wxStyledTextCtrl().
 getPrintWrapMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetPrintWrapMode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetPrintWrapMode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsethotspotactiveforeground">external documentation</a>.
 -spec setHotspotActiveForeground(This, UseSetting, Fore) -> 'ok' when
@@ -3330,8 +2952,7 @@ getPrintWrapMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setHotspotActiveForeground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
  when is_boolean(UseSetting),tuple_size(Fore) =:= 3; tuple_size(Fore) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetHotspotActiveForeground,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Fore)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetHotspotActiveForeground,[ThisRef,UseSetting,Fore]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsethotspotactivebackground">external documentation</a>.
 -spec setHotspotActiveBackground(This, UseSetting, Back) -> 'ok' when
@@ -3339,8 +2960,7 @@ setHotspotActiveForeground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Fore)
 setHotspotActiveBackground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Back)
  when is_boolean(UseSetting),tuple_size(Back) =:= 3; tuple_size(Back) =:= 4 ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetHotspotActiveBackground,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseSetting)):32/?UI,(wxe_util:colour_bin(Back)):16/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetHotspotActiveBackground,[ThisRef,UseSetting,Back]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsethotspotactiveunderline">external documentation</a>.
 -spec setHotspotActiveUnderline(This, Underline) -> 'ok' when
@@ -3348,8 +2968,7 @@ setHotspotActiveBackground(#wx_ref{type=ThisT,ref=ThisRef},UseSetting,Back)
 setHotspotActiveUnderline(#wx_ref{type=ThisT,ref=ThisRef},Underline)
  when is_boolean(Underline) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetHotspotActiveUnderline,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Underline)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetHotspotActiveUnderline,[ThisRef,Underline]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsethotspotsingleline">external documentation</a>.
 -spec setHotspotSingleLine(This, SingleLine) -> 'ok' when
@@ -3357,32 +2976,28 @@ setHotspotActiveUnderline(#wx_ref{type=ThisT,ref=ThisRef},Underline)
 setHotspotSingleLine(#wx_ref{type=ThisT,ref=ThisRef},SingleLine)
  when is_boolean(SingleLine) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetHotspotSingleLine,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(SingleLine)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetHotspotSingleLine,[ThisRef,SingleLine]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlparadownextend">external documentation</a>.
 -spec paraDownExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 paraDownExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ParaDownExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ParaDownExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlparaup">external documentation</a>.
 -spec paraUp(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 paraUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ParaUp,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ParaUp,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlparaupextend">external documentation</a>.
 -spec paraUpExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 paraUpExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ParaUpExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ParaUpExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpositionbefore">external documentation</a>.
 -spec positionBefore(This, Pos) -> integer() when
@@ -3390,8 +3005,7 @@ paraUpExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
 positionBefore(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_PositionBefore,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_PositionBefore,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpositionafter">external documentation</a>.
 -spec positionAfter(This, Pos) -> integer() when
@@ -3399,8 +3013,7 @@ positionBefore(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 positionAfter(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_PositionAfter,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_PositionAfter,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcopyrange">external documentation</a>.
 -spec copyRange(This, Start, End) -> 'ok' when
@@ -3408,8 +3021,7 @@ positionAfter(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 copyRange(#wx_ref{type=ThisT,ref=ThisRef},Start,End)
  when is_integer(Start),is_integer(End) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CopyRange,
-  <<ThisRef:32/?UI,Start:32/?UI,End:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CopyRange,[ThisRef,Start,End]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcopytext">external documentation</a>.
 -spec copyText(This, Length, Text) -> 'ok' when
@@ -3418,8 +3030,7 @@ copyText(#wx_ref{type=ThisT,ref=ThisRef},Length,Text)
  when is_integer(Length),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxStyledTextCtrl_CopyText,
-  <<ThisRef:32/?UI,Length:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((4+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_CopyText,[ThisRef,Length,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselectionmode">external documentation</a>.
 -spec setSelectionMode(This, Mode) -> 'ok' when
@@ -3427,152 +3038,133 @@ copyText(#wx_ref{type=ThisT,ref=ThisRef},Length,Text)
 setSelectionMode(#wx_ref{type=ThisT,ref=ThisRef},Mode)
  when is_integer(Mode) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetSelectionMode,
-  <<ThisRef:32/?UI,Mode:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetSelectionMode,[ThisRef,Mode]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselectionmode">external documentation</a>.
 -spec getSelectionMode(This) -> integer() when
 	This::wxStyledTextCtrl().
 getSelectionMode(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelectionMode,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelectionMode,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllinedownrectextend">external documentation</a>.
 -spec lineDownRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineDownRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineDownRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineDownRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineuprectextend">external documentation</a>.
 -spec lineUpRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineUpRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineUpRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineUpRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcharleftrectextend">external documentation</a>.
 -spec charLeftRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 charLeftRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CharLeftRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CharLeftRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcharrightrectextend">external documentation</a>.
 -spec charRightRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 charRightRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CharRightRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CharRightRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlhomerectextend">external documentation</a>.
 -spec homeRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 homeRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_HomeRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_HomeRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlvchomerectextend">external documentation</a>.
 -spec vCHomeRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 vCHomeRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_VCHomeRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_VCHomeRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrllineendrectextend">external documentation</a>.
 -spec lineEndRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 lineEndRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_LineEndRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_LineEndRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpageuprectextend">external documentation</a>.
 -spec pageUpRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 pageUpRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_PageUpRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_PageUpRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpagedownrectextend">external documentation</a>.
 -spec pageDownRectExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 pageDownRectExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_PageDownRectExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_PageDownRectExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstutteredpageup">external documentation</a>.
 -spec stutteredPageUp(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 stutteredPageUp(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StutteredPageUp,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StutteredPageUp,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstutteredpageupextend">external documentation</a>.
 -spec stutteredPageUpExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 stutteredPageUpExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StutteredPageUpExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StutteredPageUpExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstutteredpagedown">external documentation</a>.
 -spec stutteredPageDown(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 stutteredPageDown(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StutteredPageDown,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StutteredPageDown,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstutteredpagedownextend">external documentation</a>.
 -spec stutteredPageDownExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 stutteredPageDownExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StutteredPageDownExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StutteredPageDownExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordleftend">external documentation</a>.
 -spec wordLeftEnd(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordLeftEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordLeftEnd,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordLeftEnd,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordleftendextend">external documentation</a>.
 -spec wordLeftEndExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordLeftEndExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordLeftEndExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordLeftEndExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordrightend">external documentation</a>.
 -spec wordRightEnd(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordRightEnd(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordRightEnd,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordRightEnd,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlwordrightendextend">external documentation</a>.
 -spec wordRightEndExtend(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 wordRightEndExtend(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_WordRightEndExtend,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_WordRightEndExtend,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetwhitespacechars">external documentation</a>.
 -spec setWhitespaceChars(This, Characters) -> 'ok' when
@@ -3581,24 +3173,21 @@ setWhitespaceChars(#wx_ref{type=ThisT,ref=ThisRef},Characters)
  when ?is_chardata(Characters) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Characters_UC = unicode:characters_to_binary([Characters,0]),
-  wxe_util:cast(?wxStyledTextCtrl_SetWhitespaceChars,
-  <<ThisRef:32/?UI,(byte_size(Characters_UC)):32/?UI,(Characters_UC)/binary, 0:(((8- ((0+byte_size(Characters_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetWhitespaceChars,[ThisRef,Characters_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcharsdefault">external documentation</a>.
 -spec setCharsDefault(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 setCharsDefault(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCharsDefault,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCharsDefault,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompgetcurrent">external documentation</a>.
 -spec autoCompGetCurrent(This) -> integer() when
 	This::wxStyledTextCtrl().
 autoCompGetCurrent(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_AutoCompGetCurrent,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_AutoCompGetCurrent,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlallocate">external documentation</a>.
 -spec allocate(This, Bytes) -> 'ok' when
@@ -3606,8 +3195,7 @@ autoCompGetCurrent(#wx_ref{type=ThisT,ref=ThisRef}) ->
 allocate(#wx_ref{type=ThisT,ref=ThisRef},Bytes)
  when is_integer(Bytes) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Allocate,
-  <<ThisRef:32/?UI,Bytes:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Allocate,[ThisRef,Bytes]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlfindcolumn">external documentation</a>.
 -spec findColumn(This, Line, Column) -> integer() when
@@ -3615,16 +3203,14 @@ allocate(#wx_ref{type=ThisT,ref=ThisRef},Bytes)
 findColumn(#wx_ref{type=ThisT,ref=ThisRef},Line,Column)
  when is_integer(Line),is_integer(Column) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_FindColumn,
-  <<ThisRef:32/?UI,Line:32/?UI,Column:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_FindColumn,[ThisRef,Line,Column]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretsticky">external documentation</a>.
 -spec getCaretSticky(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getCaretSticky(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretSticky,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretSticky,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretsticky">external documentation</a>.
 -spec setCaretSticky(This, UseCaretStickyBehaviour) -> 'ok' when
@@ -3632,16 +3218,14 @@ getCaretSticky(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCaretSticky(#wx_ref{type=ThisT,ref=ThisRef},UseCaretStickyBehaviour)
  when is_boolean(UseCaretStickyBehaviour) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretSticky,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(UseCaretStickyBehaviour)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretSticky,[ThisRef,UseCaretStickyBehaviour]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrltogglecaretsticky">external documentation</a>.
 -spec toggleCaretSticky(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 toggleCaretSticky(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ToggleCaretSticky,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ToggleCaretSticky,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetpasteconvertendings">external documentation</a>.
 -spec setPasteConvertEndings(This, Convert) -> 'ok' when
@@ -3649,24 +3233,21 @@ toggleCaretSticky(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setPasteConvertEndings(#wx_ref{type=ThisT,ref=ThisRef},Convert)
  when is_boolean(Convert) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetPasteConvertEndings,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Convert)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetPasteConvertEndings,[ThisRef,Convert]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetpasteconvertendings">external documentation</a>.
 -spec getPasteConvertEndings(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getPasteConvertEndings(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetPasteConvertEndings,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetPasteConvertEndings,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlselectionduplicate">external documentation</a>.
 -spec selectionDuplicate(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 selectionDuplicate(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SelectionDuplicate,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SelectionDuplicate,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcaretlinebackalpha">external documentation</a>.
 -spec setCaretLineBackAlpha(This, Alpha) -> 'ok' when
@@ -3674,32 +3255,28 @@ selectionDuplicate(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCaretLineBackAlpha(#wx_ref{type=ThisT,ref=ThisRef},Alpha)
  when is_integer(Alpha) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetCaretLineBackAlpha,
-  <<ThisRef:32/?UI,Alpha:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetCaretLineBackAlpha,[ThisRef,Alpha]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcaretlinebackalpha">external documentation</a>.
 -spec getCaretLineBackAlpha(This) -> integer() when
 	This::wxStyledTextCtrl().
 getCaretLineBackAlpha(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCaretLineBackAlpha,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCaretLineBackAlpha,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstartrecord">external documentation</a>.
 -spec startRecord(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 startRecord(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StartRecord,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StartRecord,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstoprecord">external documentation</a>.
 -spec stopRecord(This) -> 'ok' when
 	This::wxStyledTextCtrl().
 stopRecord(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StopRecord,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StopRecord,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlexer">external documentation</a>.
 -spec setLexer(This, Lexer) -> 'ok' when
@@ -3707,16 +3284,14 @@ stopRecord(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setLexer(#wx_ref{type=ThisT,ref=ThisRef},Lexer)
  when is_integer(Lexer) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetLexer,
-  <<ThisRef:32/?UI,Lexer:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetLexer,[ThisRef,Lexer]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlexer">external documentation</a>.
 -spec getLexer(This) -> integer() when
 	This::wxStyledTextCtrl().
 getLexer(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLexer,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLexer,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcolourise">external documentation</a>.
 -spec colourise(This, Start, End) -> 'ok' when
@@ -3724,8 +3299,7 @@ getLexer(#wx_ref{type=ThisT,ref=ThisRef}) ->
 colourise(#wx_ref{type=ThisT,ref=ThisRef},Start,End)
  when is_integer(Start),is_integer(End) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_Colourise,
-  <<ThisRef:32/?UI,Start:32/?UI,End:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_Colourise,[ThisRef,Start,End]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetproperty">external documentation</a>.
 -spec setProperty(This, Key, Value) -> 'ok' when
@@ -3735,8 +3309,7 @@ setProperty(#wx_ref{type=ThisT,ref=ThisRef},Key,Value)
   ?CLASS(ThisT,wxStyledTextCtrl),
   Key_UC = unicode:characters_to_binary([Key,0]),
   Value_UC = unicode:characters_to_binary([Value,0]),
-  wxe_util:cast(?wxStyledTextCtrl_SetProperty,
-  <<ThisRef:32/?UI,(byte_size(Key_UC)):32/?UI,(Key_UC)/binary, 0:(((8- ((0+byte_size(Key_UC)) band 16#7)) band 16#7))/unit:8,(byte_size(Value_UC)):32/?UI,(Value_UC)/binary, 0:(((8- ((4+byte_size(Value_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetProperty,[ThisRef,Key_UC,Value_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetkeywords">external documentation</a>.
 -spec setKeyWords(This, KeywordSet, KeyWords) -> 'ok' when
@@ -3745,8 +3318,7 @@ setKeyWords(#wx_ref{type=ThisT,ref=ThisRef},KeywordSet,KeyWords)
  when is_integer(KeywordSet),?is_chardata(KeyWords) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   KeyWords_UC = unicode:characters_to_binary([KeyWords,0]),
-  wxe_util:cast(?wxStyledTextCtrl_SetKeyWords,
-  <<ThisRef:32/?UI,KeywordSet:32/?UI,(byte_size(KeyWords_UC)):32/?UI,(KeyWords_UC)/binary, 0:(((8- ((4+byte_size(KeyWords_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetKeyWords,[ThisRef,KeywordSet,KeyWords_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlexerlanguage">external documentation</a>.
 -spec setLexerLanguage(This, Language) -> 'ok' when
@@ -3755,8 +3327,7 @@ setLexerLanguage(#wx_ref{type=ThisT,ref=ThisRef},Language)
  when ?is_chardata(Language) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Language_UC = unicode:characters_to_binary([Language,0]),
-  wxe_util:cast(?wxStyledTextCtrl_SetLexerLanguage,
-  <<ThisRef:32/?UI,(byte_size(Language_UC)):32/?UI,(Language_UC)/binary, 0:(((8- ((0+byte_size(Language_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetLexerLanguage,[ThisRef,Language_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetproperty">external documentation</a>.
 -spec getProperty(This, Key) -> unicode:charlist() when
@@ -3765,24 +3336,21 @@ getProperty(#wx_ref{type=ThisT,ref=ThisRef},Key)
  when ?is_chardata(Key) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Key_UC = unicode:characters_to_binary([Key,0]),
-  wxe_util:call(?wxStyledTextCtrl_GetProperty,
-  <<ThisRef:32/?UI,(byte_size(Key_UC)):32/?UI,(Key_UC)/binary, 0:(((8- ((0+byte_size(Key_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_GetProperty,[ThisRef,Key_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetstylebitsneeded">external documentation</a>.
 -spec getStyleBitsNeeded(This) -> integer() when
 	This::wxStyledTextCtrl().
 getStyleBitsNeeded(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetStyleBitsNeeded,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetStyleBitsNeeded,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcurrentline">external documentation</a>.
 -spec getCurrentLine(This) -> integer() when
 	This::wxStyledTextCtrl().
 getCurrentLine(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCurrentLine,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCurrentLine,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetspec">external documentation</a>.
 -spec styleSetSpec(This, StyleNum, Spec) -> 'ok' when
@@ -3791,8 +3359,7 @@ styleSetSpec(#wx_ref{type=ThisT,ref=ThisRef},StyleNum,Spec)
  when is_integer(StyleNum),?is_chardata(Spec) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Spec_UC = unicode:characters_to_binary([Spec,0]),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetSpec,
-  <<ThisRef:32/?UI,StyleNum:32/?UI,(byte_size(Spec_UC)):32/?UI,(Spec_UC)/binary, 0:(((8- ((4+byte_size(Spec_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetSpec,[ThisRef,StyleNum,Spec_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetfont">external documentation</a>.
 -spec styleSetFont(This, StyleNum, Font) -> 'ok' when
@@ -3801,8 +3368,7 @@ styleSetFont(#wx_ref{type=ThisT,ref=ThisRef},StyleNum,#wx_ref{type=FontT,ref=Fon
  when is_integer(StyleNum) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetFont,
-  <<ThisRef:32/?UI,StyleNum:32/?UI,FontRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetFont,[ThisRef,StyleNum,FontRef]).
 
 %% @equiv styleSetFontAttr(This,StyleNum,Size,FaceName,Bold,Italic,Underline, [])
 -spec styleSetFontAttr(This, StyleNum, Size, FaceName, Bold, Italic, Underline) -> 'ok' when
@@ -3821,11 +3387,7 @@ styleSetFontAttr(#wx_ref{type=ThisT,ref=ThisRef},StyleNum,Size,FaceName,Bold,Ita
  when is_integer(StyleNum),is_integer(Size),?is_chardata(FaceName),is_boolean(Bold),is_boolean(Italic),is_boolean(Underline),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   FaceName_UC = unicode:characters_to_binary([FaceName,0]),
-  MOpts = fun({encoding, Encoding}, Acc) -> [<<1:32/?UI,Encoding:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetFontAttr,
-  <<ThisRef:32/?UI,StyleNum:32/?UI,Size:32/?UI,(byte_size(FaceName_UC)):32/?UI,(FaceName_UC)/binary, 0:(((8- ((0+byte_size(FaceName_UC)) band 16#7)) band 16#7))/unit:8,(wxe_util:from_bool(Bold)):32/?UI,(wxe_util:from_bool(Italic)):32/?UI,(wxe_util:from_bool(Underline)):32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetFontAttr,[ThisRef,StyleNum,Size,FaceName_UC,Bold,Italic,Underline, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetcharacterset">external documentation</a>.
 -spec styleSetCharacterSet(This, Style, CharacterSet) -> 'ok' when
@@ -3833,8 +3395,7 @@ styleSetFontAttr(#wx_ref{type=ThisT,ref=ThisRef},StyleNum,Size,FaceName,Bold,Ita
 styleSetCharacterSet(#wx_ref{type=ThisT,ref=ThisRef},Style,CharacterSet)
  when is_integer(Style),is_integer(CharacterSet) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetCharacterSet,
-  <<ThisRef:32/?UI,Style:32/?UI,CharacterSet:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetCharacterSet,[ThisRef,Style,CharacterSet]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetfontencoding">external documentation</a>.
 %%<br /> Encoding = ?wxFONTENCODING_SYSTEM | ?wxFONTENCODING_DEFAULT | ?wxFONTENCODING_ISO8859_1 | ?wxFONTENCODING_ISO8859_2 | ?wxFONTENCODING_ISO8859_3 | ?wxFONTENCODING_ISO8859_4 | ?wxFONTENCODING_ISO8859_5 | ?wxFONTENCODING_ISO8859_6 | ?wxFONTENCODING_ISO8859_7 | ?wxFONTENCODING_ISO8859_8 | ?wxFONTENCODING_ISO8859_9 | ?wxFONTENCODING_ISO8859_10 | ?wxFONTENCODING_ISO8859_11 | ?wxFONTENCODING_ISO8859_12 | ?wxFONTENCODING_ISO8859_13 | ?wxFONTENCODING_ISO8859_14 | ?wxFONTENCODING_ISO8859_15 | ?wxFONTENCODING_ISO8859_MAX | ?wxFONTENCODING_KOI8 | ?wxFONTENCODING_KOI8_U | ?wxFONTENCODING_ALTERNATIVE | ?wxFONTENCODING_BULGARIAN | ?wxFONTENCODING_CP437 | ?wxFONTENCODING_CP850 | ?wxFONTENCODING_CP852 | ?wxFONTENCODING_CP855 | ?wxFONTENCODING_CP866 | ?wxFONTENCODING_CP874 | ?wxFONTENCODING_CP932 | ?wxFONTENCODING_CP936 | ?wxFONTENCODING_CP949 | ?wxFONTENCODING_CP950 | ?wxFONTENCODING_CP1250 | ?wxFONTENCODING_CP1251 | ?wxFONTENCODING_CP1252 | ?wxFONTENCODING_CP1253 | ?wxFONTENCODING_CP1254 | ?wxFONTENCODING_CP1255 | ?wxFONTENCODING_CP1256 | ?wxFONTENCODING_CP1257 | ?wxFONTENCODING_CP12_MAX | ?wxFONTENCODING_UTF7 | ?wxFONTENCODING_UTF8 | ?wxFONTENCODING_EUC_JP | ?wxFONTENCODING_UTF16BE | ?wxFONTENCODING_UTF16LE | ?wxFONTENCODING_UTF32BE | ?wxFONTENCODING_UTF32LE | ?wxFONTENCODING_MACROMAN | ?wxFONTENCODING_MACJAPANESE | ?wxFONTENCODING_MACCHINESETRAD | ?wxFONTENCODING_MACKOREAN | ?wxFONTENCODING_MACARABIC | ?wxFONTENCODING_MACHEBREW | ?wxFONTENCODING_MACGREEK | ?wxFONTENCODING_MACCYRILLIC | ?wxFONTENCODING_MACDEVANAGARI | ?wxFONTENCODING_MACGURMUKHI | ?wxFONTENCODING_MACGUJARATI | ?wxFONTENCODING_MACORIYA | ?wxFONTENCODING_MACBENGALI | ?wxFONTENCODING_MACTAMIL | ?wxFONTENCODING_MACTELUGU | ?wxFONTENCODING_MACKANNADA | ?wxFONTENCODING_MACMALAJALAM | ?wxFONTENCODING_MACSINHALESE | ?wxFONTENCODING_MACBURMESE | ?wxFONTENCODING_MACKHMER | ?wxFONTENCODING_MACTHAI | ?wxFONTENCODING_MACLAOTIAN | ?wxFONTENCODING_MACGEORGIAN | ?wxFONTENCODING_MACARMENIAN | ?wxFONTENCODING_MACCHINESESIMP | ?wxFONTENCODING_MACTIBETAN | ?wxFONTENCODING_MACMONGOLIAN | ?wxFONTENCODING_MACETHIOPIC | ?wxFONTENCODING_MACCENTRALEUR | ?wxFONTENCODING_MACVIATNAMESE | ?wxFONTENCODING_MACARABICEXT | ?wxFONTENCODING_MACSYMBOL | ?wxFONTENCODING_MACDINGBATS | ?wxFONTENCODING_MACTURKISH | ?wxFONTENCODING_MACCROATIAN | ?wxFONTENCODING_MACICELANDIC | ?wxFONTENCODING_MACROMANIAN | ?wxFONTENCODING_MACCELTIC | ?wxFONTENCODING_MACGAELIC | ?wxFONTENCODING_MACKEYBOARD | ?wxFONTENCODING_MAX | ?wxFONTENCODING_MACMIN | ?wxFONTENCODING_MACMAX | ?wxFONTENCODING_UTF16 | ?wxFONTENCODING_UTF32 | ?wxFONTENCODING_UNICODE | ?wxFONTENCODING_GB2312 | ?wxFONTENCODING_BIG5 | ?wxFONTENCODING_SHIFT_JIS
@@ -3843,8 +3404,7 @@ styleSetCharacterSet(#wx_ref{type=ThisT,ref=ThisRef},Style,CharacterSet)
 styleSetFontEncoding(#wx_ref{type=ThisT,ref=ThisRef},Style,Encoding)
  when is_integer(Style),is_integer(Encoding) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_StyleSetFontEncoding,
-  <<ThisRef:32/?UI,Style:32/?UI,Encoding:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_StyleSetFontEncoding,[ThisRef,Style,Encoding]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcmdkeyexecute">external documentation</a>.
 -spec cmdKeyExecute(This, Cmd) -> 'ok' when
@@ -3852,8 +3412,7 @@ styleSetFontEncoding(#wx_ref{type=ThisT,ref=ThisRef},Style,Encoding)
 cmdKeyExecute(#wx_ref{type=ThisT,ref=ThisRef},Cmd)
  when is_integer(Cmd) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_CmdKeyExecute,
-  <<ThisRef:32/?UI,Cmd:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_CmdKeyExecute,[ThisRef,Cmd]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetmargins">external documentation</a>.
 -spec setMargins(This, Left, Right) -> 'ok' when
@@ -3861,16 +3420,14 @@ cmdKeyExecute(#wx_ref{type=ThisT,ref=ThisRef},Cmd)
 setMargins(#wx_ref{type=ThisT,ref=ThisRef},Left,Right)
  when is_integer(Left),is_integer(Right) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetMargins,
-  <<ThisRef:32/?UI,Left:32/?UI,Right:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetMargins,[ThisRef,Left,Right]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselection">external documentation</a>.
 -spec getSelection(This) -> {StartPos::integer(), EndPos::integer()} when
 	This::wxStyledTextCtrl().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlpointfromposition">external documentation</a>.
 -spec pointFromPosition(This, Pos) -> {X::integer(), Y::integer()} when
@@ -3878,8 +3435,7 @@ getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 pointFromPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
  when is_integer(Pos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_PointFromPosition,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_PointFromPosition,[ThisRef,Pos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlscrolltoline">external documentation</a>.
 -spec scrollToLine(This, Line) -> 'ok' when
@@ -3887,8 +3443,7 @@ pointFromPosition(#wx_ref{type=ThisT,ref=ThisRef},Pos)
 scrollToLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ScrollToLine,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ScrollToLine,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlscrolltocolumn">external documentation</a>.
 -spec scrollToColumn(This, Column) -> 'ok' when
@@ -3896,8 +3451,7 @@ scrollToLine(#wx_ref{type=ThisT,ref=ThisRef},Line)
 scrollToColumn(#wx_ref{type=ThisT,ref=ThisRef},Column)
  when is_integer(Column) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_ScrollToColumn,
-  <<ThisRef:32/?UI,Column:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_ScrollToColumn,[ThisRef,Column]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetvscrollbar">external documentation</a>.
 -spec setVScrollBar(This, Bar) -> 'ok' when
@@ -3905,8 +3459,7 @@ scrollToColumn(#wx_ref{type=ThisT,ref=ThisRef},Column)
 setVScrollBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BarT,ref=BarRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(BarT,wxScrollBar),
-  wxe_util:cast(?wxStyledTextCtrl_SetVScrollBar,
-  <<ThisRef:32/?UI,BarRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetVScrollBar,[ThisRef,BarRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsethscrollbar">external documentation</a>.
 -spec setHScrollBar(This, Bar) -> 'ok' when
@@ -3914,16 +3467,14 @@ setVScrollBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BarT,ref=BarRef}) ->
 setHScrollBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BarT,ref=BarRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(BarT,wxScrollBar),
-  wxe_util:cast(?wxStyledTextCtrl_SetHScrollBar,
-  <<ThisRef:32/?UI,BarRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetHScrollBar,[ThisRef,BarRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlastkeydownprocessed">external documentation</a>.
 -spec getLastKeydownProcessed(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getLastKeydownProcessed(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLastKeydownProcessed,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLastKeydownProcessed,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlastkeydownprocessed">external documentation</a>.
 -spec setLastKeydownProcessed(This, Val) -> 'ok' when
@@ -3931,8 +3482,7 @@ getLastKeydownProcessed(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setLastKeydownProcessed(#wx_ref{type=ThisT,ref=ThisRef},Val)
  when is_boolean(Val) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:cast(?wxStyledTextCtrl_SetLastKeydownProcessed,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Val)):32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetLastKeydownProcessed,[ThisRef,Val]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsavefile">external documentation</a>.
 -spec saveFile(This, Filename) -> boolean() when
@@ -3941,8 +3491,7 @@ saveFile(#wx_ref{type=ThisT,ref=ThisRef},Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:call(?wxStyledTextCtrl_SaveFile,
-  <<ThisRef:32/?UI,(byte_size(Filename_UC)):32/?UI,(Filename_UC)/binary, 0:(((8- ((0+byte_size(Filename_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_SaveFile,[ThisRef,Filename_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlloadfile">external documentation</a>.
 -spec loadFile(This, Filename) -> boolean() when
@@ -3951,8 +3500,7 @@ loadFile(#wx_ref{type=ThisT,ref=ThisRef},Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Filename_UC = unicode:characters_to_binary([Filename,0]),
-  wxe_util:call(?wxStyledTextCtrl_LoadFile,
-  <<ThisRef:32/?UI,(byte_size(Filename_UC)):32/?UI,(Filename_UC)/binary, 0:(((8- ((0+byte_size(Filename_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_LoadFile,[ThisRef,Filename_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldodragover">external documentation</a>.
 %%<br /> Def = ?wxDragError | ?wxDragNone | ?wxDragCopy | ?wxDragMove | ?wxDragLink | ?wxDragCancel
@@ -3962,8 +3510,7 @@ loadFile(#wx_ref{type=ThisT,ref=ThisRef},Filename)
 doDragOver(#wx_ref{type=ThisT,ref=ThisRef},X,Y,Def)
  when is_integer(X),is_integer(Y),is_integer(Def) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_DoDragOver,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,Def:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_DoDragOver,[ThisRef,X,Y,Def]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrldodroptext">external documentation</a>.
 -spec doDropText(This, X, Y, Data) -> boolean() when
@@ -3972,16 +3519,14 @@ doDropText(#wx_ref{type=ThisT,ref=ThisRef},X,Y,Data)
  when is_integer(X),is_integer(Y),?is_chardata(Data) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Data_UC = unicode:characters_to_binary([Data,0]),
-  wxe_util:call(?wxStyledTextCtrl_DoDropText,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,(byte_size(Data_UC)):32/?UI,(Data_UC)/binary, 0:(((8- ((0+byte_size(Data_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxStyledTextCtrl_DoDropText,[ThisRef,X,Y,Data_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetuseantialiasing">external documentation</a>.
 -spec getUseAntiAliasing(This) -> boolean() when
 	This::wxStyledTextCtrl().
 getUseAntiAliasing(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetUseAntiAliasing,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetUseAntiAliasing,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrladdtextraw">external documentation</a>.
 -spec addTextRaw(This, Text) -> 'ok' when
@@ -3989,9 +3534,7 @@ getUseAntiAliasing(#wx_ref{type=ThisT,ref=ThisRef}) ->
 addTextRaw(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when is_binary(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:send_bin(Text),
-  wxe_util:cast(?wxStyledTextCtrl_AddTextRaw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AddTextRaw,[ThisRef,Text]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlinserttextraw">external documentation</a>.
 -spec insertTextRaw(This, Pos, Text) -> 'ok' when
@@ -3999,9 +3542,7 @@ addTextRaw(#wx_ref{type=ThisT,ref=ThisRef},Text)
 insertTextRaw(#wx_ref{type=ThisT,ref=ThisRef},Pos,Text)
  when is_integer(Pos),is_binary(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:send_bin(Text),
-  wxe_util:cast(?wxStyledTextCtrl_InsertTextRaw,
-  <<ThisRef:32/?UI,Pos:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_InsertTextRaw,[ThisRef,Pos,Text]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetcurlineraw">external documentation</a>.
 -spec getCurLineRaw(This) -> Result when
@@ -4009,8 +3550,7 @@ insertTextRaw(#wx_ref{type=ThisT,ref=ThisRef},Pos,Text)
 	This::wxStyledTextCtrl().
 getCurLineRaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetCurLineRaw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetCurLineRaw,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetlineraw">external documentation</a>.
 -spec getLineRaw(This, Line) -> binary() when
@@ -4018,16 +3558,14 @@ getCurLineRaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getLineRaw(#wx_ref{type=ThisT,ref=ThisRef},Line)
  when is_integer(Line) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetLineRaw,
-  <<ThisRef:32/?UI,Line:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetLineRaw,[ThisRef,Line]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetselectedtextraw">external documentation</a>.
 -spec getSelectedTextRaw(This) -> binary() when
 	This::wxStyledTextCtrl().
 getSelectedTextRaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetSelectedTextRaw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetSelectedTextRaw,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettextrangeraw">external documentation</a>.
 -spec getTextRangeRaw(This, StartPos, EndPos) -> binary() when
@@ -4035,8 +3573,7 @@ getSelectedTextRaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getTextRangeRaw(#wx_ref{type=ThisT,ref=ThisRef},StartPos,EndPos)
  when is_integer(StartPos),is_integer(EndPos) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTextRangeRaw,
-  <<ThisRef:32/?UI,StartPos:32/?UI,EndPos:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTextRangeRaw,[ThisRef,StartPos,EndPos]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsettextraw">external documentation</a>.
 -spec setTextRaw(This, Text) -> 'ok' when
@@ -4044,17 +3581,14 @@ getTextRangeRaw(#wx_ref{type=ThisT,ref=ThisRef},StartPos,EndPos)
 setTextRaw(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when is_binary(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:send_bin(Text),
-  wxe_util:cast(?wxStyledTextCtrl_SetTextRaw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_SetTextRaw,[ThisRef,Text]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettextraw">external documentation</a>.
 -spec getTextRaw(This) -> binary() when
 	This::wxStyledTextCtrl().
 getTextRaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:call(?wxStyledTextCtrl_GetTextRaw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxStyledTextCtrl_GetTextRaw,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlappendtextraw">external documentation</a>.
 -spec appendTextRaw(This, Text) -> 'ok' when
@@ -4062,9 +3596,7 @@ getTextRaw(#wx_ref{type=ThisT,ref=ThisRef}) ->
 appendTextRaw(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when is_binary(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  wxe_util:send_bin(Text),
-  wxe_util:cast(?wxStyledTextCtrl_AppendTextRaw,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxStyledTextCtrl_AppendTextRaw,[ThisRef,Text]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxStyledTextCtrl()) -> 'ok'.

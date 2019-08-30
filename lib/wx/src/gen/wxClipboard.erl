@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardwxclipboard">external documentation</a>.
 -spec new() -> wxClipboard().
 new() ->
-  wxe_util:construct(?wxClipboard_new,
-  <<>>).
+  wxe_util:construct(?wxClipboard_new,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardadddata">external documentation</a>.
 -spec addData(This, Data) -> boolean() when
@@ -48,32 +47,28 @@ new() ->
 addData(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DataT,ref=DataRef}) ->
   ?CLASS(ThisT,wxClipboard),
   ?CLASS(DataT,wxDataObject),
-  wxe_util:call(?wxClipboard_AddData,
-  <<ThisRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:call(?wxClipboard_AddData,[ThisRef,DataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardclear">external documentation</a>.
 -spec clear(This) -> 'ok' when
 	This::wxClipboard().
 clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:cast(?wxClipboard_Clear,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxClipboard_Clear,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardclose">external documentation</a>.
 -spec close(This) -> 'ok' when
 	This::wxClipboard().
 close(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:cast(?wxClipboard_Close,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxClipboard_Close,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardflush">external documentation</a>.
 -spec flush(This) -> boolean() when
 	This::wxClipboard().
 flush(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:call(?wxClipboard_Flush,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxClipboard_Flush,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardgetdata">external documentation</a>.
 -spec getData(This, Data) -> boolean() when
@@ -81,24 +76,21 @@ flush(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getData(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DataT,ref=DataRef}) ->
   ?CLASS(ThisT,wxClipboard),
   ?CLASS(DataT,wxDataObject),
-  wxe_util:call(?wxClipboard_GetData,
-  <<ThisRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:call(?wxClipboard_GetData,[ThisRef,DataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardisopened">external documentation</a>.
 -spec isOpened(This) -> boolean() when
 	This::wxClipboard().
 isOpened(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:call(?wxClipboard_IsOpened,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxClipboard_IsOpened,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardopen">external documentation</a>.
 -spec open(This) -> boolean() when
 	This::wxClipboard().
 open(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:call(?wxClipboard_Open,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxClipboard_Open,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardsetdata">external documentation</a>.
 -spec setData(This, Data) -> boolean() when
@@ -106,8 +98,7 @@ open(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setData(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DataT,ref=DataRef}) ->
   ?CLASS(ThisT,wxClipboard),
   ?CLASS(DataT,wxDataObject),
-  wxe_util:call(?wxClipboard_SetData,
-  <<ThisRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:call(?wxClipboard_SetData,[ThisRef,DataRef]).
 
 %% @equiv usePrimarySelection(This, [])
 -spec usePrimarySelection(This) -> 'ok' when
@@ -124,11 +115,7 @@ usePrimarySelection(This)
 usePrimarySelection(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxClipboard),
-  MOpts = fun({primary, Primary}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Primary)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxClipboard_UsePrimarySelection,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxClipboard_UsePrimarySelection,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardissupported">external documentation</a>.
 %%<br /> Format = ?wxDF_INVALID | ?wxDF_TEXT | ?wxDF_BITMAP | ?wxDF_METAFILE | ?wxDF_SYLK | ?wxDF_DIF | ?wxDF_TIFF | ?wxDF_OEMTEXT | ?wxDF_DIB | ?wxDF_PALETTE | ?wxDF_PENDATA | ?wxDF_RIFF | ?wxDF_WAVE | ?wxDF_UNICODETEXT | ?wxDF_ENHMETAFILE | ?wxDF_FILENAME | ?wxDF_LOCALE | ?wxDF_PRIVATE | ?wxDF_HTML | ?wxDF_MAX
@@ -137,14 +124,12 @@ usePrimarySelection(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 isSupported(#wx_ref{type=ThisT,ref=ThisRef},Format)
  when is_integer(Format) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:call(?wxClipboard_IsSupported,
-  <<ThisRef:32/?UI,Format:32/?UI>>).
+  wxe_util:call(?wxClipboard_IsSupported,[ThisRef,Format]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardget">external documentation</a>.
 -spec get() -> wxClipboard().
 get() ->
-  wxe_util:call(?wxClipboard_Get,
-  <<>>).
+  wxe_util:call(?wxClipboard_Get,[]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxClipboard()) -> 'ok'.

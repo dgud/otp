@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -38,8 +38,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlognull.html#wxlognullwxlognull">external documentation</a>.
 -spec new() -> wxLogNull().
 new() ->
-  wxe_util:construct(?wxLogNull_new,
-  <<>>).
+  wxe_util:construct(?wxLogNull_new,[]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxLogNull()) -> 'ok'.

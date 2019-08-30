@@ -58,8 +58,6 @@ extern ErlNifCond  * wxe_batch_locker_c;
 extern ErlNifPid  init_caller;
 extern int wxe_status;
 
-int wxe_debug = 0;
-
 wxeFifo * wxe_queue = NULL;
 
 unsigned int wxe_needs_signal = 0;  // inside batch if larger than 0
@@ -68,27 +66,10 @@ unsigned int wxe_needs_signal = 0;  // inside batch if larger than 0
  *  Commands from erlang
  *    Called by emulator thread
  * ************************************************************/
-
-// void push_command(int op,char * buf,int len, wxe_data *sd)
-// {
-//   /* fprintf(stderr, "Op %d %d [%ld] %d\r\n", op, (int) driver_caller(sd->port_handle),
-//      wxe_batch->size(), wxe_batch_caller),fflush(stderr); */
-//   erl_drv_mutex_lock(wxe_batch_locker_m);
-//   int n = wxe_queue->Add(op, buf, len, sd);
-
-//   if(wxe_needs_signal) {
-//     erl_drv_cond_signal(wxe_batch_locker_c);
-//     erl_drv_mutex_unlock(wxe_batch_locker_m);
-//   } else {
-//     // wx-thread is waiting gui-events
-//     erl_drv_mutex_unlock(wxe_batch_locker_m);
-//     if(n < 2) wxWakeUpIdle();
-//   }
-// }
-
 void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, void *mp)
 {
   wxeMemEnv * memenv = (wxeMemEnv *) mp;
+
   enif_mutex_lock(wxe_batch_locker_m);
   int wait = wxe_queue->Add(env, argc, argv, op, memenv);
 
@@ -438,6 +419,8 @@ void WxeApp::dispatch_cb(wxeFifo * batch, wxeMemEnv * memenv, ErlNifPid process)
 void WxeApp::wxe_dispatch(wxeCommand& event)
 {
   void (*nif_cb) (WxeApp *, wxeCommand& ) = wxe_fns[event.op].nif_cb;
+  if(wxe_debug) &&
+    enif_fprintf(stderr, "\r\n***wxe_dispatch %d %p %T\r\n", event.op, nif_cb, event.caller);
   if(nif_cb) {
     try { nif_cb(this, event); }
     catch (wxe_badarg badarg) {
@@ -447,7 +430,6 @@ void WxeApp::wxe_dispatch(wxeCommand& event)
                          WXE_ATOM_badarg,
                          enif_make_string(rt.env, badarg.var, ERL_NIF_LATIN1));
       rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error, rt.make_int(event.op), ba));
-
     }
   } else {
     wxeReturn rt = wxeReturn(event.memenv, event.caller, false);

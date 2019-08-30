@@ -650,7 +650,7 @@ decode_arg(N,#type{base=string, name="wxFileName"}, Arg,Argc)  ->
 decode_arg(N,#type{base=string},Arg,Argc)  ->
     w("  ErlNifBinary ~s_bin;~n",[N]),
     wa("  wxString ~s;~n",[N], Arg),
-    w("  if(enif_inspect_binary(env, ~s, &~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
+    w("  if(!enif_inspect_binary(env, ~s, &~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
     w("  ~s = wxString(~s_bin.data, wxConvUTF8, ~s_bin.size);~n", [N, N, N]);
     %% wa(" wxString", []," ~s = wxString(bp, wxConvUTF8);~n", [N],Arg),
 
@@ -1006,10 +1006,10 @@ build_return_vals(Type,Ps0) ->
 
     if
 	NoOut > 1 ->
-            w("  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);~n"),
+            w("  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);~n"),
             w("  ERL_NIF_TERM msg = enif_make_tuple~w(rt.env,~n",[NoOut]);
         NoOut =:= 1 ->
-            w("  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);~n"),
+            w("  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);~n"),
             w("  rt.send(");
 	true ->
             ignore
@@ -1205,7 +1205,7 @@ build_enums() ->
     GVars = get(gvars),
     GSize = length(GVars),
     w("  WxeApp * app = this;~n"),
-    w("  wxeReturn rt = wxeReturn(memenv, caller);~n"),
+    w("  wxeReturn rt = wxeReturn(memenv, caller, false);~n"),
     w("  ERL_NIF_TERM consts[] = {\n"),
     [build_enum(NConst) || NConst <- lists:keysort(#const.val, NotConsts)],
     lists:foreach(fun build_gvar/1, lists:sort(GVars)),
@@ -1392,7 +1392,7 @@ encode_events(Evs) ->
       "  wxeEvtListener *cb = (wxeEvtListener *)event->m_callbackUserData;~n"
       "  WxeApp * app = (WxeApp *) wxTheApp;~n"
       "  if(!memenv) return 0;~n~n"
-      "  wxeReturn rt = wxeReturn(memenv, cb->listener);~n"),
+      "  wxeReturn rt = wxeReturn(memenv, cb->listener, false);~n"),
     w("  ERL_NIF_TERM ev_term;~n"),
     w("  switch(Etype->cID) {~n"),
     lists:foreach(fun(Ev) -> encode_event(Ev) end, Evs),

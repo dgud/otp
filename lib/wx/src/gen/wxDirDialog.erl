@@ -108,31 +108,21 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({title, Title}, Acc) ->   Title_UC = unicode:characters_to_binary([Title,0]),[<<1:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((0+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({defaultPath, DefaultPath}, Acc) ->   DefaultPath_UC = unicode:characters_to_binary([DefaultPath,0]),[<<2:32/?UI,(byte_size(DefaultPath_UC)):32/?UI,(DefaultPath_UC)/binary, 0:(((8- ((0+byte_size(DefaultPath_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<4:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({sz, {SzW,SzH}}, Acc) -> [<<5:32/?UI,SzW:32/?UI,SzH:32/?UI,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxDirDialog_new,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxDirDialog_new,[ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialoggetpath">external documentation</a>.
 -spec getPath(This) -> unicode:charlist() when
 	This::wxDirDialog().
 getPath(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDirDialog),
-  wxe_util:call(?wxDirDialog_GetPath,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDirDialog_GetPath,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialoggetmessage">external documentation</a>.
 -spec getMessage(This) -> unicode:charlist() when
 	This::wxDirDialog().
 getMessage(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDirDialog),
-  wxe_util:call(?wxDirDialog_GetMessage,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDirDialog_GetMessage,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialogsetmessage">external documentation</a>.
 -spec setMessage(This, Message) -> 'ok' when
@@ -141,8 +131,7 @@ setMessage(#wx_ref{type=ThisT,ref=ThisRef},Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxDirDialog),
   Message_UC = unicode:characters_to_binary([Message,0]),
-  wxe_util:cast(?wxDirDialog_SetMessage,
-  <<ThisRef:32/?UI,(byte_size(Message_UC)):32/?UI,(Message_UC)/binary, 0:(((8- ((0+byte_size(Message_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxDirDialog_SetMessage,[ThisRef,Message_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialogsetpath">external documentation</a>.
 -spec setPath(This, Path) -> 'ok' when
@@ -151,8 +140,7 @@ setPath(#wx_ref{type=ThisT,ref=ThisRef},Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxDirDialog),
   Path_UC = unicode:characters_to_binary([Path,0]),
-  wxe_util:cast(?wxDirDialog_SetPath,
-  <<ThisRef:32/?UI,(byte_size(Path_UC)):32/?UI,(Path_UC)/binary, 0:(((8- ((0+byte_size(Path_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxDirDialog_SetPath,[ThisRef,Path_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDirDialog()) -> 'ok'.

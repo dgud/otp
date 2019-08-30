@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -42,24 +42,21 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemwxlistitem">external documentation</a>.
 -spec new() -> wxListItem().
 new() ->
-  wxe_util:construct(?wxListItem_new_0,
-  <<>>).
+  wxe_util:construct(?wxListItem_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemwxlistitem">external documentation</a>.
 -spec new(Item) -> wxListItem() when
 	Item::wxListItem().
 new(#wx_ref{type=ItemT,ref=ItemRef}) ->
   ?CLASS(ItemT,wxListItem),
-  wxe_util:construct(?wxListItem_new_1,
-  <<ItemRef:32/?UI>>).
+  wxe_util:construct(?wxListItem_new_1,[ItemRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemclear">external documentation</a>.
 -spec clear(This) -> 'ok' when
 	This::wxListItem().
 clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_Clear,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxListItem_Clear,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetalign">external documentation</a>.
 %%<br /> Res = ?wxLIST_FORMAT_LEFT | ?wxLIST_FORMAT_RIGHT | ?wxLIST_FORMAT_CENTRE | ?wxLIST_FORMAT_CENTER
@@ -67,88 +64,77 @@ clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxListItem().
 getAlign(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetAlign,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetAlign,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetbackgroundcolour">external documentation</a>.
 -spec getBackgroundColour(This) -> wx:wx_colour4() when
 	This::wxListItem().
 getBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetBackgroundColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetBackgroundColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetcolumn">external documentation</a>.
 -spec getColumn(This) -> integer() when
 	This::wxListItem().
 getColumn(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetColumn,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetColumn,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetfont">external documentation</a>.
 -spec getFont(This) -> wxFont:wxFont() when
 	This::wxListItem().
 getFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetFont,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetFont,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetid">external documentation</a>.
 -spec getId(This) -> integer() when
 	This::wxListItem().
 getId(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetId,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetId,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetimage">external documentation</a>.
 -spec getImage(This) -> integer() when
 	This::wxListItem().
 getImage(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetImage,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetImage,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetmask">external documentation</a>.
 -spec getMask(This) -> integer() when
 	This::wxListItem().
 getMask(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetMask,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetMask,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetstate">external documentation</a>.
 -spec getState(This) -> integer() when
 	This::wxListItem().
 getState(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetState,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetState,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgettext">external documentation</a>.
 -spec getText(This) -> unicode:charlist() when
 	This::wxListItem().
 getText(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetText,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetText,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgettextcolour">external documentation</a>.
 -spec getTextColour(This) -> wx:wx_colour4() when
 	This::wxListItem().
 getTextColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetTextColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetTextColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemgetwidth">external documentation</a>.
 -spec getWidth(This) -> integer() when
 	This::wxListItem().
 getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:call(?wxListItem_GetWidth,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxListItem_GetWidth,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetalign">external documentation</a>.
 %%<br /> Align = ?wxLIST_FORMAT_LEFT | ?wxLIST_FORMAT_RIGHT | ?wxLIST_FORMAT_CENTRE | ?wxLIST_FORMAT_CENTER
@@ -157,8 +143,7 @@ getWidth(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setAlign(#wx_ref{type=ThisT,ref=ThisRef},Align)
  when is_integer(Align) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetAlign,
-  <<ThisRef:32/?UI,Align:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetAlign,[ThisRef,Align]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetbackgroundcolour">external documentation</a>.
 -spec setBackgroundColour(This, ColBack) -> 'ok' when
@@ -166,8 +151,7 @@ setAlign(#wx_ref{type=ThisT,ref=ThisRef},Align)
 setBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},ColBack)
  when tuple_size(ColBack) =:= 3; tuple_size(ColBack) =:= 4 ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetBackgroundColour,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColBack)):16/binary>>).
+  wxe_util:cast(?wxListItem_SetBackgroundColour,[ThisRef,ColBack]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetcolumn">external documentation</a>.
 -spec setColumn(This, Col) -> 'ok' when
@@ -175,8 +159,7 @@ setBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},ColBack)
 setColumn(#wx_ref{type=ThisT,ref=ThisRef},Col)
  when is_integer(Col) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetColumn,
-  <<ThisRef:32/?UI,Col:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetColumn,[ThisRef,Col]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetfont">external documentation</a>.
 -spec setFont(This, Font) -> 'ok' when
@@ -184,8 +167,7 @@ setColumn(#wx_ref{type=ThisT,ref=ThisRef},Col)
 setFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
   ?CLASS(ThisT,wxListItem),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxListItem_SetFont,
-  <<ThisRef:32/?UI,FontRef:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetFont,[ThisRef,FontRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetid">external documentation</a>.
 -spec setId(This, Id) -> 'ok' when
@@ -193,8 +175,7 @@ setFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
 setId(#wx_ref{type=ThisT,ref=ThisRef},Id)
  when is_integer(Id) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetId,
-  <<ThisRef:32/?UI,Id:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetId,[ThisRef,Id]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetimage">external documentation</a>.
 -spec setImage(This, Image) -> 'ok' when
@@ -202,8 +183,7 @@ setId(#wx_ref{type=ThisT,ref=ThisRef},Id)
 setImage(#wx_ref{type=ThisT,ref=ThisRef},Image)
  when is_integer(Image) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetImage,
-  <<ThisRef:32/?UI,Image:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetImage,[ThisRef,Image]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetmask">external documentation</a>.
 -spec setMask(This, Mask) -> 'ok' when
@@ -211,8 +191,7 @@ setImage(#wx_ref{type=ThisT,ref=ThisRef},Image)
 setMask(#wx_ref{type=ThisT,ref=ThisRef},Mask)
  when is_integer(Mask) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetMask,
-  <<ThisRef:32/?UI,Mask:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetMask,[ThisRef,Mask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetstate">external documentation</a>.
 -spec setState(This, State) -> 'ok' when
@@ -220,8 +199,7 @@ setMask(#wx_ref{type=ThisT,ref=ThisRef},Mask)
 setState(#wx_ref{type=ThisT,ref=ThisRef},State)
  when is_integer(State) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetState,
-  <<ThisRef:32/?UI,State:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetState,[ThisRef,State]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetstatemask">external documentation</a>.
 -spec setStateMask(This, StateMask) -> 'ok' when
@@ -229,8 +207,7 @@ setState(#wx_ref{type=ThisT,ref=ThisRef},State)
 setStateMask(#wx_ref{type=ThisT,ref=ThisRef},StateMask)
  when is_integer(StateMask) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetStateMask,
-  <<ThisRef:32/?UI,StateMask:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetStateMask,[ThisRef,StateMask]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsettext">external documentation</a>.
 -spec setText(This, Text) -> 'ok' when
@@ -239,8 +216,7 @@ setText(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxListItem),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:cast(?wxListItem_SetText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxListItem_SetText,[ThisRef,Text_UC]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsettextcolour">external documentation</a>.
 -spec setTextColour(This, ColText) -> 'ok' when
@@ -248,8 +224,7 @@ setText(#wx_ref{type=ThisT,ref=ThisRef},Text)
 setTextColour(#wx_ref{type=ThisT,ref=ThisRef},ColText)
  when tuple_size(ColText) =:= 3; tuple_size(ColText) =:= 4 ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetTextColour,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColText)):16/binary>>).
+  wxe_util:cast(?wxListItem_SetTextColour,[ThisRef,ColText]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistitem.html#wxlistitemsetwidth">external documentation</a>.
 -spec setWidth(This, Width) -> 'ok' when
@@ -257,8 +232,7 @@ setTextColour(#wx_ref{type=ThisT,ref=ThisRef},ColText)
 setWidth(#wx_ref{type=ThisT,ref=ThisRef},Width)
  when is_integer(Width) ->
   ?CLASS(ThisT,wxListItem),
-  wxe_util:cast(?wxListItem_SetWidth,
-  <<ThisRef:32/?UI,Width:32/?UI>>).
+  wxe_util:cast(?wxListItem_SetWidth,[ThisRef,Width]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxListItem()) -> 'ok'.

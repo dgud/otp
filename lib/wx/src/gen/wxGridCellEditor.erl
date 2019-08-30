@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -46,25 +46,22 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,#w
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(EvtHandlerT,wxEvtHandler),
-  wxe_util:cast(?wxGridCellEditor_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,EvtHandlerRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_Create,[ThisRef,ParentRef,Id,EvtHandlerRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditoriscreated">external documentation</a>.
 -spec isCreated(This) -> boolean() when
 	This::wxGridCellEditor().
 isCreated(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:call(?wxGridCellEditor_IsCreated,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGridCellEditor_IsCreated,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorsetsize">external documentation</a>.
 -spec setSize(This, Rect) -> 'ok' when
 	This::wxGridCellEditor(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-setSize(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+setSize(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_SetSize,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_SetSize,[ThisRef,Rect]).
 
 %% @equiv show(This,Show, [])
 -spec show(This, Show) -> 'ok' when
@@ -81,21 +78,16 @@ show(This,Show)
 show(#wx_ref{type=ThisT,ref=ThisRef},Show, Options)
  when is_boolean(Show),is_list(Options) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  MOpts = fun({attr, #wx_ref{type=AttrT,ref=AttrRef}}, Acc) ->   ?CLASS(AttrT,wxGridCellAttr),[<<1:32/?UI,AttrRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxGridCellEditor_Show,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI, BinOpt/binary>>).
+  wxe_util:cast(?wxGridCellEditor_Show,[ThisRef,Show, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorpaintbackground">external documentation</a>.
 -spec paintBackground(This, RectCell, Attr) -> 'ok' when
 	This::wxGridCellEditor(), RectCell::{X::integer(), Y::integer(), W::integer(), H::integer()}, Attr::wxGridCellAttr:wxGridCellAttr().
-paintBackground(#wx_ref{type=ThisT,ref=ThisRef},{RectCellX,RectCellY,RectCellW,RectCellH},#wx_ref{type=AttrT,ref=AttrRef})
+paintBackground(#wx_ref{type=ThisT,ref=ThisRef},{RectCellX,RectCellY,RectCellW,RectCellH} = RectCell,#wx_ref{type=AttrT,ref=AttrRef})
  when is_integer(RectCellX),is_integer(RectCellY),is_integer(RectCellW),is_integer(RectCellH) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(AttrT,wxGridCellAttr),
-  wxe_util:cast(?wxGridCellEditor_PaintBackground,
-  <<ThisRef:32/?UI,RectCellX:32/?UI,RectCellY:32/?UI,RectCellW:32/?UI,RectCellH:32/?UI,AttrRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_PaintBackground,[ThisRef,RectCell,AttrRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorbeginedit">external documentation</a>.
 -spec beginEdit(This, Row, Col, Grid) -> 'ok' when
@@ -104,8 +96,7 @@ beginEdit(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=GridT,ref=GridRef
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(GridT,wxGrid),
-  wxe_util:cast(?wxGridCellEditor_BeginEdit,
-  <<ThisRef:32/?UI,Row:32/?UI,Col:32/?UI,GridRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_BeginEdit,[ThisRef,Row,Col,GridRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorendedit">external documentation</a>.
 -spec endEdit(This, Row, Col, Grid) -> boolean() when
@@ -114,16 +105,14 @@ endEdit(#wx_ref{type=ThisT,ref=ThisRef},Row,Col,#wx_ref{type=GridT,ref=GridRef})
  when is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(GridT,wxGrid),
-  wxe_util:call(?wxGridCellEditor_EndEdit,
-  <<ThisRef:32/?UI,Row:32/?UI,Col:32/?UI,GridRef:32/?UI>>).
+  wxe_util:call(?wxGridCellEditor_EndEdit,[ThisRef,Row,Col,GridRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorreset">external documentation</a>.
 -spec reset(This) -> 'ok' when
 	This::wxGridCellEditor().
 reset(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_Reset,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_Reset,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorstartingkey">external documentation</a>.
 -spec startingKey(This, Event) -> 'ok' when
@@ -131,16 +120,14 @@ reset(#wx_ref{type=ThisT,ref=ThisRef}) ->
 startingKey(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=EventT,ref=EventRef}) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(EventT,wxKeyEvent),
-  wxe_util:cast(?wxGridCellEditor_StartingKey,
-  <<ThisRef:32/?UI,EventRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_StartingKey,[ThisRef,EventRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorstartingclick">external documentation</a>.
 -spec startingClick(This) -> 'ok' when
 	This::wxGridCellEditor().
 startingClick(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:cast(?wxGridCellEditor_StartingClick,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_StartingClick,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorhandlereturn">external documentation</a>.
 -spec handleReturn(This, Event) -> 'ok' when
@@ -148,6 +135,5 @@ startingClick(#wx_ref{type=ThisT,ref=ThisRef}) ->
 handleReturn(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=EventT,ref=EventRef}) ->
   ?CLASS(ThisT,wxGridCellEditor),
   ?CLASS(EventT,wxKeyEvent),
-  wxe_util:cast(?wxGridCellEditor_HandleReturn,
-  <<ThisRef:32/?UI,EventRef:32/?UI>>).
+  wxe_util:cast(?wxGridCellEditor_HandleReturn,[ThisRef,EventRef]).
 

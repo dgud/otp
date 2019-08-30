@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -84,14 +84,7 @@ add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}, Options
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Add_2_0
      end,
-  MOpts = fun({proportion, Proportion}, Acc) -> [<<1:32/?UI,Proportion:32/?UI>>|Acc];
-          ({flag, Flag}, Acc) -> [<<2:32/?UI,Flag:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<3:32/?UI,Border:32/?UI>>|Acc];
-          ({userData, #wx_ref{type=UserDataT,ref=UserDataRef}}, Acc) ->   ?CLASS(UserDataT,wx),[<<4:32/?UI,UserDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI, BinOpt/binary>>);
+  wxe_util:call(WindowOP,[ThisRef,WindowRef, Options]);
 add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{type=FlagsT,ref=FlagsRef}) ->
   ?CLASS(ThisT,wxSizer),
   WindowOP = case ?CLASS_T(WindowT,wxWindow) of
@@ -102,8 +95,7 @@ add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{
          ?CLASS(FlagsT,wxSizerFlags),
        ?wxSizer_Add_2_2
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI,FlagsRef:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef,FlagsRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizeradd">external documentation</a>.
 -spec add(This, Width, Height, [Option]) -> wxSizerItem:wxSizerItem() when
@@ -115,14 +107,7 @@ add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{
 add(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({proportion, Proportion}, Acc) -> [<<1:32/?UI,Proportion:32/?UI>>|Acc];
-          ({flag, Flag}, Acc) -> [<<2:32/?UI,Flag:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<3:32/?UI,Border:32/?UI>>|Acc];
-          ({userData, #wx_ref{type=UserDataT,ref=UserDataRef}}, Acc) ->   ?CLASS(UserDataT,wx),[<<4:32/?UI,UserDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_Add_3,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxSizer_Add_3,[ThisRef,Width,Height, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizeraddspacer">external documentation</a>.
 -spec addSpacer(This, Size) -> wxSizerItem:wxSizerItem() when
@@ -130,8 +115,7 @@ add(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
 addSpacer(#wx_ref{type=ThisT,ref=ThisRef},Size)
  when is_integer(Size) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_AddSpacer,
-  <<ThisRef:32/?UI,Size:32/?UI>>).
+  wxe_util:call(?wxSizer_AddSpacer,[ThisRef,Size]).
 
 %% @equiv addStretchSpacer(This, [])
 -spec addStretchSpacer(This) -> wxSizerItem:wxSizerItem() when
@@ -148,19 +132,14 @@ addStretchSpacer(This)
 addStretchSpacer(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({prop, Prop}, Acc) -> [<<1:32/?UI,Prop:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_AddStretchSpacer,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxSizer_AddStretchSpacer,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizercalcmin">external documentation</a>.
 -spec calcMin(This) -> {W::integer(), H::integer()} when
 	This::wxSizer().
 calcMin(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_CalcMin,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSizer_CalcMin,[ThisRef]).
 
 %% @equiv clear(This, [])
 -spec clear(This) -> 'ok' when
@@ -177,11 +156,7 @@ clear(This)
 clear(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({delete_windows, Delete_windows}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Delete_windows)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxSizer_Clear,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxSizer_Clear,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerdetach">external documentation</a>.
 %% <br /> Also:<br />
@@ -195,8 +170,7 @@ clear(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 detach(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_Detach_1_0,
-  <<ThisRef:32/?UI,Index:32/?UI>>);
+  wxe_util:call(?wxSizer_Detach_1_0,[ThisRef,Index]);
 detach(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(ThisT,wxSizer),
   WindowOP = case ?CLASS_T(WindowT,wxWindow) of
@@ -205,8 +179,7 @@ detach(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Detach_1_1
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerfit">external documentation</a>.
 -spec fit(This, Window) -> {W::integer(), H::integer()} when
@@ -214,8 +187,7 @@ detach(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
 fit(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(WindowT,wxWindow),
-  wxe_util:call(?wxSizer_Fit,
-  <<ThisRef:32/?UI,WindowRef:32/?UI>>).
+  wxe_util:call(?wxSizer_Fit,[ThisRef,WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerfitinside">external documentation</a>.
 -spec fitInside(This, Window) -> 'ok' when
@@ -223,16 +195,14 @@ fit(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
 fitInside(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(WindowT,wxWindow),
-  wxe_util:cast(?wxSizer_FitInside,
-  <<ThisRef:32/?UI,WindowRef:32/?UI>>).
+  wxe_util:cast(?wxSizer_FitInside,[ThisRef,WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetchildren">external documentation</a>.
 -spec getChildren(This) -> [wxSizerItem:wxSizerItem()] when
 	This::wxSizer().
 getChildren(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_GetChildren,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSizer_GetChildren,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetitem">external documentation</a>.
 %% <br /> Also:<br />
@@ -250,8 +220,7 @@ getItem(This,Window)
 getItem(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_GetItem_1,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxSizer_GetItem_1,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetitem">external documentation</a>.
 -spec getItem(This, Window, [Option]) -> wxSizerItem:wxSizerItem() when
@@ -266,35 +235,28 @@ getItem(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}, Opt
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_GetItem_2_0
      end,
-  MOpts = fun({recursive, Recursive}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Recursive)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetsize">external documentation</a>.
 -spec getSize(This) -> {W::integer(), H::integer()} when
 	This::wxSizer().
 getSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_GetSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSizer_GetSize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetposition">external documentation</a>.
 -spec getPosition(This) -> {X::integer(), Y::integer()} when
 	This::wxSizer().
 getPosition(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_GetPosition,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSizer_GetPosition,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetminsize">external documentation</a>.
 -spec getMinSize(This) -> {W::integer(), H::integer()} when
 	This::wxSizer().
 getMinSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_GetMinSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSizer_GetMinSize,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerhide">external documentation</a>.
 %% <br /> Also:<br />
@@ -312,8 +274,7 @@ hide(This,Window)
 hide(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_Hide_1,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxSizer_Hide_1,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerhide">external documentation</a>.
 -spec hide(This, Window, [Option]) -> boolean() when
@@ -328,11 +289,7 @@ hide(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}, Option
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Hide_2_0
      end,
-  MOpts = fun({recursive, Recursive}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Recursive)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerinsert">external documentation</a>.
 -spec insert(This, Index, Item) -> wxSizerItem:wxSizerItem() when
@@ -341,8 +298,7 @@ insert(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=ItemT,ref=ItemRef})
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(ItemT,wxSizerItem),
-  wxe_util:call(?wxSizer_Insert_2,
-  <<ThisRef:32/?UI,Index:32/?UI,ItemRef:32/?UI>>).
+  wxe_util:call(?wxSizer_Insert_2,[ThisRef,Index,ItemRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerinsert">external documentation</a>.
 %% <br /> Also:<br />
@@ -378,14 +334,7 @@ insert(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=WindowT,ref=WindowRef}
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Insert_3_0
      end,
-  MOpts = fun({proportion, Proportion}, Acc) -> [<<1:32/?UI,Proportion:32/?UI>>|Acc];
-          ({flag, Flag}, Acc) -> [<<2:32/?UI,Flag:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<3:32/?UI,Border:32/?UI>>|Acc];
-          ({userData, #wx_ref{type=UserDataT,ref=UserDataRef}}, Acc) ->   ?CLASS(UserDataT,wx),[<<4:32/?UI,UserDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,Index:32/?UI,WindowRef:32/?UI, 0:32,BinOpt/binary>>);
+  wxe_util:call(WindowOP,[ThisRef,Index,WindowRef, Options]);
 insert(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{type=FlagsT,ref=FlagsRef})
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
@@ -397,8 +346,7 @@ insert(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=WindowT,ref=WindowRef}
          ?CLASS(FlagsT,wxSizerFlags),
        ?wxSizer_Insert_3_2
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,Index:32/?UI,WindowRef:32/?UI,FlagsRef:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,Index,WindowRef,FlagsRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerinsert">external documentation</a>.
 -spec insert(This, Index, Width, Height, [Option]) -> wxSizerItem:wxSizerItem() when
@@ -410,14 +358,7 @@ insert(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=WindowT,ref=WindowRef}
 insert(#wx_ref{type=ThisT,ref=ThisRef},Index,Width,Height, Options)
  when is_integer(Index),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({proportion, Proportion}, Acc) -> [<<1:32/?UI,Proportion:32/?UI>>|Acc];
-          ({flag, Flag}, Acc) -> [<<2:32/?UI,Flag:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<3:32/?UI,Border:32/?UI>>|Acc];
-          ({userData, #wx_ref{type=UserDataT,ref=UserDataRef}}, Acc) ->   ?CLASS(UserDataT,wx),[<<4:32/?UI,UserDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_Insert_4,
-  <<ThisRef:32/?UI,Index:32/?UI,Width:32/?UI,Height:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxSizer_Insert_4,[ThisRef,Index,Width,Height, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerinsertspacer">external documentation</a>.
 -spec insertSpacer(This, Index, Size) -> wxSizerItem:wxSizerItem() when
@@ -425,8 +366,7 @@ insert(#wx_ref{type=ThisT,ref=ThisRef},Index,Width,Height, Options)
 insertSpacer(#wx_ref{type=ThisT,ref=ThisRef},Index,Size)
  when is_integer(Index),is_integer(Size) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_InsertSpacer,
-  <<ThisRef:32/?UI,Index:32/?UI,Size:32/?UI>>).
+  wxe_util:call(?wxSizer_InsertSpacer,[ThisRef,Index,Size]).
 
 %% @equiv insertStretchSpacer(This,Index, [])
 -spec insertStretchSpacer(This, Index) -> wxSizerItem:wxSizerItem() when
@@ -443,11 +383,7 @@ insertStretchSpacer(This,Index)
 insertStretchSpacer(#wx_ref{type=ThisT,ref=ThisRef},Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({prop, Prop}, Acc) -> [<<1:32/?UI,Prop:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_InsertStretchSpacer,
-  <<ThisRef:32/?UI,Index:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxSizer_InsertStretchSpacer,[ThisRef,Index, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerisshown">external documentation</a>.
 %% <br /> Also:<br />
@@ -461,8 +397,7 @@ insertStretchSpacer(#wx_ref{type=ThisT,ref=ThisRef},Index, Options)
 isShown(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_IsShown_1_0,
-  <<ThisRef:32/?UI,Index:32/?UI>>);
+  wxe_util:call(?wxSizer_IsShown_1_0,[ThisRef,Index]);
 isShown(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(ThisT,wxSizer),
   WindowOP = case ?CLASS_T(WindowT,wxWindow) of
@@ -471,16 +406,14 @@ isShown(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_IsShown_1_1
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerlayout">external documentation</a>.
 -spec layout(This) -> 'ok' when
 	This::wxSizer().
 layout(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:cast(?wxSizer_Layout,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxSizer_Layout,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerprepend">external documentation</a>.
 -spec prepend(This, Item) -> wxSizerItem:wxSizerItem() when
@@ -488,8 +421,7 @@ layout(#wx_ref{type=ThisT,ref=ThisRef}) ->
 prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ItemT,ref=ItemRef}) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(ItemT,wxSizerItem),
-  wxe_util:call(?wxSizer_Prepend_1,
-  <<ThisRef:32/?UI,ItemRef:32/?UI>>).
+  wxe_util:call(?wxSizer_Prepend_1,[ThisRef,ItemRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerprepend">external documentation</a>.
 %% <br /> Also:<br />
@@ -525,14 +457,7 @@ prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}, Opt
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Prepend_2_0
      end,
-  MOpts = fun({proportion, Proportion}, Acc) -> [<<1:32/?UI,Proportion:32/?UI>>|Acc];
-          ({flag, Flag}, Acc) -> [<<2:32/?UI,Flag:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<3:32/?UI,Border:32/?UI>>|Acc];
-          ({userData, #wx_ref{type=UserDataT,ref=UserDataRef}}, Acc) ->   ?CLASS(UserDataT,wx),[<<4:32/?UI,UserDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI, BinOpt/binary>>);
+  wxe_util:call(WindowOP,[ThisRef,WindowRef, Options]);
 prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},#wx_ref{type=FlagsT,ref=FlagsRef}) ->
   ?CLASS(ThisT,wxSizer),
   WindowOP = case ?CLASS_T(WindowT,wxWindow) of
@@ -543,8 +468,7 @@ prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},#wx_
          ?CLASS(FlagsT,wxSizerFlags),
        ?wxSizer_Prepend_2_2
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI,FlagsRef:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef,FlagsRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerprepend">external documentation</a>.
 -spec prepend(This, Width, Height, [Option]) -> wxSizerItem:wxSizerItem() when
@@ -556,14 +480,7 @@ prepend(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},#wx_
 prepend(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({proportion, Proportion}, Acc) -> [<<1:32/?UI,Proportion:32/?UI>>|Acc];
-          ({flag, Flag}, Acc) -> [<<2:32/?UI,Flag:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<3:32/?UI,Border:32/?UI>>|Acc];
-          ({userData, #wx_ref{type=UserDataT,ref=UserDataRef}}, Acc) ->   ?CLASS(UserDataT,wx),[<<4:32/?UI,UserDataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_Prepend_3,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxSizer_Prepend_3,[ThisRef,Width,Height, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerprependspacer">external documentation</a>.
 -spec prependSpacer(This, Size) -> wxSizerItem:wxSizerItem() when
@@ -571,8 +488,7 @@ prepend(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
 prependSpacer(#wx_ref{type=ThisT,ref=ThisRef},Size)
  when is_integer(Size) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_PrependSpacer,
-  <<ThisRef:32/?UI,Size:32/?UI>>).
+  wxe_util:call(?wxSizer_PrependSpacer,[ThisRef,Size]).
 
 %% @equiv prependStretchSpacer(This, [])
 -spec prependStretchSpacer(This) -> wxSizerItem:wxSizerItem() when
@@ -589,19 +505,14 @@ prependStretchSpacer(This)
 prependStretchSpacer(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({prop, Prop}, Acc) -> [<<1:32/?UI,Prop:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_PrependStretchSpacer,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxSizer_PrependStretchSpacer,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerrecalcsizes">external documentation</a>.
 -spec recalcSizes(This) -> 'ok' when
 	This::wxSizer().
 recalcSizes(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:cast(?wxSizer_RecalcSizes,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxSizer_RecalcSizes,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerremove">external documentation</a>.
 %% <br /> Also:<br />
@@ -615,13 +526,11 @@ recalcSizes(#wx_ref{type=ThisT,ref=ThisRef}) ->
 remove(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_Remove_1_0,
-  <<ThisRef:32/?UI,Index:32/?UI>>);
+  wxe_util:call(?wxSizer_Remove_1_0,[ThisRef,Index]);
 remove(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=SizerT,ref=SizerRef}) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(SizerT,wxSizer),
-  wxe_util:call(?wxSizer_Remove_1_1,
-  <<ThisRef:32/?UI,SizerRef:32/?UI>>).
+  wxe_util:call(?wxSizer_Remove_1_1,[ThisRef,SizerRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerreplace">external documentation</a>.
 %% <br /> Also:<br />
@@ -640,8 +549,7 @@ replace(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=NewitemT,ref=NewitemR
  when is_integer(Index) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(NewitemT,wxSizerItem),
-  wxe_util:call(?wxSizer_Replace_2,
-  <<ThisRef:32/?UI,Index:32/?UI,NewitemRef:32/?UI>>).
+  wxe_util:call(?wxSizer_Replace_2,[ThisRef,Index,NewitemRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerreplace">external documentation</a>.
 -spec replace(This, Oldwin, Newwin, [Option]) -> boolean() when
@@ -658,11 +566,7 @@ replace(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=OldwinT,ref=OldwinRef},#wx_
          ?CLASS(NewwinT,wxSizer),
        ?wxSizer_Replace_3_0
      end,
-  MOpts = fun({recursive, Recursive}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Recursive)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(OldwinOP,
-  <<ThisRef:32/?UI,OldwinRef:32/?UI,NewwinRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(OldwinOP,[ThisRef,OldwinRef,NewwinRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetdimension">external documentation</a>.
 -spec setDimension(This, X, Y, Width, Height) -> 'ok' when
@@ -670,17 +574,15 @@ replace(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=OldwinT,ref=OldwinRef},#wx_
 setDimension(#wx_ref{type=ThisT,ref=ThisRef},X,Y,Width,Height)
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:cast(?wxSizer_SetDimension,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,Width:32/?UI,Height:32/?UI>>).
+  wxe_util:cast(?wxSizer_SetDimension,[ThisRef,X,Y,Width,Height]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetminsize">external documentation</a>.
 -spec setMinSize(This, Size) -> 'ok' when
 	This::wxSizer(), Size::{W::integer(), H::integer()}.
-setMinSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
+setMinSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:cast(?wxSizer_SetMinSize_1,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:cast(?wxSizer_SetMinSize_1,[ThisRef,Size]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetminsize">external documentation</a>.
 -spec setMinSize(This, Width, Height) -> 'ok' when
@@ -688,8 +590,7 @@ setMinSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
 setMinSize(#wx_ref{type=ThisT,ref=ThisRef},Width,Height)
  when is_integer(Width),is_integer(Height) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:cast(?wxSizer_SetMinSize_2,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI>>).
+  wxe_util:cast(?wxSizer_SetMinSize_2,[ThisRef,Width,Height]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetitemminsize">external documentation</a>.
 %% <br /> Also:<br />
@@ -700,12 +601,11 @@ setMinSize(#wx_ref{type=ThisT,ref=ThisRef},Width,Height)
 	This::wxSizer(), Index::integer(), Size::{W::integer(), H::integer()};
       (This, Window, Size) -> boolean() when
 	This::wxSizer(), Window::wxWindow:wxWindow() | wxSizer(), Size::{W::integer(), H::integer()}.
-setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},Index,{SizeW,SizeH})
+setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},Index,{SizeW,SizeH} = Size)
  when is_integer(Index),is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_SetItemMinSize_2_0,
-  <<ThisRef:32/?UI,Index:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>);
-setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},{SizeW,SizeH})
+  wxe_util:call(?wxSizer_SetItemMinSize_2_0,[ThisRef,Index,Size]);
+setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxSizer),
   WindowOP = case ?CLASS_T(WindowT,wxWindow) of
@@ -714,8 +614,7 @@ setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRe
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_SetItemMinSize_2_1
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef,Size]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetitemminsize">external documentation</a>.
 %% <br /> Also:<br />
@@ -729,8 +628,7 @@ setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRe
 setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},Index,Width,Height)
  when is_integer(Index),is_integer(Width),is_integer(Height) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:call(?wxSizer_SetItemMinSize_3_0,
-  <<ThisRef:32/?UI,Index:32/?UI,Width:32/?UI,Height:32/?UI>>);
+  wxe_util:call(?wxSizer_SetItemMinSize_3_0,[ThisRef,Index,Width,Height]);
 setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef},Width,Height)
  when is_integer(Width),is_integer(Height) ->
   ?CLASS(ThisT,wxSizer),
@@ -740,8 +638,7 @@ setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRe
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_SetItemMinSize_3_1
      end,
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI,Width:32/?UI,Height:32/?UI>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef,Width,Height]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetsizehints">external documentation</a>.
 -spec setSizeHints(This, Window) -> 'ok' when
@@ -749,8 +646,7 @@ setItemMinSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRe
 setSizeHints(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(WindowT,wxWindow),
-  wxe_util:cast(?wxSizer_SetSizeHints,
-  <<ThisRef:32/?UI,WindowRef:32/?UI>>).
+  wxe_util:cast(?wxSizer_SetSizeHints,[ThisRef,WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetvirtualsizehints">external documentation</a>.
 -spec setVirtualSizeHints(This, Window) -> 'ok' when
@@ -758,8 +654,7 @@ setSizeHints(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}
 setVirtualSizeHints(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(ThisT,wxSizer),
   ?CLASS(WindowT,wxWindow),
-  wxe_util:cast(?wxSizer_SetVirtualSizeHints,
-  <<ThisRef:32/?UI,WindowRef:32/?UI>>).
+  wxe_util:cast(?wxSizer_SetVirtualSizeHints,[ThisRef,WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizershow">external documentation</a>.
 %% <br /> Also:<br />
@@ -785,8 +680,7 @@ show(This,Window)
 show(#wx_ref{type=ThisT,ref=ThisRef},Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:cast(?wxSizer_Show_1,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>).
+  wxe_util:cast(?wxSizer_Show_1,[ThisRef,Show]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizershow">external documentation</a>.
 %% <br /> Also:<br />
@@ -805,11 +699,7 @@ show(#wx_ref{type=ThisT,ref=ThisRef},Show)
 show(#wx_ref{type=ThisT,ref=ThisRef},Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  MOpts = fun({show, Show}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSizer_Show_2_0,
-  <<ThisRef:32/?UI,Index:32/?UI, BinOpt/binary>>);
+  wxe_util:call(?wxSizer_Show_2_0,[ThisRef,Index, Options]);
 show(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
@@ -819,10 +709,5 @@ show(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=WindowT,ref=WindowRef}, Option
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Show_2_1
      end,
-  MOpts = fun({show, Show}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>|Acc];
-          ({recursive, Recursive}, Acc) -> [<<2:32/?UI,(wxe_util:from_bool(Recursive)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(WindowOP,
-  <<ThisRef:32/?UI,WindowRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(WindowOP,[ThisRef,WindowRef, Options]).
 

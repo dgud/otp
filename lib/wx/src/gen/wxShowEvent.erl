@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,16 +50,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 setShow(#wx_ref{type=ThisT,ref=ThisRef},Show)
  when is_boolean(Show) ->
   ?CLASS(ThisT,wxShowEvent),
-  wxe_util:cast(?wxShowEvent_SetShow,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI>>).
+  wxe_util:cast(?wxShowEvent_SetShow,[ThisRef,Show]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxshowevent.html#wxshoweventgetshow">external documentation</a>.
 -spec getShow(This) -> boolean() when
 	This::wxShowEvent().
 getShow(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxShowEvent),
-  wxe_util:call(?wxShowEvent_GetShow,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxShowEvent_GetShow,[ThisRef]).
 
  %% From wxEvent
 %% @hidden

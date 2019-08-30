@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -49,8 +49,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxIconizeEvent().
 iconized(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxIconizeEvent),
-  wxe_util:call(?wxIconizeEvent_Iconized,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxIconizeEvent_Iconized,[ThisRef]).
 
  %% From wxEvent
 %% @hidden

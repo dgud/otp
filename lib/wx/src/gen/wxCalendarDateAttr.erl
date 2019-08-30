@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrwxcalendardateattr">external documentation</a>.
 -spec new() -> wxCalendarDateAttr().
 new() ->
-  wxe_util:construct(?wxCalendarDateAttr_new_0,
-  <<>>).
+  wxe_util:construct(?wxCalendarDateAttr_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrwxcalendardateattr">external documentation</a>.
 %% <br /> Also:<br />
@@ -84,21 +83,10 @@ new(ColText)
 		 | {'border', wx:wx_enum()}.
 new(Border, Options)
  when is_integer(Border),is_list(Options) ->
-  MOpts = fun({colBorder, ColBorder}, Acc) -> [<<1:32/?UI,(wxe_util:colour_bin(ColBorder)):16/binary,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxCalendarDateAttr_new_2_0,
-  <<Border:32/?UI, 0:32,BinOpt/binary>>);
+  wxe_util:construct(?wxCalendarDateAttr_new_2_0,[Border, Options]);
 new(ColText, Options)
  when tuple_size(ColText) =:= 3; tuple_size(ColText) =:= 4,is_list(Options) ->
-  MOpts = fun({colBack, ColBack}, Acc) -> [<<1:32/?UI,(wxe_util:colour_bin(ColBack)):16/binary,0:32>>|Acc];
-          ({colBorder, ColBorder}, Acc) -> [<<2:32/?UI,(wxe_util:colour_bin(ColBorder)):16/binary,0:32>>|Acc];
-          ({font, #wx_ref{type=FontT,ref=FontRef}}, Acc) ->   ?CLASS(FontT,wxFont),[<<3:32/?UI,FontRef:32/?UI>>|Acc];
-          ({border, Border}, Acc) -> [<<4:32/?UI,Border:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxCalendarDateAttr_new_2_1,
-  <<(wxe_util:colour_bin(ColText)):16/binary, BinOpt/binary>>).
+  wxe_util:construct(?wxCalendarDateAttr_new_2_1,[ColText, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsettextcolour">external documentation</a>.
 -spec setTextColour(This, ColText) -> 'ok' when
@@ -106,8 +94,7 @@ new(ColText, Options)
 setTextColour(#wx_ref{type=ThisT,ref=ThisRef},ColText)
  when tuple_size(ColText) =:= 3; tuple_size(ColText) =:= 4 ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:cast(?wxCalendarDateAttr_SetTextColour,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColText)):16/binary>>).
+  wxe_util:cast(?wxCalendarDateAttr_SetTextColour,[ThisRef,ColText]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsetbackgroundcolour">external documentation</a>.
 -spec setBackgroundColour(This, ColBack) -> 'ok' when
@@ -115,8 +102,7 @@ setTextColour(#wx_ref{type=ThisT,ref=ThisRef},ColText)
 setBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},ColBack)
  when tuple_size(ColBack) =:= 3; tuple_size(ColBack) =:= 4 ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:cast(?wxCalendarDateAttr_SetBackgroundColour,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(ColBack)):16/binary>>).
+  wxe_util:cast(?wxCalendarDateAttr_SetBackgroundColour,[ThisRef,ColBack]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsetbordercolour">external documentation</a>.
 -spec setBorderColour(This, Col) -> 'ok' when
@@ -124,8 +110,7 @@ setBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef},ColBack)
 setBorderColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
  when tuple_size(Col) =:= 3; tuple_size(Col) =:= 4 ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:cast(?wxCalendarDateAttr_SetBorderColour,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Col)):16/binary>>).
+  wxe_util:cast(?wxCalendarDateAttr_SetBorderColour,[ThisRef,Col]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsetfont">external documentation</a>.
 -spec setFont(This, Font) -> 'ok' when
@@ -133,8 +118,7 @@ setBorderColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
 setFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
   ?CLASS(FontT,wxFont),
-  wxe_util:cast(?wxCalendarDateAttr_SetFont,
-  <<ThisRef:32/?UI,FontRef:32/?UI>>).
+  wxe_util:cast(?wxCalendarDateAttr_SetFont,[ThisRef,FontRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsetborder">external documentation</a>.
 %%<br /> Border = ?wxCAL_BORDER_NONE | ?wxCAL_BORDER_SQUARE | ?wxCAL_BORDER_ROUND
@@ -143,8 +127,7 @@ setFont(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=FontT,ref=FontRef}) ->
 setBorder(#wx_ref{type=ThisT,ref=ThisRef},Border)
  when is_integer(Border) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:cast(?wxCalendarDateAttr_SetBorder,
-  <<ThisRef:32/?UI,Border:32/?UI>>).
+  wxe_util:cast(?wxCalendarDateAttr_SetBorder,[ThisRef,Border]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsetholiday">external documentation</a>.
 -spec setHoliday(This, Holiday) -> 'ok' when
@@ -152,88 +135,77 @@ setBorder(#wx_ref{type=ThisT,ref=ThisRef},Border)
 setHoliday(#wx_ref{type=ThisT,ref=ThisRef},Holiday)
  when is_boolean(Holiday) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:cast(?wxCalendarDateAttr_SetHoliday,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Holiday)):32/?UI>>).
+  wxe_util:cast(?wxCalendarDateAttr_SetHoliday,[ThisRef,Holiday]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrhastextcolour">external documentation</a>.
 -spec hasTextColour(This) -> boolean() when
 	This::wxCalendarDateAttr().
 hasTextColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_HasTextColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_HasTextColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrhasbackgroundcolour">external documentation</a>.
 -spec hasBackgroundColour(This) -> boolean() when
 	This::wxCalendarDateAttr().
 hasBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_HasBackgroundColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_HasBackgroundColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrhasbordercolour">external documentation</a>.
 -spec hasBorderColour(This) -> boolean() when
 	This::wxCalendarDateAttr().
 hasBorderColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_HasBorderColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_HasBorderColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrhasfont">external documentation</a>.
 -spec hasFont(This) -> boolean() when
 	This::wxCalendarDateAttr().
 hasFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_HasFont,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_HasFont,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrhasborder">external documentation</a>.
 -spec hasBorder(This) -> boolean() when
 	This::wxCalendarDateAttr().
 hasBorder(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_HasBorder,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_HasBorder,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrisholiday">external documentation</a>.
 -spec isHoliday(This) -> boolean() when
 	This::wxCalendarDateAttr().
 isHoliday(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_IsHoliday,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_IsHoliday,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrgettextcolour">external documentation</a>.
 -spec getTextColour(This) -> wx:wx_colour4() when
 	This::wxCalendarDateAttr().
 getTextColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_GetTextColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_GetTextColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrgetbackgroundcolour">external documentation</a>.
 -spec getBackgroundColour(This) -> wx:wx_colour4() when
 	This::wxCalendarDateAttr().
 getBackgroundColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_GetBackgroundColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_GetBackgroundColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrgetbordercolour">external documentation</a>.
 -spec getBorderColour(This) -> wx:wx_colour4() when
 	This::wxCalendarDateAttr().
 getBorderColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_GetBorderColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_GetBorderColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrgetfont">external documentation</a>.
 -spec getFont(This) -> wxFont:wxFont() when
 	This::wxCalendarDateAttr().
 getFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_GetFont,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_GetFont,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrgetborder">external documentation</a>.
 %%<br /> Res = ?wxCAL_BORDER_NONE | ?wxCAL_BORDER_SQUARE | ?wxCAL_BORDER_ROUND
@@ -241,8 +213,7 @@ getFont(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxCalendarDateAttr().
 getBorder(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCalendarDateAttr),
-  wxe_util:call(?wxCalendarDateAttr_GetBorder,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCalendarDateAttr_GetBorder,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCalendarDateAttr()) -> 'ok'.

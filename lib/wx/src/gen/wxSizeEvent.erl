@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -49,8 +49,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxSizeEvent().
 getSize(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSizeEvent),
-  wxe_util:call(?wxSizeEvent_GetSize,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSizeEvent_GetSize,[ThisRef]).
 
  %% From wxEvent
 %% @hidden

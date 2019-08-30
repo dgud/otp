@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2018. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -47,81 +47,68 @@ new() ->
 	Option :: {'n', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({n, N}, Acc) -> [<<1:32/?UI,N:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxDisplay_new,
-  <<BinOpt/binary>>).
+  wxe_util:construct(?wxDisplay_new,[Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplayisok">external documentation</a>.
 -spec isOk(This) -> boolean() when
 	This::wxDisplay().
 isOk(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_IsOk,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_IsOk,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetclientarea">external documentation</a>.
 -spec getClientArea(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxDisplay().
 getClientArea(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetClientArea,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_GetClientArea,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetgeometry">external documentation</a>.
 -spec getGeometry(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxDisplay().
 getGeometry(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetGeometry,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_GetGeometry,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetname">external documentation</a>.
 -spec getName(This) -> unicode:charlist() when
 	This::wxDisplay().
 getName(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetName,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_GetName,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplayisprimary">external documentation</a>.
 -spec isPrimary(This) -> boolean() when
 	This::wxDisplay().
 isPrimary(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_IsPrimary,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_IsPrimary,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetcount">external documentation</a>.
 -spec getCount() -> integer().
 getCount() ->
-  wxe_util:call(?wxDisplay_GetCount,
-  <<>>).
+  wxe_util:call(?wxDisplay_GetCount,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetfrompoint">external documentation</a>.
 -spec getFromPoint(Pt) -> integer() when
 	Pt::{X::integer(), Y::integer()}.
-getFromPoint({PtX,PtY})
+getFromPoint({PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
-  wxe_util:call(?wxDisplay_GetFromPoint,
-  <<PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxDisplay_GetFromPoint,[Pt]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetfromwindow">external documentation</a>.
 -spec getFromWindow(Window) -> integer() when
 	Window::wxWindow:wxWindow().
 getFromWindow(#wx_ref{type=WindowT,ref=WindowRef}) ->
   ?CLASS(WindowT,wxWindow),
-  wxe_util:call(?wxDisplay_GetFromWindow,
-  <<WindowRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_GetFromWindow,[WindowRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplaygetppi">external documentation</a>.
 -spec getPPI(This) -> {W::integer(), H::integer()} when
 	This::wxDisplay().
 getPPI(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxDisplay),
-  wxe_util:call(?wxDisplay_GetPPI,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxDisplay_GetPPI,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDisplay()) -> 'ok'.

@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistwximagelist">external documentation</a>.
 -spec new() -> wxImageList().
 new() ->
-  wxe_util:construct(?wxImageList_new_0,
-  <<>>).
+  wxe_util:construct(?wxImageList_new_0,[]).
 
 %% @equiv new(Width,Height, [])
 -spec new(Width, Height) -> wxImageList() when
@@ -58,12 +57,7 @@ new(Width,Height)
 		 | {'initialCount', integer()}.
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  MOpts = fun({mask, Mask}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Mask)):32/?UI>>|Acc];
-          ({initialCount, InitialCount}, Acc) -> [<<2:32/?UI,InitialCount:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxImageList_new_3,
-  <<Width:32/?UI,Height:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxImageList_new_3,[Width,Height, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistadd">external documentation</a>.
 -spec add(This, Bitmap) -> integer() when
@@ -71,8 +65,7 @@ new(Width,Height, Options)
 add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef}) ->
   ?CLASS(ThisT,wxImageList),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxImageList_Add_1,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI>>).
+  wxe_util:call(?wxImageList_Add_1,[ThisRef,BitmapRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistadd">external documentation</a>.
 %% <br /> Also:<br />
@@ -87,14 +80,12 @@ add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef},#wx_ref{
   ?CLASS(ThisT,wxImageList),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(MaskT,wxBitmap),
-  wxe_util:call(?wxImageList_Add_2_0,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI,MaskRef:32/?UI>>);
+  wxe_util:call(?wxImageList_Add_2_0,[ThisRef,BitmapRef,MaskRef]);
 add(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BitmapT,ref=BitmapRef},MaskColour)
  when tuple_size(MaskColour) =:= 3; tuple_size(MaskColour) =:= 4 ->
   ?CLASS(ThisT,wxImageList),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxImageList_Add_2_1,
-  <<ThisRef:32/?UI,BitmapRef:32/?UI,(wxe_util:colour_bin(MaskColour)):16/binary>>).
+  wxe_util:call(?wxImageList_Add_2_1,[ThisRef,BitmapRef,MaskColour]).
 
 %% @equiv create(This,Width,Height, [])
 -spec create(This, Width, Height) -> boolean() when
@@ -112,12 +103,7 @@ create(This,Width,Height)
 create(#wx_ref{type=ThisT,ref=ThisRef},Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImageList),
-  MOpts = fun({mask, Mask}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Mask)):32/?UI>>|Acc];
-          ({initialCount, InitialCount}, Acc) -> [<<2:32/?UI,InitialCount:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImageList_Create,
-  <<ThisRef:32/?UI,Width:32/?UI,Height:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImageList_Create,[ThisRef,Width,Height, Options]).
 
 %% @equiv draw(This,Index,Dc,X,Y, [])
 -spec draw(This, Index, Dc, X, Y) -> boolean() when
@@ -136,12 +122,7 @@ draw(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=DcT,ref=DcRef},X,Y, Opti
  when is_integer(Index),is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxImageList),
   ?CLASS(DcT,wxDC),
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          ({solidBackground, SolidBackground}, Acc) -> [<<2:32/?UI,(wxe_util:from_bool(SolidBackground)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxImageList_Draw,
-  <<ThisRef:32/?UI,Index:32/?UI,DcRef:32/?UI,X:32/?UI,Y:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxImageList_Draw,[ThisRef,Index,DcRef,X,Y, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistgetbitmap">external documentation</a>.
 -spec getBitmap(This, Index) -> wxBitmap:wxBitmap() when
@@ -149,8 +130,7 @@ draw(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=DcT,ref=DcRef},X,Y, Opti
 getBitmap(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:call(?wxImageList_GetBitmap,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxImageList_GetBitmap,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistgeticon">external documentation</a>.
 -spec getIcon(This, Index) -> wxIcon:wxIcon() when
@@ -158,16 +138,14 @@ getBitmap(#wx_ref{type=ThisT,ref=ThisRef},Index)
 getIcon(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:call(?wxImageList_GetIcon,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxImageList_GetIcon,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistgetimagecount">external documentation</a>.
 -spec getImageCount(This) -> integer() when
 	This::wxImageList().
 getImageCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:call(?wxImageList_GetImageCount,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImageList_GetImageCount,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistgetsize">external documentation</a>.
 -spec getSize(This, Index) -> Result when
@@ -176,8 +154,7 @@ getImageCount(#wx_ref{type=ThisT,ref=ThisRef}) ->
 getSize(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:call(?wxImageList_GetSize,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxImageList_GetSize,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistremove">external documentation</a>.
 -spec remove(This, Index) -> boolean() when
@@ -185,16 +162,14 @@ getSize(#wx_ref{type=ThisT,ref=ThisRef},Index)
 remove(#wx_ref{type=ThisT,ref=ThisRef},Index)
  when is_integer(Index) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:call(?wxImageList_Remove,
-  <<ThisRef:32/?UI,Index:32/?UI>>).
+  wxe_util:call(?wxImageList_Remove,[ThisRef,Index]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistremoveall">external documentation</a>.
 -spec removeAll(This) -> boolean() when
 	This::wxImageList().
 removeAll(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:call(?wxImageList_RemoveAll,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxImageList_RemoveAll,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistreplace">external documentation</a>.
 -spec replace(This, Index, Bitmap) -> boolean() when
@@ -203,8 +178,7 @@ replace(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=BitmapT,ref=BitmapRef
  when is_integer(Index) ->
   ?CLASS(ThisT,wxImageList),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:call(?wxImageList_Replace_2,
-  <<ThisRef:32/?UI,Index:32/?UI,BitmapRef:32/?UI>>).
+  wxe_util:call(?wxImageList_Replace_2,[ThisRef,Index,BitmapRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistreplace">external documentation</a>.
 -spec replace(This, Index, Bitmap, Mask) -> boolean() when
@@ -214,8 +188,7 @@ replace(#wx_ref{type=ThisT,ref=ThisRef},Index,#wx_ref{type=BitmapT,ref=BitmapRef
   ?CLASS(ThisT,wxImageList),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(MaskT,wxBitmap),
-  wxe_util:call(?wxImageList_Replace_3,
-  <<ThisRef:32/?UI,Index:32/?UI,BitmapRef:32/?UI,MaskRef:32/?UI>>).
+  wxe_util:call(?wxImageList_Replace_3,[ThisRef,Index,BitmapRef,MaskRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxImageList()) -> 'ok'.

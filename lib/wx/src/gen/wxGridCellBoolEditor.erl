@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellbooleditor.html#wxgridcellbooleditorwxgridcellbooleditor">external documentation</a>.
 -spec new() -> wxGridCellBoolEditor().
 new() ->
-  wxe_util:construct(?wxGridCellBoolEditor_new,
-  <<>>).
+  wxe_util:construct(?wxGridCellBoolEditor_new,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellbooleditor.html#wxgridcellbooleditoristruevalue">external documentation</a>.
 -spec isTrueValue(Value) -> boolean() when
@@ -54,8 +53,7 @@ new() ->
 isTrueValue(Value)
  when ?is_chardata(Value) ->
   Value_UC = unicode:characters_to_binary([Value,0]),
-  wxe_util:call(?wxGridCellBoolEditor_IsTrueValue,
-  <<(byte_size(Value_UC)):32/?UI,(Value_UC)/binary, 0:(((8- ((4+byte_size(Value_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:call(?wxGridCellBoolEditor_IsTrueValue,[Value_UC]).
 
 %% @equiv useStringValues([])
 -spec useStringValues() -> 'ok'.
@@ -69,12 +67,7 @@ useStringValues() ->
 		 | {'valueFalse', unicode:chardata()}.
 useStringValues(Options)
  when is_list(Options) ->
-  MOpts = fun({valueTrue, ValueTrue}, Acc) ->   ValueTrue_UC = unicode:characters_to_binary([ValueTrue,0]),[<<1:32/?UI,(byte_size(ValueTrue_UC)):32/?UI,(ValueTrue_UC)/binary, 0:(((8- ((0+byte_size(ValueTrue_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({valueFalse, ValueFalse}, Acc) ->   ValueFalse_UC = unicode:characters_to_binary([ValueFalse,0]),[<<2:32/?UI,(byte_size(ValueFalse_UC)):32/?UI,(ValueFalse_UC)/binary, 0:(((8- ((0+byte_size(ValueFalse_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxGridCellBoolEditor_UseStringValues,
-  <<BinOpt/binary>>).
+  wxe_util:cast(?wxGridCellBoolEditor_UseStringValues,[Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGridCellBoolEditor()) -> 'ok'.

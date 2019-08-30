@@ -110,32 +110,25 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({data, #wx_ref{type=DataT,ref=DataRef}}, Acc) ->   ?CLASS(DataT,wxPrintDialogData),[<<1:32/?UI,DataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxPrintDialog_new_2_0,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>);
+  wxe_util:construct(?wxPrintDialog_new_2_0,[ParentRef, Options]);
 new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=DataT,ref=DataRef}) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxPrintData),
-  wxe_util:construct(?wxPrintDialog_new_2_1,
-  <<ParentRef:32/?UI,DataRef:32/?UI>>).
+  wxe_util:construct(?wxPrintDialog_new_2_1,[ParentRef,DataRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialog.html#wxprintdialoggetprintdialogdata">external documentation</a>.
 -spec getPrintDialogData(This) -> wxPrintDialogData:wxPrintDialogData() when
 	This::wxPrintDialog().
 getPrintDialogData(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintDialog),
-  wxe_util:call(?wxPrintDialog_GetPrintDialogData,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintDialog_GetPrintDialogData,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdialog.html#wxprintdialoggetprintdc">external documentation</a>.
 -spec getPrintDC(This) -> wxDC:wxDC() when
 	This::wxPrintDialog().
 getPrintDC(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPrintDialog),
-  wxe_util:call(?wxPrintDialog_GetPrintDC,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPrintDialog_GetPrintDC,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPrintDialog()) -> 'ok'.

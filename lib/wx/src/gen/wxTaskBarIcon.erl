@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtaskbaricon.html#wxtaskbariconwxtaskbaricon">external documentation</a>.
 -spec new() -> wxTaskBarIcon().
 new() ->
-  wxe_util:construct(?wxTaskBarIcon_new,
-  <<>>).
+  wxe_util:construct(?wxTaskBarIcon_new,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtaskbaricon.html#wxtaskbariconpopupmenu">external documentation</a>.
 -spec popupMenu(This, Menu) -> boolean() when
@@ -51,16 +50,14 @@ new() ->
 popupMenu(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenuT,ref=MenuRef}) ->
   ?CLASS(ThisT,wxTaskBarIcon),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:call(?wxTaskBarIcon_PopupMenu,
-  <<ThisRef:32/?UI,MenuRef:32/?UI>>).
+  wxe_util:call(?wxTaskBarIcon_PopupMenu,[ThisRef,MenuRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtaskbaricon.html#wxtaskbariconremoveicon">external documentation</a>.
 -spec removeIcon(This) -> boolean() when
 	This::wxTaskBarIcon().
 removeIcon(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTaskBarIcon),
-  wxe_util:call(?wxTaskBarIcon_RemoveIcon,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTaskBarIcon_RemoveIcon,[ThisRef]).
 
 %% @equiv setIcon(This,Icon, [])
 -spec setIcon(This, Icon) -> boolean() when
@@ -78,11 +75,7 @@ setIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}, Options
  when is_list(Options) ->
   ?CLASS(ThisT,wxTaskBarIcon),
   ?CLASS(IconT,wxIcon),
-  MOpts = fun({tooltip, Tooltip}, Acc) ->   Tooltip_UC = unicode:characters_to_binary([Tooltip,0]),[<<1:32/?UI,(byte_size(Tooltip_UC)):32/?UI,(Tooltip_UC)/binary, 0:(((8- ((0+byte_size(Tooltip_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxTaskBarIcon_SetIcon,
-  <<ThisRef:32/?UI,IconRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxTaskBarIcon_SetIcon,[ThisRef,IconRef, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxTaskBarIcon()) -> 'ok'.

@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -51,16 +51,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 setManager(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MgrT,ref=MgrRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
   ?CLASS(MgrT,wxAuiManager),
-  wxe_util:cast(?wxAuiManagerEvent_SetManager,
-  <<ThisRef:32/?UI,MgrRef:32/?UI>>).
+  wxe_util:cast(?wxAuiManagerEvent_SetManager,[ThisRef,MgrRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetmanager">external documentation</a>.
 -spec getManager(This) -> wxAuiManager:wxAuiManager() when
 	This::wxAuiManagerEvent().
 getManager(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetManager,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiManagerEvent_GetManager,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetpane">external documentation</a>.
 -spec setPane(This, P) -> 'ok' when
@@ -68,16 +66,14 @@ getManager(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setPane(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PT,ref=PRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
   ?CLASS(PT,wxAuiPaneInfo),
-  wxe_util:cast(?wxAuiManagerEvent_SetPane,
-  <<ThisRef:32/?UI,PRef:32/?UI>>).
+  wxe_util:cast(?wxAuiManagerEvent_SetPane,[ThisRef,PRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetpane">external documentation</a>.
 -spec getPane(This) -> wxAuiPaneInfo:wxAuiPaneInfo() when
 	This::wxAuiManagerEvent().
 getPane(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetPane,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiManagerEvent_GetPane,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetbutton">external documentation</a>.
 -spec setButton(This, B) -> 'ok' when
@@ -85,16 +81,14 @@ getPane(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setButton(#wx_ref{type=ThisT,ref=ThisRef},B)
  when is_integer(B) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:cast(?wxAuiManagerEvent_SetButton,
-  <<ThisRef:32/?UI,B:32/?UI>>).
+  wxe_util:cast(?wxAuiManagerEvent_SetButton,[ThisRef,B]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetbutton">external documentation</a>.
 -spec getButton(This) -> integer() when
 	This::wxAuiManagerEvent().
 getButton(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetButton,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiManagerEvent_GetButton,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetdc">external documentation</a>.
 -spec setDC(This, Pdc) -> 'ok' when
@@ -102,16 +96,14 @@ getButton(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setDC(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=PdcT,ref=PdcRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
   ?CLASS(PdcT,wxDC),
-  wxe_util:cast(?wxAuiManagerEvent_SetDC,
-  <<ThisRef:32/?UI,PdcRef:32/?UI>>).
+  wxe_util:cast(?wxAuiManagerEvent_SetDC,[ThisRef,PdcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetdc">external documentation</a>.
 -spec getDC(This) -> wxDC:wxDC() when
 	This::wxAuiManagerEvent().
 getDC(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetDC,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiManagerEvent_GetDC,[ThisRef]).
 
 %% @equiv veto(This, [])
 -spec veto(This) -> 'ok' when
@@ -128,19 +120,14 @@ veto(This)
 veto(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  MOpts = fun({veto, Veto}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Veto)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxAuiManagerEvent_Veto,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxAuiManagerEvent_Veto,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetveto">external documentation</a>.
 -spec getVeto(This) -> boolean() when
 	This::wxAuiManagerEvent().
 getVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_GetVeto,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiManagerEvent_GetVeto,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventsetcanveto">external documentation</a>.
 -spec setCanVeto(This, Can_veto) -> 'ok' when
@@ -148,16 +135,14 @@ getVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCanVeto(#wx_ref{type=ThisT,ref=ThisRef},Can_veto)
  when is_boolean(Can_veto) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:cast(?wxAuiManagerEvent_SetCanVeto,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Can_veto)):32/?UI>>).
+  wxe_util:cast(?wxAuiManagerEvent_SetCanVeto,[ThisRef,Can_veto]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventcanveto">external documentation</a>.
 -spec canVeto(This) -> boolean() when
 	This::wxAuiManagerEvent().
 canVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  wxe_util:call(?wxAuiManagerEvent_CanVeto,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiManagerEvent_CanVeto,[ThisRef]).
 
  %% From wxEvent
 %% @hidden

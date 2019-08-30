@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionwxregion">external documentation</a>.
 -spec new() -> wxRegion().
 new() ->
-  wxe_util:construct(?wxRegion_new_0,
-  <<>>).
+  wxe_util:construct(?wxRegion_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionwxregion">external documentation</a>.
 %% <br /> Also:<br />
@@ -55,36 +54,31 @@ new() ->
 	Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
 new(#wx_ref{type=BmpT,ref=BmpRef}) ->
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:construct(?wxRegion_new_1_0,
-  <<BmpRef:32/?UI>>);
-new({RectX,RectY,RectW,RectH})
+  wxe_util:construct(?wxRegion_new_1_0,[BmpRef]);
+new({RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
-  wxe_util:construct(?wxRegion_new_1_1,
-  <<RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:construct(?wxRegion_new_1_1,[Rect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionwxregion">external documentation</a>.
 -spec new(TopLeft, BottomRight) -> wxRegion() when
 	TopLeft::{X::integer(), Y::integer()}, BottomRight::{X::integer(), Y::integer()}.
-new({TopLeftX,TopLeftY},{BottomRightX,BottomRightY})
+new({TopLeftX,TopLeftY} = TopLeft,{BottomRightX,BottomRightY} = BottomRight)
  when is_integer(TopLeftX),is_integer(TopLeftY),is_integer(BottomRightX),is_integer(BottomRightY) ->
-  wxe_util:construct(?wxRegion_new_2,
-  <<TopLeftX:32/?UI,TopLeftY:32/?UI,BottomRightX:32/?UI,BottomRightY:32/?UI>>).
+  wxe_util:construct(?wxRegion_new_2,[TopLeft,BottomRight]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionwxregion">external documentation</a>.
 -spec new(X, Y, W, H) -> wxRegion() when
 	X::integer(), Y::integer(), W::integer(), H::integer().
 new(X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
-  wxe_util:construct(?wxRegion_new_4,
-  <<X:32/?UI,Y:32/?UI,W:32/?UI,H:32/?UI>>).
+  wxe_util:construct(?wxRegion_new_4,[X,Y,W,H]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionclear">external documentation</a>.
 -spec clear(This) -> 'ok' when
 	This::wxRegion().
 clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:cast(?wxRegion_Clear,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxRegion_Clear,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregioncontains">external documentation</a>.
 %% <br /> Also:<br />
@@ -96,16 +90,14 @@ clear(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxRegion(), Pt::{X::integer(), Y::integer()};
       (This, Rect) -> wx:wx_enum() when
 	This::wxRegion(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}.
-contains(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+contains(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Contains_1_0,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>);
-contains(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+  wxe_util:call(?wxRegion_Contains_1_0,[ThisRef,Pt]);
+contains(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Contains_1_1,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:call(?wxRegion_Contains_1_1,[ThisRef,Rect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregioncontains">external documentation</a>.
 %%<br /> Res = ?wxOutRegion | ?wxPartRegion | ?wxInRegion
@@ -114,8 +106,7 @@ contains(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
 contains(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Contains_2,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxRegion_Contains_2,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregioncontains">external documentation</a>.
 %%<br /> Res = ?wxOutRegion | ?wxPartRegion | ?wxInRegion
@@ -124,24 +115,21 @@ contains(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
 contains(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Contains_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,W:32/?UI,H:32/?UI>>).
+  wxe_util:call(?wxRegion_Contains_4,[ThisRef,X,Y,W,H]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionconverttobitmap">external documentation</a>.
 -spec convertToBitmap(This) -> wxBitmap:wxBitmap() when
 	This::wxRegion().
 convertToBitmap(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_ConvertToBitmap,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxRegion_ConvertToBitmap,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregiongetbox">external documentation</a>.
 -spec getBox(This) -> {X::integer(), Y::integer(), W::integer(), H::integer()} when
 	This::wxRegion().
 getBox(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_GetBox,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxRegion_GetBox,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionintersect">external documentation</a>.
 %% <br /> Also:<br />
@@ -155,13 +143,11 @@ getBox(#wx_ref{type=ThisT,ref=ThisRef}) ->
 intersect(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RegionT,ref=RegionRef}) ->
   ?CLASS(ThisT,wxRegion),
   ?CLASS(RegionT,wxRegion),
-  wxe_util:call(?wxRegion_Intersect_1_0,
-  <<ThisRef:32/?UI,RegionRef:32/?UI>>);
-intersect(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+  wxe_util:call(?wxRegion_Intersect_1_0,[ThisRef,RegionRef]);
+intersect(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Intersect_1_1,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:call(?wxRegion_Intersect_1_1,[ThisRef,Rect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionintersect">external documentation</a>.
 -spec intersect(This, X, Y, W, H) -> boolean() when
@@ -169,16 +155,14 @@ intersect(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
 intersect(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Intersect_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,W:32/?UI,H:32/?UI>>).
+  wxe_util:call(?wxRegion_Intersect_4,[ThisRef,X,Y,W,H]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionisempty">external documentation</a>.
 -spec isEmpty(This) -> boolean() when
 	This::wxRegion().
 isEmpty(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_IsEmpty,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxRegion_IsEmpty,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionsubtract">external documentation</a>.
 %% <br /> Also:<br />
@@ -192,13 +176,11 @@ isEmpty(#wx_ref{type=ThisT,ref=ThisRef}) ->
 subtract(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RegionT,ref=RegionRef}) ->
   ?CLASS(ThisT,wxRegion),
   ?CLASS(RegionT,wxRegion),
-  wxe_util:call(?wxRegion_Subtract_1_0,
-  <<ThisRef:32/?UI,RegionRef:32/?UI>>);
-subtract(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+  wxe_util:call(?wxRegion_Subtract_1_0,[ThisRef,RegionRef]);
+subtract(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Subtract_1_1,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:call(?wxRegion_Subtract_1_1,[ThisRef,Rect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionsubtract">external documentation</a>.
 -spec subtract(This, X, Y, W, H) -> boolean() when
@@ -206,17 +188,15 @@ subtract(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
 subtract(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Subtract_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,W:32/?UI,H:32/?UI>>).
+  wxe_util:call(?wxRegion_Subtract_4,[ThisRef,X,Y,W,H]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionoffset">external documentation</a>.
 -spec offset(This, Pt) -> boolean() when
 	This::wxRegion(), Pt::{X::integer(), Y::integer()}.
-offset(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+offset(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Offset_1,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxRegion_Offset_1,[ThisRef,Pt]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionoffset">external documentation</a>.
 -spec offset(This, X, Y) -> boolean() when
@@ -224,8 +204,7 @@ offset(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
 offset(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Offset_2,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxRegion_Offset_2,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionunion">external documentation</a>.
 %% <br /> Also:<br />
@@ -244,13 +223,11 @@ union(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RegionT,ref=RegionRef}) ->
      _ -> ?CLASS(RegionT,wxBitmap),
        ?wxRegion_Union_1_0
      end,
-  wxe_util:call(RegionOP,
-  <<ThisRef:32/?UI,RegionRef:32/?UI>>);
-union(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+  wxe_util:call(RegionOP,[ThisRef,RegionRef]);
+union(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Union_1_2,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:call(?wxRegion_Union_1_2,[ThisRef,Rect]).
 
 %% @equiv union(This,Bmp,Transp, [])
 -spec union(This, Bmp, Transp) -> boolean() when
@@ -268,11 +245,7 @@ union(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BmpT,ref=BmpRef},Transp, Opti
  when tuple_size(Transp) =:= 3; tuple_size(Transp) =:= 4,is_list(Options) ->
   ?CLASS(ThisT,wxRegion),
   ?CLASS(BmpT,wxBitmap),
-  MOpts = fun({tolerance, Tolerance}, Acc) -> [<<1:32/?UI,Tolerance:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxRegion_Union_3,
-  <<ThisRef:32/?UI,BmpRef:32/?UI,(wxe_util:colour_bin(Transp)):16/binary, BinOpt/binary>>).
+  wxe_util:call(?wxRegion_Union_3,[ThisRef,BmpRef,Transp, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionunion">external documentation</a>.
 -spec union(This, X, Y, W, H) -> boolean() when
@@ -280,8 +253,7 @@ union(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=BmpT,ref=BmpRef},Transp, Opti
 union(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Union_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,W:32/?UI,H:32/?UI>>).
+  wxe_util:call(?wxRegion_Union_4,[ThisRef,X,Y,W,H]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionxor">external documentation</a>.
 %% <br /> Also:<br />
@@ -295,13 +267,11 @@ union(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
 'Xor'(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RegionT,ref=RegionRef}) ->
   ?CLASS(ThisT,wxRegion),
   ?CLASS(RegionT,wxRegion),
-  wxe_util:call(?wxRegion_Xor_1_0,
-  <<ThisRef:32/?UI,RegionRef:32/?UI>>);
-'Xor'(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH})
+  wxe_util:call(?wxRegion_Xor_1_0,[ThisRef,RegionRef]);
+'Xor'(#wx_ref{type=ThisT,ref=ThisRef},{RectX,RectY,RectW,RectH} = Rect)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Xor_1_1,
-  <<ThisRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI>>).
+  wxe_util:call(?wxRegion_Xor_1_1,[ThisRef,Rect]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionxor">external documentation</a>.
 -spec 'Xor'(This, X, Y, W, H) -> boolean() when
@@ -309,8 +279,7 @@ union(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
 'Xor'(#wx_ref{type=ThisT,ref=ThisRef},X,Y,W,H)
  when is_integer(X),is_integer(Y),is_integer(W),is_integer(H) ->
   ?CLASS(ThisT,wxRegion),
-  wxe_util:call(?wxRegion_Xor_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI,W:32/?UI,H:32/?UI>>).
+  wxe_util:call(?wxRegion_Xor_4,[ThisRef,X,Y,W,H]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxRegion()) -> 'ok'.

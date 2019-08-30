@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,27 +50,21 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({data, #wx_ref{type=DataT,ref=DataRef}}, Acc) ->   ?CLASS(DataT,wxPageSetupDialogData),[<<1:32/?UI,DataRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxPageSetupDialog_new,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxPageSetupDialog_new,[ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpagesetupdialog.html#wxpagesetupdialoggetpagesetupdata">external documentation</a>.
 -spec getPageSetupData(This) -> wxPageSetupDialogData:wxPageSetupDialogData() when
 	This::wxPageSetupDialog().
 getPageSetupData(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPageSetupDialog),
-  wxe_util:call(?wxPageSetupDialog_GetPageSetupData,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPageSetupDialog_GetPageSetupData,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpagesetupdialog.html#wxpagesetupdialogshowmodal">external documentation</a>.
 -spec showModal(This) -> integer() when
 	This::wxPageSetupDialog().
 showModal(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxPageSetupDialog),
-  wxe_util:call(?wxPageSetupDialog_ShowModal,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxPageSetupDialog_ShowModal,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxPageSetupDialog()) -> 'ok'.

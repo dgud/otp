@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -38,14 +38,13 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellrenderer.html#wxgridcellrendererdraw">external documentation</a>.
 -spec draw(This, Grid, Attr, Dc, Rect, Row, Col, IsSelected) -> 'ok' when
 	This::wxGridCellRenderer(), Grid::wxGrid:wxGrid(), Attr::wxGridCellAttr:wxGridCellAttr(), Dc::wxDC:wxDC(), Rect::{X::integer(), Y::integer(), W::integer(), H::integer()}, Row::integer(), Col::integer(), IsSelected::boolean().
-draw(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=GridT,ref=GridRef},#wx_ref{type=AttrT,ref=AttrRef},#wx_ref{type=DcT,ref=DcRef},{RectX,RectY,RectW,RectH},Row,Col,IsSelected)
+draw(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=GridT,ref=GridRef},#wx_ref{type=AttrT,ref=AttrRef},#wx_ref{type=DcT,ref=DcRef},{RectX,RectY,RectW,RectH} = Rect,Row,Col,IsSelected)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_integer(Row),is_integer(Col),is_boolean(IsSelected) ->
   ?CLASS(ThisT,wxGridCellRenderer),
   ?CLASS(GridT,wxGrid),
   ?CLASS(AttrT,wxGridCellAttr),
   ?CLASS(DcT,wxDC),
-  wxe_util:cast(?wxGridCellRenderer_Draw,
-  <<ThisRef:32/?UI,GridRef:32/?UI,AttrRef:32/?UI,DcRef:32/?UI,RectX:32/?UI,RectY:32/?UI,RectW:32/?UI,RectH:32/?UI,Row:32/?UI,Col:32/?UI,(wxe_util:from_bool(IsSelected)):32/?UI>>).
+  wxe_util:cast(?wxGridCellRenderer_Draw,[ThisRef,GridRef,AttrRef,DcRef,Rect,Row,Col,IsSelected]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellrenderer.html#wxgridcellrenderergetbestsize">external documentation</a>.
 -spec getBestSize(This, Grid, Attr, Dc, Row, Col) -> {W::integer(), H::integer()} when
@@ -56,6 +55,5 @@ getBestSize(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=GridT,ref=GridRef},#wx_
   ?CLASS(GridT,wxGrid),
   ?CLASS(AttrT,wxGridCellAttr),
   ?CLASS(DcT,wxDC),
-  wxe_util:call(?wxGridCellRenderer_GetBestSize,
-  <<ThisRef:32/?UI,GridRef:32/?UI,AttrRef:32/?UI,DcRef:32/?UI,Row:32/?UI,Col:32/?UI>>).
+  wxe_util:call(?wxGridCellRenderer_GetBestSize,[ThisRef,GridRef,AttrRef,DcRef,Row,Col]).
 

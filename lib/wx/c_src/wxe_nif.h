@@ -41,6 +41,19 @@ extern ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 #define WXE_EXITED        3
 #define WXE_ERROR        -1
 
+// META COMMANDS
+
+#define WXE_BATCH_BEGIN      5
+#define WXE_BATCH_END        6
+
+#define WXE_CB_START         9
+#define WXE_CB_DIED         10
+#define WXE_CB_RETURN       11
+
+#define WXE_SHUTDOWN        13
+#define WXE_DEBUG_PING      14
+#define WXE_DELETE_ENV      15
+
 int wxe_get_float(ErlNifEnv* env, ERL_NIF_TERM term, float* dp);
 
 /* wxe_impl.cpp functions */
@@ -57,16 +70,3 @@ void stop_native_gui(ErlNifEnv *);
 /* wxe_ps_init */
 void * wxe_ps_init();
 void * wxe_ps_init2();
-
-// META COMMANDS
-
-#define WXE_BATCH_BEGIN      5
-#define WXE_BATCH_END        6
-
-#define WXE_CB_START         9
-#define WXE_CB_DIED         10
-#define WXE_CB_RETURN       11
-
-#define WXE_SHUTDOWN        13
-#define WXE_DEBUG_PING      14
-#define WXE_DELETE_ENV      15

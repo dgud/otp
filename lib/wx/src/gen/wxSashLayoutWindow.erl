@@ -87,8 +87,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowwxsashlayoutwindow">external documentation</a>.
 -spec new() -> wxSashLayoutWindow().
 new() ->
-  wxe_util:construct(?wxSashLayoutWindow_new_0,
-  <<>>).
+  wxe_util:construct(?wxSashLayoutWindow_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxSashLayoutWindow() when
@@ -108,14 +107,7 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxSashLayoutWindow_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxSashLayoutWindow_new_2,[ParentRef, Options]).
 
 %% @equiv create(This,Parent, [])
 -spec create(This, Parent) -> boolean() when
@@ -136,14 +128,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
  when is_list(Options) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxSashLayoutWindow_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxSashLayoutWindow_Create,[ThisRef,ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowgetalignment">external documentation</a>.
 %%<br /> Res = ?wxLAYOUT_NONE | ?wxLAYOUT_TOP | ?wxLAYOUT_LEFT | ?wxLAYOUT_RIGHT | ?wxLAYOUT_BOTTOM
@@ -151,8 +136,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef}, Opti
 	This::wxSashLayoutWindow().
 getAlignment(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
-  wxe_util:call(?wxSashLayoutWindow_GetAlignment,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashLayoutWindow_GetAlignment,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowgetorientation">external documentation</a>.
 %%<br /> Res = ?wxLAYOUT_HORIZONTAL | ?wxLAYOUT_VERTICAL
@@ -160,8 +144,7 @@ getAlignment(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxSashLayoutWindow().
 getOrientation(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
-  wxe_util:call(?wxSashLayoutWindow_GetOrientation,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSashLayoutWindow_GetOrientation,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowsetalignment">external documentation</a>.
 %%<br /> Align = ?wxLAYOUT_NONE | ?wxLAYOUT_TOP | ?wxLAYOUT_LEFT | ?wxLAYOUT_RIGHT | ?wxLAYOUT_BOTTOM
@@ -170,17 +153,15 @@ getOrientation(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setAlignment(#wx_ref{type=ThisT,ref=ThisRef},Align)
  when is_integer(Align) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
-  wxe_util:cast(?wxSashLayoutWindow_SetAlignment,
-  <<ThisRef:32/?UI,Align:32/?UI>>).
+  wxe_util:cast(?wxSashLayoutWindow_SetAlignment,[ThisRef,Align]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowsetdefaultsize">external documentation</a>.
 -spec setDefaultSize(This, Size) -> 'ok' when
 	This::wxSashLayoutWindow(), Size::{W::integer(), H::integer()}.
-setDefaultSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
+setDefaultSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
-  wxe_util:cast(?wxSashLayoutWindow_SetDefaultSize,
-  <<ThisRef:32/?UI,SizeW:32/?UI,SizeH:32/?UI>>).
+  wxe_util:cast(?wxSashLayoutWindow_SetDefaultSize,[ThisRef,Size]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowsetorientation">external documentation</a>.
 %%<br /> Orient = ?wxLAYOUT_HORIZONTAL | ?wxLAYOUT_VERTICAL
@@ -189,8 +170,7 @@ setDefaultSize(#wx_ref{type=ThisT,ref=ThisRef},{SizeW,SizeH})
 setOrientation(#wx_ref{type=ThisT,ref=ThisRef},Orient)
  when is_integer(Orient) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
-  wxe_util:cast(?wxSashLayoutWindow_SetOrientation,
-  <<ThisRef:32/?UI,Orient:32/?UI>>).
+  wxe_util:cast(?wxSashLayoutWindow_SetOrientation,[ThisRef,Orient]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSashLayoutWindow()) -> 'ok'.

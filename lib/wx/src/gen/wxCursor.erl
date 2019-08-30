@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -46,8 +46,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorwxcursor">external documentation</a>.
 -spec new() -> wxCursor().
 new() ->
-  wxe_util:construct(?wxCursor_new_0,
-  <<>>).
+  wxe_util:construct(?wxCursor_new_0,[]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorwxcursor">external documentation</a>.
 %% <br /> Also:<br />
@@ -60,12 +59,10 @@ new() ->
 	Image::wxImage:wxImage().
 new(CursorId)
  when is_integer(CursorId) ->
-  wxe_util:construct(?wxCursor_new_1_0,
-  <<CursorId:32/?UI>>);
+  wxe_util:construct(?wxCursor_new_1_0,[CursorId]);
 new(#wx_ref{type=ImageT,ref=ImageRef}) ->
   ?CLASS(ImageT,wxImage),
-  wxe_util:construct(?wxCursor_new_1_1,
-  <<ImageRef:32/?UI>>).
+  wxe_util:construct(?wxCursor_new_1_1,[ImageRef]).
 
 %% @equiv new(Bits,Width,Height, [])
 -spec new(Bits, Width, Height) -> wxCursor() when
@@ -82,21 +79,14 @@ new(Bits,Width,Height)
 		 | {'hotSpotY', integer()}.
 new(Bits,Width,Height, Options)
  when is_binary(Bits),is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:send_bin(Bits),
-  MOpts = fun({hotSpotX, HotSpotX}, Acc) -> [<<1:32/?UI,HotSpotX:32/?UI>>|Acc];
-          ({hotSpotY, HotSpotY}, Acc) -> [<<2:32/?UI,HotSpotY:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxCursor_new_4,
-  <<Width:32/?UI,Height:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxCursor_new_4,[Bits,Width,Height, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorok">external documentation</a>.
 -spec ok(This) -> boolean() when
 	This::wxCursor().
 ok(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCursor),
-  wxe_util:call(?wxCursor_Ok,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCursor_Ok,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxCursor()) -> 'ok'.

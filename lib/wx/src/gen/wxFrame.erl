@@ -92,8 +92,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframewxframe">external documentation</a>.
 -spec new() -> wxFrame().
 new() ->
-  wxe_util:construct(?wxFrame_new_0,
-  <<>>).
+  wxe_util:construct(?wxFrame_new_0,[]).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxFrame() when
@@ -113,13 +112,7 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxFrame_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((4+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxFrame_new_4,[ParentRef,Id,Title_UC, Options]).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -140,13 +133,7 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Ti
   ?CLASS(ThisT,wxFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxFrame_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((0+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxFrame_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
 
 %% @equiv createStatusBar(This, [])
 -spec createStatusBar(This) -> wxStatusBar:wxStatusBar() when
@@ -165,13 +152,7 @@ createStatusBar(This)
 createStatusBar(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
-  MOpts = fun({number, Number}, Acc) -> [<<1:32/?UI,Number:32/?UI>>|Acc];
-          ({style, Style}, Acc) -> [<<2:32/?UI,Style:32/?UI>>|Acc];
-          ({id, Id}, Acc) -> [<<3:32/?UI,Id:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxFrame_CreateStatusBar,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxFrame_CreateStatusBar,[ThisRef, Options]).
 
 %% @equiv createToolBar(This, [])
 -spec createToolBar(This) -> wxToolBar:wxToolBar() when
@@ -189,52 +170,42 @@ createToolBar(This)
 createToolBar(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          ({id, Id}, Acc) -> [<<2:32/?UI,Id:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxFrame_CreateToolBar,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxFrame_CreateToolBar,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframegetclientareaorigin">external documentation</a>.
 -spec getClientAreaOrigin(This) -> {X::integer(), Y::integer()} when
 	This::wxFrame().
 getClientAreaOrigin(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:call(?wxFrame_GetClientAreaOrigin,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFrame_GetClientAreaOrigin,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframegetmenubar">external documentation</a>.
 -spec getMenuBar(This) -> wxMenuBar:wxMenuBar() when
 	This::wxFrame().
 getMenuBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:call(?wxFrame_GetMenuBar,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFrame_GetMenuBar,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframegetstatusbar">external documentation</a>.
 -spec getStatusBar(This) -> wxStatusBar:wxStatusBar() when
 	This::wxFrame().
 getStatusBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:call(?wxFrame_GetStatusBar,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFrame_GetStatusBar,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframegetstatusbarpane">external documentation</a>.
 -spec getStatusBarPane(This) -> integer() when
 	This::wxFrame().
 getStatusBarPane(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:call(?wxFrame_GetStatusBarPane,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFrame_GetStatusBarPane,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframegettoolbar">external documentation</a>.
 -spec getToolBar(This) -> wxToolBar:wxToolBar() when
 	This::wxFrame().
 getToolBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:call(?wxFrame_GetToolBar,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFrame_GetToolBar,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframeprocesscommand">external documentation</a>.
 -spec processCommand(This, Winid) -> boolean() when
@@ -242,16 +213,14 @@ getToolBar(#wx_ref{type=ThisT,ref=ThisRef}) ->
 processCommand(#wx_ref{type=ThisT,ref=ThisRef},Winid)
  when is_integer(Winid) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:call(?wxFrame_ProcessCommand,
-  <<ThisRef:32/?UI,Winid:32/?UI>>).
+  wxe_util:call(?wxFrame_ProcessCommand,[ThisRef,Winid]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesendsizeevent">external documentation</a>.
 -spec sendSizeEvent(This) -> 'ok' when
 	This::wxFrame().
 sendSizeEvent(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:cast(?wxFrame_SendSizeEvent,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxFrame_SendSizeEvent,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesetmenubar">external documentation</a>.
 -spec setMenuBar(This, Menubar) -> 'ok' when
@@ -259,8 +228,7 @@ sendSizeEvent(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setMenuBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenubarT,ref=MenubarRef}) ->
   ?CLASS(ThisT,wxFrame),
   ?CLASS(MenubarT,wxMenuBar),
-  wxe_util:cast(?wxFrame_SetMenuBar,
-  <<ThisRef:32/?UI,MenubarRef:32/?UI>>).
+  wxe_util:cast(?wxFrame_SetMenuBar,[ThisRef,MenubarRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesetstatusbar">external documentation</a>.
 -spec setStatusBar(This, Statbar) -> 'ok' when
@@ -268,8 +236,7 @@ setMenuBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=MenubarT,ref=MenubarRef}
 setStatusBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=StatbarT,ref=StatbarRef}) ->
   ?CLASS(ThisT,wxFrame),
   ?CLASS(StatbarT,wxStatusBar),
-  wxe_util:cast(?wxFrame_SetStatusBar,
-  <<ThisRef:32/?UI,StatbarRef:32/?UI>>).
+  wxe_util:cast(?wxFrame_SetStatusBar,[ThisRef,StatbarRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesetstatusbarpane">external documentation</a>.
 -spec setStatusBarPane(This, N) -> 'ok' when
@@ -277,8 +244,7 @@ setStatusBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=StatbarT,ref=StatbarRe
 setStatusBarPane(#wx_ref{type=ThisT,ref=ThisRef},N)
  when is_integer(N) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:cast(?wxFrame_SetStatusBarPane,
-  <<ThisRef:32/?UI,N:32/?UI>>).
+  wxe_util:cast(?wxFrame_SetStatusBarPane,[ThisRef,N]).
 
 %% @equiv setStatusText(This,Text, [])
 -spec setStatusText(This, Text) -> 'ok' when
@@ -296,11 +262,7 @@ setStatusText(#wx_ref{type=ThisT,ref=ThisRef},Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  MOpts = fun({number, Number}, Acc) -> [<<1:32/?UI,Number:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxFrame_SetStatusText,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:cast(?wxFrame_SetStatusText,[ThisRef,Text_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesetstatuswidths">external documentation</a>.
 -spec setStatusWidths(This, Widths_field) -> 'ok' when
@@ -308,9 +270,7 @@ setStatusText(#wx_ref{type=ThisT,ref=ThisRef},Text, Options)
 setStatusWidths(#wx_ref{type=ThisT,ref=ThisRef},Widths_field)
  when is_list(Widths_field) ->
   ?CLASS(ThisT,wxFrame),
-  wxe_util:cast(?wxFrame_SetStatusWidths,
-  <<ThisRef:32/?UI,(length(Widths_field)):32/?UI,
-        (<< <<C:32/?I>> || C <- Widths_field>>)/binary, 0:(((0+length(Widths_field)) rem 2)*32)>>).
+  wxe_util:cast(?wxFrame_SetStatusWidths,[ThisRef,Widths_field]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesettoolbar">external documentation</a>.
 -spec setToolBar(This, Toolbar) -> 'ok' when
@@ -318,8 +278,7 @@ setStatusWidths(#wx_ref{type=ThisT,ref=ThisRef},Widths_field)
 setToolBar(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ToolbarT,ref=ToolbarRef}) ->
   ?CLASS(ThisT,wxFrame),
   ?CLASS(ToolbarT,wxToolBar),
-  wxe_util:cast(?wxFrame_SetToolBar,
-  <<ThisRef:32/?UI,ToolbarRef:32/?UI>>).
+  wxe_util:cast(?wxFrame_SetToolBar,[ThisRef,ToolbarRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFrame()) -> 'ok'.

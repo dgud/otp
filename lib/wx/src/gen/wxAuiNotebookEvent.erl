@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2009-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2009-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -57,16 +57,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},S)
  when is_integer(S) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:cast(?wxAuiNotebookEvent_SetSelection,
-  <<ThisRef:32/?UI,S:32/?UI>>).
+  wxe_util:cast(?wxAuiNotebookEvent_SetSelection,[ThisRef,S]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventgetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxAuiNotebookEvent().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:call(?wxAuiNotebookEvent_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiNotebookEvent_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventsetoldselection">external documentation</a>.
 -spec setOldSelection(This, S) -> 'ok' when
@@ -74,16 +72,14 @@ getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setOldSelection(#wx_ref{type=ThisT,ref=ThisRef},S)
  when is_integer(S) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:cast(?wxAuiNotebookEvent_SetOldSelection,
-  <<ThisRef:32/?UI,S:32/?UI>>).
+  wxe_util:cast(?wxAuiNotebookEvent_SetOldSelection,[ThisRef,S]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventgetoldselection">external documentation</a>.
 -spec getOldSelection(This) -> integer() when
 	This::wxAuiNotebookEvent().
 getOldSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:call(?wxAuiNotebookEvent_GetOldSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiNotebookEvent_GetOldSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventsetdragsource">external documentation</a>.
 -spec setDragSource(This, S) -> 'ok' when
@@ -91,16 +87,14 @@ getOldSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setDragSource(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ST,ref=SRef}) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
   ?CLASS(ST,wxAuiNotebook),
-  wxe_util:cast(?wxAuiNotebookEvent_SetDragSource,
-  <<ThisRef:32/?UI,SRef:32/?UI>>).
+  wxe_util:cast(?wxAuiNotebookEvent_SetDragSource,[ThisRef,SRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebookevent.html#wxauinotebookeventgetdragsource">external documentation</a>.
 -spec getDragSource(This) -> wxAuiNotebook:wxAuiNotebook() when
 	This::wxAuiNotebookEvent().
 getDragSource(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxAuiNotebookEvent),
-  wxe_util:call(?wxAuiNotebookEvent_GetDragSource,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxAuiNotebookEvent_GetDragSource,[ThisRef]).
 
  %% From wxNotifyEvent
 %% @hidden

@@ -96,8 +96,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframewxmdiparentframe">external documentation</a>.
 -spec new() -> wxMDIParentFrame().
 new() ->
-  wxe_util:construct(?wxMDIParentFrame_new_0,
-  <<>>).
+  wxe_util:construct(?wxMDIParentFrame_new_0,[]).
 
 %% @equiv new(Parent,Id,Title, [])
 -spec new(Parent, Id, Title) -> wxMDIParentFrame() when
@@ -117,45 +116,35 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxMDIParentFrame_new_4,
-  <<ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((4+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxMDIParentFrame_new_4,[ParentRef,Id,Title_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframeactivatenext">external documentation</a>.
 -spec activateNext(This) -> 'ok' when
 	This::wxMDIParentFrame().
 activateNext(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_ActivateNext,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxMDIParentFrame_ActivateNext,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframeactivateprevious">external documentation</a>.
 -spec activatePrevious(This) -> 'ok' when
 	This::wxMDIParentFrame().
 activatePrevious(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_ActivatePrevious,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxMDIParentFrame_ActivatePrevious,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframearrangeicons">external documentation</a>.
 -spec arrangeIcons(This) -> 'ok' when
 	This::wxMDIParentFrame().
 arrangeIcons(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_ArrangeIcons,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxMDIParentFrame_ArrangeIcons,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframecascade">external documentation</a>.
 -spec cascade(This) -> 'ok' when
 	This::wxMDIParentFrame().
 cascade(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:cast(?wxMDIParentFrame_Cascade,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxMDIParentFrame_Cascade,[ThisRef]).
 
 %% @equiv create(This,Parent,Id,Title, [])
 -spec create(This, Parent, Id, Title) -> boolean() when
@@ -176,29 +165,21 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id,Ti
   ?CLASS(ThisT,wxMDIParentFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  MOpts = fun({pos, {PosX,PosY}}, Acc) -> [<<1:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<2:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<3:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxMDIParentFrame_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((0+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:call(?wxMDIParentFrame_Create,[ThisRef,ParentRef,Id,Title_UC, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframegetactivechild">external documentation</a>.
 -spec getActiveChild(This) -> wxMDIChildFrame:wxMDIChildFrame() when
 	This::wxMDIParentFrame().
 getActiveChild(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:call(?wxMDIParentFrame_GetActiveChild,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMDIParentFrame_GetActiveChild,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdiparentframe.html#wxmdiparentframegetclientwindow">external documentation</a>.
 -spec getClientWindow(This) -> wxMDIClientWindow:wxMDIClientWindow() when
 	This::wxMDIParentFrame().
 getClientWindow(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  wxe_util:call(?wxMDIParentFrame_GetClientWindow,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxMDIParentFrame_GetClientWindow,[ThisRef]).
 
 %% @equiv tile(This, [])
 -spec tile(This) -> 'ok' when
@@ -216,11 +197,7 @@ tile(This)
 tile(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIParentFrame),
-  MOpts = fun({orient, Orient}, Acc) -> [<<1:32/?UI,Orient:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxMDIParentFrame_Tile,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxMDIParentFrame_Tile,[ThisRef, Options]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxMDIParentFrame()) -> 'ok'.

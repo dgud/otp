@@ -87,32 +87,28 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxTopLevelWindow().
 getIcon(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_GetIcon,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_GetIcon,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowgeticons">external documentation</a>.
 -spec getIcons(This) -> wxIconBundle:wxIconBundle() when
 	This::wxTopLevelWindow().
 getIcons(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_GetIcons,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_GetIcons,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowgettitle">external documentation</a>.
 -spec getTitle(This) -> unicode:charlist() when
 	This::wxTopLevelWindow().
 getTitle(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_GetTitle,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_GetTitle,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisactive">external documentation</a>.
 -spec isActive(This) -> boolean() when
 	This::wxTopLevelWindow().
 isActive(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsActive,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_IsActive,[ThisRef]).
 
 %% @equiv iconize(This, [])
 -spec iconize(This) -> 'ok' when
@@ -129,35 +125,28 @@ iconize(This)
 iconize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  MOpts = fun({iconize, Iconize}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Iconize)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxTopLevelWindow_Iconize,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxTopLevelWindow_Iconize,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisfullscreen">external documentation</a>.
 -spec isFullScreen(This) -> boolean() when
 	This::wxTopLevelWindow().
 isFullScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsFullScreen,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_IsFullScreen,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisiconized">external documentation</a>.
 -spec isIconized(This) -> boolean() when
 	This::wxTopLevelWindow().
 isIconized(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsIconized,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_IsIconized,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowismaximized">external documentation</a>.
 -spec isMaximized(This) -> boolean() when
 	This::wxTopLevelWindow().
 isMaximized(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:call(?wxTopLevelWindow_IsMaximized,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_IsMaximized,[ThisRef]).
 
 %% @equiv maximize(This, [])
 -spec maximize(This) -> 'ok' when
@@ -174,11 +163,7 @@ maximize(This)
 maximize(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  MOpts = fun({maximize, Maximize}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Maximize)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxTopLevelWindow_Maximize,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxTopLevelWindow_Maximize,[ThisRef, Options]).
 
 %% @equiv requestUserAttention(This, [])
 -spec requestUserAttention(This) -> 'ok' when
@@ -195,11 +180,7 @@ requestUserAttention(This)
 requestUserAttention(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  MOpts = fun({flags, Flags}, Acc) -> [<<1:32/?UI,Flags:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxTopLevelWindow_RequestUserAttention,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxTopLevelWindow_RequestUserAttention,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowseticon">external documentation</a>.
 -spec setIcon(This, Icon) -> 'ok' when
@@ -207,8 +188,7 @@ requestUserAttention(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 setIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   ?CLASS(IconT,wxIcon),
-  wxe_util:cast(?wxTopLevelWindow_SetIcon,
-  <<ThisRef:32/?UI,IconRef:32/?UI>>).
+  wxe_util:cast(?wxTopLevelWindow_SetIcon,[ThisRef,IconRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowseticons">external documentation</a>.
 -spec setIcons(This, Icons) -> 'ok' when
@@ -216,8 +196,7 @@ setIcon(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconT,ref=IconRef}) ->
 setIcons(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=IconsT,ref=IconsRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   ?CLASS(IconsT,wxIconBundle),
-  wxe_util:cast(?wxTopLevelWindow_SetIcons,
-  <<ThisRef:32/?UI,IconsRef:32/?UI>>).
+  wxe_util:cast(?wxTopLevelWindow_SetIcons,[ThisRef,IconsRef]).
 
 %% @equiv centerOnScreen(This, [])
 -spec centerOnScreen(This) -> 'ok' when
@@ -234,11 +213,7 @@ centerOnScreen(This)
 centerOnScreen(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  MOpts = fun({dir, Dir}, Acc) -> [<<1:32/?UI,Dir:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxTopLevelWindow_CenterOnScreen,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxTopLevelWindow_CenterOnScreen,[ThisRef, Options]).
 
 %% @equiv centreOnScreen(This, [])
 -spec centreOnScreen(This) -> 'ok' when
@@ -255,11 +230,7 @@ centreOnScreen(This)
 centreOnScreen(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  MOpts = fun({dir, Dir}, Acc) -> [<<1:32/?UI,Dir:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxTopLevelWindow_CentreOnScreen,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxTopLevelWindow_CentreOnScreen,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowsetshape">external documentation</a>.
 -spec setShape(This, Region) -> boolean() when
@@ -267,8 +238,7 @@ centreOnScreen(#wx_ref{type=ThisT,ref=ThisRef}, Options)
 setShape(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=RegionT,ref=RegionRef}) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   ?CLASS(RegionT,wxRegion),
-  wxe_util:call(?wxTopLevelWindow_SetShape,
-  <<ThisRef:32/?UI,RegionRef:32/?UI>>).
+  wxe_util:call(?wxTopLevelWindow_SetShape,[ThisRef,RegionRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowsettitle">external documentation</a>.
 -spec setTitle(This, Title) -> 'ok' when
@@ -277,8 +247,7 @@ setTitle(#wx_ref{type=ThisT,ref=ThisRef},Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxTopLevelWindow),
   Title_UC = unicode:characters_to_binary([Title,0]),
-  wxe_util:cast(?wxTopLevelWindow_SetTitle,
-  <<ThisRef:32/?UI,(byte_size(Title_UC)):32/?UI,(Title_UC)/binary, 0:(((8- ((0+byte_size(Title_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxTopLevelWindow_SetTitle,[ThisRef,Title_UC]).
 
 %% @equiv showFullScreen(This,Show, [])
 -spec showFullScreen(This, Show) -> boolean() when
@@ -295,11 +264,7 @@ showFullScreen(This,Show)
 showFullScreen(#wx_ref{type=ThisT,ref=ThisRef},Show, Options)
  when is_boolean(Show),is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxTopLevelWindow_ShowFullScreen,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(Show)):32/?UI, BinOpt/binary>>).
+  wxe_util:call(?wxTopLevelWindow_ShowFullScreen,[ThisRef,Show, Options]).
 
  %% From wxWindow
 %% @hidden

@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -49,16 +49,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	This::wxCloseEvent().
 canVeto(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:call(?wxCloseEvent_CanVeto,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCloseEvent_CanVeto,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventgetloggingoff">external documentation</a>.
 -spec getLoggingOff(This) -> boolean() when
 	This::wxCloseEvent().
 getLoggingOff(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:call(?wxCloseEvent_GetLoggingOff,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxCloseEvent_GetLoggingOff,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventsetcanveto">external documentation</a>.
 -spec setCanVeto(This, CanVeto) -> 'ok' when
@@ -66,8 +64,7 @@ getLoggingOff(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setCanVeto(#wx_ref{type=ThisT,ref=ThisRef},CanVeto)
  when is_boolean(CanVeto) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:cast(?wxCloseEvent_SetCanVeto,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(CanVeto)):32/?UI>>).
+  wxe_util:cast(?wxCloseEvent_SetCanVeto,[ThisRef,CanVeto]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcloseevent.html#wxcloseeventsetloggingoff">external documentation</a>.
 -spec setLoggingOff(This, LogOff) -> 'ok' when
@@ -75,8 +72,7 @@ setCanVeto(#wx_ref{type=ThisT,ref=ThisRef},CanVeto)
 setLoggingOff(#wx_ref{type=ThisT,ref=ThisRef},LogOff)
  when is_boolean(LogOff) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:cast(?wxCloseEvent_SetLoggingOff,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(LogOff)):32/?UI>>).
+  wxe_util:cast(?wxCloseEvent_SetLoggingOff,[ThisRef,LogOff]).
 
 %% @equiv veto(This, [])
 -spec veto(This) -> 'ok' when
@@ -93,11 +89,7 @@ veto(This)
 veto(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCloseEvent),
-  MOpts = fun({veto, Veto}, Acc) -> [<<1:32/?UI,(wxe_util:from_bool(Veto)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxCloseEvent_Veto,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxCloseEvent_Veto,[ThisRef, Options]).
 
  %% From wxEvent
 %% @hidden

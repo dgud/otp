@@ -89,8 +89,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlwxcolourpickerctrl">external documentation</a>.
 -spec new() -> wxColourPickerCtrl().
 new() ->
-  wxe_util:construct(?wxColourPickerCtrl_new_0,
-  <<>>).
+  wxe_util:construct(?wxColourPickerCtrl_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxColourPickerCtrl() when
@@ -111,15 +110,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({col, Col}, Acc) -> [<<1:32/?UI,(wxe_util:colour_bin(Col)):16/binary,0:32>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxColourPickerCtrl_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxColourPickerCtrl_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -141,23 +132,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({col, Col}, Acc) -> [<<1:32/?UI,(wxe_util:colour_bin(Col)):16/binary,0:32>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<5:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxColourPickerCtrl_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxColourPickerCtrl_Create,[ThisRef,ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlgetcolour">external documentation</a>.
 -spec getColour(This) -> wx:wx_colour4() when
 	This::wxColourPickerCtrl().
 getColour(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
-  wxe_util:call(?wxColourPickerCtrl_GetColour,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxColourPickerCtrl_GetColour,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlsetcolour">external documentation</a>.
 %% <br /> Also:<br />
@@ -172,13 +154,11 @@ setColour(#wx_ref{type=ThisT,ref=ThisRef},Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
   Text_UC = unicode:characters_to_binary([Text,0]),
-  wxe_util:call(?wxColourPickerCtrl_SetColour_1_0,
-  <<ThisRef:32/?UI,(byte_size(Text_UC)):32/?UI,(Text_UC)/binary, 0:(((8- ((0+byte_size(Text_UC)) band 16#7)) band 16#7))/unit:8>>);
+  wxe_util:call(?wxColourPickerCtrl_SetColour_1_0,[ThisRef,Text_UC]);
 setColour(#wx_ref{type=ThisT,ref=ThisRef},Col)
  when tuple_size(Col) =:= 3; tuple_size(Col) =:= 4 ->
   ?CLASS(ThisT,wxColourPickerCtrl),
-  wxe_util:cast(?wxColourPickerCtrl_SetColour_1_1,
-  <<ThisRef:32/?UI,(wxe_util:colour_bin(Col)):16/binary>>).
+  wxe_util:cast(?wxColourPickerCtrl_SetColour_1_1,[ThisRef,Col]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxColourPickerCtrl()) -> 'ok'.

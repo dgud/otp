@@ -335,7 +335,7 @@ bool sendevent(wxEvent *event, wxeMemEnv *memenv)
   WxeApp * app = (WxeApp *) wxTheApp;
   if(!memenv) return 0;
 
-  wxeReturn rt = wxeReturn(memenv, cb->listener);
+  wxeReturn rt = wxeReturn(memenv, cb->listener, false);
   ERL_NIF_TERM ev_term;
   switch(Etype->cID) {
   case 165: {// wxCommandEvent

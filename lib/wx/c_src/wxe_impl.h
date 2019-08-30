@@ -97,7 +97,7 @@ public:
   wxeCommand * cb_return;
 };
 
-#define Badarg(Op, Argc) {wxe_badarg(Argc); return;}
+#define Badarg(Op, Argc) { throw wxe_badarg(Argc); }
 
 typedef struct {
     int op;

@@ -89,8 +89,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlwxfilepickerctrl">external documentation</a>.
 -spec new() -> wxFilePickerCtrl().
 new() ->
-  wxe_util:construct(?wxFilePickerCtrl_new_0,
-  <<>>).
+  wxe_util:construct(?wxFilePickerCtrl_new_0,[]).
 
 %% @equiv new(Parent,Id, [])
 -spec new(Parent, Id) -> wxFilePickerCtrl() when
@@ -113,17 +112,7 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT,ref=ParentRef},Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({path, Path}, Acc) ->   Path_UC = unicode:characters_to_binary([Path,0]),[<<1:32/?UI,(byte_size(Path_UC)):32/?UI,(Path_UC)/binary, 0:(((8- ((0+byte_size(Path_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary([Message,0]),[<<2:32/?UI,(byte_size(Message_UC)):32/?UI,(Message_UC)/binary, 0:(((8- ((0+byte_size(Message_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({wildcard, Wildcard}, Acc) ->   Wildcard_UC = unicode:characters_to_binary([Wildcard,0]),[<<3:32/?UI,(byte_size(Wildcard_UC)):32/?UI,(Wildcard_UC)/binary, 0:(((8- ((0+byte_size(Wildcard_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<4:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<5:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<6:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<7:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxFilePickerCtrl_new_3,
-  <<ParentRef:32/?UI,Id:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(?wxFilePickerCtrl_new_3,[ParentRef,Id, Options]).
 
 %% @equiv create(This,Parent,Id, [])
 -spec create(This, Parent, Id) -> boolean() when
@@ -147,25 +136,14 @@ create(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=ParentT,ref=ParentRef},Id, O
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({path, Path}, Acc) ->   Path_UC = unicode:characters_to_binary([Path,0]),[<<1:32/?UI,(byte_size(Path_UC)):32/?UI,(Path_UC)/binary, 0:(((8- ((0+byte_size(Path_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary([Message,0]),[<<2:32/?UI,(byte_size(Message_UC)):32/?UI,(Message_UC)/binary, 0:(((8- ((0+byte_size(Message_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({wildcard, Wildcard}, Acc) ->   Wildcard_UC = unicode:characters_to_binary([Wildcard,0]),[<<3:32/?UI,(byte_size(Wildcard_UC)):32/?UI,(Wildcard_UC)/binary, 0:(((8- ((0+byte_size(Wildcard_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<4:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<5:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<6:32/?UI,Style:32/?UI>>|Acc];
-          ({validator, #wx_ref{type=ValidatorT,ref=ValidatorRef}}, Acc) ->   ?CLASS(ValidatorT,wx),[<<7:32/?UI,ValidatorRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:call(?wxFilePickerCtrl_Create,
-  <<ThisRef:32/?UI,ParentRef:32/?UI,Id:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:call(?wxFilePickerCtrl_Create,[ThisRef,ParentRef,Id, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlgetpath">external documentation</a>.
 -spec getPath(This) -> unicode:charlist() when
 	This::wxFilePickerCtrl().
 getPath(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
-  wxe_util:call(?wxFilePickerCtrl_GetPath,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxFilePickerCtrl_GetPath,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlsetpath">external documentation</a>.
 -spec setPath(This, Str) -> 'ok' when
@@ -174,8 +152,7 @@ setPath(#wx_ref{type=ThisT,ref=ThisRef},Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
   Str_UC = unicode:characters_to_binary([Str,0]),
-  wxe_util:cast(?wxFilePickerCtrl_SetPath,
-  <<ThisRef:32/?UI,(byte_size(Str_UC)):32/?UI,(Str_UC)/binary, 0:(((8- ((0+byte_size(Str_UC)) band 16#7)) band 16#7))/unit:8>>).
+  wxe_util:cast(?wxFilePickerCtrl_SetPath,[ThisRef,Str_UC]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxFilePickerCtrl()) -> 'ok'.

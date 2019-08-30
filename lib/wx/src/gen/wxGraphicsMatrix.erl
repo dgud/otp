@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -46,8 +46,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 concat(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TT,ref=TRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
   ?CLASS(TT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Concat,
-  <<ThisRef:32/?UI,TRef:32/?UI>>).
+  wxe_util:cast(?wxGraphicsMatrix_Concat,[ThisRef,TRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixget">external documentation</a>.
 -spec get(This) -> Result when
@@ -55,16 +54,14 @@ concat(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TT,ref=TRef}) ->
 	This::wxGraphicsMatrix().
 get(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_Get,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGraphicsMatrix_Get,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixinvert">external documentation</a>.
 -spec invert(This) -> 'ok' when
 	This::wxGraphicsMatrix().
 invert(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Invert,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxGraphicsMatrix_Invert,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixisequal">external documentation</a>.
 -spec isEqual(This, T) -> boolean() when
@@ -72,16 +69,14 @@ invert(#wx_ref{type=ThisT,ref=ThisRef}) ->
 isEqual(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TT,ref=TRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
   ?CLASS(TT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_IsEqual,
-  <<ThisRef:32/?UI,TRef:32/?UI>>).
+  wxe_util:call(?wxGraphicsMatrix_IsEqual,[ThisRef,TRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixisidentity">external documentation</a>.
 -spec isIdentity(This) -> boolean() when
 	This::wxGraphicsMatrix().
 isIdentity(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_IsIdentity,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGraphicsMatrix_IsIdentity,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixrotate">external documentation</a>.
 -spec rotate(This, Angle) -> 'ok' when
@@ -89,8 +84,7 @@ isIdentity(#wx_ref{type=ThisT,ref=ThisRef}) ->
 rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle)
  when is_number(Angle) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Rotate,
-  <<ThisRef:32/?UI,0:32,Angle:64/?F>>).
+  wxe_util:cast(?wxGraphicsMatrix_Rotate,[ThisRef,Angle]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixscale">external documentation</a>.
 -spec scale(This, XScale, YScale) -> 'ok' when
@@ -98,8 +92,7 @@ rotate(#wx_ref{type=ThisT,ref=ThisRef},Angle)
 scale(#wx_ref{type=ThisT,ref=ThisRef},XScale,YScale)
  when is_number(XScale),is_number(YScale) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Scale,
-  <<ThisRef:32/?UI,0:32,XScale:64/?F,YScale:64/?F>>).
+  wxe_util:cast(?wxGraphicsMatrix_Scale,[ThisRef,XScale,YScale]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtranslate">external documentation</a>.
 -spec translate(This, Dx, Dy) -> 'ok' when
@@ -107,8 +100,7 @@ scale(#wx_ref{type=ThisT,ref=ThisRef},XScale,YScale)
 translate(#wx_ref{type=ThisT,ref=ThisRef},Dx,Dy)
  when is_number(Dx),is_number(Dy) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:cast(?wxGraphicsMatrix_Translate,
-  <<ThisRef:32/?UI,0:32,Dx:64/?F,Dy:64/?F>>).
+  wxe_util:cast(?wxGraphicsMatrix_Translate,[ThisRef,Dx,Dy]).
 
 %% @equiv set(This, [])
 -spec set(This) -> 'ok' when
@@ -130,32 +122,21 @@ set(This)
 set(#wx_ref{type=ThisT,ref=ThisRef}, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  MOpts = fun({a, A}, Acc) -> [<<1:32/?UI,0:32,A:64/?F>>|Acc];
-          ({b, B}, Acc) -> [<<2:32/?UI,0:32,B:64/?F>>|Acc];
-          ({c, C}, Acc) -> [<<3:32/?UI,0:32,C:64/?F>>|Acc];
-          ({d, D}, Acc) -> [<<4:32/?UI,0:32,D:64/?F>>|Acc];
-          ({tx, Tx}, Acc) -> [<<5:32/?UI,0:32,Tx:64/?F>>|Acc];
-          ({ty, Ty}, Acc) -> [<<6:32/?UI,0:32,Ty:64/?F>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxGraphicsMatrix_Set,
-  <<ThisRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxGraphicsMatrix_Set,[ThisRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtransformpoint">external documentation</a>.
 -spec transformPoint(This) -> {X::number(), Y::number()} when
 	This::wxGraphicsMatrix().
 transformPoint(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_TransformPoint,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGraphicsMatrix_TransformPoint,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtransformdistance">external documentation</a>.
 -spec transformDistance(This) -> {Dx::number(), Dy::number()} when
 	This::wxGraphicsMatrix().
 transformDistance(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:call(?wxGraphicsMatrix_TransformDistance,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGraphicsMatrix_TransformDistance,[ThisRef]).
 
  %% From wxGraphicsObject
 %% @hidden

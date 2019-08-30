@@ -87,8 +87,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowwxscrolledwindow">external documentation</a>.
 -spec new() -> wxScrolledWindow().
 new() ->
-  wxe_util:construct(?wxScrolledWindow_new_0,
-  <<>>).
+  wxe_util:construct(?wxScrolledWindow_new_0,[]).
 
 %% @equiv new(Parent, [])
 -spec new(Parent) -> wxScrolledWindow() when
@@ -108,23 +107,15 @@ new(Parent)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({winid, Winid}, Acc) -> [<<1:32/?UI,Winid:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxScrolledWindow_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxScrolledWindow_new_2,[ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowcalcscrolledposition">external documentation</a>.
 -spec calcScrolledPosition(This, Pt) -> {X::integer(), Y::integer()} when
 	This::wxScrolledWindow(), Pt::{X::integer(), Y::integer()}.
-calcScrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+calcScrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:call(?wxScrolledWindow_CalcScrolledPosition_1,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxScrolledWindow_CalcScrolledPosition_1,[ThisRef,Pt]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowcalcscrolledposition">external documentation</a>.
 -spec calcScrolledPosition(This, X, Y) -> {Xx::integer(), Yy::integer()} when
@@ -132,17 +123,15 @@ calcScrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
 calcScrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:call(?wxScrolledWindow_CalcScrolledPosition_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxScrolledWindow_CalcScrolledPosition_4,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowcalcunscrolledposition">external documentation</a>.
 -spec calcUnscrolledPosition(This, Pt) -> {X::integer(), Y::integer()} when
 	This::wxScrolledWindow(), Pt::{X::integer(), Y::integer()}.
-calcUnscrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
+calcUnscrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY} = Pt)
  when is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:call(?wxScrolledWindow_CalcUnscrolledPosition_1,
-  <<ThisRef:32/?UI,PtX:32/?UI,PtY:32/?UI>>).
+  wxe_util:call(?wxScrolledWindow_CalcUnscrolledPosition_1,[ThisRef,Pt]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowcalcunscrolledposition">external documentation</a>.
 -spec calcUnscrolledPosition(This, X, Y) -> {Xx::integer(), Yy::integer()} when
@@ -150,8 +139,7 @@ calcUnscrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},{PtX,PtY})
 calcUnscrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:call(?wxScrolledWindow_CalcUnscrolledPosition_4,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:call(?wxScrolledWindow_CalcUnscrolledPosition_4,[ThisRef,X,Y]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowenablescrolling">external documentation</a>.
 -spec enableScrolling(This, X_scrolling, Y_scrolling) -> 'ok' when
@@ -159,24 +147,21 @@ calcUnscrolledPosition(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
 enableScrolling(#wx_ref{type=ThisT,ref=ThisRef},X_scrolling,Y_scrolling)
  when is_boolean(X_scrolling),is_boolean(Y_scrolling) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:cast(?wxScrolledWindow_EnableScrolling,
-  <<ThisRef:32/?UI,(wxe_util:from_bool(X_scrolling)):32/?UI,(wxe_util:from_bool(Y_scrolling)):32/?UI>>).
+  wxe_util:cast(?wxScrolledWindow_EnableScrolling,[ThisRef,X_scrolling,Y_scrolling]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowgetscrollpixelsperunit">external documentation</a>.
 -spec getScrollPixelsPerUnit(This) -> {PixelsPerUnitX::integer(), PixelsPerUnitY::integer()} when
 	This::wxScrolledWindow().
 getScrollPixelsPerUnit(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:call(?wxScrolledWindow_GetScrollPixelsPerUnit,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxScrolledWindow_GetScrollPixelsPerUnit,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowgetviewstart">external documentation</a>.
 -spec getViewStart(This) -> {X::integer(), Y::integer()} when
 	This::wxScrolledWindow().
 getViewStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:call(?wxScrolledWindow_GetViewStart,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxScrolledWindow_GetViewStart,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowdopreparedc">external documentation</a>.
 -spec doPrepareDC(This, Dc) -> 'ok' when
@@ -184,8 +169,7 @@ getViewStart(#wx_ref{type=ThisT,ref=ThisRef}) ->
 doPrepareDC(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef}) ->
   ?CLASS(ThisT,wxScrolledWindow),
   ?CLASS(DcT,wxDC),
-  wxe_util:cast(?wxScrolledWindow_DoPrepareDC,
-  <<ThisRef:32/?UI,DcRef:32/?UI>>).
+  wxe_util:cast(?wxScrolledWindow_DoPrepareDC,[ThisRef,DcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowpreparedc">external documentation</a>.
 -spec prepareDC(This, Dc) -> 'ok' when
@@ -193,8 +177,7 @@ doPrepareDC(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef}) ->
 prepareDC(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef}) ->
   ?CLASS(ThisT,wxScrolledWindow),
   ?CLASS(DcT,wxDC),
-  wxe_util:cast(?wxScrolledWindow_PrepareDC,
-  <<ThisRef:32/?UI,DcRef:32/?UI>>).
+  wxe_util:cast(?wxScrolledWindow_PrepareDC,[ThisRef,DcRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowscroll">external documentation</a>.
 -spec scroll(This, X, Y) -> 'ok' when
@@ -202,8 +185,7 @@ prepareDC(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=DcT,ref=DcRef}) ->
 scroll(#wx_ref{type=ThisT,ref=ThisRef},X,Y)
  when is_integer(X),is_integer(Y) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:cast(?wxScrolledWindow_Scroll,
-  <<ThisRef:32/?UI,X:32/?UI,Y:32/?UI>>).
+  wxe_util:cast(?wxScrolledWindow_Scroll,[ThisRef,X,Y]).
 
 %% @equiv setScrollbars(This,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY, [])
 -spec setScrollbars(This, PixelsPerUnitX, PixelsPerUnitY, NoUnitsX, NoUnitsY) -> 'ok' when
@@ -222,13 +204,7 @@ setScrollbars(This,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY)
 setScrollbars(#wx_ref{type=ThisT,ref=ThisRef},PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY, Options)
  when is_integer(PixelsPerUnitX),is_integer(PixelsPerUnitY),is_integer(NoUnitsX),is_integer(NoUnitsY),is_list(Options) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  MOpts = fun({xPos, XPos}, Acc) -> [<<1:32/?UI,XPos:32/?UI>>|Acc];
-          ({yPos, YPos}, Acc) -> [<<2:32/?UI,YPos:32/?UI>>|Acc];
-          ({noRefresh, NoRefresh}, Acc) -> [<<3:32/?UI,(wxe_util:from_bool(NoRefresh)):32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:cast(?wxScrolledWindow_SetScrollbars,
-  <<ThisRef:32/?UI,PixelsPerUnitX:32/?UI,PixelsPerUnitY:32/?UI,NoUnitsX:32/?UI,NoUnitsY:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:cast(?wxScrolledWindow_SetScrollbars,[ThisRef,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowsetscrollrate">external documentation</a>.
 -spec setScrollRate(This, Xstep, Ystep) -> 'ok' when
@@ -236,8 +212,7 @@ setScrollbars(#wx_ref{type=ThisT,ref=ThisRef},PixelsPerUnitX,PixelsPerUnitY,NoUn
 setScrollRate(#wx_ref{type=ThisT,ref=ThisRef},Xstep,Ystep)
  when is_integer(Xstep),is_integer(Ystep) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:cast(?wxScrolledWindow_SetScrollRate,
-  <<ThisRef:32/?UI,Xstep:32/?UI,Ystep:32/?UI>>).
+  wxe_util:cast(?wxScrolledWindow_SetScrollRate,[ThisRef,Xstep,Ystep]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowsettargetwindow">external documentation</a>.
 -spec setTargetWindow(This, Target) -> 'ok' when
@@ -245,8 +220,7 @@ setScrollRate(#wx_ref{type=ThisT,ref=ThisRef},Xstep,Ystep)
 setTargetWindow(#wx_ref{type=ThisT,ref=ThisRef},#wx_ref{type=TargetT,ref=TargetRef}) ->
   ?CLASS(ThisT,wxScrolledWindow),
   ?CLASS(TargetT,wxWindow),
-  wxe_util:cast(?wxScrolledWindow_SetTargetWindow,
-  <<ThisRef:32/?UI,TargetRef:32/?UI>>).
+  wxe_util:cast(?wxScrolledWindow_SetTargetWindow,[ThisRef,TargetRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxScrolledWindow()) -> 'ok'.

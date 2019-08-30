@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2016. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -52,16 +52,14 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Orient::integer().
 new(Orient)
  when is_integer(Orient) ->
-  wxe_util:construct(?wxBoxSizer_new,
-  <<Orient:32/?UI>>).
+  wxe_util:construct(?wxBoxSizer_new,[Orient]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxboxsizer.html#wxboxsizergetorientation">external documentation</a>.
 -spec getOrientation(This) -> integer() when
 	This::wxBoxSizer().
 getOrientation(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxBoxSizer),
-  wxe_util:call(?wxBoxSizer_GetOrientation,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxBoxSizer_GetOrientation,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxBoxSizer()) -> 'ok'.

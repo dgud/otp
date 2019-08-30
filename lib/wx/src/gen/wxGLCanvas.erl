@@ -116,18 +116,7 @@ new(Parent,Shared)
 new(#wx_ref{type=ParentT,ref=ParentRef}, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({name, Name}, Acc) ->   Name_UC = unicode:characters_to_binary([Name,0]),[<<5:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({attribList, AttribList}, Acc) -> [<<6:32/?UI,(length(AttribList)):32/?UI,
-        (<< <<C:32/?I>> || C <- AttribList>>)/binary, 0:(((0+length(AttribList)) rem 2)*32)>>|Acc];
-          ({palette, #wx_ref{type=PaletteT,ref=PaletteRef}}, Acc) ->   ?CLASS(PaletteT,wxPalette),[<<7:32/?UI,PaletteRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxGLCanvas_new_2,
-  <<ParentRef:32/?UI, 0:32,BinOpt/binary>>).
+  wxe_util:construct(?wxGLCanvas_new_2,[ParentRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvaswxglcanvas">external documentation</a>.
 -spec new(Parent, Shared, [Option]) -> wxGLCanvas() when
@@ -148,34 +137,21 @@ new(#wx_ref{type=ParentT,ref=ParentRef},#wx_ref{type=SharedT,ref=SharedRef}, Opt
      _ -> ?CLASS(SharedT,wxGLCanvas),
        ?wxGLCanvas_new_3_0
      end,
-  MOpts = fun({id, Id}, Acc) -> [<<1:32/?UI,Id:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          ({size, {SizeW,SizeH}}, Acc) -> [<<3:32/?UI,SizeW:32/?UI,SizeH:32/?UI,0:32>>|Acc];
-          ({style, Style}, Acc) -> [<<4:32/?UI,Style:32/?UI>>|Acc];
-          ({name, Name}, Acc) ->   Name_UC = unicode:characters_to_binary([Name,0]),[<<5:32/?UI,(byte_size(Name_UC)):32/?UI,(Name_UC)/binary, 0:(((8- ((0+byte_size(Name_UC)) band 16#7)) band 16#7))/unit:8>>|Acc];
-          ({attribList, AttribList}, Acc) -> [<<6:32/?UI,(length(AttribList)):32/?UI,
-        (<< <<C:32/?I>> || C <- AttribList>>)/binary, 0:(((0+length(AttribList)) rem 2)*32)>>|Acc];
-          ({palette, #wx_ref{type=PaletteT,ref=PaletteRef}}, Acc) ->   ?CLASS(PaletteT,wxPalette),[<<7:32/?UI,PaletteRef:32/?UI>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(SharedOP,
-  <<ParentRef:32/?UI,SharedRef:32/?UI, BinOpt/binary>>).
+  wxe_util:construct(SharedOP,[ParentRef,SharedRef, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvasgetcontext">external documentation</a>.
 -spec getContext(This) -> wx:wx_object() when
 	This::wxGLCanvas().
 getContext(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGLCanvas),
-  wxe_util:call(?wxGLCanvas_GetContext,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxGLCanvas_GetContext,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvassetcurrent">external documentation</a>.
 -spec setCurrent(This) -> 'ok' when
 	This::wxGLCanvas().
 setCurrent(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGLCanvas),
-  _Result =  wxe_util:cast(?wxGLCanvas_SetCurrent,
-  <<ThisRef:32/?UI>>),
+  _Result =  wxe_util:cast(?wxGLCanvas_SetCurrent,[ThisRef]),
   {ok, _} = wxe_master:init_opengl(),
   _Result.
 
@@ -184,8 +160,7 @@ setCurrent(#wx_ref{type=ThisT,ref=ThisRef}) ->
 	This::wxGLCanvas().
 swapBuffers(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxGLCanvas),
-  wxe_util:cast(?wxGLCanvas_SwapBuffers,
-  <<ThisRef:32/?UI>>).
+  wxe_util:cast(?wxGLCanvas_SwapBuffers,[ThisRef]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxGLCanvas()) -> 'ok'.

@@ -92,8 +92,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsinglechoicedialog.html#wxsinglechoicedialogwxsinglechoicedialog">external documentation</a>.
 -spec new() -> wxSingleChoiceDialog().
 new() ->
-  wxe_util:construct(?wxSingleChoiceDialog_new_0,
-  <<>>).
+  wxe_util:construct(?wxSingleChoiceDialog_new_0,[]).
 
 %% @equiv new(Parent,Message,Caption,Choices, [])
 -spec new(Parent, Message, Caption, Choices) -> wxSingleChoiceDialog() when
@@ -115,28 +114,21 @@ new(#wx_ref{type=ParentT,ref=ParentRef},Message,Caption,Choices, Options)
   Caption_UC = unicode:characters_to_binary([Caption,0]),
   Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
               ChoicesTemp <- Choices],
-  MOpts = fun({style, Style}, Acc) -> [<<1:32/?UI,Style:32/?UI>>|Acc];
-          ({pos, {PosX,PosY}}, Acc) -> [<<2:32/?UI,PosX:32/?UI,PosY:32/?UI,0:32>>|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),
-  wxe_util:construct(?wxSingleChoiceDialog_new_5,
-  <<ParentRef:32/?UI,(byte_size(Message_UC)):32/?UI,(Message_UC)/binary, 0:(((8- ((0+byte_size(Message_UC)) band 16#7)) band 16#7))/unit:8,(byte_size(Caption_UC)):32/?UI,(Caption_UC)/binary, 0:(((8- ((4+byte_size(Caption_UC)) band 16#7)) band 16#7))/unit:8,(length(Choices_UCA)):32/?UI, (<< <<(byte_size(UC_Str)):32/?UI, UC_Str/binary>>|| UC_Str <- Choices_UCA>>)/binary, 0:(((8- ((4 + lists:sum([byte_size(S)+4||S<-Choices_UCA])) band 16#7)) band 16#7))/unit:8, BinOpt/binary>>).
+  wxe_util:construct(?wxSingleChoiceDialog_new_5,[ParentRef,Message_UC,Caption_UC,Choices_UCA, Options]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsinglechoicedialog.html#wxsinglechoicedialoggetselection">external documentation</a>.
 -spec getSelection(This) -> integer() when
 	This::wxSingleChoiceDialog().
 getSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSingleChoiceDialog),
-  wxe_util:call(?wxSingleChoiceDialog_GetSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSingleChoiceDialog_GetSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsinglechoicedialog.html#wxsinglechoicedialoggetstringselection">external documentation</a>.
 -spec getStringSelection(This) -> unicode:charlist() when
 	This::wxSingleChoiceDialog().
 getStringSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
   ?CLASS(ThisT,wxSingleChoiceDialog),
-  wxe_util:call(?wxSingleChoiceDialog_GetStringSelection,
-  <<ThisRef:32/?UI>>).
+  wxe_util:call(?wxSingleChoiceDialog_GetStringSelection,[ThisRef]).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsinglechoicedialog.html#wxsinglechoicedialogsetselection">external documentation</a>.
 -spec setSelection(This, Sel) -> 'ok' when
@@ -144,8 +136,7 @@ getStringSelection(#wx_ref{type=ThisT,ref=ThisRef}) ->
 setSelection(#wx_ref{type=ThisT,ref=ThisRef},Sel)
  when is_integer(Sel) ->
   ?CLASS(ThisT,wxSingleChoiceDialog),
-  wxe_util:cast(?wxSingleChoiceDialog_SetSelection,
-  <<ThisRef:32/?UI,Sel:32/?UI>>).
+  wxe_util:cast(?wxSingleChoiceDialog_SetSelection,[ThisRef,Sel]).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxSingleChoiceDialog()) -> 'ok'.
