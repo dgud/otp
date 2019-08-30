@@ -365,16 +365,11 @@ gen_method(CName,  M=#method{name=N,params=Ps0,type=T,method_type=MT,id=MethodId
       [wx_gen_erl:get_unique_name(MethodId)]),
     w("{~n",[]),
     Ps1 = declare_variables(void, Ps0),
-
-    %% case {MT,T,[In || #param{in=In} <- Ps1, In =/= true]} of
-    %%     {static, void, []} -> ignore;
-    %%     _ ->
-    w("  wxeMemEnv *memenv = Ecmd.memenv;~n"),
-    %%end,
-    case [In || #param{in=In,where=Where} <- Ps1, In =/= false, Where =/= c] of
+    needs_memenv(MT,T,Ps0) andalso w("  wxeMemEnv *memenv = Ecmd.memenv;~n"),
+    case [P || #param{in=In,where=Where} = P <- Ps1, In =/= false, Where =/= c] of
         [] -> ignore;
-        _Else ->
-            w("  ErlNifEnv *env = Ecmd.env;~n"),
+        PsIn ->
+            needs_env(PsIn) andalso w("  ErlNifEnv *env = Ecmd.env;~n"),
             w("  ERL_NIF_TERM * argv = Ecmd.args;~n")
     end,
 
@@ -849,6 +844,25 @@ call_wx(N,{static,Class},Type,Ps) ->
     end,
     Ps.
 
+needs_env(Ps) ->
+    Filter = fun(#param{def=Def}) when Def =/= none -> true;
+                (#param{type=#type{base=bool}}) -> false;
+                (_) -> true
+             end,
+    get(current_func) =:= "Enable" andalso
+        io:format("ps: ~p~n",[Ps]),
+    lists:any(Filter, Ps).
+
+needs_memenv(MT,T,Ps) ->
+    Filter = fun(#param{in=In}) when In =/= true ->      false;
+                (#param{type=#type{base={class,_}}}) ->  false;
+                (_) -> true
+             end,
+    NoMemEnv = lists:all(Filter, Ps),
+    case {MT,T,NoMemEnv} of
+        {static, void, true} -> false;
+        _ -> true
+    end.
 
 return_res(void) -> {"", ""};
 return_res(Type = #type{mod=Mod}) ->

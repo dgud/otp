@@ -9121,7 +9121,6 @@ void wxGridCellBoolEditor_UseStringValues(WxeApp *app, wxeCommand& Ecmd)
 {
   wxString valueTrue= wxT("1");
   wxString valueFalse= wxEmptyString;
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   ERL_NIF_TERM lstHead, lstTail;
@@ -11956,7 +11955,6 @@ void wxPostScriptDC_new_1(WxeApp *app, wxeCommand& Ecmd)
 // wxPostScriptDC::SetResolution
 void wxPostScriptDC_SetResolution(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   int ppi;
@@ -19740,7 +19738,6 @@ void wxImage_InitAlpha(WxeApp *app, wxeCommand& Ecmd)
 // wxImage::InitStandardHandlers
 void wxImage_InitStandardHandlers(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   wxImage::InitStandardHandlers();
 
 }
@@ -22062,7 +22059,6 @@ void wxCaret_Move_1(WxeApp *app, wxeCommand& Ecmd)
 // wxCaret::SetBlinkTime
 void wxCaret_SetBlinkTime(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   int milliseconds;
@@ -26131,7 +26127,6 @@ void wxFont_Ok(WxeApp *app, wxeCommand& Ecmd)
 // wxFont::SetDefaultEncoding
 void wxFont_SetDefaultEncoding(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   wxFontEncoding encoding;
@@ -26237,8 +26232,6 @@ void wxFont_SetWeight(WxeApp *app, wxeCommand& Ecmd)
 // wxToolTip::Enable
 void wxToolTip_Enable(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
-  ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   bool flag;
   flag = enif_is_identical(argv[0], WXE_ATOM_true);
@@ -26249,7 +26242,6 @@ void wxToolTip_Enable(WxeApp *app, wxeCommand& Ecmd)
 // wxToolTip::SetDelay
 void wxToolTip_SetDelay(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   long msecs;
@@ -51604,7 +51596,6 @@ void wxUpdateUIEvent_GetUpdateInterval(WxeApp *app, wxeCommand& Ecmd)
 // wxUpdateUIEvent::ResetUpdateTime
 void wxUpdateUIEvent_ResetUpdateTime(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   wxUpdateUIEvent::ResetUpdateTime();
 
 }
@@ -51612,7 +51603,6 @@ void wxUpdateUIEvent_ResetUpdateTime(WxeApp *app, wxeCommand& Ecmd)
 // wxUpdateUIEvent::SetMode
 void wxUpdateUIEvent_SetMode(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   wxUpdateUIMode mode;
@@ -51641,7 +51631,6 @@ void wxUpdateUIEvent_SetText(WxeApp *app, wxeCommand& Ecmd)
 // wxUpdateUIEvent::SetUpdateInterval
 void wxUpdateUIEvent_SetUpdateInterval(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   long updateInterval;
@@ -52017,7 +52006,6 @@ void wxIdleEvent_MoreRequested(WxeApp *app, wxeCommand& Ecmd)
 // wxIdleEvent::SetMode
 void wxIdleEvent_SetMode(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   wxIdleMode mode;
@@ -52890,7 +52878,6 @@ void utils_wxGetMouseState(WxeApp *app, wxeCommand& Ecmd)
 void utils_wxSetDetectableAutoRepeat(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
-  ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   bool flag;
   flag = enif_is_identical(argv[0], WXE_ATOM_true);
@@ -52903,7 +52890,6 @@ void utils_wxSetDetectableAutoRepeat(WxeApp *app, wxeCommand& Ecmd)
 // utils::wxBell
 void utils_wxBell(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ::wxBell();
 
 }
@@ -52996,7 +52982,6 @@ void utils_wxBeginBusyCursor(WxeApp *app, wxeCommand& Ecmd)
 // utils::wxEndBusyCursor
 void utils_wxEndBusyCursor(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ::wxEndBusyCursor();
 
 }
@@ -53124,7 +53109,6 @@ void utils_wxNewId(WxeApp *app, wxeCommand& Ecmd)
 // utils::wxRegisterId
 void utils_wxRegisterId(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   long id;
@@ -62568,7 +62552,6 @@ void wxSystemOptions_IsFalse(WxeApp *app, wxeCommand& Ecmd)
 // wxSystemOptions::SetOption
 void wxSystemOptions_SetOption_2_1(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
@@ -62586,7 +62569,6 @@ void wxSystemOptions_SetOption_2_1(WxeApp *app, wxeCommand& Ecmd)
 // wxSystemOptions::SetOption
 void wxSystemOptions_SetOption_2_0(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary name_bin;
@@ -63107,7 +63089,6 @@ void wxLocale_AddCatalog_3(WxeApp *app, wxeCommand& Ecmd)
 // wxLocale::AddCatalogLookupPathPrefix
 void wxLocale_AddCatalogLookupPathPrefix(WxeApp *app, wxeCommand& Ecmd)
 {
-  wxeMemEnv *memenv = Ecmd.memenv;
   ErlNifEnv *env = Ecmd.env;
   ERL_NIF_TERM * argv = Ecmd.args;
   ErlNifBinary prefix_bin;

@@ -419,7 +419,7 @@ void WxeApp::dispatch_cb(wxeFifo * batch, wxeMemEnv * memenv, ErlNifPid process)
 void WxeApp::wxe_dispatch(wxeCommand& event)
 {
   void (*nif_cb) (WxeApp *, wxeCommand& ) = wxe_fns[event.op].nif_cb;
-  if(wxe_debug) &&
+  if(wxe_debug)
     enif_fprintf(stderr, "\r\n***wxe_dispatch %d %p %T\r\n", event.op, nif_cb, event.caller);
   if(nif_cb) {
     try { nif_cb(this, event); }
