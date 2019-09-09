@@ -100,8 +100,9 @@ public:
 #define Badarg(Op, Argc) { throw wxe_badarg(Argc); }
 
 typedef struct {
-    int op;
     void (*nif_cb) (WxeApp *, wxeCommand& );
+    const char *cname;
+    const char *fname;
 } wxe_fns_t;
 
 extern wxe_fns_t wxe_fns[];

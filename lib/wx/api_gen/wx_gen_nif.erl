@@ -1177,7 +1177,7 @@ gen_func_table(Defs) ->
 
 gen_func_table({_, #method{where=erl_no_opt}}, Id) ->
     Id;
-gen_func_table({Class, #method{id=Id, method_type=MT, opts=FOpts}}, Id) ->
+gen_func_table({Class, #method{name=Name, id=Id, method_type=MT, opts=FOpts}}, Id) ->
     IsObjectDest = MT =:= destructor andalso
         hd(reverse(wx_gen_erl:parents(Class))) =:= object,
     Func = wx_gen_erl:get_unique_name(Id),
@@ -1188,19 +1188,19 @@ gen_func_table({Class, #method{id=Id, method_type=MT, opts=FOpts}}, Id) ->
     Endif1 = gen_if(deprecated, FOpts),
     Endif2 = gen_if(test_if, FOpts),
     if IsObjectDest ->
-            w("  {~w, NULL}, // obj destructor ~s~n", [Id, Func]);
+            w("  {NULL, \"~s\", \"~s\"}, // ~w obj destructor ~s~n", [Class, Name, Id, Func]);
        IsTaylorMadeErl ->
-            w("  {~w, NULL}, // TaylorMade erl only ~s~n", [Id, Func]);
+            w("  {NULL, \"~s\", \"~s\"}, // ~w TaylorMade erl only ~s~n", [Class, Name, Id, Func]);
        true ->
-            w("  {~w, ~s},~n", [Id, Func])
+            w("  {~s, \"~s\", \"~s\"}, // ~w~n", [Func, Class, Name, Id])
     end,
     if Endif1 orelse Endif2 ->
-            w("#else~n  {~w, NULL},~n#endif~n", [Id]);
+            w("#else~n  {NULL, \"~s\", \"~s\"}, // ~w~n#endif~n", [Class, Name, Id]);
        true -> ignore
     end,
     Id+1;
 gen_func_table({_, #method{id=MId}}=CM, Id) when MId > Id ->
-    w("  {~w, NULL},~n", [Id]),
+    w("  {NULL, \"\", \"\"}, // ~w~n", [Id]),
     gen_func_table(CM, Id+1).
 
 
