@@ -37,7 +37,7 @@ OBJC_CFLAGS=@OBJC_CFLAGS@
 
 GENERAL     = wxe_nif wxe_ps_init wxe_main wxe_impl \
 		wxe_helpers wxe_callback_impl wxe_return wxe_gl
-GENERAL_H   = wxe_callback_impl.h  wxe_driver.h  wxe_events.h  wxe_gl.h \
+GENERAL_H   = wxe_callback_impl.h  wxe_events.h  wxe_gl.h \
 		wxe_helpers.h  wxe_impl.h  wxe_memory.h  wxe_return.h
 
 GENERATED_F = wxe_wrapper wxe_events wxe_init
