@@ -316,7 +316,7 @@ setItemToolTip(#wx_ref{type=ThisT}=This,Item,Text)
 -spec destroy(This::wxRadioBox()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxRadioBox),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxControl
 %% @hidden

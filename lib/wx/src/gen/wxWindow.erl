@@ -1824,7 +1824,7 @@ toDIP(#wx_ref{type=ThisT,ref=ThisRef},{SzW,SzH})
 -spec destroy(This::wxWindow()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxWindow),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxEvtHandler
 %% @hidden

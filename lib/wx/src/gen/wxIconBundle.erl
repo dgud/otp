@@ -113,5 +113,5 @@ getIcon(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
 -spec destroy(This::wxIconBundle()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxIconBundle),
-  wxe_util:destroy(?wxIconBundle_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxIconBundle_destruct),
   ok.

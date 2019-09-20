@@ -85,7 +85,7 @@ setIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon, Options)
 -spec destroy(This::wxTaskBarIcon()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxTaskBarIcon),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxEvtHandler
 %% @hidden

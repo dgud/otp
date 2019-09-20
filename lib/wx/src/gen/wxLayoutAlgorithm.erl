@@ -103,5 +103,5 @@ layoutWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
 -spec destroy(This::wxLayoutAlgorithm()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxLayoutAlgorithm),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

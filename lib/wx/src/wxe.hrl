@@ -54,13 +54,10 @@
 
 -define(is_chardata(String), (is_list(String) orelse is_binary(String))).
 
--define(DESTROY_OBJECT, 4).
 -define(BATCH_BEGIN,    5).
 -define(BATCH_END,      6).
 %%-define(CREATE_PORT,  2).  %% Not used in erlang
 %%-define(REMOVE_PORT,  3).
-
--define(WXE_REGISTER_OBJECT,  7).  %% Used for object monitoring
 
 -define(WXE_CB_START,   9).  %% Used for event-callback start
 -define(WXE_CB_RETURN,  11).  %% Used for callback return buffer
@@ -71,8 +68,8 @@
 -define(WXE_DEBUG_PING,  14). %% debug ping (when using debugger it's needed)
 -define(WXE_DELETE_ENV,  15).
 
--define(WXE_BIN_INCR,    11). %% Binary refc incr
--define(WXE_BIN_DECR,    12). %% Binary refc decr
--define(WXE_INIT_OPENGL, 13).
+-define(DESTROY_OBJECT,  50).
+-define(WXE_REGISTER_OBJECT,  51).  %% Used for object monitoring
+%% -define(WXE_INIT_OPENGL, 52).
 
 -include("gen/wxe_funcs.hrl").

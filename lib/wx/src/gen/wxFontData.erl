@@ -159,5 +159,5 @@ setShowHelp(#wx_ref{type=ThisT}=This,Flag)
 -spec destroy(This::wxFontData()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxFontData),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

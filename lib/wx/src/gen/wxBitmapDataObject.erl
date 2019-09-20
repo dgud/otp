@@ -83,6 +83,6 @@ setBitmap(#wx_ref{type=ThisT}=This,#wx_ref{type=BitmapT}=Bitmap) ->
 -spec destroy(This::wxBitmapDataObject()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxBitmapDataObject),
-  wxe_util:destroy(?wxBitmapDataObject_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxBitmapDataObject_destroy),
   ok.
  %% From wxDataObject

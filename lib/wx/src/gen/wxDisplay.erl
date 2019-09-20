@@ -124,5 +124,5 @@ getPPI(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxDisplay()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxDisplay),
-  wxe_util:destroy(?wxDisplay_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxDisplay_destruct),
   ok.

@@ -83,7 +83,7 @@ new(#wx_ref{type=WinT}=Win) ->
 -spec destroy(This::wxClientDC()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxClientDC),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxWindowDC
  %% From wxDC

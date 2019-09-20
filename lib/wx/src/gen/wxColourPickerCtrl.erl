@@ -169,7 +169,7 @@ setColour(#wx_ref{type=ThisT}=This,Col)
 -spec destroy(This::wxColourPickerCtrl()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxColourPickerCtrl),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxPickerBase
 %% @hidden

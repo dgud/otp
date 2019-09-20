@@ -146,7 +146,7 @@ setSelection(#wx_ref{type=ThisT}=This,Sel)
 -spec destroy(This::wxSingleChoiceDialog()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxSingleChoiceDialog),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxDialog
 %% @hidden

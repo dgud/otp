@@ -412,9 +412,10 @@ void WxeApp::dispatch_cb(wxeFifo * batch, wxeMemEnv * memenv, ErlNifPid process)
 
 void WxeApp::wxe_dispatch(wxeCommand& event)
 {
-  void (*nif_cb) (WxeApp *, wxeCommand& ) = wxe_fns[event.op].nif_cb;
+  wxe_fns_t *func = &wxe_fns[event.op];
+  void (*nif_cb) (WxeApp *, wxeCommand& ) = func->nif_cb;
   if(wxe_debug) {
-    enif_fprintf(stderr, "cmd: %d %T (", event.op, event.caller);
+    enif_fprintf(stderr, "%T %d %s::%s(", event.caller, event.op, func->cname, func->fname);
     for(int i=0; i < event.argc; i++)
       enif_fprintf(stderr, "%T,", event.args[i]);
     enif_fprintf(stderr, ")\r\n");
@@ -435,6 +436,7 @@ void WxeApp::wxe_dispatch(wxeCommand& event)
     rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error,
                              rt.make_int(event.op), undef));
   }
+  event.op = -1;
 }
 
 /* Memory handling */

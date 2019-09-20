@@ -45,5 +45,5 @@ new() ->
 -spec destroy(This::wxLogNull()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxLogNull),
-  wxe_util:destroy(?wxLogNull_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxLogNull_destroy),
   ok.

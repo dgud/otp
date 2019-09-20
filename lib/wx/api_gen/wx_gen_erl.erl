@@ -375,9 +375,9 @@ gen_dest2(Class, Id) ->
     w("  ?CLASS(Type,~s),~n",[Class]),
     case Id of
 	object ->
-	    w("  wxe_util:destroy(?DESTROY_OBJECT,Obj),~n  ok.~n", []);
+	    w("  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),~n  ok.~n", []);
 	_ ->
-	    w("  wxe_util:destroy(?~s,Obj),~n  ok.~n", [get_unique_name(Id)])
+	    w("  wxe_util:queue_cmd(Obj, ?get_env(), ?~s),~n  ok.~n", [get_unique_name(Id)])
     end,
     ok.
 

@@ -142,7 +142,7 @@ setVGap(#wx_ref{type=ThisT}=This,Gap)
 -spec destroy(This::wxGridSizer()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridSizer),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxSizer
 %% @hidden

@@ -38,6 +38,24 @@
 #define wxFloodFillStyle int
 #endif
 
+// ::destroy
+void wxe_destroy(WxeApp *app, wxeCommand& Ecmd)
+{
+   wxeMemEnv *memenv = Ecmd.memenv;
+   ErlNifEnv *env = Ecmd.env;
+   ERL_NIF_TERM * argv = Ecmd.args;
+   void * This = (wxWindow *) memenv->getPtr(env, argv[0], "This");
+   wxeRefData *refd = app->getRefData(This);
+   if(This && refd) {
+       if(app->recurse_level > 1 && refd->type != 8) {
+          app->delayed_delete->Append(&Ecmd);
+       } else {
+          app->delete_object(This, refd);
+          ((WxeApp *) wxTheApp)->clearPtr(This);}
+  }
+}
+
+
 void wxEvtHandler_Connect(WxeApp *app, wxeCommand& Ecmd)
 {
   wxeMemEnv *memenv = Ecmd.memenv;
@@ -64039,7 +64057,7 @@ wxe_fns_t wxe_fns[] =
   {NULL, "", ""}, // 47
   {NULL, "", ""}, // 48
   {NULL, "", ""}, // 49
-  {NULL, "", ""}, // 50
+  {wxe_destroy, "all", "destroy"}, // 50
   {NULL, "", ""}, // 51
   {NULL, "", ""}, // 52
   {NULL, "", ""}, // 53

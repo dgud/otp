@@ -114,7 +114,7 @@ new(#wx_ref{type=ParentT}=Parent,Message, Options)
 -spec destroy(This::wxMessageDialog()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxMessageDialog),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxDialog
 %% @hidden

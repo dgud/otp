@@ -82,6 +82,6 @@ setText(#wx_ref{type=ThisT}=This,Text)
 -spec destroy(This::wxTextDataObject()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxTextDataObject),
-  wxe_util:destroy(?wxTextDataObject_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxTextDataObject_destroy),
   ok.
  %% From wxDataObject

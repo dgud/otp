@@ -104,5 +104,5 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=BitmapT}=Bitmap,Colour)
 -spec destroy(This::wxMask()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxMask),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

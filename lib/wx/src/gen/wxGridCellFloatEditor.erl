@@ -70,7 +70,7 @@ setParameters(#wx_ref{type=ThisT}=This,Params)
 -spec destroy(This::wxGridCellFloatEditor()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridCellFloatEditor),
-  wxe_util:destroy(?wxGridCellFloatEditor_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxGridCellFloatEditor_destroy),
   ok.
  %% From wxGridCellEditor
 %% @hidden

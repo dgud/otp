@@ -65,5 +65,5 @@ clear(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxDCOverlay()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxDCOverlay),
-  wxe_util:destroy(?wxDCOverlay_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxDCOverlay_destruct),
   ok.

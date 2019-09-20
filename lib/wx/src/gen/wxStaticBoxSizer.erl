@@ -90,7 +90,7 @@ getStaticBox(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxStaticBoxSizer()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxStaticBoxSizer),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxBoxSizer
 %% @hidden

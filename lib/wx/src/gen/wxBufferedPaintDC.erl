@@ -110,7 +110,7 @@ new(#wx_ref{type=WindowT}=Window,#wx_ref{type=BufferT}=Buffer, Options)
 -spec destroy(This::wxBufferedPaintDC()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxBufferedPaintDC),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxBufferedDC
 %% @hidden

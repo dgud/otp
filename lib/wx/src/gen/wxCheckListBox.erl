@@ -147,7 +147,7 @@ isChecked(#wx_ref{type=ThisT}=This,Index)
 -spec destroy(This::wxCheckListBox()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxCheckListBox),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxListBox
 %% @hidden

@@ -204,7 +204,7 @@ setBitmapSelected(#wx_ref{type=ThisT}=This,#wx_ref{type=SelT}=Sel) ->
 -spec destroy(This::wxBitmapButton()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxBitmapButton),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxButton
 %% @hidden

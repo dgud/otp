@@ -98,5 +98,5 @@ isOk(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxPalette()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxPalette),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

@@ -191,7 +191,7 @@ setScrollbar(#wx_ref{type=ThisT}=This,Position,ThumbSize,Range,PageSize, Options
 -spec destroy(This::wxScrollBar()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxScrollBar),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxControl
 %% @hidden

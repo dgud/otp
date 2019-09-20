@@ -104,5 +104,5 @@ setReplaceString(#wx_ref{type=ThisT}=This,Str)
 -spec destroy(This::wxFindReplaceData()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxFindReplaceData),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

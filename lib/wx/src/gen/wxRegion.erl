@@ -312,5 +312,5 @@ union(#wx_ref{type=ThisT}=This,X,Y,W,H)
 -spec destroy(This::wxRegion()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxRegion),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

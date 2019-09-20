@@ -80,7 +80,7 @@ setParameters(#wx_ref{type=ThisT}=This,Params)
 -spec destroy(This::wxGridCellNumberEditor()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridCellNumberEditor),
-  wxe_util:destroy(?wxGridCellNumberEditor_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxGridCellNumberEditor_destroy),
   ok.
  %% From wxGridCellTextEditor
  %% From wxGridCellEditor

@@ -100,7 +100,7 @@ selectObjectAsSource(#wx_ref{type=ThisT}=This,#wx_ref{type=BmpT}=Bmp) ->
 -spec destroy(This::wxMemoryDC()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxMemoryDC),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxDC
 %% @hidden

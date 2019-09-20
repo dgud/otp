@@ -140,7 +140,7 @@ ERL_NIF_TERM wxeReturn::make(const wxString s) {
     int * resultPtr = (int *) resultCB.data();
     ERL_NIF_TERM head, tail;
     tail = enif_make_list(env, 0);
-    for (int i = strLen-1; i >= 0; i--) {
+    for (int i = strLen-2; i >= 0; i--) {
       head = enif_make_int(env, resultPtr[i]);
       tail = enif_make_list_cell(env, head, tail);
     }

@@ -195,7 +195,7 @@ set3StateValue(#wx_ref{type=ThisT}=This,State)
 -spec destroy(This::wxCheckBox()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxCheckBox),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxControl
 %% @hidden

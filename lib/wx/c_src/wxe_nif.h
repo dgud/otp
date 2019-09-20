@@ -56,6 +56,12 @@ extern ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 #define WXE_DEBUG_PING      14
 #define WXE_DELETE_ENV      15
 
+// Taylormade functions
+
+#define WXE_DESTROY_OBJECT  50
+#define WXE_REGISTER_OBJECT 51 // Used for object monitoring
+// #define WXE_INIT_OPENGL 52
+
 int wxe_get_float(ErlNifEnv* env, ERL_NIF_TERM term, float* dp);
 
 /* wxe_impl.cpp functions */

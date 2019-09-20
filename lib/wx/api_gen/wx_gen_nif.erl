@@ -193,24 +193,25 @@ gen_funcs(Defs) ->
 		]],
     w("#endif~n",[]),
 
-    %% w("void WxeApp::wxe_dispatch(wxeCommand& Ecmd)~n{~n"),
-    %% w(" char * bp = Ecmd.buffer;~n"),
-    %% w(" int op = Ecmd.op;~n"),
-    %% w(" Ecmd.op = -1;~n"),
-    %% w(" wxeMemEnv *memenv = getMemEnv(Ecmd.port);~n"),
-    %% w(" wxeReturn rt = wxeReturn(WXE_DRV_PORT, Ecmd.caller, true);~n"),
-    %% w(" try {~n"),
-    %% w(" switch (op)~n{~n"),
-    %% w("  case DESTROY_OBJECT: {~n"),
-    %% w("     void *This = getPtr(bp,memenv);~n"),
-    %% w("     wxeRefData *refd = getRefData(This);~n"),
-    %% w("     if(This && refd) {~n"),
-    %% w("       if(recurse_level > 1 && refd->type != 8) {~n"),
-    %% w("          delayed_delete->Append(Ecmd.Save(op));~n"),
-    %% w("       } else {~n"),
-    %% w("          delete_object(This, refd);~n"),
-    %% w("          ((WxeApp *) wxTheApp)->clearPtr(This);}~n"),
-    %% w("  } } break;~n"),
+
+    w("\n// ::destroy\n"
+      "void wxe_destroy(WxeApp *app, wxeCommand& Ecmd)\n"
+      "{\n"
+      "   wxeMemEnv *memenv = Ecmd.memenv;\n"
+      "   ErlNifEnv *env = Ecmd.env;\n"
+      "   ERL_NIF_TERM * argv = Ecmd.args;\n"
+      "   void * This = (wxWindow *) memenv->getPtr(env, argv[0], \"This\");\n"
+      "   wxeRefData *refd = app->getRefData(This);~n"
+      "   if(This && refd) {~n"
+      "       if(app->recurse_level > 1 && refd->type != 8) {~n"
+      "          app->delayed_delete->Append(&Ecmd);~n"
+      "       } else {~n"
+      "          app->delete_object(This, refd);~n"
+      "          ((WxeApp *) wxTheApp)->clearPtr(This);}~n"
+      "  }~n"
+      "}~n~n", []),
+
+
     %% w("  case WXE_REGISTER_OBJECT: {~n"
     %%   "     registerPid(bp, Ecmd.caller, memenv);~n"
     %%   "     rt.addAtom(\"ok\");~n"
@@ -221,28 +222,6 @@ gen_funcs(Defs) ->
     %% w(" case WXE_INIT_OPENGL:~n  wxe_initOpenGL(&rt, bp);~n   break;~n",[]),
 
     Res = [gen_class(Class) || Class <- Defs],
-
-    %% w("  default: {~n"),
-    %% w("    wxeReturn error = wxeReturn(WXE_DRV_PORT, Ecmd.caller, false);"),
-    %% w("    error.addAtom(\"_wxe_error_\");~n"),
-    %% w("    error.addInt((int) op);~n"),
-    %% w("    error.addAtom(\"not_supported\");~n"),
-    %% w("    error.addTupleCount(3);~n"),
-    %% w("    error.send();~n"),
-    %% w("    return ;~n"),
-    %% w("  }~n"),
-    %% w("}  // switch~n"),
-    %% w(" rt.send();~n"),
-    %% w("} catch (wxe_badarg badarg) {  // try~n"),
-    %% w("    wxeReturn error = wxeReturn(WXE_DRV_PORT, Ecmd.caller, false);"),
-    %% w("    error.addAtom(\"_wxe_error_\");~n"),
-    %% w("    error.addInt((int) op);~n"),
-    %% w("    error.addAtom(\"badarg\");~n"),
-    %% w("    error.addInt((int) badarg.ref);~n"),
-    %% w("    error.addTupleCount(2);~n"),
-    %% w("    error.addTupleCount(3);~n"),
-    %% w("    error.send();~n"),
-    %% w("}} /* The End */~n~n~n"),
 
     UglySkipList = ["wxCaret", "wxCalendarDateAttr",
 		    "wxFileDataObject", "wxTextDataObject", "wxBitmapDataObject",
@@ -1199,6 +1178,9 @@ gen_func_table({Class, #method{name=Name, id=Id, method_type=MT, opts=FOpts}}, I
        true -> ignore
     end,
     Id+1;
+gen_func_table({_, _}=CM, 50=Id) ->
+    w("  {wxe_destroy, \"all\", \"destroy\"}, // ~w~n", [Id]),
+    gen_func_table(CM, Id+1);
 gen_func_table({_, #method{id=MId}}=CM, Id) when MId > Id ->
     w("  {NULL, \"\", \"\"}, // ~w~n", [Id]),
     gen_func_table(CM, Id+1).

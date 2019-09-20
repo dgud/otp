@@ -260,7 +260,7 @@ setStatusStyles(#wx_ref{type=ThisT}=This,Styles)
 -spec destroy(This::wxStatusBar()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxStatusBar),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxWindow
 %% @hidden

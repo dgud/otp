@@ -52,5 +52,5 @@ reset(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxOverlay()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxOverlay),
-  wxe_util:destroy(?wxOverlay_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxOverlay_destruct),
   ok.

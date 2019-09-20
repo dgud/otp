@@ -127,7 +127,7 @@ createClient(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
 -spec destroy(This::wxMDIClientWindow()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxMDIClientWindow),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxWindow
 %% @hidden

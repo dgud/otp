@@ -295,7 +295,7 @@ setToolBar(#wx_ref{type=ThisT}=This,#wx_ref{type=ToolbarT}=Toolbar) ->
 -spec destroy(This::wxFrame()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxFrame),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxTopLevelWindow
 %% @hidden

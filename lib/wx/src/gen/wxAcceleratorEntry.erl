@@ -107,5 +107,5 @@ set(#wx_ref{type=ThisT}=This,Flags,KeyCode,Cmd, Options)
 -spec destroy(This::wxAcceleratorEntry()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxAcceleratorEntry),
-  wxe_util:destroy(?wxAcceleratorEntry_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxAcceleratorEntry_destroy),
   ok.

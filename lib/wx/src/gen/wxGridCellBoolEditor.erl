@@ -75,7 +75,7 @@ useStringValues(Options)
 -spec destroy(This::wxGridCellBoolEditor()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridCellBoolEditor),
-  wxe_util:destroy(?wxGridCellBoolEditor_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxGridCellBoolEditor_destroy),
   ok.
  %% From wxGridCellEditor
 %% @hidden

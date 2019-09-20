@@ -233,5 +233,5 @@ getBorder(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxCalendarDateAttr()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxCalendarDateAttr),
-  wxe_util:destroy(?wxCalendarDateAttr_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxCalendarDateAttr_destroy),
   ok.

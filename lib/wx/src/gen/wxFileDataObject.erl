@@ -66,6 +66,6 @@ getFilenames(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxFileDataObject()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxFileDataObject),
-  wxe_util:destroy(?wxFileDataObject_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxFileDataObject_destroy),
   ok.
  %% From wxDataObject

@@ -51,7 +51,7 @@ new() ->
 -spec destroy(This::wxGridCellNumberRenderer()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridCellNumberRenderer),
-  wxe_util:destroy(?wxGridCellNumberRenderer_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxGridCellNumberRenderer_destroy),
   ok.
  %% From wxGridCellStringRenderer
  %% From wxGridCellRenderer

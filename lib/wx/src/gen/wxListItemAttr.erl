@@ -128,5 +128,5 @@ setTextColour(#wx_ref{type=ThisT}=This,ColText)
 -spec destroy(This::wxListItemAttr()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxListItemAttr),
-  wxe_util:destroy(?wxListItemAttr_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxListItemAttr_destroy),
   ok.

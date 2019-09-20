@@ -102,7 +102,7 @@ setWidth(#wx_ref{type=ThisT}=This,Width)
 -spec destroy(This::wxGridCellFloatRenderer()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridCellFloatRenderer),
-  wxe_util:destroy(?wxGridCellFloatRenderer_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxGridCellFloatRenderer_destroy),
   ok.
  %% From wxGridCellStringRenderer
  %% From wxGridCellRenderer

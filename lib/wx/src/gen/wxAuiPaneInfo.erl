@@ -903,5 +903,5 @@ getFloatingSize(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxAuiPaneInfo()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxAuiPaneInfo),
-  wxe_util:destroy(?wxAuiPaneInfo_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxAuiPaneInfo_destruct),
   ok.

@@ -188,5 +188,5 @@ show(#wx_ref{type=ThisT}=This, Options)
 -spec destroy(This::wxCaret()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxCaret),
-  wxe_util:destroy(?wxCaret_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxCaret_destruct),
   ok.

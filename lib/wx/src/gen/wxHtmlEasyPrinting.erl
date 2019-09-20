@@ -193,5 +193,5 @@ setFooter(#wx_ref{type=ThisT}=This,Footer, Options)
 -spec destroy(This::wxHtmlEasyPrinting()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxHtmlEasyPrinting),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.

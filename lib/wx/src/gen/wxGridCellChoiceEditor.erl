@@ -74,7 +74,7 @@ setParameters(#wx_ref{type=ThisT}=This,Params)
 -spec destroy(This::wxGridCellChoiceEditor()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxGridCellChoiceEditor),
-  wxe_util:destroy(?wxGridCellChoiceEditor_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxGridCellChoiceEditor_destroy),
   ok.
  %% From wxGridCellEditor
 %% @hidden

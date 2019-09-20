@@ -350,7 +350,7 @@ setLabelTop(#wx_ref{type=ThisT}=This,Pos,Label)
 -spec destroy(This::wxMenuBar()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxMenuBar),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxWindow
 %% @hidden

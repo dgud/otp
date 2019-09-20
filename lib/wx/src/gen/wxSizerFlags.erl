@@ -139,5 +139,5 @@ right(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxSizerFlags()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxSizerFlags),
-  wxe_util:destroy(?wxSizerFlags_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxSizerFlags_destroy),
   ok.

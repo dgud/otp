@@ -258,5 +258,5 @@ isOk(#wx_ref{type=ThisT}=This) ->
 -spec destroy(This::wxLocale()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxLocale),
-  wxe_util:destroy(?wxLocale_destruct,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxLocale_destruct),
   ok.

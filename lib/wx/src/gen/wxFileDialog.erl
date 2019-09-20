@@ -236,7 +236,7 @@ setWildcard(#wx_ref{type=ThisT}=This,WildCard)
 -spec destroy(This::wxFileDialog()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxFileDialog),
-  wxe_util:destroy(?DESTROY_OBJECT,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?DESTROY_OBJECT),
   ok.
  %% From wxDialog
 %% @hidden

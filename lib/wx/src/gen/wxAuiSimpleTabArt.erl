@@ -50,7 +50,7 @@ new() ->
 -spec destroy(This::wxAuiSimpleTabArt()) -> 'ok'.
 destroy(Obj=#wx_ref{type=Type}) ->
   ?CLASS(Type,wxAuiSimpleTabArt),
-  wxe_util:destroy(?wxAuiSimpleTabArt_destroy,Obj),
+  wxe_util:queue_cmd(Obj, ?get_env(), ?wxAuiSimpleTabArt_destroy),
   ok.
  %% From wxAuiTabArt
 %% @hidden
