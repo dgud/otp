@@ -180,66 +180,66 @@ typeCast(Old=#wx_ref{}, NewType) when is_atom(NewType) ->
 %% @see foldr/3
 -spec batch(function()) -> term().
 batch(Fun) ->
-    ok = wxe_util:cast(?BATCH_BEGIN, <<>>),
+    ok = wxe_util:queue_cmd(?BATCH_BEGIN),
     try Fun()
     catch
 	error:W:S -> erlang:exit({W, S});
 	throw:W -> erlang:throw(W);
 	exit:W  -> erlang:exit(W)
     after
-        ok = wxe_util:cast(?BATCH_END, <<>>)
+        ok = wxe_util:queue_cmd(?BATCH_END)
     end.
 
 %% @doc Behaves like {@link //stdlib/lists:foreach/2} but batches wx commands. See {@link batch/1}.
 -spec foreach(function(), list()) -> 'ok'.
 foreach(Fun, List) ->
-    ok = wxe_util:cast(?BATCH_BEGIN, <<>>),
+    ok = wxe_util:queue_cmd(?BATCH_BEGIN),
     try lists:foreach(Fun, List)
     catch
 	error:W:S -> erlang:exit({W, S});
 	throw:W -> erlang:throw(W);
 	exit:W  -> erlang:exit(W)
     after
-        ok = wxe_util:cast(?BATCH_END, <<>>)
+        ok = wxe_util:queue_cmd(?BATCH_END)
     end.
 
 %% @doc Behaves like {@link //stdlib/lists:map/2} but batches wx commands. See {@link batch/1}.
 -spec map(function(), list()) -> list().
 map(Fun, List) ->
-    ok = wxe_util:cast(?BATCH_BEGIN, <<>>),
+    ok = wxe_util:queue_cmd(?BATCH_BEGIN),
     try lists:map(Fun, List)
     catch
 	error:W:S -> erlang:exit({W, S});
 	throw:W -> erlang:throw(W);
 	exit:W  -> erlang:exit(W)
     after
-        ok = wxe_util:cast(?BATCH_END, <<>>)
+        ok = wxe_util:queue_cmd(?BATCH_END)
     end.
 
 %% @doc Behaves like {@link //stdlib/lists:foldl/3} but batches wx commands. See {@link batch/1}.
 -spec foldl(function(), term(), list()) -> term().
 foldl(Fun, Acc, List) ->
-    ok = wxe_util:cast(?BATCH_BEGIN, <<>>),
+    ok = wxe_util:queue_cmd(?BATCH_BEGIN),
     try lists:foldl(Fun, Acc, List)
     catch
 	error:W:S -> erlang:exit({W, S});
 	throw:W -> erlang:throw(W);
 	exit:W  -> erlang:exit(W)
     after
-        ok = wxe_util:cast(?BATCH_END, <<>>)
+        ok = wxe_util:queue_cmd(?BATCH_END)
     end.
 
 %% @doc Behaves like {@link //stdlib/lists:foldr/3} but batches wx commands. See {@link batch/1}.
 -spec foldr(function(), term(), list()) -> term().
 foldr(Fun, Acc, List) ->
-    ok = wxe_util:cast(?BATCH_BEGIN, <<>>),
+    ok = wxe_util:queue_cmd(?BATCH_BEGIN),
     try lists:foldr(Fun, Acc, List)
     catch
 	error:W:S -> erlang:exit({W, S});
 	throw:W -> erlang:throw(W);
 	exit:W  -> erlang:exit(W)
     after
-        ok = wxe_util:cast(?BATCH_END, <<>>)
+        ok = wxe_util:queue_cmd(?BATCH_END)
     end.
 
 -define(MIN_BIN_SIZE, 64).  %% Current emulator min off heap size
@@ -316,8 +316,7 @@ calc_level(Level) when is_integer(Level) ->
     Level.
 
 set_debug(Level) when is_integer(Level) ->
-    case get(?WXE_IDENTIFIER) of
-	undefined -> erlang:error({wxe,no_env});
+    case get_env() of
 	#wx_env{debug=Old} when Old =:= Level -> ok;
 	Env = #wx_env{sv=Server, debug=Old} ->
 	    if

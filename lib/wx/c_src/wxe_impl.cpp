@@ -69,19 +69,15 @@ void push_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[], int op, void 
   wxeMemEnv * memenv = (wxeMemEnv *) mp;
 
   enif_mutex_lock(wxe_batch_locker_m);
-  int wait = wxe_queue->Add(env, argc, argv, op, memenv);
+  int n = wxe_queue->Add(env, argc, argv, op, memenv);
 
   if(wxe_needs_signal) {
-    // wx-thread is waiting on batch end in cond_wait
-    if(!wait)
-    {
-        enif_cond_signal(wxe_batch_locker_c);
-    }
+    enif_cond_signal(wxe_batch_locker_c);
     enif_mutex_unlock(wxe_batch_locker_m);
   } else {
     // wx-thread is waiting gui-events
     enif_mutex_unlock(wxe_batch_locker_m);
-    wxWakeUpIdle();
+    if(n < 2) wxWakeUpIdle();
   }
 }
 

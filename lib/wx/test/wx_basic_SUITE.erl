@@ -159,8 +159,8 @@ wx_api(Config) ->
     Env = ?mr(wx_env, wx:get_env()),
     %% Test some error cases 
     erase(wx_env),
-    ?m({'EXIT', {{wxe,unknown_port},_}},wxWindow:show(Frame, [])),
-    ?m({'EXIT', {{wxe,unknown_port},_}},wx:debug(2)),
+    ?m({'EXIT', {{wx,unknown_env},_}},wxWindow:show(Frame, [])),
+    ?m({'EXIT', {{wx,unknown_env},_}},wx:debug(2)),
     
     ?m(ok,wx:set_env(Env)),
     ?m(ok,wx:debug(1)),
@@ -169,16 +169,18 @@ wx_api(Config) ->
     ?m(ok,wx:debug(none)),
     ?m(ok,wx:debug(verbose)),
     ?m(ok,wx:debug(trace)),
+    ?m(ok,wx:debug(driver)),
     
     Mem = ?mr(wx_mem, wx:create_memory(10)),
     ?m(true, is_binary(wx:get_memory_bin(Mem))),
     ?mt(foo, wx:typeCast(Frame, foo)),
 
-    RecBatch = fun() -> 
-		       wx:batch(fun() -> create_menus(Frame) end)
-	       end,
+    %% wx:debug(16),
+    RecBatch = fun() ->
+        	       wx:batch(fun() -> create_menus(Frame) end)
+               end,
     ?m(batch_ret, wx:batch(fun() -> RecBatch(), batch_ret end)),
-    ?m(ok, wx:foreach(fun(A) -> true = lists:member(A,[1,2,3,4,5]) end, 
+    ?m(ok, wx:foreach(fun(A) -> true = lists:member(A,[1,2,3,4,5]) end,
 		      lists:seq(1,5))),
     ?m([2,3,4,5,6], wx:map(fun(A) -> A+1 end, lists:seq(1,5))),
     ?m({5,15}, wx:foldl(fun(A,{_,Acc}) -> {A,A+Acc} end, {0,0},
