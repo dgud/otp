@@ -259,7 +259,7 @@ findItem(This,Start,Str)
 findItem(#wx_ref{type=ThisT}=This,Start,Str, Options)
  when is_integer(Start),?is_chardata(Str),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Start,Str_UC, Options,?get_env(),?wxListCtrl_FindItem_3_0),
   wxe_util:rec(?wxListCtrl_FindItem_3_0);
 findItem(#wx_ref{type=ThisT}=This,Start,{PtX,PtY} = Pt,Direction)
@@ -518,7 +518,7 @@ insertColumn(#wx_ref{type=ThisT}=This,Col,#wx_ref{type=InfoT}=Info)
 insertColumn(#wx_ref{type=ThisT}=This,Col,Heading, Options)
  when is_integer(Col),?is_chardata(Heading),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  Heading_UC = unicode:characters_to_binary([Heading,0]),
+  Heading_UC = unicode:characters_to_binary(Heading),
   wxe_util:queue_cmd(This,Col,Heading_UC, Options,?get_env(),?wxListCtrl_InsertColumn_3),
   wxe_util:rec(?wxListCtrl_InsertColumn_3).
 
@@ -548,7 +548,7 @@ insertItem(#wx_ref{type=ThisT}=This,Index,ImageIndex)
 insertItem(#wx_ref{type=ThisT}=This,Index,Label)
  when is_integer(Index),?is_chardata(Label) ->
   ?CLASS(ThisT,wxListCtrl),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Index,Label_UC,?get_env(),?wxListCtrl_InsertItem_2_1),
   wxe_util:rec(?wxListCtrl_InsertItem_2_1).
 
@@ -558,7 +558,7 @@ insertItem(#wx_ref{type=ThisT}=This,Index,Label)
 insertItem(#wx_ref{type=ThisT}=This,Index,Label,ImageIndex)
  when is_integer(Index),?is_chardata(Label),is_integer(ImageIndex) ->
   ?CLASS(ThisT,wxListCtrl),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Index,Label_UC,ImageIndex,?get_env(),?wxListCtrl_InsertItem_3),
   wxe_util:rec(?wxListCtrl_InsertItem_3).
 
@@ -648,7 +648,7 @@ setItem(This,Index,Col,Label)
 setItem(#wx_ref{type=ThisT}=This,Index,Col,Label, Options)
  when is_integer(Index),is_integer(Col),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Index,Col,Label_UC, Options,?get_env(),?wxListCtrl_SetItem_4),
   wxe_util:rec(?wxListCtrl_SetItem_4).
 
@@ -737,7 +737,7 @@ setItemState(#wx_ref{type=ThisT}=This,Item,State,StateMask)
 setItemText(#wx_ref{type=ThisT}=This,Item,Str)
  when is_integer(Item),?is_chardata(Str) ->
   ?CLASS(ThisT,wxListCtrl),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Item,Str_UC,?get_env(),?wxListCtrl_SetItemText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistctrl.html#wxlistctrlsetitemtextcolour">external documentation</a>.

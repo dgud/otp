@@ -106,7 +106,7 @@ new(Parent,Message)
 new(#wx_ref{type=ParentT}=Parent,Message, Options)
  when ?is_chardata(Message),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Message_UC = unicode:characters_to_binary([Message,0]),
+  Message_UC = unicode:characters_to_binary(Message),
   wxe_util:queue_cmd(Parent,Message_UC, Options,?get_env(),?wxMessageDialog_new),
   wxe_util:rec(?wxMessageDialog_new).
 

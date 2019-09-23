@@ -509,14 +509,14 @@ arg_type_test(#param{name=Name0,type=#type{name=Type,base=Base,single=Single}},E
     if
 	Type =:= "wxArtClient", Single =:= true ->
 	    Name = erl_arg_name(Name0),
-	    w("  ~s_UC = unicode:characters_to_binary([~s, $_, $C,0]),~s",
+	    w("  ~s_UC = unicode:characters_to_binary([~s, $_, $C]),~s",
 	      [Name,Name, EOS]);
 	Base =:= string orelse (Type =:= "wxChar" andalso Single =/= true) ->
 	    Name = erl_arg_name(Name0),
-	    w("  ~s_UC = unicode:characters_to_binary([~s,0]),~s", [Name,Name,EOS]);
+	    w("  ~s_UC = unicode:characters_to_binary(~s),~s", [Name,Name,EOS]);
 	Type =:= "wxArrayString" ->
 	    Name = erl_arg_name(Name0),
-	    w("  ~s_UCA = [unicode:characters_to_binary([~sTemp,0]) || ~s",
+	    w("  ~s_UCA = [unicode:characters_to_binary(~sTemp) ||~s",
 	      [Name,Name, EOS]),
 	    w("              ~sTemp <- ~s],~s", [Name,Name,EOS]);
 	true -> %% Not a string

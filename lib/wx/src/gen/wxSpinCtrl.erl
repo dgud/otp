@@ -154,7 +154,7 @@ setValue(#wx_ref{type=ThisT}=This,Value)
 setValue(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxSpinCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxSpinCtrl_SetValue_1_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxspinctrl.html#wxspinctrlgetvalue">external documentation</a>.

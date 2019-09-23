@@ -320,7 +320,7 @@ findWindow(#wx_ref{type=ThisT}=This,Winid)
 findWindow(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxWindow_FindWindow_1_1),
   wxe_util:rec(?wxWindow_FindWindow_1_1).
 
@@ -355,7 +355,7 @@ findWindowByName(Name)
 	Option :: {'parent', wxWindow()}.
 findWindowByName(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxWindow_FindWindowByName),
   wxe_util:rec(?wxWindow_FindWindowByName).
 
@@ -373,7 +373,7 @@ findWindowByLabel(Label)
 	Option :: {'parent', wxWindow()}.
 findWindowByLabel(Label, Options)
  when ?is_chardata(Label),is_list(Options) ->
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(Label_UC, Options,?get_env(),?wxWindow_FindWindowByLabel),
   wxe_util:rec(?wxWindow_FindWindowByLabel).
 
@@ -697,7 +697,7 @@ getTextExtent(This,String)
 getTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  String_UC = unicode:characters_to_binary([String,0]),
+  String_UC = unicode:characters_to_binary(String),
   wxe_util:queue_cmd(This,String_UC, Options,?get_env(),?wxWindow_GetTextExtent),
   wxe_util:rec(?wxWindow_GetTextExtent).
 
@@ -1354,7 +1354,7 @@ setForegroundColour(#wx_ref{type=ThisT}=This,Colour)
 setHelpText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxWindow),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxWindow_SetHelpText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetid">external documentation</a>.
@@ -1371,7 +1371,7 @@ setId(#wx_ref{type=ThisT}=This,Winid)
 setLabel(#wx_ref{type=ThisT}=This,Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Label_UC,?get_env(),?wxWindow_SetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetname">external documentation</a>.
@@ -1380,7 +1380,7 @@ setLabel(#wx_ref{type=ThisT}=This,Label)
 setName(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxWindow_SetName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetpalette">external documentation</a>.
@@ -1578,7 +1578,7 @@ setThemeEnabled(#wx_ref{type=ThisT}=This,EnableTheme)
 setToolTip(#wx_ref{type=ThisT}=This,Tip)
  when ?is_chardata(Tip) ->
   ?CLASS(ThisT,wxWindow),
-  Tip_UC = unicode:characters_to_binary([Tip,0]),
+  Tip_UC = unicode:characters_to_binary(Tip),
   wxe_util:queue_cmd(This,Tip_UC,?get_env(),?wxWindow_SetToolTip_1_0);
 setToolTip(#wx_ref{type=ThisT}=This,#wx_ref{type=TipT}=Tip) ->
   ?CLASS(ThisT,wxWindow),

@@ -200,7 +200,7 @@ setPaperId(#wx_ref{type=ThisT}=This,SizeId)
 setPrinterName(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxPrintData),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxPrintData_SetPrinterName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintdata.html#wxprintdatasetquality">external documentation</a>.

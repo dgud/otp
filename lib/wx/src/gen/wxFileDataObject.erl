@@ -51,7 +51,7 @@ new() ->
 addFile(#wx_ref{type=ThisT}=This,Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxFileDataObject),
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(This,Filename_UC,?get_env(),?wxFileDataObject_AddFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledataobject.html#wxfiledataobjectgetfilenames">external documentation</a>.

@@ -146,7 +146,7 @@ addRoot(This,Text)
 addRoot(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxTreeCtrl_AddRoot),
   wxe_util:rec(?wxTreeCtrl_AddRoot).
 
@@ -167,7 +167,7 @@ appendItem(This,Parent,Text)
 appendItem(#wx_ref{type=ThisT}=This,Parent,Text, Options)
  when is_integer(Parent),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Parent,Text_UC, Options,?get_env(),?wxTreeCtrl_AppendItem),
   wxe_util:rec(?wxTreeCtrl_AppendItem).
 
@@ -551,7 +551,7 @@ insertItem(This,Parent,Pos,Text)
 insertItem(#wx_ref{type=ThisT}=This,Parent,Pos,Text, Options)
  when is_integer(Parent),is_integer(Pos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Parent,Pos,Text_UC, Options,?get_env(),?wxTreeCtrl_InsertItem),
   wxe_util:rec(?wxTreeCtrl_InsertItem).
 
@@ -625,7 +625,7 @@ prependItem(This,Parent,Text)
 prependItem(#wx_ref{type=ThisT}=This,Parent,Text, Options)
  when is_integer(Parent),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Parent,Text_UC, Options,?get_env(),?wxTreeCtrl_PrependItem),
   wxe_util:rec(?wxTreeCtrl_PrependItem).
 
@@ -770,7 +770,7 @@ setItemImage(#wx_ref{type=ThisT}=This,Item,Image, Options)
 setItemText(#wx_ref{type=ThisT}=This,Item,Text)
  when is_integer(Item),?is_chardata(Text) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Item,Text_UC,?get_env(),?wxTreeCtrl_SetItemText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlsetitemtextcolour">external documentation</a>.

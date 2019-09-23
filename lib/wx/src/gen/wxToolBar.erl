@@ -189,7 +189,7 @@ addTool(This,Toolid,Label,Bitmap,BmpDisabled)
 addTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Toolid),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap, Options,?get_env(),?wxToolBar_AddTool_4_0),
   wxe_util:rec(?wxToolBar_AddTool_4_0);
@@ -226,7 +226,7 @@ addTool(This,Toolid,Bitmap,BmpDisabled,Toggle,XPos)
 addTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap,#wx_ref{type=BmpDisabledT}=BmpDisabled, Options)
  when is_integer(Toolid),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap,BmpDisabled, Options,?get_env(),?wxToolBar_AddTool_5),
@@ -265,7 +265,7 @@ addCheckTool(This,Toolid,Label,Bitmap)
 addCheckTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Toolid),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap, Options,?get_env(),?wxToolBar_AddCheckTool),
   wxe_util:rec(?wxToolBar_AddCheckTool).
@@ -288,7 +288,7 @@ addRadioTool(This,Toolid,Label,Bitmap)
 addRadioTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Toolid),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap, Options,?get_env(),?wxToolBar_AddRadioTool),
   wxe_util:rec(?wxToolBar_AddRadioTool).
@@ -528,7 +528,7 @@ insertTool(#wx_ref{type=ThisT}=This,Pos,Toolid,#wx_ref{type=BitmapT}=Bitmap, Opt
 insertTool(#wx_ref{type=ThisT}=This,Pos,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Pos),is_integer(Toolid),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
   wxe_util:queue_cmd(This,Pos,Toolid,Label_UC,Bitmap, Options,?get_env(),?wxToolBar_InsertTool_5),
   wxe_util:rec(?wxToolBar_InsertTool_5).
@@ -572,7 +572,7 @@ setToolBitmapSize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
 setToolLongHelp(#wx_ref{type=ThisT}=This,Toolid,HelpString)
  when is_integer(Toolid),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxToolBar),
-  HelpString_UC = unicode:characters_to_binary([HelpString,0]),
+  HelpString_UC = unicode:characters_to_binary(HelpString),
   wxe_util:queue_cmd(This,Toolid,HelpString_UC,?get_env(),?wxToolBar_SetToolLongHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoolpacking">external documentation</a>.
@@ -589,7 +589,7 @@ setToolPacking(#wx_ref{type=ThisT}=This,Packing)
 setToolShortHelp(#wx_ref{type=ThisT}=This,Id,HelpString)
  when is_integer(Id),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxToolBar),
-  HelpString_UC = unicode:characters_to_binary([HelpString,0]),
+  HelpString_UC = unicode:characters_to_binary(HelpString),
   wxe_util:queue_cmd(This,Id,HelpString_UC,?get_env(),?wxToolBar_SetToolShortHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbar.html#wxtoolbarsettoolseparation">external documentation</a>.

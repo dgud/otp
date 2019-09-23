@@ -151,7 +151,7 @@ setDefault(#wx_ref{type=ThisT}=This) ->
 setLabel(#wx_ref{type=ThisT}=This,Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxButton),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Label_UC,?get_env(),?wxButton_SetLabel).
 
 %% @doc Destroys this object, do not use object again

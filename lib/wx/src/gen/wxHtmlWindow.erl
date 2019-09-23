@@ -124,7 +124,7 @@ new(#wx_ref{type=ParentT}=Parent, Options)
 appendToPage(#wx_ref{type=ThisT}=This,Source)
  when ?is_chardata(Source) ->
   ?CLASS(ThisT,wxHtmlWindow),
-  Source_UC = unicode:characters_to_binary([Source,0]),
+  Source_UC = unicode:characters_to_binary(Source),
   wxe_util:queue_cmd(This,Source_UC,?get_env(),?wxHtmlWindow_AppendToPage),
   wxe_util:rec(?wxHtmlWindow_AppendToPage).
 
@@ -205,7 +205,7 @@ historyForward(#wx_ref{type=ThisT}=This) ->
 loadFile(#wx_ref{type=ThisT}=This,Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxHtmlWindow),
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(This,Filename_UC,?get_env(),?wxHtmlWindow_LoadFile),
   wxe_util:rec(?wxHtmlWindow_LoadFile).
 
@@ -215,7 +215,7 @@ loadFile(#wx_ref{type=ThisT}=This,Filename)
 loadPage(#wx_ref{type=ThisT}=This,Location)
  when ?is_chardata(Location) ->
   ?CLASS(ThisT,wxHtmlWindow),
-  Location_UC = unicode:characters_to_binary([Location,0]),
+  Location_UC = unicode:characters_to_binary(Location),
   wxe_util:queue_cmd(This,Location_UC,?get_env(),?wxHtmlWindow_LoadPage),
   wxe_util:rec(?wxHtmlWindow_LoadPage).
 
@@ -273,8 +273,8 @@ setFonts(This,Normal_face,Fixed_face)
 setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
  when ?is_chardata(Normal_face),?is_chardata(Fixed_face),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlWindow),
-  Normal_face_UC = unicode:characters_to_binary([Normal_face,0]),
-  Fixed_face_UC = unicode:characters_to_binary([Fixed_face,0]),
+  Normal_face_UC = unicode:characters_to_binary(Normal_face),
+  Fixed_face_UC = unicode:characters_to_binary(Fixed_face),
   wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Options,?get_env(),?wxHtmlWindow_SetFonts).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmlwindow.html#wxhtmlwindowsetpage">external documentation</a>.
@@ -283,7 +283,7 @@ setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
 setPage(#wx_ref{type=ThisT}=This,Source)
  when ?is_chardata(Source) ->
   ?CLASS(ThisT,wxHtmlWindow),
-  Source_UC = unicode:characters_to_binary([Source,0]),
+  Source_UC = unicode:characters_to_binary(Source),
   wxe_util:queue_cmd(This,Source_UC,?get_env(),?wxHtmlWindow_SetPage),
   wxe_util:rec(?wxHtmlWindow_SetPage).
 
@@ -294,7 +294,7 @@ setRelatedFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame,Format)
  when ?is_chardata(Format) ->
   ?CLASS(ThisT,wxHtmlWindow),
   ?CLASS(FrameT,wxFrame),
-  Format_UC = unicode:characters_to_binary([Format,0]),
+  Format_UC = unicode:characters_to_binary(Format),
   wxe_util:queue_cmd(This,Frame,Format_UC,?get_env(),?wxHtmlWindow_SetRelatedFrame).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmlwindow.html#wxhtmlwindowsetrelatedstatusbar">external documentation</a>.

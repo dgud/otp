@@ -111,9 +111,9 @@ new(Parent,Message,Caption,Choices)
 new(#wx_ref{type=ParentT}=Parent,Message,Caption,Choices, Options)
  when ?is_chardata(Message),?is_chardata(Caption),is_list(Choices),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Message_UC = unicode:characters_to_binary([Message,0]),
-  Caption_UC = unicode:characters_to_binary([Caption,0]),
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Message_UC = unicode:characters_to_binary(Message),
+  Caption_UC = unicode:characters_to_binary(Caption),
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(Parent,Message_UC,Caption_UC,Choices_UCA, Options,?get_env(),?wxSingleChoiceDialog_new_5),
   wxe_util:rec(?wxSingleChoiceDialog_new_5).

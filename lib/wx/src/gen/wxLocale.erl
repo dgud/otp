@@ -87,7 +87,7 @@ init(#wx_ref{type=ThisT}=This, Options)
 addCatalog(#wx_ref{type=ThisT}=This,SzDomain)
  when ?is_chardata(SzDomain) ->
   ?CLASS(ThisT,wxLocale),
-  SzDomain_UC = unicode:characters_to_binary([SzDomain,0]),
+  SzDomain_UC = unicode:characters_to_binary(SzDomain),
   wxe_util:queue_cmd(This,SzDomain_UC,?get_env(),?wxLocale_AddCatalog_1),
   wxe_util:rec(?wxLocale_AddCatalog_1).
 
@@ -98,8 +98,8 @@ addCatalog(#wx_ref{type=ThisT}=This,SzDomain)
 addCatalog(#wx_ref{type=ThisT}=This,SzDomain,MsgIdLanguage,MsgIdCharset)
  when ?is_chardata(SzDomain),is_integer(MsgIdLanguage),?is_chardata(MsgIdCharset) ->
   ?CLASS(ThisT,wxLocale),
-  SzDomain_UC = unicode:characters_to_binary([SzDomain,0]),
-  MsgIdCharset_UC = unicode:characters_to_binary([MsgIdCharset,0]),
+  SzDomain_UC = unicode:characters_to_binary(SzDomain),
+  MsgIdCharset_UC = unicode:characters_to_binary(MsgIdCharset),
   wxe_util:queue_cmd(This,SzDomain_UC,MsgIdLanguage,MsgIdCharset_UC,?get_env(),?wxLocale_AddCatalog_3),
   wxe_util:rec(?wxLocale_AddCatalog_3).
 
@@ -108,7 +108,7 @@ addCatalog(#wx_ref{type=ThisT}=This,SzDomain,MsgIdLanguage,MsgIdCharset)
 	Prefix::unicode:chardata().
 addCatalogLookupPathPrefix(Prefix)
  when ?is_chardata(Prefix) ->
-  Prefix_UC = unicode:characters_to_binary([Prefix,0]),
+  Prefix_UC = unicode:characters_to_binary(Prefix),
   wxe_util:queue_cmd(Prefix_UC,?get_env(),?wxLocale_AddCatalogLookupPathPrefix).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlocale.html#wxlocalegetcanonicalname">external documentation</a>.
@@ -166,7 +166,7 @@ getString(This,SzOrigString)
 getString(#wx_ref{type=ThisT}=This,SzOrigString, Options)
  when ?is_chardata(SzOrigString),is_list(Options) ->
   ?CLASS(ThisT,wxLocale),
-  SzOrigString_UC = unicode:characters_to_binary([SzOrigString,0]),
+  SzOrigString_UC = unicode:characters_to_binary(SzOrigString),
   wxe_util:queue_cmd(This,SzOrigString_UC, Options,?get_env(),?wxLocale_GetString_2),
   wxe_util:rec(?wxLocale_GetString_2).
 
@@ -185,8 +185,8 @@ getString(This,SzOrigString,SzOrigString2,N)
 getString(#wx_ref{type=ThisT}=This,SzOrigString,SzOrigString2,N, Options)
  when ?is_chardata(SzOrigString),?is_chardata(SzOrigString2),is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxLocale),
-  SzOrigString_UC = unicode:characters_to_binary([SzOrigString,0]),
-  SzOrigString2_UC = unicode:characters_to_binary([SzOrigString2,0]),
+  SzOrigString_UC = unicode:characters_to_binary(SzOrigString),
+  SzOrigString2_UC = unicode:characters_to_binary(SzOrigString2),
   wxe_util:queue_cmd(This,SzOrigString_UC,SzOrigString2_UC,N, Options,?get_env(),?wxLocale_GetString_4),
   wxe_util:rec(?wxLocale_GetString_4).
 
@@ -205,7 +205,7 @@ getHeaderValue(This,SzHeader)
 getHeaderValue(#wx_ref{type=ThisT}=This,SzHeader, Options)
  when ?is_chardata(SzHeader),is_list(Options) ->
   ?CLASS(ThisT,wxLocale),
-  SzHeader_UC = unicode:characters_to_binary([SzHeader,0]),
+  SzHeader_UC = unicode:characters_to_binary(SzHeader),
   wxe_util:queue_cmd(This,SzHeader_UC, Options,?get_env(),?wxLocale_GetHeaderValue),
   wxe_util:rec(?wxLocale_GetHeaderValue).
 
@@ -242,7 +242,7 @@ getSystemLanguage() ->
 isLoaded(#wx_ref{type=ThisT}=This,SzDomain)
  when ?is_chardata(SzDomain) ->
   ?CLASS(ThisT,wxLocale),
-  SzDomain_UC = unicode:characters_to_binary([SzDomain,0]),
+  SzDomain_UC = unicode:characters_to_binary(SzDomain),
   wxe_util:queue_cmd(This,SzDomain_UC,?get_env(),?wxLocale_IsLoaded),
   wxe_util:rec(?wxLocale_IsLoaded).
 

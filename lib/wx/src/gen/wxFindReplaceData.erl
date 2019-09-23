@@ -88,7 +88,7 @@ setFlags(#wx_ref{type=ThisT}=This,Flags)
 setFindString(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFindReplaceData),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxFindReplaceData_SetFindString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedata.html#wxfindreplacedatasetreplacestring">external documentation</a>.
@@ -97,7 +97,7 @@ setFindString(#wx_ref{type=ThisT}=This,Str)
 setReplaceString(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFindReplaceData),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxFindReplaceData_SetReplaceString).
 
 %% @doc Destroys this object, do not use object again

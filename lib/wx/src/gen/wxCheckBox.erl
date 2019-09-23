@@ -106,7 +106,7 @@ new(Parent,Id,Label)
 new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxCheckBox_new_4),
   wxe_util:rec(?wxCheckBox_new_4).
 
@@ -129,7 +129,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxCheckBox),
   ?CLASS(ParentT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxCheckBox_Create),
   wxe_util:rec(?wxCheckBox_Create).
 

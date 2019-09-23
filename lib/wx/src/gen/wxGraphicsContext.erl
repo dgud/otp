@@ -259,7 +259,7 @@ drawRoundedRectangle(#wx_ref{type=ThisT}=This,X,Y,W,H,Radius)
 drawText(#wx_ref{type=ThisT}=This,Str,X,Y)
  when ?is_chardata(Str),is_number(X),is_number(Y) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,X,Y,?get_env(),?wxGraphicsContext_DrawText_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicscontext.html#wxgraphicscontextdrawtext">external documentation</a>.
@@ -274,12 +274,12 @@ drawText(#wx_ref{type=ThisT}=This,Str,X,Y)
 drawText(#wx_ref{type=ThisT}=This,Str,X,Y,Angle)
  when ?is_chardata(Str),is_number(X),is_number(Y),is_number(Angle) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,X,Y,Angle,?get_env(),?wxGraphicsContext_DrawText_4_0);
 drawText(#wx_ref{type=ThisT}=This,Str,X,Y,#wx_ref{type=BackgroundBrushT}=BackgroundBrush)
  when ?is_chardata(Str),is_number(X),is_number(Y) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   ?CLASS(BackgroundBrushT,wxGraphicsBrush),
   wxe_util:queue_cmd(This,Str_UC,X,Y,BackgroundBrush,?get_env(),?wxGraphicsContext_DrawText_4_1).
 
@@ -289,7 +289,7 @@ drawText(#wx_ref{type=ThisT}=This,Str,X,Y,#wx_ref{type=BackgroundBrushT}=Backgro
 drawText(#wx_ref{type=ThisT}=This,Str,X,Y,Angle,#wx_ref{type=BackgroundBrushT}=BackgroundBrush)
  when ?is_chardata(Str),is_number(X),is_number(Y),is_number(Angle) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   ?CLASS(BackgroundBrushT,wxGraphicsBrush),
   wxe_util:queue_cmd(This,Str_UC,X,Y,Angle,BackgroundBrush,?get_env(),?wxGraphicsContext_DrawText_5).
 
@@ -326,7 +326,7 @@ strokePath(#wx_ref{type=ThisT}=This,#wx_ref{type=PathT}=Path) ->
 getPartialTextExtents(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxGraphicsContext_GetPartialTextExtents),
   wxe_util:rec(?wxGraphicsContext_GetPartialTextExtents).
 
@@ -337,7 +337,7 @@ getPartialTextExtents(#wx_ref{type=ThisT}=This,Text)
 getTextExtent(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxGraphicsContext_GetTextExtent),
   wxe_util:rec(?wxGraphicsContext_GetTextExtent).
 

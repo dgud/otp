@@ -135,8 +135,8 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Value,{PosX,PosY
  when is_integer(Id),?is_chardata(Value),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxComboBox),
   ?CLASS(ParentT,wxWindow),
-  Value_UC = unicode:characters_to_binary([Value,0]),
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Value_UC = unicode:characters_to_binary(Value),
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(This,Parent,Id,Value_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxComboBox_Create),
   wxe_util:rec(?wxComboBox_Create).
@@ -239,7 +239,7 @@ redo(#wx_ref{type=ThisT}=This) ->
 replace(#wx_ref{type=ThisT}=This,From,To,Value)
  when is_integer(From),is_integer(To),?is_chardata(Value) ->
   ?CLASS(ThisT,wxComboBox),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,From,To,Value_UC,?get_env(),?wxComboBox_Replace).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcombobox.html#wxcomboboxremove">external documentation</a>.
@@ -287,7 +287,7 @@ setSelection(#wx_ref{type=ThisT}=This,From,To)
 setValue(#wx_ref{type=ThisT}=This,Value)
  when ?is_chardata(Value) ->
   ?CLASS(ThisT,wxComboBox),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,Value_UC,?get_env(),?wxComboBox_SetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcombobox.html#wxcomboboxundo">external documentation</a>.

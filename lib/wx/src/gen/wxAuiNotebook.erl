@@ -128,7 +128,7 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Caption, Options)
  when ?is_chardata(Caption),is_list(Options) ->
   ?CLASS(ThisT,wxAuiNotebook),
   ?CLASS(PageT,wxWindow),
-  Caption_UC = unicode:characters_to_binary([Caption,0]),
+  Caption_UC = unicode:characters_to_binary(Caption),
   wxe_util:queue_cmd(This,Page,Caption_UC, Options,?get_env(),?wxAuiNotebook_AddPage),
   wxe_util:rec(?wxAuiNotebook_AddPage).
 
@@ -240,7 +240,7 @@ insertPage(#wx_ref{type=ThisT}=This,Page_idx,#wx_ref{type=PageT}=Page,Caption, O
  when is_integer(Page_idx),?is_chardata(Caption),is_list(Options) ->
   ?CLASS(ThisT,wxAuiNotebook),
   ?CLASS(PageT,wxWindow),
-  Caption_UC = unicode:characters_to_binary([Caption,0]),
+  Caption_UC = unicode:characters_to_binary(Caption),
   wxe_util:queue_cmd(This,Page_idx,Page,Caption_UC, Options,?get_env(),?wxAuiNotebook_InsertPage),
   wxe_util:rec(?wxAuiNotebook_InsertPage).
 
@@ -286,7 +286,7 @@ setPageBitmap(#wx_ref{type=ThisT}=This,Page,#wx_ref{type=BitmapT}=Bitmap)
 setPageText(#wx_ref{type=ThisT}=This,Page,Text)
  when is_integer(Page),?is_chardata(Text) ->
   ?CLASS(ThisT,wxAuiNotebook),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Page,Text_UC,?get_env(),?wxAuiNotebook_SetPageText),
   wxe_util:rec(?wxAuiNotebook_SetPageText).
 

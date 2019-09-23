@@ -775,7 +775,7 @@ getDefaultEditorForCell(#wx_ref{type=ThisT}=This,Row,Col)
 getDefaultEditorForType(#wx_ref{type=ThisT}=This,TypeName)
  when ?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
-  TypeName_UC = unicode:characters_to_binary([TypeName,0]),
+  TypeName_UC = unicode:characters_to_binary(TypeName),
   wxe_util:queue_cmd(This,TypeName_UC,?get_env(),?wxGrid_GetDefaultEditorForType),
   wxe_util:rec(?wxGrid_GetDefaultEditorForType).
 
@@ -802,7 +802,7 @@ getDefaultRendererForCell(#wx_ref{type=ThisT}=This,Row,Col)
 getDefaultRendererForType(#wx_ref{type=ThisT}=This,TypeName)
  when ?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
-  TypeName_UC = unicode:characters_to_binary([TypeName,0]),
+  TypeName_UC = unicode:characters_to_binary(TypeName),
   wxe_util:queue_cmd(This,TypeName_UC,?get_env(),?wxGrid_GetDefaultRendererForType),
   wxe_util:rec(?wxGrid_GetDefaultRendererForType).
 
@@ -1312,7 +1312,7 @@ movePageUp(#wx_ref{type=ThisT}=This) ->
 registerDataType(#wx_ref{type=ThisT}=This,TypeName,#wx_ref{type=RendererT}=Renderer,#wx_ref{type=EditorT}=Editor)
  when ?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
-  TypeName_UC = unicode:characters_to_binary([TypeName,0]),
+  TypeName_UC = unicode:characters_to_binary(TypeName),
   ?CLASS(RendererT,wxGridCellRenderer),
   ?CLASS(EditorT,wxGridCellEditor),
   wxe_util:queue_cmd(This,TypeName_UC,Renderer,Editor,?get_env(),?wxGrid_RegisterDataType).
@@ -1508,7 +1508,7 @@ setCellTextColour(#wx_ref{type=ThisT}=This,Val,Row,Col)
 setCellValue(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords,S)
  when is_integer(CoordsR),is_integer(CoordsC),?is_chardata(S) ->
   ?CLASS(ThisT,wxGrid),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,Coords,S_UC,?get_env(),?wxGrid_SetCellValue_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellvalue">external documentation</a>.
@@ -1523,12 +1523,12 @@ setCellValue(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords,S)
 setCellValue(#wx_ref{type=ThisT}=This,Row,Col,S)
  when is_integer(Row),is_integer(Col),?is_chardata(S) ->
   ?CLASS(ThisT,wxGrid),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,Row,Col,S_UC,?get_env(),?wxGrid_SetCellValue_3_0);
 setCellValue(#wx_ref{type=ThisT}=This,Val,Row,Col)
  when ?is_chardata(Val),is_integer(Row),is_integer(Col) ->
   ?CLASS(ThisT,wxGrid),
-  Val_UC = unicode:characters_to_binary([Val,0]),
+  Val_UC = unicode:characters_to_binary(Val),
   wxe_util:queue_cmd(This,Val_UC,Row,Col,?get_env(),?wxGrid_SetCellValue_3_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolattr">external documentation</a>.
@@ -1580,7 +1580,7 @@ setColFormatFloat(#wx_ref{type=ThisT}=This,Col, Options)
 setColFormatCustom(#wx_ref{type=ThisT}=This,Col,TypeName)
  when is_integer(Col),?is_chardata(TypeName) ->
   ?CLASS(ThisT,wxGrid),
-  TypeName_UC = unicode:characters_to_binary([TypeName,0]),
+  TypeName_UC = unicode:characters_to_binary(TypeName),
   wxe_util:queue_cmd(This,Col,TypeName_UC,?get_env(),?wxGrid_SetColFormatCustom).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcollabelalignment">external documentation</a>.
@@ -1605,7 +1605,7 @@ setColLabelSize(#wx_ref{type=ThisT}=This,Height)
 setColLabelValue(#wx_ref{type=ThisT}=This,Col,Val)
  when is_integer(Col),?is_chardata(Val) ->
   ?CLASS(ThisT,wxGrid),
-  Val_UC = unicode:characters_to_binary([Val,0]),
+  Val_UC = unicode:characters_to_binary(Val),
   wxe_util:queue_cmd(This,Col,Val_UC,?get_env(),?wxGrid_SetColLabelValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolminimalwidth">external documentation</a>.
@@ -1810,7 +1810,7 @@ setRowLabelSize(#wx_ref{type=ThisT}=This,Width)
 setRowLabelValue(#wx_ref{type=ThisT}=This,Row,Val)
  when is_integer(Row),?is_chardata(Val) ->
   ?CLASS(ThisT,wxGrid),
-  Val_UC = unicode:characters_to_binary([Val,0]),
+  Val_UC = unicode:characters_to_binary(Val),
   wxe_util:queue_cmd(This,Row,Val_UC,?get_env(),?wxGrid_SetRowLabelValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowminimalheight">external documentation</a>.

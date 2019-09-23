@@ -89,7 +89,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 append(#wx_ref{type=ThisT}=This,Item)
  when ?is_chardata(Item) ->
   ?CLASS(ThisT,wxControlWithItems),
-  Item_UC = unicode:characters_to_binary([Item,0]),
+  Item_UC = unicode:characters_to_binary(Item),
   wxe_util:queue_cmd(This,Item_UC,?get_env(),?wxControlWithItems_Append_1),
   wxe_util:rec(?wxControlWithItems_Append_1).
 
@@ -99,7 +99,7 @@ append(#wx_ref{type=ThisT}=This,Item)
 append(#wx_ref{type=ThisT}=This,Item,ClientData)
  when ?is_chardata(Item) ->
   ?CLASS(ThisT,wxControlWithItems),
-  Item_UC = unicode:characters_to_binary([Item,0]),
+  Item_UC = unicode:characters_to_binary(Item),
   wxe_util:queue_cmd(This,Item_UC,ClientData,?get_env(),?wxControlWithItems_Append_2),
   wxe_util:rec(?wxControlWithItems_Append_2).
 
@@ -109,7 +109,7 @@ append(#wx_ref{type=ThisT}=This,Item,ClientData)
 appendStrings(#wx_ref{type=ThisT}=This,Strings)
  when is_list(Strings) ->
   ?CLASS(ThisT,wxControlWithItems),
-  Strings_UCA = [unicode:characters_to_binary([StringsTemp,0]) || 
+  Strings_UCA = [unicode:characters_to_binary(StringsTemp) ||
               StringsTemp <- Strings],
   wxe_util:queue_cmd(This,Strings_UCA,?get_env(),?wxControlWithItems_appendStrings_1).
 
@@ -143,7 +143,7 @@ findString(This,S)
 findString(#wx_ref{type=ThisT}=This,S, Options)
  when ?is_chardata(S),is_list(Options) ->
   ?CLASS(ThisT,wxControlWithItems),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,S_UC, Options,?get_env(),?wxControlWithItems_FindString),
   wxe_util:rec(?wxControlWithItems_FindString).
 
@@ -203,7 +203,7 @@ getStringSelection(#wx_ref{type=ThisT}=This) ->
 insert(#wx_ref{type=ThisT}=This,Item,Pos)
  when ?is_chardata(Item),is_integer(Pos) ->
   ?CLASS(ThisT,wxControlWithItems),
-  Item_UC = unicode:characters_to_binary([Item,0]),
+  Item_UC = unicode:characters_to_binary(Item),
   wxe_util:queue_cmd(This,Item_UC,Pos,?get_env(),?wxControlWithItems_Insert_2),
   wxe_util:rec(?wxControlWithItems_Insert_2).
 
@@ -213,7 +213,7 @@ insert(#wx_ref{type=ThisT}=This,Item,Pos)
 insert(#wx_ref{type=ThisT}=This,Item,Pos,ClientData)
  when ?is_chardata(Item),is_integer(Pos) ->
   ?CLASS(ThisT,wxControlWithItems),
-  Item_UC = unicode:characters_to_binary([Item,0]),
+  Item_UC = unicode:characters_to_binary(Item),
   wxe_util:queue_cmd(This,Item_UC,Pos,ClientData,?get_env(),?wxControlWithItems_Insert_3),
   wxe_util:rec(?wxControlWithItems_Insert_3).
 
@@ -247,7 +247,7 @@ setSelection(#wx_ref{type=ThisT}=This,N)
 setString(#wx_ref{type=ThisT}=This,N,S)
  when is_integer(N),?is_chardata(S) ->
   ?CLASS(ThisT,wxControlWithItems),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,N,S_UC,?get_env(),?wxControlWithItems_SetString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemssetstringselection">external documentation</a>.
@@ -256,7 +256,7 @@ setString(#wx_ref{type=ThisT}=This,N,S)
 setStringSelection(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxControlWithItems),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,S_UC,?get_env(),?wxControlWithItems_SetStringSelection),
   wxe_util:rec(?wxControlWithItems_SetStringSelection).
 

@@ -103,7 +103,7 @@ new(Parent,Id,Label)
 new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxStaticText_new_4),
   wxe_util:rec(?wxStaticText_new_4).
 
@@ -125,7 +125,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxStaticText),
   ?CLASS(ParentT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxStaticText_Create),
   wxe_util:rec(?wxStaticText_Create).
 
@@ -143,7 +143,7 @@ getLabel(#wx_ref{type=ThisT}=This) ->
 setLabel(#wx_ref{type=ThisT}=This,Label)
  when ?is_chardata(Label) ->
   ?CLASS(ThisT,wxStaticText),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Label_UC,?get_env(),?wxStaticText_SetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatictext.html#wxstatictextwrap">external documentation</a>.

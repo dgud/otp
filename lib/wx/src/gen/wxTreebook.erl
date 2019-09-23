@@ -129,7 +129,7 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Page,Text_UC, Options,?get_env(),?wxTreebook_AddPage),
   wxe_util:rec(?wxTreebook_AddPage).
 
@@ -318,7 +318,7 @@ insertPage(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=PageT}=Page,Text, Options)
  when is_integer(Pos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Pos,Page,Text_UC, Options,?get_env(),?wxTreebook_InsertPage),
   wxe_util:rec(?wxTreebook_InsertPage).
 
@@ -339,7 +339,7 @@ insertSubPage(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=PageT}=Page,Text, Option
  when is_integer(Pos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Pos,Page,Text_UC, Options,?get_env(),?wxTreebook_InsertSubPage),
   wxe_util:rec(?wxTreebook_InsertSubPage).
 
@@ -374,7 +374,7 @@ setPageImage(#wx_ref{type=ThisT}=This,N,ImageId)
 setPageText(#wx_ref{type=ThisT}=This,N,StrText)
  when is_integer(N),?is_chardata(StrText) ->
   ?CLASS(ThisT,wxTreebook),
-  StrText_UC = unicode:characters_to_binary([StrText,0]),
+  StrText_UC = unicode:characters_to_binary(StrText),
   wxe_util:queue_cmd(This,N,StrText_UC,?get_env(),?wxTreebook_SetPageText),
   wxe_util:rec(?wxTreebook_SetPageText).
 

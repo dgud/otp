@@ -103,7 +103,7 @@ append(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   ?CLASS(MenuT,wxMenu),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Menu,Title_UC,?get_env(),?wxMenuBar_Append),
   wxe_util:rec(?wxMenuBar_Append).
 
@@ -155,7 +155,7 @@ enableTop(#wx_ref{type=ThisT}=This,Pos,Flag)
 findMenu(#wx_ref{type=ThisT}=This,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Title_UC,?get_env(),?wxMenuBar_FindMenu),
   wxe_util:rec(?wxMenuBar_FindMenu).
 
@@ -165,8 +165,8 @@ findMenu(#wx_ref{type=ThisT}=This,Title)
 findMenuItem(#wx_ref{type=ThisT}=This,MenuString,ItemString)
  when ?is_chardata(MenuString),?is_chardata(ItemString) ->
   ?CLASS(ThisT,wxMenuBar),
-  MenuString_UC = unicode:characters_to_binary([MenuString,0]),
-  ItemString_UC = unicode:characters_to_binary([ItemString,0]),
+  MenuString_UC = unicode:characters_to_binary(MenuString),
+  ItemString_UC = unicode:characters_to_binary(ItemString),
   wxe_util:queue_cmd(This,MenuString_UC,ItemString_UC,?get_env(),?wxMenuBar_FindMenuItem),
   wxe_util:rec(?wxMenuBar_FindMenuItem).
 
@@ -238,7 +238,7 @@ insert(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=MenuT}=Menu,Title)
  when is_integer(Pos),?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   ?CLASS(MenuT,wxMenu),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Pos,Menu,Title_UC,?get_env(),?wxMenuBar_Insert),
   wxe_util:rec(?wxMenuBar_Insert).
 
@@ -306,7 +306,7 @@ replace(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=MenuT}=Menu,Title)
  when is_integer(Pos),?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenuBar),
   ?CLASS(MenuT,wxMenu),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Pos,Menu,Title_UC,?get_env(),?wxMenuBar_Replace),
   wxe_util:rec(?wxMenuBar_Replace).
 
@@ -316,7 +316,7 @@ replace(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=MenuT}=Menu,Title)
 setHelpString(#wx_ref{type=ThisT}=This,Itemid,HelpString)
  when is_integer(Itemid),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxMenuBar),
-  HelpString_UC = unicode:characters_to_binary([HelpString,0]),
+  HelpString_UC = unicode:characters_to_binary(HelpString),
   wxe_util:queue_cmd(This,Itemid,HelpString_UC,?get_env(),?wxMenuBar_SetHelpString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetlabel">external documentation</a>.
@@ -325,7 +325,7 @@ setHelpString(#wx_ref{type=ThisT}=This,Itemid,HelpString)
 setLabel(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxMenuBar),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,S_UC,?get_env(),?wxMenuBar_SetLabel_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetlabel">external documentation</a>.
@@ -334,7 +334,7 @@ setLabel(#wx_ref{type=ThisT}=This,S)
 setLabel(#wx_ref{type=ThisT}=This,Itemid,Label)
  when is_integer(Itemid),?is_chardata(Label) ->
   ?CLASS(ThisT,wxMenuBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Itemid,Label_UC,?get_env(),?wxMenuBar_SetLabel_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarsetlabeltop">external documentation</a>.
@@ -343,7 +343,7 @@ setLabel(#wx_ref{type=ThisT}=This,Itemid,Label)
 setLabelTop(#wx_ref{type=ThisT}=This,Pos,Label)
  when is_integer(Pos),?is_chardata(Label) ->
   ?CLASS(ThisT,wxMenuBar),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Pos,Label_UC,?get_env(),?wxMenuBar_SetLabelTop).
 
 %% @doc Destroys this object, do not use object again

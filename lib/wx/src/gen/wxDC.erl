@@ -243,7 +243,7 @@ drawLabel(This,Text,Rect={RectX,RectY,RectW,RectH} = Rect)
 drawLabel(#wx_ref{type=ThisT}=This,Text,{RectX,RectY,RectW,RectH} = Rect, Options)
  when ?is_chardata(Text),is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,Rect, Options,?get_env(),?wxDC_DrawLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdcdrawline">external documentation</a>.
@@ -322,7 +322,7 @@ drawRectangle(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt,{SzW,SzH} = Sz)
 drawRotatedText(#wx_ref{type=ThisT}=This,Text,{PtX,PtY} = Pt,Angle)
  when ?is_chardata(Text),is_integer(PtX),is_integer(PtY),is_number(Angle) ->
   ?CLASS(ThisT,wxDC),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,Pt,Angle,?get_env(),?wxDC_DrawRotatedText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdcdrawroundedrectangle">external documentation</a>.
@@ -347,7 +347,7 @@ drawRoundedRectangle(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt,{SzW,SzH} = Sz,Radi
 drawText(#wx_ref{type=ThisT}=This,Text,{PtX,PtY} = Pt)
  when ?is_chardata(Text),is_integer(PtX),is_integer(PtY) ->
   ?CLASS(ThisT,wxDC),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,Pt,?get_env(),?wxDC_DrawText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdcenddoc">external documentation</a>.
@@ -471,7 +471,7 @@ getMapMode(#wx_ref{type=ThisT}=This) ->
 getMultiLineTextExtent(#wx_ref{type=ThisT}=This,String)
  when ?is_chardata(String) ->
   ?CLASS(ThisT,wxDC),
-  String_UC = unicode:characters_to_binary([String,0]),
+  String_UC = unicode:characters_to_binary(String),
   wxe_util:queue_cmd(This,String_UC,?get_env(),?wxDC_GetMultiLineTextExtent_1),
   wxe_util:rec(?wxDC_GetMultiLineTextExtent_1).
 
@@ -482,7 +482,7 @@ getMultiLineTextExtent(#wx_ref{type=ThisT}=This,String)
 getMultiLineTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  String_UC = unicode:characters_to_binary([String,0]),
+  String_UC = unicode:characters_to_binary(String),
   wxe_util:queue_cmd(This,String_UC, Options,?get_env(),?wxDC_GetMultiLineTextExtent_4),
   wxe_util:rec(?wxDC_GetMultiLineTextExtent_4).
 
@@ -493,7 +493,7 @@ getMultiLineTextExtent(#wx_ref{type=ThisT}=This,String, Options)
 getPartialTextExtents(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxDC),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxDC_GetPartialTextExtents),
   wxe_util:rec(?wxDC_GetPartialTextExtents).
 
@@ -553,7 +553,7 @@ getTextBackground(#wx_ref{type=ThisT}=This) ->
 getTextExtent(#wx_ref{type=ThisT}=This,String)
  when ?is_chardata(String) ->
   ?CLASS(ThisT,wxDC),
-  String_UC = unicode:characters_to_binary([String,0]),
+  String_UC = unicode:characters_to_binary(String),
   wxe_util:queue_cmd(This,String_UC,?get_env(),?wxDC_GetTextExtent_1),
   wxe_util:rec(?wxDC_GetTextExtent_1).
 
@@ -565,7 +565,7 @@ getTextExtent(#wx_ref{type=ThisT}=This,String)
 getTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  String_UC = unicode:characters_to_binary([String,0]),
+  String_UC = unicode:characters_to_binary(String),
   wxe_util:queue_cmd(This,String_UC, Options,?get_env(),?wxDC_GetTextExtent_4),
   wxe_util:rec(?wxDC_GetTextExtent_4).
 
@@ -849,7 +849,7 @@ setUserScale(#wx_ref{type=ThisT}=This,X,Y)
 startDoc(#wx_ref{type=ThisT}=This,Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxDC),
-  Message_UC = unicode:characters_to_binary([Message,0]),
+  Message_UC = unicode:characters_to_binary(Message),
   wxe_util:queue_cmd(This,Message_UC,?get_env(),?wxDC_StartDoc),
   wxe_util:rec(?wxDC_StartDoc).
 

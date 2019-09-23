@@ -53,7 +53,7 @@ new() ->
 	Value::unicode:chardata().
 isTrueValue(Value)
  when ?is_chardata(Value) ->
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(Value_UC,?get_env(),?wxGridCellBoolEditor_IsTrueValue),
   wxe_util:rec(?wxGridCellBoolEditor_IsTrueValue).
 

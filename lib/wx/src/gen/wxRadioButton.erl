@@ -104,7 +104,7 @@ new(Parent,Id,Label)
 new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxRadioButton_new_4),
   wxe_util:rec(?wxRadioButton_new_4).
 
@@ -127,7 +127,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxRadioButton),
   ?CLASS(ParentT,wxWindow),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxRadioButton_Create),
   wxe_util:rec(?wxRadioButton_Create).
 

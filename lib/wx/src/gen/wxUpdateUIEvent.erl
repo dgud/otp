@@ -178,7 +178,7 @@ setMode(Mode)
 setText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxUpdateUIEvent),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxUpdateUIEvent_SetText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxupdateuievent.html#wxupdateuieventsetupdateinterval">external documentation</a>.

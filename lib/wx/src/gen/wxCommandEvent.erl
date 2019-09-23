@@ -115,7 +115,7 @@ setInt(#wx_ref{type=ThisT}=This,I)
 setString(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxCommandEvent),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,S_UC,?get_env(),?wxCommandEvent_SetString).
 
  %% From wxEvent

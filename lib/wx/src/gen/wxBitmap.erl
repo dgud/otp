@@ -87,7 +87,7 @@ new(Width,Height)
   new(Width,Height, []);
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(Filename_UC, Options,?get_env(),?wxBitmap_new_2_0),
   wxe_util:rec(?wxBitmap_new_2_0);
 new(#wx_ref{type=ImageT}=Image, Options)
@@ -225,7 +225,7 @@ loadFile(This,Name)
 loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC, Options,?get_env(),?wxBitmap_LoadFile),
   wxe_util:rec(?wxBitmap_LoadFile).
 
@@ -253,7 +253,7 @@ saveFile(This,Name,Type)
 saveFile(#wx_ref{type=ThisT}=This,Name,Type, Options)
  when ?is_chardata(Name),is_integer(Type),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,Type, Options,?get_env(),?wxBitmap_SaveFile),
   wxe_util:rec(?wxBitmap_SaveFile).
 

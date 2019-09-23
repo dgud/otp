@@ -105,8 +105,8 @@ new(Title,Message)
 		 | {'style', integer()}.
 new(Title,Message, Options)
  when ?is_chardata(Title),?is_chardata(Message),is_list(Options) ->
-  Title_UC = unicode:characters_to_binary([Title,0]),
-  Message_UC = unicode:characters_to_binary([Message,0]),
+  Title_UC = unicode:characters_to_binary(Title),
+  Message_UC = unicode:characters_to_binary(Message),
   wxe_util:queue_cmd(Title_UC,Message_UC, Options,?get_env(),?wxProgressDialog_new),
   wxe_util:rec(?wxProgressDialog_new).
 

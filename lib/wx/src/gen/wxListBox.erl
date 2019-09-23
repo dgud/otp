@@ -133,7 +133,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,{PosX,PosY} = Po
  when is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxListBox),
   ?CLASS(ParentT,wxWindow),
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(This,Parent,Id,Pos,Size,Choices_UCA, Options,?get_env(),?wxListBox_Create),
   wxe_util:rec(?wxListBox_Create).
@@ -161,7 +161,7 @@ getSelections(#wx_ref{type=ThisT}=This) ->
 insertItems(#wx_ref{type=ThisT}=This,Items,Pos)
  when is_list(Items),is_integer(Pos) ->
   ?CLASS(ThisT,wxListBox),
-  Items_UCA = [unicode:characters_to_binary([ItemsTemp,0]) || 
+  Items_UCA = [unicode:characters_to_binary(ItemsTemp) ||
               ItemsTemp <- Items],
   wxe_util:queue_cmd(This,Items_UCA,Pos,?get_env(),?wxListBox_InsertItems).
 
@@ -180,7 +180,7 @@ isSelected(#wx_ref{type=ThisT}=This,N)
 set(#wx_ref{type=ThisT}=This,Items)
  when is_list(Items) ->
   ?CLASS(ThisT,wxListBox),
-  Items_UCA = [unicode:characters_to_binary([ItemsTemp,0]) || 
+  Items_UCA = [unicode:characters_to_binary(ItemsTemp) ||
               ItemsTemp <- Items],
   wxe_util:queue_cmd(This,Items_UCA,?get_env(),?wxListBox_Set).
 
@@ -209,7 +209,7 @@ setFirstItem(#wx_ref{type=ThisT}=This,N)
 setFirstItem(#wx_ref{type=ThisT}=This,S)
  when ?is_chardata(S) ->
   ?CLASS(ThisT,wxListBox),
-  S_UC = unicode:characters_to_binary([S,0]),
+  S_UC = unicode:characters_to_binary(S),
   wxe_util:queue_cmd(This,S_UC,?get_env(),?wxListBox_SetFirstItem_1_1).
 
 %% @doc Destroys this object, do not use object again

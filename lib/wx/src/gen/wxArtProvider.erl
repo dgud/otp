@@ -50,7 +50,7 @@ getBitmap(Id)
 		 | {'size', {W::integer(), H::integer()}}.
 getBitmap(Id, Options)
  when ?is_chardata(Id),is_list(Options) ->
-  Id_UC = unicode:characters_to_binary([Id,0]),
+  Id_UC = unicode:characters_to_binary(Id),
   wxe_util:queue_cmd(Id_UC, Options,?get_env(),?wxArtProvider_GetBitmap),
   wxe_util:rec(?wxArtProvider_GetBitmap).
 
@@ -69,7 +69,7 @@ getIcon(Id)
 		 | {'size', {W::integer(), H::integer()}}.
 getIcon(Id, Options)
  when ?is_chardata(Id),is_list(Options) ->
-  Id_UC = unicode:characters_to_binary([Id,0]),
+  Id_UC = unicode:characters_to_binary(Id),
   wxe_util:queue_cmd(Id_UC, Options,?get_env(),?wxArtProvider_GetIcon),
   wxe_util:rec(?wxArtProvider_GetIcon).
 

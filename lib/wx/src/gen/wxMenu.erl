@@ -67,7 +67,7 @@ new(Options)
 	Option :: {'style', integer()}.
 new(Title, Options)
  when ?is_chardata(Title),is_list(Options) ->
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(Title_UC, Options,?get_env(),?wxMenu_new_2),
   wxe_util:rec(?wxMenu_new_2).
 
@@ -109,7 +109,7 @@ append(This,Itemid,Text,Submenu)
 append(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_Append_3),
   wxe_util:rec(?wxMenu_Append_3).
 
@@ -127,13 +127,13 @@ append(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
 append(#wx_ref{type=ThisT}=This,Itemid,Text,Help,IsCheckable)
  when is_integer(Itemid),?is_chardata(Text),?is_chardata(Help),is_boolean(IsCheckable) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
-  Help_UC = unicode:characters_to_binary([Help,0]),
+  Text_UC = unicode:characters_to_binary(Text),
+  Help_UC = unicode:characters_to_binary(Help),
   wxe_util:queue_cmd(This,Itemid,Text_UC,Help_UC,IsCheckable,?get_env(),?wxMenu_Append_4_0);
 append(#wx_ref{type=ThisT}=This,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   ?CLASS(SubmenuT,wxMenu),
   wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Append_4_1),
   wxe_util:rec(?wxMenu_Append_4_1).
@@ -153,7 +153,7 @@ appendCheckItem(This,Itemid,Text)
 appendCheckItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_AppendCheckItem),
   wxe_util:rec(?wxMenu_AppendCheckItem).
 
@@ -172,7 +172,7 @@ appendRadioItem(This,Itemid,Text)
 appendRadioItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_AppendRadioItem),
   wxe_util:rec(?wxMenu_AppendRadioItem).
 
@@ -264,7 +264,7 @@ findItem(#wx_ref{type=ThisT}=This,Itemid)
 findItem(#wx_ref{type=ThisT}=This,Item)
  when ?is_chardata(Item) ->
   ?CLASS(ThisT,wxMenu),
-  Item_UC = unicode:characters_to_binary([Item,0]),
+  Item_UC = unicode:characters_to_binary(Item),
   wxe_util:queue_cmd(This,Item_UC,?get_env(),?wxMenu_FindItem_1),
   wxe_util:rec(?wxMenu_FindItem_1).
 
@@ -375,13 +375,13 @@ insert(This,Pos,Itemid,Text,Submenu)
 insert(#wx_ref{type=ThisT}=This,Pos,Itemid,Text,Help,IsCheckable)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),?is_chardata(Help),is_boolean(IsCheckable) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
-  Help_UC = unicode:characters_to_binary([Help,0]),
+  Text_UC = unicode:characters_to_binary(Text),
+  Help_UC = unicode:characters_to_binary(Help),
   wxe_util:queue_cmd(This,Pos,Itemid,Text_UC,Help_UC,IsCheckable,?get_env(),?wxMenu_Insert_5_0);
 insert(#wx_ref{type=ThisT}=This,Pos,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   ?CLASS(SubmenuT,wxMenu),
   wxe_util:queue_cmd(This,Pos,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Insert_5_1),
   wxe_util:rec(?wxMenu_Insert_5_1).
@@ -401,7 +401,7 @@ insertCheckItem(This,Pos,Itemid,Text)
 insertCheckItem(#wx_ref{type=ThisT}=This,Pos,Itemid,Text, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Options,?get_env(),?wxMenu_InsertCheckItem),
   wxe_util:rec(?wxMenu_InsertCheckItem).
 
@@ -420,7 +420,7 @@ insertRadioItem(This,Pos,Itemid,Text)
 insertRadioItem(#wx_ref{type=ThisT}=This,Pos,Itemid,Text, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Options,?get_env(),?wxMenu_InsertRadioItem),
   wxe_util:rec(?wxMenu_InsertRadioItem).
 
@@ -506,13 +506,13 @@ prepend(This,Itemid,Text,Submenu)
 prepend(#wx_ref{type=ThisT}=This,Itemid,Text,Help,IsCheckable)
  when is_integer(Itemid),?is_chardata(Text),?is_chardata(Help),is_boolean(IsCheckable) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
-  Help_UC = unicode:characters_to_binary([Help,0]),
+  Text_UC = unicode:characters_to_binary(Text),
+  Help_UC = unicode:characters_to_binary(Help),
   wxe_util:queue_cmd(This,Itemid,Text_UC,Help_UC,IsCheckable,?get_env(),?wxMenu_Prepend_4_0);
 prepend(#wx_ref{type=ThisT}=This,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   ?CLASS(SubmenuT,wxMenu),
   wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Prepend_4_1),
   wxe_util:rec(?wxMenu_Prepend_4_1).
@@ -532,7 +532,7 @@ prependCheckItem(This,Itemid,Text)
 prependCheckItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_PrependCheckItem),
   wxe_util:rec(?wxMenu_PrependCheckItem).
 
@@ -551,7 +551,7 @@ prependRadioItem(This,Itemid,Text)
 prependRadioItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_PrependRadioItem),
   wxe_util:rec(?wxMenu_PrependRadioItem).
 
@@ -589,7 +589,7 @@ remove(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
 setHelpString(#wx_ref{type=ThisT}=This,Itemid,HelpString)
  when is_integer(Itemid),?is_chardata(HelpString) ->
   ?CLASS(ThisT,wxMenu),
-  HelpString_UC = unicode:characters_to_binary([HelpString,0]),
+  HelpString_UC = unicode:characters_to_binary(HelpString),
   wxe_util:queue_cmd(This,Itemid,HelpString_UC,?get_env(),?wxMenu_SetHelpString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenusetlabel">external documentation</a>.
@@ -598,7 +598,7 @@ setHelpString(#wx_ref{type=ThisT}=This,Itemid,HelpString)
 setLabel(#wx_ref{type=ThisT}=This,Itemid,Label)
  when is_integer(Itemid),?is_chardata(Label) ->
   ?CLASS(ThisT,wxMenu),
-  Label_UC = unicode:characters_to_binary([Label,0]),
+  Label_UC = unicode:characters_to_binary(Label),
   wxe_util:queue_cmd(This,Itemid,Label_UC,?get_env(),?wxMenu_SetLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenusettitle">external documentation</a>.
@@ -607,7 +607,7 @@ setLabel(#wx_ref{type=ThisT}=This,Itemid,Label)
 setTitle(#wx_ref{type=ThisT}=This,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxMenu),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Title_UC,?get_env(),?wxMenu_SetTitle).
 
 %% @doc Destroys this object, do not use object again

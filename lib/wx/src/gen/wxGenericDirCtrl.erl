@@ -158,7 +158,7 @@ collapseTree(#wx_ref{type=ThisT}=This) ->
 expandPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxGenericDirCtrl),
-  Path_UC = unicode:characters_to_binary([Path,0]),
+  Path_UC = unicode:characters_to_binary(Path),
   wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxGenericDirCtrl_ExpandPath),
   wxe_util:rec(?wxGenericDirCtrl_ExpandPath).
 
@@ -231,7 +231,7 @@ reCreateTree(#wx_ref{type=ThisT}=This) ->
 setDefaultPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxGenericDirCtrl),
-  Path_UC = unicode:characters_to_binary([Path,0]),
+  Path_UC = unicode:characters_to_binary(Path),
   wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxGenericDirCtrl_SetDefaultPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgenericdirctrl.html#wxgenericdirctrlsetfilter">external documentation</a>.
@@ -240,7 +240,7 @@ setDefaultPath(#wx_ref{type=ThisT}=This,Path)
 setFilter(#wx_ref{type=ThisT}=This,Filter)
  when ?is_chardata(Filter) ->
   ?CLASS(ThisT,wxGenericDirCtrl),
-  Filter_UC = unicode:characters_to_binary([Filter,0]),
+  Filter_UC = unicode:characters_to_binary(Filter),
   wxe_util:queue_cmd(This,Filter_UC,?get_env(),?wxGenericDirCtrl_SetFilter).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgenericdirctrl.html#wxgenericdirctrlsetfilterindex">external documentation</a>.
@@ -257,7 +257,7 @@ setFilterIndex(#wx_ref{type=ThisT}=This,N)
 setPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxGenericDirCtrl),
-  Path_UC = unicode:characters_to_binary([Path,0]),
+  Path_UC = unicode:characters_to_binary(Path),
   wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxGenericDirCtrl_SetPath).
 
 %% @doc Destroys this object, do not use object again

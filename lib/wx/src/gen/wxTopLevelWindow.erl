@@ -254,7 +254,7 @@ setShape(#wx_ref{type=ThisT}=This,#wx_ref{type=RegionT}=Region) ->
 setTitle(#wx_ref{type=ThisT}=This,Title)
  when ?is_chardata(Title) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Title_UC,?get_env(),?wxTopLevelWindow_SetTitle).
 
 %% @equiv showFullScreen(This,Show, [])

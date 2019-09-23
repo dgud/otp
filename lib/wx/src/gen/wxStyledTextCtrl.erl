@@ -236,7 +236,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
 addText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_AddText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrladdstyledtext">external documentation</a>.
@@ -253,7 +253,7 @@ addStyledText(#wx_ref{type=ThisT}=This,#wx_ref{type=DataT}=Data) ->
 insertText(#wx_ref{type=ThisT}=This,Pos,Text)
  when is_integer(Pos),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Pos,Text_UC,?get_env(),?wxStyledTextCtrl_InsertText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlclearall">external documentation</a>.
@@ -770,7 +770,7 @@ styleSetSize(#wx_ref{type=ThisT}=This,Style,SizePoints)
 styleSetFaceName(#wx_ref{type=ThisT}=This,Style,FontName)
  when is_integer(Style),?is_chardata(FontName) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  FontName_UC = unicode:characters_to_binary([FontName,0]),
+  FontName_UC = unicode:characters_to_binary(FontName),
   wxe_util:queue_cmd(This,Style,FontName_UC,?get_env(),?wxStyledTextCtrl_StyleSetFaceName).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstyleseteolfilled">external documentation</a>.
@@ -914,7 +914,7 @@ setCaretPeriod(#wx_ref{type=ThisT}=This,PeriodMilliseconds)
 setWordChars(#wx_ref{type=ThisT}=This,Characters)
  when ?is_chardata(Characters) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Characters_UC = unicode:characters_to_binary([Characters,0]),
+  Characters_UC = unicode:characters_to_binary(Characters),
   wxe_util:queue_cmd(This,Characters_UC,?get_env(),?wxStyledTextCtrl_SetWordChars).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlbeginundoaction">external documentation</a>.
@@ -1052,7 +1052,7 @@ setCaretLineBackground(#wx_ref{type=ThisT}=This,Back)
 autoCompShow(#wx_ref{type=ThisT}=This,LenEntered,ItemList)
  when is_integer(LenEntered),?is_chardata(ItemList) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  ItemList_UC = unicode:characters_to_binary([ItemList,0]),
+  ItemList_UC = unicode:characters_to_binary(ItemList),
   wxe_util:queue_cmd(This,LenEntered,ItemList_UC,?get_env(),?wxStyledTextCtrl_AutoCompShow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompcancel">external documentation</a>.
@@ -1091,7 +1091,7 @@ autoCompComplete(#wx_ref{type=ThisT}=This) ->
 autoCompStops(#wx_ref{type=ThisT}=This,CharacterSet)
  when ?is_chardata(CharacterSet) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  CharacterSet_UC = unicode:characters_to_binary([CharacterSet,0]),
+  CharacterSet_UC = unicode:characters_to_binary(CharacterSet),
   wxe_util:queue_cmd(This,CharacterSet_UC,?get_env(),?wxStyledTextCtrl_AutoCompStops).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetseparator">external documentation</a>.
@@ -1116,7 +1116,7 @@ autoCompGetSeparator(#wx_ref{type=ThisT}=This) ->
 autoCompSelect(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_AutoCompSelect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetcancelatstart">external documentation</a>.
@@ -1141,7 +1141,7 @@ autoCompGetCancelAtStart(#wx_ref{type=ThisT}=This) ->
 autoCompSetFillUps(#wx_ref{type=ThisT}=This,CharacterSet)
  when ?is_chardata(CharacterSet) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  CharacterSet_UC = unicode:characters_to_binary([CharacterSet,0]),
+  CharacterSet_UC = unicode:characters_to_binary(CharacterSet),
   wxe_util:queue_cmd(This,CharacterSet_UC,?get_env(),?wxStyledTextCtrl_AutoCompSetFillUps).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetchoosesingle">external documentation</a>.
@@ -1182,7 +1182,7 @@ autoCompGetIgnoreCase(#wx_ref{type=ThisT}=This) ->
 userListShow(#wx_ref{type=ThisT}=This,ListType,ItemList)
  when is_integer(ListType),?is_chardata(ItemList) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  ItemList_UC = unicode:characters_to_binary([ItemList,0]),
+  ItemList_UC = unicode:characters_to_binary(ItemList),
   wxe_util:queue_cmd(This,ListType,ItemList_UC,?get_env(),?wxStyledTextCtrl_UserListShow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlautocompsetautohide">external documentation</a>.
@@ -1516,7 +1516,7 @@ findText(This,MinPos,MaxPos,Text)
 findText(#wx_ref{type=ThisT}=This,MinPos,MaxPos,Text, Options)
  when is_integer(MinPos),is_integer(MaxPos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,MinPos,MaxPos,Text_UC, Options,?get_env(),?wxStyledTextCtrl_FindText),
   wxe_util:rec(?wxStyledTextCtrl_FindText).
 
@@ -1668,7 +1668,7 @@ ensureCaretVisible(#wx_ref{type=ThisT}=This) ->
 replaceSelection(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_ReplaceSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetreadonly">external documentation</a>.
@@ -1743,7 +1743,7 @@ clear(#wx_ref{type=ThisT}=This) ->
 setText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_SetText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettext">external documentation</a>.
@@ -1824,7 +1824,7 @@ getTargetEnd(#wx_ref{type=ThisT}=This) ->
 replaceTarget(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_ReplaceTarget),
   wxe_util:rec(?wxStyledTextCtrl_ReplaceTarget).
 
@@ -1834,7 +1834,7 @@ replaceTarget(#wx_ref{type=ThisT}=This,Text)
 searchInTarget(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_SearchInTarget),
   wxe_util:rec(?wxStyledTextCtrl_SearchInTarget).
 
@@ -1860,7 +1860,7 @@ getSearchFlags(#wx_ref{type=ThisT}=This) ->
 callTipShow(#wx_ref{type=ThisT}=This,Pos,Definition)
  when is_integer(Pos),?is_chardata(Definition) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Definition_UC = unicode:characters_to_binary([Definition,0]),
+  Definition_UC = unicode:characters_to_binary(Definition),
   wxe_util:queue_cmd(This,Pos,Definition_UC,?get_env(),?wxStyledTextCtrl_CallTipShow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlcalltipcancel">external documentation</a>.
@@ -2230,7 +2230,7 @@ getScrollWidth(#wx_ref{type=ThisT}=This) ->
 textWidth(#wx_ref{type=ThisT}=This,Style,Text)
  when is_integer(Style),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Style,Text_UC,?get_env(),?wxStyledTextCtrl_TextWidth),
   wxe_util:rec(?wxStyledTextCtrl_TextWidth).
 
@@ -2273,7 +2273,7 @@ getUseVerticalScrollBar(#wx_ref{type=ThisT}=This) ->
 appendText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxStyledTextCtrl_AppendText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgettwophasedraw">external documentation</a>.
@@ -2848,7 +2848,7 @@ searchAnchor(#wx_ref{type=ThisT}=This) ->
 searchNext(#wx_ref{type=ThisT}=This,Flags,Text)
  when is_integer(Flags),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Flags,Text_UC,?get_env(),?wxStyledTextCtrl_SearchNext),
   wxe_util:rec(?wxStyledTextCtrl_SearchNext).
 
@@ -2858,7 +2858,7 @@ searchNext(#wx_ref{type=ThisT}=This,Flags,Text)
 searchPrev(#wx_ref{type=ThisT}=This,Flags,Text)
  when is_integer(Flags),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Flags,Text_UC,?get_env(),?wxStyledTextCtrl_SearchPrev),
   wxe_util:rec(?wxStyledTextCtrl_SearchPrev).
 
@@ -3164,7 +3164,7 @@ copyRange(#wx_ref{type=ThisT}=This,Start,End)
 copyText(#wx_ref{type=ThisT}=This,Length,Text)
  when is_integer(Length),?is_chardata(Text) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Length,Text_UC,?get_env(),?wxStyledTextCtrl_CopyText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetselectionmode">external documentation</a>.
@@ -3308,7 +3308,7 @@ wordRightEndExtend(#wx_ref{type=ThisT}=This) ->
 setWhitespaceChars(#wx_ref{type=ThisT}=This,Characters)
  when ?is_chardata(Characters) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Characters_UC = unicode:characters_to_binary([Characters,0]),
+  Characters_UC = unicode:characters_to_binary(Characters),
   wxe_util:queue_cmd(This,Characters_UC,?get_env(),?wxStyledTextCtrl_SetWhitespaceChars).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetcharsdefault">external documentation</a>.
@@ -3449,8 +3449,8 @@ colourise(#wx_ref{type=ThisT}=This,Start,End)
 setProperty(#wx_ref{type=ThisT}=This,Key,Value)
  when ?is_chardata(Key),?is_chardata(Value) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Key_UC = unicode:characters_to_binary([Key,0]),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Key_UC = unicode:characters_to_binary(Key),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,Key_UC,Value_UC,?get_env(),?wxStyledTextCtrl_SetProperty).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetkeywords">external documentation</a>.
@@ -3459,7 +3459,7 @@ setProperty(#wx_ref{type=ThisT}=This,Key,Value)
 setKeyWords(#wx_ref{type=ThisT}=This,KeywordSet,KeyWords)
  when is_integer(KeywordSet),?is_chardata(KeyWords) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  KeyWords_UC = unicode:characters_to_binary([KeyWords,0]),
+  KeyWords_UC = unicode:characters_to_binary(KeyWords),
   wxe_util:queue_cmd(This,KeywordSet,KeyWords_UC,?get_env(),?wxStyledTextCtrl_SetKeyWords).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlsetlexerlanguage">external documentation</a>.
@@ -3468,7 +3468,7 @@ setKeyWords(#wx_ref{type=ThisT}=This,KeywordSet,KeyWords)
 setLexerLanguage(#wx_ref{type=ThisT}=This,Language)
  when ?is_chardata(Language) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Language_UC = unicode:characters_to_binary([Language,0]),
+  Language_UC = unicode:characters_to_binary(Language),
   wxe_util:queue_cmd(This,Language_UC,?get_env(),?wxStyledTextCtrl_SetLexerLanguage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlgetproperty">external documentation</a>.
@@ -3477,7 +3477,7 @@ setLexerLanguage(#wx_ref{type=ThisT}=This,Language)
 getProperty(#wx_ref{type=ThisT}=This,Key)
  when ?is_chardata(Key) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Key_UC = unicode:characters_to_binary([Key,0]),
+  Key_UC = unicode:characters_to_binary(Key),
   wxe_util:queue_cmd(This,Key_UC,?get_env(),?wxStyledTextCtrl_GetProperty),
   wxe_util:rec(?wxStyledTextCtrl_GetProperty).
 
@@ -3503,7 +3503,7 @@ getCurrentLine(#wx_ref{type=ThisT}=This) ->
 styleSetSpec(#wx_ref{type=ThisT}=This,StyleNum,Spec)
  when is_integer(StyleNum),?is_chardata(Spec) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Spec_UC = unicode:characters_to_binary([Spec,0]),
+  Spec_UC = unicode:characters_to_binary(Spec),
   wxe_util:queue_cmd(This,StyleNum,Spec_UC,?get_env(),?wxStyledTextCtrl_StyleSetSpec).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetfont">external documentation</a>.
@@ -3531,7 +3531,7 @@ styleSetFontAttr(This,StyleNum,Size,FaceName,Bold,Italic,Underline)
 styleSetFontAttr(#wx_ref{type=ThisT}=This,StyleNum,Size,FaceName,Bold,Italic,Underline, Options)
  when is_integer(StyleNum),is_integer(Size),?is_chardata(FaceName),is_boolean(Bold),is_boolean(Italic),is_boolean(Underline),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  FaceName_UC = unicode:characters_to_binary([FaceName,0]),
+  FaceName_UC = unicode:characters_to_binary(FaceName),
   wxe_util:queue_cmd(This,StyleNum,Size,FaceName_UC,Bold,Italic,Underline, Options,?get_env(),?wxStyledTextCtrl_StyleSetFontAttr).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetcharacterset">external documentation</a>.
@@ -3638,7 +3638,7 @@ setLastKeydownProcessed(#wx_ref{type=ThisT}=This,Val)
 saveFile(#wx_ref{type=ThisT}=This,Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(This,Filename_UC,?get_env(),?wxStyledTextCtrl_SaveFile),
   wxe_util:rec(?wxStyledTextCtrl_SaveFile).
 
@@ -3648,7 +3648,7 @@ saveFile(#wx_ref{type=ThisT}=This,Filename)
 loadFile(#wx_ref{type=ThisT}=This,Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(This,Filename_UC,?get_env(),?wxStyledTextCtrl_LoadFile),
   wxe_util:rec(?wxStyledTextCtrl_LoadFile).
 
@@ -3669,7 +3669,7 @@ doDragOver(#wx_ref{type=ThisT}=This,X,Y,Def)
 doDropText(#wx_ref{type=ThisT}=This,X,Y,Data)
  when is_integer(X),is_integer(Y),?is_chardata(Data) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  Data_UC = unicode:characters_to_binary([Data,0]),
+  Data_UC = unicode:characters_to_binary(Data),
   wxe_util:queue_cmd(This,X,Y,Data_UC,?get_env(),?wxStyledTextCtrl_DoDropText),
   wxe_util:rec(?wxStyledTextCtrl_DoDropText).
 

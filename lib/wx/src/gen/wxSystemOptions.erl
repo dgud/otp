@@ -40,7 +40,7 @@ parent_class(_Class) -> erlang:error({badtype, ?MODULE}).
 	Name::unicode:chardata().
 getOption(Name)
  when ?is_chardata(Name) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_GetOption),
   wxe_util:rec(?wxSystemOptions_GetOption).
 
@@ -49,7 +49,7 @@ getOption(Name)
 	Name::unicode:chardata().
 getOptionInt(Name)
  when ?is_chardata(Name) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_GetOptionInt),
   wxe_util:rec(?wxSystemOptions_GetOptionInt).
 
@@ -58,7 +58,7 @@ getOptionInt(Name)
 	Name::unicode:chardata().
 hasOption(Name)
  when ?is_chardata(Name) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_HasOption),
   wxe_util:rec(?wxSystemOptions_HasOption).
 
@@ -67,7 +67,7 @@ hasOption(Name)
 	Name::unicode:chardata().
 isFalse(Name)
  when ?is_chardata(Name) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC,?get_env(),?wxSystemOptions_IsFalse),
   wxe_util:rec(?wxSystemOptions_IsFalse).
 
@@ -82,11 +82,11 @@ isFalse(Name)
 	Name::unicode:chardata(), Value::unicode:chardata().
 setOption(Name,Value)
  when ?is_chardata(Name),is_integer(Value) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC,Value,?get_env(),?wxSystemOptions_SetOption_2_0);
 setOption(Name,Value)
  when ?is_chardata(Name),?is_chardata(Value) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Name_UC = unicode:characters_to_binary(Name),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(Name_UC,Value_UC,?get_env(),?wxSystemOptions_SetOption_2_1).
 

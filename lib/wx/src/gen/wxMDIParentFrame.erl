@@ -116,7 +116,7 @@ new(Parent,Id,Title)
 new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxMDIParentFrame_new_4),
   wxe_util:rec(?wxMDIParentFrame_new_4).
 
@@ -166,7 +166,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxMDIParentFrame),
   ?CLASS(ParentT,wxWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxMDIParentFrame_Create),
   wxe_util:rec(?wxMDIParentFrame_Create).
 

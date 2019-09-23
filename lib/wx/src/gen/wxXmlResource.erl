@@ -62,7 +62,7 @@ new(Options)
 		 | {'domain', unicode:chardata()}.
 new(Filemask, Options)
  when ?is_chardata(Filemask),is_list(Options) ->
-  Filemask_UC = unicode:characters_to_binary([Filemask,0]),
+  Filemask_UC = unicode:characters_to_binary(Filemask),
   wxe_util:queue_cmd(Filemask_UC, Options,?get_env(),?wxXmlResource_new_2),
   wxe_util:rec(?wxXmlResource_new_2).
 
@@ -81,7 +81,7 @@ attachUnknownControl(This,Name,Control)
 attachUnknownControl(#wx_ref{type=ThisT}=This,Name,#wx_ref{type=ControlT}=Control, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxXmlResource),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   ?CLASS(ControlT,wxWindow),
   wxe_util:queue_cmd(This,Name_UC,Control, Options,?get_env(),?wxXmlResource_AttachUnknownControl),
   wxe_util:rec(?wxXmlResource_AttachUnknownControl).
@@ -138,7 +138,7 @@ getXRCID(Str_id)
 	Option :: {'value_if_not_found', integer()}.
 getXRCID(Str_id, Options)
  when is_list(Str_id),is_list(Options) ->
-  Str_id_UC = unicode:characters_to_binary([Str_id,0]),
+  Str_id_UC = unicode:characters_to_binary(Str_id),
   wxe_util:queue_cmd(Str_id_UC, Options,?get_env(),?wxXmlResource_GetXRCID),
   wxe_util:rec(?wxXmlResource_GetXRCID).
 
@@ -155,7 +155,7 @@ initAllHandlers(#wx_ref{type=ThisT}=This) ->
 load(#wx_ref{type=ThisT}=This,Filemask)
  when ?is_chardata(Filemask) ->
   ?CLASS(ThisT,wxXmlResource),
-  Filemask_UC = unicode:characters_to_binary([Filemask,0]),
+  Filemask_UC = unicode:characters_to_binary(Filemask),
   wxe_util:queue_cmd(This,Filemask_UC,?get_env(),?wxXmlResource_Load),
   wxe_util:rec(?wxXmlResource_Load).
 
@@ -165,7 +165,7 @@ load(#wx_ref{type=ThisT}=This,Filemask)
 loadBitmap(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxXmlResource_LoadBitmap),
   wxe_util:rec(?wxXmlResource_LoadBitmap).
 
@@ -176,7 +176,7 @@ loadDialog(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Parent,Name_UC,?get_env(),?wxXmlResource_LoadDialog_2),
   wxe_util:rec(?wxXmlResource_LoadDialog_2).
 
@@ -188,7 +188,7 @@ loadDialog(#wx_ref{type=ThisT}=This,#wx_ref{type=DlgT}=Dlg,#wx_ref{type=ParentT}
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(DlgT,wxDialog),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Dlg,Parent,Name_UC,?get_env(),?wxXmlResource_LoadDialog_3),
   wxe_util:rec(?wxXmlResource_LoadDialog_3).
 
@@ -199,7 +199,7 @@ loadFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Parent,Name_UC,?get_env(),?wxXmlResource_LoadFrame_2),
   wxe_util:rec(?wxXmlResource_LoadFrame_2).
 
@@ -211,7 +211,7 @@ loadFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame,#wx_ref{type=Paren
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(FrameT,wxFrame),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Frame,Parent,Name_UC,?get_env(),?wxXmlResource_LoadFrame_3),
   wxe_util:rec(?wxXmlResource_LoadFrame_3).
 
@@ -221,7 +221,7 @@ loadFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame,#wx_ref{type=Paren
 loadIcon(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxXmlResource_LoadIcon),
   wxe_util:rec(?wxXmlResource_LoadIcon).
 
@@ -231,7 +231,7 @@ loadIcon(#wx_ref{type=ThisT}=This,Name)
 loadMenu(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxXmlResource_LoadMenu),
   wxe_util:rec(?wxXmlResource_LoadMenu).
 
@@ -241,7 +241,7 @@ loadMenu(#wx_ref{type=ThisT}=This,Name)
 loadMenuBar(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxXmlResource_LoadMenuBar_1),
   wxe_util:rec(?wxXmlResource_LoadMenuBar_1).
 
@@ -252,7 +252,7 @@ loadMenuBar(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Parent,Name_UC,?get_env(),?wxXmlResource_LoadMenuBar_2),
   wxe_util:rec(?wxXmlResource_LoadMenuBar_2).
 
@@ -263,7 +263,7 @@ loadPanel(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Parent,Name_UC,?get_env(),?wxXmlResource_LoadPanel_2),
   wxe_util:rec(?wxXmlResource_LoadPanel_2).
 
@@ -275,7 +275,7 @@ loadPanel(#wx_ref{type=ThisT}=This,#wx_ref{type=PanelT}=Panel,#wx_ref{type=Paren
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(PanelT,wxPanel),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Panel,Parent,Name_UC,?get_env(),?wxXmlResource_LoadPanel_3),
   wxe_util:rec(?wxXmlResource_LoadPanel_3).
 
@@ -286,7 +286,7 @@ loadToolBar(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxXmlResource),
   ?CLASS(ParentT,wxWindow),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Parent,Name_UC,?get_env(),?wxXmlResource_LoadToolBar),
   wxe_util:rec(?wxXmlResource_LoadToolBar).
 
@@ -312,7 +312,7 @@ setFlags(#wx_ref{type=ThisT}=This,Flags)
 unload(#wx_ref{type=ThisT}=This,Filename)
  when ?is_chardata(Filename) ->
   ?CLASS(ThisT,wxXmlResource),
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(This,Filename_UC,?get_env(),?wxXmlResource_Unload),
   wxe_util:rec(?wxXmlResource_Unload).
 

@@ -111,7 +111,7 @@ new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data,Title, Options)
  when ?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(Parent,Data,Title_UC, Options,?get_env(),?wxFindReplaceDialog_new_4),
   wxe_util:rec(?wxFindReplaceDialog_new_4).
 
@@ -132,7 +132,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}
   ?CLASS(ThisT,wxFindReplaceDialog),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Parent,Data,Title_UC, Options,?get_env(),?wxFindReplaceDialog_Create),
   wxe_util:rec(?wxFindReplaceDialog_Create).
 

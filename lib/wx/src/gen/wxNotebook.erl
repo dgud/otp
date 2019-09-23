@@ -128,7 +128,7 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxNotebook),
   ?CLASS(PageT,wxWindow),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Page,Text_UC, Options,?get_env(),?wxNotebook_AddPage),
   wxe_util:rec(?wxNotebook_AddPage).
 
@@ -306,7 +306,7 @@ insertPage(#wx_ref{type=ThisT}=This,Position,#wx_ref{type=WinT}=Win,StrText, Opt
  when is_integer(Position),?is_chardata(StrText),is_list(Options) ->
   ?CLASS(ThisT,wxNotebook),
   ?CLASS(WinT,wxWindow),
-  StrText_UC = unicode:characters_to_binary([StrText,0]),
+  StrText_UC = unicode:characters_to_binary(StrText),
   wxe_util:queue_cmd(This,Position,Win,StrText_UC, Options,?get_env(),?wxNotebook_InsertPage),
   wxe_util:rec(?wxNotebook_InsertPage).
 
@@ -349,7 +349,7 @@ setPageImage(#wx_ref{type=ThisT}=This,NPage,NImage)
 setPageText(#wx_ref{type=ThisT}=This,NPage,StrText)
  when is_integer(NPage),?is_chardata(StrText) ->
   ?CLASS(ThisT,wxNotebook),
-  StrText_UC = unicode:characters_to_binary([StrText,0]),
+  StrText_UC = unicode:characters_to_binary(StrText),
   wxe_util:queue_cmd(This,NPage,StrText_UC,?get_env(),?wxNotebook_SetPageText),
   wxe_util:rec(?wxNotebook_SetPageText).
 

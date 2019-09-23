@@ -138,7 +138,7 @@ getLabel(#wx_ref{type=ThisT}=This) ->
 	Text::unicode:chardata().
 getLabelFromText(Text)
  when ?is_chardata(Text) ->
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(Text_UC,?get_env(),?wxMenuItem_GetLabelFromText),
   wxe_util:rec(?wxMenuItem_GetLabelFromText).
 
@@ -220,7 +220,7 @@ setBitmap(#wx_ref{type=ThisT}=This,#wx_ref{type=BitmapT}=Bitmap) ->
 setHelp(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxMenuItem),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxMenuItem_SetHelp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemsetmenu">external documentation</a>.
@@ -245,7 +245,7 @@ setSubMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu) ->
 setText(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxMenuItem),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxMenuItem_SetText).
 
 %% @doc Destroys this object, do not use object again

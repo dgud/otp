@@ -122,7 +122,7 @@ new(#wx_ref{type=ParentT}=Parent,Id, Options)
 appendText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxTextCtrl_AppendText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlcancopy">external documentation</a>.
@@ -222,7 +222,7 @@ discardEdits(#wx_ref{type=ThisT}=This) ->
 changeValue(#wx_ref{type=ThisT}=This,Value)
  when ?is_chardata(Value) ->
   ?CLASS(ThisT,wxTextCtrl),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,Value_UC,?get_env(),?wxTextCtrl_ChangeValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlemulatekeypress">external documentation</a>.
@@ -374,7 +374,7 @@ loadFile(This,File)
 loadFile(#wx_ref{type=ThisT}=This,File, Options)
  when ?is_chardata(File),is_list(Options) ->
   ?CLASS(ThisT,wxTextCtrl),
-  File_UC = unicode:characters_to_binary([File,0]),
+  File_UC = unicode:characters_to_binary(File),
   wxe_util:queue_cmd(This,File_UC, Options,?get_env(),?wxTextCtrl_LoadFile),
   wxe_util:rec(?wxTextCtrl_LoadFile).
 
@@ -423,7 +423,7 @@ remove(#wx_ref{type=ThisT}=This,From,To)
 replace(#wx_ref{type=ThisT}=This,From,To,Value)
  when is_integer(From),is_integer(To),?is_chardata(Value) ->
   ?CLASS(ThisT,wxTextCtrl),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,From,To,Value_UC,?get_env(),?wxTextCtrl_Replace).
 
 %% @equiv saveFile(This, [])
@@ -509,7 +509,7 @@ setStyle(#wx_ref{type=ThisT}=This,Start,End,#wx_ref{type=StyleT}=Style)
 setValue(#wx_ref{type=ThisT}=This,Value)
  when ?is_chardata(Value) ->
   ?CLASS(ThisT,wxTextCtrl),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,Value_UC,?get_env(),?wxTextCtrl_SetValue).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlshowposition">external documentation</a>.
@@ -533,7 +533,7 @@ undo(#wx_ref{type=ThisT}=This) ->
 writeText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxTextCtrl),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxTextCtrl_WriteText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlxytoposition">external documentation</a>.

@@ -76,7 +76,7 @@ new(#wx_ref{type=LocT}=Loc) ->
 		 | {'desiredHeight', integer()}.
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
-  Filename_UC = unicode:characters_to_binary([Filename,0]),
+  Filename_UC = unicode:characters_to_binary(Filename),
   wxe_util:queue_cmd(Filename_UC, Options,?get_env(),?wxIcon_new_2),
   wxe_util:rec(?wxIcon_new_2).
 

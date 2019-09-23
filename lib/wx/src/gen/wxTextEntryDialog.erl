@@ -107,7 +107,7 @@ new(Parent,Message)
 new(#wx_ref{type=ParentT}=Parent,Message, Options)
  when ?is_chardata(Message),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Message_UC = unicode:characters_to_binary([Message,0]),
+  Message_UC = unicode:characters_to_binary(Message),
   wxe_util:queue_cmd(Parent,Message_UC, Options,?get_env(),?wxTextEntryDialog_new),
   wxe_util:rec(?wxTextEntryDialog_new).
 
@@ -125,7 +125,7 @@ getValue(#wx_ref{type=ThisT}=This) ->
 setValue(#wx_ref{type=ThisT}=This,Val)
  when ?is_chardata(Val) ->
   ?CLASS(ThisT,wxTextEntryDialog),
-  Val_UC = unicode:characters_to_binary([Val,0]),
+  Val_UC = unicode:characters_to_binary(Val),
   wxe_util:queue_cmd(This,Val_UC,?get_env(),?wxTextEntryDialog_SetValue).
 
 %% @doc Destroys this object, do not use object again

@@ -79,7 +79,7 @@ getWidth(#wx_ref{type=ThisT}=This) ->
 setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellFloatRenderer),
-  Params_UC = unicode:characters_to_binary([Params,0]),
+  Params_UC = unicode:characters_to_binary(Params),
   wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellFloatRenderer_SetParameters).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderersetprecision">external documentation</a>.

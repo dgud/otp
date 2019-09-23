@@ -50,7 +50,7 @@ new() ->
 	Fontname::unicode:chardata().
 new(Fontname)
  when ?is_chardata(Fontname) ->
-  Fontname_UC = unicode:characters_to_binary([Fontname,0]),
+  Fontname_UC = unicode:characters_to_binary(Fontname),
   wxe_util:queue_cmd(Fontname_UC,?get_env(),?wxFont_new_1),
   wxe_util:rec(?wxFont_new_1).
 
@@ -179,7 +179,7 @@ setDefaultEncoding(Encoding)
 setFaceName(#wx_ref{type=ThisT}=This,FaceName)
  when ?is_chardata(FaceName) ->
   ?CLASS(ThisT,wxFont),
-  FaceName_UC = unicode:characters_to_binary([FaceName,0]),
+  FaceName_UC = unicode:characters_to_binary(FaceName),
   wxe_util:queue_cmd(This,FaceName_UC,?get_env(),?wxFont_SetFaceName),
   wxe_util:rec(?wxFont_SetFaceName).
 

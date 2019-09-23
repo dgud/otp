@@ -75,7 +75,7 @@ getText(#wx_ref{type=ThisT}=This) ->
 setText(#wx_ref{type=ThisT}=This,Text)
  when ?is_chardata(Text) ->
   ?CLASS(ThisT,wxTextDataObject),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC,?get_env(),?wxTextDataObject_SetText).
 
 %% @doc Destroys this object, do not use object again

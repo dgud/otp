@@ -112,7 +112,7 @@ new(Parent,Id,Title)
 new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxFrame_new_4),
   wxe_util:rec(?wxFrame_new_4).
 
@@ -134,7 +134,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
   ?CLASS(ParentT,wxWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
+  Title_UC = unicode:characters_to_binary(Title),
   wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxFrame_Create),
   wxe_util:rec(?wxFrame_Create).
 
@@ -272,7 +272,7 @@ setStatusText(This,Text)
 setStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxFrame_SetStatusText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesetstatuswidths">external documentation</a>.

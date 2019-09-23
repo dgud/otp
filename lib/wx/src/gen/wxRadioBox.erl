@@ -100,8 +100,8 @@ new(Parent,Id,Title,Pos={PosX,PosY} = Pos,Size={SizeW,SizeH} = Size,Choices)
 new(#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size,Choices, Options)
  when is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Title_UC = unicode:characters_to_binary(Title),
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(Parent,Id,Title_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxRadioBox_new),
   wxe_util:rec(?wxRadioBox_new).
@@ -124,8 +124,8 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY
  when is_integer(Id),?is_chardata(Title),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
   ?CLASS(ParentT,wxWindow),
-  Title_UC = unicode:characters_to_binary([Title,0]),
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Title_UC = unicode:characters_to_binary(Title),
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(This,Parent,Id,Title_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxRadioBox_Create),
   wxe_util:rec(?wxRadioBox_Create).
@@ -300,7 +300,7 @@ isItemShown(#wx_ref{type=ThisT}=This,N)
 setItemHelpText(#wx_ref{type=ThisT}=This,N,HelpText)
  when is_integer(N),?is_chardata(HelpText) ->
   ?CLASS(ThisT,wxRadioBox),
-  HelpText_UC = unicode:characters_to_binary([HelpText,0]),
+  HelpText_UC = unicode:characters_to_binary(HelpText),
   wxe_util:queue_cmd(This,N,HelpText_UC,?get_env(),?wxRadioBox_SetItemHelpText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxsetitemtooltip">external documentation</a>.
@@ -309,7 +309,7 @@ setItemHelpText(#wx_ref{type=ThisT}=This,N,HelpText)
 setItemToolTip(#wx_ref{type=ThisT}=This,Item,Text)
  when is_integer(Item),?is_chardata(Text) ->
   ?CLASS(ThisT,wxRadioBox),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Item,Text_UC,?get_env(),?wxRadioBox_SetItemToolTip).
 
 %% @doc Destroys this object, do not use object again

@@ -185,7 +185,7 @@ getWildcard(#wx_ref{type=ThisT}=This) ->
 setDirectory(#wx_ref{type=ThisT}=This,Dir)
  when ?is_chardata(Dir) ->
   ?CLASS(ThisT,wxFileDialog),
-  Dir_UC = unicode:characters_to_binary([Dir,0]),
+  Dir_UC = unicode:characters_to_binary(Dir),
   wxe_util:queue_cmd(This,Dir_UC,?get_env(),?wxFileDialog_SetDirectory).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetfilename">external documentation</a>.
@@ -194,7 +194,7 @@ setDirectory(#wx_ref{type=ThisT}=This,Dir)
 setFilename(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxFileDialog),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxFileDialog_SetFilename).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetfilterindex">external documentation</a>.
@@ -211,7 +211,7 @@ setFilterIndex(#wx_ref{type=ThisT}=This,FilterIndex)
 setMessage(#wx_ref{type=ThisT}=This,Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxFileDialog),
-  Message_UC = unicode:characters_to_binary([Message,0]),
+  Message_UC = unicode:characters_to_binary(Message),
   wxe_util:queue_cmd(This,Message_UC,?get_env(),?wxFileDialog_SetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetpath">external documentation</a>.
@@ -220,7 +220,7 @@ setMessage(#wx_ref{type=ThisT}=This,Message)
 setPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxFileDialog),
-  Path_UC = unicode:characters_to_binary([Path,0]),
+  Path_UC = unicode:characters_to_binary(Path),
   wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxFileDialog_SetPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfiledialog.html#wxfiledialogsetwildcard">external documentation</a>.
@@ -229,7 +229,7 @@ setPath(#wx_ref{type=ThisT}=This,Path)
 setWildcard(#wx_ref{type=ThisT}=This,WildCard)
  when ?is_chardata(WildCard) ->
   ?CLASS(ThisT,wxFileDialog),
-  WildCard_UC = unicode:characters_to_binary([WildCard,0]),
+  WildCard_UC = unicode:characters_to_binary(WildCard),
   wxe_util:queue_cmd(This,WildCard_UC,?get_env(),?wxFileDialog_SetWildcard).
 
 %% @doc Destroys this object, do not use object again

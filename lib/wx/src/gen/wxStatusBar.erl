@@ -194,7 +194,7 @@ pushStatusText(This,Text)
 pushStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxStatusBar_PushStatusText).
 
 %% @equiv setFieldsCount(This,Number, [])
@@ -237,7 +237,7 @@ setStatusText(This,Text)
 setStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  Text_UC = unicode:characters_to_binary([Text,0]),
+  Text_UC = unicode:characters_to_binary(Text),
   wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxStatusBar_SetStatusText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetstatuswidths">external documentation</a>.

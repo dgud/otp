@@ -171,7 +171,7 @@ getManager(#wx_ref{type=WindowT}=Window) ->
 getPane(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxAuiManager),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxAuiManager_GetPane_1_0),
   wxe_util:rec(?wxAuiManager_GetPane_1_0);
 getPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window) ->
@@ -213,7 +213,7 @@ insertPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=In
 loadPaneInfo(#wx_ref{type=ThisT}=This,Pane_part,#wx_ref{type=PaneT}=Pane)
  when ?is_chardata(Pane_part) ->
   ?CLASS(ThisT,wxAuiManager),
-  Pane_part_UC = unicode:characters_to_binary([Pane_part,0]),
+  Pane_part_UC = unicode:characters_to_binary(Pane_part),
   ?CLASS(PaneT,wxAuiPaneInfo),
   wxe_util:queue_cmd(This,Pane_part_UC,Pane,?get_env(),?wxAuiManager_LoadPaneInfo).
 
@@ -232,7 +232,7 @@ loadPerspective(This,Perspective)
 loadPerspective(#wx_ref{type=ThisT}=This,Perspective, Options)
  when ?is_chardata(Perspective),is_list(Options) ->
   ?CLASS(ThisT,wxAuiManager),
-  Perspective_UC = unicode:characters_to_binary([Perspective,0]),
+  Perspective_UC = unicode:characters_to_binary(Perspective),
   wxe_util:queue_cmd(This,Perspective_UC, Options,?get_env(),?wxAuiManager_LoadPerspective),
   wxe_util:rec(?wxAuiManager_LoadPerspective).
 

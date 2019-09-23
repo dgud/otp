@@ -59,7 +59,7 @@ new(#wx_ref{type=IcT}=Ic) ->
 	File::unicode:chardata(), Type::integer().
 new(File,Type)
  when ?is_chardata(File),is_integer(Type) ->
-  File_UC = unicode:characters_to_binary([File,0]),
+  File_UC = unicode:characters_to_binary(File),
   wxe_util:queue_cmd(File_UC,Type,?get_env(),?wxIconBundle_new_2),
   wxe_util:rec(?wxIconBundle_new_2).
 
@@ -77,7 +77,7 @@ addIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon) ->
 addIcon(#wx_ref{type=ThisT}=This,File,Type)
  when ?is_chardata(File),is_integer(Type) ->
   ?CLASS(ThisT,wxIconBundle),
-  File_UC = unicode:characters_to_binary([File,0]),
+  File_UC = unicode:characters_to_binary(File),
   wxe_util:queue_cmd(This,File_UC,Type,?get_env(),?wxIconBundle_AddIcon_2).
 
 %% @equiv getIcon(This, [])

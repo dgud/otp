@@ -155,7 +155,7 @@ getPath(#wx_ref{type=ThisT}=This) ->
 setPath(#wx_ref{type=ThisT}=This,Str)
  when ?is_chardata(Str) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
-  Str_UC = unicode:characters_to_binary([Str,0]),
+  Str_UC = unicode:characters_to_binary(Str),
   wxe_util:queue_cmd(This,Str_UC,?get_env(),?wxFilePickerCtrl_SetPath).
 
 %% @doc Destroys this object, do not use object again

@@ -133,7 +133,7 @@ getMessage(#wx_ref{type=ThisT}=This) ->
 setMessage(#wx_ref{type=ThisT}=This,Message)
  when ?is_chardata(Message) ->
   ?CLASS(ThisT,wxDirDialog),
-  Message_UC = unicode:characters_to_binary([Message,0]),
+  Message_UC = unicode:characters_to_binary(Message),
   wxe_util:queue_cmd(This,Message_UC,?get_env(),?wxDirDialog_SetMessage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialogsetpath">external documentation</a>.
@@ -142,7 +142,7 @@ setMessage(#wx_ref{type=ThisT}=This,Message)
 setPath(#wx_ref{type=ThisT}=This,Path)
  when ?is_chardata(Path) ->
   ?CLASS(ThisT,wxDirDialog),
-  Path_UC = unicode:characters_to_binary([Path,0]),
+  Path_UC = unicode:characters_to_binary(Path),
   wxe_util:queue_cmd(This,Path_UC,?get_env(),?wxDirDialog_SetPath).
 
 %% @doc Destroys this object, do not use object again

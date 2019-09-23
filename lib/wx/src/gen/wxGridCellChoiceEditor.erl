@@ -56,7 +56,7 @@ new(Choices)
 	Option :: {'allowOthers', boolean()}.
 new(Choices, Options)
  when is_list(Choices),is_list(Options) ->
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(Choices_UCA, Options,?get_env(),?wxGridCellChoiceEditor_new),
   wxe_util:rec(?wxGridCellChoiceEditor_new).
@@ -67,7 +67,7 @@ new(Choices, Options)
 setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellChoiceEditor),
-  Params_UC = unicode:characters_to_binary([Params,0]),
+  Params_UC = unicode:characters_to_binary(Params),
   wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellChoiceEditor_SetParameters).
 
 %% @doc Destroys this object, do not use object again

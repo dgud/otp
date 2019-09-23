@@ -116,7 +116,7 @@ bottomDockable(#wx_ref{type=ThisT}=This, Options)
 caption(#wx_ref{type=ThisT}=This,C)
  when ?is_chardata(C) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  C_UC = unicode:characters_to_binary([C,0]),
+  C_UC = unicode:characters_to_binary(C),
   wxe_util:queue_cmd(This,C_UC,?get_env(),?wxAuiPaneInfo_Caption),
   wxe_util:rec(?wxAuiPaneInfo_Caption).
 
@@ -655,7 +655,7 @@ movable(#wx_ref{type=ThisT}=This, Options)
 name(#wx_ref{type=ThisT}=This,N)
  when ?is_chardata(N) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  N_UC = unicode:characters_to_binary([N,0]),
+  N_UC = unicode:characters_to_binary(N),
   wxe_util:queue_cmd(This,N_UC,?get_env(),?wxAuiPaneInfo_Name),
   wxe_util:rec(?wxAuiPaneInfo_Name).
 

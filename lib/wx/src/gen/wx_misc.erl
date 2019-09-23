@@ -73,8 +73,8 @@ bell() ->
 findMenuItemId(#wx_ref{type=FrameT}=Frame,MenuString,ItemString)
  when ?is_chardata(MenuString),?is_chardata(ItemString) ->
   ?CLASS(FrameT,wxFrame),
-  MenuString_UC = unicode:characters_to_binary([MenuString,0]),
-  ItemString_UC = unicode:characters_to_binary([ItemString,0]),
+  MenuString_UC = unicode:characters_to_binary(MenuString),
+  ItemString_UC = unicode:characters_to_binary(ItemString),
   wxe_util:queue_cmd(Frame,MenuString_UC,ItemString_UC,?get_env(),?utils_wxFindMenuItemId),
   wxe_util:rec(?utils_wxFindMenuItemId).
 
@@ -155,7 +155,7 @@ launchDefaultBrowser(Url)
 	Option :: {'flags', integer()}.
 launchDefaultBrowser(Url, Options)
  when ?is_chardata(Url),is_list(Options) ->
-  Url_UC = unicode:characters_to_binary([Url,0]),
+  Url_UC = unicode:characters_to_binary(Url),
   wxe_util:queue_cmd(Url_UC, Options,?get_env(),?utils_wxLaunchDefaultBrowser),
   wxe_util:rec(?utils_wxLaunchDefaultBrowser).
 

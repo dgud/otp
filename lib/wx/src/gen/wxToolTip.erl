@@ -54,7 +54,7 @@ setDelay(Msecs)
 	Tip::unicode:chardata().
 new(Tip)
  when ?is_chardata(Tip) ->
-  Tip_UC = unicode:characters_to_binary([Tip,0]),
+  Tip_UC = unicode:characters_to_binary(Tip),
   wxe_util:queue_cmd(Tip_UC,?get_env(),?wxToolTip_new),
   wxe_util:rec(?wxToolTip_new).
 
@@ -64,7 +64,7 @@ new(Tip)
 setTip(#wx_ref{type=ThisT}=This,Tip)
  when ?is_chardata(Tip) ->
   ?CLASS(ThisT,wxToolTip),
-  Tip_UC = unicode:characters_to_binary([Tip,0]),
+  Tip_UC = unicode:characters_to_binary(Tip),
   wxe_util:queue_cmd(This,Tip_UC,?get_env(),?wxToolTip_SetTip).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtooltip.html#wxtooltipgettip">external documentation</a>.

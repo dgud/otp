@@ -75,7 +75,7 @@ getPageSetupData(#wx_ref{type=ThisT}=This) ->
 previewFile(#wx_ref{type=ThisT}=This,Htmlfile)
  when ?is_chardata(Htmlfile) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Htmlfile_UC = unicode:characters_to_binary([Htmlfile,0]),
+  Htmlfile_UC = unicode:characters_to_binary(Htmlfile),
   wxe_util:queue_cmd(This,Htmlfile_UC,?get_env(),?wxHtmlEasyPrinting_PreviewFile),
   wxe_util:rec(?wxHtmlEasyPrinting_PreviewFile).
 
@@ -94,7 +94,7 @@ previewText(This,Htmltext)
 previewText(#wx_ref{type=ThisT}=This,Htmltext, Options)
  when ?is_chardata(Htmltext),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Htmltext_UC = unicode:characters_to_binary([Htmltext,0]),
+  Htmltext_UC = unicode:characters_to_binary(Htmltext),
   wxe_util:queue_cmd(This,Htmltext_UC, Options,?get_env(),?wxHtmlEasyPrinting_PreviewText),
   wxe_util:rec(?wxHtmlEasyPrinting_PreviewText).
 
@@ -104,7 +104,7 @@ previewText(#wx_ref{type=ThisT}=This,Htmltext, Options)
 printFile(#wx_ref{type=ThisT}=This,Htmlfile)
  when ?is_chardata(Htmlfile) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Htmlfile_UC = unicode:characters_to_binary([Htmlfile,0]),
+  Htmlfile_UC = unicode:characters_to_binary(Htmlfile),
   wxe_util:queue_cmd(This,Htmlfile_UC,?get_env(),?wxHtmlEasyPrinting_PrintFile),
   wxe_util:rec(?wxHtmlEasyPrinting_PrintFile).
 
@@ -123,7 +123,7 @@ printText(This,Htmltext)
 printText(#wx_ref{type=ThisT}=This,Htmltext, Options)
  when ?is_chardata(Htmltext),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Htmltext_UC = unicode:characters_to_binary([Htmltext,0]),
+  Htmltext_UC = unicode:characters_to_binary(Htmltext),
   wxe_util:queue_cmd(This,Htmltext_UC, Options,?get_env(),?wxHtmlEasyPrinting_PrintText),
   wxe_util:rec(?wxHtmlEasyPrinting_PrintText).
 
@@ -149,8 +149,8 @@ setFonts(This,Normal_face,Fixed_face)
 setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
  when ?is_chardata(Normal_face),?is_chardata(Fixed_face),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Normal_face_UC = unicode:characters_to_binary([Normal_face,0]),
-  Fixed_face_UC = unicode:characters_to_binary([Fixed_face,0]),
+  Normal_face_UC = unicode:characters_to_binary(Normal_face),
+  Fixed_face_UC = unicode:characters_to_binary(Fixed_face),
   wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Options,?get_env(),?wxHtmlEasyPrinting_SetFonts).
 
 %% @equiv setHeader(This,Header, [])
@@ -168,7 +168,7 @@ setHeader(This,Header)
 setHeader(#wx_ref{type=ThisT}=This,Header, Options)
  when ?is_chardata(Header),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Header_UC = unicode:characters_to_binary([Header,0]),
+  Header_UC = unicode:characters_to_binary(Header),
   wxe_util:queue_cmd(This,Header_UC, Options,?get_env(),?wxHtmlEasyPrinting_SetHeader).
 
 %% @equiv setFooter(This,Footer, [])
@@ -186,7 +186,7 @@ setFooter(This,Footer)
 setFooter(#wx_ref{type=ThisT}=This,Footer, Options)
  when ?is_chardata(Footer),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
-  Footer_UC = unicode:characters_to_binary([Footer,0]),
+  Footer_UC = unicode:characters_to_binary(Footer),
   wxe_util:queue_cmd(This,Footer_UC, Options,?get_env(),?wxHtmlEasyPrinting_SetFooter).
 
 %% @doc Destroys this object, do not use object again

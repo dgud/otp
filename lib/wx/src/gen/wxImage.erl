@@ -86,7 +86,7 @@ new(Width,Height)
   new(Width,Height, []);
 new(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxImage_new_2),
   wxe_util:rec(?wxImage_new_2).
 
@@ -117,8 +117,8 @@ new(Width,Height, Options)
   wxe_util:rec(?wxImage_new_3_0);
 new(Name,Mimetype, Options)
  when ?is_chardata(Name),?is_chardata(Mimetype),is_list(Options) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
-  Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
+  Name_UC = unicode:characters_to_binary(Name),
+  Mimetype_UC = unicode:characters_to_binary(Mimetype),
   wxe_util:queue_cmd(Name_UC,Mimetype_UC, Options,?get_env(),?wxImage_new_3_1),
   wxe_util:rec(?wxImage_new_3_1).
 
@@ -386,7 +386,7 @@ getImageCount(Name)
 	Option :: {'type', wx:wx_enum()}.
 getImageCount(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxImage_GetImageCount),
   wxe_util:rec(?wxImage_GetImageCount).
 
@@ -487,7 +487,7 @@ hasMask(#wx_ref{type=ThisT}=This) ->
 getOption(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_GetOption),
   wxe_util:rec(?wxImage_GetOption).
 
@@ -497,7 +497,7 @@ getOption(#wx_ref{type=ThisT}=This,Name)
 getOptionInt(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_GetOptionInt),
   wxe_util:rec(?wxImage_GetOptionInt).
 
@@ -507,7 +507,7 @@ getOptionInt(#wx_ref{type=ThisT}=This,Name)
 hasOption(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_HasOption),
   wxe_util:rec(?wxImage_HasOption).
 
@@ -557,7 +557,7 @@ loadFile(This,Name)
 loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC, Options,?get_env(),?wxImage_LoadFile_2),
   wxe_util:rec(?wxImage_LoadFile_2).
 
@@ -568,8 +568,8 @@ loadFile(#wx_ref{type=ThisT}=This,Name, Options)
 loadFile(#wx_ref{type=ThisT}=This,Name,Mimetype, Options)
  when ?is_chardata(Name),?is_chardata(Mimetype),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
-  Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
+  Name_UC = unicode:characters_to_binary(Name),
+  Mimetype_UC = unicode:characters_to_binary(Mimetype),
   wxe_util:queue_cmd(This,Name_UC,Mimetype_UC, Options,?get_env(),?wxImage_LoadFile_3),
   wxe_util:rec(?wxImage_LoadFile_3).
 
@@ -586,7 +586,7 @@ ok(#wx_ref{type=ThisT}=This) ->
 	Name::unicode:chardata().
 removeHandler(Name)
  when ?is_chardata(Name) ->
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(Name_UC,?get_env(),?wxImage_RemoveHandler),
   wxe_util:rec(?wxImage_RemoveHandler).
 
@@ -706,7 +706,7 @@ rotate90(#wx_ref{type=ThisT}=This, Options)
 saveFile(#wx_ref{type=ThisT}=This,Name)
  when ?is_chardata(Name) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,?get_env(),?wxImage_SaveFile_1),
   wxe_util:rec(?wxImage_SaveFile_1).
 
@@ -722,14 +722,14 @@ saveFile(#wx_ref{type=ThisT}=This,Name)
 saveFile(#wx_ref{type=ThisT}=This,Name,Type)
  when ?is_chardata(Name),is_integer(Type) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,Type,?get_env(),?wxImage_SaveFile_2_0),
   wxe_util:rec(?wxImage_SaveFile_2_0);
 saveFile(#wx_ref{type=ThisT}=This,Name,Mimetype)
  when ?is_chardata(Name),?is_chardata(Mimetype) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
-  Mimetype_UC = unicode:characters_to_binary([Mimetype,0]),
+  Name_UC = unicode:characters_to_binary(Name),
+  Mimetype_UC = unicode:characters_to_binary(Mimetype),
   wxe_util:queue_cmd(This,Name_UC,Mimetype_UC,?get_env(),?wxImage_SaveFile_2_1),
   wxe_util:rec(?wxImage_SaveFile_2_1).
 
@@ -878,13 +878,13 @@ setMaskFromImage(#wx_ref{type=ThisT}=This,#wx_ref{type=MaskT}=Mask,Mr,Mg,Mb)
 setOption(#wx_ref{type=ThisT}=This,Name,Value)
  when ?is_chardata(Name),is_integer(Value) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
+  Name_UC = unicode:characters_to_binary(Name),
   wxe_util:queue_cmd(This,Name_UC,Value,?get_env(),?wxImage_SetOption_2_0);
 setOption(#wx_ref{type=ThisT}=This,Name,Value)
  when ?is_chardata(Name),?is_chardata(Value) ->
   ?CLASS(ThisT,wxImage),
-  Name_UC = unicode:characters_to_binary([Name,0]),
-  Value_UC = unicode:characters_to_binary([Value,0]),
+  Name_UC = unicode:characters_to_binary(Name),
+  Value_UC = unicode:characters_to_binary(Value),
   wxe_util:queue_cmd(This,Name_UC,Value_UC,?get_env(),?wxImage_SetOption_2_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetpalette">external documentation</a>.

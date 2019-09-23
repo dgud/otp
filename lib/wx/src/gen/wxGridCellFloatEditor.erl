@@ -63,7 +63,7 @@ new(Options)
 setParameters(#wx_ref{type=ThisT}=This,Params)
  when ?is_chardata(Params) ->
   ?CLASS(ThisT,wxGridCellFloatEditor),
-  Params_UC = unicode:characters_to_binary([Params,0]),
+  Params_UC = unicode:characters_to_binary(Params),
   wxe_util:queue_cmd(This,Params_UC,?get_env(),?wxGridCellFloatEditor_SetParameters).
 
 %% @doc Destroys this object, do not use object again

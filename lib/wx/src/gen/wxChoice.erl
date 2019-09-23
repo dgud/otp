@@ -133,7 +133,7 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,{PosX,PosY} = Po
  when is_integer(Id),is_integer(PosX),is_integer(PosY),is_integer(SizeW),is_integer(SizeH),is_list(Choices),is_list(Options) ->
   ?CLASS(ThisT,wxChoice),
   ?CLASS(ParentT,wxWindow),
-  Choices_UCA = [unicode:characters_to_binary([ChoicesTemp,0]) || 
+  Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
   wxe_util:queue_cmd(This,Parent,Id,Pos,Size,Choices_UCA, Options,?get_env(),?wxChoice_Create),
   wxe_util:rec(?wxChoice_Create).
