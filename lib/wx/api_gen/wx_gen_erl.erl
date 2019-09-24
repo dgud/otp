@@ -32,7 +32,7 @@
 %%-compile(export_all).
 -export([gen/1]).
 -export([parents/1, get_unique_names/0, get_unique_name/1, erl_option_name/1,
-	 event_type_name/1, event_rec_name/1, filter_attrs/1]).
+	 erl_func_name/1, event_type_name/1, event_rec_name/1, filter_attrs/1]).
 
 
 -import(lists, [foldl/3,reverse/1, filter/2]).
@@ -911,6 +911,11 @@ doc_enum_desc([{_Enum,Name,Vs}|R]) ->
     doc_enum_desc(R).
 
 %% Misc functions prefixed with wx
+erl_func_name(#method{method_type=constructor}) ->
+    "new";
+erl_func_name(#method{name=N, alias=A}) ->
+    erl_func_name(N, A).
+
 erl_func_name("wx" ++ Name, undefined) ->   check_name(lowercase(Name));
 erl_func_name(Name, undefined) ->   check_name(lowercase(Name));
 erl_func_name(_, Alias) -> check_name(lowercase(Alias)).

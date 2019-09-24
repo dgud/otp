@@ -1167,7 +1167,7 @@ gen_func_table(Defs) ->
 
 gen_func_table({_, #method{where=erl_no_opt}}, Id) ->
     Id;
-gen_func_table({Class, #method{name=Name, id=Id, method_type=MT, opts=FOpts}}, Id) ->
+gen_func_table({Class, #method{id=Id, method_type=MT, opts=FOpts}=Mtd}, Id) ->
     IsObjectDest = MT =:= destructor andalso
         hd(reverse(wx_gen_erl:parents(Class))) =:= object,
     Func = wx_gen_erl:get_unique_name(Id),
@@ -1177,6 +1177,7 @@ gen_func_table({Class, #method{name=Name, id=Id, method_type=MT, opts=FOpts}}, I
                                           "wxEvtHandler_Disconnect_0"]),
     Endif1 = gen_if(deprecated, FOpts),
     Endif2 = gen_if(test_if, FOpts),
+    Name = wx_gen_erl:erl_func_name(Mtd),
     if IsObjectDest ->
             w("  {NULL, \"~s\", \"~s\"}, // ~w obj destructor ~s~n", [Class, Name, Id, Func]);
        IsTaylorMadeErl ->
