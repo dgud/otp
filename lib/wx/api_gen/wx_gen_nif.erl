@@ -211,8 +211,19 @@ gen_funcs(Defs) ->
       "  }~n"
       "}~n~n", []),
 
-
-    %% w("  case WXE_REGISTER_OBJECT: {~n"
+    w("// wxe_util::registerPid()\n"
+      "void wxe_registerPid(WxeApp *app, wxeCommand& Ecmd)\n"
+      "{\n"
+      "   wxeMemEnv *memenv = Ecmd.memenv;\n"
+      "   ErlNifEnv *env = Ecmd.env;\n"
+      "   ERL_NIF_TERM * argv = Ecmd.args;\n"
+      "   int index;\n"
+      "   if(!enif_get_int(env, argv[0], &index)) Badarg(51,\"Ref\");\n"
+      "   if(app->registerPid(index, Ecmd.caller, memenv)) {\n"
+      "      wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);\n"
+      "      rt.send(WXE_ATOM_ok);\n"
+      "   } else Badarg(51,\"Ref\");"
+      "}\n\n", []),
     %%   "     registerPid(bp, Ecmd.caller, memenv);~n"
     %%   "     rt.addAtom(\"ok\");~n"
     %%   "     break;~n"
@@ -1179,7 +1190,10 @@ gen_func_table({Class, #method{name=Name, id=Id, method_type=MT, opts=FOpts}}, I
     end,
     Id+1;
 gen_func_table({_, _}=CM, 50=Id) ->
-    w("  {wxe_destroy, \"all\", \"destroy\"}, // ~w~n", [Id]),
+    w("  {wxe_destroy, \"wxe_util\", \"destroy\"}, // ~w~n", [Id]),
+    gen_func_table(CM, Id+1);
+gen_func_table({_, _}=CM, 51=Id) ->
+    w("  {wxe_registerPid, \"wxe_util\", \"registerPid\"}, // ~w~n", [Id]),
     gen_func_table(CM, Id+1);
 gen_func_table({_, #method{id=MId}}=CM, Id) when MId > Id ->
     w("  {NULL, \"\", \"\"}, // ~w~n", [Id]),

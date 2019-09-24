@@ -57,25 +57,6 @@ get_const(Id) ->
     [{Id, Data}] = ets:lookup(wx_non_consts, Id),
     Data.
 
-%% cast(Op,Args) ->
-%%     #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
-%%     apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-%%     case Dbg > 0 of
-%% 	true ->  debug_cast(Dbg band 15, Op,Args,Ref);
-%% 	false -> ok
-%%     end,
-%%     ok.
-
-%% call(Op, Args) ->
-%%     #wx_env{ref=Ref,debug=Dbg} = wx:get_env(),
-%%     case Dbg > 0 of
-%% 	false ->
-%%             apply(?MODULE, queue_cmd, Args ++ [Ref,Op]),
-%% 	    rec(Op);
-%% 	true ->
-%% 	    debug_call(Dbg band 15, Op, Args, Ref)
-%%     end.
-
 init_opengl(_) -> ?NIF_ERROR.
 debug_ping() -> queue_cmd(?WXE_DEBUG_PING).
 debug_driver(_Level) -> ?NIF_ERROR.
@@ -111,12 +92,9 @@ rec(Op) ->
 	    rec(Op)
     end.
 
-%% destroy(Op, #wx_ref{ref=Ref}) ->
-%%     cast(Op,<<Ref:32/?UI>>).
-
-register_pid(#wx_ref{ref=_Ref}) ->
-    %call(?WXE_REGISTER_OBJECT, <<Ref:32/?UI>>).
-    exit(fixme_undef).
+register_pid(#wx_ref{ref=Index}) ->
+    queue_cmd(Index, ?get_env(), ?WXE_REGISTER_OBJECT),
+    rec(?WXE_REGISTER_OBJECT).
 
 get_cbId(Fun) ->
     gen_server:call((wx:get_env())#wx_env.sv,{register_cb, Fun}, infinity).
@@ -152,36 +130,6 @@ disconnect(Object,[Ev|Evs]) ->
 	    false
     end;
 disconnect(_, []) -> false.
-
-
-debug_rec(1) ->
-    receive
-	{'_wxe_result_', Res} ->
-	    io:format("complete ~n", []),
-	    Res;
-	{'_wxe_error_', Op2, Error} ->
-	    [{_,MF2}] = ets:lookup(wx_debug_info,Op2),
-	    erlang:error({Error, MF2})
-    end;
-debug_rec(2) ->
-    receive
-	{'_wxe_result_', Res} ->
-	    io:format("~p ~n", [Res]),
-	    Res;
-	{'_wxe_error_', Op, Error} ->
-	    io:format("Error ~p ~n", [Error]),
-	    [{_,MF}] = ets:lookup(wx_debug_info,Op),
-	    erlang:error({Error, MF})
-    end.
-
-check_previous() ->
-    receive 
-	{'_wxe_error_', Op, Error} -> 
-	    [{_,MF={M,F,_}}] = ets:lookup(wx_debug_info,Op),
-	    io:format("WX ~p: ERROR in previous command ~s:~s~n",[self(), M,F]),
-	    erlang:error({Error, MF})    
-    after 0 -> ok
-    end.
 
 priv_dir(Driver0, Silent) ->
     {file, Path} = code:is_loaded(?MODULE),

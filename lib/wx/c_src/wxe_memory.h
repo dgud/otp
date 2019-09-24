@@ -102,7 +102,7 @@ class wxeMemEnv {
 class wxeRefData {
  public:
  wxeRefData(unsigned int dref, int ttype, int is_new, wxeMemEnv *menv) :
-    ref(dref), type(ttype), memenv(menv), alloc_in_erl(is_new), reg_pid(false) { } ;
+    ref(dref), type(ttype), memenv(menv), alloc_in_erl(is_new) { enif_set_pid_undefined(&pid); } ;
     int ref;
     int type;
     // 0 = wxWindow subclasses, 1 = wxObject subclasses
@@ -113,7 +113,6 @@ class wxeRefData {
     //     the stack
     wxeMemEnv *memenv;
     bool alloc_in_erl;
-    bool reg_pid;
     ErlNifPid pid;
 };
 

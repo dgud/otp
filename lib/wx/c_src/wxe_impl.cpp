@@ -673,13 +673,13 @@ void WxeApp::clearPtr(void * ptr) {
     refd->memenv->ref2ptr[ref] = NULL;
     free.Append(ref);
 
-    if(refd->reg_pid) {
+    if(!enif_is_pid_undefined(&(refd->pid))) {
       // Send terminate pid to owner
       wxeReturn rt = wxeReturn(refd->memenv,refd->pid, false);
       rt.send(enif_make_tuple2(rt.env,
                                rt.make_atom("_wxe_destroy_"),
                                enif_make_pid(rt.env, &refd->pid)));
-      refd->reg_pid = false;
+      enif_set_pid_undefined(&(refd->pid));
     };
     if(refd->type == 1 && ((wxObject*)ptr)->IsKindOf(CLASSINFO(wxSizer))) {
       wxSizerItemList list = ((wxSizer*)ptr)->GetChildren();
@@ -714,10 +714,7 @@ void WxeApp::clearPtr(void * ptr) {
 }
 
 
-void WxeApp::registerPid(char * bp, ErlNifPid pid, wxeMemEnv * memenv) {
-  int index = *(int *) bp;
-  if(!memenv)
-    throw wxe_badarg(index);
+int WxeApp::registerPid(int index, ErlNifPid pid, wxeMemEnv * memenv) {
   void * temp = memenv->ref2ptr[index];
   if((index < memenv->next) && ((index == 0) || (temp != (void *) NULL))) {
     ptrMap::iterator it;
@@ -725,8 +722,8 @@ void WxeApp::registerPid(char * bp, ErlNifPid pid, wxeMemEnv * memenv) {
     if(it != ptr2ref.end()) {
       wxeRefData *refd = it->second;
       refd->pid = pid;
-      return ;
+      return 1;
     }
   };
-  throw wxe_badarg(index);
+  return 0;
 }

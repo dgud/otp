@@ -55,6 +55,19 @@ void wxe_destroy(WxeApp *app, wxeCommand& Ecmd)
   }
 }
 
+// wxe_util::registerPid()
+void wxe_registerPid(WxeApp *app, wxeCommand& Ecmd)
+{
+   wxeMemEnv *memenv = Ecmd.memenv;
+   ErlNifEnv *env = Ecmd.env;
+   ERL_NIF_TERM * argv = Ecmd.args;
+   int index;
+   if(!enif_get_int(env, argv[0], &index)) Badarg(51,"Ref");
+   if(app->registerPid(index, Ecmd.caller, memenv)) {
+      wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
+      rt.send(WXE_ATOM_ok);
+   } else Badarg(51,"Ref");}
+
 
 void wxEvtHandler_Connect(WxeApp *app, wxeCommand& Ecmd)
 {
@@ -64057,8 +64070,8 @@ wxe_fns_t wxe_fns[] =
   {NULL, "", ""}, // 47
   {NULL, "", ""}, // 48
   {NULL, "", ""}, // 49
-  {wxe_destroy, "all", "destroy"}, // 50
-  {NULL, "", ""}, // 51
+  {wxe_destroy, "wxe_util", "destroy"}, // 50
+  {wxe_registerPid, "wxe_util", "registerPid"}, // 51
   {NULL, "", ""}, // 52
   {NULL, "", ""}, // 53
   {NULL, "", ""}, // 54

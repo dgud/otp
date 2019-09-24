@@ -80,7 +80,7 @@ public:
   // void * getPtr(char * bp, wxeMemEnv *memenv);
   void clearPtr(void *ptr);
   wxeRefData * getRefData(void *ptr);
-  void registerPid(char *ptr, ErlNifPid pid, wxeMemEnv *memenv);
+  int registerPid(int index, ErlNifPid pid, wxeMemEnv *memenv);
   void init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller);
 
   // Code found in gen/wxe_derived_dest.h

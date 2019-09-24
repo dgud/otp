@@ -44,7 +44,7 @@
 
 -define(get_env(),
         case erlang:get(?WXE_IDENTIFIER) of
-            #wx_env{ref=Ref} -> Ref;
+            #wx_env{ref=_wx_Ref_} -> _wx_Ref_;
             _ -> erlang:error({wx,unknown_env})
         end).
 
