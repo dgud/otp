@@ -102,7 +102,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPanel_new_2),
+  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxPanel_new_2),
   wxe_util:rec(?wxPanel_new_2).
 
 %% @equiv new(Parent,X,Y,Width,Height, [])
@@ -120,7 +126,10 @@ new(Parent,X,Y,Width,Height)
 new(#wx_ref{type=ParentT}=Parent,X,Y,Width,Height, Options)
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,X,Y,Width,Height, Options,?get_env(),?wxPanel_new_6),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,X,Y,Width,Height, Opts,?get_env(),?wxPanel_new_6),
   wxe_util:rec(?wxPanel_new_6).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpanel.html#wxpanelinitdialog">external documentation</a>.

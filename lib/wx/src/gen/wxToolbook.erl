@@ -108,7 +108,12 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxToolbook_new_3),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxToolbook_new_3),
   wxe_util:rec(?wxToolbook_new_3).
 
 %% @equiv addPage(This,Page,Text, [])
@@ -129,7 +134,11 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxToolbook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Page,Text_UC, Options,?get_env(),?wxToolbook_AddPage),
+  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
+          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Page,Text_UC, Opts,?get_env(),?wxToolbook_AddPage),
   wxe_util:rec(?wxToolbook_AddPage).
 
 %% @equiv advanceSelection(This, [])
@@ -147,7 +156,10 @@ advanceSelection(This)
 advanceSelection(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxToolbook),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxToolbook_AdvanceSelection).
+  MOpts = fun({forward, _forward} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxToolbook_AdvanceSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbook.html#wxtoolbookassignimagelist">external documentation</a>.
 -spec assignImageList(This, ImageList) -> 'ok' when
@@ -175,7 +187,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxToolbook),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxToolbook_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxToolbook_Create),
   wxe_util:rec(?wxToolbook_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbook.html#wxtoolbookdeleteallpages">external documentation</a>.
@@ -291,7 +308,11 @@ insertPage(#wx_ref{type=ThisT}=This,N,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxToolbook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,N,Page,Text_UC, Options,?get_env(),?wxToolbook_InsertPage),
+  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
+          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,N,Page,Text_UC, Opts,?get_env(),?wxToolbook_InsertPage),
   wxe_util:rec(?wxToolbook_InsertPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoolbook.html#wxtoolbooksetimagelist">external documentation</a>.

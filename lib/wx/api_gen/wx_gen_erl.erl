@@ -541,12 +541,12 @@ gen_function_clause(Name0,MT,Ps,Optional,Variant) ->
 			   case lists:member(name_type, Variant) of
 			       true ->
 				   Name = func_arg_name(Arg),
-				   case func_arg(Arg) of
+				   case func_arg(Arg, true) of
 				       Name -> Name;
 				       Typed -> Name ++ "=" ++ Typed
 				   end;
 			       false ->
-				   func_arg(Arg)
+				   func_arg(Arg, true)
 			   end
 		   end
 	   end,
@@ -602,37 +602,52 @@ func_arg_name(#param{where=c}) -> skip;
 func_arg_name(#param{name=Name}) ->
     erl_arg_name(Name).
 
-func_arg(#param{def=Def}) when Def =/= none -> skip;
-func_arg(#param{in=false}) -> skip;
-func_arg(#param{where=c}) -> skip;
-func_arg(#param{name=Name,type=#type{base=string}}) ->
+func_arg(#param{def=Def}, _) when Def =/= none -> skip;
+func_arg(#param{in=false}, _) -> skip;
+func_arg(#param{where=c}, _) -> skip;
+func_arg(#param{name=Name,type=#type{base=string}}, _) ->
     erl_arg_name(Name);
-func_arg(#param{name=Name,type=#type{name="wxArrayString"}}) ->
+func_arg(#param{name=Name,type=#type{name="wxArrayString"}}, _) ->
     erl_arg_name(Name);
-func_arg(#param{name=Name0,type=#type{base={class,_CN}, single=true}}) ->
+func_arg(#param{name=Name0,type=#type{base={class,_CN}, single=true}}, Used) ->
     Name = erl_arg_name(Name0),
-    "#wx_ref{type=" ++ Name ++ "T}=" ++ Name;
-func_arg(#param{name=Name0,type=#type{base={ref,CN}, single=true}}) ->
+    case Used of
+        true -> "#wx_ref{type=" ++ Name ++ "T}=" ++ Name;
+        false -> "#wx_ref{type=" ++ Name ++ "T}"
+    end;
+func_arg(#param{name=Name0,type=#type{base={ref,CN}, single=true}}, Used) ->
     Name = erl_arg_name(Name0),
-    "#wx_ref{type=" ++ CN ++ "}=" ++ Name;
+    case Used of
+        true -> "#wx_ref{type=" ++ CN ++ "}=" ++ Name;
+        false -> "#wx_ref{type=" ++ CN ++ "}"
+    end;
 func_arg(#param{name=Name0,type={merged,_,#type{base={class,_},single=true},_,
-				 _, #type{base={class,_},single=true},_}}) ->
+				 _, #type{base={class,_},single=true},_}}, Used) ->
     Name = erl_arg_name(Name0),
-    "#wx_ref{type=" ++ Name ++ "T}=" ++ Name;
-func_arg(#param{name=Name,type=#type{base={enum,_}}}) ->
+    case Used of
+        true -> "#wx_ref{type=" ++ Name ++ "T}=" ++ Name;
+        false -> "#wx_ref{type=" ++ Name ++ "T}"
+    end;
+func_arg(#param{name=Name,type=#type{base={enum,_}}}, Used) ->
+    erl_arg_name(Name, Used);
+func_arg(#param{name=Name,type=#type{base={comp,"wxColour",_Tup}, single=true}}, _) ->
     erl_arg_name(Name);
-func_arg(#param{name=Name,type=#type{base={comp,"wxColour",_Tup}, single=true}}) ->
-    erl_arg_name(Name);
-func_arg(#param{name=Name,type=#type{base={comp,"wxDateTime",_Tup}, single=true}}) ->
-    erl_arg_name(Name);
-func_arg(#param{name=Name,type=#type{name="wxArtClient", single=true}}) ->
-    erl_arg_name(Name);
-func_arg(#param{name=Name,type=#type{base={comp,_,Tup}, single=true}}) ->
+func_arg(#param{name=Name,type=#type{base={comp,"wxDateTime",[D,Mo,Y|Tup]}, single=true}}, _) ->
     N = erl_arg_name(Name),
-    Doc = fun({_,V}) -> erl_arg_name(N)++V end,
-    "{" ++ args(Doc, ",", Tup) ++ "} = " ++ N;
-func_arg(#param{name=Name}) ->
-    erl_arg_name(Name).
+    Doc = fun({_,V}) -> N++V end,
+    "{{" ++ args(Doc, ",", [Y,Mo,D]) ++ "},{" ++ args(Doc, ",", Tup) ++ "}}";
+func_arg(#param{name=Name,type=#type{name="wxArtClient", single=true}}, _) ->
+    erl_arg_name(Name);
+func_arg(#param{name=Name,type=#type{base={comp,_,Tup}, single=true}}, Used) ->
+    N = erl_arg_name(Name, Used),
+    Doc = fun({_,V}) -> N++V end,
+    "{" ++ args(Doc, ",", Tup) ++ "}" ++
+        case Used of
+            true -> " = " ++ N;
+            false -> ""
+        end;
+func_arg(#param{name=Name}, Used) ->
+    erl_arg_name(Name, Used).
 
 
 guard_test(#param{type=#type{base={class,_},single=true}}) -> skip;
@@ -660,8 +675,8 @@ guard_test(#param{name=N,type=#type{base=double}}) ->
     "is_number(" ++ erl_arg_name(N) ++ ")";
 guard_test(#param{name=N,type=#type{base=bool}}) ->
     "is_boolean(" ++ erl_arg_name(N) ++ ")";
-guard_test(#param{name=N,type=#type{name="wxDateTime"}}) ->
-    "tuple_size(" ++ erl_arg_name(N) ++ ") =:= 2";
+%%guard_test(#param{name=_N,type=#type{name="wxDateTime"}}) ->
+    %%     "tuple_size(" ++ erl_arg_name(N) ++ ") =:= 2";
 guard_test(#param{name=N,type=#type{base=binary}}) ->
     "is_binary(" ++ erl_arg_name(N) ++ ")";
 guard_test(#param{name=Name,type=#type{base={enum,_}}}) ->
@@ -901,6 +916,9 @@ erl_func_name(Name, undefined) ->   check_name(lowercase(Name));
 erl_func_name(_, Alias) -> check_name(lowercase(Alias)).
 
 erl_option_name(Name) -> lowercase(Name).
+
+erl_arg_name(Name, false) -> "_" ++ Name;
+erl_arg_name(Name, true) -> erl_arg_name(Name).
 erl_arg_name(Name) ->    uppercase(Name).
 
 check_name("destroy") -> "'Destroy'";
@@ -909,42 +927,41 @@ check_name("~" ++ _Name) -> "destroy";
 check_name(Name) -> Name.
 
 marshal_opts([],_) -> "";     %% No opts skip this!
-marshal_opts(_Opts, []) ->
-    "Options";
-marshal_opts(_Opts, _) ->
-    ", Options".
+marshal_opts(Opts, []) ->
+    marshal_opts_0(Opts),
+    "Opts";
+marshal_opts(Opts, _) ->
+    marshal_opts_0(Opts),
+    ", Opts".
 
-%%     w("  MOpts = fun", []),
-%%     marshal_opts1(Opts,1),
-%%     w(";~n          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,~n", []),
-%%     w("  BinOpt = list_to_binary(lists:foldl(MOpts, [<<0:32>>], Options)),~n", []),
-%%     {Str, _} = align(64, Align, "BinOpt/binary"),
-%%     case Args of
-%% 	[] -> Str;   % All Args are optional
-%% 	_ ->    ", " ++ Str
-%%     end.
+marshal_opts_0(Opts) ->
+    w("  MOpts = fun", []),
+    marshal_opts1(Opts),
+    w(";~n          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,~n", []),
+    w("  Opts = lists:foldr(MOpts, [], Options),~n",[]).
 
-%% marshal_opts1([P],N) ->
-%%     marshal_opt(P,N);
-%% marshal_opts1([P|R],N) ->
-%%     marshal_opt(P,N),
-%%     w(";~n          ", []),
-%%     marshal_opts1(R,N+1).
+marshal_opts1([P]) ->
+    marshal_opt(P);
+marshal_opts1([P|R]) ->
+    marshal_opt(P),
+    w(";~n          ", []),
+    marshal_opts1(R).
 
-%% marshal_opt(P0=#param{name=Name,type=Type},N) ->
-%%     P = P0#param{def=none},
-%%     {Arg,Align} = marshal_arg(Type,erl_arg_name(Name),1),
-%%     AStr = if Align =:= 0 -> "";
-%% 	      Align =:= 1 -> ",0:32"
-%% 	   end,
-%%     w("({~s, ~s}, Acc) -> ", [erl_option_name(Name), func_arg(P)]),
-%%     arg_type_test(P,"",[]),
-%%     case Arg of
-%% 	skip ->
-%% 	    w("[<<~p:32/?UI~s>>|Acc]", [N, AStr]);
-%% 	_ ->
-%% 	    w("[<<~p:32/?UI,~s~s>>|Acc]", [N, Arg,AStr])
-%%     end.
+marshal_opt(P0=#param{name=Name,type=Type}) ->
+    P = P0#param{def=none},
+    Opt = erl_option_name(Name),
+    N = erl_arg_name(Name),
+    Arg = marshal_arg(Type,N),
+    case Arg of
+	N ->
+            w("({~s, ~s} = Arg, Acc) -> ", [Opt, func_arg(P, false)]),
+            arg_type_test(P,"",[]),
+	    w("[Arg|Acc]",[]);
+	_ ->
+            w("({~s, ~s}, Acc) -> ", [Opt, func_arg(P, false)]),
+            arg_type_test(P,"",[]),
+	    w("[{~s,~s}|Acc]", [Opt, Arg])
+    end.
 
 marshal_args(Ps) ->
     marshal_args(Ps, []).
@@ -973,6 +990,10 @@ marshal_arg(#type{name="wxArrayString"}, Name) ->
     Name ++ "_UCA";
 marshal_arg(#type{single=true,base={comp,"wxColour",_Comp}}, Name) ->
     "wxe_util:color(" ++ Name ++ ")";
+marshal_arg(#type{single=true,base={comp,"wxDateTime",Comp}}, Name) ->
+    N = erl_arg_name(Name),
+    Doc = fun({_,V}) -> N++V end,
+    "{" ++ args(Doc, ",", Comp) ++ "}";
 marshal_arg(_, Name) ->
     Name.
 

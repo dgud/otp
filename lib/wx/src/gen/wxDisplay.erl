@@ -47,7 +47,10 @@ new() ->
 	Option :: {'n', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxDisplay_new),
+  MOpts = fun({n, _n} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxDisplay_new),
   wxe_util:rec(?wxDisplay_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdisplay.html#wxdisplayisok">external documentation</a>.

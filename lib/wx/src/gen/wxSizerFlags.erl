@@ -47,7 +47,10 @@ new() ->
 	Option :: {'proportion', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxSizerFlags_new),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxSizerFlags_new),
   wxe_util:rec(?wxSizerFlags_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizerflags.html#wxsizerflagsalign">external documentation</a>.
@@ -74,7 +77,10 @@ border(This)
 border(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizerFlags),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxSizerFlags_Border_1),
+  MOpts = fun({direction, _direction} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxSizerFlags_Border_1),
   wxe_util:rec(?wxSizerFlags_Border_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizerflags.html#wxsizerflagsborder">external documentation</a>.

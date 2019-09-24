@@ -47,7 +47,10 @@ new() ->
 	Option :: {'data', wxPrintDialogData:wxPrintDialogData()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxPrinter_new),
+  MOpts = fun({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxPrintDialogData),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxPrinter_new),
   wxe_util:rec(?wxPrinter_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprintercreateabortwindow">external documentation</a>.
@@ -100,7 +103,10 @@ print(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=Printou
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(PrintoutT,wxPrintout),
-  wxe_util:queue_cmd(This,Parent,Printout, Options,?get_env(),?wxPrinter_Print),
+  MOpts = fun({prompt, _prompt} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Printout, Opts,?get_env(),?wxPrinter_Print),
   wxe_util:rec(?wxPrinter_Print).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprinter.html#wxprinterprintdialog">external documentation</a>.

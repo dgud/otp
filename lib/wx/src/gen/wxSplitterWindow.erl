@@ -107,7 +107,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxSplitterWindow_new_2),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxSplitterWindow_new_2),
   wxe_util:rec(?wxSplitterWindow_new_2).
 
 %% @equiv create(This,Parent, [])
@@ -129,7 +135,13 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxSplitterWindow_Create),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxSplitterWindow_Create),
   wxe_util:rec(?wxSplitterWindow_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowgetminimumpanesize">external documentation</a>.
@@ -230,7 +242,10 @@ setSashPosition(This,Position)
 setSashPosition(#wx_ref{type=ThisT}=This,Position, Options)
  when is_integer(Position),is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:queue_cmd(This,Position, Options,?get_env(),?wxSplitterWindow_SetSashPosition).
+  MOpts = fun({redraw, _redraw} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Position, Opts,?get_env(),?wxSplitterWindow_SetSashPosition).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowsetsashsize">external documentation</a>.
 -spec setSashSize(This, Width) -> 'ok' when
@@ -273,7 +288,10 @@ splitHorizontally(#wx_ref{type=ThisT}=This,#wx_ref{type=Window1T}=Window1,#wx_re
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(Window1T,wxWindow),
   ?CLASS(Window2T,wxWindow),
-  wxe_util:queue_cmd(This,Window1,Window2, Options,?get_env(),?wxSplitterWindow_SplitHorizontally),
+  MOpts = fun({sashPosition, _sashPosition} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window1,Window2, Opts,?get_env(),?wxSplitterWindow_SplitHorizontally),
   wxe_util:rec(?wxSplitterWindow_SplitHorizontally).
 
 %% @equiv splitVertically(This,Window1,Window2, [])
@@ -293,7 +311,10 @@ splitVertically(#wx_ref{type=ThisT}=This,#wx_ref{type=Window1T}=Window1,#wx_ref{
   ?CLASS(ThisT,wxSplitterWindow),
   ?CLASS(Window1T,wxWindow),
   ?CLASS(Window2T,wxWindow),
-  wxe_util:queue_cmd(This,Window1,Window2, Options,?get_env(),?wxSplitterWindow_SplitVertically),
+  MOpts = fun({sashPosition, _sashPosition} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window1,Window2, Opts,?get_env(),?wxSplitterWindow_SplitVertically),
   wxe_util:rec(?wxSplitterWindow_SplitVertically).
 
 %% @equiv unsplit(This, [])
@@ -311,7 +332,10 @@ unsplit(This)
 unsplit(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSplitterWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxSplitterWindow_Unsplit),
+  MOpts = fun({toRemove, #wx_ref{type=ToRemoveT}} = Arg, Acc) ->   ?CLASS(ToRemoveT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxSplitterWindow_Unsplit),
   wxe_util:rec(?wxSplitterWindow_Unsplit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsplitterwindow.html#wxsplitterwindowupdatesize">external documentation</a>.

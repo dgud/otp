@@ -107,7 +107,10 @@ bottomDockable(This)
 bottomDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_BottomDockable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_BottomDockable),
   wxe_util:rec(?wxAuiPaneInfo_BottomDockable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfocaption">external documentation</a>.
@@ -135,7 +138,10 @@ captionVisible(This)
 captionVisible(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_CaptionVisible),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_CaptionVisible),
   wxe_util:rec(?wxAuiPaneInfo_CaptionVisible).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfocentre">external documentation</a>.
@@ -169,7 +175,10 @@ closeButton(This)
 closeButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_CloseButton),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_CloseButton),
   wxe_util:rec(?wxAuiPaneInfo_CloseButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfodefaultpane">external documentation</a>.
@@ -195,7 +204,10 @@ destroyOnClose(This)
 destroyOnClose(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_DestroyOnClose),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_DestroyOnClose),
   wxe_util:rec(?wxAuiPaneInfo_DestroyOnClose).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfodirection">external documentation</a>.
@@ -230,7 +242,10 @@ dockable(This)
 dockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_Dockable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Dockable),
   wxe_util:rec(?wxAuiPaneInfo_Dockable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfofixed">external documentation</a>.
@@ -264,7 +279,10 @@ floatable(This)
 floatable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_Floatable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Floatable),
   wxe_util:rec(?wxAuiPaneInfo_Floatable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfofloatingposition">external documentation</a>.
@@ -318,7 +336,10 @@ gripper(This)
 gripper(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_Gripper),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Gripper),
   wxe_util:rec(?wxAuiPaneInfo_Gripper).
 
 %% @equiv gripperTop(This, [])
@@ -336,7 +357,10 @@ gripperTop(This)
 gripperTop(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_GripperTop),
+  MOpts = fun({attop, _attop} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_GripperTop),
   wxe_util:rec(?wxAuiPaneInfo_GripperTop).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfohasborder">external documentation</a>.
@@ -556,7 +580,10 @@ leftDockable(This)
 leftDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_LeftDockable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_LeftDockable),
   wxe_util:rec(?wxAuiPaneInfo_LeftDockable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfomaxsize">external documentation</a>.
@@ -592,7 +619,10 @@ maximizeButton(This)
 maximizeButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_MaximizeButton),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_MaximizeButton),
   wxe_util:rec(?wxAuiPaneInfo_MaximizeButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfominsize">external documentation</a>.
@@ -628,7 +658,10 @@ minimizeButton(This)
 minimizeButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_MinimizeButton),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_MinimizeButton),
   wxe_util:rec(?wxAuiPaneInfo_MinimizeButton).
 
 %% @equiv movable(This, [])
@@ -646,7 +679,10 @@ movable(This)
 movable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_Movable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Movable),
   wxe_util:rec(?wxAuiPaneInfo_Movable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfoname">external documentation</a>.
@@ -674,7 +710,10 @@ paneBorder(This)
 paneBorder(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_PaneBorder),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_PaneBorder),
   wxe_util:rec(?wxAuiPaneInfo_PaneBorder).
 
 %% @equiv pinButton(This, [])
@@ -692,7 +731,10 @@ pinButton(This)
 pinButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_PinButton),
+  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_PinButton),
   wxe_util:rec(?wxAuiPaneInfo_PinButton).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfoposition">external documentation</a>.
@@ -719,7 +761,10 @@ resizable(This)
 resizable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_Resizable),
+  MOpts = fun({resizable, _resizable} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Resizable),
   wxe_util:rec(?wxAuiPaneInfo_Resizable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinforight">external documentation</a>.
@@ -745,7 +790,10 @@ rightDockable(This)
 rightDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_RightDockable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_RightDockable),
   wxe_util:rec(?wxAuiPaneInfo_RightDockable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinforow">external documentation</a>.
@@ -789,7 +837,10 @@ show(This)
 show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_Show),
+  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Show),
   wxe_util:rec(?wxAuiPaneInfo_Show).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfotoolbarpane">external documentation</a>.
@@ -823,7 +874,10 @@ topDockable(This)
 topDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxAuiPaneInfo_TopDockable),
+  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_TopDockable),
   wxe_util:rec(?wxAuiPaneInfo_TopDockable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauipaneinfo.html#wxauipaneinfowindow">external documentation</a>.

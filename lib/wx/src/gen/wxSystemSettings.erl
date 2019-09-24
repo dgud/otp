@@ -68,7 +68,10 @@ getMetric(Index)
 	Option :: {'win', wxWindow:wxWindow()}.
 getMetric(Index, Options)
  when is_integer(Index),is_list(Options) ->
-  wxe_util:queue_cmd(Index, Options,?get_env(),?wxSystemSettings_GetMetric),
+  MOpts = fun({win, #wx_ref{type=WinT}} = Arg, Acc) ->   ?CLASS(WinT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Index, Opts,?get_env(),?wxSystemSettings_GetMetric),
   wxe_util:rec(?wxSystemSettings_GetMetric).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsystemsettings.html#wxsystemsettingsgetscreentype">external documentation</a>.

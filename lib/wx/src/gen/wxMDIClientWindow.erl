@@ -101,7 +101,10 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxMDIParentFrame),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxMDIClientWindow_new_2),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxMDIClientWindow_new_2),
   wxe_util:rec(?wxMDIClientWindow_new_2).
 
 %% @equiv createClient(This,Parent, [])
@@ -120,7 +123,10 @@ createClient(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIClientWindow),
   ?CLASS(ParentT,wxMDIParentFrame),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxMDIClientWindow_CreateClient),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxMDIClientWindow_CreateClient),
   wxe_util:rec(?wxMDIClientWindow_CreateClient).
 
 %% @doc Destroys this object, do not use object again

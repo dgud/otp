@@ -115,7 +115,11 @@ new(#wx_ref{type=ParentT}=Parent,Message,Caption,Choices, Options)
   Caption_UC = unicode:characters_to_binary(Caption),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  wxe_util:queue_cmd(Parent,Message_UC,Caption_UC,Choices_UCA, Options,?get_env(),?wxMultiChoiceDialog_new_5),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Message_UC,Caption_UC,Choices_UCA, Opts,?get_env(),?wxMultiChoiceDialog_new_5),
   wxe_util:rec(?wxMultiChoiceDialog_new_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmultichoicedialog.html#wxmultichoicedialoggetselections">external documentation</a>.

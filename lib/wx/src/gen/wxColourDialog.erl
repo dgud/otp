@@ -110,7 +110,10 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxColourDialog_new_2),
+  MOpts = fun({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxColourData),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxColourDialog_new_2),
   wxe_util:rec(?wxColourDialog_new_2).
 
 %% @equiv create(This,Parent, [])
@@ -129,7 +132,10 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxColourDialog),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxColourDialog_Create),
+  MOpts = fun({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxColourData),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxColourDialog_Create),
   wxe_util:rec(?wxColourDialog_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourdialog.html#wxcolourdialoggetcolourdata">external documentation</a>.

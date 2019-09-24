@@ -58,7 +58,10 @@ new() ->
 	Option :: {'style', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxMenu_new_1),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxMenu_new_1),
   wxe_util:rec(?wxMenu_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuwxmenu">external documentation</a>.
@@ -68,7 +71,10 @@ new(Options)
 new(Title, Options)
  when ?is_chardata(Title),is_list(Options) ->
   Title_UC = unicode:characters_to_binary(Title),
-  wxe_util:queue_cmd(Title_UC, Options,?get_env(),?wxMenu_new_2),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Title_UC, Opts,?get_env(),?wxMenu_new_2),
   wxe_util:rec(?wxMenu_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuappend">external documentation</a>.
@@ -110,7 +116,11 @@ append(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_Append_3),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          ({kind, _kind} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Opts,?get_env(),?wxMenu_Append_3),
   wxe_util:rec(?wxMenu_Append_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuappend">external documentation</a>.
@@ -135,7 +145,10 @@ append(#wx_ref{type=ThisT}=This,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Opti
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
   ?CLASS(SubmenuT,wxMenu),
-  wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Append_4_1),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Opts,?get_env(),?wxMenu_Append_4_1),
   wxe_util:rec(?wxMenu_Append_4_1).
 
 %% @equiv appendCheckItem(This,Itemid,Text, [])
@@ -154,7 +167,10 @@ appendCheckItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_AppendCheckItem),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Opts,?get_env(),?wxMenu_AppendCheckItem),
   wxe_util:rec(?wxMenu_AppendCheckItem).
 
 %% @equiv appendRadioItem(This,Itemid,Text, [])
@@ -173,7 +189,10 @@ appendRadioItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_AppendRadioItem),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Opts,?get_env(),?wxMenu_AppendRadioItem),
   wxe_util:rec(?wxMenu_AppendRadioItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuappendseparator">external documentation</a>.
@@ -350,7 +369,12 @@ insert(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=ItemT}=Item)
 insert(#wx_ref{type=ThisT}=This,Pos,Itemid, Options)
  when is_integer(Pos),is_integer(Itemid),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:queue_cmd(This,Pos,Itemid, Options,?get_env(),?wxMenu_Insert_3),
+  MOpts = fun({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary(Text),[{text,Text_UC}|Acc];
+          ({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          ({kind, _kind} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos,Itemid, Opts,?get_env(),?wxMenu_Insert_3),
   wxe_util:rec(?wxMenu_Insert_3).
 
 %% @equiv insert(This,Pos,Itemid,Text,Submenu, [])
@@ -383,7 +407,10 @@ insert(#wx_ref{type=ThisT}=This,Pos,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, 
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
   ?CLASS(SubmenuT,wxMenu),
-  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Insert_5_1),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC,Submenu, Opts,?get_env(),?wxMenu_Insert_5_1),
   wxe_util:rec(?wxMenu_Insert_5_1).
 
 %% @equiv insertCheckItem(This,Pos,Itemid,Text, [])
@@ -402,7 +429,10 @@ insertCheckItem(#wx_ref{type=ThisT}=This,Pos,Itemid,Text, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Options,?get_env(),?wxMenu_InsertCheckItem),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Opts,?get_env(),?wxMenu_InsertCheckItem),
   wxe_util:rec(?wxMenu_InsertCheckItem).
 
 %% @equiv insertRadioItem(This,Pos,Itemid,Text, [])
@@ -421,7 +451,10 @@ insertRadioItem(#wx_ref{type=ThisT}=This,Pos,Itemid,Text, Options)
  when is_integer(Pos),is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Options,?get_env(),?wxMenu_InsertRadioItem),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos,Itemid,Text_UC, Opts,?get_env(),?wxMenu_InsertRadioItem),
   wxe_util:rec(?wxMenu_InsertRadioItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuinsertseparator">external documentation</a>.
@@ -481,7 +514,12 @@ prepend(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item) ->
 prepend(#wx_ref{type=ThisT}=This,Itemid, Options)
  when is_integer(Itemid),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
-  wxe_util:queue_cmd(This,Itemid, Options,?get_env(),?wxMenu_Prepend_2),
+  MOpts = fun({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary(Text),[{text,Text_UC}|Acc];
+          ({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          ({kind, _kind} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid, Opts,?get_env(),?wxMenu_Prepend_2),
   wxe_util:rec(?wxMenu_Prepend_2).
 
 %% @equiv prepend(This,Itemid,Text,Submenu, [])
@@ -514,7 +552,10 @@ prepend(#wx_ref{type=ThisT}=This,Itemid,Text,#wx_ref{type=SubmenuT}=Submenu, Opt
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
   ?CLASS(SubmenuT,wxMenu),
-  wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Options,?get_env(),?wxMenu_Prepend_4_1),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC,Submenu, Opts,?get_env(),?wxMenu_Prepend_4_1),
   wxe_util:rec(?wxMenu_Prepend_4_1).
 
 %% @equiv prependCheckItem(This,Itemid,Text, [])
@@ -533,7 +574,10 @@ prependCheckItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_PrependCheckItem),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Opts,?get_env(),?wxMenu_PrependCheckItem),
   wxe_util:rec(?wxMenu_PrependCheckItem).
 
 %% @equiv prependRadioItem(This,Itemid,Text, [])
@@ -552,7 +596,10 @@ prependRadioItem(#wx_ref{type=ThisT}=This,Itemid,Text, Options)
  when is_integer(Itemid),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxMenu),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Itemid,Text_UC, Options,?get_env(),?wxMenu_PrependRadioItem),
+  MOpts = fun({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Itemid,Text_UC, Opts,?get_env(),?wxMenu_PrependRadioItem),
   wxe_util:rec(?wxMenu_PrependRadioItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenu.html#wxmenuprependseparator">external documentation</a>.

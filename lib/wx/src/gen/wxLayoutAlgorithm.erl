@@ -58,7 +58,10 @@ layoutFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxFrame),
-  wxe_util:queue_cmd(This,Frame, Options,?get_env(),?wxLayoutAlgorithm_LayoutFrame),
+  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT}} = Arg, Acc) ->   ?CLASS(MainWindowT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Frame, Opts,?get_env(),?wxLayoutAlgorithm_LayoutFrame),
   wxe_util:rec(?wxLayoutAlgorithm_LayoutFrame).
 
 %% @equiv layoutMDIFrame(This,Frame, [])
@@ -77,7 +80,10 @@ layoutMDIFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxMDIParentFrame),
-  wxe_util:queue_cmd(This,Frame, Options,?get_env(),?wxLayoutAlgorithm_LayoutMDIFrame),
+  MOpts = fun({rect, {_rectX,_rectY,_rectW,_rectH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Frame, Opts,?get_env(),?wxLayoutAlgorithm_LayoutMDIFrame),
   wxe_util:rec(?wxLayoutAlgorithm_LayoutMDIFrame).
 
 %% @equiv layoutWindow(This,Frame, [])
@@ -96,7 +102,10 @@ layoutWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxWindow),
-  wxe_util:queue_cmd(This,Frame, Options,?get_env(),?wxLayoutAlgorithm_LayoutWindow),
+  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT}} = Arg, Acc) ->   ?CLASS(MainWindowT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Frame, Opts,?get_env(),?wxLayoutAlgorithm_LayoutWindow),
   wxe_util:rec(?wxLayoutAlgorithm_LayoutWindow).
 
 %% @doc Destroys this object, do not use object again

@@ -77,7 +77,12 @@ new(#wx_ref{type=LocT}=Loc) ->
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
   Filename_UC = unicode:characters_to_binary(Filename),
-  wxe_util:queue_cmd(Filename_UC, Options,?get_env(),?wxIcon_new_2),
+  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
+          ({desiredWidth, _desiredWidth} = Arg, Acc) -> [Arg|Acc];
+          ({desiredHeight, _desiredHeight} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Filename_UC, Opts,?get_env(),?wxIcon_new_2),
   wxe_util:rec(?wxIcon_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxicon.html#wxiconcopyfrombitmap">external documentation</a>.

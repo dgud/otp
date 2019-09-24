@@ -110,7 +110,13 @@ new(#wx_ref{type=ParentT}=Parent,Id,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:queue_cmd(Parent,Id,Bitmap, Options,?get_env(),?wxBitmapButton_new_4),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id,Bitmap, Opts,?get_env(),?wxBitmapButton_new_4),
   wxe_util:rec(?wxBitmapButton_new_4).
 
 %% @equiv create(This,Parent,Id,Bitmap, [])
@@ -133,7 +139,13 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,#wx_ref{type=Bit
   ?CLASS(ThisT,wxBitmapButton),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(BitmapT,wxBitmap),
-  wxe_util:queue_cmd(This,Parent,Id,Bitmap, Options,?get_env(),?wxBitmapButton_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Bitmap, Opts,?get_env(),?wxBitmapButton_Create),
   wxe_util:rec(?wxBitmapButton_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmapbutton.html#wxbitmapbuttongetbitmapdisabled">external documentation</a>.

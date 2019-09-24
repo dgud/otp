@@ -54,7 +54,11 @@ new() ->
 		 | {'precision', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxGridCellFloatRenderer_new),
+  MOpts = fun({width, _width} = Arg, Acc) -> [Arg|Acc];
+          ({precision, _precision} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxGridCellFloatRenderer_new),
   wxe_util:rec(?wxGridCellFloatRenderer_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellfloatrenderer.html#wxgridcellfloatrenderergetprecision">external documentation</a>.

@@ -58,7 +58,11 @@ new(Colour)
 		 | {'style', integer()}.
 new(Colour, Options)
  when tuple_size(Colour) =:= 3; tuple_size(Colour) =:= 4,is_list(Options) ->
-  wxe_util:queue_cmd(wxe_util:color(Colour), Options,?get_env(),?wxPen_new_2),
+  MOpts = fun({width, _width} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(wxe_util:color(Colour), Opts,?get_env(),?wxPen_new_2),
   wxe_util:rec(?wxPen_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpen.html#wxpengetcap">external documentation</a>.

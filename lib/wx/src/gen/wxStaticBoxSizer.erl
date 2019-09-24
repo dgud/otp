@@ -75,7 +75,10 @@ new(#wx_ref{type=BoxT}=Box,Orient)
 new(Orient,#wx_ref{type=WinT}=Win, Options)
  when is_integer(Orient),is_list(Options) ->
   ?CLASS(WinT,wxWindow),
-  wxe_util:queue_cmd(Orient,Win, Options,?get_env(),?wxStaticBoxSizer_new_3),
+  MOpts = fun({label, Label}, Acc) ->   Label_UC = unicode:characters_to_binary(Label),[{label,Label_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Orient,Win, Opts,?get_env(),?wxStaticBoxSizer_new_3),
   wxe_util:rec(?wxStaticBoxSizer_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstaticboxsizer.html#wxstaticboxsizergetstaticbox">external documentation</a>.

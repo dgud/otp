@@ -56,7 +56,11 @@ new() ->
 		 | {'max', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxGridCellNumberEditor_new),
+  MOpts = fun({min, _min} = Arg, Acc) -> [Arg|Acc];
+          ({max, _max} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxGridCellNumberEditor_new),
   wxe_util:rec(?wxGridCellNumberEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellnumbereditor.html#wxgridcellnumbereditorgetvalue">external documentation</a>.

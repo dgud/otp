@@ -111,7 +111,13 @@ new(#wx_ref{type=PreviewT}=Preview,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(PreviewT,wxPrintPreview),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Preview,Parent, Options,?get_env(),?wxPreviewFrame_new),
+  MOpts = fun({title, Title}, Acc) ->   Title_UC = unicode:characters_to_binary(Title),[{title,Title_UC}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Preview,Parent, Opts,?get_env(),?wxPreviewFrame_new),
   wxe_util:rec(?wxPreviewFrame_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpreviewframe.html#wxpreviewframecreatecontrolbar">external documentation</a>.

@@ -54,7 +54,11 @@ new(Printout)
 new(#wx_ref{type=PrintoutT}=Printout, Options)
  when is_list(Options) ->
   ?CLASS(PrintoutT,wxPrintout),
-  wxe_util:queue_cmd(Printout, Options,?get_env(),?wxPrintPreview_new_2),
+  MOpts = fun({printoutForPrinting, #wx_ref{type=PrintoutForPrintingT}} = Arg, Acc) ->   ?CLASS(PrintoutForPrintingT,wxPrintout),[Arg|Acc];
+          ({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxPrintDialogData),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Printout, Opts,?get_env(),?wxPrintPreview_new_2),
   wxe_util:rec(?wxPrintPreview_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprintpreview.html#wxprintpreviewwxprintpreview">external documentation</a>.

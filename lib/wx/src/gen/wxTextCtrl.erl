@@ -113,7 +113,14 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxTextCtrl_new_3),
+  MOpts = fun({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary(Value),[{value,Value_UC}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxTextCtrl_new_3),
   wxe_util:rec(?wxTextCtrl_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlappendtext">external documentation</a>.
@@ -199,7 +206,14 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxTextCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxTextCtrl_Create),
+  MOpts = fun({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary(Value),[{value,Value_UC}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxTextCtrl_Create),
   wxe_util:rec(?wxTextCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlcut">external documentation</a>.
@@ -375,7 +389,10 @@ loadFile(#wx_ref{type=ThisT}=This,File, Options)
  when ?is_chardata(File),is_list(Options) ->
   ?CLASS(ThisT,wxTextCtrl),
   File_UC = unicode:characters_to_binary(File),
-  wxe_util:queue_cmd(This,File_UC, Options,?get_env(),?wxTextCtrl_LoadFile),
+  MOpts = fun({fileType, _fileType} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,File_UC, Opts,?get_env(),?wxTextCtrl_LoadFile),
   wxe_util:rec(?wxTextCtrl_LoadFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlmarkdirty">external documentation</a>.
@@ -442,7 +459,11 @@ saveFile(This)
 saveFile(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTextCtrl),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTextCtrl_SaveFile),
+  MOpts = fun({file, File}, Acc) ->   File_UC = unicode:characters_to_binary(File),[{file,File_UC}|Acc];
+          ({fileType, _fileType} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTextCtrl_SaveFile),
   wxe_util:rec(?wxTextCtrl_SaveFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextctrl.html#wxtextctrlsetdefaultstyle">external documentation</a>.

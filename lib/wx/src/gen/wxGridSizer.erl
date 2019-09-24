@@ -63,7 +63,11 @@ new(Cols)
 		 | {'hgap', integer()}.
 new(Cols, Options)
  when is_integer(Cols),is_list(Options) ->
-  wxe_util:queue_cmd(Cols, Options,?get_env(),?wxGridSizer_new_2),
+  MOpts = fun({vgap, _vgap} = Arg, Acc) -> [Arg|Acc];
+          ({hgap, _hgap} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Cols, Opts,?get_env(),?wxGridSizer_new_2),
   wxe_util:rec(?wxGridSizer_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridsizer.html#wxgridsizerwxgridsizer">external documentation</a>.

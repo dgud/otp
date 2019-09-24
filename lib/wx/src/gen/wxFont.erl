@@ -73,7 +73,12 @@ new(Size,Family,Style,Weight)
 		 | {'encoding', wx:wx_enum()}.
 new(Size,Family,Style,Weight, Options)
  when is_integer(Size),is_integer(Family),is_integer(Style),is_integer(Weight),is_list(Options) ->
-  wxe_util:queue_cmd(Size,Family,Style,Weight, Options,?get_env(),?wxFont_new_5),
+  MOpts = fun({underlined, _underlined} = Arg, Acc) -> [Arg|Acc];
+          ({face, Face}, Acc) ->   Face_UC = unicode:characters_to_binary(Face),[{face,Face_UC}|Acc];
+          ({encoding, _encoding} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Size,Family,Style,Weight, Opts,?get_env(),?wxFont_new_5),
   wxe_util:rec(?wxFont_new_5).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfont.html#wxfontisfixedwidth">external documentation</a>.

@@ -115,7 +115,12 @@ new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary(Title),
-  wxe_util:queue_cmd(Parent,Id,Title_UC, Options,?get_env(),?wxMiniFrame_new_4),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id,Title_UC, Opts,?get_env(),?wxMiniFrame_new_4),
   wxe_util:rec(?wxMiniFrame_new_4).
 
 %% @equiv create(This,Parent,Id,Title, [])
@@ -137,7 +142,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
   ?CLASS(ThisT,wxMiniFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary(Title),
-  wxe_util:queue_cmd(This,Parent,Id,Title_UC, Options,?get_env(),?wxMiniFrame_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC, Opts,?get_env(),?wxMiniFrame_Create),
   wxe_util:rec(?wxMiniFrame_Create).
 
 %% @doc Destroys this object, do not use object again

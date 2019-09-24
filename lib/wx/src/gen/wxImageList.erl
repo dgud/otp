@@ -58,7 +58,11 @@ new(Width,Height)
 		 | {'initialCount', integer()}.
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:queue_cmd(Width,Height, Options,?get_env(),?wxImageList_new_3),
+  MOpts = fun({mask, _mask} = Arg, Acc) -> [Arg|Acc];
+          ({initialCount, _initialCount} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Width,Height, Opts,?get_env(),?wxImageList_new_3),
   wxe_util:rec(?wxImageList_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistadd">external documentation</a>.
@@ -108,7 +112,11 @@ create(This,Width,Height)
 create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImageList),
-  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxImageList_Create),
+  MOpts = fun({mask, _mask} = Arg, Acc) -> [Arg|Acc];
+          ({initialCount, _initialCount} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxImageList_Create),
   wxe_util:rec(?wxImageList_Create).
 
 %% @equiv draw(This,Index,Dc,X,Y, [])
@@ -128,7 +136,11 @@ draw(#wx_ref{type=ThisT}=This,Index,#wx_ref{type=DcT}=Dc,X,Y, Options)
  when is_integer(Index),is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxImageList),
   ?CLASS(DcT,wxDC),
-  wxe_util:queue_cmd(This,Index,Dc,X,Y, Options,?get_env(),?wxImageList_Draw),
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          ({solidBackground, _solidBackground} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Index,Dc,X,Y, Opts,?get_env(),?wxImageList_Draw),
   wxe_util:rec(?wxImageList_Draw).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximagelist.html#wximagelistgetbitmap">external documentation</a>.

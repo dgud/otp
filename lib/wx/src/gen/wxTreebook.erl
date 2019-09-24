@@ -109,7 +109,12 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxTreebook_new_3),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxTreebook_new_3),
   wxe_util:rec(?wxTreebook_new_3).
 
 %% @equiv addPage(This,Page,Text, [])
@@ -130,7 +135,11 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Page,Text_UC, Options,?get_env(),?wxTreebook_AddPage),
+  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
+          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Page,Text_UC, Opts,?get_env(),?wxTreebook_AddPage),
   wxe_util:rec(?wxTreebook_AddPage).
 
 %% @equiv advanceSelection(This, [])
@@ -148,7 +157,10 @@ advanceSelection(This)
 advanceSelection(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTreebook_AdvanceSelection).
+  MOpts = fun({forward, _forward} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTreebook_AdvanceSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreebook.html#wxtreebookassignimagelist">external documentation</a>.
 -spec assignImageList(This, ImageList) -> 'ok' when
@@ -176,7 +188,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxTreebook_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxTreebook_Create),
   wxe_util:rec(?wxTreebook_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreebook.html#wxtreebookdeleteallpages">external documentation</a>.
@@ -279,7 +296,10 @@ expandNode(This,Pos)
 expandNode(#wx_ref{type=ThisT}=This,Pos, Options)
  when is_integer(Pos),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
-  wxe_util:queue_cmd(This,Pos, Options,?get_env(),?wxTreebook_ExpandNode),
+  MOpts = fun({expand, _expand} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos, Opts,?get_env(),?wxTreebook_ExpandNode),
   wxe_util:rec(?wxTreebook_ExpandNode).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreebook.html#wxtreebookisnodeexpanded">external documentation</a>.
@@ -319,7 +339,11 @@ insertPage(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Pos,Page,Text_UC, Options,?get_env(),?wxTreebook_InsertPage),
+  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
+          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos,Page,Text_UC, Opts,?get_env(),?wxTreebook_InsertPage),
   wxe_util:rec(?wxTreebook_InsertPage).
 
 %% @equiv insertSubPage(This,Pos,Page,Text, [])
@@ -340,7 +364,11 @@ insertSubPage(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=PageT}=Page,Text, Option
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Pos,Page,Text_UC, Options,?get_env(),?wxTreebook_InsertSubPage),
+  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
+          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pos,Page,Text_UC, Opts,?get_env(),?wxTreebook_InsertSubPage),
   wxe_util:rec(?wxTreebook_InsertSubPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreebook.html#wxtreebooksetimagelist">external documentation</a>.

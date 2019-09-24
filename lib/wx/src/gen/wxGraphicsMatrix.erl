@@ -125,7 +125,15 @@ set(This)
 set(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsMatrix),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxGraphicsMatrix_Set).
+  MOpts = fun({a, _a} = Arg, Acc) -> [Arg|Acc];
+          ({b, _b} = Arg, Acc) -> [Arg|Acc];
+          ({c, _c} = Arg, Acc) -> [Arg|Acc];
+          ({d, _d} = Arg, Acc) -> [Arg|Acc];
+          ({tx, _tx} = Arg, Acc) -> [Arg|Acc];
+          ({ty, _ty} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxGraphicsMatrix_Set).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsmatrix.html#wxgraphicsmatrixtransformpoint">external documentation</a>.
 -spec transformPoint(This) -> {X::number(), Y::number()} when

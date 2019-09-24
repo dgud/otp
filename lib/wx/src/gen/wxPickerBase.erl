@@ -170,7 +170,10 @@ setPickerCtrlGrowable(This)
 setPickerCtrlGrowable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxPickerBase_SetPickerCtrlGrowable).
+  MOpts = fun({grow, _grow} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxPickerBase_SetPickerCtrlGrowable).
 
 %% @equiv setTextCtrlGrowable(This, [])
 -spec setTextCtrlGrowable(This) -> 'ok' when
@@ -187,7 +190,10 @@ setTextCtrlGrowable(This)
 setTextCtrlGrowable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPickerBase),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxPickerBase_SetTextCtrlGrowable).
+  MOpts = fun({grow, _grow} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxPickerBase_SetTextCtrlGrowable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpickerbase.html#wxpickerbaseispickerctrlgrowable">external documentation</a>.
 -spec isPickerCtrlGrowable(This) -> boolean() when

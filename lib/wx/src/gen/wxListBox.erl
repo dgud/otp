@@ -113,7 +113,14 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxListBox_new_3),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({choices, Choices}, Acc) ->   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||              ChoicesTemp <- Choices],[{choices,Choices_UCA}|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxListBox_new_3),
   wxe_util:rec(?wxListBox_new_3).
 
 %% @equiv create(This,Parent,Id,Pos,Size,Choices, [])
@@ -135,7 +142,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,{PosX,PosY} = Po
   ?CLASS(ParentT,wxWindow),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  wxe_util:queue_cmd(This,Parent,Id,Pos,Size,Choices_UCA, Options,?get_env(),?wxListBox_Create),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Pos,Size,Choices_UCA, Opts,?get_env(),?wxListBox_Create),
   wxe_util:rec(?wxListBox_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistbox.html#wxlistboxdeselect">external documentation</a>.

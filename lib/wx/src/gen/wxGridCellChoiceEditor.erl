@@ -58,7 +58,10 @@ new(Choices, Options)
  when is_list(Choices),is_list(Options) ->
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  wxe_util:queue_cmd(Choices_UCA, Options,?get_env(),?wxGridCellChoiceEditor_new),
+  MOpts = fun({allowOthers, _allowOthers} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Choices_UCA, Opts,?get_env(),?wxGridCellChoiceEditor_new),
   wxe_util:rec(?wxGridCellChoiceEditor_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcellchoiceeditor.html#wxgridcellchoiceeditorsetparameters">external documentation</a>.

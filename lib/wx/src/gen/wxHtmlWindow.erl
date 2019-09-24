@@ -115,7 +115,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxHtmlWindow_new_2),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxHtmlWindow_new_2),
   wxe_util:rec(?wxHtmlWindow_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmlwindow.html#wxhtmlwindowappendtopage">external documentation</a>.
@@ -275,7 +281,10 @@ setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
   ?CLASS(ThisT,wxHtmlWindow),
   Normal_face_UC = unicode:characters_to_binary(Normal_face),
   Fixed_face_UC = unicode:characters_to_binary(Fixed_face),
-  wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Options,?get_env(),?wxHtmlWindow_SetFonts).
+  MOpts = fun({sizes, _sizes} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Opts,?get_env(),?wxHtmlWindow_SetFonts).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmlwindow.html#wxhtmlwindowsetpage">external documentation</a>.
 -spec setPage(This, Source) -> boolean() when

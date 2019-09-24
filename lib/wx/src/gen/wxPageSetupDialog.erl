@@ -50,7 +50,10 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPageSetupDialog_new),
+  MOpts = fun({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxPageSetupDialogData),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxPageSetupDialog_new),
   wxe_util:rec(?wxPageSetupDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpagesetupdialog.html#wxpagesetupdialoggetpagesetupdata">external documentation</a>.

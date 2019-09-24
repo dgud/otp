@@ -146,7 +146,10 @@ select(This,N)
 select(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxListView),
-  wxe_util:queue_cmd(This,N, Options,?get_env(),?wxListView_Select).
+  MOpts = fun({on, _on} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,N, Opts,?get_env(),?wxListView_Select).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistview.html#wxlistviewsetcolumnimage">external documentation</a>.
 -spec setColumnImage(This, Col, Image) -> 'ok' when

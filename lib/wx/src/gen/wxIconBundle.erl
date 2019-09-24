@@ -101,7 +101,10 @@ getIcon(This)
 getIcon(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxIconBundle),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxIconBundle_GetIcon_1_0),
+  MOpts = fun({size, _size} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxIconBundle_GetIcon_1_0),
   wxe_util:rec(?wxIconBundle_GetIcon_1_0);
 getIcon(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size)
  when is_integer(SizeW),is_integer(SizeH) ->

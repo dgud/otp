@@ -82,7 +82,11 @@ new(Bits,Width,Height)
 		 | {'hotSpotY', integer()}.
 new(Bits,Width,Height, Options)
  when is_binary(Bits),is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:queue_cmd(Bits,Width,Height, Options,?get_env(),?wxCursor_new_4),
+  MOpts = fun({hotSpotX, _hotSpotX} = Arg, Acc) -> [Arg|Acc];
+          ({hotSpotY, _hotSpotY} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Bits,Width,Height, Opts,?get_env(),?wxCursor_new_4),
   wxe_util:rec(?wxCursor_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcursor.html#wxcursorok">external documentation</a>.

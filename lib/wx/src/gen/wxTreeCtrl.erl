@@ -126,7 +126,14 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxTreeCtrl_new_2),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxTreeCtrl_new_2),
   wxe_util:rec(?wxTreeCtrl_new_2).
 
 %% @equiv addRoot(This,Text, [])
@@ -147,7 +154,12 @@ addRoot(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxTreeCtrl_AddRoot),
+  MOpts = fun({image, _image} = Arg, Acc) -> [Arg|Acc];
+          ({selectedImage, _selectedImage} = Arg, Acc) -> [Arg|Acc];
+          ({data, _data} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Text_UC, Opts,?get_env(),?wxTreeCtrl_AddRoot),
   wxe_util:rec(?wxTreeCtrl_AddRoot).
 
 %% @equiv appendItem(This,Parent,Text, [])
@@ -168,7 +180,12 @@ appendItem(#wx_ref{type=ThisT}=This,Parent,Text, Options)
  when is_integer(Parent),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Parent,Text_UC, Options,?get_env(),?wxTreeCtrl_AppendItem),
+  MOpts = fun({image, _image} = Arg, Acc) -> [Arg|Acc];
+          ({selectedImage, _selectedImage} = Arg, Acc) -> [Arg|Acc];
+          ({data, _data} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Text_UC, Opts,?get_env(),?wxTreeCtrl_AppendItem),
   wxe_util:rec(?wxTreeCtrl_AppendItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlassignimagelist">external documentation</a>.
@@ -223,7 +240,14 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxTreeCtrl_Create),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxTreeCtrl_Create),
   wxe_util:rec(?wxTreeCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrldelete">external documentation</a>.
@@ -291,7 +315,10 @@ getBoundingRect(This,Item)
 getBoundingRect(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_GetBoundingRect),
+  MOpts = fun({textOnly, _textOnly} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_GetBoundingRect),
   wxe_util:rec(?wxTreeCtrl_GetBoundingRect).
 
 %% @equiv getChildrenCount(This,Item, [])
@@ -309,7 +336,10 @@ getChildrenCount(This,Item)
 getChildrenCount(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_GetChildrenCount),
+  MOpts = fun({recursively, _recursively} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_GetChildrenCount),
   wxe_util:rec(?wxTreeCtrl_GetChildrenCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlgetcount">external documentation</a>.
@@ -416,7 +446,10 @@ getItemImage(#wx_ref{type=ThisT}=This,Item)
 getItemImage(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_GetItemImage_2),
+  MOpts = fun({which, _which} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_GetItemImage_2),
   wxe_util:rec(?wxTreeCtrl_GetItemImage_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlgetitemtext">external documentation</a>.
@@ -552,7 +585,12 @@ insertItem(#wx_ref{type=ThisT}=This,Parent,Pos,Text, Options)
  when is_integer(Parent),is_integer(Pos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Parent,Pos,Text_UC, Options,?get_env(),?wxTreeCtrl_InsertItem),
+  MOpts = fun({image, _image} = Arg, Acc) -> [Arg|Acc];
+          ({selImage, _selImage} = Arg, Acc) -> [Arg|Acc];
+          ({data, _data} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Pos,Text_UC, Opts,?get_env(),?wxTreeCtrl_InsertItem),
   wxe_util:rec(?wxTreeCtrl_InsertItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlisbold">external documentation</a>.
@@ -626,7 +664,12 @@ prependItem(#wx_ref{type=ThisT}=This,Parent,Text, Options)
  when is_integer(Parent),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Parent,Text_UC, Options,?get_env(),?wxTreeCtrl_PrependItem),
+  MOpts = fun({image, _image} = Arg, Acc) -> [Arg|Acc];
+          ({selectedImage, _selectedImage} = Arg, Acc) -> [Arg|Acc];
+          ({data, _data} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Text_UC, Opts,?get_env(),?wxTreeCtrl_PrependItem),
   wxe_util:rec(?wxTreeCtrl_PrependItem).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlscrollto">external documentation</a>.
@@ -652,7 +695,10 @@ selectItem(#wx_ref{type=ThisT}=This,Item)
 selectItem(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_SelectItem_2).
+  MOpts = fun({select, _select} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_SelectItem_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlsetindent">external documentation</a>.
 -spec setIndent(This, Indent) -> 'ok' when
@@ -693,7 +739,10 @@ setItemBold(This,Item)
 setItemBold(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_SetItemBold).
+  MOpts = fun({bold, _bold} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_SetItemBold).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlsetitemdata">external documentation</a>.
 -spec setItemData(This, Item, Data) -> 'ok' when
@@ -718,7 +767,10 @@ setItemDropHighlight(This,Item)
 setItemDropHighlight(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_SetItemDropHighlight).
+  MOpts = fun({highlight, _highlight} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_SetItemDropHighlight).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlsetitemfont">external documentation</a>.
 -spec setItemFont(This, Item, Font) -> 'ok' when
@@ -744,7 +796,10 @@ setItemHasChildren(This,Item)
 setItemHasChildren(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item, Options,?get_env(),?wxTreeCtrl_SetItemHasChildren).
+  MOpts = fun({has, _has} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxTreeCtrl_SetItemHasChildren).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlsetitemimage">external documentation</a>.
 -spec setItemImage(This, Item, Image) -> 'ok' when
@@ -762,7 +817,10 @@ setItemImage(#wx_ref{type=ThisT}=This,Item,Image)
 setItemImage(#wx_ref{type=ThisT}=This,Item,Image, Options)
  when is_integer(Item),is_integer(Image),is_list(Options) ->
   ?CLASS(ThisT,wxTreeCtrl),
-  wxe_util:queue_cmd(This,Item,Image, Options,?get_env(),?wxTreeCtrl_SetItemImage_3).
+  MOpts = fun({which, _which} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Item,Image, Opts,?get_env(),?wxTreeCtrl_SetItemImage_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreectrl.html#wxtreectrlsetitemtext">external documentation</a>.
 -spec setItemText(This, Item, Text) -> 'ok' when

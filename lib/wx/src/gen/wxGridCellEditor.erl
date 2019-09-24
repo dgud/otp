@@ -79,7 +79,10 @@ show(This,Show)
 show(#wx_ref{type=ThisT}=This,Show, Options)
  when is_boolean(Show),is_list(Options) ->
   ?CLASS(ThisT,wxGridCellEditor),
-  wxe_util:queue_cmd(This,Show, Options,?get_env(),?wxGridCellEditor_Show).
+  MOpts = fun({attr, #wx_ref{type=AttrT}} = Arg, Acc) ->   ?CLASS(AttrT,wxGridCellAttr),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Show, Opts,?get_env(),?wxGridCellEditor_Show).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgridcelleditor.html#wxgridcelleditorpaintbackground">external documentation</a>.
 -spec paintBackground(This, RectCell, Attr) -> 'ok' when

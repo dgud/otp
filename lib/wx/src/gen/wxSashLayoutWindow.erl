@@ -108,7 +108,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxSashLayoutWindow_new_2),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxSashLayoutWindow_new_2),
   wxe_util:rec(?wxSashLayoutWindow_new_2).
 
 %% @equiv create(This,Parent, [])
@@ -130,7 +136,13 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSashLayoutWindow),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxSashLayoutWindow_Create),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxSashLayoutWindow_Create),
   wxe_util:rec(?wxSashLayoutWindow_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsashlayoutwindow.html#wxsashlayoutwindowgetalignment">external documentation</a>.

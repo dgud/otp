@@ -107,7 +107,13 @@ new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary(Label),
-  wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxCheckBox_new_4),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id,Label_UC, Opts,?get_env(),?wxCheckBox_new_4),
   wxe_util:rec(?wxCheckBox_new_4).
 
 %% @equiv create(This,Parent,Id,Label, [])
@@ -130,7 +136,13 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
   ?CLASS(ThisT,wxCheckBox),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary(Label),
-  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxCheckBox_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Opts,?get_env(),?wxCheckBox_Create),
   wxe_util:rec(?wxCheckBox_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcheckbox.html#wxcheckboxgetvalue">external documentation</a>.

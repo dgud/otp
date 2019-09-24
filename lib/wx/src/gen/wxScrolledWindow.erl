@@ -108,7 +108,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxScrolledWindow_new_2),
+  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxScrolledWindow_new_2),
   wxe_util:rec(?wxScrolledWindow_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowcalcscrolledposition">external documentation</a>.
@@ -212,7 +218,12 @@ setScrollbars(This,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY)
 setScrollbars(#wx_ref{type=ThisT}=This,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY, Options)
  when is_integer(PixelsPerUnitX),is_integer(PixelsPerUnitY),is_integer(NoUnitsX),is_integer(NoUnitsY),is_list(Options) ->
   ?CLASS(ThisT,wxScrolledWindow),
-  wxe_util:queue_cmd(This,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY, Options,?get_env(),?wxScrolledWindow_SetScrollbars).
+  MOpts = fun({xPos, _xPos} = Arg, Acc) -> [Arg|Acc];
+          ({yPos, _yPos} = Arg, Acc) -> [Arg|Acc];
+          ({noRefresh, _noRefresh} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,PixelsPerUnitX,PixelsPerUnitY,NoUnitsX,NoUnitsY, Opts,?get_env(),?wxScrolledWindow_SetScrollbars).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxscrolledwindow.html#wxscrolledwindowsetscrollrate">external documentation</a>.
 -spec setScrollRate(This, Xstep, Ystep) -> 'ok' when

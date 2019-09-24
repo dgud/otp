@@ -111,7 +111,14 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxColourPickerCtrl_new_3),
+  MOpts = fun({col, Col}, Acc) -> [{col,wxe_util:color(Col)}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxColourPickerCtrl_new_3),
   wxe_util:rec(?wxColourPickerCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
@@ -134,7 +141,14 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxColourPickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxColourPickerCtrl_Create),
+  MOpts = fun({col, Col}, Acc) -> [{col,wxe_util:color(Col)}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxColourPickerCtrl_Create),
   wxe_util:rec(?wxColourPickerCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcolourpickerctrl.html#wxcolourpickerctrlgetcolour">external documentation</a>.

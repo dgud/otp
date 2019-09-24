@@ -63,7 +63,12 @@ new(ColText)
 		 | {'alignment', wx:wx_enum()}.
 new(ColText, Options)
  when tuple_size(ColText) =:= 3; tuple_size(ColText) =:= 4,is_list(Options) ->
-  wxe_util:queue_cmd(wxe_util:color(ColText), Options,?get_env(),?wxTextAttr_new_2),
+  MOpts = fun({colBack, ColBack}, Acc) -> [{colBack,wxe_util:color(ColBack)}|Acc];
+          ({font, #wx_ref{type=FontT}} = Arg, Acc) ->   ?CLASS(FontT,wxFont),[Arg|Acc];
+          ({alignment, _alignment} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(wxe_util:color(ColText), Opts,?get_env(),?wxTextAttr_new_2),
   wxe_util:rec(?wxTextAttr_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextattr.html#wxtextattrgetalignment">external documentation</a>.
@@ -212,7 +217,10 @@ setFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTextAttr),
   ?CLASS(FontT,wxFont),
-  wxe_util:queue_cmd(This,Font, Options,?get_env(),?wxTextAttr_SetFont).
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Font, Opts,?get_env(),?wxTextAttr_SetFont).
 
 %% @equiv setLeftIndent(This,Indent, [])
 -spec setLeftIndent(This, Indent) -> 'ok' when
@@ -229,7 +237,10 @@ setLeftIndent(This,Indent)
 setLeftIndent(#wx_ref{type=ThisT}=This,Indent, Options)
  when is_integer(Indent),is_list(Options) ->
   ?CLASS(ThisT,wxTextAttr),
-  wxe_util:queue_cmd(This,Indent, Options,?get_env(),?wxTextAttr_SetLeftIndent).
+  MOpts = fun({subIndent, _subIndent} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Indent, Opts,?get_env(),?wxTextAttr_SetLeftIndent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextattr.html#wxtextattrsetrightindent">external documentation</a>.
 -spec setRightIndent(This, Indent) -> 'ok' when

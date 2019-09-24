@@ -56,7 +56,11 @@ new() ->
 		 | {'flags', integer()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxAuiManager_new),
+  MOpts = fun({managed_wnd, #wx_ref{type=Managed_wndT}} = Arg, Acc) ->   ?CLASS(Managed_wndT,wxWindow),[Arg|Acc];
+          ({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxAuiManager_new),
   wxe_util:rec(?wxAuiManager_new).
 
 %% @equiv addPane(This,Window, [])
@@ -82,7 +86,11 @@ addPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiManager),
   ?CLASS(WindowT,wxWindow),
-  wxe_util:queue_cmd(This,Window, Options,?get_env(),?wxAuiManager_AddPane_2_0),
+  MOpts = fun({direction, _direction} = Arg, Acc) -> [Arg|Acc];
+          ({caption, Caption}, Acc) ->   Caption_UC = unicode:characters_to_binary(Caption),[{caption,Caption_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window, Opts,?get_env(),?wxAuiManager_AddPane_2_0),
   wxe_util:rec(?wxAuiManager_AddPane_2_0);
 addPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=Pane_infoT}=Pane_info) ->
   ?CLASS(ThisT,wxAuiManager),
@@ -204,7 +212,10 @@ insertPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=In
   ?CLASS(ThisT,wxAuiManager),
   ?CLASS(WindowT,wxWindow),
   ?CLASS(Insert_locationT,wxAuiPaneInfo),
-  wxe_util:queue_cmd(This,Window,Insert_location, Options,?get_env(),?wxAuiManager_InsertPane),
+  MOpts = fun({insert_level, _insert_level} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window,Insert_location, Opts,?get_env(),?wxAuiManager_InsertPane),
   wxe_util:rec(?wxAuiManager_InsertPane).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanager.html#wxauimanagerloadpaneinfo">external documentation</a>.
@@ -233,7 +244,10 @@ loadPerspective(#wx_ref{type=ThisT}=This,Perspective, Options)
  when ?is_chardata(Perspective),is_list(Options) ->
   ?CLASS(ThisT,wxAuiManager),
   Perspective_UC = unicode:characters_to_binary(Perspective),
-  wxe_util:queue_cmd(This,Perspective_UC, Options,?get_env(),?wxAuiManager_LoadPerspective),
+  MOpts = fun({update, _update} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Perspective_UC, Opts,?get_env(),?wxAuiManager_LoadPerspective),
   wxe_util:rec(?wxAuiManager_LoadPerspective).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanager.html#wxauimanagersavepaneinfo">external documentation</a>.

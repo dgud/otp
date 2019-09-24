@@ -52,7 +52,11 @@ new() ->
 		 | {'domain', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxXmlResource_new_1),
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          ({domain, Domain}, Acc) ->   Domain_UC = unicode:characters_to_binary(Domain),[{domain,Domain_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxXmlResource_new_1),
   wxe_util:rec(?wxXmlResource_new_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourcewxxmlresource">external documentation</a>.
@@ -63,7 +67,11 @@ new(Options)
 new(Filemask, Options)
  when ?is_chardata(Filemask),is_list(Options) ->
   Filemask_UC = unicode:characters_to_binary(Filemask),
-  wxe_util:queue_cmd(Filemask_UC, Options,?get_env(),?wxXmlResource_new_2),
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          ({domain, Domain}, Acc) ->   Domain_UC = unicode:characters_to_binary(Domain),[{domain,Domain_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Filemask_UC, Opts,?get_env(),?wxXmlResource_new_2),
   wxe_util:rec(?wxXmlResource_new_2).
 
 %% @equiv attachUnknownControl(This,Name,Control, [])
@@ -83,7 +91,10 @@ attachUnknownControl(#wx_ref{type=ThisT}=This,Name,#wx_ref{type=ControlT}=Contro
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary(Name),
   ?CLASS(ControlT,wxWindow),
-  wxe_util:queue_cmd(This,Name_UC,Control, Options,?get_env(),?wxXmlResource_AttachUnknownControl),
+  MOpts = fun({parent, #wx_ref{type=ParentT}} = Arg, Acc) ->   ?CLASS(ParentT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Name_UC,Control, Opts,?get_env(),?wxXmlResource_AttachUnknownControl),
   wxe_util:rec(?wxXmlResource_AttachUnknownControl).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceclearhandlers">external documentation</a>.
@@ -139,7 +150,10 @@ getXRCID(Str_id)
 getXRCID(Str_id, Options)
  when is_list(Str_id),is_list(Options) ->
   Str_id_UC = unicode:characters_to_binary(Str_id),
-  wxe_util:queue_cmd(Str_id_UC, Options,?get_env(),?wxXmlResource_GetXRCID),
+  MOpts = fun({value_if_not_found, _value_if_not_found} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Str_id_UC, Opts,?get_env(),?wxXmlResource_GetXRCID),
   wxe_util:rec(?wxXmlResource_GetXRCID).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxxmlresource.html#wxxmlresourceinitallhandlers">external documentation</a>.

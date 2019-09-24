@@ -111,7 +111,10 @@ createFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsRenderer),
   ?CLASS(FontT,wxFont),
-  wxe_util:queue_cmd(This,Font, Options,?get_env(),?wxGraphicsRenderer_CreateFont),
+  MOpts = fun({col, Col}, Acc) -> [{col,wxe_util:color(Col)}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Font, Opts,?get_env(),?wxGraphicsRenderer_CreateFont),
   wxe_util:rec(?wxGraphicsRenderer_CreateFont).
 
 %% @equiv createMatrix(This, [])
@@ -134,7 +137,15 @@ createMatrix(This)
 createMatrix(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsRenderer),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxGraphicsRenderer_CreateMatrix),
+  MOpts = fun({a, _a} = Arg, Acc) -> [Arg|Acc];
+          ({b, _b} = Arg, Acc) -> [Arg|Acc];
+          ({c, _c} = Arg, Acc) -> [Arg|Acc];
+          ({d, _d} = Arg, Acc) -> [Arg|Acc];
+          ({tx, _tx} = Arg, Acc) -> [Arg|Acc];
+          ({ty, _ty} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxGraphicsRenderer_CreateMatrix),
   wxe_util:rec(?wxGraphicsRenderer_CreateMatrix).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicsrenderer.html#wxgraphicsrenderercreatepath">external documentation</a>.

@@ -107,7 +107,12 @@ new(Title,Message, Options)
  when ?is_chardata(Title),?is_chardata(Message),is_list(Options) ->
   Title_UC = unicode:characters_to_binary(Title),
   Message_UC = unicode:characters_to_binary(Message),
-  wxe_util:queue_cmd(Title_UC,Message_UC, Options,?get_env(),?wxProgressDialog_new),
+  MOpts = fun({maximum, _maximum} = Arg, Acc) -> [Arg|Acc];
+          ({parent, #wx_ref{type=ParentT}} = Arg, Acc) ->   ?CLASS(ParentT,wxWindow),[Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Title_UC,Message_UC, Opts,?get_env(),?wxProgressDialog_new),
   wxe_util:rec(?wxProgressDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxprogressdialog.html#wxprogressdialogresume">external documentation</a>.
@@ -139,7 +144,10 @@ update(This,Value)
 update(#wx_ref{type=ThisT}=This,Value, Options)
  when is_integer(Value),is_list(Options) ->
   ?CLASS(ThisT,wxProgressDialog),
-  wxe_util:queue_cmd(This,Value, Options,?get_env(),?wxProgressDialog_Update_2),
+  MOpts = fun({newmsg, Newmsg}, Acc) ->   Newmsg_UC = unicode:characters_to_binary(Newmsg),[{newmsg,Newmsg_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Value, Opts,?get_env(),?wxProgressDialog_Update_2),
   wxe_util:rec(?wxProgressDialog_Update_2).
 
 %% @doc Destroys this object, do not use object again

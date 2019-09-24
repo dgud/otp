@@ -108,7 +108,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxAuiNotebook_new_2),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxAuiNotebook_new_2),
   wxe_util:rec(?wxAuiNotebook_new_2).
 
 %% @equiv addPage(This,Page,Caption, [])
@@ -129,7 +135,11 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Caption, Options)
   ?CLASS(ThisT,wxAuiNotebook),
   ?CLASS(PageT,wxWindow),
   Caption_UC = unicode:characters_to_binary(Caption),
-  wxe_util:queue_cmd(This,Page,Caption_UC, Options,?get_env(),?wxAuiNotebook_AddPage),
+  MOpts = fun({select, _select} = Arg, Acc) -> [Arg|Acc];
+          ({bitmap, #wx_ref{type=BitmapT}} = Arg, Acc) ->   ?CLASS(BitmapT,wxBitmap),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Page,Caption_UC, Opts,?get_env(),?wxAuiNotebook_AddPage),
   wxe_util:rec(?wxAuiNotebook_AddPage).
 
 %% @equiv create(This,Parent, [])
@@ -151,7 +161,13 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiNotebook),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxAuiNotebook_Create),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxAuiNotebook_Create),
   wxe_util:rec(?wxAuiNotebook_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebook.html#wxauinotebookdeletepage">external documentation</a>.
@@ -241,7 +257,11 @@ insertPage(#wx_ref{type=ThisT}=This,Page_idx,#wx_ref{type=PageT}=Page,Caption, O
   ?CLASS(ThisT,wxAuiNotebook),
   ?CLASS(PageT,wxWindow),
   Caption_UC = unicode:characters_to_binary(Caption),
-  wxe_util:queue_cmd(This,Page_idx,Page,Caption_UC, Options,?get_env(),?wxAuiNotebook_InsertPage),
+  MOpts = fun({select, _select} = Arg, Acc) -> [Arg|Acc];
+          ({bitmap, #wx_ref{type=BitmapT}} = Arg, Acc) ->   ?CLASS(BitmapT,wxBitmap),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Page_idx,Page,Caption_UC, Opts,?get_env(),?wxAuiNotebook_InsertPage),
   wxe_util:rec(?wxAuiNotebook_InsertPage).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauinotebook.html#wxauinotebookremovepage">external documentation</a>.

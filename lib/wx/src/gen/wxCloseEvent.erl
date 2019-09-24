@@ -91,7 +91,10 @@ veto(This)
 veto(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCloseEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxCloseEvent_Veto).
+  MOpts = fun({veto, _veto} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxCloseEvent_Veto).
 
  %% From wxEvent
 %% @hidden

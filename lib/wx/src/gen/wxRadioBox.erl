@@ -103,7 +103,12 @@ new(#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size
   Title_UC = unicode:characters_to_binary(Title),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  wxe_util:queue_cmd(Parent,Id,Title_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxRadioBox_new),
+  MOpts = fun({majorDim, _majorDim} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({val, #wx_ref{type=ValT}} = Arg, Acc) ->   ?CLASS(ValT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id,Title_UC,Pos,Size,Choices_UCA, Opts,?get_env(),?wxRadioBox_new),
   wxe_util:rec(?wxRadioBox_new).
 
 %% @equiv create(This,Parent,Id,Title,Pos,Size,Choices, [])
@@ -127,7 +132,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY
   Title_UC = unicode:characters_to_binary(Title),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  wxe_util:queue_cmd(This,Parent,Id,Title_UC,Pos,Size,Choices_UCA, Options,?get_env(),?wxRadioBox_Create),
+  MOpts = fun({majorDim, _majorDim} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({val, #wx_ref{type=ValT}} = Arg, Acc) ->   ?CLASS(ValT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Title_UC,Pos,Size,Choices_UCA, Opts,?get_env(),?wxRadioBox_Create),
   wxe_util:rec(?wxRadioBox_Create).
 
 %% @equiv enable(This, [])
@@ -156,7 +166,10 @@ enable(This,N)
 enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxRadioBox_Enable_1),
+  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxRadioBox_Enable_1),
   wxe_util:rec(?wxRadioBox_Enable_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxenable">external documentation</a>.
@@ -166,7 +179,10 @@ enable(#wx_ref{type=ThisT}=This, Options)
 enable(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:queue_cmd(This,N, Options,?get_env(),?wxRadioBox_Enable_2),
+  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,N, Opts,?get_env(),?wxRadioBox_Enable_2),
   wxe_util:rec(?wxRadioBox_Enable_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetselection">external documentation</a>.
@@ -220,7 +236,10 @@ show(This,N)
 show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxRadioBox_Show_1),
+  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxRadioBox_Show_1),
   wxe_util:rec(?wxRadioBox_Show_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxshow">external documentation</a>.
@@ -230,7 +249,10 @@ show(#wx_ref{type=ThisT}=This, Options)
 show(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  wxe_util:queue_cmd(This,N, Options,?get_env(),?wxRadioBox_Show_2),
+  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,N, Opts,?get_env(),?wxRadioBox_Show_2),
   wxe_util:rec(?wxRadioBox_Show_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxradiobox.html#wxradioboxgetcolumncount">external documentation</a>.

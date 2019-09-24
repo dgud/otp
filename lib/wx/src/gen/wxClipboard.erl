@@ -122,7 +122,10 @@ usePrimarySelection(This)
 usePrimarySelection(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxClipboard),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxClipboard_UsePrimarySelection).
+  MOpts = fun({primary, _primary} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxClipboard_UsePrimarySelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxclipboard.html#wxclipboardissupported">external documentation</a>.
 %%<br /> Format = ?wxDF_INVALID | ?wxDF_TEXT | ?wxDF_BITMAP | ?wxDF_METAFILE | ?wxDF_SYLK | ?wxDF_DIF | ?wxDF_TIFF | ?wxDF_OEMTEXT | ?wxDF_DIB | ?wxDF_PALETTE | ?wxDF_PENDATA | ?wxDF_RIFF | ?wxDF_WAVE | ?wxDF_UNICODETEXT | ?wxDF_ENHMETAFILE | ?wxDF_FILENAME | ?wxDF_LOCALE | ?wxDF_PRIVATE | ?wxDF_HTML | ?wxDF_MAX

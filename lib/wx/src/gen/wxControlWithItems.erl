@@ -144,7 +144,10 @@ findString(#wx_ref{type=ThisT}=This,S, Options)
  when ?is_chardata(S),is_list(Options) ->
   ?CLASS(ThisT,wxControlWithItems),
   S_UC = unicode:characters_to_binary(S),
-  wxe_util:queue_cmd(This,S_UC, Options,?get_env(),?wxControlWithItems_FindString),
+  MOpts = fun({bCase, _bCase} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,S_UC, Opts,?get_env(),?wxControlWithItems_FindString),
   wxe_util:rec(?wxControlWithItems_FindString).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcontrolwithitems.html#wxcontrolwithitemsgetclientobject">external documentation</a>.

@@ -105,7 +105,10 @@ beginBusyCursor() ->
 	Option :: {'cursor', wxCursor:wxCursor()}.
 beginBusyCursor(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?utils_wxBeginBusyCursor).
+  MOpts = fun({cursor, #wx_ref{type=CursorT}} = Arg, Acc) ->   ?CLASS(CursorT,wxCursor),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?utils_wxBeginBusyCursor).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxendbusycursor">external documentation</a>.
 -spec endBusyCursor() -> 'ok'.
@@ -138,7 +141,10 @@ shell() ->
 	Option :: {'command', unicode:chardata()}.
 shell(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?utils_wxShell),
+  MOpts = fun({command, Command}, Acc) ->   Command_UC = unicode:characters_to_binary(Command),[{command,Command_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?utils_wxShell),
   wxe_util:rec(?utils_wxShell).
 
 %% @equiv launchDefaultBrowser(Url, [])
@@ -156,7 +162,10 @@ launchDefaultBrowser(Url)
 launchDefaultBrowser(Url, Options)
  when ?is_chardata(Url),is_list(Options) ->
   Url_UC = unicode:characters_to_binary(Url),
-  wxe_util:queue_cmd(Url_UC, Options,?get_env(),?utils_wxLaunchDefaultBrowser),
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Url_UC, Opts,?get_env(),?utils_wxLaunchDefaultBrowser),
   wxe_util:rec(?utils_wxLaunchDefaultBrowser).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_miscellany.html#wxgetemailaddress">external documentation</a>.

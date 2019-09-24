@@ -129,7 +129,10 @@ iconize(This)
 iconize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_Iconize).
+  MOpts = fun({iconize, _iconize} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTopLevelWindow_Iconize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowisfullscreen">external documentation</a>.
 -spec isFullScreen(This) -> boolean() when
@@ -170,7 +173,10 @@ maximize(This)
 maximize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_Maximize).
+  MOpts = fun({maximize, _maximize} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTopLevelWindow_Maximize).
 
 %% @equiv requestUserAttention(This, [])
 -spec requestUserAttention(This) -> 'ok' when
@@ -187,7 +193,10 @@ requestUserAttention(This)
 requestUserAttention(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_RequestUserAttention).
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTopLevelWindow_RequestUserAttention).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowseticon">external documentation</a>.
 -spec setIcon(This, Icon) -> 'ok' when
@@ -220,7 +229,10 @@ centerOnScreen(This)
 centerOnScreen(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_CenterOnScreen).
+  MOpts = fun({dir, _dir} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTopLevelWindow_CenterOnScreen).
 
 %% @equiv centreOnScreen(This, [])
 -spec centreOnScreen(This) -> 'ok' when
@@ -237,7 +249,10 @@ centreOnScreen(This)
 centreOnScreen(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxTopLevelWindow_CentreOnScreen).
+  MOpts = fun({dir, _dir} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxTopLevelWindow_CentreOnScreen).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtoplevelwindow.html#wxtoplevelwindowsetshape">external documentation</a>.
 -spec setShape(This, Region) -> boolean() when
@@ -272,7 +287,10 @@ showFullScreen(This,Show)
 showFullScreen(#wx_ref{type=ThisT}=This,Show, Options)
  when is_boolean(Show),is_list(Options) ->
   ?CLASS(ThisT,wxTopLevelWindow),
-  wxe_util:queue_cmd(This,Show, Options,?get_env(),?wxTopLevelWindow_ShowFullScreen),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Show, Opts,?get_env(),?wxTopLevelWindow_ShowFullScreen),
   wxe_util:rec(?wxTopLevelWindow_ShowFullScreen).
 
  %% From wxWindow

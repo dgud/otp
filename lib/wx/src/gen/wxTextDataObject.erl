@@ -50,7 +50,10 @@ new() ->
 	Option :: {'text', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxTextDataObject_new),
+  MOpts = fun({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary(Text),[{text,Text_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxTextDataObject_new),
   wxe_util:rec(?wxTextDataObject_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtextdataobject.html#wxtextdataobjectgettextlength">external documentation</a>.

@@ -113,7 +113,16 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxFilePickerCtrl_new_3),
+  MOpts = fun({path, Path}, Acc) ->   Path_UC = unicode:characters_to_binary(Path),[{path,Path_UC}|Acc];
+          ({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary(Message),[{message,Message_UC}|Acc];
+          ({wildcard, Wildcard}, Acc) ->   Wildcard_UC = unicode:characters_to_binary(Wildcard),[{wildcard,Wildcard_UC}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxFilePickerCtrl_new_3),
   wxe_util:rec(?wxFilePickerCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
@@ -138,7 +147,16 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxFilePickerCtrl_Create),
+  MOpts = fun({path, Path}, Acc) ->   Path_UC = unicode:characters_to_binary(Path),[{path,Path_UC}|Acc];
+          ({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary(Message),[{message,Message_UC}|Acc];
+          ({wildcard, Wildcard}, Acc) ->   Wildcard_UC = unicode:characters_to_binary(Wildcard),[{wildcard,Wildcard_UC}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxFilePickerCtrl_Create),
   wxe_util:rec(?wxFilePickerCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfilepickerctrl.html#wxfilepickerctrlgetpath">external documentation</a>.

@@ -111,16 +111,23 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxDatePickerCtrl_new_3),
+  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}, Acc) -> [{date,{DateD,DateMo,DateY,DateH,DateMi,DateS}}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxDatePickerCtrl_new_3),
   wxe_util:rec(?wxDatePickerCtrl_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlgetrange">external documentation</a>.
 -spec getRange(This, Dt1, Dt2) -> boolean() when
 	This::wxDatePickerCtrl(), Dt1::wx:wx_datetime(), Dt2::wx:wx_datetime().
-getRange(#wx_ref{type=ThisT}=This,Dt1,Dt2)
- when tuple_size(Dt1) =:= 2,tuple_size(Dt2) =:= 2 ->
+getRange(#wx_ref{type=ThisT}=This,{{Dt1Y,Dt1Mo,Dt1D},{Dt1H,Dt1Mi,Dt1S}},{{Dt2Y,Dt2Mo,Dt2D},{Dt2H,Dt2Mi,Dt2S}})
+ when is_integer(Dt1D),is_integer(Dt1Mo),is_integer(Dt1Y),is_integer(Dt1H),is_integer(Dt1Mi),is_integer(Dt1S),is_integer(Dt2D),is_integer(Dt2Mo),is_integer(Dt2Y),is_integer(Dt2H),is_integer(Dt2Mi),is_integer(Dt2S) ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:queue_cmd(This,Dt1,Dt2,?get_env(),?wxDatePickerCtrl_GetRange),
+  wxe_util:queue_cmd(This,{Dt1D,Dt1Mo,Dt1Y,Dt1H,Dt1Mi,Dt1S},{Dt2D,Dt2Mo,Dt2Y,Dt2H,Dt2Mi,Dt2S},?get_env(),?wxDatePickerCtrl_GetRange),
   wxe_util:rec(?wxDatePickerCtrl_GetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlgetvalue">external documentation</a>.
@@ -134,18 +141,18 @@ getValue(#wx_ref{type=ThisT}=This) ->
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlsetrange">external documentation</a>.
 -spec setRange(This, Dt1, Dt2) -> 'ok' when
 	This::wxDatePickerCtrl(), Dt1::wx:wx_datetime(), Dt2::wx:wx_datetime().
-setRange(#wx_ref{type=ThisT}=This,Dt1,Dt2)
- when tuple_size(Dt1) =:= 2,tuple_size(Dt2) =:= 2 ->
+setRange(#wx_ref{type=ThisT}=This,{{Dt1Y,Dt1Mo,Dt1D},{Dt1H,Dt1Mi,Dt1S}},{{Dt2Y,Dt2Mo,Dt2D},{Dt2H,Dt2Mi,Dt2S}})
+ when is_integer(Dt1D),is_integer(Dt1Mo),is_integer(Dt1Y),is_integer(Dt1H),is_integer(Dt1Mi),is_integer(Dt1S),is_integer(Dt2D),is_integer(Dt2Mo),is_integer(Dt2Y),is_integer(Dt2H),is_integer(Dt2Mi),is_integer(Dt2S) ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:queue_cmd(This,Dt1,Dt2,?get_env(),?wxDatePickerCtrl_SetRange).
+  wxe_util:queue_cmd(This,{Dt1D,Dt1Mo,Dt1Y,Dt1H,Dt1Mi,Dt1S},{Dt2D,Dt2Mo,Dt2Y,Dt2H,Dt2Mi,Dt2S},?get_env(),?wxDatePickerCtrl_SetRange).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdatepickerctrl.html#wxdatepickerctrlsetvalue">external documentation</a>.
 -spec setValue(This, Date) -> 'ok' when
 	This::wxDatePickerCtrl(), Date::wx:wx_datetime().
-setValue(#wx_ref{type=ThisT}=This,Date)
- when tuple_size(Date) =:= 2 ->
+setValue(#wx_ref{type=ThisT}=This,{{DateY,DateMo,DateD},{DateH,DateMi,DateS}})
+ when is_integer(DateD),is_integer(DateMo),is_integer(DateY),is_integer(DateH),is_integer(DateMi),is_integer(DateS) ->
   ?CLASS(ThisT,wxDatePickerCtrl),
-  wxe_util:queue_cmd(This,Date,?get_env(),?wxDatePickerCtrl_SetValue).
+  wxe_util:queue_cmd(This,{DateD,DateMo,DateY,DateH,DateMi,DateS},?get_env(),?wxDatePickerCtrl_SetValue).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxDatePickerCtrl()) -> 'ok'.

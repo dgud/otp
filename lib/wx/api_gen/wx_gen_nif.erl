@@ -562,7 +562,7 @@ decode_arg(N,#type{base={comp,"wxDateTime",List},single=true,name=Type,ref=Ref},
                    Idx+1
 	   end,
     lists:foldl(Decl,0,List),
-    Name = fun({_,"Mo"}) -> "(wxDateTime::Month) "++N++"Mo";
+    Name = fun({_,"Mo"}) -> "(wxDateTime::Month) ("++N++"Mo-1)";
 	      ({_,"Y"}) -> ""++N++"Y";
 	      ({_,Spec}) -> "(wxDateTime::wxDateTime_t) "++N++Spec
 	   end,

@@ -82,7 +82,10 @@ buttonDClick(This)
 buttonDClick(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxMouseEvent_ButtonDClick),
+  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxMouseEvent_ButtonDClick),
   wxe_util:rec(?wxMouseEvent_ButtonDClick).
 
 %% @equiv buttonDown(This, [])
@@ -100,7 +103,10 @@ buttonDown(This)
 buttonDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxMouseEvent_ButtonDown),
+  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxMouseEvent_ButtonDown),
   wxe_util:rec(?wxMouseEvent_ButtonDown).
 
 %% @equiv buttonUp(This, [])
@@ -118,7 +124,10 @@ buttonUp(This)
 buttonUp(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxMouseEvent_ButtonUp),
+  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxMouseEvent_ButtonUp),
   wxe_util:rec(?wxMouseEvent_ButtonUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmouseevent.html#wxmouseeventcmddown">external documentation</a>.

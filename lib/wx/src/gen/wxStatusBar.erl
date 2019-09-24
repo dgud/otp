@@ -103,7 +103,11 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxStatusBar_new_2),
+  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxStatusBar_new_2),
   wxe_util:rec(?wxStatusBar_new_2).
 
 %% @equiv create(This,Parent, [])
@@ -123,7 +127,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent, Options,?get_env(),?wxStatusBar_Create),
+  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxStatusBar_Create),
   wxe_util:rec(?wxStatusBar_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbargetfieldrect">external documentation</a>.
@@ -159,7 +167,10 @@ getStatusText(This)
 getStatusText(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxStatusBar_GetStatusText),
+  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxStatusBar_GetStatusText),
   wxe_util:rec(?wxStatusBar_GetStatusText).
 
 %% @equiv popStatusText(This, [])
@@ -177,7 +188,10 @@ popStatusText(This)
 popStatusText(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxStatusBar_PopStatusText).
+  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxStatusBar_PopStatusText).
 
 %% @equiv pushStatusText(This,Text, [])
 -spec pushStatusText(This, Text) -> 'ok' when
@@ -195,7 +209,10 @@ pushStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxStatusBar_PushStatusText).
+  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Text_UC, Opts,?get_env(),?wxStatusBar_PushStatusText).
 
 %% @equiv setFieldsCount(This,Number, [])
 -spec setFieldsCount(This, Number) -> 'ok' when
@@ -212,7 +229,10 @@ setFieldsCount(This,Number)
 setFieldsCount(#wx_ref{type=ThisT}=This,Number, Options)
  when is_integer(Number),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  wxe_util:queue_cmd(This,Number, Options,?get_env(),?wxStatusBar_SetFieldsCount).
+  MOpts = fun({widths, _widths} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Number, Opts,?get_env(),?wxStatusBar_SetFieldsCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetminheight">external documentation</a>.
 -spec setMinHeight(This, Height) -> 'ok' when
@@ -238,7 +258,10 @@ setStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   Text_UC = unicode:characters_to_binary(Text),
-  wxe_util:queue_cmd(This,Text_UC, Options,?get_env(),?wxStatusBar_SetStatusText).
+  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Text_UC, Opts,?get_env(),?wxStatusBar_SetStatusText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetstatuswidths">external documentation</a>.
 -spec setStatusWidths(This, Widths_field) -> 'ok' when

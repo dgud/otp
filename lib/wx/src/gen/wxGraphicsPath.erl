@@ -197,7 +197,10 @@ contains(This,X,Y)
 contains(#wx_ref{type=ThisT}=This,{CX,CY} = C, Options)
  when is_number(CX),is_number(CY),is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:queue_cmd(This,C, Options,?get_env(),?wxGraphicsPath_Contains_2),
+  MOpts = fun({fillStyle, _fillStyle} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,C, Opts,?get_env(),?wxGraphicsPath_Contains_2),
   wxe_util:rec(?wxGraphicsPath_Contains_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathcontains">external documentation</a>.
@@ -208,7 +211,10 @@ contains(#wx_ref{type=ThisT}=This,{CX,CY} = C, Options)
 contains(#wx_ref{type=ThisT}=This,X,Y, Options)
  when is_number(X),is_number(Y),is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsPath),
-  wxe_util:queue_cmd(This,X,Y, Options,?get_env(),?wxGraphicsPath_Contains_3),
+  MOpts = fun({fillStyle, _fillStyle} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,X,Y, Opts,?get_env(),?wxGraphicsPath_Contains_3),
   wxe_util:rec(?wxGraphicsPath_Contains_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicspath.html#wxgraphicspathgetbox">external documentation</a>.

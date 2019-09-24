@@ -84,11 +84,20 @@ new(ColText)
 		 | {'border', wx:wx_enum()}.
 new(Border, Options)
  when is_integer(Border),is_list(Options) ->
-  wxe_util:queue_cmd(Border, Options,?get_env(),?wxCalendarDateAttr_new_2_0),
+  MOpts = fun({colBorder, ColBorder}, Acc) -> [{colBorder,wxe_util:color(ColBorder)}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Border, Opts,?get_env(),?wxCalendarDateAttr_new_2_0),
   wxe_util:rec(?wxCalendarDateAttr_new_2_0);
 new(ColText, Options)
  when tuple_size(ColText) =:= 3; tuple_size(ColText) =:= 4,is_list(Options) ->
-  wxe_util:queue_cmd(wxe_util:color(ColText), Options,?get_env(),?wxCalendarDateAttr_new_2_1),
+  MOpts = fun({colBack, ColBack}, Acc) -> [{colBack,wxe_util:color(ColBack)}|Acc];
+          ({colBorder, ColBorder}, Acc) -> [{colBorder,wxe_util:color(ColBorder)}|Acc];
+          ({font, #wx_ref{type=FontT}} = Arg, Acc) ->   ?CLASS(FontT,wxFont),[Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(wxe_util:color(ColText), Opts,?get_env(),?wxCalendarDateAttr_new_2_1),
   wxe_util:rec(?wxCalendarDateAttr_new_2_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendardateattr.html#wxcalendardateattrsettextcolour">external documentation</a>.

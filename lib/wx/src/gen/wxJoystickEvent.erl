@@ -61,7 +61,10 @@ buttonDown(This)
 buttonDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxJoystickEvent_ButtonDown),
+  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxJoystickEvent_ButtonDown),
   wxe_util:rec(?wxJoystickEvent_ButtonDown).
 
 %% @equiv buttonIsDown(This, [])
@@ -79,7 +82,10 @@ buttonIsDown(This)
 buttonIsDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxJoystickEvent_ButtonIsDown),
+  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxJoystickEvent_ButtonIsDown),
   wxe_util:rec(?wxJoystickEvent_ButtonIsDown).
 
 %% @equiv buttonUp(This, [])
@@ -97,7 +103,10 @@ buttonUp(This)
 buttonUp(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxJoystickEvent),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxJoystickEvent_ButtonUp),
+  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxJoystickEvent_ButtonUp),
   wxe_util:rec(?wxJoystickEvent_ButtonUp).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxjoystickevent.html#wxjoystickeventgetbuttonchange">external documentation</a>.

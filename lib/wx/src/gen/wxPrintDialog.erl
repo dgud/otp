@@ -110,7 +110,10 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxPrintDialog_new_2_0),
+  MOpts = fun({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxPrintDialogData),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxPrintDialog_new_2_0),
   wxe_util:rec(?wxPrintDialog_new_2_0);
 new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data) ->
   ?CLASS(ParentT,wxWindow),

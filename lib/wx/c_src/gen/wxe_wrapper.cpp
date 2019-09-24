@@ -26950,7 +26950,7 @@ void wxCalendarCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, date_t[4], &dateMi)) Badarg(1506,"date");
   int dateS;
   if(!enif_get_int(env, date_t[5], &dateS)) Badarg(1506,"date");
- date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) dateMo,dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
+ date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) (dateMo-1),dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -27020,7 +27020,7 @@ void wxCalendarCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, date_t[4], &dateMi)) Badarg(1507,"date");
   int dateS;
   if(!enif_get_int(env, date_t[5], &dateS)) Badarg(1507,"date");
- date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) dateMo,dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
+ date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) (dateMo-1),dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -27073,7 +27073,7 @@ void wxCalendarCtrl_SetDate(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, date_t[4], &dateMi)) Badarg(1509,"date");
   int dateS;
   if(!enif_get_int(env, date_t[5], &dateS)) Badarg(1509,"date");
- wxDateTime date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) dateMo,dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
+ wxDateTime date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) (dateMo-1),dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
   if(!This) throw wxe_badarg("This");
   bool Result = This->SetDate(date);
   wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
@@ -41861,7 +41861,7 @@ void wxDatePickerCtrl_new_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, date_t[4], &dateMi)) Badarg(2285,"date");
   int dateS;
   if(!enif_get_int(env, date_t[5], &dateS)) Badarg(2285,"date");
- date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) dateMo,dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
+ date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) (dateMo-1),dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "pos"))) {
   const ERL_NIF_TERM *pos_t;
   int pos_sz;
@@ -41916,7 +41916,7 @@ void wxDatePickerCtrl_GetRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, dt1_t[4], &dt1Mi)) Badarg(2286,"dt1");
   int dt1S;
   if(!enif_get_int(env, dt1_t[5], &dt1S)) Badarg(2286,"dt1");
- wxDateTime dt1 = wxDateTime((wxDateTime::wxDateTime_t) dt1D,(wxDateTime::Month) dt1Mo,dt1Y,(wxDateTime::wxDateTime_t) dt1H,(wxDateTime::wxDateTime_t) dt1Mi,(wxDateTime::wxDateTime_t) dt1S);
+ wxDateTime dt1 = wxDateTime((wxDateTime::wxDateTime_t) dt1D,(wxDateTime::Month) (dt1Mo-1),dt1Y,(wxDateTime::wxDateTime_t) dt1H,(wxDateTime::wxDateTime_t) dt1Mi,(wxDateTime::wxDateTime_t) dt1S);
   const ERL_NIF_TERM *dt2_t;
   int dt2_sz;
   if(!enif_get_tuple(env, argv[2], &dt2_sz, &dt2_t)) Badarg(2286,"dt2");
@@ -41932,7 +41932,7 @@ void wxDatePickerCtrl_GetRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, dt2_t[4], &dt2Mi)) Badarg(2286,"dt2");
   int dt2S;
   if(!enif_get_int(env, dt2_t[5], &dt2S)) Badarg(2286,"dt2");
- wxDateTime dt2 = wxDateTime((wxDateTime::wxDateTime_t) dt2D,(wxDateTime::Month) dt2Mo,dt2Y,(wxDateTime::wxDateTime_t) dt2H,(wxDateTime::wxDateTime_t) dt2Mi,(wxDateTime::wxDateTime_t) dt2S);
+ wxDateTime dt2 = wxDateTime((wxDateTime::wxDateTime_t) dt2D,(wxDateTime::Month) (dt2Mo-1),dt2Y,(wxDateTime::wxDateTime_t) dt2H,(wxDateTime::wxDateTime_t) dt2Mi,(wxDateTime::wxDateTime_t) dt2S);
   if(!This) throw wxe_badarg("This");
   bool Result = This->GetRange(&dt1,&dt2);
   wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
@@ -41978,7 +41978,7 @@ void wxDatePickerCtrl_SetRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, dt1_t[4], &dt1Mi)) Badarg(2288,"dt1");
   int dt1S;
   if(!enif_get_int(env, dt1_t[5], &dt1S)) Badarg(2288,"dt1");
- wxDateTime dt1 = wxDateTime((wxDateTime::wxDateTime_t) dt1D,(wxDateTime::Month) dt1Mo,dt1Y,(wxDateTime::wxDateTime_t) dt1H,(wxDateTime::wxDateTime_t) dt1Mi,(wxDateTime::wxDateTime_t) dt1S);
+ wxDateTime dt1 = wxDateTime((wxDateTime::wxDateTime_t) dt1D,(wxDateTime::Month) (dt1Mo-1),dt1Y,(wxDateTime::wxDateTime_t) dt1H,(wxDateTime::wxDateTime_t) dt1Mi,(wxDateTime::wxDateTime_t) dt1S);
   const ERL_NIF_TERM *dt2_t;
   int dt2_sz;
   if(!enif_get_tuple(env, argv[2], &dt2_sz, &dt2_t)) Badarg(2288,"dt2");
@@ -41994,7 +41994,7 @@ void wxDatePickerCtrl_SetRange(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, dt2_t[4], &dt2Mi)) Badarg(2288,"dt2");
   int dt2S;
   if(!enif_get_int(env, dt2_t[5], &dt2S)) Badarg(2288,"dt2");
- wxDateTime dt2 = wxDateTime((wxDateTime::wxDateTime_t) dt2D,(wxDateTime::Month) dt2Mo,dt2Y,(wxDateTime::wxDateTime_t) dt2H,(wxDateTime::wxDateTime_t) dt2Mi,(wxDateTime::wxDateTime_t) dt2S);
+ wxDateTime dt2 = wxDateTime((wxDateTime::wxDateTime_t) dt2D,(wxDateTime::Month) (dt2Mo-1),dt2Y,(wxDateTime::wxDateTime_t) dt2H,(wxDateTime::wxDateTime_t) dt2Mi,(wxDateTime::wxDateTime_t) dt2S);
   if(!This) throw wxe_badarg("This");
   This->SetRange(dt1,dt2);
 
@@ -42023,7 +42023,7 @@ void wxDatePickerCtrl_SetValue(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, date_t[4], &dateMi)) Badarg(2289,"date");
   int dateS;
   if(!enif_get_int(env, date_t[5], &dateS)) Badarg(2289,"date");
- wxDateTime date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) dateMo,dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
+ wxDateTime date = wxDateTime((wxDateTime::wxDateTime_t) dateD,(wxDateTime::Month) (dateMo-1),dateY,(wxDateTime::wxDateTime_t) dateH,(wxDateTime::wxDateTime_t) dateMi,(wxDateTime::wxDateTime_t) dateS);
   if(!This) throw wxe_badarg("This");
   This->SetValue(date);
 

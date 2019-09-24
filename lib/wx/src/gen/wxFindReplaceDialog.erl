@@ -112,7 +112,10 @@ new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data,Title, Options)
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
   Title_UC = unicode:characters_to_binary(Title),
-  wxe_util:queue_cmd(Parent,Data,Title_UC, Options,?get_env(),?wxFindReplaceDialog_new_4),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Data,Title_UC, Opts,?get_env(),?wxFindReplaceDialog_new_4),
   wxe_util:rec(?wxFindReplaceDialog_new_4).
 
 %% @equiv create(This,Parent,Data,Title, [])
@@ -133,7 +136,10 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
   Title_UC = unicode:characters_to_binary(Title),
-  wxe_util:queue_cmd(This,Parent,Data,Title_UC, Options,?get_env(),?wxFindReplaceDialog_Create),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Data,Title_UC, Opts,?get_env(),?wxFindReplaceDialog_Create),
   wxe_util:rec(?wxFindReplaceDialog_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxfindreplacedialog.html#wxfindreplacedialoggetdata">external documentation</a>.

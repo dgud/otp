@@ -88,12 +88,18 @@ new(Width,Height)
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
   Filename_UC = unicode:characters_to_binary(Filename),
-  wxe_util:queue_cmd(Filename_UC, Options,?get_env(),?wxBitmap_new_2_0),
+  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Filename_UC, Opts,?get_env(),?wxBitmap_new_2_0),
   wxe_util:rec(?wxBitmap_new_2_0);
 new(#wx_ref{type=ImageT}=Image, Options)
  when is_list(Options) ->
   ?CLASS(ImageT,wxImage),
-  wxe_util:queue_cmd(Image, Options,?get_env(),?wxBitmap_new_2_1),
+  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Image, Opts,?get_env(),?wxBitmap_new_2_1),
   wxe_util:rec(?wxBitmap_new_2_1).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapwxbitmap">external documentation</a>.
@@ -113,7 +119,10 @@ new(Bits,Width,Height)
   new(Bits,Width,Height, []);
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:queue_cmd(Width,Height, Options,?get_env(),?wxBitmap_new_3),
+  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Width,Height, Opts,?get_env(),?wxBitmap_new_3),
   wxe_util:rec(?wxBitmap_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapwxbitmap">external documentation</a>.
@@ -122,7 +131,10 @@ new(Width,Height, Options)
 	Option :: {'depth', integer()}.
 new(Bits,Width,Height, Options)
  when is_binary(Bits),is_integer(Width),is_integer(Height),is_list(Options) ->
-  wxe_util:queue_cmd(Bits,Width,Height, Options,?get_env(),?wxBitmap_new_4),
+  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Bits,Width,Height, Opts,?get_env(),?wxBitmap_new_4),
   wxe_util:rec(?wxBitmap_new_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapconverttoimage">external documentation</a>.
@@ -157,7 +169,10 @@ create(This,Width,Height)
 create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
-  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxBitmap_Create),
+  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxBitmap_Create),
   wxe_util:rec(?wxBitmap_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapgetdepth">external documentation</a>.
@@ -226,7 +241,10 @@ loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
   Name_UC = unicode:characters_to_binary(Name),
-  wxe_util:queue_cmd(This,Name_UC, Options,?get_env(),?wxBitmap_LoadFile),
+  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Name_UC, Opts,?get_env(),?wxBitmap_LoadFile),
   wxe_util:rec(?wxBitmap_LoadFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapok">external documentation</a>.
@@ -254,7 +272,10 @@ saveFile(#wx_ref{type=ThisT}=This,Name,Type, Options)
  when ?is_chardata(Name),is_integer(Type),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
   Name_UC = unicode:characters_to_binary(Name),
-  wxe_util:queue_cmd(This,Name_UC,Type, Options,?get_env(),?wxBitmap_SaveFile),
+  MOpts = fun({palette, #wx_ref{type=PaletteT}} = Arg, Acc) ->   ?CLASS(PaletteT,wxPalette),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Name_UC,Type, Opts,?get_env(),?wxBitmap_SaveFile),
   wxe_util:rec(?wxBitmap_SaveFile).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbitmap.html#wxbitmapsetdepth">external documentation</a>.

@@ -84,7 +84,13 @@ add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Add_2_0
      end,
-  wxe_util:queue_cmd(This,Window, Options,?get_env(),WindowOP),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP);
 add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=FlagsT}=Flags) ->
   ?CLASS(ThisT,wxSizer),
@@ -109,7 +115,13 @@ add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=FlagsT}=F
 add(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxSizer_Add_3),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxSizer_Add_3),
   wxe_util:rec(?wxSizer_Add_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizeraddspacer">external documentation</a>.
@@ -136,7 +148,10 @@ addStretchSpacer(This)
 addStretchSpacer(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxSizer_AddStretchSpacer),
+  MOpts = fun({prop, _prop} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxSizer_AddStretchSpacer),
   wxe_util:rec(?wxSizer_AddStretchSpacer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizercalcmin">external documentation</a>.
@@ -162,7 +177,10 @@ clear(This)
 clear(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxSizer_Clear).
+  MOpts = fun({delete_windows, _delete_windows} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxSizer_Clear).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerdetach">external documentation</a>.
 %% <br /> Also:<br />
@@ -246,7 +264,10 @@ getItem(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_GetItem_2_0
      end,
-  wxe_util:queue_cmd(This,Window, Options,?get_env(),WindowOP),
+  MOpts = fun({recursive, _recursive} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizergetsize">external documentation</a>.
@@ -305,7 +326,10 @@ hide(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Hide_2_0
      end,
-  wxe_util:queue_cmd(This,Window, Options,?get_env(),WindowOP),
+  MOpts = fun({recursive, _recursive} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerinsert">external documentation</a>.
@@ -352,7 +376,13 @@ insert(#wx_ref{type=ThisT}=This,Index,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Insert_3_0
      end,
-  wxe_util:queue_cmd(This,Index,Window, Options,?get_env(),WindowOP),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Index,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP);
 insert(#wx_ref{type=ThisT}=This,Index,#wx_ref{type=WindowT}=Window,#wx_ref{type=FlagsT}=Flags)
  when is_integer(Index) ->
@@ -378,7 +408,13 @@ insert(#wx_ref{type=ThisT}=This,Index,#wx_ref{type=WindowT}=Window,#wx_ref{type=
 insert(#wx_ref{type=ThisT}=This,Index,Width,Height, Options)
  when is_integer(Index),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This,Index,Width,Height, Options,?get_env(),?wxSizer_Insert_4),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Index,Width,Height, Opts,?get_env(),?wxSizer_Insert_4),
   wxe_util:rec(?wxSizer_Insert_4).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerinsertspacer">external documentation</a>.
@@ -405,7 +441,10 @@ insertStretchSpacer(This,Index)
 insertStretchSpacer(#wx_ref{type=ThisT}=This,Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This,Index, Options,?get_env(),?wxSizer_InsertStretchSpacer),
+  MOpts = fun({prop, _prop} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Index, Opts,?get_env(),?wxSizer_InsertStretchSpacer),
   wxe_util:rec(?wxSizer_InsertStretchSpacer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerisshown">external documentation</a>.
@@ -483,7 +522,13 @@ prepend(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Prepend_2_0
      end,
-  wxe_util:queue_cmd(This,Window, Options,?get_env(),WindowOP),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP);
 prepend(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=FlagsT}=Flags) ->
   ?CLASS(ThisT,wxSizer),
@@ -508,7 +553,13 @@ prepend(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=Flags
 prepend(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This,Width,Height, Options,?get_env(),?wxSizer_Prepend_3),
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
+          ({border, _border} = Arg, Acc) -> [Arg|Acc];
+          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxSizer_Prepend_3),
   wxe_util:rec(?wxSizer_Prepend_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerprependspacer">external documentation</a>.
@@ -535,7 +586,10 @@ prependStretchSpacer(This)
 prependStretchSpacer(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxSizer_PrependStretchSpacer),
+  MOpts = fun({prop, _prop} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxSizer_PrependStretchSpacer),
   wxe_util:rec(?wxSizer_PrependStretchSpacer).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizerrecalcsizes">external documentation</a>.
@@ -600,7 +654,10 @@ replace(#wx_ref{type=ThisT}=This,#wx_ref{type=OldwinT}=Oldwin,#wx_ref{type=Newwi
          ?CLASS(NewwinT,wxSizer),
        ?wxSizer_Replace_3_0
      end,
-  wxe_util:queue_cmd(This,Oldwin,Newwin, Options,?get_env(),OldwinOP),
+  MOpts = fun({recursive, _recursive} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Oldwin,Newwin, Opts,?get_env(),OldwinOP),
   wxe_util:rec(OldwinOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxsizer.html#wxsizersetdimension">external documentation</a>.
@@ -738,7 +795,10 @@ show(#wx_ref{type=ThisT}=This,Show)
 show(#wx_ref{type=ThisT}=This,Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxSizer),
-  wxe_util:queue_cmd(This,Index, Options,?get_env(),?wxSizer_Show_2_0),
+  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Index, Opts,?get_env(),?wxSizer_Show_2_0),
   wxe_util:rec(?wxSizer_Show_2_0);
 show(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
  when is_list(Options) ->
@@ -749,6 +809,10 @@ show(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxSizer_Show_2_1
      end,
-  wxe_util:queue_cmd(This,Window, Options,?get_env(),WindowOP),
+  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
+          ({recursive, _recursive} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP).
 

@@ -267,7 +267,10 @@ union(#wx_ref{type=ThisT}=This,#wx_ref{type=BmpT}=Bmp,Transp, Options)
  when tuple_size(Transp) =:= 3; tuple_size(Transp) =:= 4,is_list(Options) ->
   ?CLASS(ThisT,wxRegion),
   ?CLASS(BmpT,wxBitmap),
-  wxe_util:queue_cmd(This,Bmp,wxe_util:color(Transp), Options,?get_env(),?wxRegion_Union_3),
+  MOpts = fun({tolerance, _tolerance} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Bmp,wxe_util:color(Transp), Opts,?get_env(),?wxRegion_Union_3),
   wxe_util:rec(?wxRegion_Union_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxregion.html#wxregionunion">external documentation</a>.

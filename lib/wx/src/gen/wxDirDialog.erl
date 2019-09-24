@@ -108,7 +108,14 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxDirDialog_new),
+  MOpts = fun({title, Title}, Acc) ->   Title_UC = unicode:characters_to_binary(Title),[{title,Title_UC}|Acc];
+          ({defaultPath, DefaultPath}, Acc) ->   DefaultPath_UC = unicode:characters_to_binary(DefaultPath),[{defaultPath,DefaultPath_UC}|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({sz, {_szW,_szH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxDirDialog_new),
   wxe_util:rec(?wxDirDialog_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdirdialog.html#wxdirdialoggetpath">external documentation</a>.

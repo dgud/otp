@@ -106,7 +106,13 @@ new(Parent,Id,Value,MinValue,MaxValue)
 new(#wx_ref{type=ParentT}=Parent,Id,Value,MinValue,MaxValue, Options)
  when is_integer(Id),is_integer(Value),is_integer(MinValue),is_integer(MaxValue),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id,Value,MinValue,MaxValue, Options,?get_env(),?wxSlider_new_6),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id,Value,MinValue,MaxValue, Opts,?get_env(),?wxSlider_new_6),
   wxe_util:rec(?wxSlider_new_6).
 
 %% @equiv create(This,Parent,Id,Value,MinValue,MaxValue, [])
@@ -128,7 +134,13 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Value,MinValue,M
  when is_integer(Id),is_integer(Value),is_integer(MinValue),is_integer(MaxValue),is_list(Options) ->
   ?CLASS(ThisT,wxSlider),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id,Value,MinValue,MaxValue, Options,?get_env(),?wxSlider_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Value,MinValue,MaxValue, Opts,?get_env(),?wxSlider_Create),
   wxe_util:rec(?wxSlider_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxslider.html#wxslidergetlinesize">external documentation</a>.

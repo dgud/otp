@@ -92,7 +92,10 @@ new(Window,Buffer)
 new(#wx_ref{type=WindowT}=Window, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
-  wxe_util:queue_cmd(Window, Options,?get_env(),?wxBufferedPaintDC_new_2),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Window, Opts,?get_env(),?wxBufferedPaintDC_new_2),
   wxe_util:rec(?wxBufferedPaintDC_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbufferedpaintdc.html#wxbufferedpaintdcwxbufferedpaintdc">external documentation</a>.
@@ -103,7 +106,10 @@ new(#wx_ref{type=WindowT}=Window,#wx_ref{type=BufferT}=Buffer, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
   ?CLASS(BufferT,wxBitmap),
-  wxe_util:queue_cmd(Window,Buffer, Options,?get_env(),?wxBufferedPaintDC_new_3),
+  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Window,Buffer, Opts,?get_env(),?wxBufferedPaintDC_new_3),
   wxe_util:rec(?wxBufferedPaintDC_new_3).
 
 %% @doc Destroys this object, do not use object again

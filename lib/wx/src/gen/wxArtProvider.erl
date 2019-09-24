@@ -51,7 +51,11 @@ getBitmap(Id)
 getBitmap(Id, Options)
  when ?is_chardata(Id),is_list(Options) ->
   Id_UC = unicode:characters_to_binary(Id),
-  wxe_util:queue_cmd(Id_UC, Options,?get_env(),?wxArtProvider_GetBitmap),
+  MOpts = fun({client, Client}, Acc) ->   Client_UC = unicode:characters_to_binary([Client, $_, $C]),[{client,Client_UC}|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Id_UC, Opts,?get_env(),?wxArtProvider_GetBitmap),
   wxe_util:rec(?wxArtProvider_GetBitmap).
 
 %% @equiv getIcon(Id, [])
@@ -70,6 +74,10 @@ getIcon(Id)
 getIcon(Id, Options)
  when ?is_chardata(Id),is_list(Options) ->
   Id_UC = unicode:characters_to_binary(Id),
-  wxe_util:queue_cmd(Id_UC, Options,?get_env(),?wxArtProvider_GetIcon),
+  MOpts = fun({client, Client}, Acc) ->   Client_UC = unicode:characters_to_binary([Client, $_, $C]),[{client,Client_UC}|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Id_UC, Opts,?get_env(),?wxArtProvider_GetIcon),
   wxe_util:rec(?wxArtProvider_GetIcon).
 

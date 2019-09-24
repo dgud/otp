@@ -100,7 +100,12 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxWindow_new_3),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxWindow_new_3),
   wxe_util:rec(?wxWindow_new_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowcachebestsize">external documentation</a>.
@@ -133,7 +138,10 @@ center(This)
 center(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Center).
+  MOpts = fun({dir, _dir} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Center).
 
 %% @equiv centerOnParent(This, [])
 -spec centerOnParent(This) -> 'ok' when
@@ -150,7 +158,10 @@ centerOnParent(This)
 centerOnParent(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_CenterOnParent).
+  MOpts = fun({dir, _dir} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_CenterOnParent).
 
 %% @equiv centre(This, [])
 -spec centre(This) -> 'ok' when
@@ -167,7 +178,10 @@ centre(This)
 centre(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Centre).
+  MOpts = fun({dir, _dir} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Centre).
 
 %% @equiv centreOnParent(This, [])
 -spec centreOnParent(This) -> 'ok' when
@@ -184,7 +198,10 @@ centreOnParent(This)
 centreOnParent(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_CentreOnParent).
+  MOpts = fun({dir, _dir} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_CentreOnParent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowclearbackground">external documentation</a>.
 -spec clearBackground(This) -> 'ok' when
@@ -226,7 +243,10 @@ close(This)
 close(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Close),
+  MOpts = fun({force, _force} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Close),
   wxe_util:rec(?wxWindow_Close).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowconvertdialogtopixels">external documentation</a>.
@@ -294,7 +314,10 @@ enable(This)
 enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Enable),
+  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Enable),
   wxe_util:rec(?wxWindow_Enable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfindfocus">external documentation</a>.
@@ -338,7 +361,10 @@ findWindowById(Winid)
 	Option :: {'parent', wxWindow()}.
 findWindowById(Winid, Options)
  when is_integer(Winid),is_list(Options) ->
-  wxe_util:queue_cmd(Winid, Options,?get_env(),?wxWindow_FindWindowById),
+  MOpts = fun({parent, #wx_ref{type=ParentT}} = Arg, Acc) ->   ?CLASS(ParentT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Winid, Opts,?get_env(),?wxWindow_FindWindowById),
   wxe_util:rec(?wxWindow_FindWindowById).
 
 %% @equiv findWindowByName(Name, [])
@@ -356,7 +382,10 @@ findWindowByName(Name)
 findWindowByName(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary(Name),
-  wxe_util:queue_cmd(Name_UC, Options,?get_env(),?wxWindow_FindWindowByName),
+  MOpts = fun({parent, #wx_ref{type=ParentT}} = Arg, Acc) ->   ?CLASS(ParentT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Name_UC, Opts,?get_env(),?wxWindow_FindWindowByName),
   wxe_util:rec(?wxWindow_FindWindowByName).
 
 %% @equiv findWindowByLabel(Label, [])
@@ -374,7 +403,10 @@ findWindowByLabel(Label)
 findWindowByLabel(Label, Options)
  when ?is_chardata(Label),is_list(Options) ->
   Label_UC = unicode:characters_to_binary(Label),
-  wxe_util:queue_cmd(Label_UC, Options,?get_env(),?wxWindow_FindWindowByLabel),
+  MOpts = fun({parent, #wx_ref{type=ParentT}} = Arg, Acc) ->   ?CLASS(ParentT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Label_UC, Opts,?get_env(),?wxWindow_FindWindowByLabel),
   wxe_util:rec(?wxWindow_FindWindowByLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfit">external documentation</a>.
@@ -698,7 +730,10 @@ getTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   String_UC = unicode:characters_to_binary(String),
-  wxe_util:queue_cmd(This,String_UC, Options,?get_env(),?wxWindow_GetTextExtent),
+  MOpts = fun({theFont, #wx_ref{type=TheFontT}} = Arg, Acc) ->   ?CLASS(TheFontT,wxFont),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,String_UC, Opts,?get_env(),?wxWindow_GetTextExtent),
   wxe_util:rec(?wxWindow_GetTextExtent).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgettooltip">external documentation</a>.
@@ -920,7 +955,10 @@ makeModal(This)
 makeModal(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_MakeModal).
+  MOpts = fun({modal, _modal} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_MakeModal).
 
 %% @equiv move(This,Pt, [])
 -spec move(This, Pt) -> 'ok' when
@@ -948,7 +986,10 @@ move(This,X,Y)
 move(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt, Options)
  when is_integer(PtX),is_integer(PtY),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,Pt, Options,?get_env(),?wxWindow_Move_2).
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Pt, Opts,?get_env(),?wxWindow_Move_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowmove">external documentation</a>.
 -spec move(This, X, Y, [Option]) -> 'ok' when
@@ -957,7 +998,10 @@ move(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt, Options)
 move(#wx_ref{type=ThisT}=This,X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,X,Y, Options,?get_env(),?wxWindow_Move_3).
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,X,Y, Opts,?get_env(),?wxWindow_Move_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowmoveafterintaborder">external documentation</a>.
 -spec moveAfterInTabOrder(This, Win) -> 'ok' when
@@ -990,7 +1034,10 @@ navigate(This)
 navigate(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Navigate),
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Navigate),
   wxe_util:rec(?wxWindow_Navigate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowpagedown">external documentation</a>.
@@ -1024,7 +1071,10 @@ popEventHandler(This)
 popEventHandler(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_PopEventHandler),
+  MOpts = fun({deleteHandler, _deleteHandler} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_PopEventHandler),
   wxe_util:rec(?wxWindow_PopEventHandler).
 
 %% @equiv popupMenu(This,Menu, [])
@@ -1043,7 +1093,10 @@ popupMenu(#wx_ref{type=ThisT}=This,#wx_ref{type=MenuT}=Menu, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(MenuT,wxMenu),
-  wxe_util:queue_cmd(This,Menu, Options,?get_env(),?wxWindow_PopupMenu_2),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Menu, Opts,?get_env(),?wxWindow_PopupMenu_2),
   wxe_util:rec(?wxWindow_PopupMenu_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowpopupmenu">external documentation</a>.
@@ -1079,7 +1132,11 @@ refresh(This)
 refresh(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Refresh).
+  MOpts = fun({eraseBackground, _eraseBackground} = Arg, Acc) -> [Arg|Acc];
+          ({rect, {_rectX,_rectY,_rectW,_rectH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Refresh).
 
 %% @equiv refreshRect(This,Rect, [])
 -spec refreshRect(This, Rect) -> 'ok' when
@@ -1096,7 +1153,10 @@ refreshRect(This,Rect={RectX,RectY,RectW,RectH} = Rect)
 refreshRect(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect, Options)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,Rect, Options,?get_env(),?wxWindow_RefreshRect).
+  MOpts = fun({eraseBackground, _eraseBackground} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Rect, Opts,?get_env(),?wxWindow_RefreshRect).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowreleasemouse">external documentation</a>.
 -spec releaseMouse(This) -> 'ok' when
@@ -1172,7 +1232,10 @@ scrollWindow(This,Dx,Dy)
 scrollWindow(#wx_ref{type=ThisT}=This,Dx,Dy, Options)
  when is_integer(Dx),is_integer(Dy),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,Dx,Dy, Options,?get_env(),?wxWindow_ScrollWindow).
+  MOpts = fun({rect, {_rectX,_rectY,_rectW,_rectH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Dx,Dy, Opts,?get_env(),?wxWindow_ScrollWindow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetacceleratortable">external documentation</a>.
 -spec setAcceleratorTable(This, Accel) -> 'ok' when
@@ -1406,7 +1469,10 @@ setScrollbar(This,Orient,Pos,ThumbVisible,Range)
 setScrollbar(#wx_ref{type=ThisT}=This,Orient,Pos,ThumbVisible,Range, Options)
  when is_integer(Orient),is_integer(Pos),is_integer(ThumbVisible),is_integer(Range),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,Orient,Pos,ThumbVisible,Range, Options,?get_env(),?wxWindow_SetScrollbar).
+  MOpts = fun({refresh, _refresh} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Orient,Pos,ThumbVisible,Range, Opts,?get_env(),?wxWindow_SetScrollbar).
 
 %% @equiv setScrollPos(This,Orient,Pos, [])
 -spec setScrollPos(This, Orient, Pos) -> 'ok' when
@@ -1423,7 +1489,10 @@ setScrollPos(This,Orient,Pos)
 setScrollPos(#wx_ref{type=ThisT}=This,Orient,Pos, Options)
  when is_integer(Orient),is_integer(Pos),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,Orient,Pos, Options,?get_env(),?wxWindow_SetScrollPos).
+  MOpts = fun({refresh, _refresh} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Orient,Pos, Opts,?get_env(),?wxWindow_SetScrollPos).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetsize">external documentation</a>.
 %% <br /> Also:<br />
@@ -1461,7 +1530,10 @@ setSize(#wx_ref{type=ThisT}=This,Width,Height)
 setSize(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect, Options)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,Rect, Options,?get_env(),?wxWindow_SetSize_2_1).
+  MOpts = fun({sizeFlags, _sizeFlags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Rect, Opts,?get_env(),?wxWindow_SetSize_2_1).
 
 %% @equiv setSize(This,X,Y,Width,Height, [])
 -spec setSize(This, X, Y, Width, Height) -> 'ok' when
@@ -1478,7 +1550,10 @@ setSize(This,X,Y,Width,Height)
 setSize(#wx_ref{type=ThisT}=This,X,Y,Width,Height, Options)
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,X,Y,Width,Height, Options,?get_env(),?wxWindow_SetSize_5).
+  MOpts = fun({sizeFlags, _sizeFlags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,X,Y,Width,Height, Opts,?get_env(),?wxWindow_SetSize_5).
 
 %% @equiv setSizeHints(This,MinSize, [])
 -spec setSizeHints(This, MinSize) -> 'ok' when
@@ -1508,7 +1583,11 @@ setSizeHints(This,MinW,MinH)
 setSizeHints(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize, Options)
  when is_integer(MinSizeW),is_integer(MinSizeH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,MinSize, Options,?get_env(),?wxWindow_SetSizeHints_2).
+  MOpts = fun({maxSize, {_maxSizeW,_maxSizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({incSize, {_incSizeW,_incSizeH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,MinSize, Opts,?get_env(),?wxWindow_SetSizeHints_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetsizehints">external documentation</a>.
 -spec setSizeHints(This, MinW, MinH, [Option]) -> 'ok' when
@@ -1520,7 +1599,13 @@ setSizeHints(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize, Options)
 setSizeHints(#wx_ref{type=ThisT}=This,MinW,MinH, Options)
  when is_integer(MinW),is_integer(MinH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,MinW,MinH, Options,?get_env(),?wxWindow_SetSizeHints_3).
+  MOpts = fun({maxW, _maxW} = Arg, Acc) -> [Arg|Acc];
+          ({maxH, _maxH} = Arg, Acc) -> [Arg|Acc];
+          ({incW, _incW} = Arg, Acc) -> [Arg|Acc];
+          ({incH, _incH} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,MinW,MinH, Opts,?get_env(),?wxWindow_SetSizeHints_3).
 
 %% @equiv setSizer(This,Sizer, [])
 -spec setSizer(This, Sizer) -> 'ok' when
@@ -1538,7 +1623,10 @@ setSizer(#wx_ref{type=ThisT}=This,#wx_ref{type=SizerT}=Sizer, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(SizerT,wxSizer),
-  wxe_util:queue_cmd(This,Sizer, Options,?get_env(),?wxWindow_SetSizer).
+  MOpts = fun({deleteOld, _deleteOld} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Sizer, Opts,?get_env(),?wxWindow_SetSizer).
 
 %% @equiv setSizerAndFit(This,Sizer, [])
 -spec setSizerAndFit(This, Sizer) -> 'ok' when
@@ -1556,7 +1644,10 @@ setSizerAndFit(#wx_ref{type=ThisT}=This,#wx_ref{type=SizerT}=Sizer, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
   ?CLASS(SizerT,wxSizer),
-  wxe_util:queue_cmd(This,Sizer, Options,?get_env(),?wxWindow_SetSizerAndFit).
+  MOpts = fun({deleteOld, _deleteOld} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Sizer, Opts,?get_env(),?wxWindow_SetSizerAndFit).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetthemeenabled">external documentation</a>.
 -spec setThemeEnabled(This, EnableTheme) -> 'ok' when
@@ -1627,7 +1718,10 @@ setVirtualSizeHints(This,MinW,MinH)
 setVirtualSizeHints(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize, Options)
  when is_integer(MinSizeW),is_integer(MinSizeH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,MinSize, Options,?get_env(),?wxWindow_SetVirtualSizeHints_2).
+  MOpts = fun({maxSize, {_maxSizeW,_maxSizeH}} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,MinSize, Opts,?get_env(),?wxWindow_SetVirtualSizeHints_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetvirtualsizehints">external documentation</a>.
 -spec setVirtualSizeHints(This, MinW, MinH, [Option]) -> 'ok' when
@@ -1637,7 +1731,11 @@ setVirtualSizeHints(#wx_ref{type=ThisT}=This,{MinSizeW,MinSizeH} = MinSize, Opti
 setVirtualSizeHints(#wx_ref{type=ThisT}=This,MinW,MinH, Options)
  when is_integer(MinW),is_integer(MinH),is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This,MinW,MinH, Options,?get_env(),?wxWindow_SetVirtualSizeHints_3).
+  MOpts = fun({maxW, _maxW} = Arg, Acc) -> [Arg|Acc];
+          ({maxH, _maxH} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,MinW,MinH, Opts,?get_env(),?wxWindow_SetVirtualSizeHints_3).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowsetwindowstyle">external documentation</a>.
 -spec setWindowStyle(This, Style) -> 'ok' when
@@ -1687,7 +1785,10 @@ show(This)
 show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_Show),
+  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_Show),
   wxe_util:rec(?wxWindow_Show).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowthaw">external documentation</a>.
@@ -1735,7 +1836,10 @@ updateWindowUI(This)
 updateWindowUI(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxWindow_UpdateWindowUI).
+  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxWindow_UpdateWindowUI).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowvalidate">external documentation</a>.
 -spec validate(This) -> boolean() when

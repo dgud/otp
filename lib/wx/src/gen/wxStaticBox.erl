@@ -104,7 +104,12 @@ new(#wx_ref{type=ParentT}=Parent,Id,Label, Options)
  when is_integer(Id),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary(Label),
-  wxe_util:queue_cmd(Parent,Id,Label_UC, Options,?get_env(),?wxStaticBox_new_4),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id,Label_UC, Opts,?get_env(),?wxStaticBox_new_4),
   wxe_util:rec(?wxStaticBox_new_4).
 
 %% @equiv create(This,Parent,Id,Label, [])
@@ -126,7 +131,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Label, Options)
   ?CLASS(ThisT,wxStaticBox),
   ?CLASS(ParentT,wxWindow),
   Label_UC = unicode:characters_to_binary(Label),
-  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Options,?get_env(),?wxStaticBox_Create),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id,Label_UC, Opts,?get_env(),?wxStaticBox_Create),
   wxe_util:rec(?wxStaticBox_Create).
 
 %% @doc Destroys this object, do not use object again

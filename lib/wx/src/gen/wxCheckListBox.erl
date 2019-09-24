@@ -114,7 +114,14 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxCheckListBox_new_3),
+  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({choices, Choices}, Acc) ->   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||              ChoicesTemp <- Choices],[{choices,Choices_UCA}|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxCheckListBox_new_3),
   wxe_util:rec(?wxCheckListBox_new_3).
 
 %% @equiv check(This,Index, [])
@@ -132,7 +139,10 @@ check(This,Index)
 check(#wx_ref{type=ThisT}=This,Index, Options)
  when is_integer(Index),is_list(Options) ->
   ?CLASS(ThisT,wxCheckListBox),
-  wxe_util:queue_cmd(This,Index, Options,?get_env(),?wxCheckListBox_Check).
+  MOpts = fun({check, _check} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Index, Opts,?get_env(),?wxCheckListBox_Check).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchecklistbox.html#wxchecklistboxischecked">external documentation</a>.
 -spec isChecked(This, Index) -> boolean() when

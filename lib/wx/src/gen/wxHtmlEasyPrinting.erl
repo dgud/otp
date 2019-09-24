@@ -50,7 +50,11 @@ new() ->
 		 | {'parentWindow', wxWindow:wxWindow()}.
 new(Options)
  when is_list(Options) ->
-  wxe_util:queue_cmd(Options,?get_env(),?wxHtmlEasyPrinting_new),
+  MOpts = fun({name, Name}, Acc) ->   Name_UC = unicode:characters_to_binary(Name),[{name,Name_UC}|Acc];
+          ({parentWindow, #wx_ref{type=ParentWindowT}} = Arg, Acc) ->   ?CLASS(ParentWindowT,wxWindow),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Opts,?get_env(),?wxHtmlEasyPrinting_new),
   wxe_util:rec(?wxHtmlEasyPrinting_new).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmleasyprinting.html#wxhtmleasyprintinggetprintdata">external documentation</a>.
@@ -95,7 +99,10 @@ previewText(#wx_ref{type=ThisT}=This,Htmltext, Options)
  when ?is_chardata(Htmltext),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Htmltext_UC = unicode:characters_to_binary(Htmltext),
-  wxe_util:queue_cmd(This,Htmltext_UC, Options,?get_env(),?wxHtmlEasyPrinting_PreviewText),
+  MOpts = fun({basepath, Basepath}, Acc) ->   Basepath_UC = unicode:characters_to_binary(Basepath),[{basepath,Basepath_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Htmltext_UC, Opts,?get_env(),?wxHtmlEasyPrinting_PreviewText),
   wxe_util:rec(?wxHtmlEasyPrinting_PreviewText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmleasyprinting.html#wxhtmleasyprintingprintfile">external documentation</a>.
@@ -124,7 +131,10 @@ printText(#wx_ref{type=ThisT}=This,Htmltext, Options)
  when ?is_chardata(Htmltext),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Htmltext_UC = unicode:characters_to_binary(Htmltext),
-  wxe_util:queue_cmd(This,Htmltext_UC, Options,?get_env(),?wxHtmlEasyPrinting_PrintText),
+  MOpts = fun({basepath, Basepath}, Acc) ->   Basepath_UC = unicode:characters_to_binary(Basepath),[{basepath,Basepath_UC}|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Htmltext_UC, Opts,?get_env(),?wxHtmlEasyPrinting_PrintText),
   wxe_util:rec(?wxHtmlEasyPrinting_PrintText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmleasyprinting.html#wxhtmleasyprintingpagesetup">external documentation</a>.
@@ -151,7 +161,10 @@ setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Normal_face_UC = unicode:characters_to_binary(Normal_face),
   Fixed_face_UC = unicode:characters_to_binary(Fixed_face),
-  wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Options,?get_env(),?wxHtmlEasyPrinting_SetFonts).
+  MOpts = fun({sizes, _sizes} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Opts,?get_env(),?wxHtmlEasyPrinting_SetFonts).
 
 %% @equiv setHeader(This,Header, [])
 -spec setHeader(This, Header) -> 'ok' when
@@ -169,7 +182,10 @@ setHeader(#wx_ref{type=ThisT}=This,Header, Options)
  when ?is_chardata(Header),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Header_UC = unicode:characters_to_binary(Header),
-  wxe_util:queue_cmd(This,Header_UC, Options,?get_env(),?wxHtmlEasyPrinting_SetHeader).
+  MOpts = fun({pg, _pg} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Header_UC, Opts,?get_env(),?wxHtmlEasyPrinting_SetHeader).
 
 %% @equiv setFooter(This,Footer, [])
 -spec setFooter(This, Footer) -> 'ok' when
@@ -187,7 +203,10 @@ setFooter(#wx_ref{type=ThisT}=This,Footer, Options)
  when ?is_chardata(Footer),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Footer_UC = unicode:characters_to_binary(Footer),
-  wxe_util:queue_cmd(This,Footer_UC, Options,?get_env(),?wxHtmlEasyPrinting_SetFooter).
+  MOpts = fun({pg, _pg} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Footer_UC, Opts,?get_env(),?wxHtmlEasyPrinting_SetFooter).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxHtmlEasyPrinting()) -> 'ok'.

@@ -116,7 +116,16 @@ new(Parent,Shared)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent, Options,?get_env(),?wxGLCanvas_new_2),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({name, Name}, Acc) ->   Name_UC = unicode:characters_to_binary(Name),[{name,Name_UC}|Acc];
+          ({attribList, _attribList} = Arg, Acc) -> [Arg|Acc];
+          ({palette, #wx_ref{type=PaletteT}} = Arg, Acc) ->   ?CLASS(PaletteT,wxPalette),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxGLCanvas_new_2),
   wxe_util:rec(?wxGLCanvas_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvaswxglcanvas">external documentation</a>.
@@ -138,7 +147,16 @@ new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=SharedT}=Shared, Options)
      _ -> ?CLASS(SharedT,wxGLCanvas),
        ?wxGLCanvas_new_3_0
      end,
-  wxe_util:queue_cmd(Parent,Shared, Options,?get_env(),SharedOP),
+  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          ({name, Name}, Acc) ->   Name_UC = unicode:characters_to_binary(Name),[{name,Name_UC}|Acc];
+          ({attribList, _attribList} = Arg, Acc) -> [Arg|Acc];
+          ({palette, #wx_ref{type=PaletteT}} = Arg, Acc) ->   ?CLASS(PaletteT,wxPalette),[Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Shared, Opts,?get_env(),SharedOP),
   wxe_util:rec(SharedOP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvasgetcontext">external documentation</a>.

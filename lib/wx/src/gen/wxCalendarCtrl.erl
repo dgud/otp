@@ -111,7 +111,13 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(Parent,Id, Options,?get_env(),?wxCalendarCtrl_new_3),
+  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}, Acc) -> [{date,{DateD,DateMo,DateY,DateH,DateMi,DateS}}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxCalendarCtrl_new_3),
   wxe_util:rec(?wxCalendarCtrl_new_3).
 
 %% @equiv create(This,Parent,Id, [])
@@ -133,16 +139,22 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
   ?CLASS(ParentT,wxWindow),
-  wxe_util:queue_cmd(This,Parent,Id, Options,?get_env(),?wxCalendarCtrl_Create),
+  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}, Acc) -> [{date,{DateD,DateMo,DateY,DateH,DateMi,DateS}}|Acc];
+          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
+          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
+          ({style, _style} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxCalendarCtrl_Create),
   wxe_util:rec(?wxCalendarCtrl_Create).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetdate">external documentation</a>.
 -spec setDate(This, Date) -> boolean() when
 	This::wxCalendarCtrl(), Date::wx:wx_datetime().
-setDate(#wx_ref{type=ThisT}=This,Date)
- when tuple_size(Date) =:= 2 ->
+setDate(#wx_ref{type=ThisT}=This,{{DateY,DateMo,DateD},{DateH,DateMi,DateS}})
+ when is_integer(DateD),is_integer(DateMo),is_integer(DateY),is_integer(DateH),is_integer(DateMi),is_integer(DateS) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:queue_cmd(This,Date,?get_env(),?wxCalendarCtrl_SetDate),
+  wxe_util:queue_cmd(This,{DateD,DateMo,DateY,DateH,DateMi,DateS},?get_env(),?wxCalendarCtrl_SetDate),
   wxe_util:rec(?wxCalendarCtrl_SetDate).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlgetdate">external documentation</a>.
@@ -168,7 +180,10 @@ enableYearChange(This)
 enableYearChange(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxCalendarCtrl_EnableYearChange).
+  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxCalendarCtrl_EnableYearChange).
 
 %% @equiv enableMonthChange(This, [])
 -spec enableMonthChange(This) -> 'ok' when
@@ -185,7 +200,10 @@ enableMonthChange(This)
 enableMonthChange(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxCalendarCtrl_EnableMonthChange).
+  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxCalendarCtrl_EnableMonthChange).
 
 %% @equiv enableHolidayDisplay(This, [])
 -spec enableHolidayDisplay(This) -> 'ok' when
@@ -202,7 +220,10 @@ enableHolidayDisplay(This)
 enableHolidayDisplay(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  wxe_util:queue_cmd(This, Options,?get_env(),?wxCalendarCtrl_EnableHolidayDisplay).
+  MOpts = fun({display, _display} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This, Opts,?get_env(),?wxCalendarCtrl_EnableHolidayDisplay).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetheadercolours">external documentation</a>.
 -spec setHeaderColours(This, ColFg, ColBg) -> 'ok' when

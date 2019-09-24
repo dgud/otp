@@ -68,7 +68,11 @@ new(Cols)
 		 | {'hgap', integer()}.
 new(Cols, Options)
  when is_integer(Cols),is_list(Options) ->
-  wxe_util:queue_cmd(Cols, Options,?get_env(),?wxFlexGridSizer_new_2),
+  MOpts = fun({vgap, _vgap} = Arg, Acc) -> [Arg|Acc];
+          ({hgap, _hgap} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(Cols, Opts,?get_env(),?wxFlexGridSizer_new_2),
   wxe_util:rec(?wxFlexGridSizer_new_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizerwxflexgridsizer">external documentation</a>.
@@ -94,7 +98,10 @@ addGrowableCol(This,Idx)
 addGrowableCol(#wx_ref{type=ThisT}=This,Idx, Options)
  when is_integer(Idx),is_list(Options) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:queue_cmd(This,Idx, Options,?get_env(),?wxFlexGridSizer_AddGrowableCol).
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Idx, Opts,?get_env(),?wxFlexGridSizer_AddGrowableCol).
 
 %% @equiv addGrowableRow(This,Idx, [])
 -spec addGrowableRow(This, Idx) -> 'ok' when
@@ -111,7 +118,10 @@ addGrowableRow(This,Idx)
 addGrowableRow(#wx_ref{type=ThisT}=This,Idx, Options)
  when is_integer(Idx),is_list(Options) ->
   ?CLASS(ThisT,wxFlexGridSizer),
-  wxe_util:queue_cmd(This,Idx, Options,?get_env(),?wxFlexGridSizer_AddGrowableRow).
+  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
+          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:foldr(MOpts, [], Options),
+  wxe_util:queue_cmd(This,Idx, Opts,?get_env(),?wxFlexGridSizer_AddGrowableRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxflexgridsizer.html#wxflexgridsizergetflexibledirection">external documentation</a>.
 -spec getFlexibleDirection(This) -> integer() when
