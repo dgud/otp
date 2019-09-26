@@ -249,7 +249,7 @@ ERL_NIF_TERM  wxeReturn::make(wxArrayDouble val) {
 
 INLINE
 ERL_NIF_TERM wxeReturn::make(wxUIntPtr *val) {
-  return enif_make_uint64(env, *val);
+  return enif_make_uint64(env, (ErlNifUInt64) val);
 }
 
 INLINE
