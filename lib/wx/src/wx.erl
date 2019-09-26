@@ -139,7 +139,7 @@ get_env() ->
 -spec set_env(wx_env()) -> 'ok'.
 set_env(#wx_env{sv=Pid} = Env) ->
     put(?WXE_IDENTIFIER, Env),
-%%    put(opengl_port, Port),
+    %%    put(opengl_port, Port),
     %%    wxe_util:cast(?REGISTER_PID, <<>>),
     wxe_server:register_me(Pid),
     ok.
@@ -251,6 +251,7 @@ foldr(Fun, Acc, List) ->
 %%
 %% This is far from erlang's intentional usage and can crash the erlang emulator.
 %% Use it carefully.
+
 -spec create_memory(integer()) -> wx_memory().
 create_memory(Size) when Size > ?MIN_BIN_SIZE ->
     #wx_mem{bin = <<0:(Size*8)>>, size = Size};
@@ -268,24 +269,26 @@ get_memory_bin(#wx_mem{bin=Bin, size=Size}) ->
 %% @doc Saves the memory from deletion until release_memory/1 is called.
 %% If release_memory/1 is not called the memory will not be garbage collected.
 -spec retain_memory(wx_memory()) -> 'ok'.
-retain_memory(#wx_mem{bin=Bin}) ->
-    wxe_util:send_bin(Bin),
-    ok = wxe_util:cast(?WXE_BIN_INCR, <<>>);
+retain_memory(#wx_mem{}=Mem) ->
+    case get(Mem) of
+        {Mem, N} -> put(Mem, N+1);
+        undefined -> put(Mem, 1)
+    end;
 retain_memory(Bin) when is_binary(Bin) ->
     case byte_size(Bin) > ?MIN_BIN_SIZE of
 	true  -> ok;
 	false -> erlang:error(small_bin)
     end,
-    wxe_util:send_bin(Bin),
-    ok = wxe_util:cast(?WXE_BIN_INCR, <<>>).
+    retain_memory(#wx_mem{bin=Bin, size=byte_size(Bin)}).
 
 -spec release_memory(wx_memory()) -> 'ok'.
-release_memory(#wx_mem{bin=Bin}) ->
-    wxe_util:send_bin(Bin),
-    ok = wxe_util:cast(?WXE_BIN_DECR, <<>>);
+release_memory(#wx_mem{}=Mem) ->
+    case get(Mem) of
+        {Mem, 1} -> erase(Mem);
+        {Mem, N} -> put(Mem, N-1)
+    end;
 release_memory(Bin) when is_binary(Bin) ->
-    wxe_util:send_bin(Bin),
-    ok = wxe_util:cast(?WXE_BIN_DECR, <<>>).
+    release_memory(#wx_mem{bin=Bin, size=byte_size(Bin)}).
 
 %% @doc Sets debug level. If debug level is 'verbose' or 'trace'
 %% each call is printed on console. If Level is 'driver' each allocated
