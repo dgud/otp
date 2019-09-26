@@ -154,7 +154,7 @@ handle_cast(_Msg, State) ->
 %%%% Info
 
 %% Callback request from driver
-handle_info(Cb = {_, _, '_wx_invoke_cb_'}, State) ->
+handle_info({'_wx_invoke_cb_', _, _, _} = Cb, State) ->
     invoke_cb(Cb, State),
     {noreply, State};
 
@@ -236,7 +236,7 @@ handle_connect(Object, EvData=#evh{handler=Handler},
 	    {reply, {error, terminating}, State0}
     end.
 
-invoke_cb({{Ev=#wx{}, Ref=#wx_ref{}}, FunId,_}, _S) ->
+invoke_cb({'_wx_invoke_cb_', FunId, Ev=#wx{}, Ref=#wx_ref{}}, _S) ->
     %% Event callbacks
     case get(FunId) of
 	{{nospawn, Fun}, _} when is_function(Fun) ->
@@ -248,7 +248,7 @@ invoke_cb({{Ev=#wx{}, Ref=#wx_ref{}}, FunId,_}, _S) ->
 	Err ->
 	    ?log("Internal Error ~p~n",[Err])
     end;
-invoke_cb({FunId, Args, _}, _S) when is_list(Args), is_integer(FunId) ->
+invoke_cb({'_wx_invoke_cb_', FunId, Args, _}, _S) when is_list(Args), is_integer(FunId) ->
     %% Overloaded functions
     case get(FunId) of
 	{Fun,_} when is_function(Fun) ->
@@ -269,7 +269,7 @@ invoke_callback(Pid, Ev, Ref) ->
     Env = get(?WXE_IDENTIFIER),
     CB = fun() ->
 		 wx:set_env(Env),
-		 wxe_util:cast(?WXE_CB_START, <<>>),
+                 wxe_util:queue_cmd(Env, ?WXE_CB_START),
 		 try
 		     case get_wx_object_state(Pid, 5) of
 			 ignore ->
@@ -287,13 +287,14 @@ invoke_callback(Pid, Ev, Ref) ->
 			 ?log("Callback fun crashed with {'EXIT, ~p, ~p}~n",
 			      [Reason, Stacktrace])
 		 end,
-		 wxe_util:cast(?WXE_CB_RETURN, <<>>)
+                 wxe_util:queue_cmd(Env, ?WXE_CB_RETURN)
 	 end,
     spawn(CB),
     ok.
 
 invoke_callback_fun(Fun) ->
-    wxe_util:cast(?WXE_CB_START, <<>>),
+    Env = ?get_env(),
+    wxe_util:queue_cmd(Env, ?WXE_CB_START),
     Res = try
 	      Return = Fun(),
 	      true = is_binary(Return),
@@ -303,7 +304,7 @@ invoke_callback_fun(Fun) ->
 		       [Reason, Stacktrace]),
 		  <<>>
 	  end,
-    wxe_util:cast(?WXE_CB_RETURN, Res).
+    wxe_util:queue_cmd(Res, Env, ?WXE_CB_RETURN).
 
 
 get_wx_object_state(Pid, N) when N > 0 ->
