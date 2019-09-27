@@ -56,10 +56,10 @@ new() ->
 		 | {'max', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({min, _min} = Arg, Acc) -> [Arg|Acc];
-          ({max, _max} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({min, _min} = Arg) -> Arg;
+          ({max, _max} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxGridCellNumberEditor_new),
   wxe_util:rec(?wxGridCellNumberEditor_new).
 

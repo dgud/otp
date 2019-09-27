@@ -124,9 +124,9 @@ veto(This)
 veto(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiManagerEvent),
-  MOpts = fun({veto, _veto} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({veto, _veto} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiManagerEvent_Veto).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxauimanagerevent.html#wxauimanagereventgetveto">external documentation</a>.

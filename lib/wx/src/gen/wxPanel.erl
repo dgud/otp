@@ -102,12 +102,12 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({winid, _winid} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxPanel_new_2),
   wxe_util:rec(?wxPanel_new_2).
 
@@ -126,9 +126,9 @@ new(Parent,X,Y,Width,Height)
 new(#wx_ref{type=ParentT}=Parent,X,Y,Width,Height, Options)
  when is_integer(X),is_integer(Y),is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,X,Y,Width,Height, Opts,?get_env(),?wxPanel_new_6),
   wxe_util:rec(?wxPanel_new_6).
 

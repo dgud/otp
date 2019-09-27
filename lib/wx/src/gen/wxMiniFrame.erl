@@ -115,11 +115,11 @@ new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id,Title_UC, Opts,?get_env(),?wxMiniFrame_new_4),
   wxe_util:rec(?wxMiniFrame_new_4).
 
@@ -142,11 +142,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
   ?CLASS(ThisT,wxMiniFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id,Title_UC, Opts,?get_env(),?wxMiniFrame_Create),
   wxe_util:rec(?wxMiniFrame_Create).
 

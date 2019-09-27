@@ -113,15 +113,15 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({path, Path}, Acc) ->   Path_UC = unicode:characters_to_binary(Path),[{path,Path_UC}|Acc];
-          ({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary(Message),[{message,Message_UC}|Acc];
-          ({wildcard, Wildcard}, Acc) ->   Wildcard_UC = unicode:characters_to_binary(Wildcard),[{wildcard,Wildcard_UC}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({path, Path}) ->   Path_UC = unicode:characters_to_binary(Path),{path,Path_UC};
+          ({message, Message}) ->   Message_UC = unicode:characters_to_binary(Message),{message,Message_UC};
+          ({wildcard, Wildcard}) ->   Wildcard_UC = unicode:characters_to_binary(Wildcard),{wildcard,Wildcard_UC};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({validator, #wx_ref{type=ValidatorT}} = Arg) ->   ?CLASS(ValidatorT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxFilePickerCtrl_new_3),
   wxe_util:rec(?wxFilePickerCtrl_new_3).
 
@@ -147,15 +147,15 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxFilePickerCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({path, Path}, Acc) ->   Path_UC = unicode:characters_to_binary(Path),[{path,Path_UC}|Acc];
-          ({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary(Message),[{message,Message_UC}|Acc];
-          ({wildcard, Wildcard}, Acc) ->   Wildcard_UC = unicode:characters_to_binary(Wildcard),[{wildcard,Wildcard_UC}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({path, Path}) ->   Path_UC = unicode:characters_to_binary(Path),{path,Path_UC};
+          ({message, Message}) ->   Message_UC = unicode:characters_to_binary(Message),{message,Message_UC};
+          ({wildcard, Wildcard}) ->   Wildcard_UC = unicode:characters_to_binary(Wildcard),{wildcard,Wildcard_UC};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({validator, #wx_ref{type=ValidatorT}} = Arg) ->   ?CLASS(ValidatorT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxFilePickerCtrl_Create),
   wxe_util:rec(?wxFilePickerCtrl_Create).
 

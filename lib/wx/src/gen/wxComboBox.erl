@@ -115,14 +115,14 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary(Value),[{value,Value_UC}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({choices, Choices}, Acc) ->   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||              ChoicesTemp <- Choices],[{choices,Choices_UCA}|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({value, Value}) ->   Value_UC = unicode:characters_to_binary(Value),{value,Value_UC};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({choices, Choices}) ->   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||              ChoicesTemp <- Choices],{choices,Choices_UCA};
+          ({style, _style} = Arg) -> Arg;
+          ({validator, #wx_ref{type=ValidatorT}} = Arg) ->   ?CLASS(ValidatorT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxComboBox_new_3),
   wxe_util:rec(?wxComboBox_new_3).
 
@@ -146,10 +146,10 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Value,{PosX,PosY
   Value_UC = unicode:characters_to_binary(Value),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({validator, #wx_ref{type=ValidatorT}} = Arg, Acc) ->   ?CLASS(ValidatorT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          ({validator, #wx_ref{type=ValidatorT}} = Arg) ->   ?CLASS(ValidatorT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id,Value_UC,Pos,Size,Choices_UCA, Opts,?get_env(),?wxComboBox_Create),
   wxe_util:rec(?wxComboBox_Create).
 

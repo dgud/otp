@@ -101,9 +101,9 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxPopupTransientWindow_new_2),
   wxe_util:rec(?wxPopupTransientWindow_new_2).
 
@@ -122,9 +122,9 @@ popup(This)
 popup(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxPopupTransientWindow),
-  MOpts = fun({focus, #wx_ref{type=FocusT}} = Arg, Acc) ->   ?CLASS(FocusT,wxWindow),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({focus, #wx_ref{type=FocusT}} = Arg) ->   ?CLASS(FocusT,wxWindow),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxPopupTransientWindow_Popup).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxpopuptransientwindow.html#wxpopuptransientwindowdismiss">external documentation</a>.

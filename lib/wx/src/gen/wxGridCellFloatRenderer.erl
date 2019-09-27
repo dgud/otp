@@ -54,10 +54,10 @@ new() ->
 		 | {'precision', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({width, _width} = Arg, Acc) -> [Arg|Acc];
-          ({precision, _precision} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({width, _width} = Arg) -> Arg;
+          ({precision, _precision} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxGridCellFloatRenderer_new),
   wxe_util:rec(?wxGridCellFloatRenderer_new).
 

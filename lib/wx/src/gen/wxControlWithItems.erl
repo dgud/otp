@@ -144,9 +144,9 @@ findString(#wx_ref{type=ThisT}=This,S, Options)
  when ?is_chardata(S),is_list(Options) ->
   ?CLASS(ThisT,wxControlWithItems),
   S_UC = unicode:characters_to_binary(S),
-  MOpts = fun({bCase, _bCase} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bCase, _bCase} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,S_UC, Opts,?get_env(),?wxControlWithItems_FindString),
   wxe_util:rec(?wxControlWithItems_FindString).
 

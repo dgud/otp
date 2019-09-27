@@ -109,11 +109,11 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxTreebook_new_3),
   wxe_util:rec(?wxTreebook_new_3).
 
@@ -135,10 +135,10 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
-          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bSelect, _bSelect} = Arg) -> Arg;
+          ({imageId, _imageId} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Page,Text_UC, Opts,?get_env(),?wxTreebook_AddPage),
   wxe_util:rec(?wxTreebook_AddPage).
 
@@ -157,9 +157,9 @@ advanceSelection(This)
 advanceSelection(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
-  MOpts = fun({forward, _forward} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({forward, _forward} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxTreebook_AdvanceSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxtreebook.html#wxtreebookassignimagelist">external documentation</a>.
@@ -188,11 +188,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxTreebook_Create),
   wxe_util:rec(?wxTreebook_Create).
 
@@ -296,9 +296,9 @@ expandNode(This,Pos)
 expandNode(#wx_ref{type=ThisT}=This,Pos, Options)
  when is_integer(Pos),is_list(Options) ->
   ?CLASS(ThisT,wxTreebook),
-  MOpts = fun({expand, _expand} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({expand, _expand} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pos, Opts,?get_env(),?wxTreebook_ExpandNode),
   wxe_util:rec(?wxTreebook_ExpandNode).
 
@@ -339,10 +339,10 @@ insertPage(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
-          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bSelect, _bSelect} = Arg) -> Arg;
+          ({imageId, _imageId} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pos,Page,Text_UC, Opts,?get_env(),?wxTreebook_InsertPage),
   wxe_util:rec(?wxTreebook_InsertPage).
 
@@ -364,10 +364,10 @@ insertSubPage(#wx_ref{type=ThisT}=This,Pos,#wx_ref{type=PageT}=Page,Text, Option
   ?CLASS(ThisT,wxTreebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
-          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bSelect, _bSelect} = Arg) -> Arg;
+          ({imageId, _imageId} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pos,Page,Text_UC, Opts,?get_env(),?wxTreebook_InsertSubPage),
   wxe_util:rec(?wxTreebook_InsertSubPage).
 

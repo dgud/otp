@@ -103,10 +103,10 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({winid, _winid} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxStatusBar_new_2),
   wxe_util:rec(?wxStatusBar_new_2).
 
@@ -127,10 +127,10 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({winid, _winid} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({winid, _winid} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxStatusBar_Create),
   wxe_util:rec(?wxStatusBar_Create).
 
@@ -167,9 +167,9 @@ getStatusText(This)
 getStatusText(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({number, _number} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxStatusBar_GetStatusText),
   wxe_util:rec(?wxStatusBar_GetStatusText).
 
@@ -188,9 +188,9 @@ popStatusText(This)
 popStatusText(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({number, _number} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxStatusBar_PopStatusText).
 
 %% @equiv pushStatusText(This,Text, [])
@@ -209,9 +209,9 @@ pushStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({number, _number} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Text_UC, Opts,?get_env(),?wxStatusBar_PushStatusText).
 
 %% @equiv setFieldsCount(This,Number, [])
@@ -229,9 +229,9 @@ setFieldsCount(This,Number)
 setFieldsCount(#wx_ref{type=ThisT}=This,Number, Options)
  when is_integer(Number),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
-  MOpts = fun({widths, _widths} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({widths, _widths} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Number, Opts,?get_env(),?wxStatusBar_SetFieldsCount).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetminheight">external documentation</a>.
@@ -258,9 +258,9 @@ setStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStatusBar),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({number, _number} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Text_UC, Opts,?get_env(),?wxStatusBar_SetStatusText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstatusbar.html#wxstatusbarsetstatuswidths">external documentation</a>.

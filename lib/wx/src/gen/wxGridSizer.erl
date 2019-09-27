@@ -63,10 +63,10 @@ new(Cols)
 		 | {'hgap', integer()}.
 new(Cols, Options)
  when is_integer(Cols),is_list(Options) ->
-  MOpts = fun({vgap, _vgap} = Arg, Acc) -> [Arg|Acc];
-          ({hgap, _hgap} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({vgap, _vgap} = Arg) -> Arg;
+          ({hgap, _hgap} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Cols, Opts,?get_env(),?wxGridSizer_new_2),
   wxe_util:rec(?wxGridSizer_new_2).
 

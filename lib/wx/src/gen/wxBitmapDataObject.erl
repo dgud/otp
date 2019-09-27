@@ -56,9 +56,9 @@ new() ->
 	Bitmap::wxBitmap:wxBitmap().
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({bitmap, #wx_ref{type=BitmapT}} = Arg, Acc) ->   ?CLASS(BitmapT,wxBitmap),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bitmap, #wx_ref{type=BitmapT}} = Arg) ->   ?CLASS(BitmapT,wxBitmap),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxBitmapDataObject_new_1_0),
   wxe_util:rec(?wxBitmapDataObject_new_1_0);
 new(#wx_ref{type=BitmapT}=Bitmap) ->

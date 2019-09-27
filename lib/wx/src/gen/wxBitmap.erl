@@ -88,17 +88,17 @@ new(Width,Height)
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
   Filename_UC = unicode:characters_to_binary(Filename),
-  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({type, _type} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Filename_UC, Opts,?get_env(),?wxBitmap_new_2_0),
   wxe_util:rec(?wxBitmap_new_2_0);
 new(#wx_ref{type=ImageT}=Image, Options)
  when is_list(Options) ->
   ?CLASS(ImageT,wxImage),
-  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({depth, _depth} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Image, Opts,?get_env(),?wxBitmap_new_2_1),
   wxe_util:rec(?wxBitmap_new_2_1).
 
@@ -119,9 +119,9 @@ new(Bits,Width,Height)
   new(Bits,Width,Height, []);
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({depth, _depth} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Width,Height, Opts,?get_env(),?wxBitmap_new_3),
   wxe_util:rec(?wxBitmap_new_3).
 
@@ -131,9 +131,9 @@ new(Width,Height, Options)
 	Option :: {'depth', integer()}.
 new(Bits,Width,Height, Options)
  when is_binary(Bits),is_integer(Width),is_integer(Height),is_list(Options) ->
-  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({depth, _depth} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Bits,Width,Height, Opts,?get_env(),?wxBitmap_new_4),
   wxe_util:rec(?wxBitmap_new_4).
 
@@ -169,9 +169,9 @@ create(This,Width,Height)
 create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
-  MOpts = fun({depth, _depth} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({depth, _depth} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxBitmap_Create),
   wxe_util:rec(?wxBitmap_Create).
 
@@ -241,9 +241,9 @@ loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
   Name_UC = unicode:characters_to_binary(Name),
-  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({type, _type} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Name_UC, Opts,?get_env(),?wxBitmap_LoadFile),
   wxe_util:rec(?wxBitmap_LoadFile).
 
@@ -272,9 +272,9 @@ saveFile(#wx_ref{type=ThisT}=This,Name,Type, Options)
  when ?is_chardata(Name),is_integer(Type),is_list(Options) ->
   ?CLASS(ThisT,wxBitmap),
   Name_UC = unicode:characters_to_binary(Name),
-  MOpts = fun({palette, #wx_ref{type=PaletteT}} = Arg, Acc) ->   ?CLASS(PaletteT,wxPalette),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({palette, #wx_ref{type=PaletteT}} = Arg) ->   ?CLASS(PaletteT,wxPalette),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Name_UC,Type, Opts,?get_env(),?wxBitmap_SaveFile),
   wxe_util:rec(?wxBitmap_SaveFile).
 

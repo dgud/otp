@@ -173,11 +173,11 @@ new(Parent,X,Y)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxGrid_new_3),
   wxe_util:rec(?wxGrid_new_3).
 
@@ -190,11 +190,11 @@ new(#wx_ref{type=ParentT}=Parent,Id, Options)
 new(#wx_ref{type=ParentT}=Parent,X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({w, _w} = Arg, Acc) -> [Arg|Acc];
-          ({h, _h} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({w, _w} = Arg) -> Arg;
+          ({h, _h} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,X,Y, Opts,?get_env(),?wxGrid_new_4),
   wxe_util:rec(?wxGrid_new_4).
 
@@ -214,10 +214,10 @@ appendCols(This)
 appendCols(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({numCols, _numCols} = Arg, Acc) -> [Arg|Acc];
-          ({updateLabels, _updateLabels} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({numCols, _numCols} = Arg) -> Arg;
+          ({updateLabels, _updateLabels} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_AppendCols),
   wxe_util:rec(?wxGrid_AppendCols).
 
@@ -237,10 +237,10 @@ appendRows(This)
 appendRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({numRows, _numRows} = Arg, Acc) -> [Arg|Acc];
-          ({updateLabels, _updateLabels} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({numRows, _numRows} = Arg) -> Arg;
+          ({updateLabels, _updateLabels} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_AppendRows),
   wxe_util:rec(?wxGrid_AppendRows).
 
@@ -266,9 +266,9 @@ autoSizeColumn(This,Col)
 autoSizeColumn(#wx_ref{type=ThisT}=This,Col, Options)
  when is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({setAsMin, _setAsMin} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({setAsMin, _setAsMin} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Col, Opts,?get_env(),?wxGrid_AutoSizeColumn).
 
 %% @equiv autoSizeColumns(This, [])
@@ -286,9 +286,9 @@ autoSizeColumns(This)
 autoSizeColumns(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({setAsMin, _setAsMin} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({setAsMin, _setAsMin} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_AutoSizeColumns).
 
 %% @equiv autoSizeRow(This,Row, [])
@@ -306,9 +306,9 @@ autoSizeRow(This,Row)
 autoSizeRow(#wx_ref{type=ThisT}=This,Row, Options)
  when is_integer(Row),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({setAsMin, _setAsMin} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({setAsMin, _setAsMin} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Row, Opts,?get_env(),?wxGrid_AutoSizeRow).
 
 %% @equiv autoSizeRows(This, [])
@@ -326,9 +326,9 @@ autoSizeRows(This)
 autoSizeRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({setAsMin, _setAsMin} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({setAsMin, _setAsMin} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_AutoSizeRows).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridbeginbatch">external documentation</a>.
@@ -427,9 +427,9 @@ createGrid(This,NumRows,NumCols)
 createGrid(#wx_ref{type=ThisT}=This,NumRows,NumCols, Options)
  when is_integer(NumRows),is_integer(NumCols),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({selmode, _selmode} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({selmode, _selmode} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,NumRows,NumCols, Opts,?get_env(),?wxGrid_CreateGrid),
   wxe_util:rec(?wxGrid_CreateGrid).
 
@@ -450,11 +450,11 @@ deleteCols(This)
 deleteCols(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({pos, _pos} = Arg, Acc) -> [Arg|Acc];
-          ({numCols, _numCols} = Arg, Acc) -> [Arg|Acc];
-          ({updateLabels, _updateLabels} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, _pos} = Arg) -> Arg;
+          ({numCols, _numCols} = Arg) -> Arg;
+          ({updateLabels, _updateLabels} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_DeleteCols),
   wxe_util:rec(?wxGrid_DeleteCols).
 
@@ -475,11 +475,11 @@ deleteRows(This)
 deleteRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({pos, _pos} = Arg, Acc) -> [Arg|Acc];
-          ({numRows, _numRows} = Arg, Acc) -> [Arg|Acc];
-          ({updateLabels, _updateLabels} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, _pos} = Arg) -> Arg;
+          ({numRows, _numRows} = Arg) -> Arg;
+          ({updateLabels, _updateLabels} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_DeleteRows),
   wxe_util:rec(?wxGrid_DeleteRows).
 
@@ -526,9 +526,9 @@ enableCellEditControl(This)
 enableCellEditControl(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_EnableCellEditControl).
 
 %% @equiv enableDragColSize(This, [])
@@ -546,9 +546,9 @@ enableDragColSize(This)
 enableDragColSize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_EnableDragColSize).
 
 %% @equiv enableDragGridSize(This, [])
@@ -566,9 +566,9 @@ enableDragGridSize(This)
 enableDragGridSize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_EnableDragGridSize).
 
 %% @equiv enableDragRowSize(This, [])
@@ -586,9 +586,9 @@ enableDragRowSize(This)
 enableDragRowSize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_EnableDragRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridenableediting">external documentation</a>.
@@ -614,9 +614,9 @@ enableGridLines(This)
 enableGridLines(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_EnableGridLines).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridendbatch">external documentation</a>.
@@ -1139,11 +1139,11 @@ insertCols(This)
 insertCols(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({pos, _pos} = Arg, Acc) -> [Arg|Acc];
-          ({numCols, _numCols} = Arg, Acc) -> [Arg|Acc];
-          ({updateLabels, _updateLabels} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, _pos} = Arg) -> Arg;
+          ({numCols, _numCols} = Arg) -> Arg;
+          ({updateLabels, _updateLabels} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_InsertCols),
   wxe_util:rec(?wxGrid_InsertCols).
 
@@ -1164,11 +1164,11 @@ insertRows(This)
 insertRows(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({pos, _pos} = Arg, Acc) -> [Arg|Acc];
-          ({numRows, _numRows} = Arg, Acc) -> [Arg|Acc];
-          ({updateLabels, _updateLabels} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, _pos} = Arg) -> Arg;
+          ({numRows, _numRows} = Arg) -> Arg;
+          ({updateLabels, _updateLabels} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGrid_InsertRows),
   wxe_util:rec(?wxGrid_InsertRows).
 
@@ -1257,9 +1257,9 @@ isVisible(This,Row,Col)
 isVisible(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords, Options)
  when is_integer(CoordsR),is_integer(CoordsC),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({wholeCellVisible, _wholeCellVisible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({wholeCellVisible, _wholeCellVisible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Coords, Opts,?get_env(),?wxGrid_IsVisible_2),
   wxe_util:rec(?wxGrid_IsVisible_2).
 
@@ -1270,9 +1270,9 @@ isVisible(#wx_ref{type=ThisT}=This,{CoordsR,CoordsC} = Coords, Options)
 isVisible(#wx_ref{type=ThisT}=This,Row,Col, Options)
  when is_integer(Row),is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({wholeCellVisible, _wholeCellVisible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({wholeCellVisible, _wholeCellVisible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Row,Col, Opts,?get_env(),?wxGrid_IsVisible_3),
   wxe_util:rec(?wxGrid_IsVisible_3).
 
@@ -1420,9 +1420,9 @@ selectBlock(This,TopLeft={TopLeftR,TopLeftC} = TopLeft,BottomRight={BottomRightR
 selectBlock(#wx_ref{type=ThisT}=This,{TopLeftR,TopLeftC} = TopLeft,{BottomRightR,BottomRightC} = BottomRight, Options)
  when is_integer(TopLeftR),is_integer(TopLeftC),is_integer(BottomRightR),is_integer(BottomRightC),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({addToSelected, _addToSelected} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({addToSelected, _addToSelected} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,TopLeft,BottomRight, Opts,?get_env(),?wxGrid_SelectBlock_3).
 
 %% @equiv selectBlock(This,TopRow,LeftCol,BottomRow,RightCol, [])
@@ -1440,9 +1440,9 @@ selectBlock(This,TopRow,LeftCol,BottomRow,RightCol)
 selectBlock(#wx_ref{type=ThisT}=This,TopRow,LeftCol,BottomRow,RightCol, Options)
  when is_integer(TopRow),is_integer(LeftCol),is_integer(BottomRow),is_integer(RightCol),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({addToSelected, _addToSelected} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({addToSelected, _addToSelected} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,TopRow,LeftCol,BottomRow,RightCol, Opts,?get_env(),?wxGrid_SelectBlock_5).
 
 %% @equiv selectCol(This,Col, [])
@@ -1460,9 +1460,9 @@ selectCol(This,Col)
 selectCol(#wx_ref{type=ThisT}=This,Col, Options)
  when is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({addToSelected, _addToSelected} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({addToSelected, _addToSelected} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Col, Opts,?get_env(),?wxGrid_SelectCol).
 
 %% @equiv selectRow(This,Row, [])
@@ -1480,9 +1480,9 @@ selectRow(This,Row)
 selectRow(#wx_ref{type=ThisT}=This,Row, Options)
  when is_integer(Row),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({addToSelected, _addToSelected} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({addToSelected, _addToSelected} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Row, Opts,?get_env(),?wxGrid_SelectRow).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcellalignment">external documentation</a>.
@@ -1658,10 +1658,10 @@ setColFormatFloat(This,Col)
 setColFormatFloat(#wx_ref{type=ThisT}=This,Col, Options)
  when is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({width, _width} = Arg, Acc) -> [Arg|Acc];
-          ({precision, _precision} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({width, _width} = Arg) -> Arg;
+          ({precision, _precision} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Col, Opts,?get_env(),?wxGrid_SetColFormatFloat).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetcolformatcustom">external documentation</a>.
@@ -1785,9 +1785,9 @@ setDefaultColSize(This,Width)
 setDefaultColSize(#wx_ref{type=ThisT}=This,Width, Options)
  when is_integer(Width),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({resizeExistingCols, _resizeExistingCols} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({resizeExistingCols, _resizeExistingCols} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width, Opts,?get_env(),?wxGrid_SetDefaultColSize).
 
 %% @equiv setDefaultRowSize(This,Height, [])
@@ -1805,9 +1805,9 @@ setDefaultRowSize(This,Height)
 setDefaultRowSize(#wx_ref{type=ThisT}=This,Height, Options)
  when is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({resizeExistingRows, _resizeExistingRows} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({resizeExistingRows, _resizeExistingRows} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Height, Opts,?get_env(),?wxGrid_SetDefaultRowSize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetgridcursor">external documentation</a>.
@@ -1873,9 +1873,9 @@ setReadOnly(This,Row,Col)
 setReadOnly(#wx_ref{type=ThisT}=This,Row,Col, Options)
  when is_integer(Row),is_integer(Col),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({isReadOnly, _isReadOnly} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({isReadOnly, _isReadOnly} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Row,Col, Opts,?get_env(),?wxGrid_SetReadOnly).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgrid.html#wxgridsetrowattr">external documentation</a>.
@@ -1999,9 +1999,9 @@ xToCol(This,X)
 xToCol(#wx_ref{type=ThisT}=This,X, Options)
  when is_integer(X),is_list(Options) ->
   ?CLASS(ThisT,wxGrid),
-  MOpts = fun({clipToMinMax, _clipToMinMax} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({clipToMinMax, _clipToMinMax} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,X, Opts,?get_env(),?wxGrid_XToCol),
   wxe_util:rec(?wxGrid_XToCol).
 

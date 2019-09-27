@@ -101,9 +101,9 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxMDIParentFrame),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxMDIClientWindow_new_2),
   wxe_util:rec(?wxMDIClientWindow_new_2).
 
@@ -123,9 +123,9 @@ createClient(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIClientWindow),
   ?CLASS(ParentT,wxMDIParentFrame),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxMDIClientWindow_CreateClient),
   wxe_util:rec(?wxMDIClientWindow_CreateClient).
 

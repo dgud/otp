@@ -58,10 +58,10 @@ new(Width,Height)
 		 | {'initialCount', integer()}.
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  MOpts = fun({mask, _mask} = Arg, Acc) -> [Arg|Acc];
-          ({initialCount, _initialCount} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({mask, _mask} = Arg) -> Arg;
+          ({initialCount, _initialCount} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Width,Height, Opts,?get_env(),?wxImageList_new_3),
   wxe_util:rec(?wxImageList_new_3).
 
@@ -112,10 +112,10 @@ create(This,Width,Height)
 create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImageList),
-  MOpts = fun({mask, _mask} = Arg, Acc) -> [Arg|Acc];
-          ({initialCount, _initialCount} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({mask, _mask} = Arg) -> Arg;
+          ({initialCount, _initialCount} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxImageList_Create),
   wxe_util:rec(?wxImageList_Create).
 
@@ -136,10 +136,10 @@ draw(#wx_ref{type=ThisT}=This,Index,#wx_ref{type=DcT}=Dc,X,Y, Options)
  when is_integer(Index),is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxImageList),
   ?CLASS(DcT,wxDC),
-  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          ({solidBackground, _solidBackground} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flags, _flags} = Arg) -> Arg;
+          ({solidBackground, _solidBackground} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Index,Dc,X,Y, Opts,?get_env(),?wxImageList_Draw),
   wxe_util:rec(?wxImageList_Draw).
 

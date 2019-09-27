@@ -205,12 +205,12 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({id, _id} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxStyledTextCtrl_new_2),
   wxe_util:rec(?wxStyledTextCtrl_new_2).
 
@@ -233,12 +233,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({id, _id} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxStyledTextCtrl_Create),
   wxe_util:rec(?wxStyledTextCtrl_Create).
 
@@ -566,10 +566,10 @@ markerDefine(This,MarkerNumber,MarkerSymbol)
 markerDefine(#wx_ref{type=ThisT}=This,MarkerNumber,MarkerSymbol, Options)
  when is_integer(MarkerNumber),is_integer(MarkerSymbol),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
-  MOpts = fun({foreground, Foreground}, Acc) -> [{foreground,wxe_util:color(Foreground)}|Acc];
-          ({background, Background}, Acc) -> [{background,wxe_util:color(Background)}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({foreground, Foreground}) -> {foreground,wxe_util:color(Foreground)};
+          ({background, Background}) -> {background,wxe_util:color(Background)};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,MarkerNumber,MarkerSymbol, Opts,?get_env(),?wxStyledTextCtrl_MarkerDefine).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlmarkersetforeground">external documentation</a>.
@@ -1533,9 +1533,9 @@ findText(#wx_ref{type=ThisT}=This,MinPos,MaxPos,Text, Options)
  when is_integer(MinPos),is_integer(MaxPos),?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flags, _flags} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,MinPos,MaxPos,Text_UC, Opts,?get_env(),?wxStyledTextCtrl_FindText),
   wxe_util:rec(?wxStyledTextCtrl_FindText).
 
@@ -3551,9 +3551,9 @@ styleSetFontAttr(#wx_ref{type=ThisT}=This,StyleNum,Size,FaceName,Bold,Italic,Und
  when is_integer(StyleNum),is_integer(Size),?is_chardata(FaceName),is_boolean(Bold),is_boolean(Italic),is_boolean(Underline),is_list(Options) ->
   ?CLASS(ThisT,wxStyledTextCtrl),
   FaceName_UC = unicode:characters_to_binary(FaceName),
-  MOpts = fun({encoding, _encoding} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({encoding, _encoding} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,StyleNum,Size,FaceName_UC,Bold,Italic,Underline, Opts,?get_env(),?wxStyledTextCtrl_StyleSetFontAttr).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxstyledtextctrl.html#wxstyledtextctrlstylesetcharacterset">external documentation</a>.

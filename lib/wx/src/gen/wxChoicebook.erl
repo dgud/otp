@@ -108,11 +108,11 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxChoicebook_new_3),
   wxe_util:rec(?wxChoicebook_new_3).
 
@@ -134,10 +134,10 @@ addPage(#wx_ref{type=ThisT}=This,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
-          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bSelect, _bSelect} = Arg) -> Arg;
+          ({imageId, _imageId} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Page,Text_UC, Opts,?get_env(),?wxChoicebook_AddPage),
   wxe_util:rec(?wxChoicebook_AddPage).
 
@@ -156,9 +156,9 @@ advanceSelection(This)
 advanceSelection(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxChoicebook),
-  MOpts = fun({forward, _forward} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({forward, _forward} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxChoicebook_AdvanceSelection).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxchoicebook.html#wxchoicebookassignimagelist">external documentation</a>.
@@ -187,11 +187,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxChoicebook_Create),
   wxe_util:rec(?wxChoicebook_Create).
 
@@ -308,10 +308,10 @@ insertPage(#wx_ref{type=ThisT}=This,N,#wx_ref{type=PageT}=Page,Text, Options)
   ?CLASS(ThisT,wxChoicebook),
   ?CLASS(PageT,wxWindow),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({bSelect, _bSelect} = Arg, Acc) -> [Arg|Acc];
-          ({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bSelect, _bSelect} = Arg) -> Arg;
+          ({imageId, _imageId} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,N,Page,Text_UC, Opts,?get_env(),?wxChoicebook_InsertPage),
   wxe_util:rec(?wxChoicebook_InsertPage).
 

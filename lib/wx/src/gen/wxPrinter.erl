@@ -47,9 +47,9 @@ new() ->
 	Option :: {'data', wxPrintDialogData:wxPrintDialogData()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wxPrintDialogData),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({data, #wx_ref{type=DataT}} = Arg) ->   ?CLASS(DataT,wxPrintDialogData),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxPrinter_new),
   wxe_util:rec(?wxPrinter_new).
 
@@ -103,9 +103,9 @@ print(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=Printou
   ?CLASS(ThisT,wxPrinter),
   ?CLASS(ParentT,wxWindow),
   ?CLASS(PrintoutT,wxPrintout),
-  MOpts = fun({prompt, _prompt} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({prompt, _prompt} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Printout, Opts,?get_env(),?wxPrinter_Print),
   wxe_util:rec(?wxPrinter_Print).
 

@@ -55,12 +55,12 @@ new() ->
 	Entry::wxAcceleratorEntry().
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          ({keyCode, _keyCode} = Arg, Acc) -> [Arg|Acc];
-          ({cmd, _cmd} = Arg, Acc) -> [Arg|Acc];
-          ({item, #wx_ref{type=ItemT}} = Arg, Acc) ->   ?CLASS(ItemT,wxMenuItem),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flags, _flags} = Arg) -> Arg;
+          ({keyCode, _keyCode} = Arg) -> Arg;
+          ({cmd, _cmd} = Arg) -> Arg;
+          ({item, #wx_ref{type=ItemT}} = Arg) ->   ?CLASS(ItemT,wxMenuItem),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxAcceleratorEntry_new_1_0),
   wxe_util:rec(?wxAcceleratorEntry_new_1_0);
 new(#wx_ref{type=EntryT}=Entry) ->
@@ -107,9 +107,9 @@ set(This,Flags,KeyCode,Cmd)
 set(#wx_ref{type=ThisT}=This,Flags,KeyCode,Cmd, Options)
  when is_integer(Flags),is_integer(KeyCode),is_integer(Cmd),is_list(Options) ->
   ?CLASS(ThisT,wxAcceleratorEntry),
-  MOpts = fun({item, #wx_ref{type=ItemT}} = Arg, Acc) ->   ?CLASS(ItemT,wxMenuItem),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({item, #wx_ref{type=ItemT}} = Arg) ->   ?CLASS(ItemT,wxMenuItem),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Flags,KeyCode,Cmd, Opts,?get_env(),?wxAcceleratorEntry_Set).
 
 %% @doc Destroys this object, do not use object again

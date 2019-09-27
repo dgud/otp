@@ -108,13 +108,13 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({title, Title}, Acc) ->   Title_UC = unicode:characters_to_binary(Title),[{title,Title_UC}|Acc];
-          ({defaultPath, DefaultPath}, Acc) ->   DefaultPath_UC = unicode:characters_to_binary(DefaultPath),[{defaultPath,DefaultPath_UC}|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({sz, {_szW,_szH}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({title, Title}) ->   Title_UC = unicode:characters_to_binary(Title),{title,Title_UC};
+          ({defaultPath, DefaultPath}) ->   DefaultPath_UC = unicode:characters_to_binary(DefaultPath),{defaultPath,DefaultPath_UC};
+          ({style, _style} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({sz, {_szW,_szH}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxDirDialog_new),
   wxe_util:rec(?wxDirDialog_new).
 

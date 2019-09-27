@@ -149,9 +149,9 @@ arrange(This)
 arrange(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  MOpts = fun({flag, _flag} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flag, _flag} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxListCtrl_Arrange),
   wxe_util:rec(?wxListCtrl_Arrange).
 
@@ -279,9 +279,9 @@ findItem(#wx_ref{type=ThisT}=This,Start,Str, Options)
  when is_integer(Start),?is_chardata(Str),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
   Str_UC = unicode:characters_to_binary(Str),
-  MOpts = fun({partial, _partial} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({partial, _partial} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Start,Str_UC, Opts,?get_env(),?wxListCtrl_FindItem_3_0),
   wxe_util:rec(?wxListCtrl_FindItem_3_0);
 findItem(#wx_ref{type=ThisT}=This,Start,{PtX,PtY} = Pt,Direction)
@@ -413,9 +413,9 @@ getItemRect(This,Item)
 getItemRect(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  MOpts = fun({code, _code} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({code, _code} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxListCtrl_GetItemRect),
   wxe_util:rec(?wxListCtrl_GetItemRect).
 
@@ -470,10 +470,10 @@ getNextItem(This,Item)
 getNextItem(#wx_ref{type=ThisT}=This,Item, Options)
  when is_integer(Item),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  MOpts = fun({geometry, _geometry} = Arg, Acc) -> [Arg|Acc];
-          ({state, _state} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({geometry, _geometry} = Arg) -> Arg;
+          ({state, _state} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxListCtrl_GetNextItem),
   wxe_util:rec(?wxListCtrl_GetNextItem).
 
@@ -548,10 +548,10 @@ insertColumn(#wx_ref{type=ThisT}=This,Col,Heading, Options)
  when is_integer(Col),?is_chardata(Heading),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
   Heading_UC = unicode:characters_to_binary(Heading),
-  MOpts = fun({format, _format} = Arg, Acc) -> [Arg|Acc];
-          ({width, _width} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({format, _format} = Arg) -> Arg;
+          ({width, _width} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Col,Heading_UC, Opts,?get_env(),?wxListCtrl_InsertColumn_3),
   wxe_util:rec(?wxListCtrl_InsertColumn_3).
 
@@ -682,9 +682,9 @@ setItem(#wx_ref{type=ThisT}=This,Index,Col,Label, Options)
  when is_integer(Index),is_integer(Col),?is_chardata(Label),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
   Label_UC = unicode:characters_to_binary(Label),
-  MOpts = fun({imageId, _imageId} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({imageId, _imageId} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Index,Col,Label_UC, Opts,?get_env(),?wxListCtrl_SetItem_4),
   wxe_util:rec(?wxListCtrl_SetItem_4).
 
@@ -737,9 +737,9 @@ setItemImage(This,Item,Image)
 setItemImage(#wx_ref{type=ThisT}=This,Item,Image, Options)
  when is_integer(Item),is_integer(Image),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  MOpts = fun({selImage, _selImage} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({selImage, _selImage} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Item,Image, Opts,?get_env(),?wxListCtrl_SetItemImage),
   wxe_util:rec(?wxListCtrl_SetItemImage).
 
@@ -802,9 +802,9 @@ setSingleStyle(This,Style)
 setSingleStyle(#wx_ref{type=ThisT}=This,Style, Options)
  when is_integer(Style),is_list(Options) ->
   ?CLASS(ThisT,wxListCtrl),
-  MOpts = fun({add, _add} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({add, _add} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Style, Opts,?get_env(),?wxListCtrl_SetSingleStyle).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxlistctrl.html#wxlistctrlsettextcolour">external documentation</a>.

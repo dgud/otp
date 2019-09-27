@@ -50,9 +50,9 @@ new() ->
 	Option :: {'text', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary(Text),[{text,Text_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({text, Text}) ->   Text_UC = unicode:characters_to_binary(Text),{text,Text_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxTextDataObject_new),
   wxe_util:rec(?wxTextDataObject_new).
 

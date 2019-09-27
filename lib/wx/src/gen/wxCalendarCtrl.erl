@@ -111,12 +111,12 @@ new(Parent,Id)
 new(#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}, Acc) -> [{date,{DateD,DateMo,DateY,DateH,DateMi,DateS}}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}) -> {date,{DateD,DateMo,DateY,DateH,DateMi,DateS}};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id, Opts,?get_env(),?wxCalendarCtrl_new_3),
   wxe_util:rec(?wxCalendarCtrl_new_3).
 
@@ -139,12 +139,12 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id, Options)
  when is_integer(Id),is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}, Acc) -> [{date,{DateD,DateMo,DateY,DateH,DateMi,DateS}}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({date, {{DateY,DateMo,DateD},{DateH,DateMi,DateS}}}) -> {date,{DateD,DateMo,DateY,DateH,DateMi,DateS}};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id, Opts,?get_env(),?wxCalendarCtrl_Create),
   wxe_util:rec(?wxCalendarCtrl_Create).
 
@@ -180,9 +180,9 @@ enableYearChange(This)
 enableYearChange(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxCalendarCtrl_EnableYearChange).
 
 %% @equiv enableMonthChange(This, [])
@@ -200,9 +200,9 @@ enableMonthChange(This)
 enableMonthChange(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxCalendarCtrl_EnableMonthChange).
 
 %% @equiv enableHolidayDisplay(This, [])
@@ -220,9 +220,9 @@ enableHolidayDisplay(This)
 enableHolidayDisplay(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxCalendarCtrl),
-  MOpts = fun({display, _display} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({display, _display} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxCalendarCtrl_EnableHolidayDisplay).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxcalendarctrl.html#wxcalendarctrlsetheadercolours">external documentation</a>.

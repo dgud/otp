@@ -942,8 +942,8 @@ marshal_opts(Opts, _) ->
 marshal_opts_0(Opts) ->
     w("  MOpts = fun", []),
     marshal_opts1(Opts),
-    w(";~n          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,~n", []),
-    w("  Opts = lists:foldr(MOpts, [], Options),~n",[]).
+    w(";~n          (BadOpt) -> erlang:error({badoption, BadOpt}) end,~n", []),
+    w("  Opts = lists:map(MOpts, Options),~n",[]).
 
 marshal_opts1([P]) ->
     marshal_opt(P);
@@ -959,13 +959,13 @@ marshal_opt(P0=#param{name=Name,type=Type}) ->
     Arg = marshal_arg(Type,N),
     case Arg of
 	N ->
-            w("({~s, ~s} = Arg, Acc) -> ", [Opt, func_arg(P, false)]),
+            w("({~s, ~s} = Arg) -> ", [Opt, func_arg(P, false)]),
             arg_type_test(P,"",[]),
-	    w("[Arg|Acc]",[]);
+	    w("Arg",[]);
 	_ ->
-            w("({~s, ~s}, Acc) -> ", [Opt, func_arg(P, false)]),
+            w("({~s, ~s}) -> ", [Opt, func_arg(P, false)]),
             arg_type_test(P,"",[]),
-	    w("[{~s,~s}|Acc]", [Opt, Arg])
+	    w("{~s,~s}", [Opt, Arg])
     end.
 
 marshal_args(Ps) ->

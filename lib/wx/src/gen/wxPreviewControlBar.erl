@@ -100,11 +100,11 @@ new(#wx_ref{type=PreviewT}=Preview,Buttons,#wx_ref{type=ParentT}=Parent, Options
  when is_integer(Buttons),is_list(Options) ->
   ?CLASS(PreviewT,wxPrintPreview),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Preview,Buttons,Parent, Opts,?get_env(),?wxPreviewControlBar_new),
   wxe_util:rec(?wxPreviewControlBar_new).
 

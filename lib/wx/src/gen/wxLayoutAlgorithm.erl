@@ -58,9 +58,9 @@ layoutFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxFrame),
-  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT}} = Arg, Acc) ->   ?CLASS(MainWindowT,wxWindow),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT}} = Arg) ->   ?CLASS(MainWindowT,wxWindow),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Frame, Opts,?get_env(),?wxLayoutAlgorithm_LayoutFrame),
   wxe_util:rec(?wxLayoutAlgorithm_LayoutFrame).
 
@@ -80,9 +80,9 @@ layoutMDIFrame(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxMDIParentFrame),
-  MOpts = fun({rect, {_rectX,_rectY,_rectW,_rectH}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({rect, {_rectX,_rectY,_rectW,_rectH}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Frame, Opts,?get_env(),?wxLayoutAlgorithm_LayoutMDIFrame),
   wxe_util:rec(?wxLayoutAlgorithm_LayoutMDIFrame).
 
@@ -102,9 +102,9 @@ layoutWindow(#wx_ref{type=ThisT}=This,#wx_ref{type=FrameT}=Frame, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLayoutAlgorithm),
   ?CLASS(FrameT,wxWindow),
-  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT}} = Arg, Acc) ->   ?CLASS(MainWindowT,wxWindow),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({mainWindow, #wx_ref{type=MainWindowT}} = Arg) ->   ?CLASS(MainWindowT,wxWindow),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Frame, Opts,?get_env(),?wxLayoutAlgorithm_LayoutWindow),
   wxe_util:rec(?wxLayoutAlgorithm_LayoutWindow).
 

@@ -59,9 +59,9 @@ new(Language)
 	Option :: {'flags', integer()}.
 new(Language, Options)
  when is_integer(Language),is_list(Options) ->
-  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flags, _flags} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Language, Opts,?get_env(),?wxLocale_new_2),
   wxe_util:rec(?wxLocale_new_2).
 
@@ -81,10 +81,10 @@ init(This)
 init(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxLocale),
-  MOpts = fun({language, _language} = Arg, Acc) -> [Arg|Acc];
-          ({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({language, _language} = Arg) -> Arg;
+          ({flags, _flags} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxLocale_Init),
   wxe_util:rec(?wxLocale_Init).
 
@@ -174,9 +174,9 @@ getString(#wx_ref{type=ThisT}=This,SzOrigString, Options)
  when ?is_chardata(SzOrigString),is_list(Options) ->
   ?CLASS(ThisT,wxLocale),
   SzOrigString_UC = unicode:characters_to_binary(SzOrigString),
-  MOpts = fun({szDomain, SzDomain}, Acc) ->   SzDomain_UC = unicode:characters_to_binary(SzDomain),[{szDomain,SzDomain_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({szDomain, SzDomain}) ->   SzDomain_UC = unicode:characters_to_binary(SzDomain),{szDomain,SzDomain_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,SzOrigString_UC, Opts,?get_env(),?wxLocale_GetString_2),
   wxe_util:rec(?wxLocale_GetString_2).
 
@@ -197,9 +197,9 @@ getString(#wx_ref{type=ThisT}=This,SzOrigString,SzOrigString2,N, Options)
   ?CLASS(ThisT,wxLocale),
   SzOrigString_UC = unicode:characters_to_binary(SzOrigString),
   SzOrigString2_UC = unicode:characters_to_binary(SzOrigString2),
-  MOpts = fun({szDomain, SzDomain}, Acc) ->   SzDomain_UC = unicode:characters_to_binary(SzDomain),[{szDomain,SzDomain_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({szDomain, SzDomain}) ->   SzDomain_UC = unicode:characters_to_binary(SzDomain),{szDomain,SzDomain_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,SzOrigString_UC,SzOrigString2_UC,N, Opts,?get_env(),?wxLocale_GetString_4),
   wxe_util:rec(?wxLocale_GetString_4).
 
@@ -219,9 +219,9 @@ getHeaderValue(#wx_ref{type=ThisT}=This,SzHeader, Options)
  when ?is_chardata(SzHeader),is_list(Options) ->
   ?CLASS(ThisT,wxLocale),
   SzHeader_UC = unicode:characters_to_binary(SzHeader),
-  MOpts = fun({szDomain, SzDomain}, Acc) ->   SzDomain_UC = unicode:characters_to_binary(SzDomain),[{szDomain,SzDomain_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({szDomain, SzDomain}) ->   SzDomain_UC = unicode:characters_to_binary(SzDomain),{szDomain,SzDomain_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,SzHeader_UC, Opts,?get_env(),?wxLocale_GetHeaderValue),
   wxe_util:rec(?wxLocale_GetHeaderValue).
 

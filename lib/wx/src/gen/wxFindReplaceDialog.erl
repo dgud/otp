@@ -112,9 +112,9 @@ new(#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}=Data,Title, Options)
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Data,Title_UC, Opts,?get_env(),?wxFindReplaceDialog_new_4),
   wxe_util:rec(?wxFindReplaceDialog_new_4).
 
@@ -136,9 +136,9 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,#wx_ref{type=DataT}
   ?CLASS(ParentT,wxWindow),
   ?CLASS(DataT,wxFindReplaceData),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Data,Title_UC, Opts,?get_env(),?wxFindReplaceDialog_Create),
   wxe_util:rec(?wxFindReplaceDialog_Create).
 

@@ -47,9 +47,9 @@ new() ->
 	Option :: {'n', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({n, _n} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({n, _n} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxDisplay_new),
   wxe_util:rec(?wxDisplay_new).
 

@@ -153,10 +153,10 @@ addTool(#wx_ref{type=ThisT}=This,Toolid,#wx_ref{type=BitmapT}=Bitmap, Options)
  when is_integer(Toolid),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({shortHelpString, ShortHelpString}, Acc) ->   ShortHelpString_UC = unicode:characters_to_binary(ShortHelpString),[{shortHelpString,ShortHelpString_UC}|Acc];
-          ({longHelpString, LongHelpString}, Acc) ->   LongHelpString_UC = unicode:characters_to_binary(LongHelpString),[{longHelpString,LongHelpString_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({shortHelpString, ShortHelpString}) ->   ShortHelpString_UC = unicode:characters_to_binary(ShortHelpString),{shortHelpString,ShortHelpString_UC};
+          ({longHelpString, LongHelpString}) ->   LongHelpString_UC = unicode:characters_to_binary(LongHelpString),{longHelpString,LongHelpString_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Bitmap, Opts,?get_env(),?wxToolBar_AddTool_3),
   wxe_util:rec(?wxToolBar_AddTool_3).
 
@@ -195,10 +195,10 @@ addTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap, Opti
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({kind, _kind} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({kind, _kind} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap, Opts,?get_env(),?wxToolBar_AddTool_4_0),
   wxe_util:rec(?wxToolBar_AddTool_4_0);
 addTool(#wx_ref{type=ThisT}=This,Toolid,#wx_ref{type=BitmapT}=Bitmap,#wx_ref{type=BmpDisabledT}=BmpDisabled, Options)
@@ -206,12 +206,12 @@ addTool(#wx_ref{type=ThisT}=This,Toolid,#wx_ref{type=BitmapT}=Bitmap,#wx_ref{typ
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
-  MOpts = fun({toggle, _toggle} = Arg, Acc) -> [Arg|Acc];
-          ({clientData, #wx_ref{type=ClientDataT}} = Arg, Acc) ->   ?CLASS(ClientDataT,wx),[Arg|Acc];
-          ({shortHelpString, ShortHelpString}, Acc) ->   ShortHelpString_UC = unicode:characters_to_binary(ShortHelpString),[{shortHelpString,ShortHelpString_UC}|Acc];
-          ({longHelpString, LongHelpString}, Acc) ->   LongHelpString_UC = unicode:characters_to_binary(LongHelpString),[{longHelpString,LongHelpString_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({toggle, _toggle} = Arg) -> Arg;
+          ({clientData, #wx_ref{type=ClientDataT}} = Arg) ->   ?CLASS(ClientDataT,wx),Arg;
+          ({shortHelpString, ShortHelpString}) ->   ShortHelpString_UC = unicode:characters_to_binary(ShortHelpString),{shortHelpString,ShortHelpString_UC};
+          ({longHelpString, LongHelpString}) ->   LongHelpString_UC = unicode:characters_to_binary(LongHelpString),{longHelpString,LongHelpString_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Bitmap,BmpDisabled, Opts,?get_env(),?wxToolBar_AddTool_4_1),
   wxe_util:rec(?wxToolBar_AddTool_4_1).
 
@@ -243,12 +243,12 @@ addTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap,#wx_r
   Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
-  MOpts = fun({kind, _kind} = Arg, Acc) -> [Arg|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),[{longHelp,LongHelp_UC}|Acc];
-          ({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({kind, _kind} = Arg) -> Arg;
+          ({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({longHelp, LongHelp}) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),{longHelp,LongHelp_UC};
+          ({data, #wx_ref{type=DataT}} = Arg) ->   ?CLASS(DataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap,BmpDisabled, Opts,?get_env(),?wxToolBar_AddTool_5),
   wxe_util:rec(?wxToolBar_AddTool_5).
 
@@ -264,12 +264,12 @@ addTool(#wx_ref{type=ThisT}=This,Toolid,#wx_ref{type=BitmapT}=Bitmap,#wx_ref{typ
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
   ?CLASS(BmpDisabledT,wxBitmap),
-  MOpts = fun({yPos, _yPos} = Arg, Acc) -> [Arg|Acc];
-          ({clientData, #wx_ref{type=ClientDataT}} = Arg, Acc) ->   ?CLASS(ClientDataT,wx),[Arg|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),[{longHelp,LongHelp_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({yPos, _yPos} = Arg) -> Arg;
+          ({clientData, #wx_ref{type=ClientDataT}} = Arg) ->   ?CLASS(ClientDataT,wx),Arg;
+          ({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({longHelp, LongHelp}) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),{longHelp,LongHelp_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Bitmap,BmpDisabled,Toggle,XPos, Opts,?get_env(),?wxToolBar_AddTool_6),
   wxe_util:rec(?wxToolBar_AddTool_6).
 
@@ -293,12 +293,12 @@ addCheckTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap,
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[Arg|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),[{longHelp,LongHelp_UC}|Acc];
-          ({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg) ->   ?CLASS(BmpDisabledT,wxBitmap),Arg;
+          ({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({longHelp, LongHelp}) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),{longHelp,LongHelp_UC};
+          ({data, #wx_ref{type=DataT}} = Arg) ->   ?CLASS(DataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap, Opts,?get_env(),?wxToolBar_AddCheckTool),
   wxe_util:rec(?wxToolBar_AddCheckTool).
 
@@ -322,12 +322,12 @@ addRadioTool(#wx_ref{type=ThisT}=This,Toolid,Label,#wx_ref{type=BitmapT}=Bitmap,
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[Arg|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),[{longHelp,LongHelp_UC}|Acc];
-          ({data, #wx_ref{type=DataT}} = Arg, Acc) ->   ?CLASS(DataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg) ->   ?CLASS(BmpDisabledT,wxBitmap),Arg;
+          ({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({longHelp, LongHelp}) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),{longHelp,LongHelp_UC};
+          ({data, #wx_ref{type=DataT}} = Arg) ->   ?CLASS(DataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Toolid,Label_UC,Bitmap, Opts,?get_env(),?wxToolBar_AddRadioTool),
   wxe_util:rec(?wxToolBar_AddRadioTool).
 
@@ -551,13 +551,13 @@ insertTool(#wx_ref{type=ThisT}=This,Pos,Toolid,#wx_ref{type=BitmapT}=Bitmap, Opt
  when is_integer(Pos),is_integer(Toolid),is_list(Options) ->
   ?CLASS(ThisT,wxToolBar),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[Arg|Acc];
-          ({toggle, _toggle} = Arg, Acc) -> [Arg|Acc];
-          ({clientData, #wx_ref{type=ClientDataT}} = Arg, Acc) ->   ?CLASS(ClientDataT,wx),[Arg|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),[{longHelp,LongHelp_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg) ->   ?CLASS(BmpDisabledT,wxBitmap),Arg;
+          ({toggle, _toggle} = Arg) -> Arg;
+          ({clientData, #wx_ref{type=ClientDataT}} = Arg) ->   ?CLASS(ClientDataT,wx),Arg;
+          ({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({longHelp, LongHelp}) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),{longHelp,LongHelp_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pos,Toolid,Bitmap, Opts,?get_env(),?wxToolBar_InsertTool_4),
   wxe_util:rec(?wxToolBar_InsertTool_4).
 
@@ -575,13 +575,13 @@ insertTool(#wx_ref{type=ThisT}=This,Pos,Toolid,Label,#wx_ref{type=BitmapT}=Bitma
   ?CLASS(ThisT,wxToolBar),
   Label_UC = unicode:characters_to_binary(Label),
   ?CLASS(BitmapT,wxBitmap),
-  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg, Acc) ->   ?CLASS(BmpDisabledT,wxBitmap),[Arg|Acc];
-          ({kind, _kind} = Arg, Acc) -> [Arg|Acc];
-          ({shortHelp, ShortHelp}, Acc) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),[{shortHelp,ShortHelp_UC}|Acc];
-          ({longHelp, LongHelp}, Acc) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),[{longHelp,LongHelp_UC}|Acc];
-          ({clientData, #wx_ref{type=ClientDataT}} = Arg, Acc) ->   ?CLASS(ClientDataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({bmpDisabled, #wx_ref{type=BmpDisabledT}} = Arg) ->   ?CLASS(BmpDisabledT,wxBitmap),Arg;
+          ({kind, _kind} = Arg) -> Arg;
+          ({shortHelp, ShortHelp}) ->   ShortHelp_UC = unicode:characters_to_binary(ShortHelp),{shortHelp,ShortHelp_UC};
+          ({longHelp, LongHelp}) ->   LongHelp_UC = unicode:characters_to_binary(LongHelp),{longHelp,LongHelp_UC};
+          ({clientData, #wx_ref{type=ClientDataT}} = Arg) ->   ?CLASS(ClientDataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pos,Toolid,Label_UC,Bitmap, Opts,?get_env(),?wxToolBar_InsertTool_5),
   wxe_util:rec(?wxToolBar_InsertTool_5).
 

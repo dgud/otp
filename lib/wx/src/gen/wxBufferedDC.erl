@@ -97,10 +97,10 @@ new(Dc,Area={AreaW,AreaH} = Area)
 new(#wx_ref{type=DcT}=Dc, Options)
  when is_list(Options) ->
   ?CLASS(DcT,wxDC),
-  MOpts = fun({buffer, #wx_ref{type=BufferT}} = Arg, Acc) ->   ?CLASS(BufferT,wxBitmap),[Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({buffer, #wx_ref{type=BufferT}} = Arg) ->   ?CLASS(BufferT,wxBitmap),Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Dc, Opts,?get_env(),?wxBufferedDC_new_2),
   wxe_util:rec(?wxBufferedDC_new_2).
 
@@ -111,9 +111,9 @@ new(#wx_ref{type=DcT}=Dc, Options)
 new(#wx_ref{type=DcT}=Dc,{AreaW,AreaH} = Area, Options)
  when is_integer(AreaW),is_integer(AreaH),is_list(Options) ->
   ?CLASS(DcT,wxDC),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Dc,Area, Opts,?get_env(),?wxBufferedDC_new_3),
   wxe_util:rec(?wxBufferedDC_new_3).
 
@@ -146,10 +146,10 @@ init(#wx_ref{type=ThisT}=This,#wx_ref{type=DcT}=Dc, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxBufferedDC),
   ?CLASS(DcT,wxDC),
-  MOpts = fun({buffer, #wx_ref{type=BufferT}} = Arg, Acc) ->   ?CLASS(BufferT,wxBitmap),[Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({buffer, #wx_ref{type=BufferT}} = Arg) ->   ?CLASS(BufferT,wxBitmap),Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Dc, Opts,?get_env(),?wxBufferedDC_Init_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxbuffereddc.html#wxbuffereddcinit">external documentation</a>.
@@ -160,9 +160,9 @@ init(#wx_ref{type=ThisT}=This,#wx_ref{type=DcT}=Dc,{AreaW,AreaH} = Area, Options
  when is_integer(AreaW),is_integer(AreaH),is_list(Options) ->
   ?CLASS(ThisT,wxBufferedDC),
   ?CLASS(DcT,wxDC),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Dc,Area, Opts,?get_env(),?wxBufferedDC_Init_3).
 
 %% @doc Destroys this object, do not use object again

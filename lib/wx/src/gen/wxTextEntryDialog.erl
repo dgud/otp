@@ -108,12 +108,12 @@ new(#wx_ref{type=ParentT}=Parent,Message, Options)
  when ?is_chardata(Message),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Message_UC = unicode:characters_to_binary(Message),
-  MOpts = fun({caption, Caption}, Acc) ->   Caption_UC = unicode:characters_to_binary(Caption),[{caption,Caption_UC}|Acc];
-          ({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary(Value),[{value,Value_UC}|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({caption, Caption}) ->   Caption_UC = unicode:characters_to_binary(Caption),{caption,Caption_UC};
+          ({value, Value}) ->   Value_UC = unicode:characters_to_binary(Value),{value,Value_UC};
+          ({style, _style} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Message_UC, Opts,?get_env(),?wxTextEntryDialog_new),
   wxe_util:rec(?wxTextEntryDialog_new).
 

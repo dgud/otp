@@ -50,10 +50,10 @@ new() ->
 		 | {'parentWindow', wxWindow:wxWindow()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({name, Name}, Acc) ->   Name_UC = unicode:characters_to_binary(Name),[{name,Name_UC}|Acc];
-          ({parentWindow, #wx_ref{type=ParentWindowT}} = Arg, Acc) ->   ?CLASS(ParentWindowT,wxWindow),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({name, Name}) ->   Name_UC = unicode:characters_to_binary(Name),{name,Name_UC};
+          ({parentWindow, #wx_ref{type=ParentWindowT}} = Arg) ->   ?CLASS(ParentWindowT,wxWindow),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxHtmlEasyPrinting_new),
   wxe_util:rec(?wxHtmlEasyPrinting_new).
 
@@ -99,9 +99,9 @@ previewText(#wx_ref{type=ThisT}=This,Htmltext, Options)
  when ?is_chardata(Htmltext),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Htmltext_UC = unicode:characters_to_binary(Htmltext),
-  MOpts = fun({basepath, Basepath}, Acc) ->   Basepath_UC = unicode:characters_to_binary(Basepath),[{basepath,Basepath_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({basepath, Basepath}) ->   Basepath_UC = unicode:characters_to_binary(Basepath),{basepath,Basepath_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Htmltext_UC, Opts,?get_env(),?wxHtmlEasyPrinting_PreviewText),
   wxe_util:rec(?wxHtmlEasyPrinting_PreviewText).
 
@@ -131,9 +131,9 @@ printText(#wx_ref{type=ThisT}=This,Htmltext, Options)
  when ?is_chardata(Htmltext),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Htmltext_UC = unicode:characters_to_binary(Htmltext),
-  MOpts = fun({basepath, Basepath}, Acc) ->   Basepath_UC = unicode:characters_to_binary(Basepath),[{basepath,Basepath_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({basepath, Basepath}) ->   Basepath_UC = unicode:characters_to_binary(Basepath),{basepath,Basepath_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Htmltext_UC, Opts,?get_env(),?wxHtmlEasyPrinting_PrintText),
   wxe_util:rec(?wxHtmlEasyPrinting_PrintText).
 
@@ -161,9 +161,9 @@ setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Normal_face_UC = unicode:characters_to_binary(Normal_face),
   Fixed_face_UC = unicode:characters_to_binary(Fixed_face),
-  MOpts = fun({sizes, _sizes} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({sizes, _sizes} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Opts,?get_env(),?wxHtmlEasyPrinting_SetFonts).
 
 %% @equiv setHeader(This,Header, [])
@@ -182,9 +182,9 @@ setHeader(#wx_ref{type=ThisT}=This,Header, Options)
  when ?is_chardata(Header),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Header_UC = unicode:characters_to_binary(Header),
-  MOpts = fun({pg, _pg} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pg, _pg} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Header_UC, Opts,?get_env(),?wxHtmlEasyPrinting_SetHeader).
 
 %% @equiv setFooter(This,Footer, [])
@@ -203,9 +203,9 @@ setFooter(#wx_ref{type=ThisT}=This,Footer, Options)
  when ?is_chardata(Footer),is_list(Options) ->
   ?CLASS(ThisT,wxHtmlEasyPrinting),
   Footer_UC = unicode:characters_to_binary(Footer),
-  MOpts = fun({pg, _pg} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pg, _pg} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Footer_UC, Opts,?get_env(),?wxHtmlEasyPrinting_SetFooter).
 
 %% @doc Destroys this object, do not use object again

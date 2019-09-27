@@ -113,11 +113,11 @@ new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id,Title_UC, Opts,?get_env(),?wxFrame_new_4),
   wxe_util:rec(?wxFrame_new_4).
 
@@ -140,11 +140,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
   ?CLASS(ThisT,wxFrame),
   ?CLASS(ParentT,wxWindow),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id,Title_UC, Opts,?get_env(),?wxFrame_Create),
   wxe_util:rec(?wxFrame_Create).
 
@@ -165,11 +165,11 @@ createStatusBar(This)
 createStatusBar(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
-  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({id, _id} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({number, _number} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({id, _id} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxFrame_CreateStatusBar),
   wxe_util:rec(?wxFrame_CreateStatusBar).
 
@@ -189,10 +189,10 @@ createToolBar(This)
 createToolBar(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({id, _id} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          ({id, _id} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxFrame_CreateToolBar),
   wxe_util:rec(?wxFrame_CreateToolBar).
 
@@ -292,9 +292,9 @@ setStatusText(#wx_ref{type=ThisT}=This,Text, Options)
  when ?is_chardata(Text),is_list(Options) ->
   ?CLASS(ThisT,wxFrame),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({number, _number} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({number, _number} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Text_UC, Opts,?get_env(),?wxFrame_SetStatusText).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxframe.html#wxframesetstatuswidths">external documentation</a>.

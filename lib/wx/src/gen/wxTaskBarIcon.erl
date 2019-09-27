@@ -78,9 +78,9 @@ setIcon(#wx_ref{type=ThisT}=This,#wx_ref{type=IconT}=Icon, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxTaskBarIcon),
   ?CLASS(IconT,wxIcon),
-  MOpts = fun({tooltip, Tooltip}, Acc) ->   Tooltip_UC = unicode:characters_to_binary(Tooltip),[{tooltip,Tooltip_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({tooltip, Tooltip}) ->   Tooltip_UC = unicode:characters_to_binary(Tooltip),{tooltip,Tooltip_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Icon, Opts,?get_env(),?wxTaskBarIcon_SetIcon),
   wxe_util:rec(?wxTaskBarIcon_SetIcon).
 

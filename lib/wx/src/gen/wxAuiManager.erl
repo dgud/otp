@@ -56,10 +56,10 @@ new() ->
 		 | {'flags', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({managed_wnd, #wx_ref{type=Managed_wndT}} = Arg, Acc) ->   ?CLASS(Managed_wndT,wxWindow),[Arg|Acc];
-          ({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({managed_wnd, #wx_ref{type=Managed_wndT}} = Arg) ->   ?CLASS(Managed_wndT,wxWindow),Arg;
+          ({flags, _flags} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxAuiManager_new),
   wxe_util:rec(?wxAuiManager_new).
 
@@ -86,10 +86,10 @@ addPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiManager),
   ?CLASS(WindowT,wxWindow),
-  MOpts = fun({direction, _direction} = Arg, Acc) -> [Arg|Acc];
-          ({caption, Caption}, Acc) ->   Caption_UC = unicode:characters_to_binary(Caption),[{caption,Caption_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({direction, _direction} = Arg) -> Arg;
+          ({caption, Caption}) ->   Caption_UC = unicode:characters_to_binary(Caption),{caption,Caption_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Window, Opts,?get_env(),?wxAuiManager_AddPane_2_0),
   wxe_util:rec(?wxAuiManager_AddPane_2_0);
 addPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=Pane_infoT}=Pane_info) ->
@@ -212,9 +212,9 @@ insertPane(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,#wx_ref{type=In
   ?CLASS(ThisT,wxAuiManager),
   ?CLASS(WindowT,wxWindow),
   ?CLASS(Insert_locationT,wxAuiPaneInfo),
-  MOpts = fun({insert_level, _insert_level} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({insert_level, _insert_level} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Window,Insert_location, Opts,?get_env(),?wxAuiManager_InsertPane),
   wxe_util:rec(?wxAuiManager_InsertPane).
 
@@ -244,9 +244,9 @@ loadPerspective(#wx_ref{type=ThisT}=This,Perspective, Options)
  when ?is_chardata(Perspective),is_list(Options) ->
   ?CLASS(ThisT,wxAuiManager),
   Perspective_UC = unicode:characters_to_binary(Perspective),
-  MOpts = fun({update, _update} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({update, _update} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Perspective_UC, Opts,?get_env(),?wxAuiManager_LoadPerspective),
   wxe_util:rec(?wxAuiManager_LoadPerspective).
 

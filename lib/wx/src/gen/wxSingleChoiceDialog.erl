@@ -115,10 +115,10 @@ new(#wx_ref{type=ParentT}=Parent,Message,Caption,Choices, Options)
   Caption_UC = unicode:characters_to_binary(Caption),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Message_UC,Caption_UC,Choices_UCA, Opts,?get_env(),?wxSingleChoiceDialog_new_5),
   wxe_util:rec(?wxSingleChoiceDialog_new_5).
 

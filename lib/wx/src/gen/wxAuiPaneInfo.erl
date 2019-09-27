@@ -107,9 +107,9 @@ bottomDockable(This)
 bottomDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_BottomDockable),
   wxe_util:rec(?wxAuiPaneInfo_BottomDockable).
 
@@ -138,9 +138,9 @@ captionVisible(This)
 captionVisible(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_CaptionVisible),
   wxe_util:rec(?wxAuiPaneInfo_CaptionVisible).
 
@@ -175,9 +175,9 @@ closeButton(This)
 closeButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_CloseButton),
   wxe_util:rec(?wxAuiPaneInfo_CloseButton).
 
@@ -204,9 +204,9 @@ destroyOnClose(This)
 destroyOnClose(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_DestroyOnClose),
   wxe_util:rec(?wxAuiPaneInfo_DestroyOnClose).
 
@@ -242,9 +242,9 @@ dockable(This)
 dockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Dockable),
   wxe_util:rec(?wxAuiPaneInfo_Dockable).
 
@@ -279,9 +279,9 @@ floatable(This)
 floatable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Floatable),
   wxe_util:rec(?wxAuiPaneInfo_Floatable).
 
@@ -336,9 +336,9 @@ gripper(This)
 gripper(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Gripper),
   wxe_util:rec(?wxAuiPaneInfo_Gripper).
 
@@ -357,9 +357,9 @@ gripperTop(This)
 gripperTop(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({attop, _attop} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({attop, _attop} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_GripperTop),
   wxe_util:rec(?wxAuiPaneInfo_GripperTop).
 
@@ -580,9 +580,9 @@ leftDockable(This)
 leftDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_LeftDockable),
   wxe_util:rec(?wxAuiPaneInfo_LeftDockable).
 
@@ -619,9 +619,9 @@ maximizeButton(This)
 maximizeButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_MaximizeButton),
   wxe_util:rec(?wxAuiPaneInfo_MaximizeButton).
 
@@ -658,9 +658,9 @@ minimizeButton(This)
 minimizeButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_MinimizeButton),
   wxe_util:rec(?wxAuiPaneInfo_MinimizeButton).
 
@@ -679,9 +679,9 @@ movable(This)
 movable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Movable),
   wxe_util:rec(?wxAuiPaneInfo_Movable).
 
@@ -710,9 +710,9 @@ paneBorder(This)
 paneBorder(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_PaneBorder),
   wxe_util:rec(?wxAuiPaneInfo_PaneBorder).
 
@@ -731,9 +731,9 @@ pinButton(This)
 pinButton(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({visible, _visible} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({visible, _visible} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_PinButton),
   wxe_util:rec(?wxAuiPaneInfo_PinButton).
 
@@ -761,9 +761,9 @@ resizable(This)
 resizable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({resizable, _resizable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({resizable, _resizable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Resizable),
   wxe_util:rec(?wxAuiPaneInfo_Resizable).
 
@@ -790,9 +790,9 @@ rightDockable(This)
 rightDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_RightDockable),
   wxe_util:rec(?wxAuiPaneInfo_RightDockable).
 
@@ -837,9 +837,9 @@ show(This)
 show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({show, _show} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_Show),
   wxe_util:rec(?wxAuiPaneInfo_Show).
 
@@ -874,9 +874,9 @@ topDockable(This)
 topDockable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxAuiPaneInfo),
-  MOpts = fun({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxAuiPaneInfo_TopDockable),
   wxe_util:rec(?wxAuiPaneInfo_TopDockable).
 

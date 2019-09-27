@@ -82,9 +82,9 @@ buttonDClick(This)
 buttonDClick(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({but, _but} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxMouseEvent_ButtonDClick),
   wxe_util:rec(?wxMouseEvent_ButtonDClick).
 
@@ -103,9 +103,9 @@ buttonDown(This)
 buttonDown(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({but, _but} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxMouseEvent_ButtonDown),
   wxe_util:rec(?wxMouseEvent_ButtonDown).
 
@@ -124,9 +124,9 @@ buttonUp(This)
 buttonUp(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMouseEvent),
-  MOpts = fun({but, _but} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({but, _but} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxMouseEvent_ButtonUp),
   wxe_util:rec(?wxMouseEvent_ButtonUp).
 

@@ -112,15 +112,15 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({message, Message}, Acc) ->   Message_UC = unicode:characters_to_binary(Message),[{message,Message_UC}|Acc];
-          ({defaultDir, DefaultDir}, Acc) ->   DefaultDir_UC = unicode:characters_to_binary(DefaultDir),[{defaultDir,DefaultDir_UC}|Acc];
-          ({defaultFile, DefaultFile}, Acc) ->   DefaultFile_UC = unicode:characters_to_binary(DefaultFile),[{defaultFile,DefaultFile_UC}|Acc];
-          ({wildCard, WildCard}, Acc) ->   WildCard_UC = unicode:characters_to_binary(WildCard),[{wildCard,WildCard_UC}|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({sz, {_szW,_szH}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({message, Message}) ->   Message_UC = unicode:characters_to_binary(Message),{message,Message_UC};
+          ({defaultDir, DefaultDir}) ->   DefaultDir_UC = unicode:characters_to_binary(DefaultDir),{defaultDir,DefaultDir_UC};
+          ({defaultFile, DefaultFile}) ->   DefaultFile_UC = unicode:characters_to_binary(DefaultFile),{defaultFile,DefaultFile_UC};
+          ({wildCard, WildCard}) ->   WildCard_UC = unicode:characters_to_binary(WildCard),{wildCard,WildCard_UC};
+          ({style, _style} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({sz, {_szW,_szH}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxFileDialog_new),
   wxe_util:rec(?wxFileDialog_new).
 

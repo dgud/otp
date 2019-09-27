@@ -92,9 +92,9 @@ new(Window,Buffer)
 new(#wx_ref{type=WindowT}=Window, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Window, Opts,?get_env(),?wxBufferedPaintDC_new_2),
   wxe_util:rec(?wxBufferedPaintDC_new_2).
 
@@ -106,9 +106,9 @@ new(#wx_ref{type=WindowT}=Window,#wx_ref{type=BufferT}=Buffer, Options)
  when is_list(Options) ->
   ?CLASS(WindowT,wxWindow),
   ?CLASS(BufferT,wxBitmap),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Window,Buffer, Opts,?get_env(),?wxBufferedPaintDC_new_3),
   wxe_util:rec(?wxBufferedPaintDC_new_3).
 

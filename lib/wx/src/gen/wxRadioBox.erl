@@ -103,11 +103,11 @@ new(#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY} = Pos,{SizeW,SizeH} = Size
   Title_UC = unicode:characters_to_binary(Title),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  MOpts = fun({majorDim, _majorDim} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({val, #wx_ref{type=ValT}} = Arg, Acc) ->   ?CLASS(ValT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({majorDim, _majorDim} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({val, #wx_ref{type=ValT}} = Arg) ->   ?CLASS(ValT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id,Title_UC,Pos,Size,Choices_UCA, Opts,?get_env(),?wxRadioBox_new),
   wxe_util:rec(?wxRadioBox_new).
 
@@ -132,11 +132,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title,{PosX,PosY
   Title_UC = unicode:characters_to_binary(Title),
   Choices_UCA = [unicode:characters_to_binary(ChoicesTemp) ||
               ChoicesTemp <- Choices],
-  MOpts = fun({majorDim, _majorDim} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({val, #wx_ref{type=ValT}} = Arg, Acc) ->   ?CLASS(ValT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({majorDim, _majorDim} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({val, #wx_ref{type=ValT}} = Arg) ->   ?CLASS(ValT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id,Title_UC,Pos,Size,Choices_UCA, Opts,?get_env(),?wxRadioBox_Create),
   wxe_util:rec(?wxRadioBox_Create).
 
@@ -166,9 +166,9 @@ enable(This,N)
 enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxRadioBox_Enable_1),
   wxe_util:rec(?wxRadioBox_Enable_1).
 
@@ -179,9 +179,9 @@ enable(#wx_ref{type=ThisT}=This, Options)
 enable(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,N, Opts,?get_env(),?wxRadioBox_Enable_2),
   wxe_util:rec(?wxRadioBox_Enable_2).
 
@@ -236,9 +236,9 @@ show(This,N)
 show(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({show, _show} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxRadioBox_Show_1),
   wxe_util:rec(?wxRadioBox_Show_1).
 
@@ -249,9 +249,9 @@ show(#wx_ref{type=ThisT}=This, Options)
 show(#wx_ref{type=ThisT}=This,N, Options)
  when is_integer(N),is_list(Options) ->
   ?CLASS(ThisT,wxRadioBox),
-  MOpts = fun({show, _show} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({show, _show} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,N, Opts,?get_env(),?wxRadioBox_Show_2),
   wxe_util:rec(?wxRadioBox_Show_2).
 

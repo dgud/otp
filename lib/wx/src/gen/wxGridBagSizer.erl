@@ -69,10 +69,10 @@ new() ->
 		 | {'hgap', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({vgap, _vgap} = Arg, Acc) -> [Arg|Acc];
-          ({hgap, _hgap} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({vgap, _vgap} = Arg) -> Arg;
+          ({hgap, _hgap} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxGridBagSizer_new),
   wxe_util:rec(?wxGridBagSizer_new).
 
@@ -128,12 +128,12 @@ add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window, Options)
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxGridBagSizer_Add_2_0
      end,
-  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
-          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
-          ({border, _border} = Arg, Acc) -> [Arg|Acc];
-          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({proportion, _proportion} = Arg) -> Arg;
+          ({flag, _flag} = Arg) -> Arg;
+          ({border, _border} = Arg) -> Arg;
+          ({userData, #wx_ref{type=UserDataT}} = Arg) ->   ?CLASS(UserDataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Window, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP).
 
@@ -173,12 +173,12 @@ add(This,Width,Height,Pos={PosR,PosC} = Pos)
 add(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxGridBagSizer),
-  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
-          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
-          ({border, _border} = Arg, Acc) -> [Arg|Acc];
-          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({proportion, _proportion} = Arg) -> Arg;
+          ({flag, _flag} = Arg) -> Arg;
+          ({border, _border} = Arg) -> Arg;
+          ({userData, #wx_ref{type=UserDataT}} = Arg) ->   ?CLASS(UserDataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxGridBagSizer_Add_3_0),
   wxe_util:rec(?wxGridBagSizer_Add_3_0);
 add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,{PosR,PosC} = Pos, Options)
@@ -190,12 +190,12 @@ add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,{PosR,PosC} = Pos, Opt
      _ -> ?CLASS(WindowT,wxSizer),
        ?wxGridBagSizer_Add_3_1
      end,
-  MOpts = fun({span, {_spanRS,_spanCS}} = Arg, Acc) -> [Arg|Acc];
-          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
-          ({border, _border} = Arg, Acc) -> [Arg|Acc];
-          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({span, {_spanRS,_spanCS}} = Arg) -> Arg;
+          ({flag, _flag} = Arg) -> Arg;
+          ({border, _border} = Arg) -> Arg;
+          ({userData, #wx_ref{type=UserDataT}} = Arg) ->   ?CLASS(UserDataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Window,Pos, Opts,?get_env(),WindowOP),
   wxe_util:rec(WindowOP).
 
@@ -209,12 +209,12 @@ add(#wx_ref{type=ThisT}=This,#wx_ref{type=WindowT}=Window,{PosR,PosC} = Pos, Opt
 add(#wx_ref{type=ThisT}=This,Width,Height,{PosR,PosC} = Pos, Options)
  when is_integer(Width),is_integer(Height),is_integer(PosR),is_integer(PosC),is_list(Options) ->
   ?CLASS(ThisT,wxGridBagSizer),
-  MOpts = fun({span, {_spanRS,_spanCS}} = Arg, Acc) -> [Arg|Acc];
-          ({flag, _flag} = Arg, Acc) -> [Arg|Acc];
-          ({border, _border} = Arg, Acc) -> [Arg|Acc];
-          ({userData, #wx_ref{type=UserDataT}} = Arg, Acc) ->   ?CLASS(UserDataT,wx),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({span, {_spanRS,_spanCS}} = Arg) -> Arg;
+          ({flag, _flag} = Arg) -> Arg;
+          ({border, _border} = Arg) -> Arg;
+          ({userData, #wx_ref{type=UserDataT}} = Arg) ->   ?CLASS(UserDataT,wx),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height,Pos, Opts,?get_env(),?wxGridBagSizer_Add_4),
   wxe_util:rec(?wxGridBagSizer_Add_4).
 
@@ -253,9 +253,9 @@ checkForIntersection(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGridBagSizer),
   ?CLASS(ItemT,wxGBSizerItem),
-  MOpts = fun({excludeItem, #wx_ref{type=ExcludeItemT}} = Arg, Acc) ->   ?CLASS(ExcludeItemT,wxGBSizerItem),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({excludeItem, #wx_ref{type=ExcludeItemT}} = Arg) ->   ?CLASS(ExcludeItemT,wxGBSizerItem),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Item, Opts,?get_env(),?wxGridBagSizer_CheckForIntersection_2),
   wxe_util:rec(?wxGridBagSizer_CheckForIntersection_2).
 
@@ -266,9 +266,9 @@ checkForIntersection(#wx_ref{type=ThisT}=This,#wx_ref{type=ItemT}=Item, Options)
 checkForIntersection(#wx_ref{type=ThisT}=This,{PosR,PosC} = Pos,{SpanRS,SpanCS} = Span, Options)
  when is_integer(PosR),is_integer(PosC),is_integer(SpanRS),is_integer(SpanCS),is_list(Options) ->
   ?CLASS(ThisT,wxGridBagSizer),
-  MOpts = fun({excludeItem, #wx_ref{type=ExcludeItemT}} = Arg, Acc) ->   ?CLASS(ExcludeItemT,wxGBSizerItem),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({excludeItem, #wx_ref{type=ExcludeItemT}} = Arg) ->   ?CLASS(ExcludeItemT,wxGBSizerItem),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pos,Span, Opts,?get_env(),?wxGridBagSizer_CheckForIntersection_3),
   wxe_util:rec(?wxGridBagSizer_CheckForIntersection_3).
 

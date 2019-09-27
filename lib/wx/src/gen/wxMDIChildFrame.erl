@@ -116,11 +116,11 @@ new(#wx_ref{type=ParentT}=Parent,Id,Title, Options)
  when is_integer(Id),?is_chardata(Title),is_list(Options) ->
   ?CLASS(ParentT,wxMDIParentFrame),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent,Id,Title_UC, Opts,?get_env(),?wxMDIChildFrame_new_4),
   wxe_util:rec(?wxMDIChildFrame_new_4).
 
@@ -150,11 +150,11 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent,Id,Title, Options)
   ?CLASS(ThisT,wxMDIChildFrame),
   ?CLASS(ParentT,wxMDIParentFrame),
   Title_UC = unicode:characters_to_binary(Title),
-  MOpts = fun({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent,Id,Title_UC, Opts,?get_env(),?wxMDIChildFrame_Create),
   wxe_util:rec(?wxMDIChildFrame_Create).
 
@@ -173,9 +173,9 @@ maximize(This)
 maximize(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMDIChildFrame),
-  MOpts = fun({maximize, _maximize} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({maximize, _maximize} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxMDIChildFrame_Maximize).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmdichildframe.html#wxmdichildframerestore">external documentation</a>.

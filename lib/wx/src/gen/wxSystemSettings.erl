@@ -68,9 +68,9 @@ getMetric(Index)
 	Option :: {'win', wxWindow:wxWindow()}.
 getMetric(Index, Options)
  when is_integer(Index),is_list(Options) ->
-  MOpts = fun({win, #wx_ref{type=WinT}} = Arg, Acc) ->   ?CLASS(WinT,wxWindow),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({win, #wx_ref{type=WinT}} = Arg) ->   ?CLASS(WinT,wxWindow),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Index, Opts,?get_env(),?wxSystemSettings_GetMetric),
   wxe_util:rec(?wxSystemSettings_GetMetric).
 

@@ -117,9 +117,9 @@ createFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsContext),
   ?CLASS(FontT,wxFont),
-  MOpts = fun({col, Col}, Acc) -> [{col,wxe_util:color(Col)}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({col, Col}) -> {col,wxe_util:color(Col)};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Font, Opts,?get_env(),?wxGraphicsContext_CreateFont),
   wxe_util:rec(?wxGraphicsContext_CreateFont).
 
@@ -143,14 +143,14 @@ createMatrix(This)
 createMatrix(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  MOpts = fun({a, _a} = Arg, Acc) -> [Arg|Acc];
-          ({b, _b} = Arg, Acc) -> [Arg|Acc];
-          ({c, _c} = Arg, Acc) -> [Arg|Acc];
-          ({d, _d} = Arg, Acc) -> [Arg|Acc];
-          ({tx, _tx} = Arg, Acc) -> [Arg|Acc];
-          ({ty, _ty} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({a, _a} = Arg) -> Arg;
+          ({b, _b} = Arg) -> Arg;
+          ({c, _c} = Arg) -> Arg;
+          ({d, _d} = Arg) -> Arg;
+          ({tx, _tx} = Arg) -> Arg;
+          ({ty, _ty} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGraphicsContext_CreateMatrix),
   wxe_util:rec(?wxGraphicsContext_CreateMatrix).
 
@@ -227,9 +227,9 @@ drawLines(This,Points)
 drawLines(#wx_ref{type=ThisT}=This,Points, Options)
  when is_list(Points),is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsContext),
-  MOpts = fun({fillStyle, _fillStyle} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({fillStyle, _fillStyle} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Points, Opts,?get_env(),?wxGraphicsContext_DrawLines).
 
 %% @equiv drawPath(This,Path, [])
@@ -249,9 +249,9 @@ drawPath(#wx_ref{type=ThisT}=This,#wx_ref{type=PathT}=Path, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsContext),
   ?CLASS(PathT,wxGraphicsPath),
-  MOpts = fun({fillStyle, _fillStyle} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({fillStyle, _fillStyle} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Path, Opts,?get_env(),?wxGraphicsContext_DrawPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicscontext.html#wxgraphicscontextdrawrectangle">external documentation</a>.
@@ -327,9 +327,9 @@ fillPath(#wx_ref{type=ThisT}=This,#wx_ref{type=PathT}=Path, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsContext),
   ?CLASS(PathT,wxGraphicsPath),
-  MOpts = fun({fillStyle, _fillStyle} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({fillStyle, _fillStyle} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Path, Opts,?get_env(),?wxGraphicsContext_FillPath).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxgraphicscontext.html#wxgraphicscontextstrokepath">external documentation</a>.

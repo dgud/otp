@@ -76,11 +76,11 @@ blit(#wx_ref{type=ThisT}=This,{DestPtX,DestPtY} = DestPt,{SzW,SzH} = Sz,#wx_ref{
  when is_integer(DestPtX),is_integer(DestPtY),is_integer(SzW),is_integer(SzH),is_integer(SrcPtX),is_integer(SrcPtY),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
   ?CLASS(SourceT,wxDC),
-  MOpts = fun({rop, _rop} = Arg, Acc) -> [Arg|Acc];
-          ({useMask, _useMask} = Arg, Acc) -> [Arg|Acc];
-          ({srcPtMask, {_srcPtMaskX,_srcPtMaskY}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({rop, _rop} = Arg) -> Arg;
+          ({useMask, _useMask} = Arg) -> Arg;
+          ({srcPtMask, {_srcPtMaskX,_srcPtMaskY}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,DestPt,Sz,Source,SrcPt, Opts,?get_env(),?wxDC_Blit),
   wxe_util:rec(?wxDC_Blit).
 
@@ -181,9 +181,9 @@ drawBitmap(#wx_ref{type=ThisT}=This,#wx_ref{type=BmpT}=Bmp,{PtX,PtY} = Pt, Optio
  when is_integer(PtX),is_integer(PtY),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
   ?CLASS(BmpT,wxBitmap),
-  MOpts = fun({useMask, _useMask} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({useMask, _useMask} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Bmp,Pt, Opts,?get_env(),?wxDC_DrawBitmap).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdcdrawcheckmark">external documentation</a>.
@@ -252,10 +252,10 @@ drawLabel(#wx_ref{type=ThisT}=This,Text,{RectX,RectY,RectW,RectH} = Rect, Option
  when ?is_chardata(Text),is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
   Text_UC = unicode:characters_to_binary(Text),
-  MOpts = fun({alignment, _alignment} = Arg, Acc) -> [Arg|Acc];
-          ({indexAccel, _indexAccel} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({alignment, _alignment} = Arg) -> Arg;
+          ({indexAccel, _indexAccel} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Text_UC,Rect, Opts,?get_env(),?wxDC_DrawLabel).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdcdrawline">external documentation</a>.
@@ -282,10 +282,10 @@ drawLines(This,Points)
 drawLines(#wx_ref{type=ThisT}=This,Points, Options)
  when is_list(Points),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  MOpts = fun({xoffset, _xoffset} = Arg, Acc) -> [Arg|Acc];
-          ({yoffset, _yoffset} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({xoffset, _xoffset} = Arg) -> Arg;
+          ({yoffset, _yoffset} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Points, Opts,?get_env(),?wxDC_DrawLines).
 
 %% @equiv drawPolygon(This,Points, [])
@@ -306,11 +306,11 @@ drawPolygon(This,Points)
 drawPolygon(#wx_ref{type=ThisT}=This,Points, Options)
  when is_list(Points),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  MOpts = fun({xoffset, _xoffset} = Arg, Acc) -> [Arg|Acc];
-          ({yoffset, _yoffset} = Arg, Acc) -> [Arg|Acc];
-          ({fillStyle, _fillStyle} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({xoffset, _xoffset} = Arg) -> Arg;
+          ({yoffset, _yoffset} = Arg) -> Arg;
+          ({fillStyle, _fillStyle} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Points, Opts,?get_env(),?wxDC_DrawPolygon).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdcdrawpoint">external documentation</a>.
@@ -401,9 +401,9 @@ floodFill(This,Pt={PtX,PtY} = Pt,Col)
 floodFill(#wx_ref{type=ThisT}=This,{PtX,PtY} = Pt,Col, Options)
  when is_integer(PtX),is_integer(PtY),tuple_size(Col) =:= 3; tuple_size(Col) =:= 4,is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  MOpts = fun({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Pt,wxe_util:color(Col), Opts,?get_env(),?wxDC_FloodFill),
   wxe_util:rec(?wxDC_FloodFill).
 
@@ -507,9 +507,9 @@ getMultiLineTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
   String_UC = unicode:characters_to_binary(String),
-  MOpts = fun({font, #wx_ref{type=FontT}} = Arg, Acc) ->   ?CLASS(FontT,wxFont),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({font, #wx_ref{type=FontT}} = Arg) ->   ?CLASS(FontT,wxFont),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,String_UC, Opts,?get_env(),?wxDC_GetMultiLineTextExtent_4),
   wxe_util:rec(?wxDC_GetMultiLineTextExtent_4).
 
@@ -593,9 +593,9 @@ getTextExtent(#wx_ref{type=ThisT}=This,String, Options)
  when ?is_chardata(String),is_list(Options) ->
   ?CLASS(ThisT,wxDC),
   String_UC = unicode:characters_to_binary(String),
-  MOpts = fun({theFont, #wx_ref{type=TheFontT}} = Arg, Acc) ->   ?CLASS(TheFontT,wxFont),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({theFont, #wx_ref{type=TheFontT}} = Arg) ->   ?CLASS(TheFontT,wxFont),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,String_UC, Opts,?get_env(),?wxDC_GetTextExtent_4),
   wxe_util:rec(?wxDC_GetTextExtent_4).
 
@@ -647,9 +647,9 @@ gradientFillLinear(This,Rect={RectX,RectY,RectW,RectH} = Rect,InitialColour,Dest
 gradientFillLinear(#wx_ref{type=ThisT}=This,{RectX,RectY,RectW,RectH} = Rect,InitialColour,DestColour, Options)
  when is_integer(RectX),is_integer(RectY),is_integer(RectW),is_integer(RectH),tuple_size(InitialColour) =:= 3; tuple_size(InitialColour) =:= 4,tuple_size(DestColour) =:= 3; tuple_size(DestColour) =:= 4,is_list(Options) ->
   ?CLASS(ThisT,wxDC),
-  MOpts = fun({nDirection, _nDirection} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({nDirection, _nDirection} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Rect,wxe_util:color(InitialColour),wxe_util:color(DestColour), Opts,?get_env(),?wxDC_GradientFillLinear).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxdc.html#wxdclogicaltodevicex">external documentation</a>.

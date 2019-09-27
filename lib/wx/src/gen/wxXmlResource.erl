@@ -52,10 +52,10 @@ new() ->
 		 | {'domain', unicode:chardata()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          ({domain, Domain}, Acc) ->   Domain_UC = unicode:characters_to_binary(Domain),[{domain,Domain_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flags, _flags} = Arg) -> Arg;
+          ({domain, Domain}) ->   Domain_UC = unicode:characters_to_binary(Domain),{domain,Domain_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxXmlResource_new_1),
   wxe_util:rec(?wxXmlResource_new_1).
 
@@ -67,10 +67,10 @@ new(Options)
 new(Filemask, Options)
  when ?is_chardata(Filemask),is_list(Options) ->
   Filemask_UC = unicode:characters_to_binary(Filemask),
-  MOpts = fun({flags, _flags} = Arg, Acc) -> [Arg|Acc];
-          ({domain, Domain}, Acc) ->   Domain_UC = unicode:characters_to_binary(Domain),[{domain,Domain_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({flags, _flags} = Arg) -> Arg;
+          ({domain, Domain}) ->   Domain_UC = unicode:characters_to_binary(Domain),{domain,Domain_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Filemask_UC, Opts,?get_env(),?wxXmlResource_new_2),
   wxe_util:rec(?wxXmlResource_new_2).
 
@@ -91,9 +91,9 @@ attachUnknownControl(#wx_ref{type=ThisT}=This,Name,#wx_ref{type=ControlT}=Contro
   ?CLASS(ThisT,wxXmlResource),
   Name_UC = unicode:characters_to_binary(Name),
   ?CLASS(ControlT,wxWindow),
-  MOpts = fun({parent, #wx_ref{type=ParentT}} = Arg, Acc) ->   ?CLASS(ParentT,wxWindow),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({parent, #wx_ref{type=ParentT}} = Arg) ->   ?CLASS(ParentT,wxWindow),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Name_UC,Control, Opts,?get_env(),?wxXmlResource_AttachUnknownControl),
   wxe_util:rec(?wxXmlResource_AttachUnknownControl).
 
@@ -150,9 +150,9 @@ getXRCID(Str_id)
 getXRCID(Str_id, Options)
  when is_list(Str_id),is_list(Options) ->
   Str_id_UC = unicode:characters_to_binary(Str_id),
-  MOpts = fun({value_if_not_found, _value_if_not_found} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({value_if_not_found, _value_if_not_found} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Str_id_UC, Opts,?get_env(),?wxXmlResource_GetXRCID),
   wxe_util:rec(?wxXmlResource_GetXRCID).
 

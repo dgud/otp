@@ -55,14 +55,14 @@ new() ->
 		 | {'subMenu', wxMenu:wxMenu()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({parentMenu, #wx_ref{type=ParentMenuT}} = Arg, Acc) ->   ?CLASS(ParentMenuT,wxMenu),[Arg|Acc];
-          ({id, _id} = Arg, Acc) -> [Arg|Acc];
-          ({text, Text}, Acc) ->   Text_UC = unicode:characters_to_binary(Text),[{text,Text_UC}|Acc];
-          ({help, Help}, Acc) ->   Help_UC = unicode:characters_to_binary(Help),[{help,Help_UC}|Acc];
-          ({kind, _kind} = Arg, Acc) -> [Arg|Acc];
-          ({subMenu, #wx_ref{type=SubMenuT}} = Arg, Acc) ->   ?CLASS(SubMenuT,wxMenu),[Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({parentMenu, #wx_ref{type=ParentMenuT}} = Arg) ->   ?CLASS(ParentMenuT,wxMenu),Arg;
+          ({id, _id} = Arg) -> Arg;
+          ({text, Text}) ->   Text_UC = unicode:characters_to_binary(Text),{text,Text_UC};
+          ({help, Help}) ->   Help_UC = unicode:characters_to_binary(Help),{help,Help_UC};
+          ({kind, _kind} = Arg) -> Arg;
+          ({subMenu, #wx_ref{type=SubMenuT}} = Arg) ->   ?CLASS(SubMenuT,wxMenu),Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxMenuItem_new),
   wxe_util:rec(?wxMenuItem_new).
 
@@ -81,9 +81,9 @@ check(This)
 check(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuItem),
-  MOpts = fun({check, _check} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({check, _check} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxMenuItem_Check).
 
 %% @equiv enable(This, [])
@@ -101,9 +101,9 @@ enable(This)
 enable(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxMenuItem),
-  MOpts = fun({enable, _enable} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({enable, _enable} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxMenuItem_Enable).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenuitem.html#wxmenuitemgetbitmap">external documentation</a>.

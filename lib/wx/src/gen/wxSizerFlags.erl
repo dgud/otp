@@ -47,9 +47,9 @@ new() ->
 	Option :: {'proportion', integer()}.
 new(Options)
  when is_list(Options) ->
-  MOpts = fun({proportion, _proportion} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({proportion, _proportion} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxSizerFlags_new),
   wxe_util:rec(?wxSizerFlags_new).
 
@@ -77,9 +77,9 @@ border(This)
 border(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSizerFlags),
-  MOpts = fun({direction, _direction} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({direction, _direction} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxSizerFlags_Border_1),
   wxe_util:rec(?wxSizerFlags_Border_1).
 

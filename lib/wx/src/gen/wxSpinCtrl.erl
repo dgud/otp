@@ -109,16 +109,16 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
-          ({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary(Value),[{value,Value_UC}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({min, _min} = Arg, Acc) -> [Arg|Acc];
-          ({max, _max} = Arg, Acc) -> [Arg|Acc];
-          ({initial, _initial} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({id, _id} = Arg) -> Arg;
+          ({value, Value}) ->   Value_UC = unicode:characters_to_binary(Value),{value,Value_UC};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({min, _min} = Arg) -> Arg;
+          ({max, _max} = Arg) -> Arg;
+          ({initial, _initial} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxSpinCtrl_new_2),
   wxe_util:rec(?wxSpinCtrl_new_2).
 
@@ -145,16 +145,16 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxSpinCtrl),
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
-          ({value, Value}, Acc) ->   Value_UC = unicode:characters_to_binary(Value),[{value,Value_UC}|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          ({min, _min} = Arg, Acc) -> [Arg|Acc];
-          ({max, _max} = Arg, Acc) -> [Arg|Acc];
-          ({initial, _initial} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({id, _id} = Arg) -> Arg;
+          ({value, Value}) ->   Value_UC = unicode:characters_to_binary(Value),{value,Value_UC};
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          ({min, _min} = Arg) -> Arg;
+          ({max, _max} = Arg) -> Arg;
+          ({initial, _initial} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Parent, Opts,?get_env(),?wxSpinCtrl_Create),
   wxe_util:rec(?wxSpinCtrl_Create).
 

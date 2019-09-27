@@ -87,10 +87,10 @@ new(Width,Height)
 new(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary(Name),
-  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
-          ({index, _index} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({type, _type} = Arg) -> Arg;
+          ({index, _index} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Name_UC, Opts,?get_env(),?wxImage_new_2),
   wxe_util:rec(?wxImage_new_2).
 
@@ -117,18 +117,18 @@ new(Width,Height,Data)
   new(Width,Height,Data, []);
 new(Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
-  MOpts = fun({clear, _clear} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({clear, _clear} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Width,Height, Opts,?get_env(),?wxImage_new_3_0),
   wxe_util:rec(?wxImage_new_3_0);
 new(Name,Mimetype, Options)
  when ?is_chardata(Name),?is_chardata(Mimetype),is_list(Options) ->
   Name_UC = unicode:characters_to_binary(Name),
   Mimetype_UC = unicode:characters_to_binary(Mimetype),
-  MOpts = fun({index, _index} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({index, _index} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Name_UC,Mimetype_UC, Opts,?get_env(),?wxImage_new_3_1),
   wxe_util:rec(?wxImage_new_3_1).
 
@@ -149,9 +149,9 @@ new(Width,Height,Data,Alpha)
   new(Width,Height,Data,Alpha, []);
 new(Width,Height,Data, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_list(Options) ->
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Width,Height,Data, Opts,?get_env(),?wxImage_new_4),
   wxe_util:rec(?wxImage_new_4).
 
@@ -161,9 +161,9 @@ new(Width,Height,Data, Options)
 	Option :: {'static_data', boolean()}.
 new(Width,Height,Data,Alpha, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha),is_list(Options) ->
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Width,Height,Data,Alpha, Opts,?get_env(),?wxImage_new_5),
   wxe_util:rec(?wxImage_new_5).
 
@@ -209,9 +209,9 @@ convertAlphaToMask(This)
 convertAlphaToMask(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({threshold, _threshold} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({threshold, _threshold} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxImage_ConvertAlphaToMask),
   wxe_util:rec(?wxImage_ConvertAlphaToMask).
 
@@ -232,11 +232,11 @@ convertToGreyscale(This)
 convertToGreyscale(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({lr, _lr} = Arg, Acc) -> [Arg|Acc];
-          ({lg, _lg} = Arg, Acc) -> [Arg|Acc];
-          ({lb, _lb} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({lr, _lr} = Arg) -> Arg;
+          ({lg, _lg} = Arg) -> Arg;
+          ({lb, _lb} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxImage_ConvertToGreyscale),
   wxe_util:rec(?wxImage_ConvertToGreyscale).
 
@@ -283,9 +283,9 @@ create(This,Width,Height,Data)
 create(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({clear, _clear} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({clear, _clear} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxImage_Create_3),
   wxe_util:rec(?wxImage_Create_3).
 
@@ -307,9 +307,9 @@ create(This,Width,Height,Data,Alpha)
 create(#wx_ref{type=ThisT}=This,Width,Height,Data, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height,Data, Opts,?get_env(),?wxImage_Create_4),
   wxe_util:rec(?wxImage_Create_4).
 
@@ -320,9 +320,9 @@ create(#wx_ref{type=ThisT}=This,Width,Height,Data, Options)
 create(#wx_ref{type=ThisT}=This,Width,Height,Data,Alpha, Options)
  when is_integer(Width),is_integer(Height),is_binary(Data),is_binary(Alpha),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height,Data,Alpha, Opts,?get_env(),?wxImage_Create_5),
   wxe_util:rec(?wxImage_Create_5).
 
@@ -352,11 +352,11 @@ findFirstUnusedColour(This)
 findFirstUnusedColour(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({startR, _startR} = Arg, Acc) -> [Arg|Acc];
-          ({startG, _startG} = Arg, Acc) -> [Arg|Acc];
-          ({startB, _startB} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({startR, _startR} = Arg) -> Arg;
+          ({startG, _startG} = Arg) -> Arg;
+          ({startB, _startB} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxImage_FindFirstUnusedColour),
   wxe_util:rec(?wxImage_FindFirstUnusedColour).
 
@@ -425,9 +425,9 @@ getImageCount(Name)
 getImageCount(Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   Name_UC = unicode:characters_to_binary(Name),
-  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({type, _type} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Name_UC, Opts,?get_env(),?wxImage_GetImageCount),
   wxe_util:rec(?wxImage_GetImageCount).
 
@@ -579,9 +579,9 @@ isTransparent(This,X,Y)
 isTransparent(#wx_ref{type=ThisT}=This,X,Y, Options)
  when is_integer(X),is_integer(Y),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({threshold, _threshold} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({threshold, _threshold} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,X,Y, Opts,?get_env(),?wxImage_IsTransparent),
   wxe_util:rec(?wxImage_IsTransparent).
 
@@ -602,10 +602,10 @@ loadFile(#wx_ref{type=ThisT}=This,Name, Options)
  when ?is_chardata(Name),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary(Name),
-  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
-          ({index, _index} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({type, _type} = Arg) -> Arg;
+          ({index, _index} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Name_UC, Opts,?get_env(),?wxImage_LoadFile_2),
   wxe_util:rec(?wxImage_LoadFile_2).
 
@@ -618,9 +618,9 @@ loadFile(#wx_ref{type=ThisT}=This,Name,Mimetype, Options)
   ?CLASS(ThisT,wxImage),
   Name_UC = unicode:characters_to_binary(Name),
   Mimetype_UC = unicode:characters_to_binary(Mimetype),
-  MOpts = fun({index, _index} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({index, _index} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Name_UC,Mimetype_UC, Opts,?get_env(),?wxImage_LoadFile_3),
   wxe_util:rec(?wxImage_LoadFile_3).
 
@@ -656,9 +656,9 @@ mirror(This)
 mirror(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({horizontally, _horizontally} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({horizontally, _horizontally} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxImage_Mirror),
   wxe_util:rec(?wxImage_Mirror).
 
@@ -686,9 +686,9 @@ rescale(This,Width,Height)
 rescale(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({quality, _quality} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({quality, _quality} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxImage_Rescale),
   wxe_util:rec(?wxImage_Rescale).
 
@@ -709,11 +709,11 @@ resize(This,Size={SizeW,SizeH} = Size,Pos={PosX,PosY} = Pos)
 resize(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
  when is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({r, _r} = Arg, Acc) -> [Arg|Acc];
-          ({g, _g} = Arg, Acc) -> [Arg|Acc];
-          ({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({r, _r} = Arg) -> Arg;
+          ({g, _g} = Arg) -> Arg;
+          ({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Size,Pos, Opts,?get_env(),?wxImage_Resize),
   wxe_util:rec(?wxImage_Resize).
 
@@ -733,10 +733,10 @@ rotate(This,Angle,Centre_of_rotation={Centre_of_rotationX,Centre_of_rotationY} =
 rotate(#wx_ref{type=ThisT}=This,Angle,{Centre_of_rotationX,Centre_of_rotationY} = Centre_of_rotation, Options)
  when is_number(Angle),is_integer(Centre_of_rotationX),is_integer(Centre_of_rotationY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({interpolating, _interpolating} = Arg, Acc) -> [Arg|Acc];
-          ({offset_after_rotation, {_offset_after_rotationX,_offset_after_rotationY}} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({interpolating, _interpolating} = Arg) -> Arg;
+          ({offset_after_rotation, {_offset_after_rotationX,_offset_after_rotationY}} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Angle,Centre_of_rotation, Opts,?get_env(),?wxImage_Rotate),
   wxe_util:rec(?wxImage_Rotate).
 
@@ -763,9 +763,9 @@ rotate90(This)
 rotate90(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({clockwise, _clockwise} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({clockwise, _clockwise} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxImage_Rotate90),
   wxe_util:rec(?wxImage_Rotate90).
 
@@ -818,9 +818,9 @@ scale(This,Width,Height)
 scale(#wx_ref{type=ThisT}=This,Width,Height, Options)
  when is_integer(Width),is_integer(Height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({quality, _quality} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({quality, _quality} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Width,Height, Opts,?get_env(),?wxImage_Scale),
   wxe_util:rec(?wxImage_Scale).
 
@@ -841,11 +841,11 @@ size(This,Size={SizeW,SizeH} = Size,Pos={PosX,PosY} = Pos)
 size(#wx_ref{type=ThisT}=This,{SizeW,SizeH} = Size,{PosX,PosY} = Pos, Options)
  when is_integer(SizeW),is_integer(SizeH),is_integer(PosX),is_integer(PosY),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({r, _r} = Arg, Acc) -> [Arg|Acc];
-          ({g, _g} = Arg, Acc) -> [Arg|Acc];
-          ({b, _b} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({r, _r} = Arg) -> Arg;
+          ({g, _g} = Arg) -> Arg;
+          ({b, _b} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Size,Pos, Opts,?get_env(),?wxImage_Size),
   wxe_util:rec(?wxImage_Size).
 
@@ -864,9 +864,9 @@ setAlpha(This,Alpha)
 setAlpha(#wx_ref{type=ThisT}=This,Alpha, Options)
  when is_binary(Alpha),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Alpha, Opts,?get_env(),?wxImage_SetAlpha_2).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetalpha">external documentation</a>.
@@ -892,9 +892,9 @@ setData(This,Data)
 setData(#wx_ref{type=ThisT}=This,Data, Options)
  when is_binary(Data),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Data, Opts,?get_env(),?wxImage_SetData_2).
 
 %% @equiv setData(This,Data,New_width,New_height, [])
@@ -912,9 +912,9 @@ setData(This,Data,New_width,New_height)
 setData(#wx_ref{type=ThisT}=This,Data,New_width,New_height, Options)
  when is_binary(Data),is_integer(New_width),is_integer(New_height),is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({static_data, _static_data} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({static_data, _static_data} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Data,New_width,New_height, Opts,?get_env(),?wxImage_SetData_4).
 
 %% @equiv setMask(This, [])
@@ -932,9 +932,9 @@ setMask(This)
 setMask(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxImage),
-  MOpts = fun({mask, _mask} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({mask, _mask} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxImage_SetMask).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wximage.html#wximagesetmaskcolour">external documentation</a>.

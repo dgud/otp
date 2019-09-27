@@ -77,11 +77,11 @@ new(#wx_ref{type=LocT}=Loc) ->
 new(Filename, Options)
  when ?is_chardata(Filename),is_list(Options) ->
   Filename_UC = unicode:characters_to_binary(Filename),
-  MOpts = fun({type, _type} = Arg, Acc) -> [Arg|Acc];
-          ({desiredWidth, _desiredWidth} = Arg, Acc) -> [Arg|Acc];
-          ({desiredHeight, _desiredHeight} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({type, _type} = Arg) -> Arg;
+          ({desiredWidth, _desiredWidth} = Arg) -> Arg;
+          ({desiredHeight, _desiredHeight} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Filename_UC, Opts,?get_env(),?wxIcon_new_2),
   wxe_util:rec(?wxIcon_new_2).
 

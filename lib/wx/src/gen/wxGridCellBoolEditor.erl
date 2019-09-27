@@ -69,10 +69,10 @@ useStringValues() ->
 		 | {'valueFalse', unicode:chardata()}.
 useStringValues(Options)
  when is_list(Options) ->
-  MOpts = fun({valueTrue, ValueTrue}, Acc) ->   ValueTrue_UC = unicode:characters_to_binary(ValueTrue),[{valueTrue,ValueTrue_UC}|Acc];
-          ({valueFalse, ValueFalse}, Acc) ->   ValueFalse_UC = unicode:characters_to_binary(ValueFalse),[{valueFalse,ValueFalse_UC}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({valueTrue, ValueTrue}) ->   ValueTrue_UC = unicode:characters_to_binary(ValueTrue),{valueTrue,ValueTrue_UC};
+          ({valueFalse, ValueFalse}) ->   ValueFalse_UC = unicode:characters_to_binary(ValueFalse),{valueFalse,ValueFalse_UC};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Opts,?get_env(),?wxGridCellBoolEditor_UseStringValues).
 
 %% @doc Destroys this object, do not use object again

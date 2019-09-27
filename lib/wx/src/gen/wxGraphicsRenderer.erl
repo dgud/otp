@@ -111,9 +111,9 @@ createFont(#wx_ref{type=ThisT}=This,#wx_ref{type=FontT}=Font, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsRenderer),
   ?CLASS(FontT,wxFont),
-  MOpts = fun({col, Col}, Acc) -> [{col,wxe_util:color(Col)}|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({col, Col}) -> {col,wxe_util:color(Col)};
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Font, Opts,?get_env(),?wxGraphicsRenderer_CreateFont),
   wxe_util:rec(?wxGraphicsRenderer_CreateFont).
 
@@ -137,14 +137,14 @@ createMatrix(This)
 createMatrix(#wx_ref{type=ThisT}=This, Options)
  when is_list(Options) ->
   ?CLASS(ThisT,wxGraphicsRenderer),
-  MOpts = fun({a, _a} = Arg, Acc) -> [Arg|Acc];
-          ({b, _b} = Arg, Acc) -> [Arg|Acc];
-          ({c, _c} = Arg, Acc) -> [Arg|Acc];
-          ({d, _d} = Arg, Acc) -> [Arg|Acc];
-          ({tx, _tx} = Arg, Acc) -> [Arg|Acc];
-          ({ty, _ty} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({a, _a} = Arg) -> Arg;
+          ({b, _b} = Arg) -> Arg;
+          ({c, _c} = Arg) -> Arg;
+          ({d, _d} = Arg) -> Arg;
+          ({tx, _tx} = Arg) -> Arg;
+          ({ty, _ty} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This, Opts,?get_env(),?wxGraphicsRenderer_CreateMatrix),
   wxe_util:rec(?wxGraphicsRenderer_CreateMatrix).
 

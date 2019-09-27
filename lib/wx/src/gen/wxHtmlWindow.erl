@@ -115,12 +115,12 @@ new(Parent)
 new(#wx_ref{type=ParentT}=Parent, Options)
  when is_list(Options) ->
   ?CLASS(ParentT,wxWindow),
-  MOpts = fun({id, _id} = Arg, Acc) -> [Arg|Acc];
-          ({pos, {_posX,_posY}} = Arg, Acc) -> [Arg|Acc];
-          ({size, {_sizeW,_sizeH}} = Arg, Acc) -> [Arg|Acc];
-          ({style, _style} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({id, _id} = Arg) -> Arg;
+          ({pos, {_posX,_posY}} = Arg) -> Arg;
+          ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+          ({style, _style} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(Parent, Opts,?get_env(),?wxHtmlWindow_new_2),
   wxe_util:rec(?wxHtmlWindow_new_2).
 
@@ -281,9 +281,9 @@ setFonts(#wx_ref{type=ThisT}=This,Normal_face,Fixed_face, Options)
   ?CLASS(ThisT,wxHtmlWindow),
   Normal_face_UC = unicode:characters_to_binary(Normal_face),
   Fixed_face_UC = unicode:characters_to_binary(Fixed_face),
-  MOpts = fun({sizes, _sizes} = Arg, Acc) -> [Arg|Acc];
-          (BadOpt, _) -> erlang:error({badoption, BadOpt}) end,
-  Opts = lists:foldr(MOpts, [], Options),
+  MOpts = fun({sizes, _sizes} = Arg) -> Arg;
+          (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+  Opts = lists:map(MOpts, Options),
   wxe_util:queue_cmd(This,Normal_face_UC,Fixed_face_UC, Opts,?get_env(),?wxHtmlWindow_SetFonts).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxhtmlwindow.html#wxhtmlwindowsetpage">external documentation</a>.
