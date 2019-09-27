@@ -44,7 +44,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxListCtrl * Result = new EwxListCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListCtrl"));
 }
 
@@ -121,7 +121,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   This->onGetItemColumnImage = onGetItemColumnImage;
   This->memenv = memenv;
 
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -140,7 +140,7 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   // fn = (wxListCtrlCompare *) memenv->getPtr(env, argv[1]);
   callbackInfo cb = callbackInfo();
   cb.memenv = memenv;
-  if(!enif_get_int(env, argv[2], &cb.callbackID)) Badarg(1725,"CallBack");
+  if(!enif_get_int(env, argv[1], &cb.callbackID)) Badarg(1725,"CallBack");
   // long data;
   // if(!enif_get_long(env, argv[2], &data)) Badarg(1725,"data");
   if(!This) throw wxe_badarg(0);
@@ -148,9 +148,9 @@ void ~s(WxeApp *app, wxeCommand& Ecmd)
   wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
   wxeReturn rt2 = wxeReturn(memenv, memenv->owner, false);
-  rt.send( enif_make_tuple2(rt.env,
-			    rt.make_atom("wx_delete_cb"),
-			    rt.make_int(cb.callbackID)));
+  rt2.send( enif_make_tuple2(rt2.env,
+			     rt2.make_atom("wx_delete_cb"),
+			     rt2.make_int(cb.callbackID)));
 }
 
 SortItems>>

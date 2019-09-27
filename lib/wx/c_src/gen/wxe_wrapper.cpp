@@ -9440,7 +9440,7 @@ void wxGridCellChoiceEditor_new(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[0];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(600,"choices");
-    if(!enif_inspect_binary(env, argv[0], &choices_bin)) Badarg(600,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(600,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -14882,7 +14882,7 @@ void wxControlWithItems_appendStrings_1(WxeApp *app, wxeCommand& Ecmd)
   stringsTail = argv[1];
   while(!enif_is_empty_list(env, stringsTail)) {
     if(!enif_get_list_cell(env, stringsTail, &stringsHead, &stringsTail)) Badarg(889,"strings");
-    if(!enif_inspect_binary(env, argv[1], &strings_bin)) Badarg(889,"strings");
+    if(!enif_inspect_binary(env, stringsHead, &strings_bin)) Badarg(889,"strings");
     strings.Add(wxString(strings_bin.data, wxConvUTF8, strings_bin.size));
   };
   if(!This) throw wxe_badarg("This");
@@ -28189,7 +28189,7 @@ void wxCheckListBox_new_3(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1563,"choices");
-    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1563,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1563,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -28297,7 +28297,7 @@ void wxChoice_new_3(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1569,"choices");
-    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1569,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1569,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -28360,7 +28360,7 @@ void wxChoice_Create(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[5];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1574,"choices");
-    if(!enif_inspect_binary(env, argv[5], &choices_bin)) Badarg(1574,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1574,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -28503,7 +28503,7 @@ void wxComboBox_new_3(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1580,"choices");
-    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1580,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1580,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -28559,7 +28559,7 @@ void wxComboBox_Create(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[6];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1583,"choices");
-    if(!enif_inspect_binary(env, argv[6], &choices_bin)) Badarg(1583,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1583,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -29772,7 +29772,7 @@ void wxListBox_new_3(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = tpl[1];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1647,"choices");
-    if(!enif_inspect_binary(env, tpl[1], &choices_bin)) Badarg(1647,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1647,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "style"))) {
@@ -29835,7 +29835,7 @@ void wxListBox_Create(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[5];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(1652,"choices");
-    if(!enif_inspect_binary(env, argv[5], &choices_bin)) Badarg(1652,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(1652,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -29907,7 +29907,7 @@ void wxListBox_InsertItems(WxeApp *app, wxeCommand& Ecmd)
   itemsTail = argv[1];
   while(!enif_is_empty_list(env, itemsTail)) {
     if(!enif_get_list_cell(env, itemsTail, &itemsHead, &itemsTail)) Badarg(1655,"items");
-    if(!enif_inspect_binary(env, argv[1], &items_bin)) Badarg(1655,"items");
+    if(!enif_inspect_binary(env, itemsHead, &items_bin)) Badarg(1655,"items");
     items.Add(wxString(items_bin.data, wxConvUTF8, items_bin.size));
   };
   unsigned int pos;
@@ -29948,7 +29948,7 @@ void wxListBox_Set(WxeApp *app, wxeCommand& Ecmd)
   itemsTail = argv[1];
   while(!enif_is_empty_list(env, itemsTail)) {
     if(!enif_get_list_cell(env, itemsTail, &itemsHead, &itemsTail)) Badarg(1657,"items");
-    if(!enif_inspect_binary(env, argv[1], &items_bin)) Badarg(1657,"items");
+    if(!enif_inspect_binary(env, itemsHead, &items_bin)) Badarg(1657,"items");
     items.Add(wxString(items_bin.data, wxConvUTF8, items_bin.size));
   };
   if(!This) throw wxe_badarg("This");
@@ -30017,7 +30017,7 @@ void wxListCtrl_new_0(WxeApp *app, wxeCommand& Ecmd)
   wxeMemEnv *memenv = Ecmd.memenv;
   wxListCtrl * Result = new EwxListCtrl();
   app->newPtr((void *) Result, 0, memenv);
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_ref(app->getRef((void *)Result,memenv), "wxListCtrl"));
 }
 
@@ -30148,7 +30148,7 @@ void wxListCtrl_Create(WxeApp *app, wxeCommand& Ecmd)
   This->onGetItemColumnImage = onGetItemColumnImage;
   This->memenv = memenv;
 
-  wxeReturn rt = wxeReturn(memenv, Ecmd.caller);
+  wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
 
 }
@@ -31348,7 +31348,7 @@ void wxListCtrl_SortItems(WxeApp *app, wxeCommand& Ecmd)
   // fn = (wxListCtrlCompare *) memenv->getPtr(env, argv[1]);
   callbackInfo cb = callbackInfo();
   cb.memenv = memenv;
-  if(!enif_get_int(env, argv[2], &cb.callbackID)) Badarg(1725,"CallBack");
+  if(!enif_get_int(env, argv[1], &cb.callbackID)) Badarg(1725,"CallBack");
   // long data;
   // if(!enif_get_long(env, argv[2], &data)) Badarg(1725,"data");
   if(!This) throw wxe_badarg(0);
@@ -31356,9 +31356,9 @@ void wxListCtrl_SortItems(WxeApp *app, wxeCommand& Ecmd)
   wxeReturn rt = wxeReturn(memenv, Ecmd.caller, true);
   rt.send(  rt.make_bool(Result));
   wxeReturn rt2 = wxeReturn(memenv, memenv->owner, false);
-  rt.send( enif_make_tuple2(rt.env,
-			    rt.make_atom("wx_delete_cb"),
-			    rt.make_int(cb.callbackID)));
+  rt2.send( enif_make_tuple2(rt2.env,
+			     rt2.make_atom("wx_delete_cb"),
+			     rt2.make_int(cb.callbackID)));
 }
 
 // wxListView::ClearColumnImage
@@ -39131,7 +39131,7 @@ void wxRadioBox_new(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[5];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2142,"choices");
-    if(!enif_inspect_binary(env, argv[5], &choices_bin)) Badarg(2142,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(2142,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -39198,7 +39198,7 @@ void wxRadioBox_Create(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[6];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2145,"choices");
-    if(!enif_inspect_binary(env, argv[6], &choices_bin)) Badarg(2145,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(2145,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -42478,7 +42478,7 @@ void wxMultiChoiceDialog_new_5(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[3];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2317,"choices");
-    if(!enif_inspect_binary(env, argv[3], &choices_bin)) Badarg(2317,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(2317,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;
@@ -42582,7 +42582,7 @@ void wxSingleChoiceDialog_new_5(WxeApp *app, wxeCommand& Ecmd)
   choicesTail = argv[3];
   while(!enif_is_empty_list(env, choicesTail)) {
     if(!enif_get_list_cell(env, choicesTail, &choicesHead, &choicesTail)) Badarg(2323,"choices");
-    if(!enif_inspect_binary(env, argv[3], &choices_bin)) Badarg(2323,"choices");
+    if(!enif_inspect_binary(env, choicesHead, &choices_bin)) Badarg(2323,"choices");
     choices.Add(wxString(choices_bin.data, wxConvUTF8, choices_bin.size));
   };
   ERL_NIF_TERM lstHead, lstTail;

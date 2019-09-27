@@ -646,7 +646,7 @@ decode_arg(N,#type{name="wxArrayString"},Arg,Argc) ->
     w("  ~sTail = ~s;~n",[N,Argc]),
     w("  while(!enif_is_empty_list(env, ~sTail)) {~n", [N]),
     w("    if(!enif_get_list_cell(env, ~sTail, &~sHead, &~sTail)) ~s;~n",[N,N,N,badarg(N)]),
-    w("    if(!enif_inspect_binary(env, ~s, &~s_bin)) ~s;~n",[Argc, N, badarg(N)]),
+    w("    if(!enif_inspect_binary(env, ~sHead, &~s_bin)) ~s;~n",[N, N, badarg(N)]),
     w("    ~s.Add(wxString(~s_bin.data, wxConvUTF8, ~s_bin.size));~n", [N,N,N]),
     w("  };~n",[]);
 

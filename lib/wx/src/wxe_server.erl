@@ -240,9 +240,9 @@ invoke_cb({'_wx_invoke_cb_', FunId, Ev=#wx{}, Ref=#wx_ref{}}, _S) ->
     %% Event callbacks
     case get(FunId) of
 	{{nospawn, Fun}, _} when is_function(Fun) ->
-	    invoke_callback_fun(fun() -> Fun(Ev, Ref), <<>> end);
+	    invoke_callback_fun(fun() -> Fun(Ev, Ref), [] end);
 	{Fun,_} when is_function(Fun) ->
-	    invoke_callback(fun() -> Fun(Ev, Ref), <<>> end);
+	    invoke_callback(fun() -> Fun(Ev, Ref), [] end);
 	{Pid,_} when is_pid(Pid) -> %% wx_object sync event
 	    invoke_callback(Pid, Ev, Ref);
 	Err ->
@@ -252,7 +252,7 @@ invoke_cb({'_wx_invoke_cb_', FunId, Args, _}, _S) when is_list(Args), is_integer
     %% Overloaded functions
     case get(FunId) of
 	{Fun,_} when is_function(Fun) ->
-	    invoke_callback(fun() -> Fun(Args) end);
+	    invoke_callback(fun() -> apply(Fun, Args) end);
 	Err ->
 	    ?log("Internal Error ~p ~p ~p~n",[Err, FunId, Args])
     end.
@@ -296,13 +296,11 @@ invoke_callback_fun(Fun) ->
     Env = ?get_env(),
     wxe_util:queue_cmd(Env, ?WXE_CB_START),
     Res = try
-	      Return = Fun(),
-	      true = is_binary(Return),
-	      Return
+	      Fun()
 	  catch _:Reason:Stacktrace ->
 		  ?log("Callback fun crashed with {'EXIT, ~p, ~p}~n",
 		       [Reason, Stacktrace]),
-		  <<>>
+		  []
 	  end,
     wxe_util:queue_cmd(Res, Env, ?WXE_CB_RETURN).
 

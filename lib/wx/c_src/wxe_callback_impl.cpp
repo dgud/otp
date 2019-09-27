@@ -224,12 +224,13 @@ wxString EwxListCtrl::OnGetItemText(long item, long col) const {
     wxeCommand *cb = ((WxeApp *) wxTheApp)->cb_return;
     ErlNifBinary bin;
     if(cb && enif_inspect_binary(cb->env, cb->args[0], &bin)) {
-      wxString str = wxString(bin.data, wxConvUTF8);
+      wxString str = wxString(bin.data, wxConvUTF8, bin.size);
       cb->Delete();
       return str;
     }
+    return wxT("OnGetItemText must return a string");
   }
-  return wxT("OnGetItemText not correctly defined");
+  return wxT("OnGetItemText not defined");
 }
 
 wxListItemAttr* EwxListCtrl::OnGetItemAttr(long item) const {

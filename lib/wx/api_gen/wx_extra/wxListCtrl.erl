@@ -29,15 +29,14 @@
 %%         value if the first item is less than the second one and a positive
 %%         value if the first item is greater than the second one.
 %%  <br /> NOTE: The callback may not call other (wx) processes.
-sortItems(#wx_ref{type=ThisT,ref=ThisRef}, SortCallBack)
+sortItems(#wx_ref{type=ThisT}=This, SortCallBack)
   when is_function(SortCallBack, 2) ->
-	?CLASS(ThisT,wxListCtrl),
-	Sort = fun([Item1,Item2]) ->
-			Result = SortCallBack(Item1,Item2),
-			<<Result:32/?UI>>
-		end,
-	SortId = wxe_util:get_cbId(Sort),
-	wxe_util:call(~s, <<ThisRef:32/?UI,SortId:32/?UI>>).
+    ?CLASS(ThisT,wxListCtrl),
+    SortId = wxe_util:get_cbId(SortCallBack),
+    Op = ~s,
+    wxe_util:queue_cmd(This, SortId, ?get_env(), Op),
+    wxe_util:rec(Op).
+
 SortItems>>
 
 <<EXPORT:wxListCtrl new/0, new/1, new/2 wxListCtrl:EXPORT>>
@@ -46,7 +45,10 @@ SortItems>>
 %% @doc See <a href="http://www.wxwidgets.org/manuals/stable/wx_wxlistctrl.html#wxlistctrlwxlistctrl">external documentation</a>.
 -spec new() -> wxListCtrl().
 new() ->
-    wxe_util:construct(~s, <<>>).
+    Op = ~s,
+    wxe_util:queue_cmd(?get_env(), Op),
+    wxe_util:rec(Op).
+
 wxListCtrl_new_0>>
 
 <<wxListCtrl_new_2
@@ -78,7 +80,8 @@ new(#wx_ref{}=Parent, Options)
   when is_list(Options)->
     %% ~s
     ListCtrl = new(),
-    create(ListCtrl,Parent,Options).
+    true = create(ListCtrl,Parent,Options),
+    ListCtrl.
 
 wxListCtrl_new_2>>
 
@@ -94,7 +97,7 @@ create(This,Parent)
   create(This,Parent, []).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/stable/wx_wxlistctrl.html#wxlistctrlcreate">external documentation</a>.
--spec create(This, Parent, [Option]) -> wxListCtrl() when
+-spec create(This, Parent, [Option]) -> boolean() when
       This::wxWindow:wxWindow(),
       Parent::wxWindow:wxWindow(),
       Option::{winid, integer()} |
@@ -111,7 +114,19 @@ create(#wx_ref{type=ThisT}=This,#wx_ref{type=ParentT}=Parent, Options)
     ?CLASS(ThisT,wxListCtrl),
     ?CLASS(ParentT,wxWindow),
     Op = ~s,
-    wxe_util:queue_cmd(This, Parent, Options, ?get_env(), Op),
+    MOpts = fun({winid, _} = Arg) -> Arg;
+               ({pos, {_posX,_posY}} = Arg) -> Arg;
+               ({size, {_sizeW,_sizeH}} = Arg) -> Arg;
+               ({style, _style} = Arg) -> Arg;
+               ({validator, #wx_ref{type=ValidatorT}} = Arg) ->   ?CLASS(ValidatorT,wx),Arg;
+               ({onGetItemText, Fun}) ->
+                    ToStr = fun(A,B,C) -> unicode:characters_to_binary(Fun(A,B,C)) end,
+                    {onGetItemText, wxe_util:get_cbId(ToStr)};
+               ({onGetItemAttr, Fun}) -> {onGetItemAttr, wxe_util:get_cbId(Fun)};
+               ({onGetItemColumnImage, Fun}) -> {onGetItemColumnImage, wxe_util:get_cbId(Fun)};
+               (BadOpt) -> erlang:error({badoption, BadOpt}) end,
+    Opts = lists:map(MOpts, Options),
+    wxe_util:queue_cmd(This, Parent, Opts, ?get_env(), Op),
     wxe_util:rec(Op).
 
 Create>>
