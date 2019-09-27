@@ -30,7 +30,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start/1, stop/0, register_me/1, set_debug/2, invoke_callback/1]).
+-export([start/1, stop/0, register_me/1, set_debug/2]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -238,35 +238,35 @@ handle_connect(Object, EvData=#evh{handler=Handler},
 
 invoke_cb({'_wx_invoke_cb_', FunId, Ev=#wx{}, Ref=#wx_ref{}}, _S) ->
     %% Event callbacks
+    Env = get(?WXE_IDENTIFIER),
     case get(FunId) of
 	{{nospawn, Fun}, _} when is_function(Fun) ->
-	    invoke_callback_fun(fun() -> Fun(Ev, Ref), [] end);
+	    invoke_callback_fun(Env, Fun, [Ev, Ref]);
 	{Fun,_} when is_function(Fun) ->
-	    invoke_callback(fun() -> Fun(Ev, Ref), [] end);
+	    invoke_callback(Env, Fun, [Ev, Ref]);
 	{Pid,_} when is_pid(Pid) -> %% wx_object sync event
-	    invoke_callback(Pid, Ev, Ref);
+	    invoke_callback_obj(Env, Pid, Ev, Ref);
 	Err ->
 	    ?log("Internal Error ~p~n",[Err])
     end;
 invoke_cb({'_wx_invoke_cb_', FunId, Args, _}, _S) when is_list(Args), is_integer(FunId) ->
     %% Overloaded functions
+    Env = get(?WXE_IDENTIFIER),
     case get(FunId) of
 	{Fun,_} when is_function(Fun) ->
-	    invoke_callback(fun() -> apply(Fun, Args) end);
+	    invoke_callback(Env, Fun, Args);
 	Err ->
 	    ?log("Internal Error ~p ~p ~p~n",[Err, FunId, Args])
     end.
 
-invoke_callback(Fun) ->
-    Env = get(?WXE_IDENTIFIER),
+invoke_callback(Env, Fun, Args) ->
     spawn(fun() ->
 		  wx:set_env(Env),
-		  invoke_callback_fun(Fun)
+		  invoke_callback_fun(Env, Fun, Args)
 	  end),
     ok.
 
-invoke_callback(Pid, Ev, Ref) ->
-    Env = get(?WXE_IDENTIFIER),
+invoke_callback_obj(Env, Pid, Ev, Ref) ->
     CB = fun() ->
 		 wx:set_env(Env),
                  wxe_util:queue_cmd(Env, ?WXE_CB_START),
@@ -292,17 +292,16 @@ invoke_callback(Pid, Ev, Ref) ->
     spawn(CB),
     ok.
 
-invoke_callback_fun(Fun) ->
-    Env = ?get_env(),
-    wxe_util:queue_cmd(Env, ?WXE_CB_START),
+invoke_callback_fun(#wx_env{ref=EnvRef}, Fun, Args) ->
+    wxe_util:queue_cmd(EnvRef, ?WXE_CB_START),
     Res = try
-	      Fun()
+	      apply(Fun, Args)
 	  catch _:Reason:Stacktrace ->
 		  ?log("Callback fun crashed with {'EXIT, ~p, ~p}~n",
 		       [Reason, Stacktrace]),
 		  []
 	  end,
-    wxe_util:queue_cmd(Res, Env, ?WXE_CB_RETURN).
+    wxe_util:queue_cmd(Res, EnvRef, ?WXE_CB_RETURN).
 
 
 get_wx_object_state(Pid, N) when N > 0 ->
