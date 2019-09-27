@@ -199,6 +199,7 @@ handle_info(_Info, State) ->
 terminate(_Reason, _State) ->
     %% erlang:display({?MODULE, killed, process_info(self(),trap_exit),_Reason}),
     %% timer:sleep(250), %% Give driver a chance to clean up
+    wxe_util:delete_env(?get_env()),
     shutdown.
 
 code_change(_OldVsn, State, _Extra) ->

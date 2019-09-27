@@ -75,9 +75,9 @@ class wxeMemEnv {
         free.list = NULL;
     };
 
-    ~wxeMemEnv() {
-        enif_free(ref2ptr);
-    };
+    /* ~wxeMemEnv() { done in WxeApp::destroyMemEnv */
+    /*     enif_free(ref2ptr); */
+    /* }; */
 
     void * getPtr(ErlNifEnv *env, ERL_NIF_TERM term, const char *arg) {
         int index, tpl_sz;

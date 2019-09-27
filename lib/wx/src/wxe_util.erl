@@ -35,7 +35,7 @@
 -export([queue_cmd/1,queue_cmd/2,queue_cmd/3,queue_cmd/4,queue_cmd/5,
          queue_cmd/6,queue_cmd/7,queue_cmd/8,queue_cmd/9,queue_cmd/10,
          queue_cmd/11,queue_cmd/12,queue_cmd/13,queue_cmd/14,queue_cmd/15,
-         make_env/0, debug_ping/0, debug_driver/1, init_opengl/1
+         make_env/0, delete_env/1, debug_ping/0, debug_driver/1, init_opengl/1
         ]).
 
 -export([priv_dir/2, opt_error_log/3, init_nif/1]).
@@ -62,6 +62,7 @@ debug_ping() -> queue_cmd(?WXE_DEBUG_PING).
 debug_driver(_Level) -> ?NIF_ERROR.
 
 make_env() -> ?NIF_ERROR.
+delete_env(EnvRef) -> ?NIF_ERROR.
 
 queue_cmd(_) -> ?NIF_ERROR.
 queue_cmd(_,_) -> ?NIF_ERROR.

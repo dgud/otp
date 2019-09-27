@@ -581,8 +581,8 @@ void WxeApp::destroyMemEnv(wxeMetaCommand &Ecmd)
 //     fprintf(stderr, "L %d %d %d\r\n", refd->ref, refd->type, refd->alloc_in_erl);
 // }
 //  fflush(stderr);
-  delete memenv;
-  // refmap.erase((ErlDrvTermData) Ecmd.port);
+  enif_free(memenv->ref2ptr);
+  enif_release_resource(memenv);
 }
 
 
