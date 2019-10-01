@@ -110,10 +110,7 @@ static ERL_NIF_TERM wxe_debug_driver(ErlNifEnv* env, int argc, const ERL_NIF_TER
 // Callback
 static void wxe_destroy_env(ErlNifEnv* env, void *obj)
 {
-    // wxeMemEnv * mem = (wxeMemEnv *) obj;
-    // Clean up all references (delete all windows) ??
-    fprintf(stderr, "Deleting memenv\r\n");
-    // enif_free(mem->ref2ptr);
+    // fprintf(stderr, "Deleting memenv\r\n");
 }
 
 static void wxe_process_down(ErlNifEnv* env, void *obj, ErlNifPid *pid, ErlNifMonitor *mon)
