@@ -412,15 +412,17 @@ void WxeApp::dispatch_cb(wxeFifo * batch, wxeMemEnv * memenv, ErlNifPid process)
 
 void WxeApp::wxe_dispatch(wxeCommand& event)
 {
-  wxe_fns_t *func = &wxe_fns[event.op];
+  int op = event.op;
+  wxe_fns_t *func = &wxe_fns[op];
   void (*nif_cb) (WxeApp *, wxeCommand& ) = func->nif_cb;
   if(wxe_debug) {
-    enif_fprintf(stderr, "%T %d %s::%s(", event.caller, event.op, func->cname, func->fname);
+    enif_fprintf(stderr, "%T %d %s::%s(", event.caller, op, func->cname, func->fname);
     for(int i=0; i < event.argc; i++)
       enif_fprintf(stderr, "%T,", event.args[i]);
     enif_fprintf(stderr, ")\r\n");
   }
   if(nif_cb) {
+    event.op = -1;
     try { nif_cb(this, event); }
     catch (wxe_badarg badarg) {
       wxeReturn rt = wxeReturn(event.memenv, event.caller, false);
@@ -428,15 +430,14 @@ void WxeApp::wxe_dispatch(wxeCommand& event)
         enif_make_tuple2(rt.env,
                          WXE_ATOM_badarg,
                          enif_make_string(rt.env, badarg.var, ERL_NIF_LATIN1));
-      rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error, rt.make_int(event.op), ba));
+      rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error, rt.make_int(op), ba));
     }
   } else {
     wxeReturn rt = wxeReturn(event.memenv, event.caller, false);
     ERL_NIF_TERM undef = enif_make_atom(rt.env, "undefined_function");
     rt.send(enif_make_tuple3(rt.env, WXE_ATOM_error,
-                             rt.make_int(event.op), undef));
+                             rt.make_int(op), undef));
   }
-  event.op = -1;
 }
 
 /* Memory handling */

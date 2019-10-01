@@ -374,7 +374,7 @@ listCtrlSort(Config) ->
     wx:foreach(Add, lists:seq(0,50)),
     wxWindow:show(Frame),
 
-    timer:sleep(2000),
+    timer:sleep(1000),
 
     Sort = fun() ->
 		   wxListCtrl:sortItems(LC, fun(A, B) ->
@@ -663,21 +663,22 @@ modal(Config) ->
 
 modal_dialog(Parent, Level, Tester) when Level < 3 ->
     M1 = wxTextEntryDialog:new(Parent, "Dialog " ++ integer_to_list(Level)),
+    Id = wxWindow:getId(M1),
     io:format("Creating dialog ~p ~p~n",[Level, M1]),
-    wxDialog:connect(M1, show, [{callback, fun(#wx{event=Ev},_) ->
-						   case Ev of
-						       #wxShow{show=true} ->
-							   Tester ! {dialog, M1, Level};
-						       _ -> ignore
-						   end
-					   end}]),
+    ok = wxDialog:connect(M1, show, [{callback, fun(#wx{event=Ev},_) ->
+                                                        case Ev of
+                                                            #wxShow{show=true} ->
+                                                                Tester ! {dialog, M1, Level};
+                                                            _ -> ignore
+                                                        end
+                                                end}]),
     DoOnce = fun(_,_) ->
 		     case ets:take(test_state, M1) of
 			 [] -> ignore;
 			 [_] -> modal_dialog(M1, Level+1, Tester)
 		     end
 	     end,
-    wxDialog:connect(M1, update_ui, [{callback, DoOnce}]),
+    ok = wxDialog:connect(M1, update_ui, [{callback, DoOnce}, {id,Id}]),
     ?wxID_OK = wxDialog:showModal(M1),
     wxDialog:destroy(M1),
     case Level > 1 of

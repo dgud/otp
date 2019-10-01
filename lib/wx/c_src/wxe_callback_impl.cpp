@@ -46,7 +46,7 @@ wxeEvtListener::wxeEvtListener(ErlNifPid caller, int req, ERL_NIF_TERM req_type,
 }
 
 wxeEvtListener::~wxeEvtListener() {
-    // fprintf(stderr, "CBD Deleteing %p %s\r\n", this, class_name); fflush(stderr);
+  // enif_fprintf(stderr, "CBD Deleteing %p %T\r\n", this, class_name); fflush(stderr);
   if(user_data) {
     delete user_data;
   }
@@ -59,7 +59,7 @@ wxeEvtListener::~wxeEvtListener() {
                              rt.make_atom("wx_delete_cb"),
                              rt.make_int(fun_id),
                              rt.make_ref(refd->ref, "wxeEvtListener"),
-                             class_name));
+                             rt.make_ref(obj, class_name)));
   }
   ((WxeApp *)wxTheApp)->clearPtr(this);
 }

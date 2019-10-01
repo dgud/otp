@@ -52,6 +52,7 @@ void wxEvtHandler_Disconnect_2(WxeApp *app, wxeCommand& Ecmd)
 
   if(eventType > 0) {
     if(app->recurse_level > 1) {
+      Ecmd.op = 101;
       app->delayed_delete->Append(&Ecmd);
     } else {
       bool Result = This->Disconnect(winid,lastid,eventType,

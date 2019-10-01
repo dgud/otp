@@ -48,10 +48,11 @@ void wxe_destroy(WxeApp *app, wxeCommand& Ecmd)
    wxeRefData *refd = app->getRefData(This);
    if(This && refd) {
        if(app->recurse_level > 1 && refd->type != 8) {
-          app->delayed_delete->Append(&Ecmd);
+         Ecmd.op = 50;
+         app->delayed_delete->Append(&Ecmd);
        } else {
-          app->delete_object(This, refd);
-          ((WxeApp *) wxTheApp)->clearPtr(This);}
+         app->delete_object(This, refd);
+         ((WxeApp *) wxTheApp)->clearPtr(This);}
   }
 }
 
@@ -122,6 +123,7 @@ void wxEvtHandler_Disconnect_2(WxeApp *app, wxeCommand& Ecmd)
 
   if(eventType > 0) {
     if(app->recurse_level > 1) {
+      Ecmd.op = 101;
       app->delayed_delete->Append(&Ecmd);
     } else {
       bool Result = This->Disconnect(winid,lastid,eventType,

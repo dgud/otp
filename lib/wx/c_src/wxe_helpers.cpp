@@ -138,9 +138,11 @@ void wxeFifo::Append(wxeCommand *orig)
   orig->env = curr->env;
   curr->env = temp;
 
+  curr->argc = orig->argc;
   for(int i=0; i < 16; i++) {
     curr->args[i] = orig->args[i];
   }
+  curr->memenv = orig->memenv;
   orig->op = -1;
 }
 

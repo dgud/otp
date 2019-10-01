@@ -204,10 +204,11 @@ gen_funcs(Defs) ->
       "   wxeRefData *refd = app->getRefData(This);~n"
       "   if(This && refd) {~n"
       "       if(app->recurse_level > 1 && refd->type != 8) {~n"
-      "          app->delayed_delete->Append(&Ecmd);~n"
+      "         Ecmd.op = 50;\n"
+      "         app->delayed_delete->Append(&Ecmd);~n"
       "       } else {~n"
-      "          app->delete_object(This, refd);~n"
-      "          ((WxeApp *) wxTheApp)->clearPtr(This);}~n"
+      "         app->delete_object(This, refd);~n"
+      "         ((WxeApp *) wxTheApp)->clearPtr(This);}~n"
       "  }~n"
       "}~n~n", []),
 
