@@ -273,7 +273,8 @@ retain_memory(#wx_mem{}=Mem) ->
     case get(Mem) of
         {Mem, N} -> put(Mem, N+1);
         undefined -> put(Mem, 1)
-    end;
+    end,
+    ok;
 retain_memory(Bin) when is_binary(Bin) ->
     case byte_size(Bin) > ?MIN_BIN_SIZE of
 	true  -> ok;
@@ -283,9 +284,10 @@ retain_memory(Bin) when is_binary(Bin) ->
 
 -spec release_memory(wx_memory()) -> 'ok'.
 release_memory(#wx_mem{}=Mem) ->
-    case get(Mem) of
-        {Mem, 1} -> erase(Mem);
-        {Mem, N} -> put(Mem, N-1)
+    case erase(Mem) of
+        1 -> ok;
+        N -> put(Mem, N-1),
+             ok
     end;
 release_memory(Bin) when is_binary(Bin) ->
     release_memory(#wx_mem{bin=Bin, size=byte_size(Bin)}).
