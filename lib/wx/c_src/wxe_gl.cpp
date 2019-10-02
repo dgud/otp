@@ -33,8 +33,9 @@
  * Opengl context management *
  * ****************************************************************************/
 
-int erl_gl_initiated = FALSE;
-ErlNifUInt64 gl_active = 0;
+ErlNifUInt64 gl_active_index = 0;
+ErlNifPid gl_active_pid;
+
 wxeGLC glc;
 typedef void * (*WXE_GL_LOOKUP) (int);
 WXE_GL_LOOKUP wxe_gl_lookup_func = NULL;
@@ -43,6 +44,7 @@ typedef void * (*WXE_GL_FUNC) (ErlNifEnv*, ErlNifPid*, const ERL_NIF_TERM argv[]
 extern "C" {
 void wxe_initOpenGL(void * fptr) {
   wxe_gl_lookup_func = (WXE_GL_LOOKUP) fptr;
+  enif_set_pid_undefined(&gl_active_pid);
 }
 }
 
@@ -54,15 +56,16 @@ ErlNifUInt64 wxe_make_hash(ErlNifEnv *env, ErlNifPid *pid)
 
 void setActiveGL(wxeMemEnv *memenv, ErlNifPid caller, wxGLCanvas *canvas)
 {
-  gl_active = wxe_make_hash(memenv->tmp_env, &caller);
-  glc[gl_active] = canvas;
+  gl_active_index = wxe_make_hash(memenv->tmp_env, &caller);
+  glc[gl_active_index] = canvas;
   //fprintf(stderr, "set caller %p => %p\r\n", caller, canvas);
-  canvas->SetCurrent();
 }
 
 void deleteActiveGL(wxGLCanvas *canvas)
 {
-  gl_active = 0;
+  gl_active_index = 0;
+  enif_set_pid_undefined(&gl_active_pid);
+
   wxeGLC::iterator it;
   for(it = glc.begin(); it != glc.end(); ++it) {
     if(it->second == canvas) {
@@ -73,15 +76,18 @@ void deleteActiveGL(wxGLCanvas *canvas)
 
 void gl_dispatch(wxeCommand *event) {
   WXE_GL_FUNC fptr;
-  //fprintf(stderr, "caller %p gl_active %p\r\n", event->pid, gl_active);
-  if(gl_active && wxe_gl_lookup_func) {
-  // if(caller != gl_active) {
-  //   wxGLCanvas * current = glc[caller];
-  //   if(current) {
-  //     if(current != glc[gl_active]) {
-  //       current->SetCurrent();
-  //     }
-  //     gl_active = caller;
+  if(gl_active_index && wxe_gl_lookup_func) {
+    if(enif_compare_pids(&(event->caller),&gl_active_pid) != 0) {
+      ErlNifUInt64 caller_index =  wxe_make_hash(event->env, &(event->caller));
+      wxGLCanvas * current = glc[caller_index];
+      if(current) {
+        if(current != glc[gl_active_index]) {
+          current->SetCurrent();
+        }
+        gl_active_index = caller_index;
+        gl_active_pid = event->caller;
+      }
+    }
   } else {
     enif_send(NULL, &event->caller, event->env,
               enif_make_tuple3(event->env,
@@ -93,6 +99,7 @@ void gl_dispatch(wxeCommand *event) {
     return ;
   }
   if((fptr = (WXE_GL_FUNC) wxe_gl_lookup_func(event->op))) {
+    // enif_fprintf(stderr, "GL: caller %T gl_active %T %d\r\n", event->caller, gl_active_pid, event->op);
     fptr(event->env, &event->caller, event->args);
   } else {
     enif_send(NULL, &event->caller, event->env,

@@ -158,7 +158,7 @@ glu_api(Fs) ->
     w("                  Triangles :: [integer()], VertexPos :: binary().~n", []),
     w("tesselate(Normal, Vs) ->~n",[]),
     w("  IF = get_interface(),\n"
-      "  IF:queue_cmd(Normal,Vs,5009,0),~n"
+      "  IF:queue_cmd(Normal,Vs,5009),~n"
       "  rec(5009).~n~n", []),
 
     Nifs = [gen_funcs(F) || F <- Fs],
@@ -410,9 +410,9 @@ gen_func(_F=#func{id=Id, name=Name,type=T,params=As}) ->
             end,
     case have_return_vals(T,As) of
         false ->
-            w("  IF:queue_cmd(~s~w,1),~n  ok.~n~n", [NifAs,Id]);
+            w("  IF:queue_cmd(~s~w),~n  ok.~n~n", [NifAs,Id]);
         true ->
-            w("  IF:queue_cmd(~s~w,0),~n  rec(5009).~n~n", [NifAs,Id])
+            w("  IF:queue_cmd(~s~w),~n  rec(~w).~n~n", [NifAs,Id,Id])
     end,
     ok.
 

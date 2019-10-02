@@ -173,7 +173,7 @@ getContext(#wx_ref{type=ThisT}=This) ->
 setCurrent(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxGLCanvas),
   wxe_util:queue_cmd(This,?get_env(),?wxGLCanvas_SetCurrent),
-  {ok, _} = wxe_master:init_opengl()
+  {ok, _} = wxe_master:init_opengl(), ok
 .
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxglcanvas.html#wxglcanvasswapbuffers">external documentation</a>.

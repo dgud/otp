@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2008-2018. All Rights Reserved.
+%% Copyright Ericsson AB 2008-2019. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@
                   Triangles :: [integer()], VertexPos :: binary().
 tesselate(Normal, Vs) ->
   IF = get_interface(),
-  IF:queue_cmd(Normal,Vs,5009,0),
+  IF:queue_cmd(Normal,Vs,5009),
   rec(5009).
 
 %% @doc gluBuild1DMipmapLevels
@@ -71,8 +71,8 @@ tesselate(Normal, Vs) ->
 -spec build1DMipmapLevels(Target, InternalFormat, Width, Format, Type, Level, Base, Max, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Format :: enum(),Type :: enum(),Level :: integer(),Base :: integer(),Max :: integer(),Data :: binary().
 build1DMipmapLevels(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Format),is_integer(Type),is_integer(Level),is_integer(Base),is_integer(Max),is_binary(Data) ->
   IF = get_interface(),
-  IF:queue_cmd(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data,5010,0),
-  rec(5009).
+  IF:queue_cmd(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data,5010),
+  rec(5010).
 
 %% @doc gluBuild1DMipmaps
 %%
@@ -80,8 +80,8 @@ build1DMipmapLevels(Target,InternalFormat,Width,Format,Type,Level,Base,Max,Data)
 -spec build1DMipmaps(Target, InternalFormat, Width, Format, Type, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Format :: enum(),Type :: enum(),Data :: binary().
 build1DMipmaps(Target,InternalFormat,Width,Format,Type,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Format),is_integer(Type),is_binary(Data) ->
   IF = get_interface(),
-  IF:queue_cmd(Target,InternalFormat,Width,Format,Type,Data,5011,0),
-  rec(5009).
+  IF:queue_cmd(Target,InternalFormat,Width,Format,Type,Data,5011),
+  rec(5011).
 
 %% @doc gluBuild2DMipmapLevels
 %%
@@ -89,8 +89,8 @@ build1DMipmaps(Target,InternalFormat,Width,Format,Type,Data) when is_integer(Tar
 -spec build2DMipmapLevels(Target, InternalFormat, Width, Height, Format, Type, Level, Base, Max, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Level :: integer(),Base :: integer(),Max :: integer(),Data :: binary().
 build2DMipmapLevels(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Max,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Format),is_integer(Type),is_integer(Level),is_integer(Base),is_integer(Max),is_binary(Data) ->
   IF = get_interface(),
-  IF:queue_cmd(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Max,Data,5012,0),
-  rec(5009).
+  IF:queue_cmd(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Max,Data,5012),
+  rec(5012).
 
 %% @doc gluBuild2DMipmaps
 %%
@@ -98,8 +98,8 @@ build2DMipmapLevels(Target,InternalFormat,Width,Height,Format,Type,Level,Base,Ma
 -spec build2DMipmaps(Target, InternalFormat, Width, Height, Format, Type, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Format :: enum(),Type :: enum(),Data :: binary().
 build2DMipmaps(Target,InternalFormat,Width,Height,Format,Type,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Format),is_integer(Type),is_binary(Data) ->
   IF = get_interface(),
-  IF:queue_cmd(Target,InternalFormat,Width,Height,Format,Type,Data,5013,0),
-  rec(5009).
+  IF:queue_cmd(Target,InternalFormat,Width,Height,Format,Type,Data,5013),
+  rec(5013).
 
 %% @doc gluBuild3DMipmapLevels
 %%
@@ -107,8 +107,8 @@ build2DMipmaps(Target,InternalFormat,Width,Height,Format,Type,Data) when is_inte
 -spec build3DMipmapLevels(Target, InternalFormat, Width, Height, Depth, Format, Type, Level, Base, Max, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Format :: enum(),Type :: enum(),Level :: integer(),Base :: integer(),Max :: integer(),Data :: binary().
 build3DMipmapLevels(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,Base,Max,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Depth),is_integer(Format),is_integer(Type),is_integer(Level),is_integer(Base),is_integer(Max),is_binary(Data) ->
   IF = get_interface(),
-  IF:queue_cmd(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,Base,Max,Data,5014,0),
-  rec(5009).
+  IF:queue_cmd(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,Base,Max,Data,5014),
+  rec(5014).
 
 %% @doc gluBuild3DMipmaps
 %%
@@ -116,8 +116,8 @@ build3DMipmapLevels(Target,InternalFormat,Width,Height,Depth,Format,Type,Level,B
 -spec build3DMipmaps(Target, InternalFormat, Width, Height, Depth, Format, Type, Data) -> integer() when Target :: enum(),InternalFormat :: integer(),Width :: integer(),Height :: integer(),Depth :: integer(),Format :: enum(),Type :: enum(),Data :: binary().
 build3DMipmaps(Target,InternalFormat,Width,Height,Depth,Format,Type,Data) when is_integer(Target),is_integer(InternalFormat),is_integer(Width),is_integer(Height),is_integer(Depth),is_integer(Format),is_integer(Type),is_binary(Data) ->
   IF = get_interface(),
-  IF:queue_cmd(Target,InternalFormat,Width,Height,Depth,Format,Type,Data,5015,0),
-  rec(5009).
+  IF:queue_cmd(Target,InternalFormat,Width,Height,Depth,Format,Type,Data,5015),
+  rec(5015).
 
 %% @doc gluCheckExtension
 %%
@@ -127,8 +127,8 @@ checkExtension(ExtName,ExtString) when is_list(ExtName),is_list(ExtString) ->
   IF = get_interface(),
   ExtNameBin = unicode:characters_to_binary([ExtName|[0]]),
   ExtStringBin = unicode:characters_to_binary([ExtString|[0]]),
-  IF:queue_cmd(ExtNameBin,ExtStringBin,5016,0),
-  rec(5009).
+  IF:queue_cmd(ExtNameBin,ExtStringBin,5016),
+  rec(5016).
 
 %% @doc gluCylinder
 %%
@@ -136,7 +136,7 @@ checkExtension(ExtName,ExtString) when is_list(ExtName),is_list(ExtString) ->
 -spec cylinder(Quad, Base, Top, Height, Slices, Stacks) -> 'ok' when Quad :: integer(),Base :: float(),Top :: float(),Height :: float(),Slices :: integer(),Stacks :: integer().
 cylinder(Quad,Base,Top,Height,Slices,Stacks) when is_integer(Quad),is_float(Base),is_float(Top),is_float(Height),is_integer(Slices),is_integer(Stacks) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Base,Top,Height,Slices,Stacks,5017,1),
+  IF:queue_cmd(Quad,Base,Top,Height,Slices,Stacks,5017),
   ok.
 
 %% @doc gluDeleteQuadric
@@ -145,7 +145,7 @@ cylinder(Quad,Base,Top,Height,Slices,Stacks) when is_integer(Quad),is_float(Base
 -spec deleteQuadric(Quad) -> 'ok' when Quad :: integer().
 deleteQuadric(Quad) when is_integer(Quad) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,5018,1),
+  IF:queue_cmd(Quad,5018),
   ok.
 
 %% @doc gluDisk
@@ -154,7 +154,7 @@ deleteQuadric(Quad) when is_integer(Quad) ->
 -spec disk(Quad, Inner, Outer, Slices, Loops) -> 'ok' when Quad :: integer(),Inner :: float(),Outer :: float(),Slices :: integer(),Loops :: integer().
 disk(Quad,Inner,Outer,Slices,Loops) when is_integer(Quad),is_float(Inner),is_float(Outer),is_integer(Slices),is_integer(Loops) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Inner,Outer,Slices,Loops,5019,1),
+  IF:queue_cmd(Quad,Inner,Outer,Slices,Loops,5019),
   ok.
 
 %% @doc gluErrorString
@@ -163,8 +163,8 @@ disk(Quad,Inner,Outer,Slices,Loops) when is_integer(Quad),is_float(Inner),is_flo
 -spec errorString(Error) -> string() when Error :: enum().
 errorString(Error) when is_integer(Error) ->
   IF = get_interface(),
-  IF:queue_cmd(Error,5020,0),
-  rec(5009).
+  IF:queue_cmd(Error,5020),
+  rec(5020).
 
 %% @doc gluGetString
 %%
@@ -172,8 +172,8 @@ errorString(Error) when is_integer(Error) ->
 -spec getString(Name) -> string() when Name :: enum().
 getString(Name) when is_integer(Name) ->
   IF = get_interface(),
-  IF:queue_cmd(Name,5021,0),
-  rec(5009).
+  IF:queue_cmd(Name,5021),
+  rec(5021).
 
 %% @doc gluLookAt
 %%
@@ -181,7 +181,7 @@ getString(Name) when is_integer(Name) ->
 -spec lookAt(EyeX, EyeY, EyeZ, CenterX, CenterY, CenterZ, UpX, UpY, UpZ) -> 'ok' when EyeX :: float(),EyeY :: float(),EyeZ :: float(),CenterX :: float(),CenterY :: float(),CenterZ :: float(),UpX :: float(),UpY :: float(),UpZ :: float().
 lookAt(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ) when is_float(EyeX),is_float(EyeY),is_float(EyeZ),is_float(CenterX),is_float(CenterY),is_float(CenterZ),is_float(UpX),is_float(UpY),is_float(UpZ) ->
   IF = get_interface(),
-  IF:queue_cmd(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ,5022,1),
+  IF:queue_cmd(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ,5022),
   ok.
 
 %% @doc gluNewQuadric
@@ -190,8 +190,8 @@ lookAt(EyeX,EyeY,EyeZ,CenterX,CenterY,CenterZ,UpX,UpY,UpZ) when is_float(EyeX),i
 -spec newQuadric() -> integer().
 newQuadric()  ->
   IF = get_interface(),
-  IF:queue_cmd(5023,0),
-  rec(5009).
+  IF:queue_cmd(5023),
+  rec(5023).
 
 %% @doc gluOrtho2D
 %%
@@ -199,7 +199,7 @@ newQuadric()  ->
 -spec ortho2D(Left, Right, Bottom, Top) -> 'ok' when Left :: float(),Right :: float(),Bottom :: float(),Top :: float().
 ortho2D(Left,Right,Bottom,Top) when is_float(Left),is_float(Right),is_float(Bottom),is_float(Top) ->
   IF = get_interface(),
-  IF:queue_cmd(Left,Right,Bottom,Top,5024,1),
+  IF:queue_cmd(Left,Right,Bottom,Top,5024),
   ok.
 
 %% @doc gluPartialDisk
@@ -208,7 +208,7 @@ ortho2D(Left,Right,Bottom,Top) when is_float(Left),is_float(Right),is_float(Bott
 -spec partialDisk(Quad, Inner, Outer, Slices, Loops, Start, Sweep) -> 'ok' when Quad :: integer(),Inner :: float(),Outer :: float(),Slices :: integer(),Loops :: integer(),Start :: float(),Sweep :: float().
 partialDisk(Quad,Inner,Outer,Slices,Loops,Start,Sweep) when is_integer(Quad),is_float(Inner),is_float(Outer),is_integer(Slices),is_integer(Loops),is_float(Start),is_float(Sweep) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Inner,Outer,Slices,Loops,Start,Sweep,5025,1),
+  IF:queue_cmd(Quad,Inner,Outer,Slices,Loops,Start,Sweep,5025),
   ok.
 
 %% @doc gluPerspective
@@ -217,7 +217,7 @@ partialDisk(Quad,Inner,Outer,Slices,Loops,Start,Sweep) when is_integer(Quad),is_
 -spec perspective(Fovy, Aspect, ZNear, ZFar) -> 'ok' when Fovy :: float(),Aspect :: float(),ZNear :: float(),ZFar :: float().
 perspective(Fovy,Aspect,ZNear,ZFar) when is_float(Fovy),is_float(Aspect),is_float(ZNear),is_float(ZFar) ->
   IF = get_interface(),
-  IF:queue_cmd(Fovy,Aspect,ZNear,ZFar,5026,1),
+  IF:queue_cmd(Fovy,Aspect,ZNear,ZFar,5026),
   ok.
 
 %% @doc gluPickMatrix
@@ -226,7 +226,7 @@ perspective(Fovy,Aspect,ZNear,ZFar) when is_float(Fovy),is_float(Aspect),is_floa
 -spec pickMatrix(X, Y, DelX, DelY, Viewport) -> 'ok' when X :: float(),Y :: float(),DelX :: float(),DelY :: float(),Viewport :: {integer(),integer(),integer(),integer()}.
 pickMatrix(X,Y,DelX,DelY,Viewport) when is_float(X),is_float(Y),is_float(DelX),is_float(DelY),tuple_size(Viewport) =:= 4 ->
   IF = get_interface(),
-  IF:queue_cmd(X,Y,DelX,DelY,Viewport,5027,1),
+  IF:queue_cmd(X,Y,DelX,DelY,Viewport,5027),
   ok.
 
 %% @doc gluProject
@@ -235,8 +235,8 @@ pickMatrix(X,Y,DelX,DelY,Viewport) when is_float(X),is_float(Y),is_float(DelX),i
 -spec project(ObjX, ObjY, ObjZ, Model, Proj, View) -> {integer(),WinX :: float(),WinY :: float(),WinZ :: float()} when ObjX :: float(),ObjY :: float(),ObjZ :: float(),Model :: matrix(),Proj :: matrix(),View :: {integer(),integer(),integer(),integer()}.
 project(ObjX,ObjY,ObjZ,Model,Proj,View) when is_float(ObjX),is_float(ObjY),is_float(ObjZ),tuple_size(Model) =:= 16,tuple_size(Proj) =:= 16,tuple_size(View) =:= 4 ->
   IF = get_interface(),
-  IF:queue_cmd(ObjX,ObjY,ObjZ,Model,Proj,View,5028,0),
-  rec(5009).
+  IF:queue_cmd(ObjX,ObjY,ObjZ,Model,Proj,View,5028),
+  rec(5028).
 
 %% @doc gluQuadricDrawStyle
 %%
@@ -244,7 +244,7 @@ project(ObjX,ObjY,ObjZ,Model,Proj,View) when is_float(ObjX),is_float(ObjY),is_fl
 -spec quadricDrawStyle(Quad, Draw) -> 'ok' when Quad :: integer(),Draw :: enum().
 quadricDrawStyle(Quad,Draw) when is_integer(Quad),is_integer(Draw) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Draw,5029,1),
+  IF:queue_cmd(Quad,Draw,5029),
   ok.
 
 %% @doc gluQuadricNormals
@@ -253,7 +253,7 @@ quadricDrawStyle(Quad,Draw) when is_integer(Quad),is_integer(Draw) ->
 -spec quadricNormals(Quad, Normal) -> 'ok' when Quad :: integer(),Normal :: enum().
 quadricNormals(Quad,Normal) when is_integer(Quad),is_integer(Normal) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Normal,5030,1),
+  IF:queue_cmd(Quad,Normal,5030),
   ok.
 
 %% @doc gluQuadricOrientation
@@ -262,7 +262,7 @@ quadricNormals(Quad,Normal) when is_integer(Quad),is_integer(Normal) ->
 -spec quadricOrientation(Quad, Orientation) -> 'ok' when Quad :: integer(),Orientation :: enum().
 quadricOrientation(Quad,Orientation) when is_integer(Quad),is_integer(Orientation) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Orientation,5031,1),
+  IF:queue_cmd(Quad,Orientation,5031),
   ok.
 
 %% @doc gluQuadricTexture
@@ -271,7 +271,7 @@ quadricOrientation(Quad,Orientation) when is_integer(Quad),is_integer(Orientatio
 -spec quadricTexture(Quad, Texture) -> 'ok' when Quad :: integer(),Texture :: 0|1.
 quadricTexture(Quad,Texture) when is_integer(Quad),(0 =:= Texture) orelse (1 =:= Texture) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Texture,5032,1),
+  IF:queue_cmd(Quad,Texture,5032),
   ok.
 
 %% @doc gluScaleImage
@@ -280,8 +280,8 @@ quadricTexture(Quad,Texture) when is_integer(Quad),(0 =:= Texture) orelse (1 =:=
 -spec scaleImage(Format, WIn, HIn, TypeIn, DataIn, WOut, HOut, TypeOut, DataOut) -> integer() when Format :: enum(),WIn :: integer(),HIn :: integer(),TypeIn :: enum(),DataIn :: binary(),WOut :: integer(),HOut :: integer(),TypeOut :: enum(),DataOut :: mem().
 scaleImage(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut) when is_integer(Format),is_integer(WIn),is_integer(HIn),is_integer(TypeIn),is_binary(DataIn),is_integer(WOut),is_integer(HOut),is_integer(TypeOut),is_tuple(DataOut) orelse is_binary(DataOut) ->
   IF = get_interface(),
-  IF:queue_cmd(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut,5033,0),
-  rec(5009).
+  IF:queue_cmd(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut,5033),
+  rec(5033).
 
 %% @doc gluSphere
 %%
@@ -289,7 +289,7 @@ scaleImage(Format,WIn,HIn,TypeIn,DataIn,WOut,HOut,TypeOut,DataOut) when is_integ
 -spec sphere(Quad, Radius, Slices, Stacks) -> 'ok' when Quad :: integer(),Radius :: float(),Slices :: integer(),Stacks :: integer().
 sphere(Quad,Radius,Slices,Stacks) when is_integer(Quad),is_float(Radius),is_integer(Slices),is_integer(Stacks) ->
   IF = get_interface(),
-  IF:queue_cmd(Quad,Radius,Slices,Stacks,5034,1),
+  IF:queue_cmd(Quad,Radius,Slices,Stacks,5034),
   ok.
 
 %% @doc gluUnProject
@@ -298,8 +298,8 @@ sphere(Quad,Radius,Slices,Stacks) when is_integer(Quad),is_float(Radius),is_inte
 -spec unProject(WinX, WinY, WinZ, Model, Proj, View) -> {integer(),ObjX :: float(),ObjY :: float(),ObjZ :: float()} when WinX :: float(),WinY :: float(),WinZ :: float(),Model :: matrix(),Proj :: matrix(),View :: {integer(),integer(),integer(),integer()}.
 unProject(WinX,WinY,WinZ,Model,Proj,View) when is_float(WinX),is_float(WinY),is_float(WinZ),tuple_size(Model) =:= 16,tuple_size(Proj) =:= 16,tuple_size(View) =:= 4 ->
   IF = get_interface(),
-  IF:queue_cmd(WinX,WinY,WinZ,Model,Proj,View,5035,0),
-  rec(5009).
+  IF:queue_cmd(WinX,WinY,WinZ,Model,Proj,View,5035),
+  rec(5035).
 
 %% @doc gluUnProject
 %%
@@ -307,6 +307,6 @@ unProject(WinX,WinY,WinZ,Model,Proj,View) when is_float(WinX),is_float(WinY),is_
 -spec unProject4(WinX, WinY, WinZ, ClipW, Model, Proj, View, NearVal, FarVal) -> {integer(),ObjX :: float(),ObjY :: float(),ObjZ :: float(),ObjW :: float()} when WinX :: float(),WinY :: float(),WinZ :: float(),ClipW :: float(),Model :: matrix(),Proj :: matrix(),View :: {integer(),integer(),integer(),integer()},NearVal :: float(),FarVal :: float().
 unProject4(WinX,WinY,WinZ,ClipW,Model,Proj,View,NearVal,FarVal) when is_float(WinX),is_float(WinY),is_float(WinZ),is_float(ClipW),tuple_size(Model) =:= 16,tuple_size(Proj) =:= 16,tuple_size(View) =:= 4,is_float(NearVal),is_float(FarVal) ->
   IF = get_interface(),
-  IF:queue_cmd(WinX,WinY,WinZ,ClipW,Model,Proj,View,NearVal,FarVal,5036,0),
-  rec(5009).
+  IF:queue_cmd(WinX,WinY,WinZ,ClipW,Model,Proj,View,NearVal,FarVal,5036),
+  rec(5036).
 
