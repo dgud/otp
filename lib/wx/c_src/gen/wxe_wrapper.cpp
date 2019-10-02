@@ -10368,9 +10368,9 @@ void wxDC_DrawEllipticArc(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, sz_t[1], &szH)) Badarg(647,"sz");
   wxSize sz = wxSize(szW,szH);
   double sa;
-  if(!enif_get_double(env, argv[3], &sa)) Badarg(647,"sa");
+  if(!wxe_get_double(env, argv[3], &sa)) Badarg(647,"sa");
   double ea;
-  if(!enif_get_double(env, argv[4], &ea)) Badarg(647,"ea");
+  if(!wxe_get_double(env, argv[4], &ea)) Badarg(647,"ea");
   if(!This) throw wxe_badarg("This");
   This->DrawEllipticArc(pt,sz,sa,ea);
 
@@ -10496,8 +10496,8 @@ void wxDC_DrawLines(WxeApp *app, wxeCommand& Ecmd)
   while(!enif_is_empty_list(env, pointsTail)) {
     if(!enif_get_list_cell(env, pointsTail, &pointsHead, &pointsTail)) Badarg(651,"points");
     if(!enif_get_tuple(env, pointsHead, &points_tsz, &points_tpl) || points_tsz != 2) Badarg(651,"points");
-    if(!enif_get_int(env, *points_tpl, &x)) Badarg(651,"points");
-    if(!enif_get_int(env, *points_tpl, &y)) Badarg(651,"points");
+    if(!enif_get_int(env, points_tpl[0], &x)) Badarg(651,"points");
+    if(!enif_get_int(env, points_tpl[1], &y)) Badarg(651,"points");
     *points_ptr = wxPoint(x,y);
     points_ptr++;
   };
@@ -10545,8 +10545,8 @@ void wxDC_DrawPolygon(WxeApp *app, wxeCommand& Ecmd)
   while(!enif_is_empty_list(env, pointsTail)) {
     if(!enif_get_list_cell(env, pointsTail, &pointsHead, &pointsTail)) Badarg(653,"points");
     if(!enif_get_tuple(env, pointsHead, &points_tsz, &points_tpl) || points_tsz != 2) Badarg(653,"points");
-    if(!enif_get_int(env, *points_tpl, &x)) Badarg(653,"points");
-    if(!enif_get_int(env, *points_tpl, &y)) Badarg(653,"points");
+    if(!enif_get_int(env, points_tpl[0], &x)) Badarg(653,"points");
+    if(!enif_get_int(env, points_tpl[1], &y)) Badarg(653,"points");
     *points_ptr = wxPoint(x,y);
     points_ptr++;
   };
@@ -10668,7 +10668,7 @@ void wxDC_DrawRotatedText(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, pt_t[1], &ptY)) Badarg(659,"pt");
   wxPoint pt = wxPoint(ptX,ptY);
   double angle;
-  if(!enif_get_double(env, argv[3], &angle)) Badarg(659,"angle");
+  if(!wxe_get_double(env, argv[3], &angle)) Badarg(659,"angle");
   if(!This) throw wxe_badarg("This");
   This->DrawRotatedText(text,pt,angle);
 
@@ -10699,7 +10699,7 @@ void wxDC_DrawRoundedRectangle_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, sz_t[1], &szH)) Badarg(661,"sz");
   wxSize sz = wxSize(szW,szH);
   double radius;
-  if(!enif_get_double(env, argv[3], &radius)) Badarg(661,"radius");
+  if(!wxe_get_double(env, argv[3], &radius)) Badarg(661,"radius");
   if(!This) throw wxe_badarg("This");
   This->DrawRoundedRectangle(pt,sz,radius);
 
@@ -10726,7 +10726,7 @@ void wxDC_DrawRoundedRectangle_2(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_get_int(env, r_t[3], &rH)) Badarg(662,"r");
   wxRect r = wxRect(rX,rY,rW,rH);
   double radius;
-  if(!enif_get_double(env, argv[2], &radius)) Badarg(662,"radius");
+  if(!wxe_get_double(env, argv[2], &radius)) Badarg(662,"radius");
   if(!This) throw wxe_badarg("This");
   This->DrawRoundedRectangle(r,radius);
 
@@ -11889,9 +11889,9 @@ void wxDC_SetUserScale(WxeApp *app, wxeCommand& Ecmd)
   wxDC *This;
   This = (wxDC *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(724,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(724,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(724,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(724,"y");
   if(!This) throw wxe_badarg("This");
   This->SetUserScale(x,y);
 
@@ -12483,15 +12483,15 @@ void wxGraphicsContext_CreateRadialGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double xo;
-  if(!enif_get_double(env, argv[1], &xo)) Badarg(771,"xo");
+  if(!wxe_get_double(env, argv[1], &xo)) Badarg(771,"xo");
   double yo;
-  if(!enif_get_double(env, argv[2], &yo)) Badarg(771,"yo");
+  if(!wxe_get_double(env, argv[2], &yo)) Badarg(771,"yo");
   double xc;
-  if(!enif_get_double(env, argv[3], &xc)) Badarg(771,"xc");
+  if(!wxe_get_double(env, argv[3], &xc)) Badarg(771,"xc");
   double yc;
-  if(!enif_get_double(env, argv[4], &yc)) Badarg(771,"yc");
+  if(!wxe_get_double(env, argv[4], &yc)) Badarg(771,"yc");
   double radius;
-  if(!enif_get_double(env, argv[5], &radius)) Badarg(771,"radius");
+  if(!wxe_get_double(env, argv[5], &radius)) Badarg(771,"radius");
   const ERL_NIF_TERM *oColor_t;
   int oColor_sz;
   if(!enif_get_tuple(env, argv[6], &oColor_sz, &oColor_t)) Badarg(771,"oColor");
@@ -12532,13 +12532,13 @@ void wxGraphicsContext_CreateLinearGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double x1;
-  if(!enif_get_double(env, argv[1], &x1)) Badarg(772,"x1");
+  if(!wxe_get_double(env, argv[1], &x1)) Badarg(772,"x1");
   double y1;
-  if(!enif_get_double(env, argv[2], &y1)) Badarg(772,"y1");
+  if(!wxe_get_double(env, argv[2], &y1)) Badarg(772,"y1");
   double x2;
-  if(!enif_get_double(env, argv[3], &x2)) Badarg(772,"x2");
+  if(!wxe_get_double(env, argv[3], &x2)) Badarg(772,"x2");
   double y2;
-  if(!enif_get_double(env, argv[4], &y2)) Badarg(772,"y2");
+  if(!wxe_get_double(env, argv[4], &y2)) Badarg(772,"y2");
   const ERL_NIF_TERM *c1_t;
   int c1_sz;
   if(!enif_get_tuple(env, argv[5], &c1_sz, &c1_t)) Badarg(772,"c1");
@@ -12634,17 +12634,17 @@ void wxGraphicsContext_CreateMatrix(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(774,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(774,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "a"))) {
-  if(!enif_get_double(env, tpl[1], &a)) Badarg(774,"a");
+  if(!wxe_get_double(env, tpl[1], &a)) Badarg(774,"a");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  if(!enif_get_double(env, tpl[1], &b)) Badarg(774,"b");
+  if(!wxe_get_double(env, tpl[1], &b)) Badarg(774,"b");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "c"))) {
-  if(!enif_get_double(env, tpl[1], &c)) Badarg(774,"c");
+  if(!wxe_get_double(env, tpl[1], &c)) Badarg(774,"c");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "d"))) {
-  if(!enif_get_double(env, tpl[1], &d)) Badarg(774,"d");
+  if(!wxe_get_double(env, tpl[1], &d)) Badarg(774,"d");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "tx"))) {
-  if(!enif_get_double(env, tpl[1], &tx)) Badarg(774,"tx");
+  if(!wxe_get_double(env, tpl[1], &tx)) Badarg(774,"tx");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "ty"))) {
-  if(!enif_get_double(env, tpl[1], &ty)) Badarg(774,"ty");
+  if(!wxe_get_double(env, tpl[1], &ty)) Badarg(774,"ty");
     } else        Badarg(774,"Options");
   };
   if(!This) throw wxe_badarg("This");
@@ -12693,13 +12693,13 @@ void wxGraphicsContext_Clip_4(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(777,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(777,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(777,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(777,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(777,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(777,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(777,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(777,"h");
   if(!This) throw wxe_badarg("This");
   This->Clip(x,y,w,h);
 
@@ -12729,13 +12729,13 @@ void wxGraphicsContext_DrawBitmap(WxeApp *app, wxeCommand& Ecmd)
   wxBitmap *bmp;
   bmp = (wxBitmap *) memenv->getPtr(env, argv[1], "bmp");
   double x;
-  if(!enif_get_double(env, argv[2], &x)) Badarg(779,"x");
+  if(!wxe_get_double(env, argv[2], &x)) Badarg(779,"x");
   double y;
-  if(!enif_get_double(env, argv[3], &y)) Badarg(779,"y");
+  if(!wxe_get_double(env, argv[3], &y)) Badarg(779,"y");
   double w;
-  if(!enif_get_double(env, argv[4], &w)) Badarg(779,"w");
+  if(!wxe_get_double(env, argv[4], &w)) Badarg(779,"w");
   double h;
-  if(!enif_get_double(env, argv[5], &h)) Badarg(779,"h");
+  if(!wxe_get_double(env, argv[5], &h)) Badarg(779,"h");
   if(!This) throw wxe_badarg("This");
   This->DrawBitmap(*bmp,x,y,w,h);
 
@@ -12750,13 +12750,13 @@ void wxGraphicsContext_DrawEllipse(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(780,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(780,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(780,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(780,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(780,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(780,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(780,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(780,"h");
   if(!This) throw wxe_badarg("This");
   This->DrawEllipse(x,y,w,h);
 
@@ -12773,13 +12773,13 @@ void wxGraphicsContext_DrawIcon(WxeApp *app, wxeCommand& Ecmd)
   wxIcon *icon;
   icon = (wxIcon *) memenv->getPtr(env, argv[1], "icon");
   double x;
-  if(!enif_get_double(env, argv[2], &x)) Badarg(781,"x");
+  if(!wxe_get_double(env, argv[2], &x)) Badarg(781,"x");
   double y;
-  if(!enif_get_double(env, argv[3], &y)) Badarg(781,"y");
+  if(!wxe_get_double(env, argv[3], &y)) Badarg(781,"y");
   double w;
-  if(!enif_get_double(env, argv[4], &w)) Badarg(781,"w");
+  if(!wxe_get_double(env, argv[4], &w)) Badarg(781,"w");
   double h;
-  if(!enif_get_double(env, argv[5], &h)) Badarg(781,"h");
+  if(!wxe_get_double(env, argv[5], &h)) Badarg(781,"h");
   if(!This) throw wxe_badarg("This");
   This->DrawIcon(*icon,x,y,w,h);
 
@@ -12807,8 +12807,8 @@ void wxGraphicsContext_DrawLines(WxeApp *app, wxeCommand& Ecmd)
   while(!enif_is_empty_list(env, pointsTail)) {
     if(!enif_get_list_cell(env, pointsTail, &pointsHead, &pointsTail)) Badarg(782,"points");
     if(!enif_get_tuple(env, pointsHead, &points_tsz, &points_tpl) || points_tsz != 2) Badarg(782,"points");
-    if(!enif_get_double(env, *points_tpl, &x)) Badarg(782,"points");
-    if(!enif_get_double(env, *points_tpl, &y)) Badarg(782,"points");
+    if(!wxe_get_double(env, points_tpl[0], &x)) Badarg(782,"points");
+    if(!wxe_get_double(env, points_tpl[1], &y)) Badarg(782,"points");
     *points_ptr = wxPoint2DDouble(x,y);
     points_ptr++;
   };
@@ -12867,13 +12867,13 @@ void wxGraphicsContext_DrawRectangle(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(784,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(784,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(784,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(784,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(784,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(784,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(784,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(784,"h");
   if(!This) throw wxe_badarg("This");
   This->DrawRectangle(x,y,w,h);
 
@@ -12888,15 +12888,15 @@ void wxGraphicsContext_DrawRoundedRectangle(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(785,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(785,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(785,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(785,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(785,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(785,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(785,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(785,"h");
   double radius;
-  if(!enif_get_double(env, argv[5], &radius)) Badarg(785,"radius");
+  if(!wxe_get_double(env, argv[5], &radius)) Badarg(785,"radius");
   if(!This) throw wxe_badarg("This");
   This->DrawRoundedRectangle(x,y,w,h,radius);
 
@@ -12915,9 +12915,9 @@ void wxGraphicsContext_DrawText_3(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(786,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
-  if(!enif_get_double(env, argv[2], &x)) Badarg(786,"x");
+  if(!wxe_get_double(env, argv[2], &x)) Badarg(786,"x");
   double y;
-  if(!enif_get_double(env, argv[3], &y)) Badarg(786,"y");
+  if(!wxe_get_double(env, argv[3], &y)) Badarg(786,"y");
   if(!This) throw wxe_badarg("This");
   This->DrawText(str,x,y);
 
@@ -12936,11 +12936,11 @@ void wxGraphicsContext_DrawText_4_0(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(787,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
-  if(!enif_get_double(env, argv[2], &x)) Badarg(787,"x");
+  if(!wxe_get_double(env, argv[2], &x)) Badarg(787,"x");
   double y;
-  if(!enif_get_double(env, argv[3], &y)) Badarg(787,"y");
+  if(!wxe_get_double(env, argv[3], &y)) Badarg(787,"y");
   double angle;
-  if(!enif_get_double(env, argv[4], &angle)) Badarg(787,"angle");
+  if(!wxe_get_double(env, argv[4], &angle)) Badarg(787,"angle");
   if(!This) throw wxe_badarg("This");
   This->DrawText(str,x,y,angle);
 
@@ -12959,9 +12959,9 @@ void wxGraphicsContext_DrawText_4_1(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(788,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
-  if(!enif_get_double(env, argv[2], &x)) Badarg(788,"x");
+  if(!wxe_get_double(env, argv[2], &x)) Badarg(788,"x");
   double y;
-  if(!enif_get_double(env, argv[3], &y)) Badarg(788,"y");
+  if(!wxe_get_double(env, argv[3], &y)) Badarg(788,"y");
   wxGraphicsBrush *backgroundBrush;
   backgroundBrush = (wxGraphicsBrush *) memenv->getPtr(env, argv[4], "backgroundBrush");
   if(!This) throw wxe_badarg("This");
@@ -12982,11 +12982,11 @@ void wxGraphicsContext_DrawText_5(WxeApp *app, wxeCommand& Ecmd)
   if(!enif_inspect_binary(env, argv[1], &str_bin)) Badarg(789,"str");
   str = wxString(str_bin.data, wxConvUTF8, str_bin.size);
   double x;
-  if(!enif_get_double(env, argv[2], &x)) Badarg(789,"x");
+  if(!wxe_get_double(env, argv[2], &x)) Badarg(789,"x");
   double y;
-  if(!enif_get_double(env, argv[3], &y)) Badarg(789,"y");
+  if(!wxe_get_double(env, argv[3], &y)) Badarg(789,"y");
   double angle;
-  if(!enif_get_double(env, argv[4], &angle)) Badarg(789,"angle");
+  if(!wxe_get_double(env, argv[4], &angle)) Badarg(789,"angle");
   wxGraphicsBrush *backgroundBrush;
   backgroundBrush = (wxGraphicsBrush *) memenv->getPtr(env, argv[5], "backgroundBrush");
   if(!This) throw wxe_badarg("This");
@@ -13094,7 +13094,7 @@ void wxGraphicsContext_Rotate(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double angle;
-  if(!enif_get_double(env, argv[1], &angle)) Badarg(794,"angle");
+  if(!wxe_get_double(env, argv[1], &angle)) Badarg(794,"angle");
   if(!This) throw wxe_badarg("This");
   This->Rotate(angle);
 
@@ -13109,9 +13109,9 @@ void wxGraphicsContext_Scale(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double xScale;
-  if(!enif_get_double(env, argv[1], &xScale)) Badarg(795,"xScale");
+  if(!wxe_get_double(env, argv[1], &xScale)) Badarg(795,"xScale");
   double yScale;
-  if(!enif_get_double(env, argv[2], &yScale)) Badarg(795,"yScale");
+  if(!wxe_get_double(env, argv[2], &yScale)) Badarg(795,"yScale");
   if(!This) throw wxe_badarg("This");
   This->Scale(xScale,yScale);
 
@@ -13126,9 +13126,9 @@ void wxGraphicsContext_Translate(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double dx;
-  if(!enif_get_double(env, argv[1], &dx)) Badarg(796,"dx");
+  if(!wxe_get_double(env, argv[1], &dx)) Badarg(796,"dx");
   double dy;
-  if(!enif_get_double(env, argv[2], &dy)) Badarg(796,"dy");
+  if(!wxe_get_double(env, argv[2], &dy)) Badarg(796,"dy");
   if(!This) throw wxe_badarg("This");
   This->Translate(dx,dy);
 
@@ -13288,13 +13288,13 @@ void wxGraphicsContext_StrokeLine(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsContext *This;
   This = (wxGraphicsContext *) memenv->getPtr(env, argv[0], "This");
   double x1;
-  if(!enif_get_double(env, argv[1], &x1)) Badarg(806,"x1");
+  if(!wxe_get_double(env, argv[1], &x1)) Badarg(806,"x1");
   double y1;
-  if(!enif_get_double(env, argv[2], &y1)) Badarg(806,"y1");
+  if(!wxe_get_double(env, argv[2], &y1)) Badarg(806,"y1");
   double x2;
-  if(!enif_get_double(env, argv[3], &x2)) Badarg(806,"x2");
+  if(!wxe_get_double(env, argv[3], &x2)) Badarg(806,"x2");
   double y2;
-  if(!enif_get_double(env, argv[4], &y2)) Badarg(806,"y2");
+  if(!wxe_get_double(env, argv[4], &y2)) Badarg(806,"y2");
   if(!This) throw wxe_badarg("This");
   This->StrokeLine(x1,y1,x2,y2);
 
@@ -13321,8 +13321,8 @@ void wxGraphicsContext_StrokeLines(WxeApp *app, wxeCommand& Ecmd)
   while(!enif_is_empty_list(env, pointsTail)) {
     if(!enif_get_list_cell(env, pointsTail, &pointsHead, &pointsTail)) Badarg(807,"points");
     if(!enif_get_tuple(env, pointsHead, &points_tsz, &points_tpl) || points_tsz != 2) Badarg(807,"points");
-    if(!enif_get_double(env, *points_tpl, &x)) Badarg(807,"points");
-    if(!enif_get_double(env, *points_tpl, &y)) Badarg(807,"points");
+    if(!wxe_get_double(env, points_tpl[0], &x)) Badarg(807,"points");
+    if(!wxe_get_double(env, points_tpl[1], &y)) Badarg(807,"points");
     *points_ptr = wxPoint2DDouble(x,y);
     points_ptr++;
   };
@@ -13431,7 +13431,7 @@ void wxGraphicsMatrix_Rotate(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsMatrix *This;
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0], "This");
   double angle;
-  if(!enif_get_double(env, argv[1], &angle)) Badarg(816,"angle");
+  if(!wxe_get_double(env, argv[1], &angle)) Badarg(816,"angle");
   if(!This) throw wxe_badarg("This");
   This->Rotate(angle);
 
@@ -13446,9 +13446,9 @@ void wxGraphicsMatrix_Scale(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsMatrix *This;
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0], "This");
   double xScale;
-  if(!enif_get_double(env, argv[1], &xScale)) Badarg(817,"xScale");
+  if(!wxe_get_double(env, argv[1], &xScale)) Badarg(817,"xScale");
   double yScale;
-  if(!enif_get_double(env, argv[2], &yScale)) Badarg(817,"yScale");
+  if(!wxe_get_double(env, argv[2], &yScale)) Badarg(817,"yScale");
   if(!This) throw wxe_badarg("This");
   This->Scale(xScale,yScale);
 
@@ -13463,9 +13463,9 @@ void wxGraphicsMatrix_Translate(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsMatrix *This;
   This = (wxGraphicsMatrix *) memenv->getPtr(env, argv[0], "This");
   double dx;
-  if(!enif_get_double(env, argv[1], &dx)) Badarg(818,"dx");
+  if(!wxe_get_double(env, argv[1], &dx)) Badarg(818,"dx");
   double dy;
-  if(!enif_get_double(env, argv[2], &dy)) Badarg(818,"dy");
+  if(!wxe_get_double(env, argv[2], &dy)) Badarg(818,"dy");
   if(!This) throw wxe_badarg("This");
   This->Translate(dx,dy);
 
@@ -13494,17 +13494,17 @@ void wxGraphicsMatrix_Set(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(819,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(819,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "a"))) {
-  if(!enif_get_double(env, tpl[1], &a)) Badarg(819,"a");
+  if(!wxe_get_double(env, tpl[1], &a)) Badarg(819,"a");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  if(!enif_get_double(env, tpl[1], &b)) Badarg(819,"b");
+  if(!wxe_get_double(env, tpl[1], &b)) Badarg(819,"b");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "c"))) {
-  if(!enif_get_double(env, tpl[1], &c)) Badarg(819,"c");
+  if(!wxe_get_double(env, tpl[1], &c)) Badarg(819,"c");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "d"))) {
-  if(!enif_get_double(env, tpl[1], &d)) Badarg(819,"d");
+  if(!wxe_get_double(env, tpl[1], &d)) Badarg(819,"d");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "tx"))) {
-  if(!enif_get_double(env, tpl[1], &tx)) Badarg(819,"tx");
+  if(!wxe_get_double(env, tpl[1], &tx)) Badarg(819,"tx");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "ty"))) {
-  if(!enif_get_double(env, tpl[1], &ty)) Badarg(819,"ty");
+  if(!wxe_get_double(env, tpl[1], &ty)) Badarg(819,"ty");
     } else        Badarg(819,"Options");
   };
   if(!This) throw wxe_badarg("This");
@@ -13563,9 +13563,9 @@ void wxGraphicsPath_MoveToPoint_2(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(822,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(822,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(822,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(822,"y");
   if(!This) throw wxe_badarg("This");
   This->MoveToPoint(x,y);
 
@@ -13583,9 +13583,9 @@ void wxGraphicsPath_MoveToPoint_1(WxeApp *app, wxeCommand& Ecmd)
   int p_sz;
   if(!enif_get_tuple(env, argv[1], &p_sz, &p_t)) Badarg(823,"p");
   double pX;
-  if(!enif_get_double(env, p_t[0], &pX)) Badarg(823,"p");
+  if(!wxe_get_double(env, p_t[0], &pX)) Badarg(823,"p");
   double pY;
-  if(!enif_get_double(env, p_t[1], &pY)) Badarg(823,"p");
+  if(!wxe_get_double(env, p_t[1], &pY)) Badarg(823,"p");
   wxPoint2DDouble p = wxPoint2DDouble(pX,pY);
   if(!This) throw wxe_badarg("This");
   This->MoveToPoint(p);
@@ -13601,15 +13601,15 @@ void wxGraphicsPath_AddArc_6(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(824,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(824,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(824,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(824,"y");
   double r;
-  if(!enif_get_double(env, argv[3], &r)) Badarg(824,"r");
+  if(!wxe_get_double(env, argv[3], &r)) Badarg(824,"r");
   double startAngle;
-  if(!enif_get_double(env, argv[4], &startAngle)) Badarg(824,"startAngle");
+  if(!wxe_get_double(env, argv[4], &startAngle)) Badarg(824,"startAngle");
   double endAngle;
-  if(!enif_get_double(env, argv[5], &endAngle)) Badarg(824,"endAngle");
+  if(!wxe_get_double(env, argv[5], &endAngle)) Badarg(824,"endAngle");
   bool clockwise;
   clockwise = enif_is_identical(argv[6], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
@@ -13629,16 +13629,16 @@ void wxGraphicsPath_AddArc_5(WxeApp *app, wxeCommand& Ecmd)
   int c_sz;
   if(!enif_get_tuple(env, argv[1], &c_sz, &c_t)) Badarg(825,"c");
   double cX;
-  if(!enif_get_double(env, c_t[0], &cX)) Badarg(825,"c");
+  if(!wxe_get_double(env, c_t[0], &cX)) Badarg(825,"c");
   double cY;
-  if(!enif_get_double(env, c_t[1], &cY)) Badarg(825,"c");
+  if(!wxe_get_double(env, c_t[1], &cY)) Badarg(825,"c");
   wxPoint2DDouble c = wxPoint2DDouble(cX,cY);
   double r;
-  if(!enif_get_double(env, argv[2], &r)) Badarg(825,"r");
+  if(!wxe_get_double(env, argv[2], &r)) Badarg(825,"r");
   double startAngle;
-  if(!enif_get_double(env, argv[3], &startAngle)) Badarg(825,"startAngle");
+  if(!wxe_get_double(env, argv[3], &startAngle)) Badarg(825,"startAngle");
   double endAngle;
-  if(!enif_get_double(env, argv[4], &endAngle)) Badarg(825,"endAngle");
+  if(!wxe_get_double(env, argv[4], &endAngle)) Badarg(825,"endAngle");
   bool clockwise;
   clockwise = enif_is_identical(argv[5], WXE_ATOM_true);
   if(!This) throw wxe_badarg("This");
@@ -13655,15 +13655,15 @@ void wxGraphicsPath_AddArcToPoint(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x1;
-  if(!enif_get_double(env, argv[1], &x1)) Badarg(826,"x1");
+  if(!wxe_get_double(env, argv[1], &x1)) Badarg(826,"x1");
   double y1;
-  if(!enif_get_double(env, argv[2], &y1)) Badarg(826,"y1");
+  if(!wxe_get_double(env, argv[2], &y1)) Badarg(826,"y1");
   double x2;
-  if(!enif_get_double(env, argv[3], &x2)) Badarg(826,"x2");
+  if(!wxe_get_double(env, argv[3], &x2)) Badarg(826,"x2");
   double y2;
-  if(!enif_get_double(env, argv[4], &y2)) Badarg(826,"y2");
+  if(!wxe_get_double(env, argv[4], &y2)) Badarg(826,"y2");
   double r;
-  if(!enif_get_double(env, argv[5], &r)) Badarg(826,"r");
+  if(!wxe_get_double(env, argv[5], &r)) Badarg(826,"r");
   if(!This) throw wxe_badarg("This");
   This->AddArcToPoint(x1,y1,x2,y2,r);
 
@@ -13678,11 +13678,11 @@ void wxGraphicsPath_AddCircle(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(827,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(827,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(827,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(827,"y");
   double r;
-  if(!enif_get_double(env, argv[3], &r)) Badarg(827,"r");
+  if(!wxe_get_double(env, argv[3], &r)) Badarg(827,"r");
   if(!This) throw wxe_badarg("This");
   This->AddCircle(x,y,r);
 
@@ -13697,17 +13697,17 @@ void wxGraphicsPath_AddCurveToPoint_6(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double cx1;
-  if(!enif_get_double(env, argv[1], &cx1)) Badarg(828,"cx1");
+  if(!wxe_get_double(env, argv[1], &cx1)) Badarg(828,"cx1");
   double cy1;
-  if(!enif_get_double(env, argv[2], &cy1)) Badarg(828,"cy1");
+  if(!wxe_get_double(env, argv[2], &cy1)) Badarg(828,"cy1");
   double cx2;
-  if(!enif_get_double(env, argv[3], &cx2)) Badarg(828,"cx2");
+  if(!wxe_get_double(env, argv[3], &cx2)) Badarg(828,"cx2");
   double cy2;
-  if(!enif_get_double(env, argv[4], &cy2)) Badarg(828,"cy2");
+  if(!wxe_get_double(env, argv[4], &cy2)) Badarg(828,"cy2");
   double x;
-  if(!enif_get_double(env, argv[5], &x)) Badarg(828,"x");
+  if(!wxe_get_double(env, argv[5], &x)) Badarg(828,"x");
   double y;
-  if(!enif_get_double(env, argv[6], &y)) Badarg(828,"y");
+  if(!wxe_get_double(env, argv[6], &y)) Badarg(828,"y");
   if(!This) throw wxe_badarg("This");
   This->AddCurveToPoint(cx1,cy1,cx2,cy2,x,y);
 
@@ -13725,25 +13725,25 @@ void wxGraphicsPath_AddCurveToPoint_3(WxeApp *app, wxeCommand& Ecmd)
   int c1_sz;
   if(!enif_get_tuple(env, argv[1], &c1_sz, &c1_t)) Badarg(829,"c1");
   double c1X;
-  if(!enif_get_double(env, c1_t[0], &c1X)) Badarg(829,"c1");
+  if(!wxe_get_double(env, c1_t[0], &c1X)) Badarg(829,"c1");
   double c1Y;
-  if(!enif_get_double(env, c1_t[1], &c1Y)) Badarg(829,"c1");
+  if(!wxe_get_double(env, c1_t[1], &c1Y)) Badarg(829,"c1");
   wxPoint2DDouble c1 = wxPoint2DDouble(c1X,c1Y);
   const ERL_NIF_TERM *c2_t;
   int c2_sz;
   if(!enif_get_tuple(env, argv[2], &c2_sz, &c2_t)) Badarg(829,"c2");
   double c2X;
-  if(!enif_get_double(env, c2_t[0], &c2X)) Badarg(829,"c2");
+  if(!wxe_get_double(env, c2_t[0], &c2X)) Badarg(829,"c2");
   double c2Y;
-  if(!enif_get_double(env, c2_t[1], &c2Y)) Badarg(829,"c2");
+  if(!wxe_get_double(env, c2_t[1], &c2Y)) Badarg(829,"c2");
   wxPoint2DDouble c2 = wxPoint2DDouble(c2X,c2Y);
   const ERL_NIF_TERM *e_t;
   int e_sz;
   if(!enif_get_tuple(env, argv[3], &e_sz, &e_t)) Badarg(829,"e");
   double eX;
-  if(!enif_get_double(env, e_t[0], &eX)) Badarg(829,"e");
+  if(!wxe_get_double(env, e_t[0], &eX)) Badarg(829,"e");
   double eY;
-  if(!enif_get_double(env, e_t[1], &eY)) Badarg(829,"e");
+  if(!wxe_get_double(env, e_t[1], &eY)) Badarg(829,"e");
   wxPoint2DDouble e = wxPoint2DDouble(eX,eY);
   if(!This) throw wxe_badarg("This");
   This->AddCurveToPoint(c1,c2,e);
@@ -13759,13 +13759,13 @@ void wxGraphicsPath_AddEllipse(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(830,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(830,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(830,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(830,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(830,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(830,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(830,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(830,"h");
   if(!This) throw wxe_badarg("This");
   This->AddEllipse(x,y,w,h);
 
@@ -13780,9 +13780,9 @@ void wxGraphicsPath_AddLineToPoint_2(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(831,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(831,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(831,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(831,"y");
   if(!This) throw wxe_badarg("This");
   This->AddLineToPoint(x,y);
 
@@ -13800,9 +13800,9 @@ void wxGraphicsPath_AddLineToPoint_1(WxeApp *app, wxeCommand& Ecmd)
   int p_sz;
   if(!enif_get_tuple(env, argv[1], &p_sz, &p_t)) Badarg(832,"p");
   double pX;
-  if(!enif_get_double(env, p_t[0], &pX)) Badarg(832,"p");
+  if(!wxe_get_double(env, p_t[0], &pX)) Badarg(832,"p");
   double pY;
-  if(!enif_get_double(env, p_t[1], &pY)) Badarg(832,"p");
+  if(!wxe_get_double(env, p_t[1], &pY)) Badarg(832,"p");
   wxPoint2DDouble p = wxPoint2DDouble(pX,pY);
   if(!This) throw wxe_badarg("This");
   This->AddLineToPoint(p);
@@ -13833,13 +13833,13 @@ void wxGraphicsPath_AddQuadCurveToPoint(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double cx;
-  if(!enif_get_double(env, argv[1], &cx)) Badarg(834,"cx");
+  if(!wxe_get_double(env, argv[1], &cx)) Badarg(834,"cx");
   double cy;
-  if(!enif_get_double(env, argv[2], &cy)) Badarg(834,"cy");
+  if(!wxe_get_double(env, argv[2], &cy)) Badarg(834,"cy");
   double x;
-  if(!enif_get_double(env, argv[3], &x)) Badarg(834,"x");
+  if(!wxe_get_double(env, argv[3], &x)) Badarg(834,"x");
   double y;
-  if(!enif_get_double(env, argv[4], &y)) Badarg(834,"y");
+  if(!wxe_get_double(env, argv[4], &y)) Badarg(834,"y");
   if(!This) throw wxe_badarg("This");
   This->AddQuadCurveToPoint(cx,cy,x,y);
 
@@ -13854,13 +13854,13 @@ void wxGraphicsPath_AddRectangle(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(835,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(835,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(835,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(835,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(835,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(835,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(835,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(835,"h");
   if(!This) throw wxe_badarg("This");
   This->AddRectangle(x,y,w,h);
 
@@ -13875,15 +13875,15 @@ void wxGraphicsPath_AddRoundedRectangle(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(836,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(836,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(836,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(836,"y");
   double w;
-  if(!enif_get_double(env, argv[3], &w)) Badarg(836,"w");
+  if(!wxe_get_double(env, argv[3], &w)) Badarg(836,"w");
   double h;
-  if(!enif_get_double(env, argv[4], &h)) Badarg(836,"h");
+  if(!wxe_get_double(env, argv[4], &h)) Badarg(836,"h");
   double radius;
-  if(!enif_get_double(env, argv[5], &radius)) Badarg(836,"radius");
+  if(!wxe_get_double(env, argv[5], &radius)) Badarg(836,"radius");
   if(!This) throw wxe_badarg("This");
   This->AddRoundedRectangle(x,y,w,h,radius);
 
@@ -13912,9 +13912,9 @@ void wxGraphicsPath_Contains_3(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsPath *This;
   This = (wxGraphicsPath *) memenv->getPtr(env, argv[0], "This");
   double x;
-  if(!enif_get_double(env, argv[1], &x)) Badarg(838,"x");
+  if(!wxe_get_double(env, argv[1], &x)) Badarg(838,"x");
   double y;
-  if(!enif_get_double(env, argv[2], &y)) Badarg(838,"y");
+  if(!wxe_get_double(env, argv[2], &y)) Badarg(838,"y");
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[3];
   if(!enif_is_list(env, lstTail)) Badarg(838,"Options");
@@ -13947,9 +13947,9 @@ void wxGraphicsPath_Contains_2(WxeApp *app, wxeCommand& Ecmd)
   int c_sz;
   if(!enif_get_tuple(env, argv[1], &c_sz, &c_t)) Badarg(839,"c");
   double cX;
-  if(!enif_get_double(env, c_t[0], &cX)) Badarg(839,"c");
+  if(!wxe_get_double(env, c_t[0], &cX)) Badarg(839,"c");
   double cY;
-  if(!enif_get_double(env, c_t[1], &cY)) Badarg(839,"c");
+  if(!wxe_get_double(env, c_t[1], &cY)) Badarg(839,"c");
   wxPoint2DDouble c = wxPoint2DDouble(cX,cY);
   ERL_NIF_TERM lstHead, lstTail;
   lstTail = argv[2];
@@ -14132,13 +14132,13 @@ void wxGraphicsRenderer_CreateLinearGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsRenderer *This;
   This = (wxGraphicsRenderer *) memenv->getPtr(env, argv[0], "This");
   double x1;
-  if(!enif_get_double(env, argv[1], &x1)) Badarg(850,"x1");
+  if(!wxe_get_double(env, argv[1], &x1)) Badarg(850,"x1");
   double y1;
-  if(!enif_get_double(env, argv[2], &y1)) Badarg(850,"y1");
+  if(!wxe_get_double(env, argv[2], &y1)) Badarg(850,"y1");
   double x2;
-  if(!enif_get_double(env, argv[3], &x2)) Badarg(850,"x2");
+  if(!wxe_get_double(env, argv[3], &x2)) Badarg(850,"x2");
   double y2;
-  if(!enif_get_double(env, argv[4], &y2)) Badarg(850,"y2");
+  if(!wxe_get_double(env, argv[4], &y2)) Badarg(850,"y2");
   const ERL_NIF_TERM *c1_t;
   int c1_sz;
   if(!enif_get_tuple(env, argv[5], &c1_sz, &c1_t)) Badarg(850,"c1");
@@ -14181,15 +14181,15 @@ void wxGraphicsRenderer_CreateRadialGradientBrush(WxeApp *app, wxeCommand& Ecmd)
   wxGraphicsRenderer *This;
   This = (wxGraphicsRenderer *) memenv->getPtr(env, argv[0], "This");
   double xo;
-  if(!enif_get_double(env, argv[1], &xo)) Badarg(851,"xo");
+  if(!wxe_get_double(env, argv[1], &xo)) Badarg(851,"xo");
   double yo;
-  if(!enif_get_double(env, argv[2], &yo)) Badarg(851,"yo");
+  if(!wxe_get_double(env, argv[2], &yo)) Badarg(851,"yo");
   double xc;
-  if(!enif_get_double(env, argv[3], &xc)) Badarg(851,"xc");
+  if(!wxe_get_double(env, argv[3], &xc)) Badarg(851,"xc");
   double yc;
-  if(!enif_get_double(env, argv[4], &yc)) Badarg(851,"yc");
+  if(!wxe_get_double(env, argv[4], &yc)) Badarg(851,"yc");
   double radius;
-  if(!enif_get_double(env, argv[5], &radius)) Badarg(851,"radius");
+  if(!wxe_get_double(env, argv[5], &radius)) Badarg(851,"radius");
   const ERL_NIF_TERM *oColor_t;
   int oColor_sz;
   if(!enif_get_tuple(env, argv[6], &oColor_sz, &oColor_t)) Badarg(851,"oColor");
@@ -14286,17 +14286,17 @@ void wxGraphicsRenderer_CreateMatrix(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(853,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(853,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "a"))) {
-  if(!enif_get_double(env, tpl[1], &a)) Badarg(853,"a");
+  if(!wxe_get_double(env, tpl[1], &a)) Badarg(853,"a");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "b"))) {
-  if(!enif_get_double(env, tpl[1], &b)) Badarg(853,"b");
+  if(!wxe_get_double(env, tpl[1], &b)) Badarg(853,"b");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "c"))) {
-  if(!enif_get_double(env, tpl[1], &c)) Badarg(853,"c");
+  if(!wxe_get_double(env, tpl[1], &c)) Badarg(853,"c");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "d"))) {
-  if(!enif_get_double(env, tpl[1], &d)) Badarg(853,"d");
+  if(!wxe_get_double(env, tpl[1], &d)) Badarg(853,"d");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "tx"))) {
-  if(!enif_get_double(env, tpl[1], &tx)) Badarg(853,"tx");
+  if(!wxe_get_double(env, tpl[1], &tx)) Badarg(853,"tx");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "ty"))) {
-  if(!enif_get_double(env, tpl[1], &ty)) Badarg(853,"ty");
+  if(!wxe_get_double(env, tpl[1], &ty)) Badarg(853,"ty");
     } else        Badarg(853,"Options");
   };
   if(!This) throw wxe_badarg("This");
@@ -19160,11 +19160,11 @@ void wxImage_ConvertToGreyscale(WxeApp *app, wxeCommand& Ecmd)
     if(!enif_get_list_cell(env, lstTail, &lstHead, &lstTail)) Badarg(1099,"Options");
     if(!enif_get_tuple(env, lstHead, &tpl_sz, &tpl) || tpl_sz != 2) Badarg(1099,"Options");
     if(enif_is_identical(tpl[0], enif_make_atom(env, "lr"))) {
-  if(!enif_get_double(env, tpl[1], &lr)) Badarg(1099,"lr");
+  if(!wxe_get_double(env, tpl[1], &lr)) Badarg(1099,"lr");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "lg"))) {
-  if(!enif_get_double(env, tpl[1], &lg)) Badarg(1099,"lg");
+  if(!wxe_get_double(env, tpl[1], &lg)) Badarg(1099,"lg");
     } else     if(enif_is_identical(tpl[0], enif_make_atom(env, "lb"))) {
-  if(!enif_get_double(env, tpl[1], &lb)) Badarg(1099,"lb");
+  if(!wxe_get_double(env, tpl[1], &lb)) Badarg(1099,"lb");
     } else        Badarg(1099,"Options");
   };
   if(!This) throw wxe_badarg("This");
@@ -20055,7 +20055,7 @@ void wxImage_Rotate(WxeApp *app, wxeCommand& Ecmd)
   wxImage *This;
   This = (wxImage *) memenv->getPtr(env, argv[0], "This");
   double angle;
-  if(!enif_get_double(env, argv[1], &angle)) Badarg(1139,"angle");
+  if(!wxe_get_double(env, argv[1], &angle)) Badarg(1139,"angle");
   const ERL_NIF_TERM *centre_of_rotation_t;
   int centre_of_rotation_sz;
   if(!enif_get_tuple(env, argv[2], &centre_of_rotation_sz, &centre_of_rotation_t)) Badarg(1139,"centre_of_rotation");
@@ -20101,7 +20101,7 @@ void wxImage_RotateHue(WxeApp *app, wxeCommand& Ecmd)
   wxImage *This;
   This = (wxImage *) memenv->getPtr(env, argv[0], "This");
   double angle;
-  if(!enif_get_double(env, argv[1], &angle)) Badarg(1140,"angle");
+  if(!wxe_get_double(env, argv[1], &angle)) Badarg(1140,"angle");
   if(!This) throw wxe_badarg("This");
   This->RotateHue(angle);
 
@@ -46813,9 +46813,9 @@ void wxAuiManager_SetDockSizeConstraint(WxeApp *app, wxeCommand& Ecmd)
   wxAuiManager *This;
   This = (wxAuiManager *) memenv->getPtr(env, argv[0], "This");
   double width_pct;
-  if(!enif_get_double(env, argv[1], &width_pct)) Badarg(2577,"width_pct");
+  if(!wxe_get_double(env, argv[1], &width_pct)) Badarg(2577,"width_pct");
   double height_pct;
-  if(!enif_get_double(env, argv[2], &height_pct)) Badarg(2577,"height_pct");
+  if(!wxe_get_double(env, argv[2], &height_pct)) Badarg(2577,"height_pct");
   if(!This) throw wxe_badarg("This");
   This->SetDockSizeConstraint(width_pct,height_pct);
 
@@ -61725,7 +61725,7 @@ void wxSplitterWindow_SetSashGravity(WxeApp *app, wxeCommand& Ecmd)
   wxSplitterWindow *This;
   This = (wxSplitterWindow *) memenv->getPtr(env, argv[0], "This");
   double gravity;
-  if(!enif_get_double(env, argv[1], &gravity)) Badarg(3479,"gravity");
+  if(!wxe_get_double(env, argv[1], &gravity)) Badarg(3479,"gravity");
   if(!This) throw wxe_badarg("This");
   This->SetSashGravity(gravity);
 

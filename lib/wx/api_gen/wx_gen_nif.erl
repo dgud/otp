@@ -554,7 +554,7 @@ decode_arg(N,#type{base=float,single=true}, Arg, Argc) ->
     w("  if(!wxe_get_float(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,#type{base=double,single=true},Arg,Argc) ->
     wa("  double ~s;~n",[N], Arg),
-    w("  if(!enif_get_double(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
+    w("  if(!wxe_get_double(env, ~s, &~s)) ~s;~n", [Argc, N, badarg(N)]);
 decode_arg(N,#type{base=bool,single=true},Arg,Argc) ->
     wa("  bool ~s;~n", [N], Arg),
     w("  ~s = enif_is_identical(~s, WXE_ATOM_true);~n", [N, Argc]);
@@ -596,7 +596,7 @@ decode_arg(N,#type{base={comp,_,List},single=true,name=Type,ref=Ref},Arg,Argc) -
                    Idx+1;
               ({double, Spec}, Idx) ->
                    w("  double ~s~s;~n", [N,Spec]),
-                   w("  if(!enif_get_double(env, ~s_t[~w], &~s~s)) ~s;~n", [N,Idx,N,Spec,badarg(N)]),
+                   w("  if(!wxe_get_double(env, ~s_t[~w], &~s~s)) ~s;~n", [N,Idx,N,Spec,badarg(N)]),
                    Idx+1
 	   end,
     _ = lists:foldl(Decl,0,List),
@@ -743,11 +743,11 @@ decode_arg(N,#type{single=array, name="wxPoint"++_=Class,
     w("    if(!enif_get_tuple(env, ~sHead, &~s_tsz, &~s_tpl) || ~s_tsz != 2) ~s;~n", [N,N,N,N,badarg(N)]),
     case Class of
         "wxPoint" ->
-            w("    if(!enif_get_int(env, *~s_tpl, &x)) ~s;~n", [N,badarg(N)]),
-            w("    if(!enif_get_int(env, *~s_tpl, &y)) ~s;~n", [N,badarg(N)]);
+            w("    if(!enif_get_int(env, ~s_tpl[0], &x)) ~s;~n", [N,badarg(N)]),
+            w("    if(!enif_get_int(env, ~s_tpl[1], &y)) ~s;~n", [N,badarg(N)]);
         "wxPoint2DDouble" ->
-            w("    if(!enif_get_double(env, *~s_tpl, &x)) ~s;~n", [N,badarg(N)]),
-            w("    if(!enif_get_double(env, *~s_tpl, &y)) ~s;~n", [N,badarg(N)])
+            w("    if(!wxe_get_double(env, ~s_tpl[0], &x)) ~s;~n", [N,badarg(N)]),
+            w("    if(!wxe_get_double(env, ~s_tpl[1], &y)) ~s;~n", [N,badarg(N)])
     end,
     w("    *~s_ptr = ~s(x,y);~n", [N, Class]),
     w("    ~s_ptr++;~n",[N]),

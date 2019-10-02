@@ -63,6 +63,7 @@ extern ERL_NIF_TERM WXE_ATOM__wx_invoke_cb_;
 // #define WXE_INIT_OPENGL 52
 
 int wxe_get_float(ErlNifEnv* env, ERL_NIF_TERM term, float* dp);
+int wxe_get_double(ErlNifEnv* env, ERL_NIF_TERM term, double* dp);
 
 /* wxe_impl.cpp functions */
 

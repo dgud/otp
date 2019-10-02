@@ -51,12 +51,28 @@ int get_ptr(ErlNifEnv* env, ERL_NIF_TERM term, void** dp)
 
 int wxe_get_float(ErlNifEnv* env, ERL_NIF_TERM term, float* dp)
 {
-    double temp;
-    if(enif_get_double(env, term, &temp)) {
-        *dp = (float) temp;
+    double dtemp;
+    int itemp;
+    if(enif_get_double(env, term, &dtemp)) {
+        *dp = (float) dtemp;
+        return 1;
+    } else if(enif_get_int(env, term, &itemp)) {
+        *dp = (float) itemp;
         return 1;
     } else return 0;
 }
+
+int wxe_get_double(ErlNifEnv* env, ERL_NIF_TERM term, double* dp)
+{
+    ErlNifSInt64 itemp;
+    if(enif_get_double(env, term, dp)) {
+        return 1;
+    } else if(enif_get_int64(env, term, &itemp)) {
+        *dp = (double) itemp;
+        return 1;
+    } else return 0;
+}
+
 
 static ERL_NIF_TERM wx_setup_cmd(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
