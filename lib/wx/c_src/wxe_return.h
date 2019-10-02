@@ -62,7 +62,7 @@ public:
     ERL_NIF_TERM make_ext2term(wxETreeItemData * term);
 
     ERL_NIF_TERM make_list_strings(size_t size, wxString* atomName);
-    ERL_NIF_TERM make_list_objs(const wxList& wx_list, WxeApp *app, const char *cname);
+    ERL_NIF_TERM make_list_objs(const wxObjectList& wx_list, WxeApp *app, const char *cname);
     ERL_NIF_TERM make_array_objs(wxGridCellCoordsArray& arr);
     // ERL_NIF_TERM make_array_objs(const wxList& wx_list, WxeApp *app, const char *cname);
     ERL_NIF_TERM make_array_objs(wxArrayTreeItemIds& arr);

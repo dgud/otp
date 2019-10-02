@@ -25,7 +25,7 @@
 wxeReturn::wxeReturn (wxeMemEnv * _memenv,
                       ErlNifPid   _caller,
 		      bool        _isResult) {
-  memenv  = memenv;
+  memenv  = _memenv;
   env     = _memenv->tmp_env;
   caller  = _caller;
 
@@ -164,12 +164,12 @@ ERL_NIF_TERM  wxeReturn::make(wxArrayString val) {
     return tail;
 }
 
-ERL_NIF_TERM wxeReturn::make_list_objs(const wxList& list, WxeApp *app, const char *cname)
+ERL_NIF_TERM wxeReturn::make_list_objs(const wxObjectList& list, WxeApp *app, const char *cname)
 {
   ERL_NIF_TERM head, tail;
   ERL_NIF_TERM class_name = enif_make_atom(env, cname);
   tail = enif_make_list(env, 0);
-  for(wxList::const_iterator it = list.end(); it != list.begin(); ++it) {
+  for(wxObjectList::const_reverse_iterator it = list.rbegin(); it != list.rend(); ++it) {
     void * ResultTmp = *it;
     head = make_ref(app->getRef(ResultTmp,memenv), class_name);
     tail = enif_make_list_cell(env, head, tail);
