@@ -37,6 +37,7 @@ wxeCommand::~wxeCommand()
 void wxeCommand::Delete()
 {
   op = -2;
+  enif_clear_env(env);
 }
 
 /* ****************************************************************************

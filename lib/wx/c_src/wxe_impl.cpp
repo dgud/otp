@@ -583,6 +583,7 @@ void WxeApp::destroyMemEnv(wxeMetaCommand &Ecmd)
 // }
 //  fflush(stderr);
   enif_free(memenv->ref2ptr);
+  enif_free_env(memenv->tmp_env);
   enif_release_resource(memenv);
 }
 
