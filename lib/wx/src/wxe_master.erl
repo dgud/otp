@@ -105,6 +105,7 @@ fetch_msgs() ->
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
 init([SilentStart]) ->
+    erlang:group_leader(whereis(init), self()),
     case catch erlang:system_info(smp_support) of
 	true -> ok;
 	_ ->
