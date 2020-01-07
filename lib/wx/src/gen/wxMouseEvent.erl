@@ -375,10 +375,10 @@ shiftDown(#wx_ref{type=ThisT}=This) ->
 %%<br /> Res = ?wxMOUSE_WHEEL_VERTICAL | ?wxMOUSE_WHEEL_HORIZONTAL
 -spec getWheelAxis(This) -> wx:wx_enum() when
 	This::wxMouseEvent().
-getWheelAxis(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getWheelAxis(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMouseEvent),
-  wxe_util:call(?wxMouseEvent_GetWheelAxis,
-  <<ThisRef:32/?UI>>).
+  wxe_util:queue_cmd(This,?get_env(),?wxMouseEvent_GetWheelAxis),
+  wxe_util:rec(?wxMouseEvent_GetWheelAxis).
 
  %% From wxEvent
 %% @hidden

@@ -904,10 +904,10 @@ isTopLevel(#wx_ref{type=ThisT}=This) ->
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowisshownonscreen">external documentation</a>.
 -spec isShownOnScreen(This) -> boolean() when
 	This::wxWindow().
-isShownOnScreen(#wx_ref{type=ThisT,ref=ThisRef}) ->
+isShownOnScreen(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_IsShownOnScreen,
-  <<ThisRef:32/?UI>>).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_IsShownOnScreen),
+  wxe_util:rec(?wxWindow_IsShownOnScreen).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowlayout">external documentation</a>.
 -spec layout(This) -> boolean() when
@@ -1901,28 +1901,28 @@ getContentScaleFactor(#wx_ref{type=ThisT}=This) ->
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowgetdpi">external documentation</a>.
 -spec getDPI(This) -> {W::integer(), H::integer()} when
 	This::wxWindow().
-getDPI(#wx_ref{type=ThisT,ref=ThisRef}) ->
+getDPI(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_GetDPI,
-  <<ThisRef:32/?UI>>).
+  wxe_util:queue_cmd(This,?get_env(),?wxWindow_GetDPI),
+  wxe_util:rec(?wxWindow_GetDPI).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowfromdip">external documentation</a>.
 -spec fromDIP(This, Sz) -> {W::integer(), H::integer()} when
 	This::wxWindow(), Sz::{W::integer(), H::integer()}.
-fromDIP(#wx_ref{type=ThisT,ref=ThisRef},{SzW,SzH})
+fromDIP(#wx_ref{type=ThisT}=This,{SzW,SzH} = Sz)
  when is_integer(SzW),is_integer(SzH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_FromDIP,
-  <<ThisRef:32/?UI,SzW:32/?UI,SzH:32/?UI>>).
+  wxe_util:queue_cmd(This,Sz,?get_env(),?wxWindow_FromDIP),
+  wxe_util:rec(?wxWindow_FromDIP).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxwindow.html#wxwindowtodip">external documentation</a>.
 -spec toDIP(This, Sz) -> {W::integer(), H::integer()} when
 	This::wxWindow(), Sz::{W::integer(), H::integer()}.
-toDIP(#wx_ref{type=ThisT,ref=ThisRef},{SzW,SzH})
+toDIP(#wx_ref{type=ThisT}=This,{SzW,SzH} = Sz)
  when is_integer(SzW),is_integer(SzH) ->
   ?CLASS(ThisT,wxWindow),
-  wxe_util:call(?wxWindow_ToDIP,
-  <<ThisRef:32/?UI,SzW:32/?UI,SzH:32/?UI>>).
+  wxe_util:queue_cmd(This,Sz,?get_env(),?wxWindow_ToDIP),
+  wxe_util:rec(?wxWindow_ToDIP).
 
 %% @doc Destroys this object, do not use object again
 -spec destroy(This::wxWindow()) -> 'ok'.

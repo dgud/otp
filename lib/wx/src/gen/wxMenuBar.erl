@@ -259,22 +259,21 @@ isChecked(#wx_ref{type=ThisT}=This,Itemid)
 	Enable::boolean().
 setAutoWindowMenu(Enable)
  when is_boolean(Enable) ->
-  wxe_util:cast(?wxMenuBar_SetAutoWindowMenu,
-  <<(wxe_util:from_bool(Enable)):32/?UI>>).
+  wxe_util:queue_cmd(Enable,?get_env(),?wxMenuBar_SetAutoWindowMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubargetautowindowmenu">external documentation</a>.
 -spec getAutoWindowMenu() -> boolean().
 getAutoWindowMenu() ->
-  wxe_util:call(?wxMenuBar_GetAutoWindowMenu,
-  <<>>).
+  wxe_util:queue_cmd(?get_env(), ?wxMenuBar_GetAutoWindowMenu),
+  wxe_util:rec(?wxMenuBar_GetAutoWindowMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarosxgetapplemenu">external documentation</a>.
 -spec oSXGetAppleMenu(This) -> wxMenu:wxMenu() when
 	This::wxMenuBar().
-oSXGetAppleMenu(#wx_ref{type=ThisT,ref=ThisRef}) ->
+oSXGetAppleMenu(#wx_ref{type=ThisT}=This) ->
   ?CLASS(ThisT,wxMenuBar),
-  wxe_util:call(?wxMenuBar_OSXGetAppleMenu,
-  <<ThisRef:32/?UI>>).
+  wxe_util:queue_cmd(This,?get_env(),?wxMenuBar_OSXGetAppleMenu),
+  wxe_util:rec(?wxMenuBar_OSXGetAppleMenu).
 
 %% @doc See <a href="http://www.wxwidgets.org/manuals/2.8.12/wx_wxmenubar.html#wxmenubarisenabled">external documentation</a>.
 -spec isEnabled(This) -> boolean() when

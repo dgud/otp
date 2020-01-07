@@ -39,6 +39,11 @@ void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller) {
     enif_make_tuple2(rt.env, rt.make_atom("wxMINOR_VERSION"), rt.make_int(wxMINOR_VERSION)),
     enif_make_tuple2(rt.env, rt.make_atom("wxRELEASE_NUMBER"), rt.make_int(wxRELEASE_NUMBER)),
     enif_make_tuple2(rt.env, rt.make_atom("wxSUBRELEASE_NUMBER"), rt.make_int(wxSUBRELEASE_NUMBER)),
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_HIGH"), rt.make_int(wxIMAGE_QUALITY_HIGH)),
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_NORMAL"), rt.make_int(wxIMAGE_QUALITY_NORMAL)),
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_COLOUR"), rt.make_int(wxBG_STYLE_COLOUR)),
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_CUSTOM"), rt.make_int(wxBG_STYLE_CUSTOM)),
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_SYSTEM"), rt.make_int(wxBG_STYLE_SYSTEM)),
     enif_make_tuple2(rt.env, rt.make_atom("wxFONTENCODING_UTF16"), rt.make_int(wxFONTENCODING_UTF16)),
     enif_make_tuple2(rt.env, rt.make_atom("wxFONTENCODING_UTF32"), rt.make_int(wxFONTENCODING_UTF32)),
     enif_make_tuple2(rt.env, rt.make_atom("wxFONTWEIGHT_BOLD"), rt.make_int(wxFONTWEIGHT_BOLD)),
@@ -357,6 +362,21 @@ void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller) {
 #else
     enif_make_tuple2(rt.env, rt.make_atom("WX_GL_SAMPLE_BUFFERS"), WXE_ATOM_undefined),
 #endif
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_ERASE"), rt.make_int(wxBG_STYLE_ERASE)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_ERASE"), WXE_ATOM_undefined),
+#endif
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_PAINT"), rt.make_int(wxBG_STYLE_PAINT)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_PAINT"), WXE_ATOM_undefined),
+#endif
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_TRANSPARENT"), rt.make_int(wxBG_STYLE_TRANSPARENT)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxBG_STYLE_TRANSPARENT"), WXE_ATOM_undefined),
+#endif
     enif_make_tuple2(rt.env, rt.make_atom("wxBLACK"), rt.make(*(wxBLACK))),
     enif_make_tuple2(rt.env, rt.make_atom("wxBLACK_BRUSH"),rt.make_ref(app->getRef((void *)wxBLACK_BRUSH,memenv), "wxBrush")),
     enif_make_tuple2(rt.env, rt.make_atom("wxBLACK_DASHED_PEN"),rt.make_ref(app->getRef((void *)wxBLACK_DASHED_PEN,memenv), "wxPen")),
@@ -413,6 +433,26 @@ void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller) {
     enif_make_tuple2(rt.env, rt.make_atom("wxGREY_BRUSH"),rt.make_ref(app->getRef((void *)wxGREY_BRUSH,memenv), "wxBrush")),
     enif_make_tuple2(rt.env, rt.make_atom("wxGREY_PEN"),rt.make_ref(app->getRef((void *)wxGREY_PEN,memenv), "wxPen")),
     enif_make_tuple2(rt.env, rt.make_atom("wxHOURGLASS_CURSOR"),rt.make_ref(app->getRef((void *)wxHOURGLASS_CURSOR,memenv), "wxCursor")),
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_BICUBIC"), rt.make_int(wxIMAGE_QUALITY_BICUBIC)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_BICUBIC"), WXE_ATOM_undefined),
+#endif
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_BILINEAR"), rt.make_int(wxIMAGE_QUALITY_BILINEAR)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_BILINEAR"), WXE_ATOM_undefined),
+#endif
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_BOX_AVERAGE"), rt.make_int(wxIMAGE_QUALITY_BOX_AVERAGE)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_BOX_AVERAGE"), WXE_ATOM_undefined),
+#endif
+#if wxCHECK_VERSION(3,0,0)
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_NEAREST"), rt.make_int(wxIMAGE_QUALITY_NEAREST)),
+#else
+    enif_make_tuple2(rt.env, rt.make_atom("wxIMAGE_QUALITY_NEAREST"), WXE_ATOM_undefined),
+#endif
     enif_make_tuple2(rt.env, rt.make_atom("wxITALIC_FONT"),rt.make_ref(app->getRef((void *)wxITALIC_FONT,memenv), "wxFont")),
     enif_make_tuple2(rt.env, rt.make_atom("wxLIGHT_GREY"), rt.make(*(wxLIGHT_GREY))),
     enif_make_tuple2(rt.env, rt.make_atom("wxLIGHT_GREY_BRUSH"),rt.make_ref(app->getRef((void *)wxLIGHT_GREY_BRUSH,memenv), "wxBrush")),
@@ -445,6 +485,6 @@ void WxeApp::init_nonconsts(wxeMemEnv *memenv, ErlNifPid caller) {
 #endif
   };
   ERL_NIF_TERM msg = enif_make_tuple2(rt.env,
-    rt.make_atom("wx_consts"),  enif_make_list_from_array(rt.env, consts, 321));
+    rt.make_atom("wx_consts"),  enif_make_list_from_array(rt.env, consts, 333));
   rt.send(msg);
 }
