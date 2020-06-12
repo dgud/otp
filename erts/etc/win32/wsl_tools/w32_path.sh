@@ -82,25 +82,38 @@ else
         exit 0
     fi
 
+    # absolute input and/or absolute output
+
     if [ -d "$1" ]; then
         dir=$1;
-        file=""
+        case "$SEPARATOR" in
+	    slash)
+	        echo `wslpath -m $ABSOLUTE "$dir"`;
+	        ;;
+	    backslash)
+	        echo `wslpath -w $ABSOLUTE "$dir"`;
+	        ;;
+	    double)
+	        DOUBLE=`wslpath -w $ABSOLUTE "$dir" | sed 's,\\\\,\\\\\\\\,g'`;
+	        echo $DOUBLE
+	        ;;
+        esac
+        exit 0
     else
         dir=`dirname $1`
         file=`basename $1`
-    fi
 
-    # absolute input and/or absolute output
-    case "$SEPARATOR" in
-	slash)
-	    echo `wslpath -m $ABSOLUTE "$dir"`/$file;
-	    ;;
-	backslash)
-	    echo `wslpath -w $ABSOLUTE "$dir"`\\$file;
-	    ;;
-	double)
-	    DOUBLE=`wslpath -w $ABSOLUTE "$dir" | sed 's,\\\\,\\\\\\\\,g'`;
-	    echo $DOUBLE\\\\$file
-	    ;;
-    esac
+        case "$SEPARATOR" in
+	    slash)
+	        echo `wslpath -m $ABSOLUTE "$dir"`/$file;
+	        ;;
+	    backslash)
+	        echo `wslpath -w $ABSOLUTE "$dir"`\\$file;
+	        ;;
+	    double)
+	        DOUBLE=`wslpath -w $ABSOLUTE "$dir" | sed 's,\\\\,\\\\\\\\,g'`;
+	        echo $DOUBLE\\\\$file
+	        ;;
+        esac
+    fi
 fi
