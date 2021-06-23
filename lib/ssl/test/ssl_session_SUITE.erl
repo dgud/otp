@@ -154,6 +154,7 @@ init_per_testcase(server_max_session_table, Config) ->
     ct:timetrap({seconds, 30}),
     Config;
 init_per_testcase(_, Config) ->
+    ct:timetrap({seconds, 30}),
     Config.
 
 end_per_testcase(reuse_session_expired, Config) ->

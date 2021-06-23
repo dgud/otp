@@ -957,7 +957,7 @@ client_loop(_Node, Host, Port, Pid, Transport, Options, Opts) ->
     case Transport:connect(Host, Port, Options) of
 	{ok, Socket} ->
 	    Pid ! {connected, Socket},
-	    ct:log("~p:~p~nClient: connected~n", [?MODULE,?LINE]),
+	    ct:log("~p:~p ~p Client: connected (tester ~p)~n", [?MODULE,?LINE, self(), Pid]),
 	    %% In special cases we want to know the client port, it will
 	    %% be indicated by sending {port, 0} in options list!
 	    send_selected_port(Pid,  proplists:get_value(port, Options), Socket),
@@ -1039,7 +1039,15 @@ client_loop_core(Socket, Pid, Transport) ->
         {ssl_closed, Socket} ->
             ok;
         {gen_tcp, closed} ->
-            ok
+            ok;
+        {apply, From, Fun} ->
+            try
+                Res = Fun(Socket, Transport),
+                From ! {apply_res, Res}
+            catch E:R:ST ->
+                    From ! {apply_res, {E,R,ST}}
+            end,
+            client_loop_core(Socket, Pid, Transport)
     end.
 
 client_cont_loop(_Node, Host, Port, Pid, Transport, Options, cancel, _Opts) ->
