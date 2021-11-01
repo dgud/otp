@@ -1023,8 +1023,9 @@ do_parse_module(DefEncoding, #compile{ifile=File,options=Opts,dir=Dir}=St) ->
                             1
                     end,
 
+    %% FIXME: Rewrite this when the feature EEP has been implemented.
     ResWordFun = case proplists:get_value(enable_feature, Opts, []) of
-                     maybe ->
+                     maybe_expr ->
                          fun('maybe') -> true;
                             ('else') -> true;
                             (Other) -> erl_scan:reserved_word(Other)
