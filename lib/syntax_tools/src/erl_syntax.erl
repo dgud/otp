@@ -4162,6 +4162,7 @@ match_expr_body(Node) ->
 %%
 %% @see maybe_match_expr_pattern/1
 %% @see maybe_match_expr_body/1
+%% @see maybe_expr/2
 
 -record(maybe_match_expr, {pattern :: syntaxTree(), body :: syntaxTree()}).
 
@@ -4192,7 +4193,6 @@ revert_maybe_match_expr(Node) ->
 %% @doc Returns the pattern subtree of a `maybe_expr' node.
 %%
 %% @see maybe_match_expr/2
-%% @see maybe_expr/2
 
 -spec maybe_match_expr_pattern(syntaxTree()) -> syntaxTree().
 
@@ -4209,7 +4209,6 @@ maybe_match_expr_pattern(Node) ->
 %% @doc Returns the body subtree of a `maybe_expr' node.
 %%
 %% @see maybe_match_expr/2
-%% @see maybe_expr/2
 
 -spec maybe_match_expr_body(syntaxTree()) -> syntaxTree().
 
@@ -6492,15 +6491,18 @@ maybe_expr(Body) ->
     maybe_expr(Body, none).
 
 %% =====================================================================
-%% @doc Creates an abstract maybe-expression. If `Body' is
-%% `[B1, ..., Bn]', and `Clauses' is `[C1, ..., Cn]',
-%% the result represents "<code>maybe
-%% <em>B1</em>, ..., <em>Bn</em> else <em>C1</em>; ...,
-%% <em>Cn</em> end</code>".
+%% @doc Creates an abstract maybe-expression. If `Body' is `[B1, ...,
+%% Bn]', and `OptionalElse' is `none', the result represents
+%% "<code>maybe <em>B1</em>, ..., <em>Bn</em> end</code>".  If `Body'
+%% is `[B1, ..., Bn]', and `OptionalElse' reprsents an `else_expr' node
+%% with clauses `[C1, ..., Cn]', the result represents "<code>maybe
+%% <em>B1</em>, ..., <em>Bn</em> else <em>C1</em>; ..., <em>Cn</em>
+%% end</code>".
 %%
 %%	See `clause' for documentation on `erl_parse' clauses.
 %%
 %% @see maybe_expr_body/1
+%% @see maybe_expr_else/1
 
 -record(maybe_expr, {body :: [syntaxTree()],
                      'else' = none :: 'none' | syntaxTree()}).
