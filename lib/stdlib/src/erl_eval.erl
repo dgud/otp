@@ -475,7 +475,7 @@ expr({match,_,Lhs,Rhs0}, Bs0, Lf, Ef, RBs) ->
             ret_expr(Rhs, Bs, RBs);
 	nomatch -> erlang:raise(error, {badmatch,Rhs}, ?STACKTRACE)
     end;
-expr({'maybe',_,Es,{nil,_}}, Bs, Lf, Ef, RBs) ->
+expr({'maybe',_,Es}, Bs, Lf, Ef, RBs) ->
     {_,Val} = maybe_match_exprs(Es, Bs, Lf, Ef),
     ret_expr(Val, Bs, RBs);
 expr({'maybe',_,Es,{'else',_,Cs}}, Bs0, Lf, Ef, RBs) ->
