@@ -700,6 +700,7 @@ type(Node) ->
 	{'fun', _, {function, _, _}} -> implicit_fun;
 	{'fun', _, {function, _, _, _}} -> implicit_fun;
 	{'if', _, _} -> if_expr;
+        {'maybe', _, _} -> maybe_expr;
         {'maybe', _, _, _} -> maybe_expr;
         {'else', _, _} -> else_expr;
 	{'receive', _, _, _, _} -> receive_expr;
@@ -721,7 +722,6 @@ type(Node) ->
         {map, _, _} -> map_expr;
         {map_field_assoc, _, _, _} -> map_field_assoc;
         {map_field_exact, _, _, _} -> map_field_exact;
-        {maybe_, _, _, _} -> maybe_expr;
         {maybe_match, _, _, _} -> maybe_match_expr;
 	{op, _, _, _, _} -> infix_expr;
 	{op, _, _, _} -> prefix_expr;
@@ -6482,12 +6482,12 @@ else_expr_clauses(Node) ->
     end.
 
 %% =====================================================================
-%% @equiv maybe_expr(Body, nil())
+%% @equiv maybe_expr(Body, none)
 
 -spec maybe_expr([syntaxTree()]) -> syntaxTree().
 
 maybe_expr(Body) ->
-    maybe_expr(Body, nil()).
+    maybe_expr(Body, none).
 
 %% =====================================================================
 %% @doc Creates an abstract maybe-expression. If `Body' is
@@ -6500,23 +6500,26 @@ maybe_expr(Body) ->
 %%
 %% @see block_expr_body/1
 
--record(maybe_expr, {body :: [syntaxTree()], 'else' :: syntaxTree()}).
+-record(maybe_expr, {body :: [syntaxTree()],
+                     'else' = none :: 'none' | syntaxTree()}).
 
 %% type(Node) = maybe_expr
-%% data(Node) = #maybe_expr{body :: Body, clauses :: Clauses}
+%% data(Node) = #maybe_expr{body :: Body, 'else' :: 'none' | Else}
 %%
 %%     Body = [syntaxTree()]
-%%     Clauses = [syntaxTree()]
+%%     Else = syntaxTree()
 %%
 %% `erl_parse' representation:
 %%
-%% {block, Pos, Body, Clauses}
+%% {block, Pos, Body}
+%% {block, Pos, Body, Else}
 %%
 %%    Body = [erl_parse()] \ []
+%%    Else = {'else', Pos, Clauses}
 %%    Clauses = [Clause] \ []
 %%    Clause = {clause, ...}
 
--spec maybe_expr([syntaxTree()], syntaxTree()) -> syntaxTree().
+-spec maybe_expr([syntaxTree()], 'none' | syntaxTree()) -> syntaxTree().
 
 maybe_expr(Body, OptionalElse) ->
     tree(maybe_expr, #maybe_expr{body = Body,
@@ -6524,23 +6527,31 @@ maybe_expr(Body, OptionalElse) ->
 revert_maybe_expr(Node) ->
     Pos = get_pos(Node),
     Body = maybe_expr_body(Node),
-    OptionalElse = maybe_expr_else(Node),
-    {'maybe', Pos, Body, OptionalElse}.
+    case maybe_expr_else(Node) of
+        none ->
+            {'maybe', Pos, Body};
+        Else ->
+            {'maybe', Pos, Body, Else}
+    end.
 
 -spec maybe_expr_body(syntaxTree()) -> [syntaxTree()].
 
 maybe_expr_body(Node) ->
     case unwrap(Node) of
+	{'maybe', _, Body} ->
+            Body;
 	{'maybe', _, Body, _Else} ->
             Body;
         Node1 ->
             (data(Node1))#maybe_expr.body
     end.
 
--spec maybe_expr_else(syntaxTree()) -> syntaxTree().
+-spec maybe_expr_else(syntaxTree()) -> 'none' | syntaxTree().
 
 maybe_expr_else(Node) ->
     case unwrap(Node) of
+        {'maybe', _, _Body} ->
+            none;
         {'maybe', _, _Body, Else} ->
             Else;
         Node1 ->
@@ -8017,8 +8028,13 @@ subtrees(T) ->
 		    [[match_expr_pattern(T)],
 		     [match_expr_body(T)]];
                 maybe_expr ->
-                    [maybe_expr_body(T),
-                     [maybe_expr_else(T)]];
+                    case maybe_expr_else(T) of
+                        none ->
+                            [maybe_expr_body(T)];
+                        E ->
+                            [maybe_expr_body(T),
+                             [E]]
+                    end;
                 maybe_match_expr ->
                     [[maybe_match_expr_pattern(T)],
                      [maybe_match_expr_body(T)]];
@@ -8185,6 +8201,7 @@ make_tree(map_type, [Fs]) -> map_type(Fs);
 make_tree(map_type_assoc, [[N],[V]]) -> map_type_assoc(N, V);
 make_tree(map_type_exact, [[N],[V]]) -> map_type_exact(N, V);
 make_tree(match_expr, [[P], [E]]) -> match_expr(P, E);
+make_tree(maybe_expr, [Body]) -> maybe_expr(Body);
 make_tree(maybe_expr, [Body, [Else]]) -> maybe_expr(Body, Else);
 make_tree(maybe_match_expr, [[P], [E]]) -> maybe_match_expr(P, E);
 make_tree(named_fun_expr, [[N], C]) -> named_fun_expr(N, C);

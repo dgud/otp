@@ -54,7 +54,7 @@
 -type hook() :: 'none'
               | fun((erl_syntax:syntaxTree(), _, _) -> prettypr:document()).
 -type clause_t() :: 'case_expr' | 'fun_expr'
-                  | 'if_expr' | 'receive_expr' | 'try_expr'
+                  | 'if_expr' | 'maybe_expr' | 'receive_expr' | 'try_expr'
                   | {'function', prettypr:document()}
                   | 'spec'.
 
@@ -655,10 +655,9 @@ lay_2(Node, Ctxt) ->
 	    D1 = sep(seq(erl_syntax:maybe_expr_body(Node),
 			 floating(text(",")), Ctxt1, fun lay/2)),
             Es0 = [text("end")],
-            ElseNode = erl_syntax:maybe_expr_else(Node),
-            Es1 = case erl_syntax:type(ElseNode) of
-                      nil -> Es0;
-                      else_expr ->
+            Es1 = case erl_syntax:maybe_expr_else(Node) of
+                      none -> Es0;
+                      ElseNode ->
                           ElseCs = erl_syntax:else_expr_clauses(ElseNode),
                           D3 = lay_clauses(ElseCs, maybe_expr, Ctxt1),
                           [text("else"),
