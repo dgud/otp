@@ -2265,9 +2265,9 @@ munge_expr({'try',Anno,Body,Clauses,CatchClauses,After}, Vars) ->
     {MungedAfter, Vars4} = munge_body(After, Vars3),
     {{'try',Anno,MungedBody,MungedClauses,MungedCatchClauses,MungedAfter},
      Vars4};
-munge_expr({'maybe',Anno,Exprs,{nil,_}=Nil}, Vars) ->
+munge_expr({'maybe',Anno,Exprs}, Vars) ->
     {MungedExprs, Vars2} = munge_body(Exprs, Vars),
-    {{'maybe',Anno,MungedExprs,Nil}, Vars2};
+    {{'maybe',Anno,MungedExprs}, Vars2};
 munge_expr({'maybe',MaybeAnno,Exprs,{'else',ElseAnno,Clauses}}, Vars) ->
     {MungedExprs, Vars2} = munge_body(Exprs, Vars),
     {MungedClauses, Vars3} = munge_clauses(Clauses, Vars2),
