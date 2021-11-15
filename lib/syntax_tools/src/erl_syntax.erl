@@ -4192,6 +4192,7 @@ revert_maybe_match_expr(Node) ->
 %% @doc Returns the pattern subtree of a `maybe_expr' node.
 %%
 %% @see maybe_match_expr/2
+%% @see maybe_expr/2
 
 -spec maybe_match_expr_pattern(syntaxTree()) -> syntaxTree().
 
@@ -4207,6 +4208,7 @@ maybe_match_expr_pattern(Node) ->
 %% =====================================================================
 %% @doc Returns the body subtree of a `maybe_expr' node.
 %%
+%% @see maybe_match_expr/2
 %% @see maybe_expr/2
 
 -spec maybe_match_expr_body(syntaxTree()) -> syntaxTree().
@@ -6467,9 +6469,9 @@ revert_else_expr(Node) ->
     {'else', Pos, Clauses}.
 
 %% =====================================================================
-%% @doc Returns the list of clause subtrees of a `else_expr' node.
+%% @doc Returns the list of clause subtrees of an `else_expr' node.
 %%
-%% @see clause/3
+%% @see else_expr/1
 
 -spec else_expr_clauses(syntaxTree()) -> [syntaxTree()].
 
@@ -6498,7 +6500,7 @@ maybe_expr(Body) ->
 %%
 %%	See `clause' for documentation on `erl_parse' clauses.
 %%
-%% @see block_expr_body/1
+%% @see maybe_expr_body/1
 
 -record(maybe_expr, {body :: [syntaxTree()],
                      'else' = none :: 'none' | syntaxTree()}).
