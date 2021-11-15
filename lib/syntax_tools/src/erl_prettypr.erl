@@ -652,8 +652,8 @@ lay_2(Node, Ctxt) ->
 
         maybe_expr ->
 	    Ctxt1 = reset_prec(Ctxt),
-	    D1 = sep(seq(erl_syntax:maybe_expr_body(Node),
-			 floating(text(",")), Ctxt1, fun lay/2)),
+	    D1 = vertical(seq(erl_syntax:maybe_expr_body(Node),
+                              floating(text(",")), Ctxt1, fun lay/2)),
             Es0 = [text("end")],
             Es1 = case erl_syntax:maybe_expr_else(Node) of
                       none -> Es0;
@@ -664,7 +664,7 @@ lay_2(Node, Ctxt) ->
                            nest(Ctxt1#ctxt.break_indent, D3)
                           | Es0]
                   end,
-	    sep([par([follow(text("maybe"), D1, Ctxt1#ctxt.break_indent),
+	    sep([par([text("maybe"), nest(Ctxt1#ctxt.break_indent, D1),
 		      hd(Es1)]) | tl(Es1)]);
 
 	maybe_match_expr ->

@@ -544,10 +544,23 @@ eep49() ->
     maybe ok ?= ok end,
 
     {a,b} =
+        maybe
+            {ok,A} ?= {ok,a},
+            {ok,B} ?= {ok,b},
+            {A,B}
+        end,
+
     maybe
-        {ok,A} ?= {ok,a},
-        {ok,B} ?= {ok,b},
-        {A,B}
+        ok ?= {ok,x}
+    else
+        error -> error;
+        {error,_} -> error
+    end,
+
+    maybe
+        ok ?= {ok,x}
+    else
+        error -> error
     end,
 
     maybe
@@ -557,6 +570,14 @@ eep49() ->
     else
         error -> error;
         {error,_} -> error
+    end,
+
+    maybe
+        {ok,X2} ?= {ok,x},
+        {ok,Y2} ?= {ok,y},
+        {X2,Y2}
+    else
+        error -> error
     end,
 
     ok.
