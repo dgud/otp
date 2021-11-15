@@ -660,7 +660,7 @@ scan_form([{'-', _Anno}, {'if', AnnoA} | Ts], Opt) ->
 scan_form([{'-', _Anno}, {atom, AnnoA, elif} | Ts], Opt) ->
     [{atom, AnnoA, ?pp_form}, {'(', AnnoA}, {')', AnnoA}, {'->', AnnoA},
      {atom, AnnoA, 'elif'} | scan_macros(Ts, Opt)];
-scan_form([{'-', _Anno}, {atom, AnnoA, else} | Ts], Opt) ->
+scan_form([{'-', _Anno}, {atom, AnnoA, 'else'} | Ts], Opt) ->
     [{atom, AnnoA, ?pp_form}, {'(', AnnoA}, {')', AnnoA}, {'->', AnnoA},
      {atom, AnnoA, 'else'} | scan_macros(Ts, Opt)];
 scan_form([{'-', _Anno}, {'else', AnnoA} | Ts], Opt) ->

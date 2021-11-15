@@ -6534,6 +6534,11 @@ revert_maybe_expr(Node) ->
             {'maybe', Pos, Body, Else}
     end.
 
+%% =====================================================================
+%% @doc Returns the list of body subtrees of a `maybe_expr' node.
+%%
+%% @see maybe_expr/2
+
 -spec maybe_expr_body(syntaxTree()) -> [syntaxTree()].
 
 maybe_expr_body(Node) ->
@@ -6545,6 +6550,11 @@ maybe_expr_body(Node) ->
         Node1 ->
             (data(Node1))#maybe_expr.body
     end.
+
+%% =====================================================================
+%% @doc Returns the else subtree of a `maybe_expr' node.
+%%
+%% @see maybe_expr/2
 
 -spec maybe_expr_else(syntaxTree()) -> 'none' | syntaxTree().
 
