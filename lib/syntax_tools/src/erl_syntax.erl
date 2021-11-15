@@ -6460,8 +6460,8 @@ case_expr_clauses(Node) ->
 %% @see else_expr_clauses/1
 %% @see clause/3
 
-else_expr(Else) ->
-    tree(else_expr, Else).
+else_expr(Clauses) ->
+    tree(else_expr, Clauses).
 
 revert_else_expr(Node) ->
     Pos = get_pos(Node),
