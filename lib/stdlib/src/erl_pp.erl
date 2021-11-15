@@ -704,7 +704,7 @@ lexpr({'catch',_,Expr}, Prec, Opts) ->
     {P,R} = preop_prec('catch'),
     El = {list,[{step,'catch',lexpr(Expr, R, Opts)}]},
     maybe_paren(P, Prec, El);
-lexpr({'maybe',_,Es,{nil,_}}, _, Opts) ->
+lexpr({'maybe',_,Es}, _, Opts) ->
     {list,[{step,'maybe',body(Es, Opts)},{reserved,'end'}]};
 lexpr({'maybe',_,Es,{'else',_,Cs}}, _, Opts) ->
     {list,[{step,'maybe',body(Es, Opts)},{step,'else',cr_clauses(Cs, Opts)},{reserved,'end'}]};

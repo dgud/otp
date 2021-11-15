@@ -406,9 +406,9 @@ expr({'try',Anno,Es0,Scs0,Ccs0,As0}, St0) ->
 expr({'catch',Anno,E0}, St0) ->
     {E,St1} = expr(E0, St0),
     {{'catch',Anno,E},St1};
-expr({'maybe',MaybeAnno,Es0,{nil,_}=Nil}, St0) ->
+expr({'maybe',MaybeAnno,Es0}, St0) ->
     {Es,St1} = exprs(Es0, St0),
-    {{'maybe',MaybeAnno,Es,Nil},St1};
+    {{'maybe',MaybeAnno,Es},St1};
 expr({'maybe',MaybeAnno,Es0,{'else',ElseAnno,Cs0}}, St0) ->
     {Es,St1} = exprs(Es0, St0),
     {Cs,St2} = clauses(Cs0, St1),

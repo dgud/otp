@@ -2581,7 +2581,7 @@ expr({match,_Anno,P,E}, Vt, St0) ->
     {vtupdate(Pnew, vtmerge(Evt, Pvt)),St};
 expr({maybe_match,Anno,P,E}, Vt, St0) ->
     expr({match,Anno,P,E}, Vt, St0);
-expr({'maybe',Anno,Es,{nil,_}}, Vt, St) ->
+expr({'maybe',Anno,Es}, Vt, St) ->
     %% No variables are exported.
     {Evt0, St1} = exprs(Es, Vt, St),
     Evt1 = vtupdate(vtunsafe({'maybe',Anno}, Evt0, Vt), Vt),

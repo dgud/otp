@@ -482,11 +482,10 @@ try_opt_stacktrace -> '$empty' : '_'.
 
 
 maybe_expr -> 'maybe' maybe_match_exprs 'end' :
-        %% We don't have useful annotation for the nil.
-	{'maybe',?anno('$1'),'$2',{nil,erl_anno:new(0)}}.
+	{'maybe',?anno('$1'),'$2'}.
 maybe_expr -> 'maybe' maybe_match_exprs 'else' cr_clauses 'end' :
         %% `erl_lint` can produce a better warning when the position
-        %% the `else` keyword is known.
+        %% of the `else` keyword is known.
 	{'maybe',?anno('$1'),'$2',{'else',?anno('$3'),'$4'}}.
 
 maybe_match_exprs -> maybe_match : ['$1'].

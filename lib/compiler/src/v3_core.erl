@@ -690,7 +690,7 @@ expr({block,_,Es0}, St0) ->
     {Es1,St1} = exprs(droplast(Es0), St0),
     {E1,Eps,St2} = expr(last(Es0), St1),
     {E1,Es1 ++ Eps,St2};
-expr({'maybe',L,Es,{nil,_}}, St0) ->
+expr({'maybe',L,Es}, St0) ->
     {V,St1} = new_var_name(St0),
     Var = {var,L,V},
     Cs = [{clause,L,[Var],[],[Var]}],
