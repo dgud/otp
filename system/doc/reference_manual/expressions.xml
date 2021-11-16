@@ -1646,6 +1646,73 @@ end</pre>
   </section>
 
   <section>
+    <title>Maybe Expressions</title>
+    <p>Maybe expressions is an experimental new feature introduced in
+    OTP 25. By default, maybe expressions are disabled. To enable
+    them, use compiler option <c>{enable_feature,maybe_expr}</c>.</p>
+
+    <code type="erl"><![CDATA[
+maybe
+    Expr1,
+    ...,
+    ExprN
+end]]></code>
+
+    <p>Within a maybe expression, an expression can use the conditional match operator
+    <c>?=</c>:</p>
+
+    <code type="erl"><![CDATA[
+Expr1 ?= Expr2]]></code>
+
+    <p>The conditional match operator matches the pattern
+    <c>Expr1</c>, a pattern, against <c>Expr2</c>. If the matching succeeds,
+    any unbound variable in the pattern becomes bound. If the matching is unsuccessful,
+    the rest of the expressions in the maybe expression are skipped and the return
+    value of the maybe expression is <c>Expr2</c>.</p>
+
+    <p>If all expressions in a mabye expressions are executed successfully, the
+    return value is the value of the last expression <c>ExprN</c>.</p>
+
+    <p>Here is an example:</p>
+
+    <code type="erl"><![CDATA[
+maybe
+    {ok, A} ?= a(),
+    true = A >= 0,
+    {ok, B} ?= b(),
+    A + B
+end]]></code>
+
+    <p>Let us first assume that <c>a()</c> returns <c>{ok,42}</c> and
+    <c>b()</c> returns <c>{ok,58}</c>. With those return values, all
+    of the match operators will succeed, and the return value of the
+    maybe expression will be <c>A + B</c>, which is equal to <c>42 +
+    58</c>, which in turn is equal to <c>100</c>.</p>
+
+    <p>Now let us assume that <c>a()</c> returns <c>error</c>. The
+    conditional match operator in <c>{ok, A} ?= a()</c> will fail to
+    match, and the maybe expression will immediately return the
+    value of the expression that failed to match, namely <c>error</c>.
+    Similarly, if <c>b()</c> returns <c>wrong</c>, the return value of
+    the maybe expression will be <c>wrong</c>.</p>
+
+    <code type="erl"><![CDATA[
+case a() of
+    {ok, A} ->
+        true = A >= 0,
+        case b() of
+            {ok, B} ->
+                A + B;
+            Other1 ->
+                Other1
+        end;
+    Other2 ->
+        Other2
+end]]></code>
+
+  </section>
+
+  <section>
     <marker id="guards"></marker>
     <title>Guard Sequences</title>
 
@@ -1852,6 +1919,10 @@ end</pre>
       <row>
         <cell align="left" valign="middle">= !</cell>
         <cell align="left" valign="middle">Right associative</cell>
+      </row>
+      <row>
+        <cell align="left" valign="middle">?=</cell>
+        <cell align="left" valign="middle">&nbsp;</cell>
       </row>
       <row>
         <cell align="left" valign="middle">catch</cell>
