@@ -7,7 +7,7 @@
 <erlref>
 <header>
   <copyright>
-    <year>2020</year><year>2021</year>
+    <year>2020</year><year>2023</year>
     <holder>wxWidgets team.</holder></copyright>
   <legalnotice>Licensed under the wxWindows Free Documentation Licence, Version 3
   </legalnotice>
@@ -54,6 +54,12 @@
       </p><p>Note: This function may only be called when the window is shown on screen, in particular it can't usually be called from the constructor as the window isn't yet shown at this moment.
       </p><p>Return: false if an error occurred. 
       </p></desc>
+  </func>
+  
+  <func>
+    <name name="createSurface" arity="1" clause_i="1" since=""/>
+    <fsummary/>
+    <desc/>
   </func>
   
   <func>
