@@ -271,7 +271,10 @@ clipboard(Config) ->
 	    Paste = ?mt(wxTextDataObject, wxTextDataObject:new([{text,"From Erlang"}])),
 	    case wxClipboard:addData(CB,Paste) of
 		true ->
-		    ?log("Put text on clipboard~n", []);
+		    ?log("Put text on clipboard~n", []),
+                    ?log("Flushing ~n",[]),
+                    wxClipboard:flush(CB),
+                    ?log("Stopping ~n",[]);
 		false ->
 		    ?log("Couldn't copy data to clipboard~n",[])
 	    end,
@@ -279,9 +282,6 @@ clipboard(Config) ->
 	false ->
 	    ?log("Clipboard open failed~n",[])
     end,
-    ?log("Flushing ~n",[]),
-    wxClipboard:flush(CB),
-    ?log("Stopping ~n",[]),
     wx_test_lib:wx_destroy(Frame,Config).
 
 
