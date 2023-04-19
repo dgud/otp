@@ -244,6 +244,8 @@ clipboard(Config) ->
     wxTextCtrl:connect(Ctrl, command_text_paste, [{skip, true}]),
     wxWindow:show(Frame),
 
+    BlockWxDialogs = wxLogNull:new(),
+
     CB = ?mt(wxClipboard, wxClipboard:get()),
     wxClipboard:usePrimarySelection(CB),
     ?m(false, wx:is_null(CB)),
@@ -282,6 +284,7 @@ clipboard(Config) ->
 	false ->
 	    ?log("Clipboard open failed~n",[])
     end,
+    wxLogNull:destroy(BlockWxDialogs),
     wx_test_lib:wx_destroy(Frame,Config).
 
 
