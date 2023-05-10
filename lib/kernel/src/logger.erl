@@ -28,7 +28,7 @@
          notice/1,notice/2,notice/3,
          info/1,info/2,info/3,
          debug/1,debug/2,debug/3]).
--export([log/2,log/3,log/4]).
+-export([log/2,log/3,log/4,log_allowed/4]).
 
 %% Called by macro
 -export([allow/2,macro_log/3,macro_log/4,macro_log/5,add_default_metadata/1]).

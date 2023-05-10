@@ -497,6 +497,20 @@ logger:debug(fun([]) -> {"Hello World", #{ meta => expensive() }} end,[],
           returned by the fun.</p>
       </desc>
     </func>
+
+    <func>
+      <name name="log_allowed" arity="4" since="OTP "/>
+      <fsummary>Logs the given message.</fsummary>
+      <desc>
+        <p>Behaves that same as
+	<seemfa marker="#log/4"><c>log/4</c></seemfa> except that no filter
+        on <c>Level</c> is made as is done in <c>log/4</c>.
+        </p>
+        <p>This can be used to allow applications to determine which
+        log level will be logged.
+        </p>
+      </desc>
+    </func>
   </funcs>
 
   <funcs>
