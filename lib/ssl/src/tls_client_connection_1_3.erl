@@ -316,9 +316,9 @@ hello_middlebox_assert(enter, _, State) ->
     {keep_state, State};
 hello_middlebox_assert(internal, #change_cipher_spec{}, State) ->
     tls_gen_connection:next_event(wait_ee, no_record, State);
-hello_middlebox_assert(internal = Type, #encrypted_extensions{} = Msg,  #state{ssl_options = #{log_level := Level}} = State) ->
-    ssl_logger:log(warning, Level, #{description => "Failed to assert middlebox server message",
-                                     reason => [{missing, #change_cipher_spec{}}]}, ?LOCATION),
+hello_middlebox_assert(internal = Type, #encrypted_extensions{} = Msg, State) ->
+    ?SSL_LOG(warning, "Failed to assert middlebox server message",
+             {missing, #change_cipher_spec{}}),
     ssl_gen_statem:handle_common_event(Type, Msg, ?FUNCTION_NAME, State);
 hello_middlebox_assert(info, Msg, State) ->
     tls_gen_connection:handle_info(Msg, ?FUNCTION_NAME, State);
@@ -335,9 +335,9 @@ hello_retry_middlebox_assert(enter, _, State) ->
     {keep_state, State};
 hello_retry_middlebox_assert(internal, #change_cipher_spec{}, State) ->
     tls_gen_connection:next_event(wait_sh, no_record, State);
-hello_retry_middlebox_assert(internal = Type, #server_hello{} = Msg, #state{ssl_options = #{log_level := Level}} = State) ->
-    ssl_logger:log(warning, Level, #{description => "Failed to assert middlebox server message",
-                                     reason => [{missing, #change_cipher_spec{}}]}, ?LOCATION),
+hello_retry_middlebox_assert(internal = Type, #server_hello{} = Msg, State) ->
+    ?SSL_LOG(warning, "Failed to assert middlebox server message",
+             {missing, #change_cipher_spec{}}),
     ssl_gen_statem:handle_common_event(Type, Msg, ?FUNCTION_NAME, State);
 hello_retry_middlebox_assert(info, Msg, State) ->
     tls_gen_connection:handle_info(Msg, ?FUNCTION_NAME, State);

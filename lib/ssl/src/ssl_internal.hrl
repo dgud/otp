@@ -173,20 +173,9 @@
 
 
 -define(SSL_LOG(Level, Descr, Reason),
-        fun() ->
-                case get(log_level) of
-                    undefined ->
-                        %% Use debug here, i.e. log everything and let loggers
-                        %% log_level decide if it should be logged
-                        ssl_logger:log(Level, debug,
-                                       #{description => Descr, reason => Reason},
-                                       ?LOCATION);
-                    __LogLevel__ ->
-                        ssl_logger:log(Level, __LogLevel__,
-                                       #{description => Descr, reason => Reason},
-                                       ?LOCATION)
-                end
-        end()).
+        ssl_logger:log(Level, get(log_level),
+                       #{description => Descr, reason => Reason},
+                       ?LOCATION)).
 
 
 %% Internal ticket data record holding pre-processed ticket data.

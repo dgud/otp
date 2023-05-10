@@ -45,14 +45,14 @@
 %% Internal API -- Stateful logging
 %%-------------------------------------------------------------------------
 
-log(Level, LogLevel, ReportMap, Meta) ->
-    case logger:compare_levels(LogLevel, Level) of
-        lt ->
-            logger:log(Level, ReportMap,  Meta#{depth => ?DEPTH, 
-                                                report_cb => fun ?MODULE:format/1});
-        eq ->
-            logger:log(Level, ReportMap, Meta#{depth => ?DEPTH, 
-                                               report_cb => fun ?MODULE:format/1});
+log(Level, undefined, ReportMap, Meta0) ->
+    Meta = Meta0#{depth => ?DEPTH, report_cb => fun ?MODULE:format/1},
+    logger:log(#{}, Level, ReportMap, Meta);
+log(Level, LogLevel, ReportMap, Meta0) ->
+    case logger:compare_levels(Level, LogLevel) of
+        Res when Res =:= gt; Res =:= eq ->
+            Meta = Meta0#{depth => ?DEPTH, report_cb => fun ?MODULE:format/1},
+            logger:log_allowed(#{}, Level, ReportMap, Meta);
         _ ->
             ok
     end.
@@ -61,16 +61,12 @@ debug(LogLevel, Direction, Protocol, Message)
   when (Direction =:= inbound orelse Direction =:= outbound) andalso
        (Protocol =:= 'record' orelse Protocol =:= 'handshake') ->
     case logger:compare_levels(LogLevel, debug) of
-        lt ->
-            ?LOG_DEBUG(#{direction => Direction,
-                         protocol => Protocol,
-                         message => Message},
-                       #{domain => [otp,ssl,Protocol]});
         eq ->
-            ?LOG_DEBUG(#{direction => Direction,
-                         protocol => Protocol,
-                         message => Message},
-                       #{domain => [otp,ssl,Protocol]});
+            ReportMap = #{direction => Direction,
+                          protocol => Protocol,
+                          message => Message},
+            Meta = #{domain => [otp,ssl,Protocol]},
+            logger:log_allowed(?LOCATION, LogLevel, ReportMap, Meta);
         _ ->
             ok
     end.
@@ -99,10 +95,7 @@ format(#{alert := Alert, alerter := ignored} = Report) ->
     {Fmt, Args} = ssl_alert:own_alert_format(ProtocolName, Role, StateName, Alert),
     {"~s " ++ Fmt, ["Ignored alert to mitigate DoS attacks", Args]};
 format(#{description := Desc, reason := Reason}) ->
-    {"~12s ~p"
-     "~n"
-     "~12s ~p"
-     "~n",
+    {"~12s ~p~n~12s ~p~n",
      ["Description:", Desc, "Reason:", Reason]
     }.
 
