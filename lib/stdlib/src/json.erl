@@ -49,7 +49,7 @@ standards. The decoder is tested using [JSONTestSuite](https://github.com/nst/JS
 -export_type([encoder/0, encode_value/0]).
 
 -export([
-    decode/1, decode/3, decode_continue/2
+    decode/1, decode/3, decode_start/3, decode_continue/2
 ]).
 -export_type([
     from_binary_fun/0,
@@ -60,7 +60,8 @@ standards. The decoder is tested using [JSONTestSuite](https://github.com/nst/JS
     object_push_fun/0,
     object_finish_fun/0,
     decoders/0,
-    decode_value/0
+    decode_value/0,
+    continuation_state/0
 ]).
 
 -compile(warn_missing_spec).
@@ -565,6 +566,8 @@ error_info(Skip) ->
 -type stack() :: [?ARRAY | ?OBJECT | binary() | acc()].
 -type decode() :: #decode{}.
 
+-opaque continuation_state() :: tuple().
+
 -type decode_value() ::
     integer()
     | float()
@@ -606,6 +609,10 @@ decode(Binary) when is_binary(Binary) ->
             Result;
         {_, _, Rest} ->
             invalid_byte(Rest, 0);
+        {continue, {_Bin, _Acc, [], _Decode, {number, Number}}} ->
+            Number;
+        {continue, {_, _, _, _, {float_error, Token, Skip}}} ->
+            unexpected_sequence(Token, Skip);
         {continue, _} ->
             error(unexpected_end)
     end.
@@ -640,6 +647,7 @@ implementations used by the `decode/1` function:
 
 * `error({invalid_byte, Byte})` if `Binary` contains unexpected byte or invalid UTF-8 byte
 * `error({invalid_sequence, Bytes})` if `Binary` contains invalid UTF-8 escape
+* `error(unexpected_end)` if `Binary` contains incomplete JSON value
 
 ## Example
 
@@ -652,17 +660,69 @@ Decoding object keys as atoms:
 ```
 """.
 -spec decode(binary(), dynamic(), decoders()) ->
-          {Result :: dynamic(), Acc :: dynamic(), binary()} | {continue, Opaque::term()}.
-decode(Binary, Acc, Decoders) when is_binary(Binary) ->
+          {Result :: dynamic(), Acc :: dynamic(), binary()}.
+decode(Binary, Acc0, Decoders) when is_binary(Binary) ->
+    Decode = maps:fold(fun parse_decoder/3, #decode{}, Decoders),
+    case value(Binary, Binary, 0, Acc0, [], Decode) of
+        {continue, {_Bin, Acc, [], _Decode, {number, Val}}} ->
+            {Val, Acc, <<>>};
+        {continue, {_, _, _, _, {float_error, Token, Skip}}} ->
+            unexpected_sequence(Token, Skip);
+        {continue, _} ->
+            error(unexpected_end);
+        Result ->
+            Result
+    end.
+
+-doc """
+Begin parsing a stream of bytes of a JSON value.
+
+Similar to `decode/3` but returns when a complete JSON value can be parsed or
+returns `{continue, State}` for incomplete data,
+the `State` can be fed to the `decode_continue/2` function when more data is available.
+""".
+-spec decode_start(binary(), dynamic(), decoders()) ->
+          {Result :: dynamic(), Acc :: dynamic(), binary()} | {continue, continuation_state()}.
+decode_start(Binary, Acc, Decoders) when is_binary(Binary) ->
     Decode = maps:fold(fun parse_decoder/3, #decode{}, Decoders),
     value(Binary, Binary, 0, Acc, [], Decode).
 
--spec decode_continue(binary(), Opaque::term()) ->
-          {Result :: dynamic(), Acc :: dynamic(), binary()} | {continue, Opaque::term()}.
-decode_continue(Cont, {Rest, Acc, Stack, Decode, FuncData}) ->
+-doc """
+Continue parsing a stream of bytes of a JSON value.
+
+Similar to `decode_start/3`, if the function returns `{continue, State}` and
+there is no more data, use `end_of_input` instead of a binary.
+
+```erlang
+> {continue, State} = json:decode_start(<<"{\"foo\":">>, ok, #{}).
+> json:decode_continue(<<"1}">>, State).
+{#{foo => 1},ok,<<>>}
+```
+```erlang
+> {continue, State} = json:decode_start(<<"123">>, ok, #{}).
+> json:decode_continue(end_of_input, State).
+{123,ok,<<>>}
+```
+""".
+-spec decode_continue(binary() | end_of_input, Opaque::term()) ->
+          {Result :: dynamic(), Acc :: dynamic(), binary()} | {continue, continuation_state()}.
+decode_continue(end_of_input, State) ->
+    case State of
+        {_, Acc, [], _Decode, {number, Val}} ->
+            {Val, Acc, <<>>};
+        {_, _, _, _, {float_error, Token, Skip}} ->
+            unexpected_sequence(Token, Skip);
+        _ ->
+            error(unexpected_end)
+    end;
+decode_continue(Cont, {Rest, Acc, Stack, Decode, FuncData}) when is_binary(Cont) ->
     Binary = <<Rest/binary, Cont/binary>>,
     case FuncData of
         value ->
+            value(Binary, Binary, 0, Acc, Stack, Decode);
+        {number, _} ->
+            value(Binary, Binary, 0, Acc, Stack, Decode);
+        {float_error, _Token, _Skip} ->
             value(Binary, Binary, 0, Acc, Stack, Decode);
         {array_push, Val} ->
             array_push(Binary, Binary, 0, Acc, Stack, Decode, Val);
@@ -749,9 +809,10 @@ number_zero(<<$., Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) ->
 number_zero(<<E, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when E =:= $E; E =:= $e ->
     number_exp_copy(Rest, Original, Skip, Acc, Stack, Decode, Len + 1, <<"0">>);
 number_zero(Rest, Original, Skip, Acc, Stack, Decode, Len) ->
-    if Rest =:= <<>> andalso Stack =/= [] ->
-            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, value);
-       true ->
+    case Rest =:= <<>> of
+        true ->
+            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, {number, 0});
+        false ->
             continue(Rest, Original, Skip+Len, Acc, Stack, Decode, 0)
     end.
 
@@ -763,10 +824,11 @@ number(<<E, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when E =:= $E;
     Prefix = binary_part(Original, Skip, Len),
     number_exp_copy(Rest, Original, Skip, Acc, Stack, Decode, Len + 1, Prefix);
 number(Rest, Original, Skip, Acc, Stack, Decode, Len) ->
-    if Rest =:= <<>> andalso Stack =/= [] ->
-            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, value);
-       true ->
-            Int = (Decode#decode.integer)(binary_part(Original, Skip, Len)),
+    Int = (Decode#decode.integer)(binary_part(Original, Skip, Len)),
+    case Rest =:= <<>> of
+        true ->
+            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, {number, Int});
+        false ->
             continue(Rest, Original, Skip+Len, Acc, Stack, Decode, Int)
     end.
 
@@ -780,19 +842,23 @@ number_frac_cont(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) w
 number_frac_cont(<<E, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when E =:= $e; E =:= $E ->
     number_exp(Rest, Original, Skip, Acc, Stack, Decode, Len + 1);
 number_frac_cont(Rest, Original, Skip, Acc, Stack, Decode, Len) ->
-    if Rest =:= <<>> andalso Stack =/= [] ->
-            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, value);
-       true ->
-            Token = binary_part(Original, Skip, Len),
-            float_decode(Rest, Original, Skip, Acc, Stack, Decode, Len, Token)
-    end.
+    Token = binary_part(Original, Skip, Len),
+    float_decode(Rest, Original, Skip, Acc, Stack, Decode, Len, Token).
 
 float_decode(<<Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len, Token) ->
     try (Decode#decode.float)(Token) of
+        Float when Rest =:= <<>> ->
+            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, {number, Float});
         Float ->
             continue(Rest, Original, Skip+Len, Acc, Stack, Decode, Float)
     catch
-        _:_ -> unexpected_sequence(Token, Skip)
+        _:_ ->
+            case Rest =:= <<>> of
+                true ->
+                    unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, {float_error, Token, Skip});
+                false ->
+                    unexpected_sequence(Token, Skip)
+            end
     end.
 
 number_exp(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when ?is_0_to_9(Byte) ->
@@ -810,12 +876,8 @@ number_exp_sign(_, Original, Skip, Acc, Stack, Decode, Len) ->
 number_exp_cont(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when ?is_0_to_9(Byte) ->
     number_exp_cont(Rest, Original, Skip, Acc, Stack, Decode, Len + 1);
 number_exp_cont(Rest, Original, Skip, Acc, Stack, Decode, Len) ->
-    if Rest =:= <<>> andalso Stack =/= [] ->
-            unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, value);
-       true ->
-            Token = binary_part(Original, Skip, Len),
-            float_decode(Rest, Original, Skip, Acc, Stack, Decode, Len, Token)
-    end.
+    Token = binary_part(Original, Skip, Len),
+    float_decode(Rest, Original, Skip, Acc, Stack, Decode, Len, Token).
 
 number_exp_copy(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len, Prefix) when ?is_0_to_9(Byte) ->
     number_exp_cont(Rest, Original, Skip, Acc, Stack, Decode, Len, Prefix, 1);
@@ -832,13 +894,9 @@ number_exp_sign(_, Original, Skip, Acc, Stack, Decode, Len, _Prefix, ExpLen) ->
 number_exp_cont(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len, Prefix, ExpLen) when ?is_0_to_9(Byte) ->
     number_exp_cont(Rest, Original, Skip, Acc, Stack, Decode, Len, Prefix, ExpLen + 1);
 number_exp_cont(Rest, Original, Skip, Acc, Stack, Decode, Len, Prefix, ExpLen) ->
-    if Rest =:= <<>> andalso Stack =/= [] ->
-            unexpected(Original, Skip, Acc, Stack, Decode, Len + ExpLen, 0, value);
-       true ->
-            Suffix = binary_part(Original, Skip + Len, ExpLen),
-            Token = <<Prefix/binary, ".0e", Suffix/binary>>,
-            float_decode(Rest, Original, Skip, Acc, Stack, Decode, Len + ExpLen, Token)
-    end.
+    Suffix = binary_part(Original, Skip + Len, ExpLen),
+    Token = <<Prefix/binary, ".0e", Suffix/binary>>,
+    float_decode(Rest, Original, Skip, Acc, Stack, Decode, Len + ExpLen, Token).
 
 string(Binary, Original, Skip, Acc, Stack, Decode) ->
     string_ascii(Binary, Original, Skip, Acc, Stack, Decode, 0).
