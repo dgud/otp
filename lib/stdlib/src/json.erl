@@ -601,10 +601,12 @@ Supports basic data mapping:
 """.
 -spec decode(binary()) -> decode_value().
 decode(Binary) when is_binary(Binary) ->
-    try value(Binary, Binary, 0, ok, [], #decode{}) of
-        {Result, _Acc, <<>>} -> Result;
-        {_, _, Rest} -> invalid_byte(Rest, 0)
-    catch throw:{continue, _} ->
+    case value(Binary, Binary, 0, ok, [], #decode{}) of
+        {Result, _Acc, <<>>} ->
+            Result;
+        {_, _, Rest} ->
+            invalid_byte(Rest, 0);
+        {continue, _} ->
             error(unexpected_end)
     end.
 
@@ -653,32 +655,24 @@ Decoding object keys as atoms:
           {Result :: dynamic(), Acc :: dynamic(), binary()} | {continue, Opaque::term()}.
 decode(Binary, Acc, Decoders) when is_binary(Binary) ->
     Decode = maps:fold(fun parse_decoder/3, #decode{}, Decoders),
-    try value(Binary, Binary, 0, Acc, [], Decode)
-    catch throw:{continue, State} ->
-            {continue, State}
-    end.
+    value(Binary, Binary, 0, Acc, [], Decode).
 
 -spec decode_continue(binary(), Opaque::term()) ->
           {Result :: dynamic(), Acc :: dynamic(), binary()} | {continue, Opaque::term()}.
 decode_continue(Cont, {Rest, Acc, Stack, Decode, FuncData}) ->
     Binary = <<Rest/binary, Cont/binary>>,
-    try
-        case FuncData of
-            value ->
-                value(Binary, Binary, 0, Acc, Stack, Decode);
-            {array_push, Val} ->
-                array_push(Binary, Binary, 0, Acc, Stack, Decode, Val);
-            {object_value, Key} ->
-                object_value(Binary, Binary, 0, Acc, Stack, Decode, Key);
-            {object_push, Value, Key} ->
-                object_push(Binary, Binary, 0, Acc, Stack, Decode, Value, Key);
-            object_key ->
-                object_key(Binary, Binary, 0, Acc, Stack, Decode)
-        end
-    catch throw:{continue, State} ->
-            {continue, State}
+    case FuncData of
+        value ->
+            value(Binary, Binary, 0, Acc, Stack, Decode);
+        {array_push, Val} ->
+            array_push(Binary, Binary, 0, Acc, Stack, Decode, Val);
+        {object_value, Key} ->
+            object_value(Binary, Binary, 0, Acc, Stack, Decode, Key);
+        {object_push, Value, Key} ->
+            object_push(Binary, Binary, 0, Acc, Stack, Decode, Value, Key);
+        object_key ->
+            object_key(Binary, Binary, 0, Acc, Stack, Decode)
     end.
-
 
 parse_decoder(array_start, Fun, Decode) when is_function(Fun, 1) ->
     Decode#decode{array_start = Fun};
@@ -1139,7 +1133,7 @@ unexpected(Original, Skip, Acc, Stack, Decode, Pos, Len, FuncData) ->
     case OrigSize =< RequiredSize of
         true ->
             <<_:Skip/binary, Rest/binary>> = Original,
-            throw({continue, {Rest, Acc, Stack, Decode, FuncData}});
+            {continue, {Rest, Acc, Stack, Decode, FuncData}};
         false ->
             invalid_byte(Original, Skip+Pos)
     end.
