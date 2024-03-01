@@ -772,9 +772,9 @@ value(<<$n, Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
 value(<<$", Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
     string(Rest, Original, Skip + 1, Acc, Stack, Decode);
 value(<<$[, Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
-    array_start(Rest, Original, Skip, Acc, Stack, Decode);
+    array_start(Rest, Original, Skip, Acc, Stack, Decode, 1);
 value(<<${, Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
-    object_start(Rest, Original, Skip, Acc, Stack, Decode);
+    object_start(Rest, Original, Skip, Acc, Stack, Decode, 1);
 value(<<Byte, _/bits>>, Original, Skip, _Acc, _Stack, _Decode) when ?is_ascii_plain(Byte) ->
     %% this clause is effecively the same as the last one, but necessary to
     %% force compiler to emit a jump table dispatch, rather than binary search
@@ -1061,9 +1061,9 @@ unescape_surrogate(_Rest, Original, Skip, Acc, Stack, Decode, Start, Len, _SAcc,
 hex_to_int(H1, H2, H3, H4) ->
     ?hex_digit(H4) + 16 * (?hex_digit(H3) + 16 * (?hex_digit(H2) + 16 * ?hex_digit(H1))).
 
-array_start(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode) when ?is_ws(Byte) ->
-    array_start(Rest, Original, Skip + 1, Acc, Stack, Decode);
-array_start(<<"]", Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
+array_start(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when ?is_ws(Byte) ->
+    array_start(Rest, Original, Skip, Acc, Stack, Decode, Len+1);
+array_start(<<"]", Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) ->
     {Value, NewAcc} =
         case {Decode#decode.array_start, Decode#decode.array_finish} of
             {undefined, undefined} -> {[], Acc};
@@ -1071,14 +1071,14 @@ array_start(<<"]", Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
             {undefined, Finish} -> Finish([], Acc);
             {Start, Finish} -> Finish(Start(Acc), Acc)
         end,
-    continue(Rest, Original, Skip+2, NewAcc, Stack, Decode, Value);
-array_start(<<>>, Original, Skip, Acc, Stack, Decode) ->
+    continue(Rest, Original, Skip+Len+1, NewAcc, Stack, Decode, Value);
+array_start(<<>>, Original, Skip, Acc, Stack, Decode, Len) ->
     %% Handles empty array [] in continuation mode
-    unexpected(Original, Skip, Acc, Stack, Decode, 1, 0, value);
-array_start(Rest, Original, Skip, OldAcc, Stack, Decode) ->
+    unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, value);
+array_start(Rest, Original, Skip, OldAcc, Stack, Decode, Len) ->
     case Decode#decode.array_start of
-        undefined -> value(Rest, Original, Skip+1, [], [?ARRAY, OldAcc | Stack], Decode);
-        Fun -> value(Rest, Original, Skip+1, Fun(OldAcc), [?ARRAY, OldAcc | Stack], Decode)
+        undefined -> value(Rest, Original, Skip+Len, [], [?ARRAY, OldAcc | Stack], Decode);
+        Fun -> value(Rest, Original, Skip+Len, Fun(OldAcc), [?ARRAY, OldAcc | Stack], Decode)
     end.
 
 array_push(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Value) when ?is_ws(Byte) ->
@@ -1105,9 +1105,10 @@ array_push(<<$,, Rest/bits>>, Original, Skip0, Acc, Stack, Decode, Value) ->
 array_push(_, Original, Skip, Acc, Stack, Decode, Value) ->
     unexpected(Original, Skip, Acc, Stack, Decode, 0, 0, {?FUNCTION_NAME, Value}).
 
-object_start(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode) when ?is_ws(Byte) ->
-    object_start(Rest, Original, Skip + 1, Acc, Stack, Decode);
-object_start(<<"}", Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
+
+object_start(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) when ?is_ws(Byte) ->
+    object_start(Rest, Original, Skip, Acc, Stack, Decode, Len+1);
+object_start(<<"}", Rest/bits>>, Original, Skip, Acc, Stack, Decode, Len) ->
     {Value, NewAcc} =
         case {Decode#decode.object_start, Decode#decode.object_finish} of
             {undefined, undefined} -> {#{}, Acc};
@@ -1115,10 +1116,10 @@ object_start(<<"}", Rest/bits>>, Original, Skip, Acc, Stack, Decode) ->
             {undefined, Finish} -> Finish([], Acc);
             {Start, Finish} -> Finish(Start(Acc), Acc)
         end,
-    continue(Rest, Original, Skip + 2, NewAcc, Stack, Decode, Value);
-object_start(<<$", Rest/bits>>, Original, Skip0, OldAcc, Stack0, Decode) ->
+    continue(Rest, Original, Skip+Len+1, NewAcc, Stack, Decode, Value);
+object_start(<<$", Rest/bits>>, Original, Skip0, OldAcc, Stack0, Decode, Len) ->
     Stack = [?OBJECT, OldAcc | Stack0],
-    Skip = Skip0 + 2,
+    Skip = Skip0 + Len + 1,
     case Decode#decode.object_start of
         undefined ->
             string(Rest, Original, Skip, [], Stack, Decode);
@@ -1126,8 +1127,8 @@ object_start(<<$", Rest/bits>>, Original, Skip0, OldAcc, Stack0, Decode) ->
             Acc = Fun(OldAcc),
             string(Rest, Original, Skip, Acc, Stack, Decode)
     end;
-object_start(_, Original, Skip, Acc, Stack, Decode) ->
-    unexpected(Original, Skip, Acc, Stack, Decode, 1, 0, value).
+object_start(_, Original, Skip, Acc, Stack, Decode, Len) ->
+    unexpected(Original, Skip, Acc, Stack, Decode, Len, 0, value).
 
 object_value(<<Byte, Rest/bits>>, Original, Skip, Acc, Stack, Decode, Key) when ?is_ws(Byte) ->
     object_value(Rest, Original, Skip + 1, Acc, Stack, Decode, Key);
