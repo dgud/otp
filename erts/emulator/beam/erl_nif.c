@@ -57,6 +57,7 @@
 #include "erl_bif_unique.h"
 #include "erl_utils.h"
 #include "erl_io_queue.h"
+#include "erl_io_stream.h"
 #include "erl_proc_sig_queue.h"
 #include "beam_common.h"
 #undef ERTS_WANT_NFUNC_SCHED_INTERNALS__
@@ -5645,7 +5646,120 @@ uninstall_on_halt_callback(ErtsNifOnHaltData *ohdp)
 }
 
 /*
- * End of halt functionality...
+ * IO stream functionality...
+ */
+
+struct ios_read_wrapper_args {
+    size_t (*callback)(ErlNifIOVec *vec, void *data);
+    void *data;
+};
+
+static void ios_read_wrapper(ErtsIOQueue *queue, void *data) {
+    struct ios_read_wrapper_args *args = (struct ios_read_wrapper_args*)data;
+    ErlNifIOVec vec;
+    size_t dequeue;
+
+    vec.iov = erts_ioq_peekq(queue, &vec.iovcnt);
+    vec.size = queue->size;
+
+    dequeue = args->callback(&vec, args->data);
+    erts_ioq_deq(queue, dequeue);
+}
+
+int enif_ios_notify(ErlNifEnv *env, ERL_NIF_TERM handle) {
+    ErtsIOStreamReader *reader;
+    ErtsIOStreamWriter *writer;
+
+    (void)env;
+
+    reader = erts_io_stream_get_reader(handle);
+    if (reader != NULL) {
+        erts_io_stream_notify_writer(reader);
+        return 1;
+    }
+
+    writer = erts_io_stream_get_writer(handle);
+    if (writer != NULL) {
+        erts_io_stream_notify_reader(writer);
+        return 1;
+    }
+
+    return 0;
+}
+
+int enif_ios_read(ErlNifEnv *env,
+                  ERL_NIF_TERM handle,
+                  size_t (*callback)(ErlNifIOVec *vec, void *data),
+                  void *data,
+                  int *events)
+{
+    struct ios_read_wrapper_args args;
+    ErtsIOStreamReader *reader;
+    (void)env;
+
+    reader = erts_io_stream_get_reader(handle);
+    if (reader == NULL) {
+        return 0;
+    }
+
+    args.callback = callback;
+    args.data = data;
+
+    ERTS_CT_ASSERT(ERL_NIF_IO_STREAM_EVENT_NONE == ERTS_IO_STREAM_EVENT_NONE);
+    ERTS_CT_ASSERT(ERL_NIF_IO_STREAM_EVENT_NOTIFY == ERTS_IO_STREAM_EVENT_NOTIFY);
+    ERTS_CT_ASSERT(ERL_NIF_IO_STREAM_EVENT_CLOSED == ERTS_IO_STREAM_EVENT_CLOSED);
+    *events = erts_io_stream_read(reader, ios_read_wrapper, (void*)&args);
+
+    return 1;
+}
+
+int enif_ios_write(ErlNifEnv *env,
+                   ERL_NIF_TERM handle,
+                   ErlNifIOVec *iov,
+                   size_t skip,
+                   int *events)
+{
+    ErtsIOStreamWriter *writer;
+    (void)env;
+
+    writer = erts_io_stream_get_writer(handle);
+    if (writer == NULL) {
+        return 0;
+    }
+
+    ERTS_CT_ASSERT(ERL_NIF_IO_STREAM_EVENT_NONE == ERTS_IO_STREAM_EVENT_NONE);
+    ERTS_CT_ASSERT(ERL_NIF_IO_STREAM_EVENT_NOTIFY == ERTS_IO_STREAM_EVENT_NOTIFY);
+    ERTS_CT_ASSERT(ERL_NIF_IO_STREAM_EVENT_CLOSED == ERTS_IO_STREAM_EVENT_CLOSED);
+    *events = erts_io_stream_write(writer, (ErtsIOVec*)iov, skip);
+
+    return 1;
+}
+
+int enif_ios_write_binary(ErlNifEnv *env,
+                          ERL_NIF_TERM stream,
+                          ErlNifBinary *bin,
+                          size_t skip,
+                          int *events)
+{
+    ErlNifIOVec vec = {1, bin->size, NULL, NULL, ERL_NIF_IOVEC_FLAGS_PREALLOC };
+    Binary *ref_bin = (Binary*)bin->ref_bin;
+
+    vec.iov = vec.small_iov;
+    vec.ref_bins = vec.small_ref_bin;
+    vec.iov[0].iov_base = bin->data;
+    vec.iov[0].iov_len = bin->size;
+    ((Binary**)(vec.ref_bins))[0] = ref_bin;
+
+    if (enif_ios_write(env, stream, &vec, skip, events)) {
+        enif_release_binary(bin);
+        return 1;
+    }
+
+    return 0;
+}
+
+/*
+ * End of IO stream functionality...
  */
 
 #ifdef USE_VM_PROBES

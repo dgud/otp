@@ -56,7 +56,8 @@ PRE_LOADED_ERL_MODULES = \
 	erts_dirty_process_signal_handler \
 	atomics \
 	counters \
-        persistent_term
+        persistent_term \
+        iostream
 
 PRE_LOADED_BEAM_MODULES = \
 	prim_eval

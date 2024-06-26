@@ -807,3 +807,8 @@ bif erts_trace_cleaner:send_trace_clean_signal/1
 #
 bif erts_internal:system_monitor/1
 bif erts_internal:system_monitor/3
+bif iostream:new/0
+bif iostream:close/1
+bif iostream:notify/1
+bif iostream:read_internal/2
+bif iostream:write_internal/2

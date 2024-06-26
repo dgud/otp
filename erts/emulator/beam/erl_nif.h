@@ -59,9 +59,11 @@
 ** 2.16: 24.0 enif_init_resource_type, enif_dynamic_resource_call
 ** 2.17: 26.0 enif_set_option, enif_get_string_length, enif_make_new_atom,
 **            enif_make_new_atom_len, ERL_NIF_UTF8
+** 2.18: 28.0 enif_ios_notify, enif_ios_read, enif_ios_write_binary
+**            enif_ios_write
 */
 #define ERL_NIF_MAJOR_VERSION 2
-#define ERL_NIF_MINOR_VERSION 17
+#define ERL_NIF_MINOR_VERSION 18
 
 /*
  * WHEN CHANGING INTERFACE VERSION, also replace erts version below with
@@ -337,6 +339,10 @@ typedef enum {
     ERL_NIF_OPT_ON_HALT = 2,
     ERL_NIF_OPT_ON_UNLOAD_THREAD = 3
 } ErlNifOption;
+
+#define ERL_NIF_IO_STREAM_EVENT_NONE    (0)
+#define ERL_NIF_IO_STREAM_EVENT_CLOSED  (1 << 0)
+#define ERL_NIF_IO_STREAM_EVENT_NOTIFY  (1 << 1)
 
 #if (defined(__WIN32__) || defined(_WIN32) || defined(_WIN32_))
 #  define ERL_NIF_API_FUNC_DECL(RET_TYPE, NAME, ARGS) RET_TYPE (*NAME) ARGS

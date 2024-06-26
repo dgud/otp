@@ -99,6 +99,9 @@ static erts_lc_lock_order_t erts_lock_order[] = {
     LEVEL,
     {"proc_main",				"pid"},
     LEVEL,
+    /* FIXME: place this in a more suitable location. */
+    {"iostream_lock",				NULL},
+    LEVEL,
     {"old_code",                                "address"},
     {"nif_call_tab",                            NULL},
     {"nodes_monitors",			        NULL},

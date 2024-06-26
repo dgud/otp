@@ -224,6 +224,11 @@ ERL_NIF_API_FUNC_DECL(int, enif_make_new_atom, (ErlNifEnv *env, const char *name
 ERL_NIF_API_FUNC_DECL(int, enif_make_new_atom_len, (ErlNifEnv *env, const char *name, size_t len, ERL_NIF_TERM *atom, ErlNifCharEncoding encoding));
 ERL_NIF_API_FUNC_DECL(int, enif_set_option, (ErlNifEnv *env, ErlNifOption opt, ...));
 
+ERL_NIF_API_FUNC_DECL(int, enif_ios_notify, (ErlNifEnv *env, ERL_NIF_TERM handle));
+ERL_NIF_API_FUNC_DECL(int, enif_ios_read, (ErlNifEnv *env, ERL_NIF_TERM handle, size_t (*callback)(ErlNifIOVec *vec, void *data), void *data, int *events));
+ERL_NIF_API_FUNC_DECL(int, enif_ios_write_binary, (ErlNifEnv *env, ERL_NIF_TERM handle, ErlNifBinary *bin, size_t skip, int *events));
+ERL_NIF_API_FUNC_DECL(int, enif_ios_write, (ErlNifEnv *env, ERL_NIF_TERM handle, ErlNifIOVec *iov, size_t skip, int *events));
+
 /*
 ** ADD NEW ENTRIES HERE (before this comment) !!!
 */
@@ -417,6 +422,9 @@ ERL_NIF_API_FUNC_DECL(int, enif_set_option, (ErlNifEnv *env, ErlNifOption opt, .
 #  define enif_make_new_atom ERL_NIF_API_FUNC_MACRO(enif_make_new_atom)
 #  define enif_make_new_atom_len ERL_NIF_API_FUNC_MACRO(enif_make_new_atom_len)
 #  define enif_set_option ERL_NIF_API_FUNC_MACRO(enif_set_option)
+#  define enif_ios_read ERL_NIF_API_FUNC_MACRO(enif_ios_read)
+#  define enif_ios_write_binary ERL_NIF_API_FUNC_MACRO(enif_ios_write_binary)
+#  define enif_ios_write ERL_NIF_API_FUNC_MACRO(enif_ios_write)
 /*
 ** ADD NEW ENTRIES HERE (before this comment)
 */
