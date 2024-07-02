@@ -107,6 +107,7 @@ MODULES= \
 	tls_handshake_1_3 \
 	tls_record \
 	tls_record_1_3 \
+	tls_record_nif \
 	tls_client_ticket_store \
 	tls_dist_sup \
 	tls_dist_server_sup \

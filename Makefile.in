@@ -540,8 +540,10 @@ compdb:
 
 format-check:
 	(cd erts/emulator && ERL_TOP=$(ERL_TOP) $(MAKE) format-check)
+	(cd lib/ssl && ERL_TOP=$(ERL_TOP) $(MAKE) format-check)
 format:
 	(cd erts/emulator && ERL_TOP=$(ERL_TOP) $(MAKE) format)
+	(cd lib/ssl && ERL_TOP=$(ERL_TOP) $(MAKE) format)
 
 dep depend:
 	$(make_verbose)

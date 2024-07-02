@@ -26,7 +26,7 @@ include $(ERL_TOP)/make/$(TARGET)/otp.mk
 # Macros
 #
 
-SUB_DIRECTORIES = src  doc examples/certs examples/src
+SUB_DIRECTORIES = c_src src doc examples/certs examples/src
 
 include vsn.mk
 VSN = $(SSL_VSN)
@@ -41,5 +41,8 @@ include $(ERL_TOP)/make/otp_subdir.mk
 DIA_PLT_APPS=crypto runtime_tools inets public_key
 
 TEST_NEEDS_RELEASE=true
+
+format format-check:
+	(cd c_src && $(MAKE) -f Makefile $@ || exit 1)
 
 include $(ERL_TOP)/make/app_targets.mk
