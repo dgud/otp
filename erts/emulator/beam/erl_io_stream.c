@@ -321,20 +321,21 @@ static void iostream_read_to_iovec(ErtsIOQueue *queue, void *data) {
     ErtsHeapFactory hfact;
     ErtsIOVec vec;
 
-    UWord bytes_remaining;
+    UWord bytes_remaining, to_dequeue;
     Eterm *tail_ptr;
 
     (void)erts_ioq_peekqv(queue, &vec);
 
     if (args->size == ERTS_UWORD_MAX) {
-        bytes_remaining = vec.common.size;
+        to_dequeue = vec.common.size;
     } else if (args->size <= vec.common.size) {
-        bytes_remaining = args->size;
+        to_dequeue = args->size;
     } else {
         args->result = am_error;
         return;
     }
 
+    bytes_remaining = to_dequeue;
     tail_ptr = &args->result;
     args->result = NIL;
 
@@ -376,7 +377,7 @@ static void iostream_read_to_iovec(ErtsIOQueue *queue, void *data) {
         tail_ptr = &CDR(hp);
     }
 
-    (void)erts_ioq_deq(queue, args->size);
+    (void)erts_ioq_deq(queue, to_dequeue);
     erts_factory_close(&hfact);
 }
 
