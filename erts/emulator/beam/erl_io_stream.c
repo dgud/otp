@@ -331,7 +331,10 @@ static void iostream_read_to_iovec(ErtsIOQueue *queue, void *data) {
     } else if (args->size <= vec.common.size) {
         to_dequeue = args->size;
     } else {
-        args->result = am_error;
+        Eterm *hp = HAlloc(args->p, 3);
+        args->result = TUPLE2(hp,
+                              am_incomplete,
+                              erts_make_integer(vec.common.size, args->p));
         return;
     }
 

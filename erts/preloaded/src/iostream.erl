@@ -74,16 +74,18 @@ PLACEHOLDER
 """.
 -spec read(handle()) -> {[event()], erlang:iovec()}.
 read(Handle) ->
-    {Events, Data} = read_internal(Handle, all),
-    {events(Events), Data}.
+    {Events, Res} = read_internal(Handle, all),
+    {events(Events), Res}.
 
 -doc """
 PLACEHOLDER
 """.
--spec read(handle(), non_neg_integer()) -> {[event()], error | erlang:iovec()}.
+-spec read(handle(), non_neg_integer()) -> {[event()],
+                                            {incomplete, non_neg_integer()}
+                                            | erlang:iovec()}.
 read(Handle, Size) ->
-    {Events, Data} = read_internal(Handle, Size),
-    {events(Events), Data}.
+    {Events, Res} = read_internal(Handle, Size),
+    {events(Events), Res}.
 
 write_internal(_Handle, _Data) ->
     erlang:nif_error(undefined).
