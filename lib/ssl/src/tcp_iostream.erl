@@ -27,7 +27,7 @@
          %% accept/1, accept/2,
 	 shutdown/2, close/1]).
 -export([send/2, recv/2, recv/3]). %%, unrecv/2]).
--export([controlling_process/2]).
+-export([controlling_process/2, setopts/2]).
 
 -behavior(gen_server).
 -include_lib("kernel/include/logger.hrl").
@@ -37,9 +37,11 @@
 -record(reader,
         {
          from :: pid(),
-         read_ahead :: non_neg_integer(),  %% No of packets, similar to active n
+         read_ahead :: integer(),  %% No of packets, similar to active n (-1 is active)
          length :: non_neg_integer(),
-         handle :: undefined | socket:select_handle() | socket:completion_handle()
+         handle :: undefined | socket:select_handle() | socket:completion_handle(),
+         user_read :: iostream:handle(),
+         user_write :: iostream:handle()
         }).
 
 -record(state,
@@ -48,8 +50,6 @@
          pid :: pid(),
          read :: iostream:handle(),
          write :: iostream:handle(),
-         user_read :: iostream:handle(),
-         user_write :: iostream:handle(),
          socket :: socket:socket(),
          reader :: #reader{}
         }).
@@ -228,6 +228,20 @@ controlling_process(S, NewOwner) ->
     gen_server:call(S, {controlling_process, NewOwner}).
 
 %%
+%% setopts ({active,...)
+%%
+
+-spec setopts(Socket, Opts) -> ok | {error, Reason} when
+      Socket :: socket(),
+      Opts :: [{active, false|true|once|integer()}],
+      Reason :: closed | not_owner | badarg | inet:posix().
+
+setopts(#?MODULE{pid = Pid}, [{active, What}])
+  when is_boolean(What); is_integer(What); What =:= once ->
+    gen_server:call(Pid, {active, What}).
+
+
+%%
 %% Helpers and local functions
 %%
 
@@ -254,34 +268,51 @@ init([_Role, Owner]) ->
     {ok, Socket} = socket:open(inet, stream, tcp),
     {ok, #state{pid = Owner,
                 read = ReadOut, write = WriteIn,
-                user_read = ReadIn, user_write = WriteOut,
                 socket = Socket,
-                reader = #reader{from = Owner, read_ahead = 0, length = 0, handle = undefined}
-               }}.
+                reader = #reader{from = Owner, read_ahead = 0, length = 0, handle = undefined,
+                                 user_read = ReadIn, user_write = WriteOut}
+               }
+    }.
 
-handle_call({connect, SockAddr, _Opts, Timeout}, _From,
-            #state{role = undefined, socket = Sock} = State) ->
+handle_call({connect, SockAddr, #{active := Active}, Timeout}, From,
+            #state{role = undefined, socket = Sock, reader=Reader} = State0) ->
     %% io:format("~p:~p: ~p ~n",[?MODULE, ?LINE, SockAddr]),
     case socket:connect(Sock, SockAddr, Timeout) of
         ok ->
-            {reply, {ok, make_socket(State)}, State#state{role = client}};
+            #state{} = State = handle_active(Active, From, State0#state{role = client}),
+            {reply, {ok, make_socket(Reader)}, State};
         {error, _} = Error ->
             ok = socket:close(Sock),
-            {stop, normal, Error, State}
+            {stop, normal, Error, State0}
     end;
 
-handle_call({more_data, Length}, From, #state{write = Write, socket = Sock, reader = Reader} = State) ->
+handle_call({more_data, Length}, From0,
+            #state{pid = Pid, write = Write, socket = Sock, reader = Reader} = State) ->
     case socket:recv(Sock, Length, 0) of
         {error, timeout} ->
-            {noreply, State#state{reader = fetch_data(From, Length, Sock, Write, Reader)}};
+            From = #{owner => Pid, from => From0},
+            {noreply,
+             State#state{reader = fetch_data(Length, Sock, Write,
+                                             Reader#reader{from=From})}};
         {error, {timeout, Data}} ->
+            From = #{owner => Pid, from => From0},
             [] = iostream:write(Write, Data),
-            {noreply, State#state{reader = fetch_data(From, Length-byte_size(Data), Sock, Write, Reader)}};
+            {noreply,
+             State#state{reader = fetch_data(Length-byte_size(Data), Sock, Write,
+                                             Reader#reader{from=From})}};
         {ok, Data} ->
             [] = iostream:write(Write, Data),
-            {reply, ok, State#state{reader = fetch_data(undefined, 0, Sock, Write, Reader)}};
+            {reply, ok, State#state{reader = fetch_data(0, Sock, Write, Reader)}};
         {error, _} = Error ->
             {reply, Error, State}
+    end;
+
+handle_call({active, N}, From, State0) ->
+    case handle_active(N, From, State0) of
+        #state{} = State ->
+            {reply, ok, State};
+        Error ->
+            {reply, Error, State0}
     end;
 
 handle_call(close, _From, State) ->
@@ -302,8 +333,8 @@ handle_cast(send, #state{read = Stream, socket = Sock} = State) ->
 handle_cast({cancel_req, Pid}, #state{reader = Reader} = State) ->
     ?LOG(debug, "~p:~p: ~p ~p~n", [?MODULE, ?LINE, Pid, Reader]),
     case Reader of
-        #reader{from = {Pid, _}} ->
-            {noreply, State#state{reader = Reader#reader{from = undefined, length = 0}}};
+        #reader{from = #{from := {Pid, _}, owner := CPid}} ->
+            {noreply, State#state{reader = Reader#reader{from = CPid, length = 0}}};
         _ ->
             ?LOG_INFO("~w: Unknown cancel req from ~p~n",[?MODULE, Pid]),
             {noreply, State}
@@ -317,11 +348,10 @@ handle_cast(Info, State) ->
 handle_info({'$socket', Sock, select, Handle},
             #state{socket = Sock, write = Stream,
                    reader = #reader{handle = Handle,
-                                    length = Size,
-                                    from = From
+                                    length = Size
                                    } = Reader
                   } = State) ->
-    R = fetch_data(From, Size, Sock, Stream, Reader#reader{handle = undefined}),
+    R = fetch_data(Size, Sock, Stream, Reader#reader{handle = undefined}),
     {noreply, State#state{reader = R}};
 
 handle_info(Info, State) ->
@@ -333,40 +363,75 @@ terminate(_Reason, #state{socket = Sock}) ->
     socket:close(Sock).
 
 %%
-make_socket(#state{user_read = Read, user_write = Write}) ->
+make_socket(#reader{user_read = Read, user_write = Write}) ->
     #?MODULE{pid = self(), read = Read, write = Write}.
 
-fetch_data(From, Size, Sock, Stream, #reader{handle = undefined} = Reader) ->
+fetch_data(Size, Sock, Stream, #reader{handle = undefined, from = From} = Reader0) ->
     case socket:recv(Sock, Size, nowait) of
         {select, {select_info, _, Handle}} ->
-            Reader#reader{from = From, length = Size, handle = Handle};
+            Reader0#reader{length = Size, handle = Handle};
         {select, {{select_info, _, Handle}, Data}} ->
             _ = iostream:write(Stream, Data),
-            Reader#reader{from = From, length = Size-byte_size(Data), handle = Handle};
+            Reader0#reader{length = Size-byte_size(Data), handle = Handle};
         %% FIXME Windows stuff
         {ok, Data} ->
-            _ = iostream:write(Stream, Data),
-            reply_data(From),
-            read_ahead(Sock, Stream, Reader#reader{from=undefined, length=0})
+            Ev = iostream:write(Stream, Data),
+            Reader = reply_data(Ev, From, Reader0),
+            read_ahead(Sock, Stream, Reader)
     end;
-fetch_data(From, Size, _Sock, _Stream, #reader{length = 0} = Reader) ->
-    Reader#reader{length = Size, from = From}.
+fetch_data(Size, _Sock, _Stream, #reader{length = 0} = Reader) ->
+    Reader#reader{length = Size}.
 
-read_ahead(Sock, Stream, #reader{read_ahead = ReadAHead} = Reader) ->
-    case ReadAHead > 0 of
-        true ->
-            fetch_data(undefined, 0, Sock, Stream, Reader#reader{read_ahead = ReadAHead-1});
-        false ->
-            Reader
-    end.
+read_ahead(_Sock, _Stream, #reader{read_ahead = 0} = Reader) ->
+    Reader;
+read_ahead(Sock, Stream, Reader) ->
+    fetch_data(0, Sock, Stream, Reader).
 
-reply_data(From) when is_pid(From) ->
-    fixme;
-reply_data(From) ->
-    gen_server:reply(From, ok).
+handle_active(false, {Pid, _}, #state{pid = Pid, reader = Reader0} = State) ->
+    State#state{reader = Reader0#reader{read_ahead = 0}};
+handle_active(true, {Pid, _}, #state{pid = Pid, socket = Sock, write = Stream,
+                                     reader = Reader0} = State) ->
+    iostream:notify(Reader0#reader.user_read),
+    Reader = read_ahead(Sock, Stream, Reader0#reader{from = Pid, read_ahead = -1}),
+    State#state{reader = Reader};
+handle_active(once, {Pid, _}, #state{pid = Pid, socket = Sock, write = Stream,
+                                     reader = Reader0} = State) ->
+    iostream:notify(Reader0#reader.user_read),
+    Reader = read_ahead(Sock, Stream, Reader0#reader{from = Pid, read_ahead = once}),
+    State#state{reader = Reader};
+handle_active(N, {Pid, _}, #state{pid = Pid, socket = Sock, write = Stream,
+                                  reader = #reader{read_ahead = Prev, user_read = User} = Reader0} = State) ->
+    ReadAHead = if Prev == -1 -> max(0, N);
+                   true -> max(0, Prev+N)
+                end,
+    ReadAHead > 0 andalso iostream:notify(User),
+    Reader = read_ahead(Sock, Stream, Reader0#reader{read_ahead = ReadAHead}),
+    State#state{reader = Reader};
+handle_active(_Active, {Pid, _},  #state{pid = Pid2}) ->
+    ?LOG_DEBUG("ACTIVE: ~p ~p ~p~n",[_Active, Pid, Pid2]),
+    {error, {not_controlling_process, Pid, Pid2}}.
+
+reply_data([], From, Reader) when is_pid(From) ->
+    Reader;
+reply_data([notify], From, #reader{user_read = Stream, read_ahead = RA0} = Reader) when is_pid(From) ->
+    From ! {?MODULE, make_socket(Reader), Stream},
+    RA = if RA0 =:= once ->
+                 0;
+            RA0 =:= 1 ->
+                 From ! {tcp_iostream_passive, make_socket(Reader)},
+                 0;
+            RA0 > 0 ->
+                 RA0 -1;
+            RA0 =:= -1 ->  %% active mode
+                 RA0
+         end,
+    Reader#reader{read_ahead = RA};
+reply_data(_Ev, #{from := From, owner:= Pid}, Reader) ->
+    gen_server:reply(From, ok),
+    Reader#reader{from = Pid, length = 0}.
 
 check_opts(Opts0) ->
-    lists:foldr(fun check_opts_1/2, #{}, Opts0).
+    lists:foldr(fun check_opts_1/2, #{active => true}, Opts0).
 
 check_opts_1(binary, Opts) ->
     Opts#{binary => true};
