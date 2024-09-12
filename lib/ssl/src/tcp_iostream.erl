@@ -435,6 +435,8 @@ check_opts(Opts0) ->
 
 check_opts_1(binary, Opts) ->
     Opts#{binary => true};
+check_opts_1({mode, binary}, Opts) ->
+    Opts#{binary => true};
 check_opts_1({active, Active}, Opts) ->
     Opts#{active => Active};
 check_opts_1({packet, Raw}, Opts) ->
@@ -442,5 +444,9 @@ check_opts_1({packet, Raw}, Opts) ->
        Raw =:= raw -> Opts;
        true -> error({badarg, {unsupported, {packet, Raw}}})
     end;
+check_opts_1({header, 0}, Opts) ->
+    Opts;
+check_opts_1({packet_size, 0}, Opts) ->
+    Opts;
 check_opts_1(Opt, _Opts) ->
     error({badarg, {unsupported, Opt}}).
