@@ -422,6 +422,7 @@ ERL_NIF_API_FUNC_DECL(int, enif_ios_write, (ErlNifEnv *env, ERL_NIF_TERM handle,
 #  define enif_make_new_atom ERL_NIF_API_FUNC_MACRO(enif_make_new_atom)
 #  define enif_make_new_atom_len ERL_NIF_API_FUNC_MACRO(enif_make_new_atom_len)
 #  define enif_set_option ERL_NIF_API_FUNC_MACRO(enif_set_option)
+#  define enif_ios_notify ERL_NIF_API_FUNC_MACRO(enif_ios_notify)
 #  define enif_ios_read ERL_NIF_API_FUNC_MACRO(enif_ios_read)
 #  define enif_ios_write_binary ERL_NIF_API_FUNC_MACRO(enif_ios_write_binary)
 #  define enif_ios_write ERL_NIF_API_FUNC_MACRO(enif_ios_write)
