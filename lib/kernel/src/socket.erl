@@ -258,6 +258,8 @@ server(Addr, Port) ->
          sendmsg/2, sendmsg/3, sendmsg/4,
          sendv/2, sendv/3, sendv/4,
 
+         send_iostream/3,
+
          sendfile/2, sendfile/3, sendfile/4, sendfile/5,
 
          recv/1, recv/2, recv/3, recv/4,
@@ -3608,12 +3610,14 @@ send_deadline_cont(SockRef, Bin, Cont, Deadline, HasWritten) ->
 -compile({inline, [send_common_nowait_result/3]}).
 send_common_nowait_result(Handle, Op, Result) ->
     case Result of
-        completion ->
-            {completion, ?COMPLETION_INFO(Op, Handle)};
+        %%
         {select, ContData} ->
             {select, ?SELECT_INFO({Op, ContData}, Handle)};
         {select, Data, ContData} ->
             {select, {?SELECT_INFO({Op, ContData}, Handle), Data}};
+        %%
+        completion ->
+            {completion, ?COMPLETION_INFO(Op, Handle)};
         %%
         Result ->
             Result
@@ -3625,19 +3629,7 @@ send_common_deadline_result(
   Op, Fun, SendResult) ->
     %%
     case SendResult of
-        select ->
-            %% Would block, wait for continuation
-            Timeout = timeout(Deadline),
-            receive
-                ?socket_msg(_Socket, select, Handle) ->
-                    Fun(SockRef, Data, undefined, Deadline, HasWritten);
-                ?socket_msg(_Socket, abort, {Handle, Reason}) ->
-                    send_common_error(Reason, Data, HasWritten)
-            after Timeout ->
-                    _ = cancel(SockRef, Op, Handle),
-                    send_common_error(timeout, Data, HasWritten)
-            end;
-
+        %%
         {select, Cont} ->
             %% Would block, wait for continuation
             Timeout = timeout(Deadline),
@@ -3662,7 +3654,7 @@ send_common_deadline_result(
                     _ = cancel(SockRef, Op, Handle),
                     send_common_error(timeout, Data_1, true)
             end;
-
+        %%
         completion ->
             %% Would block, wait for continuation
             Timeout = timeout(Deadline),
@@ -3676,13 +3668,12 @@ send_common_deadline_result(
                     _ = cancel(SockRef, Op, Handle),
                     send_common_error(timeout, Data, false)
             end;
-
         %%
         {error, {_Reason, RestIOV}} = Error when is_list(RestIOV) ->
             Error;
         {error, Reason} ->
             send_common_error(Reason, Data, HasWritten);
-
+        %%
         Result ->
             %% ?DBG([{deadline, Deadline}, {op, Op}, {result, Result}]),
             Result
@@ -4266,8 +4257,8 @@ sendmsg_deadline_cont(SockRef, Data, Cont, Deadline, HasWritten) ->
       RestIOV :: erlang:iovec(),
       Reason  :: posix() | 'closed' | invalid().
 
-sendv(Socket, IOV) ->
-    sendv(Socket, IOV, ?ESOCK_SENDMSG_TIMEOUT_DEFAULT).
+sendv(Socket, IOS) ->
+    sendv(Socket, IOS, ?ESOCK_SENDMSG_TIMEOUT_DEFAULT).
 
 
 -doc """
@@ -4380,31 +4371,20 @@ With the argument [`Cont`](`t:select_info/0`), equivalent to
       RestIOV :: erlang:iovec(),
       Reason  :: posix() | 'closed' | invalid().
 
-sendv(?socket(SockRef) = Socket, IOV,
+sendv(?socket(SockRef) = Socket, IOS,
       ?SELECT_INFO(SelectTag, _) = Cont)
   when is_reference(SockRef) ->
     case SelectTag of
         {sendv, _} -> % We do not use ContData here
-            sendv_timeout_cont(SockRef, IOV, ?ESOCK_SENDV_TIMEOUT_DEFAULT);
+            sendv_timeout(SockRef, IOS, ?ESOCK_SENDV_TIMEOUT_DEFAULT);
         _ ->
-            erlang:error(badarg, [Socket, IOV, Cont])
+            erlang:error(badarg, [Socket, IOS, Cont])
     end;
-sendv(?socket(SockRef), IOV, Timeout)
+sendv(?socket(SockRef), IOS, Timeout)
   when is_reference(SockRef) ->
-    case deadline(Timeout) of
-        invalid ->
-            erlang:error({invalid, {timeout, Timeout}});
-        nowait ->
-            Handle = make_ref(),
-            sendv_nowait(SockRef, IOV, Handle);
-        handle ->
-            Handle = Timeout,
-            sendv_nowait(SockRef, IOV, Handle);
-        Deadline ->
-            sendv_deadline(SockRef, IOV, Deadline)
-    end;
-sendv(Socket, IOV, Timeout) ->
-    erlang:error(badarg, [Socket, IOV, Timeout]).
+    sendv_timeout(SockRef, IOS, Timeout);
+sendv(Socket, IOS, Timeout) ->
+    erlang:error(badarg, [Socket, IOS, Timeout]).
 
 -doc """
 Send data on a connected socket, continuation.
@@ -4461,61 +4441,106 @@ See `sendv/3` about the return values.
       Reason         :: posix() | 'closed' | invalid().
 
 -doc(#{since => <<"OTP 27.0">>}).
-sendv(?socket(SockRef) = _Socket, IOV,
+sendv(?socket(SockRef) = _Socket, IOS,
       ?SELECT_INFO(SelectTag, _) = Cont, Timeout)
-  when is_reference(SockRef) andalso is_list(IOV) ->
+  when is_reference(SockRef) ->
     %%
     case SelectTag of
         {sendv, _} -> % We do not use ContData here
-            sendv_timeout_cont(SockRef, IOV, Timeout);
+            sendv_timeout(SockRef, IOS, Timeout);
         _ ->
             {error, {invalid, Cont}}
     end;
-sendv(Socket, IOV, Cont, Timeout) ->
-    erlang:error(badarg, [Socket, IOV, Cont, Timeout]).
+sendv(Socket, IOS, Cont, Timeout) ->
+    erlang:error(badarg, [Socket, IOS, Cont, Timeout]).
 
 
-sendv_timeout_cont(SockRef, RestIOV, Timeout) ->
+sendv_timeout(SockRef, IOS, Timeout) ->
     case deadline(Timeout) of
         invalid ->
             erlang:error({invalid, {timeout, Timeout}});
         nowait ->
             SelectHandle = make_ref(),
-            sendv_nowait_cont(SockRef, RestIOV, SelectHandle);
+            sendv_nowait(SockRef, IOS, SelectHandle);
         handle ->
             SelectHandle = Timeout,
-            sendv_nowait_cont(SockRef, RestIOV, SelectHandle);
+            sendv_nowait(SockRef, IOS, SelectHandle);
         Deadline ->
-            HasWritten = false,
-            sendv_deadline_cont(
-              SockRef, RestIOV, undefined, Deadline, HasWritten)
+            sendv_deadline(SockRef, IOS, Deadline)
     end.
 
-sendv_nowait(SockRef, IOV, Handle) ->
+sendv_nowait(SockRef, IOS, Handle) ->
     send_common_nowait_result(
       Handle, sendv,
-      prim_socket:sendv(SockRef, IOV, Handle)).
+      prim_socket:sendv(SockRef, IOS, Handle)).
 
-sendv_nowait_cont(SockRef, RestIOV, SelectHandle) ->
-    send_common_nowait_result(
-      SelectHandle, sendv,
-      prim_socket:sendv(SockRef, RestIOV, SelectHandle)).
-
-sendv_deadline(SockRef, IOV, Deadline) ->
-    Handle     = make_ref(),
+sendv_deadline(SockRef, IOS, Deadline) ->
+    Cont = undefined,
     HasWritten = false,
-    send_common_deadline_result(
-      SockRef, IOV, Handle, Deadline, HasWritten,
-      sendv, fun sendv_deadline_cont/5,
-      prim_socket:sendv(SockRef, IOV, Handle)).
-
-sendv_deadline_cont(SockRef, IOV, _, Deadline, HasWritten) ->
+    sendv_deadline(SockRef, IOS, Cont, Deadline, HasWritten).
+%%
+sendv_deadline(SockRef, IOV, _Cont, Deadline, HasWritten) ->
     SelectHandle = make_ref(),
     send_common_deadline_result(
       SockRef, IOV, SelectHandle, Deadline, HasWritten,
-      sendv, fun sendv_deadline_cont/5,
+      sendv, fun sendv_deadline/5,
       prim_socket:sendv(SockRef, IOV, SelectHandle)).
 
+
+%% ===========================================================================
+%%
+%% send_iostream - send data from an iostream on a socket
+%%
+
+-doc(#{since => <<"OTP 28.0">>}).
+-spec send_iostream(Socket, IOS, 'nowait' | Handle) ->
+          {Events, Result, Sent, Remaining}
+              when
+      Socket :: socket(),
+      IOS    :: iostream:handle(),
+      Handle :: select_handle() | completion_handle(),
+      Events :: [iostream:event()],
+      Result ::
+        'ok' |
+        {'select', SelectInfo} |
+        {'completion', CompletionInfo} |
+        {'error', Reason},
+      Sent           :: non_neg_integer(),
+      Remaining      :: non_neg_integer(),
+      SelectInfo     :: select_info(),
+      CompletionInfo :: completion_info(),
+      Reason  :: posix() | 'closed' | invalid().
+
+send_iostream(?socket(SockRef) = _Socket, IOS, nowait)
+  when is_reference(SockRef),
+       is_reference(IOS) ->
+    Handle = make_ref(),
+    send_iostream_handle(SockRef, IOS, Handle);
+send_iostream(?socket(SockRef) = _Socket, IOS, Handle)
+  when is_reference(SockRef),
+       is_reference(IOS),
+       is_reference(Handle) ->
+    send_iostream_handle(SockRef, IOS, Handle);
+send_iostream(Socket, IOS, Handle) ->
+    erlang:error(badarg, [Socket, IOS, Handle]).
+
+send_iostream_handle(SockRef, IOS, Handle) ->
+    {Events, Result, Sent, Remaining} = SendIostreamResult =
+        prim_socket:sendv(SockRef, IOS, Handle),
+     case Result of
+         ok ->
+             SendIostreamResult;
+         completion ->
+             {Events,
+              {completion, ?COMPLETION_INFO(?FUNCTION_NAME, Handle)},
+              Sent, Remaining};
+         select ->
+             {Events,
+              {select, ?SELECT_INFO(?FUNCTION_NAME, Handle)},
+              Sent, Remaining};
+         {error, _} ->
+             SendIostreamResult
+     end.
 
 %% ===========================================================================
 %%

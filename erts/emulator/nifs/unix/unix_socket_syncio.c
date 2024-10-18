@@ -2300,6 +2300,46 @@ ERL_NIF_TERM essio_sendmsg(ErlNifEnv*       env,
 
 /* ========================================================================
  */
+
+struct sendv_io_stream_data {
+    ESockDescriptor *descP;
+    int              iov_max;
+    ssize_t          dataSize;
+    BOOLEAN_T        dataInTail;
+    size_t           size;
+    ssize_t          sendv_result;
+};
+
+static size_t sendv_io_stream(ErlNifIOVec *eiovP, void *sidVP) {
+    struct sendv_io_stream_data *sidP;
+    int i, iovcnt;
+
+    sidP       = sidVP;
+    sidP->size = eiovP->size;
+    iovcnt     = eiovP->iovcnt;
+    if (((sidP->iov_max < iovcnt) && (iovcnt = sidP->iov_max, TRUE))
+        || (SSIZE_MAX < eiovP->size)) {
+        /* Have to truncate and calculate the dataSize to send
+         */
+        sidP->dataSize = 0;
+        for (i = 0;  i < iovcnt;  i++) {
+            if (SSIZE_MAX - sidP->dataSize < eiovP->iov[i].iov_len)
+                break;
+            sidP->dataSize += eiovP->iov[i].iov_len;
+        }
+        sidP->dataInTail = TRUE;
+    }
+    else {
+        sidP->dataSize = eiovP->size;
+        sidP->dataInTail = FALSE;
+    }
+
+    sidP->sendv_result = sock_sendv(sidP->descP->sock, eiovP->iov, iovcnt);
+
+    /* How much to deq */
+    return 0 < sidP->sendv_result ? sidP->sendv_result : 0;
+}
+
 extern
 ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
                          ESockDescriptor* descP,
@@ -2309,7 +2349,7 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
                          const ESockData* dataP)
 {
     ERL_NIF_TERM  eres;
-    ErlNifIOVec  *iovec = NULL;
+    ErlNifIOVec  *iovecP = NULL;
     ssize_t       dataSize, sendv_result;
     ERL_NIF_TERM  writerCheck, tail;
     BOOLEAN_T     dataInTail;
@@ -2332,11 +2372,32 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
         return writerCheck;
     }
 
+    /* Handle io_stream send data for SOCK_STREAM
+     */
+    if (descP->type == SOCK_STREAM) {
+        struct sendv_io_stream_data sid;
+        int events;
+
+        sid.descP = descP;
+        sid.iov_max = dataP->iov_max;
+        if (enif_ios_read(env, eIOV, sendv_io_stream, &sid, &events)) {
+
+            eres = send_check_result(env, descP, sid.sendv_result,
+                                     sid.dataSize, sid.dataInTail,
+                                     sockRef, sendRef);
+
+            SSDBG( descP, ("UNIX-ESSIO", "essio_sendv {%d} -> done"
+                           "\r\n   send result:    %ld"
+                           "\r\n", descP->sock,
+                           (long) sid.sendv_result) );
+            return MKT3(env, MKI(env, events), MKUI64(env, sid.size), eres);
+        }
+    }
 
     /* Extract the 'iov', which must be an erlang:iovec(),
      * from which we take at most IOV_MAX binaries
      */
-    if (! enif_inspect_iovec(NULL, dataP->iov_max, eIOV, &tail, &iovec)) {
+    if (! enif_inspect_iovec(NULL, dataP->iov_max, eIOV, &tail, &iovecP)) {
         SSDBG( descP, ("UNIX-ESSIO",
                        "essio_sendv {%d} -> iov inspection failed\r\n",
                        descP->sock) );
@@ -2344,7 +2405,7 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
         return esock_make_invalid(env, esock_atom_iov);
     }
 
-    if (iovec == NULL) {
+    if (iovecP == NULL) {
         SSDBG( descP, ("UNIX-ESSIO",
                        "essio_sendv {%d} -> not an iov\r\n",
                        descP->sock) );
@@ -2352,7 +2413,7 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
         return esock_make_invalid(env, esock_atom_iov);
     }
 
-    // ESOCK_ASSERT( iovec != NULL );
+    // ESOCK_ASSERT( iovecP != NULL );
 
     dataInTail = (! enif_is_empty_list(env, tail));    
 
@@ -2360,20 +2421,20 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
                    "\r\n   iovcnt: %lu"
                    "\r\n   tail:   %s"
                    "\r\n", descP->sock,
-                   (unsigned long) iovec->iovcnt, B2S(dataInTail)) );
+                   (unsigned long) iovecP->iovcnt, B2S(dataInTail)) );
 
     /* We now have an allocated iovec - verify vector size */
 
-    if (iovec->iovcnt > dataP->iov_max) {
+    if (iovecP->iovcnt > dataP->iov_max) {
         if (descP->type == SOCK_STREAM) {
-            iovec->iovcnt = dataP->iov_max;
+            iovecP->iovcnt = dataP->iov_max;
         } else {
             /* We can not send the whole packet in one sendv() call */
             SSDBG( descP, ("UNIX-ESSIO",
                            "essio_sendv {%d} -> iovcnt > iov_max\r\n",
                            descP->sock) );
 
-            FREE_IOVEC( iovec );
+            FREE_IOVEC( iovecP );
 
             return esock_make_invalid(env, esock_atom_iov);
         }
@@ -2408,7 +2469,7 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
                            "essio_sendv {%d} -> invalid tail\r\n",
                            descP->sock) );
 
-            FREE_IOVEC( iovec );
+            FREE_IOVEC( iovecP );
 
             return esock_make_invalid(env, esock_atom_iov);
 
@@ -2416,8 +2477,8 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
 
         /* Calculate the data size */
 
-        for (i = 0;  i < iovec->iovcnt;  i++) {
-            size_t len = iovec->iov[i].iov_len;
+        for (i = 0;  i < iovecP->iovcnt;  i++) {
+            size_t len = iovecP->iov[i].iov_len;
             dataSize += len;
             if (dataSize < len) {
                 /* Overflow */
@@ -2428,7 +2489,7 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
                                "\r\n", descP->sock, (unsigned long) i,
                                (unsigned long) len, (long) dataSize) );
 
-                FREE_IOVEC( iovec );
+                FREE_IOVEC( iovecP );
 
                 return esock_make_invalid(env, esock_atom_iov);
 
@@ -2443,19 +2504,19 @@ ERL_NIF_TERM essio_sendv(ErlNifEnv*       env,
             "\r\n   data size:  %u"
             "\r\n",
             descP->sock,
-            (unsigned long) iovec->iovcnt, (long) dataSize) );
+            (unsigned long) iovecP->iovcnt, (long) dataSize) );
 
     ESOCK_CNT_INC(env, descP, sockRef,
                   esock_atom_write_tries, &descP->writeTries, 1);
 
     /* And now, try to send the message */
-    sendv_result = sock_sendv(descP->sock, iovec->iov, iovec->iovcnt);
+    sendv_result = sock_sendv(descP->sock, iovecP->iov, iovecP->iovcnt);
 
     eres = send_check_result(env, descP, sendv_result,
                              dataSize, dataInTail,
                              sockRef, sendRef);
 
-    FREE_IOVEC( iovec );
+    FREE_IOVEC( iovecP );
 
     SSDBG( descP, ("UNIX-ESSIO", "essio_sendv {%d} -> done"
                    "\r\n   data size:    %lu"

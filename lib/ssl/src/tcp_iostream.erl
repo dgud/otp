@@ -326,9 +326,14 @@ handle_call(Op, _, State) ->
 handle_cast(send, #state{read = Stream, socket = Sock} = State) ->
     iostream:notify(Stream),
     %% Should be done by socket nif anyway
-    {_, Data} = iostream:read(Stream, all),   %% FIXME ASYNC
-    ok = socket:sendv(Sock, Data),
-    {noreply, State};
+%%%     {_, Data} = iostream:read(Stream, all),   %% FIXME ASYNC
+%%%     ok = socket:sendv(Sock, Data),
+    case socket:send_iostream(Sock, Stream, nowait) of
+        %% FIXME missing async SelectInfo handling, incomplete
+        %% send (Remaining > 0), etc...
+        {_Events, ok, _Sent, 0} ->
+            {noreply, State}
+    end;
 
 handle_cast({cancel_req, Pid}, #state{reader = Reader} = State) ->
     ?LOG(debug, "~p:~p: ~p ~p~n", [?MODULE, ?LINE, Pid, Reader]),

@@ -699,12 +699,51 @@ invalid_iov(_, N) ->
     {improper_list, N}.
 
 
-sendv(SockRef, IOV, SendRef) ->
-    sendv_result(
-      SockRef, IOV, SendRef, false,
-      nif_sendv(SockRef, IOV, SendRef)).
+sendv(SockRef, IOV_or_IOS, SendRef) ->
+    case nif_sendv(SockRef, IOV_or_IOS, SendRef) of
+        {IOSFlags, Size, Result} ->
+            sendv_result(IOSFlags, Size, Result);
+        Result ->
+            IOV = IOV_or_IOS,
+            sendv_result(SockRef, IOV, SendRef, false, Result)
+    end.
+
+sendv_result(IOSFlags, Size, Result) ->
+    case Result of
+        ok ->
+            {ios_flags(IOSFlags), ok, Size, 0};
+        {ok, Written} ->
+            %% Not returned from NIF for IO Stream since socket type is stream
+            {ios_flags(IOSFlags), ok, Written, Size - Written};
+        {iov, Written} ->
+            {ios_flags(IOSFlags), ok, Written, Size - Written};
+        completion ->
+            {ios_flags(IOSFlags), completion, 0, Size};
+        select ->
+            {ios_flags(IOSFlags), select, 0, Size};
+        {select, Written} ->
+            {ios_flags(IOSFlags), select, Written, Size - Written};
+        {error, _} ->
+            {ios_flags(IOSFlags), Result, 0, Size}
+    end.
+
+ios_flags(0) -> [];
+ios_flags(Flags) when is_integer(Flags) ->
+    Events = [closed, notify], % iostream.erl, ERTS_IO_STREAM_EVENT_*
+    ios_flags(Flags, Events).
+%%
+ios_flags(0, _)  -> [];
+ios_flags(_, []) -> [];
+ios_flags(Flags, [Event | Events]) ->
+    if
+        (Flags band 1) =/= 0 ->
+            [Event | ios_flags(Flags bsr 1, Events)];
+        true ->
+            ios_flags(Flags bsr 1, Events)
+    end.
 
 sendv_result(SockRef, IOV, SendRef, HasWritten, Result) ->
+    Cont = undefined, % Cont is not used for sendv
     case Result of
         ok ->
             ok;
@@ -722,15 +761,13 @@ sendv_result(SockRef, IOV, SendRef, HasWritten, Result) ->
         select ->
             if
                 HasWritten ->
-                    %% Cont is not used for sendv
-                    {select, IOV, undefined};
+                    {select, IOV, Cont};
                 true ->
-                    select
+                    {select, Cont}
             end;
         {select, Written} ->
             RestIOV = rest_iov(Written, IOV),
-            %% Cont is not used for sendv
-            {select, RestIOV, undefined};
+            {select, RestIOV, Cont};
 
         completion = C ->
             C;
