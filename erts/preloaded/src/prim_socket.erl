@@ -38,7 +38,7 @@
     accept/2,
     send/4, sendto/4, sendto/5, sendmsg/4, sendmsg/5, sendv/3,
     sendfile/4, sendfile/5, sendfile_deferred_close/1,
-    recv/4, recvfrom/4, recvmsg/5,
+    recv/4, recv_iostream/5, recvfrom/4, recvmsg/5,
     close/1, finalize_close/1,
     shutdown/2,
     setopt/3, setopt_native/3,
@@ -54,7 +54,8 @@
        nif_open/2, nif_open/4, nif_bind/2, nif_connect/1, nif_connect/3,
        nif_listen/2, nif_accept/2,
        nif_send/4, nif_sendto/5, nif_sendmsg/5, nif_sendv/3,
-       nif_sendfile/5, nif_sendfile/4, nif_sendfile/1, nif_recv/4,
+       nif_sendfile/5, nif_sendfile/4, nif_sendfile/1,
+       nif_recv/4, nif_recv/5,
        nif_recvfrom/4, nif_recvmsg/5, nif_close/1, nif_shutdown/2,
        nif_setopt/5, nif_getopt/3, nif_getopt/4, nif_sockname/1,
        nif_peername/1, nif_ioctl/2, nif_ioctl/3, nif_ioctl/4, nif_cancel/3,
@@ -157,8 +158,18 @@ on_load(Extra) when is_map(Extra) ->
           end,
     %% This will fail if the user has disabled esock support, making all NIFs
     %% fall back to their Erlang implementation which throws `notsup`.
-    _ = erlang:load_nif(atom_to_list(?MODULE), Extra_2),
-    init().
+    case erlang:load_nif(atom_to_list(?MODULE), Extra_2) of
+        ok ->
+            init();
+        {error, {Reason, _} = Description} = Error ->
+            if
+                Reason =:= load_failed ->
+                    init();
+                true ->
+                    erlang:display({?MODULE,?LINE,Description}),
+                    Error
+            end
+    end.
 
 init() ->
     PT =
@@ -796,6 +807,16 @@ recv(SockRef, Length, Flags, RecvRef) ->
             {error, Reason}
     end.
 
+recv_iostream(SockRef, Length, Flags, IOS, RecvRef) ->
+    try enc_msg_flags(Flags) of
+        EFlags ->
+	    {IOSFlags, Result, Received} =
+                nif_recv(SockRef, Length, EFlags, IOS, RecvRef),
+            {ios_flags(IOSFlags), Result, Received}
+    catch throw : Reason ->
+            {error, Reason}
+    end.
+
 recvfrom(SockRef, Length, Flags, RecvRef) ->
     try enc_msg_flags(Flags) of
         EFlags ->
@@ -1275,6 +1296,7 @@ nif_sendfile(_SockRef, _SendRef, _Offset, _Count) ->
 nif_sendfile(_SockRef) -> erlang:nif_error(notsup).
 
 nif_recv(_SockRef, _Length, _Flags, _RecvRef) -> erlang:nif_error(notsup).
+nif_recv(_SockRef, _Length, _Flags, _IOS, _RecvRef) -> erlang:nif_error(notsup).
 nif_recvfrom(_SockRef, _Length, _Flags, _RecvRef) -> erlang:nif_error(notsup).
 nif_recvmsg(_SockRef, _BufSz, _CtrlSz, _Flags, _RecvRef) ->
     erlang:nif_error(notsup).

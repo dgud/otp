@@ -353,6 +353,7 @@ typedef long ssize_t;
     GLOBAL_ATOM_DEF(initmsg);                  \
     GLOBAL_ATOM_DEF(invalid);                  \
     GLOBAL_ATOM_DEF(integer_range);            \
+    GLOBAL_ATOM_DEF(iostream);                 \
     GLOBAL_ATOM_DEF(iov);                      \
     GLOBAL_ATOM_DEF(ip);                       \
     GLOBAL_ATOM_DEF(ipcomp_level);             \

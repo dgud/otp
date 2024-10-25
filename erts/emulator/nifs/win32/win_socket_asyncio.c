@@ -4030,6 +4030,7 @@ ERL_NIF_TERM esaio_recv(ErlNifEnv*       env,
                         ERL_NIF_TERM     sockRef,
                         ERL_NIF_TERM     recvRef,
                         ssize_t          len,
+                        ERL_NIF_TERM     ioStream,
                         int              flags)
 {
     ErlNifPid       caller;

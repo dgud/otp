@@ -2097,6 +2097,7 @@ static const struct in6_addr in6addr_loopback =
     GLOBAL_ATOM_DECL(initmsg);                         \
     GLOBAL_ATOM_DECL(invalid);                         \
     GLOBAL_ATOM_DECL(integer_range);                   \
+    GLOBAL_ATOM_DECL(iostream);                        \
     GLOBAL_ATOM_DECL(iov);                             \
     GLOBAL_ATOM_DECL(ip);                              \
     GLOBAL_ATOM_DECL(ipcomp_level);                    \
@@ -2647,10 +2648,10 @@ static ESockIoBackend io_backend = {0};
      io_backend.sendfile_dc((ENV), (D)) :                       \
      enif_raise_exception((ENV), MKA((ENV), "notsup")))
 #define ESOCK_IO_RECV(ENV, D,                         \
-                      SR, RR, L, F)                   \
+                      SR, RR, L, S, F)                \
     ((io_backend.recv != NULL) ?                      \
      io_backend.recv((ENV), (D),                      \
-                     (SR), (RR), (L), (F)) :          \
+                     (SR), (RR), (L), (S), (F)) :     \
      enif_raise_exception((ENV), MKA((ENV), "notsup")))
 #define ESOCK_IO_RECVFROM(ENV, D,                         \
                           SR, RR, L, F)                   \
@@ -3948,7 +3949,7 @@ extern ErlNifEnv* esock_alloc_env(const char* slogan)
  * nif_sendfile(Sock, SendRef, Offset, Count, InFileRef)
  * nif_sendfile(Sock, SendRef, Offset, Count)
  * nif_sendfile(Sock)
- * nif_recv(Sock, Length, Flags, RecvRef)
+ * nif_recv(Sock, Length, Flags, IOS, RecvRef)
  * nif_recvfrom(Sock, RecvRef, BufSz, Flags)
  * nif_recvmsg(Sock, RecvRef, BufSz, CtrlSz, Flags)
  * nif_close(Sock)
@@ -6117,17 +6118,19 @@ ERL_NIF_TERM nif_recv(ErlNifEnv*         env,
                       const ERL_NIF_TERM argv[])
 {
     ESockDescriptor* descP;
-    ERL_NIF_TERM     sockRef, recvRef;
+    ERL_NIF_TERM     sockRef, ioStream, recvRef;
     ErlNifUInt64     elen;
     ssize_t          len; /* ssize_t due to the return type of recv() */
     int              flags;
     ERL_NIF_TERM     res;
     BOOLEAN_T        a1ok;
 
-    ESOCK_ASSERT( argc == 4 );
+    ESOCK_ASSERT( argc == 4 || argc == 5);
 
     sockRef = argv[0]; // We need this in case we send abort (to the caller)
-    recvRef = argv[3];
+    recvRef = argv[argc - 1];
+    if (argc == 5) ioStream = argv[argc - 2];
+    else           ioStream = esock_atom_undefined;
 
     if (! ESOCK_GET_RESOURCE(env, sockRef, (void**) &descP)) {
         return enif_make_badarg(env);
@@ -6171,7 +6174,7 @@ ERL_NIF_TERM nif_recv(ErlNifEnv*         env,
      * is done!
      */
 
-    res = ESOCK_IO_RECV(env, descP, sockRef, recvRef, len, flags);
+    res = ESOCK_IO_RECV(env, descP, sockRef, recvRef, len, ioStream, flags);
 
     SSDBG( descP, ("SOCKET", "nif_recv(%T) -> done"
                    "\r\n", sockRef) );
@@ -13617,6 +13620,7 @@ ErlNifFunc esock_funcs[] =
     {"nif_sendfile",            4, nif_sendfile, ERL_NIF_DIRTY_JOB_IO_BOUND},
     {"nif_sendfile",            1, nif_sendfile, ERL_NIF_DIRTY_JOB_IO_BOUND},
     {"nif_recv",                4, nif_recv, 0},
+    {"nif_recv",                5, nif_recv, 0},
     {"nif_recvfrom",            4, nif_recvfrom, 0},
     {"nif_recvmsg",             5, nif_recvmsg, 0},
     {"nif_close",               1, nif_close, 0},

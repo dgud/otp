@@ -266,6 +266,8 @@ server(Addr, Port) ->
          recvfrom/1, recvfrom/2, recvfrom/3, recvfrom/4,
          recvmsg/1, recvmsg/2, recvmsg/3, recvmsg/4, recvmsg/5,
 
+         recv_iostream/5,
+
          close/1,
          shutdown/2,
 
@@ -4532,11 +4534,11 @@ send_iostream_handle(SockRef, IOS, Handle) ->
              SendIostreamResult;
          completion ->
              {Events,
-              {completion, ?COMPLETION_INFO(?FUNCTION_NAME, Handle)},
+              {completion, ?COMPLETION_INFO(send_iostream, Handle)},
               Sent, Remaining};
          select ->
              {Events,
-              {select, ?SELECT_INFO(?FUNCTION_NAME, Handle)},
+              {select, ?SELECT_INFO(send_iostream, Handle)},
               Sent, Remaining};
          {error, _} ->
              SendIostreamResult
@@ -5301,6 +5303,64 @@ recv_error([], Reason) ->
     {error, Reason};
 recv_error(Buf, Reason) when is_list(Buf) ->
     {error, {Reason, condense_buffer(Buf)}}.
+
+
+%% ---------------------------------------------------------------------------
+%%
+
+-doc(#{since => <<"OTP 28.0">>}).
+-spec recv_iostream(Socket, Length, Flags, IOS, 'nowait' | Handle) ->
+          {Events, Result, Received}
+              when
+      Socket :: socket(),
+      Length :: non_neg_integer(),
+      Flags  :: [msg_flag() | integer()],
+      IOS    :: iostream:handle(),
+      Handle :: select_handle() | completion_handle(),
+      Events :: [iostream:event()],
+      Result ::
+        'ok' |
+        {'select', SelectInfo} |
+        {'completion', CompletionInfo} |
+        {'error', Reason},
+      Received       :: non_neg_integer(),
+      SelectInfo     :: select_info(),
+      CompletionInfo :: completion_info(),
+      Reason  :: posix() | 'closed' | invalid().
+
+
+recv_iostream(?socket(SockRef) = _Socket, Length, Flags, IOS, nowait)
+  when is_reference(SockRef),
+       is_integer(Length), Length >= 0,
+       is_list(Flags),
+       is_reference(IOS) ->
+    Handle = make_ref(),
+    recv_iostream_handle(SockRef, Length, Flags, IOS, Handle);
+recv_iostream(?socket(SockRef) = _Socket, Length, Flags, IOS, Handle)
+  when is_reference(SockRef),
+       is_integer(Length), Length >= 0,
+       is_list(Flags),
+       is_reference(IOS),
+       is_reference(Handle) ->
+    recv_iostream_handle(SockRef, Length, Flags, IOS, Handle).
+
+recv_iostream_handle(SockRef, Length, Flags, IOS, Handle) ->
+    {Events, Result, Received} = RecvIostreamResult =
+        prim_socket:recv_iostream(SockRef, Length, Flags, IOS, Handle),
+    case Result of
+        ok ->
+            RecvIostreamResult;
+        completion ->
+            {Events,
+             {completion, ?COMPLETION_INFO(send_iostream, Handle)},
+             Received};
+        select ->
+            {Events,
+             {select, ?SELECT_INFO(send_iostream, Handle)},
+             Received};
+        {error, _} ->
+            RecvIostreamResult
+    end.
 
 
 %% ---------------------------------------------------------------------------

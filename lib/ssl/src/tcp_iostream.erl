@@ -372,18 +372,27 @@ make_socket(#reader{user_read = Read, user_write = Write}) ->
     #?MODULE{pid = self(), read = Read, write = Write}.
 
 fetch_data(Size, Sock, Stream, #reader{handle = undefined, from = From} = Reader0) ->
-    case socket:recv(Sock, Size, nowait) of
+    {Ev, Result, _Received} =
+        socket:recv_iostream(Sock, Size, [], Stream, nowait),
+    case Result of
         {select, {select_info, _, Handle}} ->
             Reader0#reader{length = Size, handle = Handle};
-        {select, {{select_info, _, Handle}, Data}} ->
-            _ = iostream:write(Stream, Data),
-            Reader0#reader{length = Size-byte_size(Data), handle = Handle};
-        %% FIXME Windows stuff
-        {ok, Data} ->
-            Ev = iostream:write(Stream, Data),
+        ok ->
             Reader = reply_data(Ev, From, Reader0),
             read_ahead(Sock, Stream, Reader)
     end;
+%%%     case socket:recv(Sock, Size, nowait) of
+%%%         {select, {select_info, _, Handle}} ->
+%%%             Reader0#reader{length = Size, handle = Handle};
+%%%         {select, {{select_info, _, Handle}, Data}} ->
+%%%             _ = iostream:write(Stream, Data),
+%%%             Reader0#reader{length = Size-byte_size(Data), handle = Handle};
+%%%         %% FIXME Windows stuff
+%%%         {ok, Data} ->
+%%%             Ev = iostream:write(Stream, Data),
+%%%             Reader = reply_data(Ev, From, Reader0),
+%%%             read_ahead(Sock, Stream, Reader)
+%%%     end;
 fetch_data(Size, _Sock, _Stream, #reader{length = 0} = Reader) ->
     Reader#reader{length = Size}.
 
