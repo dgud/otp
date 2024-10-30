@@ -23,6 +23,20 @@
 
 #include "common.h"
 
+extern ErlNifResourceType* aead_cipher_ctx_rtype;
+struct aead_cipher_ctx {
+    const struct cipher_type_t *cipherp;
+    ERL_NIF_TERM key;
+    ERL_NIF_TERM tag;
+
+    int encflg;
+    unsigned int tag_len;
+    ErlNifEnv *env;
+};
+
+int init_aead_cipher_ctx(ErlNifEnv *env, ErlNifBinary* rt_buf);
+
+ERL_NIF_TERM aead_cipher_init_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
 ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
 
 #endif /* E_AEAD_H__ */

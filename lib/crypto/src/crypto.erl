@@ -147,6 +147,7 @@ try crypto:crypto_init(Ciph, Key, IV, true)
 end
 ```
 """.
+
 -moduledoc(#{titles =>
                  [{function,<<"Cipher API">>},
                   {function,<<"Hash API">>},
@@ -247,6 +248,7 @@ end
 
          crypto_one_time/4, crypto_one_time/5,
          crypto_one_time_aead/6, crypto_one_time_aead/7,
+         crypto_one_time_aead_init/4, crypto_one_time_aead/4,
 
          crypto_final/1,
          crypto_get_data/1,
@@ -297,7 +299,8 @@ end
        evp_compute_key_nif/3, evp_generate_key_nif/2, privkey_to_pubkey_nif/2,
        srp_value_B_nif/5, srp_user_secret_nif/7, srp_host_secret_nif/5,
        ec_generate_key_nif/2, ecdh_compute_key_nif/3, rand_seed_nif/1,
-       aead_cipher_nif/7, engine_by_id_nif/1, engine_init_nif/1,
+       aead_cipher_nif/7, aead_cipher_init_nif/4, aead_cipher_nif/4,
+       engine_by_id_nif/1, engine_init_nif/1,
        engine_free_nif/1, engine_load_dynamic_nif/0,
        engine_ctrl_cmd_strings_nif/3, engine_register_nif/2,
        engine_unregister_nif/2, engine_add_nif/1, engine_remove_nif/1,
@@ -1752,7 +1755,6 @@ crypto_one_time_aead(Cipher, Key, IV, PlainText, AAD, true) ->
               {1,2,3,4,5,-1,6}
              ).
 
-
 -doc """
 Do a complete encrypt or decrypt with an AEAD cipher of the full text.
 
@@ -1816,6 +1818,50 @@ aead_tag_len(sm4_ccm) -> 16;
 aead_tag_len(_) ->
     error({badarg, "Not an AEAD cipher"}).
 
+
+
+%% -doc(#{equiv => crypto_one_time_aead/7}).
+-doc(#{title => <<"Cipher API">>,
+       since => <<"OTP 28.0">>}).
+-spec crypto_one_time_aead_init(Cipher, Key, TagOrTagLength, EncFlag) -> Result
+              when Cipher :: cipher_aead(),
+                   Key :: iodata(),
+                   TagOrTagLength :: EncryptTagLength | DecryptTag,
+                   EncryptTagLength :: non_neg_integer(), % or pos_integer() 1..
+                   DecryptTag :: iodata(),
+                   EncFlag :: boolean(),
+                   Result :: crypto_state().
+
+crypto_one_time_aead_init(Cipher, Key, Length, true) when is_integer(Length) ->
+    ?nif_call(aead_cipher_init_nif(alias(Cipher,Key), iolist_to_binary(Key), Length, true),
+              [Cipher, Key, Length, true],
+              {}
+             );
+crypto_one_time_aead_init(Cipher, Key, Tag, false) ->
+    ?nif_call(aead_cipher_init_nif(alias(Cipher,Key), iolist_to_binary(Key), iolist_to_binary(Tag), false),
+              [Cipher, Key, Tag, false],
+              {}
+             ).
+
+%% -doc(#{equiv => crypto_one_time_aead/7}).
+-doc(#{title => <<"Cipher API">>,
+       since => <<"OTP 28.0">>}).
+-spec crypto_one_time_aead(State, IV, InText, AAD) ->
+                             Result
+                                 when State :: crypto_state(),
+                                      IV :: iodata(),
+                                      InText :: iodata(),
+                                      AAD :: iodata(),
+                                      Result :: EncryptResult | DecryptResult,
+                                      EncryptResult :: {OutCryptoText, OutTag},
+                                      DecryptResult :: OutPlainText | error,
+                                      OutCryptoText :: binary(),
+                                      OutTag :: binary(),
+                                      OutPlainText :: binary().
+crypto_one_time_aead(State, IV, InText, AAD) ->
+    ?nif_call(aead_cipher_nif(State, IV, InText, AAD)).
+
+
 %%%----------------------------------------------------------------
 %%% Cipher NIFs
 
@@ -1830,6 +1876,10 @@ ng_crypto_get_data_nif(_State) -> ?nif_stub.
 ng_crypto_one_time_nif(_Cipher, _Key, _IVec, _Data, _OptionsMap) -> ?nif_stub.
 
 aead_cipher_nif(_Type, _Key, _Ivec, _AAD, _In, _TagOrTagLength, _EncFlg) -> ?nif_stub.
+
+aead_cipher_init_nif(_Type, _Key, _TagOrTagLength, _EncFlg) -> ?nif_stub.
+
+aead_cipher_nif(_State, _IV, _InText, _AA) -> ?nif_stub.
 
 cipher_info_nif(_Type) -> ?nif_stub.
 
