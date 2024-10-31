@@ -57,8 +57,16 @@
 
 %% Manual test
 -export([ssl/0,
-         test/2
+         test/2,
+         erlperf/0,
+         erlperf_server_init/0,
+         erlperf_client_init/1,
+         erlperf_client_echo/1,
+         erlperf_close/0
         ]).
+
+
+
 
 
 -define(COUNT, 400).
@@ -252,7 +260,58 @@ payload_13(Config) ->
 %%--------------------------------------------------------------------
 
 ssl() ->
-    test(ssl, ?COUNT).
+    Server = ssl_bench_test_lib:setup(perf_server),
+    do_test(ssl, {payload, [{version, 'tlsv1.3'}]}, ?COUNT*2000, 1, Server),
+    ok.
+    %% test(ssl, ?COUNT).
+
+erlperf() ->
+    Server = ssl_bench_test_lib:setup(perf_server),
+    {ok, _} = ensure_all_started(ssl, []),
+    catch ets:new(bench_data, [named_table, public]),
+    ets:insert(bench_data, {server, Server}),
+    ets:insert(bench_data, {certs, cert_data()}),
+
+    Rs = [#{runner => "run(S) -> ssl_bench_SUITE:erlperf_client_echo(S).",
+            init => "ssl_bench_SUITE:erlperf_server_init().",
+            init_runner => "ssl_bench_SUITE:erlperf_client_init('tlsv1.3').",
+            done => "ssl_bench_SUITE:erlperf_close()."
+           }
+         ],
+    Run = #{sample_duration=> 1000, samples => 25, report => full, warmup => 20},
+    Res = erlperf:benchmark(Rs, Run, undefined),
+    io:put_chars(erlperf_cli:format(Res, #{format => extended})).
+
+erlperf_server_init() ->
+    %%io:format("~p start~n",[?FUNCTION_NAME]),
+    [{certs, Certs}] = ets:lookup(bench_data, certs),
+    [{server, Server}] = ets:lookup(bench_data, server),
+    {ok, ServerInfo} = rpc:call(Server, ?MODULE, setup_server_init,
+                                [ssl, {payload, [{version, 'tlsv1.3'}]}, 10000000, 10, Certs]),
+    true = ets:insert(bench_data, {server, ServerInfo}),
+    %%io:format("~p done~n",[?FUNCTION_NAME]),
+    ok.
+
+erlperf_client_init(Version) ->
+    %%io:format("~p start~n",[?FUNCTION_NAME]),
+    [{server, {_Pid, Host, Port}}] = ets:lookup(bench_data, server),
+    [{certs, Certs}] = ets:lookup(bench_data, certs),
+    SocketData = client_init(self(), ssl, {payload, [{version, Version}]}, Host, Port, Certs),
+    receive {_, init} ->
+            %%io:format("~p done~n",[?FUNCTION_NAME]),
+            SocketData
+    end.
+
+erlperf_client_echo({Socket, Size}) ->
+    ssl:setopts(Socket, [{active, once}]),
+    ok = ssl:send(Socket, msg()),
+    fetch_data(Socket, Size),
+    ok.
+
+erlperf_close() ->
+    [{server, {Pid, _Host, _Port}}] = ets:lookup(bench_data, server),
+    %% unlink(SPid),
+    Pid ! quit.
 
 test(Type, Count) ->
     Server = ssl_bench_test_lib:setup(perf_server),
@@ -300,6 +359,9 @@ do_test(Type, {Func, _}=TC, Loop, ParallellConnections, Server) ->
 		   [Pid ! go || Pid <- Pids],
 		   [receive Pid -> ok end || Pid <- Pids]
 	   end,
+    io:format("~nStarting in 2 seconds~n  perf record --call-graph=fp --pid ~s~n~n", [os:getpid()]),
+    timer:sleep(3000),
+    io:format("Starting~n"),
     {TimeInMicro, _} = timer:tc(Run),
     TotalTests = ParallellConnections * Loop,
     TestPerSecond = case TimeInMicro of
@@ -371,9 +433,13 @@ setup_server_connection(LSocket, Test) ->
     end.
 
 server_echo(Socket, Size, Loop) when Loop > 0 ->
-    {ok, Msg} = ssl:recv(Socket, Size),
-    ok = ssl:send(Socket, Msg),
-    server_echo(Socket, Size, Loop-1);
+    case ssl:recv(Socket, Size) of
+        {ok, Msg} ->
+            ok = ssl:send(Socket, Msg),
+            server_echo(Socket, Size, Loop-1);
+        {error, closed} ->
+            ok
+    end;
 server_echo(_, _, _) -> ok.
 
 setup_connection(N, ssl, Env = {Host, Port, Opts}) when N > 0 ->
@@ -389,7 +455,6 @@ setup_connection(_, _, _) ->
     ok.
 
 payload(Loop, ssl, D = {Socket, Size}) when Loop > 0 ->
-    ssl:setopts(Socket, [{active, once}]),
     ok = ssl:send(Socket, msg()),
     fetch_data(Socket, Size),
     payload(Loop-1, ssl, D);
@@ -397,6 +462,7 @@ payload(_, _, {Socket, _}) ->
     ssl:close(Socket).
 
 fetch_data(Socket, Size) ->
+    ssl:setopts(Socket, [{active, once}]),
     receive
         {ssl, Socket, Bin} ->
             case Size - size(Bin) of
@@ -406,11 +472,11 @@ fetch_data(Socket, Size) ->
     end.
 
 msg() ->
-    <<"Hello", 
-      0:(512*8), 
-      "asdlkjsafsdfoierwlejsdlkfjsdf", 
-      1:(512*8),
-      "asdlkjsafsdfoierwlejsdlkfjsdf">>.
+    iolist_to_binary([<<"Hello",
+                        %% 0:(512*8),
+                        %% "asdlkjsafsdfoierwlejsdlkfjsdf",
+                        1:(512*8),
+                        "asdlkjsafsdfoierwlejsdlkfjsdf">>]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
