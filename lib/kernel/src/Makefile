@@ -103,6 +103,7 @@ MODULES = \
 	inet_dns_tsig \
 	inet_epmd_dist \
 	inet_epmd_socket \
+	inet_epmd_socket_iostream \
 	inet_gethost_native \
 	inet_hosts \
 	inet_parse \

@@ -57,16 +57,18 @@ suite() -> [{ct_hooks, [{ts_install_cth, [{nodenames, 2}]}]}].
 
 all() ->
     [{group, smoketest}].
+    %% [{group, benchmark}].
 
 groups() ->
     [{smoketest, protocols()},
      {benchmark, protocols()},
      %%
      %% protocols()
-     {ssl,         ssl_backends()},
-     {cryptcookie, cryptcookie_backends()},
-     {plain,       categories()},
-     {socket,      categories()},
+     {ssl,             ssl_backends()},
+     {cryptcookie,     cryptcookie_backends()},
+     {plain,           categories()},
+     {socket,          categories()},
+     {socket_iostream, categories()},
      %%
      %% ssl_backends()
      {tls,  categories()},
@@ -98,10 +100,11 @@ groups() ->
        throughput_1048576]}].
 
 protocols() ->
-    [{group, ssl},
-     {group, cryptcookie},
+    [%% {group, ssl},
+     %% {group, cryptcookie},
      {group, plain},
-     {group, socket}].
+     {group, socket},
+     {group, socket_iostream}].
 
 ssl_backends() ->
     [{group, tls},
@@ -327,6 +330,21 @@ init_per_group(socket, Config) ->
              {ssl_dist_prefix, "Socket"},
              {ssl_dist_args,
               "-proto_dist inet_epmd -inet_epmd socket"}
+            | Config];
+        Problem ->
+            {skip, Problem}
+    catch
+        Class : Reason : Stacktrace ->
+            {fail, {Class, Reason, Stacktrace}}
+    end;
+%%
+init_per_group(socket_iostream, Config) ->
+    try inet_epmd_socket:supported() of
+        ok ->
+            [{ssl_dist, false},
+             {ssl_dist_prefix, "SocketIOS"},
+             {ssl_dist_args,
+              "-proto_dist inet_epmd -inet_epmd socket_iostream"}
             | Config];
         Problem ->
             {skip, Problem}
