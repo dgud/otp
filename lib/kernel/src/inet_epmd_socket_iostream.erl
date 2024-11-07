@@ -267,12 +267,24 @@ tick(DistCtrl) ->
     ok.
 
 %% ------------------------------------------------------------
+-record(ohp, %% Output Handler Parameters
+        {socket, dist_handle, watermark, ios}).
+
 -spec output_handler_start(_, _) -> no_return(). % Server loop
 output_handler_start(Socket, DistHandle) ->
     try
         erlang:dist_ctrl_get_data_notification(DistHandle),
-        IOS = iostream:new(),
-        output_handler(Socket, DistHandle, IOS)
+        {ok, SndbufSize} = socket:getopt(Socket, {socket,sndbuf}),
+        OHP =
+            #ohp{
+               socket      = Socket,
+               dist_handle = DistHandle,
+               watermark   = SndbufSize bsr 1,
+               ios         = iostream:new()},
+        Size               = 0,
+        DistData           = false,
+        SelectHandle       = nowait,
+        output_handler(OHP, Size, DistData, SelectHandle)
     catch
         Class : Reason : Stacktrace when Class =:= error ->
             error_logger:error_report(
@@ -283,77 +295,95 @@ output_handler_start(Socket, DistHandle) ->
             erlang:raise(Class, Reason, Stacktrace)
     end.
 
-output_handler(Socket, DistHandle, IOS) ->
-    receive
-        dist_tick ->
-            output_handler_tick(Socket, DistHandle, IOS);
-        dist_data ->
-            output_handler_data(Socket, DistHandle, IOS);
-        _ -> % Ignore
-            output_handler(Socket, DistHandle, IOS)
-    end.
-
-output_handler_tick(Socket, DistHandle, IOS) ->
-    receive
-        dist_tick ->
-            output_handler_tick(Socket, DistHandle, IOS);
-        dist_data ->
-            output_handler_data(Socket, DistHandle, IOS);
-        _ -> % Ignore
-            output_handler_tick(Socket, DistHandle, IOS)
-    after 0 ->
-            _ = iostream:write(element(2, IOS), [<<0:32>>]),
-            output_handler_send(Socket, DistHandle, IOS)
-    end.
-
-output_handler_data(Socket, DistHandle, IOS) ->
-    output_handler_data(Socket, DistHandle, IOS, 0).
-%%
-output_handler_data(Socket, DistHandle, IOS, Size)
-  when 1 bsl 16 =< Size ->
-    output_handler_send(Socket, DistHandle, IOS);
-output_handler_data(Socket, DistHandle, IOS, Size) ->
-    case erlang:dist_ctrl_get_data(DistHandle) of
-        none ->
-            if
-                Size =:= 0 ->
+output_handler(OHP, Size, DistData, SelectHandle) ->
+    if
+        DistData, OHP#ohp.watermark > Size->
+            %% There is dist_data from the emulator,
+            %% and we have buffer space for it
+            DistHandle = OHP#ohp.dist_handle,
+            case erlang:dist_ctrl_get_data(DistHandle) of
+                none ->
                     erlang:dist_ctrl_get_data_notification(DistHandle),
-                    output_handler(Socket, DistHandle, IOS);
-                true ->
-                    output_handler_send(Socket, DistHandle, IOS)
+                    output_handler(OHP, Size, false, SelectHandle);
+                {Len, Iovec} ->
+                    %% erlang:display({?FUNCTION_NAME, ?LINE, Len}),
+                    #ohp{ios = {_, WriteHandle}} = OHP,
+                    _ = iostream:write(WriteHandle, [<<Len:32>> | Iovec]),
+                    Size_1 = Len + 4 + Size,
+                    output_handler(OHP, Size_1, DistData, SelectHandle)
             end;
-        {Len, Iovec} ->
-            %% erlang:display({Len, '==>>'}),
-            _ = iostream:write(element(2, IOS), [<<Len:32>> | Iovec]),
-            output_handler_data(Socket, DistHandle, IOS, Size + Len + 4)
+        SelectHandle =:= nowait, Size > 0 ->
+            %% We are not waiting for a send to complete,
+            %% and we have buffered data
+            output_handler_send(OHP, Size, DistData);
+        true ->
+            %% Wait for something to happen
+            output_handler_wait(OHP, Size, DistData, SelectHandle, infinity)
+    end.
+
+%% Wait for an external event (message)
+output_handler_wait(
+  #ohp{socket = Socket} = OHP, Size, DistData, SelectHandle, Tick) ->
+    receive
+        dist_data ->
+            output_handler(OHP, Size, true, SelectHandle);
+        dist_tick
+          when SelectHandle =:= nowait, not DistData, Size == 0 ->
+            %% Tick only when we don't wait for a send to complete
+            %% and there is no dist_data to send,
+            %% but receive all dist_tick messages first
+            %% by looping with after timeout Tick = 0
+            output_handler_wait(OHP, Size, DistData, SelectHandle, 0);
+        {'$socket', Socket, select, SelectHandle}
+          when SelectHandle =/= nowait ->
+            %% Send no longer pending; try to send again
+            output_handler_send(OHP, Size, DistData);
+        _ -> % Ignore
+            output_handler_wait(OHP, Size, DistData, SelectHandle, Tick)
+    after Tick ->
+            %% We can only get here after a dist_tick
+            %%
+            %% Send a tick
+            Size     = 0,       % Assert
+            DistData = false,   % Assert
+            #ohp{ios = {_, WriteHandle}} = OHP,
+            _ = iostream:write(WriteHandle, [<<0:32>>]),
+            output_handler_send(OHP, Size + 4, DistData)
     end.
 
 %% Output data to socket
-output_handler_send(Socket, DistHandle, IOS) ->
+output_handler_send(
+  #ohp{socket = Socket, ios = IOS} = OHP, _Size, DistData) ->
     case socket:send_iostream(Socket, element(1, IOS), nowait) of
-        {_Events, ok, _Sent, 0} ->
-            output_handler_data(Socket, DistHandle, IOS);
-        {_Events, ok, _Sent, _Remaining} ->
-            output_handler_send(Socket, DistHandle, IOS);
+        {_Events, ok, _Sent, Remaining} ->
+            %% erlang:display({?FUNCTION_NAME, ?LINE, _Sent}),
+            output_handler(OHP, Remaining, DistData, nowait);
         {_Events, {select, {select_info, _, SelectHandle}},
-         _Sent, _Remaining} ->
-            output_handler_select(Socket, DistHandle, IOS, SelectHandle);
+         _Sent, Remaining} ->
+            output_handler(OHP, Remaining, DistData, SelectHandle);
         {_Events, {error, Reason}, _Sent, _Remaining} ->
             exit(Reason)
     end.
 
-output_handler_select(Socket, DistHandle, IOS, SelectHandle) ->
-    receive
-        {'$socket', Socket, select, SelectHandle} ->
-            output_handler_send(Socket, DistHandle, IOS);
-        _ -> % Ignore, also dist_tick
-            output_handler_select(Socket, DistHandle, IOS, SelectHandle)
-    end.
-
 %% ------------------------------------------------------------
+-record(ihp, %% Input Handler Parameters
+        {socket, dist_handle, watermark, ios}).
+
 -spec input_handler_start(_, _) -> no_return(). % Server loop
 input_handler_start(Socket, DistHandle) ->
-    try input_handler(Socket, DistHandle)
+    try
+        {ok, RcvbufSize} = socket:getopt(Socket, {socket,rcvbuf}),
+        IHP =
+            #ihp{
+               socket      = Socket,
+               dist_handle = DistHandle,
+               watermark   = RcvbufSize,
+               ios         = iostream:new()},
+        Size               = 0,         % iostream size
+        PacketSize         = undefined, % packet header not received
+        SelectHandle       = undefined, % no receive in progress
+        %% erlang:display({?FUNCTION_NAME, Socket, DistHandle}),
+        input_handler(IHP, Size, PacketSize, SelectHandle)
     catch
         Class : Reason : Stacktrace when Class =:= error ->
             error_logger:error_report(
@@ -364,52 +394,89 @@ input_handler_start(Socket, DistHandle) ->
             erlang:raise(Class, Reason, Stacktrace)
     end.
 
-input_handler(Socket, DistHandle) ->
-    IOS = iostream:new(),
-    input_handler(Socket, DistHandle, IOS, 0).
-
-input_handler(Socket, DistHandle, IOS, Size) when 4 =< Size ->
-    <<PacketSize:32>> =
-        case iostream:read(element(1, IOS), 4) of
-            {_Events, [Bin]} -> Bin;
-            {_Events, Iovec} -> iolist_to_binary(Iovec)
-        end,
-    input_handler_packet(Socket, DistHandle, IOS, Size - 4, PacketSize);
-input_handler(Socket, DistHandle, IOS, Size) ->
-    Size_1 = input_data(Socket, IOS, Size),
-    input_handler(Socket, DistHandle, IOS, Size_1).
-
-input_handler_packet(Socket, DistHandle, IOS, Size, PacketSize)
-  when PacketSize =< Size ->
-    {_Events_2, Packet} = iostream:read(element(1, IOS), PacketSize),
-    put_data(DistHandle, PacketSize, Packet),
-    input_handler(Socket, DistHandle, IOS, Size - PacketSize);
-input_handler_packet(Socket, DistHandle, IOS, Size, PacketSize) ->
-    Size_1 = input_data(Socket, IOS, Size),
-    input_handler_packet(Socket, DistHandle, IOS, Size_1, PacketSize).
-
-%% Input data from socket
-input_data(Socket, IOS, Size) ->
-    case socket:recv_iostream(Socket, 0, [], element(2, IOS), nowait) of
-        {_Events, ok, Received} ->
-            Size + Received;
-        {_Events, {select, {select_info, _, SelectHandle}}, Received} ->
-            receive
-                {'$socket', Socket, select, SelectHandle} ->
-                    input_data(Socket, IOS, Size + Received)
-            end;
-        {_Events, {error, Reason}, _Received} ->
-            exit(Reason)
+input_handler(IHP, Size, undefined = _PacketSize, SelectHandle) ->
+    if
+        IHP#ihp.watermark > Size, SelectHandle =:= undefined ->
+            %% We have room and no receive in progress
+            input_handler_recv(IHP, Size, undefined, undefined);
+        Size >= 4 ->
+            %% We have a header to decode
+            #ihp{ios = {ReadHandle, _}} = IHP,
+            {_, Hdr} = iostream:read(ReadHandle, 4),
+            <<PacketSize:32>> = iolist_to_binary(Hdr),
+            %% erlang:display({?FUNCTION_NAME, ?LINE, hdr, Size, PacketSize}),
+            input_handler(IHP, Size - 4, PacketSize, SelectHandle);
+        true ->
+            input_handler_recv(IHP, Size, undefined, SelectHandle)
+    end;
+input_handler(IHP, Size, PacketSize, SelectHandle) ->
+    %% PacketSize is defined; we have a decoded header
+    if
+        PacketSize == 0 ->
+            %% A Tick (empty packet)
+            %% erlang:display({?FUNCTION_NAME, ?LINE, tick, Size}),
+            put_data(IHP#ihp.dist_handle, []),
+            input_handler(IHP, Size, undefined, SelectHandle);
+        Size >= PacketSize ->
+            %% erlang:display({?FUNCTION_NAME, ?LINE, packet, Size, PacketSize}),
+            %% We have a complete packet
+            #ihp{dist_handle = DistHandle, ios = {ReadHandle, _}} = IHP,
+            {_, Packet} = iostream:read(ReadHandle, PacketSize),
+            put_data(DistHandle, Packet),
+            input_handler(IHP, Size - PacketSize, undefined, SelectHandle);
+        true ->
+            input_handler_recv(IHP, Size, PacketSize, SelectHandle)
     end.
 
+input_handler_recv(IHP, Size, PacketSize, undefined = _SelectHandle) ->
+    #ihp{
+       watermark = Watermark,
+       socket = Socket,
+       ios = {_, WriteHandle}} = IHP,
+    RecvSize =
+        if  PacketSize =:= undefined    -> 0;
+            PacketSize  >  Size ->
+                Missing = PacketSize - Size,
+                if  Watermark > Missing -> 0;
+                    true                -> Missing
+                end
+        end,
+    case socket:recv_iostream(Socket, RecvSize, [], WriteHandle, nowait) of
+        {_Events, ok, Received} ->
+            %% erlang:display({?FUNCTION_NAME, ?LINE, RecvSize, ok, Received}),
+            input_handler(IHP, Size + Received, PacketSize, undefined);
+        {_Events, {select, {select_info, _, SelectHandle}}, Received} ->
+            %% erlang:display(
+              %% {?FUNCTION_NAME, ?LINE, RecvSize, select, Received}),
+            input_handler(IHP, Size + Received, PacketSize, SelectHandle);
+        {_Events, {error, Reason}, _Received} ->
+            exit(Reason)
+    end;
+input_handler_recv(IHP, Size, PacketSize, SelectHandle) ->
+    %% SelectHandle is defined; we have a receive in progress
+    input_handler_wait(IHP, Size, PacketSize, SelectHandle).
+
+input_handler_wait(IHP, Size, PacketSize, SelectHandle) ->
+    %% erlang:display(
+    %%   {?FUNCTION_NAME, ?LINE, SelectHandle}),
+    Socket = IHP#ihp.socket,
+    receive
+        {'$socket', Socket, select, SelectHandle} ->
+            %% erlang:display({?FUNCTION_NAME, ?LINE, select_received}),
+            %% Go ahead with the receive
+            input_handler_recv(IHP, Size, PacketSize, undefined);
+        _Ignore ->
+            %% erlang:display({?FUNCTION_NAME, ?LINE, ignore, _Ignore}),
+            input_handler_wait(IHP, Size, PacketSize, SelectHandle)
+    end.
 
 %%% put_data(_DistHandle, 0, _) ->
 %%%     ok;
 %% We deliver ticks (packets size 0) to the VM,
 %% so that erlang:dist_get_stat(DistHandle) that
 %% dist_util:getstat/3 falls back to becomes good enough
-put_data(DistHandle, _PacketSize, Packet) ->
-    %% erlang:display({'<<==', _PacketSize}),
+put_data(DistHandle, Packet) ->
+    %% erlang:display({'<<==', iolist_size(Packet)}),
     erlang:dist_ctrl_put_data(DistHandle, Packet).
 
 %% ------------------------------------------------------------
