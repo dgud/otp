@@ -179,7 +179,8 @@ initial_state(Role, Sender, Host, Port, Socket, {SSLOptions, SocketOptions, Trac
        protocol_specific = #{sender => Sender,
                              active_n => ssl_config:get_internal_active_n(
                                            maps:get(erl_dist, SSLOptions, false)),
-                             active_n_toggle => true
+                             active_n_toggle => true,
+                             socket_active => 0
                             }
       }.
 

@@ -2425,7 +2425,7 @@ handshake(Socket, SslOptions, Timeout)
         ConnetionCb = connection_cb(SslOptions),
         {ok, #config{transport_info = CbInfo, ssl = SslOpts, emulated = EmOpts}} =
             handle_options(Transport, Socket, SslOptions, server, undefined),
-        ok = tls_socket:setopts(Transport, Socket, tls_socket:internal_inet_values()),
+        ok = tls_socket:setopts(Transport, Socket, tls_socket:internal_inet_values(Transport)),
         {ok, Port} = tls_socket:port(Transport, Socket),
         {ok, SessionIdHandle} = tls_socket:session_id_tracker(ssl_unknown_listener, SslOpts),
         ssl_gen_statem:handshake(ConnetionCb, Port, Socket,
@@ -3219,12 +3219,14 @@ See `inet:getstat/2` for further details.
       Options :: [inet:stat_option()],
       OptionValues :: [{inet:stat_option(), integer()}].
 %%--------------------------------------------------------------------
+
 getstat(#sslsocket{socket_handle = {Listener, _},
-                   listener_config = #config{transport_info = Info}},
+                   listener_config = #config{transport_info = Info,
+                                             connection_cb = dtls_gen_connection}},
         Options) when is_list(Options) ->
     Transport = element(1, Info),
     dtls_socket:getstat(Transport, Listener, Options);
-getstat(#sslsocket{socket_handle = Listen, 
+getstat(#sslsocket{socket_handle = Listen,
                    listener_config = #config{transport_info = Info}},
         Options) when is_list(Options) ->
     Transport = element(1, Info),
@@ -3258,8 +3260,7 @@ To handle siutations where the peer has performed a shutdown on the
 write side, option `{exit_on_close, false}` is useful.
 """.
 %%--------------------------------------------------------------------
-shutdown(#sslsocket{listener_config = #config{connection_cb = dtls_gen_connection,
-                                              transport_info = Info}}, _) ->
+shutdown(#sslsocket{listener_config = #config{transport_info = Info}}, _) ->
     Transport = element(1, Info),
     %% enotconn is what gen_tcp:shutdown on a listen socket will result with.
     %% shutdown really is handling TCP functionality not present
@@ -3274,11 +3275,6 @@ shutdown(#sslsocket{listener_config = #config{connection_cb = dtls_gen_connectio
         _  ->
             {error, enotconn}
     end;
-shutdown(#sslsocket{socket_handle = Listen, 
-                    listener_config = #config{connection_cb = tls_gen_connection,
-                                              transport_info = Info}}, How) ->
-    Transport = element(1, Info),
-    Transport:shutdown(Listen, How);    
 shutdown(#sslsocket{connection_handler = Controller}, How) when is_pid(Controller) ->
     ssl_gen_statem:shutdown(Controller, How).
 
@@ -4751,6 +4747,7 @@ set_opt_new(_, _, _, _, Opts) ->
 %%%%
 
 default_cb_info(tls) ->
+    %% tls_socket_tcp:cb_info();
     {gen_tcp, tcp, tcp_closed, tcp_error, tcp_passive};
 default_cb_info(dtls) ->
     {gen_udp, udp, udp_closed, udp_error, udp_passive}.
@@ -4931,7 +4928,7 @@ tls_validate_version_gap(Versions) ->
             Versions
     end.
 
-emulated_options(undefined, undefined, Protocol, Opts) ->
+emulated_options(undefined, undefined, Protocol, Opts) -> 
     case Protocol of
 	tls ->
 	    tls_socket:emulated_options(Opts);
