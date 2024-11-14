@@ -77,10 +77,6 @@ encode_data(Frag, ConnectionStates) ->
     Data = tls_record:split_iovec(Frag, MaxLength),
     encode_iolist(?APPLICATION_DATA, Data, ConnectionStates).
 
-encode_plain_text(Type, Data, ConnectionStates) ->
-    PadLen = 0, %% TODO where to specify PadLen?
-    encode_plain_text(Type, Data, PadLen, ConnectionStates).
-
 encode_iolist(Type, Data, ConnectionStates) ->
     encode_iolist(Type, Data, ConnectionStates, []).
 
@@ -89,6 +85,11 @@ encode_iolist(Type, [Text|Rest], CS0, Encoded) ->
     encode_iolist(Type, Rest, CS1, [Enc|Encoded]);
 encode_iolist(_Type, [], CS, Encoded) ->
     {lists:reverse(Encoded), CS}.
+
+encode_plain_text(Type, Data, ConnectionStates) ->
+    PadLen = 0, %% TODO where to specify PadLen?
+    encode_plain_text(Type, Data, PadLen, ConnectionStates).
+
 
 %%====================================================================
 %% Decoding
@@ -245,6 +246,22 @@ process_early_data(ConnectionStates0, #{early_data:=EarlyData0} = ReadState0,
 
 encode_plain_text(Type, Data, 0,
                   #{current_write :=
+                        #{aead_handle := Handle,
+                          sequence_number := Seq,
+                          cipher_state := #cipher_state{iv = IV, tag_len = TagLen}
+                         } = Write
+                   } = CS) ->
+    %% Pad = <<0:(Length*8)>>,
+    TLSInnerPlainText = [Data, Type],  %% ++ Pad (currently always zero)
+    Encoded = cipher_aead(Handle, TLSInnerPlainText, Seq, IV, TagLen),
+
+    {
+     encode_tls_cipher_text(?OPAQUE_TYPE, ?LEGACY_VERSION, Encoded),
+     CS#{current_write := Write#{sequence_number := Seq+1}}
+    };
+
+encode_plain_text(Type, Data, 0,
+                  #{current_write :=
                         #{cipher_state :=
                               #cipher_state{key= Key,
                                             iv = IV,
@@ -257,12 +274,16 @@ encode_plain_text(Type, Data, 0,
                          } = Write} = CS) ->
     %% Pad = <<0:(Length*8)>>,
     TLSInnerPlainText = [Data, Type],  %% ++ Pad (currently always zero)
-    Encoded = cipher_aead(TLSInnerPlainText, BulkCipherAlgo, Key, Seq, IV, TagLen),
+    Cipher = ssl_cipher:aead_type(BulkCipherAlgo,byte_size(Key)),
+    Handle = crypto:crypto_one_time_aead_init(Cipher, Key, TagLen, true),
+    Encoded = cipher_aead(Handle, TLSInnerPlainText, Seq, IV, TagLen),
+
     %% 23 (application_data) for outward compatibility
     {
      encode_tls_cipher_text(?OPAQUE_TYPE, ?LEGACY_VERSION, Encoded),
-     CS#{current_write := Write#{sequence_number := Seq+1}}
+     CS#{current_write := Write#{sequence_number := Seq+1, aead_handle => Handle}}
     };
+
 encode_plain_text(Type, Data, 0,
                   #{current_write :=
                         #{sequence_number := Seq,
@@ -277,6 +298,12 @@ encode_plain_text(Type, Data, 0,
      encode_tls_cipher_text(Type, ?TLS_1_2, Data),
      CS#{current_write := Write#{sequence_number := Seq+1}}
     }.
+
+cipher_aead(Handle, Fragment, Seq, IV, TagLen) ->
+    AAD = additional_data(erlang:iolist_size(Fragment) + TagLen),
+    Nonce = nonce(Seq, IV),
+    {Content, CipherTag} = crypto:crypto_one_time_aead(Handle, Nonce, Fragment, AAD),
+    <<Content/binary, CipherTag/binary>>.
 
 additional_data(Length) ->
     <<?BYTE(?OPAQUE_TYPE), ?BYTE(3), ?BYTE(3),?UINT16(Length)>>.
@@ -293,14 +320,12 @@ additional_data(Length) ->
 %% The resulting quantity (of length iv_length) is used as the
 %% per-record nonce.
 nonce(Seq, IV) ->
-    crypto:exor(<<0:(bit_size(IV)-64),?UINT64(Seq)>>, IV).
-
-cipher_aead(Fragment, BulkCipherAlgo, Key, Seq, IV, TagLen) ->
-    AAD = additional_data(erlang:iolist_size(Fragment) + TagLen),
-    Nonce = nonce(Seq, IV),
-    {Content, CipherTag} =
-        ssl_cipher:aead_encrypt(BulkCipherAlgo, Key, Nonce, Fragment, AAD, TagLen),
-    <<Content/binary, CipherTag/binary>>.
+    %% crypto:exor(<<0:(bit_size(IV)-64),?UINT64(Seq)>>, IV).
+    Size = (bit_size(IV)-64),
+    <<Head:Size/bits, W1:32/native, W0:32/native>> = IV,
+    Seq0 = Seq band 16#FFFF_FFFF,
+    Seq1 = (Seq bsr 32) band 16#FFFF_FFFF,
+    <<Head:Size/bits, (W1 bxor Seq1):32/native, (W0 bxor Seq0):32/native>>.
 
 encode_tls_cipher_text(Type, {MajVer,MinVer}, Encoded) ->
     Length = erlang:iolist_size(Encoded),
