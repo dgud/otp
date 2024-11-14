@@ -359,7 +359,7 @@ do_test(Type, {Func, _}=TC, Loop, ParallellConnections, Server) ->
 		   [Pid ! go || Pid <- Pids],
 		   [receive Pid -> ok end || Pid <- Pids]
 	   end,
-    io:format("~nStarting in 2 seconds~n  perf record --call-graph=fp --pid ~s~n~n", [os:getpid()]),
+    io:format("~nStarting in 2 seconds~n  perf record --call-graph=lbr --pid ~s~n~n", [os:getpid()]),
     timer:sleep(3000),
     io:format("Starting~n"),
     {TimeInMicro, _} = timer:tc(Run),
