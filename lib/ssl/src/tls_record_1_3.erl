@@ -104,9 +104,25 @@ encode_plain_text(Type, Data, ConnectionStates) ->
 %% tls_cipher_text in decoding context so that we can reuse the code
 %% from earlier versions.
 %% --------------------------------------------------------------------
-decode_cipher_text(#ssl_tls{type = ?OPAQUE_TYPE,
-                            version = ?LEGACY_VERSION,
-                            fragment = CipherFragment},
+decode_cipher_text(#ssl_tls{type = ?OPAQUE_TYPE,version = ?LEGACY_VERSION,fragment = CipherFragment},
+                   #{current_read :=
+                         #{aead_handle := Handle,
+                           sequence_number := Seq,
+                           cipher_state := #cipher_state{iv = IV}
+                          } = ReadState0
+                    } = ConnectionStates0) ->
+    case decipher_aead(Handle, CipherFragment, Seq, IV) of
+        #alert{} = Alert ->
+	    Alert;
+        PlainFragment ->
+	    ConnectionStates =
+                ConnectionStates0#{current_read =>
+                                       ReadState0#{sequence_number => Seq + 1,
+                                                   aead_handle => Handle
+                                                  }},
+	    {decode_inner_plaintext(PlainFragment), ConnectionStates}
+    end;
+decode_cipher_text(#ssl_tls{type = ?OPAQUE_TYPE,version = ?LEGACY_VERSION,fragment = CipherFragment},
 		   #{current_read :=
 			 #{sequence_number := Seq,
                            cipher_state := #cipher_state{key = Key,
@@ -123,7 +139,10 @@ decode_cipher_text(#ssl_tls{type = ?OPAQUE_TYPE,
                                  early_data_accepted := EarlyDataAccepted
                                 }
 			  } = ReadState0} = ConnectionStates0) ->
-    case decipher_aead(CipherFragment, BulkCipherAlgo, Key, Seq, IV, TagLen) of
+    Cipher = ssl_cipher:aead_type(BulkCipherAlgo,byte_size(Key)),
+    Handle = crypto:crypto_one_time_aead_init(Cipher, Key, TagLen, false),
+
+    case decipher_aead(Handle, CipherFragment, Seq, IV) of
 	#alert{} when TrialDecryption =:= true andalso
                       EarlyDataAccepted =:= false andalso
                       PendingMaxEarlyDataSize0 > 0 -> %% Trial decryption
@@ -140,7 +159,9 @@ decode_cipher_text(#ssl_tls{type = ?OPAQUE_TYPE,
 	PlainFragment ->
 	    ConnectionStates =
                 ConnectionStates0#{current_read =>
-                                       ReadState0#{sequence_number => Seq + 1}},
+                                       ReadState0#{sequence_number => Seq + 1,
+                                                   aead_handle => Handle
+                                                  }},
 	    {decode_inner_plaintext(PlainFragment), ConnectionStates}
     end;
 
@@ -302,8 +323,7 @@ encode_plain_text(Type, Data, 0,
 cipher_aead(Handle, Fragment, Seq, IV, TagLen) ->
     AAD = additional_data(erlang:iolist_size(Fragment) + TagLen),
     Nonce = nonce(Seq, IV),
-    {Content, CipherTag} = crypto:crypto_one_time_aead(Handle, Nonce, Fragment, AAD),
-    <<Content/binary, CipherTag/binary>>.
+    crypto:crypto_one_time_aead(Handle, Nonce, Fragment, AAD).
 
 additional_data(Length) ->
     <<?BYTE(?OPAQUE_TYPE), ?BYTE(3), ?BYTE(3),?UINT16(Length)>>.
@@ -331,15 +351,12 @@ encode_tls_cipher_text(Type, {MajVer,MinVer}, Encoded) ->
     Length = erlang:iolist_size(Encoded),
     [<<?BYTE(Type), ?BYTE(MajVer), ?BYTE(MinVer), ?UINT16(Length)>>, Encoded].
 
-decipher_aead(CipherFragment0, BulkCipherAlgo, Key, Seq, IV, TagLen) ->
+decipher_aead(Handle, CipherFragment, Seq, IV) ->
     try
-        CipherFragment = iolist_to_binary(CipherFragment0),
-        FragLen = byte_size(CipherFragment),
+        FragLen = iolist_size(CipherFragment), %% Includes TagLen
         AAD = additional_data(FragLen),
         Nonce = nonce(Seq, IV),
-        CipherLen = FragLen - TagLen,
-        <<CipherText:CipherLen/bytes, CipherTag:TagLen/bytes>> = CipherFragment,
-	case ssl_cipher:aead_decrypt(BulkCipherAlgo, Key, Nonce, CipherText, CipherTag, AAD) of
+	case crypto:crypto_one_time_aead(Handle, Nonce, CipherFragment, AAD) of
 	    Content when is_binary(Content) ->
 		Content;
 	    Reason ->
