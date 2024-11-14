@@ -26,6 +26,8 @@
 extern ErlNifResourceType* aead_cipher_ctx_rtype;
 struct aead_cipher_ctx {
     const struct cipher_type_t *cipherp;
+    EVP_CIPHER_CTX *ctx;
+
     ERL_NIF_TERM key;
     ERL_NIF_TERM tag;
 

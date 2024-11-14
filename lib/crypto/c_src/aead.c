@@ -29,6 +29,9 @@ static void aead_cipher_ctx_dtor(ErlNifEnv* env, struct aead_cipher_ctx* ctx) {
     if (ctx == NULL)
         return;
     enif_free_env(ctx->env);
+    if (ctx->ctx)
+        EVP_CIPHER_CTX_free(ctx->ctx);
+
     return;
 }
 
@@ -115,6 +118,20 @@ ERL_NIF_TERM aead_cipher_init_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM a
     if (CIPHER_FORBIDDEN_IN_FIPS(ctx_res->cipherp))
         {ret = EXCP_NOTSUP_N(env, 0, "Forbidden in FIPS"); goto done;}
 
+#if defined(HAVE_GCM_EVP_DECRYPT_BUG)
+    if ( !ctx_res->encflg && (ctx_res->cipherp->flags & GCM_MODE)) {
+        {ret = EXCP_NOTSUP_N(env, 0, "HAVE_GCM_EVP_DECRYPT_BUG with init aead not supported, update ssl version"); goto done;}
+    }
+#endif
+
+    if (ctx_res->cipherp->cipher.p == NULL)
+        {ret = EXCP_NOTSUP_N(env, 0, "The cipher is not supported in this libcrypto version"); goto done;}
+
+    if ((ctx_res->ctx = EVP_CIPHER_CTX_new()) == NULL)
+        {ret = EXCP_ERROR(env, "Can't allocate ctx"); goto done;}
+    if (EVP_CipherInit_ex(ctx_res->ctx, ctx_res->cipherp->cipher.p, NULL, NULL, NULL, ctx_res->encflg) != 1)
+        {ret = EXCP_ERROR(env, "CipherInit failed"); goto done;}
+
     ret = enif_make_resource(env, ctx_res);
 
 done:
@@ -197,6 +214,20 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             {ret = EXCP_BADARG_N(env, 0, "Not aead cipher"); goto done;}
         if (CIPHER_FORBIDDEN_IN_FIPS(cipherp))
             {ret = EXCP_NOTSUP_N(env, 0, "Forbidden in FIPS"); goto done;}
+
+#if defined(HAVE_GCM_EVP_DECRYPT_BUG)
+        if ( !encflg && (cipherp->flags & GCM_MODE)) {
+            return aes_gcm_decrypt_NO_EVP(env, argc, argv);
+        }
+#endif
+        if ((cipher = cipherp->cipher.p) == NULL)
+            {ret = EXCP_NOTSUP_N(env, 0, "The cipher is not supported in this libcrypto version"); goto done;}
+
+        if ((ctx = EVP_CIPHER_CTX_new()) == NULL)
+            {ret = EXCP_ERROR(env, "Can't allocate ctx"); goto done;}
+        if (EVP_CipherInit_ex(ctx, cipher, NULL, NULL, NULL, encflg) != 1)
+            {ret = EXCP_ERROR(env, "CipherInit failed"); goto done;}
+
     } else {
         /* argc = 4  {state, IV, InData, AAD }  */
         struct aead_cipher_ctx *ctx_res = NULL;
@@ -209,7 +240,6 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
         if (!enif_inspect_iolist_as_binary(env, argv[3], &aad))
             {ret = EXCP_BADARG_N(env, 3, "non-binary AAD"); goto done;}
 
-        cipherp = ctx_res->cipherp;
         if (!enif_inspect_binary(env, ctx_res->key, &key))
             {ret = EXCP_BADARG_N(env, 0, "Bad State key"); goto done;}
 
@@ -225,25 +255,13 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             tag_len = tag.size;
             tag_data = tag.data;
         }
+
+        cipherp = ctx_res->cipherp;
+        cipher = cipherp->cipher.p;
+        ctx = ctx_res->ctx;
     }
     /* Init done */
 
-    if ((cipher = cipherp->cipher.p) == NULL)
-        {ret = EXCP_NOTSUP_N(env, 0, "The cipher is not supported in this libcrypto version"); goto done;}
-
-#if defined(HAVE_GCM_EVP_DECRYPT_BUG)
-    if ( !encflg && (cipherp->flags & GCM_MODE)) {
-        if(argc == 3)
-            {ret = EXCP_NOTSUP_N(env, 0, "HAVE_GCM_EVP_DECRYPT_BUG with init aead not currently supported"); goto done;}
-        return aes_gcm_decrypt_NO_EVP(env, argc, argv);
-    }
-#endif
-
-    if ((ctx = EVP_CIPHER_CTX_new()) == NULL)
-        {ret = EXCP_ERROR(env, "Can't allocate ctx"); goto done;}
-
-    if (EVP_CipherInit_ex(ctx, cipher, NULL, NULL, NULL, encflg) != 1)
-        {ret = EXCP_ERROR(env, "CipherInit failed"); goto done;}
     if (EVP_CIPHER_CTX_ctrl(ctx, cipherp->extra.aead.ctx_ctrl_set_ivlen, (int)iv.size, NULL) != 1)
         {ret = EXCP_BADARG_N(env, 2, "Bad IV length"); goto done;}
 
@@ -323,7 +341,7 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
     CONSUME_REDS(env, in);
 
 done:
-    if (ctx)
+    if (ctx && argc == 7 )
         EVP_CIPHER_CTX_free(ctx);
     return ret;
 
