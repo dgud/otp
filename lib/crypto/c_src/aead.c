@@ -51,23 +51,14 @@ int init_aead_cipher_ctx(ErlNifEnv *env, ErlNifBinary* rt_buf) {
     return 0;
 }
 
-void print_bytes(ErlNifBinary bin);
-
-void print_bytes(ErlNifBinary bin) {
-    for(int i=0; i < bin.size; i++) {
-        enif_fprintf(stderr, "%d ", bin.data[i]);
-    }
-}
-
 ERL_NIF_TERM aead_cipher_init_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {/*
-   (Type,Key,Iv,Seq,TagLen,true)
-   (Type,Key,Iv,Seq,Tag,false)
+   (Type,Key,Iv,Seq,TagLen,DoEncode)
  */
 #if defined(HAVE_AEAD)
     struct aead_cipher_ctx *ctx_res = NULL;
     ERL_NIF_TERM ret, encflg_arg, type;
-    ErlNifBinary tag, key;
+    ErlNifBinary key;
 
     if ((ctx_res = enif_alloc_resource(aead_cipher_ctx_rtype, sizeof(struct aead_cipher_ctx))) == NULL)
         return EXCP_ERROR(env, "Can't allocate resource");
@@ -95,15 +86,8 @@ ERL_NIF_TERM aead_cipher_init_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM a
         {ret = EXCP_BADARG_N(env, 1, "non-binary key"); goto done;}
     ctx_res->key = enif_make_copy(ctx_res->env, argv[1]);
 
-    if (ctx_res->encflg) {
-        if (!enif_get_uint(env, argv[2], &ctx_res->tag_len))
-            {ret = EXCP_BADARG_N(env, 2, "Bad Tag length"); goto done;}
-    } else {
-        if (!enif_inspect_binary(env, argv[2], &tag))
-            {ret = EXCP_BADARG_N(env, 2, "non-binary Tag"); goto done;}
-        ctx_res->tag = enif_make_copy(ctx_res->env, argv[2]);
-        ctx_res->tag_len = 0;
-    }
+    if (!enif_get_uint(env, argv[2], &ctx_res->tag_len))
+        {ret = EXCP_BADARG_N(env, 2, "Bad Tag length"); goto done;}
 
     if (ctx_res->tag_len > INT_MAX
         || key.size > INT_MAX)
@@ -150,9 +134,9 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
     const EVP_CIPHER *cipher = NULL;
     ErlNifBinary key, iv, aad, in, tag;
     unsigned int tag_len;
-    unsigned char *outp, *tagp, *tag_data;
+    unsigned char *outp, *tagp, *tag_data, *in_data;
     ERL_NIF_TERM type, out, out_tag, ret, encflg_arg;
-    int len, encflg;
+    int len, encflg, in_len;
 
     if(argc == 7) {
         /*
@@ -185,6 +169,8 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             {ret = EXCP_BADARG_N(env, 2, "non-binary iv"); goto done;}
         if (!enif_inspect_iolist_as_binary(env, argv[3], &in))
             {ret = EXCP_BADARG_N(env, 3, "non-binary text"); goto done;}
+        in_data = in.data;
+        in_len = in.size;
         if (!enif_inspect_iolist_as_binary(env, argv[4], &aad))
             {ret = EXCP_BADARG_N(env, 4, "non-binary AAD"); goto done;}
 
@@ -237,6 +223,9 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             {ret = EXCP_BADARG_N(env, 1, "non-binary iv"); goto done;}
         if (!enif_inspect_iolist_as_binary(env, argv[2], &in))
             {ret = EXCP_BADARG_N(env, 2, "non-binary text"); goto done;}
+        in_data = in.data;
+        in_len = in.size;
+
         if (!enif_inspect_iolist_as_binary(env, argv[3], &aad))
             {ret = EXCP_BADARG_N(env, 3, "non-binary AAD"); goto done;}
 
@@ -249,11 +238,11 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             tag_len = ctx_res->tag_len;
             tag_data = NULL;
         } else {
-            if (!enif_inspect_binary(env, ctx_res->tag, &tag))
-                {ret = EXCP_BADARG_N(env, 0, "Bad State key"); goto done;}
-
-            tag_len = tag.size;
-            tag_data = tag.data;
+            tag_len  = ctx_res->tag_len;
+            in_len   = in_len - tag_len;
+            if (in_len < 0)
+                {ret = EXCP_ERROR(env, "Bad in data"); goto done;}
+            tag_data = in_data + in_len;
         }
 
         cipherp = ctx_res->cipherp;
@@ -271,7 +260,7 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             {ret = EXCP_BADARG_N(env, 5, "Can't set tag"); goto done;}
         if (EVP_CipherInit_ex(ctx, NULL, NULL, key.data, iv.data, -1) != 1)
             {ret = EXCP_ERROR(env, "Can't set key or iv"); goto done;}
-        if (EVP_CipherUpdate(ctx, NULL, &len, NULL, (int)in.size) != 1)
+        if (EVP_CipherUpdate(ctx, NULL, &len, NULL, (int)in_len) != 1)
             {ret = EXCP_ERROR(env, "Can't set text size"); goto done;}
     } else
 #endif
@@ -285,18 +274,16 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
     if (EVP_CipherUpdate(ctx, NULL, &len, aad.data, (int)aad.size) != 1)
         {ret = EXCP_BADARG_N(env, 4, "Can't set AAD"); goto done;}
 
-    /* if(encflg) { */
-    /*     enif_fprintf(stderr, "\r\nenif: args: %d", argc); */
-    /*     enif_fprintf(stderr, "\r\nenif: aad: "); print_bytes(aad); */
-    /*     enif_fprintf(stderr, "\r\nenif: iv: " ); print_bytes(iv); */
-    /*     enif_fprintf(stderr, "\r\nenif: key: "); print_bytes(key); */
-    /*     enif_fprintf(stderr, "\r\n"); */
-    /* } */
-
     /* Set the plain text and get the crypto text (or vice versa :) ) */
-    if ((outp = enif_make_new_binary(env, in.size, &out)) == NULL)
+    if (encflg && argc == 4)
+        len = in_len+tag_len;
+    else
+        len = in_len;
+
+    if ((outp = enif_make_new_binary(env, len, &out)) == NULL)
         {ret = EXCP_ERROR(env, "Can't make 'Out' binary"); goto done;}
-    if (EVP_CipherUpdate(ctx, outp, &len, in.data, (int)in.size) != 1)
+
+    if (EVP_CipherUpdate(ctx, outp, &len, in_data, in_len) != 1)
         {
             if (encflg)
                 ret = EXCP_BADARG_N(env, 3, "Can't set in-text");
@@ -307,18 +294,28 @@ ERL_NIF_TERM aead_cipher_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
         }
     if (encflg)
         {
-            /* Finalize the encrypted text */
-            if (EVP_CipherFinal_ex(ctx, outp, &len) != 1)
-                {ret = EXCP_ERROR(env, "Encrypt error"); goto done;}
+            if (argc == 7) {
+                /* Finalize the encrypted text */
+                if (EVP_CipherFinal_ex(ctx, outp, &len) != 1)
+                    {ret = EXCP_ERROR(env, "Encrypt error"); goto done;}
 
-            /* Get the tag */
-            if ((tagp = enif_make_new_binary(env, tag_len, &out_tag)) == NULL)
-                {ret = EXCP_ERROR(env, "Can't make 'Out' binary"); goto done;}
-            if (EVP_CIPHER_CTX_ctrl(ctx, cipherp->extra.aead.ctx_ctrl_get_tag, (int)tag_len, tagp) != 1)
-                {ret = EXCP_ERROR(env, "Can't get Tag"); goto done;}
+                /* Get the tag */
+                if ((tagp = enif_make_new_binary(env, tag_len, &out_tag)) == NULL)
+                    {ret = EXCP_ERROR(env, "Can't make 'Out' binary"); goto done;}
+                if (EVP_CIPHER_CTX_ctrl(ctx, cipherp->extra.aead.ctx_ctrl_get_tag, (int)tag_len, tagp) != 1)
+                    {ret = EXCP_ERROR(env, "Can't get Tag"); goto done;}
 
-            /* Make the return value (the tuple with binary crypto text and the tag) */
-            ret = enif_make_tuple2(env, out, out_tag);
+                /* Make the return value (the tuple with binary crypto text and the tag) */
+                ret = enif_make_tuple2(env, out, out_tag);
+            } else {
+                if (EVP_CipherFinal_ex(ctx, outp, &len) != 1)
+                    {ret = EXCP_ERROR(env, "Encrypt error"); goto done;}
+                /* Add tag to output end */
+                tagp = outp + in_len;
+                if (EVP_CIPHER_CTX_ctrl(ctx, cipherp->extra.aead.ctx_ctrl_get_tag, (int)tag_len, tagp) != 1)
+                    {ret = EXCP_ERROR(env, "Can't get Tag"); goto done;}
+                ret = out;
+            }
         }
     else /* Decrypting. The plain text is already pointed to by 'out' */
         {

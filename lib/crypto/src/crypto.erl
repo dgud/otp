@@ -1832,14 +1832,9 @@ aead_tag_len(_) ->
                    EncFlag :: boolean(),
                    Result :: crypto_state().
 
-crypto_one_time_aead_init(Cipher, Key, Length, true) when is_integer(Length) ->
-    ?nif_call(aead_cipher_init_nif(alias(Cipher,Key), iolist_to_binary(Key), Length, true),
-              [Cipher, Key, Length, true],
-              {}
-             );
-crypto_one_time_aead_init(Cipher, Key, Tag, false) ->
-    ?nif_call(aead_cipher_init_nif(alias(Cipher,Key), iolist_to_binary(Key), iolist_to_binary(Tag), false),
-              [Cipher, Key, Tag, false],
+crypto_one_time_aead_init(Cipher, Key, Length, Encode) when is_integer(Length) ->
+    ?nif_call(aead_cipher_init_nif(alias(Cipher,Key), iolist_to_binary(Key), Length, Encode),
+              [Cipher, Key, Length, Encode],
               {}
              ).
 
@@ -1853,11 +1848,8 @@ crypto_one_time_aead_init(Cipher, Key, Tag, false) ->
                                       InText :: iodata(),
                                       AAD :: iodata(),
                                       Result :: EncryptResult | DecryptResult,
-                                      EncryptResult :: {OutCryptoText, OutTag},
-                                      DecryptResult :: OutPlainText | error,
-                                      OutCryptoText :: binary(),
-                                      OutTag :: binary(),
-                                      OutPlainText :: binary().
+                                      EncryptResult :: binary(),
+                                      DecryptResult :: binary() | error.
 crypto_one_time_aead(State, IV, InText, AAD) ->
     ?nif_call(aead_cipher_nif(State, IV, InText, AAD)).
 

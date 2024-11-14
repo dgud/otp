@@ -1658,15 +1658,16 @@ aead_cipher_ng({Type, Key, PlainText, IV, AAD, CipherText, CipherTag, TagLen, _I
             T1;
         true ->
             %% ok
+            CipherTextCipherTag = <<CipherText/binary, TruncatedCipherTag/binary>>,
             cipher_test(T,
                         fun() ->
                                 Handle = crypto:crypto_one_time_aead_init(Type, Key, TagLen, true),
                                 crypto:crypto_one_time_aead(Handle, IV, PlainText, AAD)
                         end,
-                        {CipherText, TruncatedCipherTag},
+                        CipherTextCipherTag,
                         fun() ->
-                                Handle = crypto:crypto_one_time_aead_init(Type, Key, TruncatedCipherTag, false),
-                                crypto:crypto_one_time_aead(Handle, IV, CipherText, AAD)
+                                Handle = crypto:crypto_one_time_aead_init(Type, Key, TagLen, false),
+                                crypto:crypto_one_time_aead(Handle, IV, CipherTextCipherTag, AAD)
                         end,
                         Plain)
     end.

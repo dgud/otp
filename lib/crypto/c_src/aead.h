@@ -29,7 +29,6 @@ struct aead_cipher_ctx {
     EVP_CIPHER_CTX *ctx;
 
     ERL_NIF_TERM key;
-    ERL_NIF_TERM tag;
 
     int encflg;
     unsigned int tag_len;
