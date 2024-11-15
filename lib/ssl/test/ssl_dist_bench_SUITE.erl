@@ -60,8 +60,9 @@ all() ->
     %% [{group, benchmark}].
 
 groups() ->
-    [{smoketest, protocols()},
-     {benchmark, protocols()},
+    [{smoketest,   protocols()},
+     {benchmark,   protocols()},
+     {perf_record, protocols()},
      %%
      %% protocols()
      {ssl,             ssl_backends()},
@@ -250,6 +251,8 @@ end_per_suite(Config) ->
 
 init_per_group(benchmark, Config) ->
     [{effort,10}|Config];
+init_per_group(perf_record, Config) ->
+    [{perf_record,true}, {effort,200}|Config];
 %%
 init_per_group(ssl, Config) ->
     [{ssl_dist, true}, {ssl_dist_prefix, "SSL"}|Config];
@@ -1356,12 +1359,41 @@ run_nodepair_test(TestFun, Config) ->
     B = proplists:get_value(server, Config),
     Prefix = proplists:get_value(ssl_dist_prefix, Config),
     Effort = proplists:get_value(effort, Config, 1),
+    Tag = make_ref(),
+    Parent = self(),
     HA = start_ssl_node({client,1}, Config),
     try
         HB = start_ssl_node(server, Config),
-        try TestFun(A, B, Prefix, Effort, HA, HB)
+        NodePid = ssl_apply(HB, os, getpid, []),
+        case proplists:lookup(perf_record, Config) of
+            {_, true} ->
+                %% The --output option is actually needed since it seems
+                %% perf record when facing a pipe as output will
+                %% per default write the collected data to it
+                PerfCmd =
+                    "perf record -p " ++ NodePid ++ " "
+                    "--output=perf.data --call-graph=fp",
+                ?CT_PAL("~nPerfCmd: ~s~n", [PerfCmd]),
+                _ = spawn_link(
+                      fun () ->
+                              Parent ! {Tag, os:cmd(PerfCmd)}
+                      end), ok;
+            _ ->
+                Parent ! {Tag, none},
+                ok
+        end,
+        try
+            TestFun(A, B, Prefix, Effort, HA, HB)
         after
-            stop_ssl_node(server, HB, Config)
+            stop_ssl_node(server, HB, Config),
+            receive
+                {Tag, none} -> ok;
+                {Tag, PerfResult} ->
+                    ?CT_PAL("~n"
+                            "Perf CWD: ~s~n"
+                            "Perf result:~n~s~n",
+                            [element(2, file:get_cwd()), PerfResult]), ok
+            end
         end
     after
         stop_ssl_node({client,1}, HA, Config)
@@ -1397,9 +1429,14 @@ start_ssl_node(server, Config, Verbose) ->
     Args = get_node_args(server_dist_args, Config),
     Pa = filename:dirname(code:which(?MODULE)),
     ServerNode = proplists:get_value(server_node, Config),
+    EmuPerfArg =
+        case proplists:lookup(perf_record, Config) of
+            {_, true} -> " +JPperf true";
+            _         -> ""
+        end,
     erpc:call(
       ServerNode, ssl_dist_test_lib, start_ssl_node,
-      [Name, "-pa " ++ Pa ++ " +Muacul 0 " ++ Args, Verbose]).
+      [Name, "-pa " ++ Pa ++ EmuPerfArg ++ " +Muacul 0 " ++ Args, Verbose]).
 
 stop_ssl_node({client, _}, HA, _Config) ->
     ssl_dist_test_lib:stop_ssl_node(HA);
