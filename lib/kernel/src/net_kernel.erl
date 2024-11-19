@@ -2484,7 +2484,7 @@ proto_dist_argument() ->
             end,
             Protos;
         _ ->
-            ["inet_tcp"]
+            ["inet_tls"]
     end.
 
 %%
