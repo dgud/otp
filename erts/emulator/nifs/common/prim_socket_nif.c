@@ -866,6 +866,7 @@ const int esock_ioctl_flags_length = NUM(esock_ioctl_flags);
 #define ESOCK_OPT_OTP_FD           1008
 #define ESOCK_OPT_OTP_META         1009
 #define ESOCK_OPT_OTP_USE_REGISTRY 1010
+#define ESOCK_OPT_OTP_SELECT_READ  1011
 /**/
 #define ESOCK_OPT_OTP_DOMAIN       1999 // INTERNAL AND ONLY GET
 #if 0
@@ -1242,6 +1243,7 @@ static ERL_NIF_TERM esock_setopt_otp(ErlNifEnv*       env,
     ESOCK_SETOPT_OTP_FUNC_DEF(rcvctrlbuf);      \
     ESOCK_SETOPT_OTP_FUNC_DEF(sndctrlbuf);      \
     ESOCK_SETOPT_OTP_FUNC_DEF(meta);            \
+    ESOCK_SETOPT_OTP_FUNC_DEF(select_read);    \
     ESOCK_SETOPT_OTP_FUNC_DEF(use_registry);
 #define ESOCK_SETOPT_OTP_FUNC_DEF(F)                                    \
     static ERL_NIF_TERM esock_setopt_otp_##F(ErlNifEnv*       env,      \
@@ -6772,6 +6774,14 @@ ERL_NIF_TERM esock_setopt_otp(ErlNifEnv*       env,
         MUNLOCK(descP->readMtx);
         break;
 
+    case ESOCK_OPT_OTP_SELECT_READ:
+        MLOCK(descP->readMtx);
+        MLOCK(descP->writeMtx);
+        result = esock_setopt_otp_select_read(env, descP, eVal);
+        MUNLOCK(descP->writeMtx);
+        MUNLOCK(descP->readMtx);
+        break;
+
     case ESOCK_OPT_OTP_CTRL_PROC:
         MLOCK(descP->readMtx);
         MLOCK(descP->writeMtx);
@@ -6881,6 +6891,34 @@ ERL_NIF_TERM esock_setopt_otp_iow(ErlNifEnv*       env,
 
     SSDBG( descP,
            ("SOCKET", "esock_setopt_otp_iow {%d} -> ok"
+            "\r\n   eVal: %T"
+            "\r\n", descP->sock, eVal) );
+
+    return esock_atom_ok;
+}
+
+
+
+/* esock_setopt_otp_select_read - Handle the OTP (level) select_read option
+ */
+
+static
+ERL_NIF_TERM esock_setopt_otp_select_read(ErlNifEnv*       env,
+                                          ESockDescriptor* descP,
+                                          ERL_NIF_TERM     eVal)
+{
+    if (! IS_OPEN(descP->writeState)) {
+        SSDBG( descP,
+               ("SOCKET", "esock_setopt_otp_iow {%d} -> closed\r\n",
+                descP->sock) );
+        return esock_make_error_closed(env);
+    }
+
+    if (! esock_decode_bool(eVal, &descP->selectRead))
+      return esock_make_invalid(env, esock_atom_value);
+
+    SSDBG( descP,
+           ("SOCKET", "esock_setopt_otp_select_read {%d} -> ok"
             "\r\n   eVal: %T"
             "\r\n", descP->sock, eVal) );
 
@@ -11978,6 +12016,7 @@ ESockDescriptor* esock_alloc_descriptor(SOCKET sock)
     descP->wCtrlSz          = ESOCK_SEND_CTRL_BUFFER_SIZE_DEFAULT;
     descP->iow              = FALSE;
     descP->dbg              = ESOCK_DEBUG_DEFAULT;      // Overwritten by caller
+    descP->selectRead       = FALSE;
     descP->useReg           = ESOCK_USE_SOCKET_REGISTRY;// Overwritten by caller
     descP->meta.env         = esock_alloc_env("esock_alloc_descriptor - "
                                               "meta-env");

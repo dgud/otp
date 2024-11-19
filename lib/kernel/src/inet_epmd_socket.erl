@@ -391,6 +391,7 @@ output_handler_send_result(OHP, Buffer, Size, DistData, Result) ->
 -spec input_handler_start(_, _) -> no_return(). % Server loop
 input_handler_start(Socket, DistHandle) ->
     try
+        ok               = socket:setopt(Socket, {otp,select_read}, true),
         {ok, RcvbufSize} = socket:getopt(Socket, {socket,rcvbuf}),
         IHP =
             #ihp{

@@ -5350,6 +5350,8 @@ recv_iostream_handle(SockRef, Length, Flags, IOS, Handle) ->
     case Result of
         ok ->
             RecvIostreamResult;
+        timeout ->
+            {Events, ok, Received};
         completion ->
             {Events,
              {completion, ?COMPLETION_INFO(send_iostream, Handle)},
