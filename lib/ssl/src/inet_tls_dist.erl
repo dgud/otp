@@ -95,7 +95,7 @@ hs_data_inet_tcp(Driver, Socket) ->
                   #net_address{
                      address  = Peername,
                      host     = Host,
-                     protocol = ?PROTOCOL,
+                     protocol = tcp,
                      family   = Family
                     }
           end}.
@@ -322,15 +322,18 @@ spawn_accept({Family, ListenSocket, NetKernel, Continue}) ->
         fun () ->
             case gen_tcp:accept(ListenSocket) of
                 {ok, Socket} ->
+                    trace({gen_tcp, accept, Socket}),
                     AcceptLoop ! {Continue, self()},
-                    case check_ip(Socket) of
+                    case trace(check_ip(Socket)) of
                         true ->
                             accept_one(Family, Socket, NetKernel);
                         {false,IP} ->
                             ?LOG_ERROR(
                                 "** Connection attempt from "
                                 "disallowed IP ~w ** ~n", [IP]),
-                            trace({disallowed, IP})
+                            trace({disallowed, IP});
+                        inet_tcp ->
+                            trace(accept_inet_tcp(Family, Socket, NetKernel))
                     end;
                 Error ->
                     exit(Error)
@@ -401,6 +404,14 @@ accept_one(
             trace(unsupported_protocol)
     end.
 
+accept_inet_tcp(Family, DistSocket, NetKernel) ->
+    ok = inet:setopts(DistSocket, [{packet, 2}]),
+    trace(NetKernel ! {accept, self(), DistSocket, Family, ?PROTOCOL}),
+    receive
+        {NetKernel, controller, Pid} ->
+            ok = gen_tcp:controlling_process(DistSocket, Pid),
+            trace(Pid ! {self(), controller})
+    end.
 
 %% {verify_fun,{fun ?MODULE:verify_client/3,_}} is used
 %% as a configuration marker that verify_client/3 shall be used.
@@ -530,15 +541,16 @@ do_accept(
                   this_flags = 0,
                   allowed = NewAllowed},
             dist_util:handshake_other_started(trace(HSData));
+
         {AcceptPid, exit} ->
             %% this can happen when connection was initiated, but dropped
             %%  between TLS handshake completion and dist handshake start
-            ?shutdown2(MyNode, connection_setup_failed);
+            ?shutdown2(MyNode, {connection_setup_failed, ?LINE});
         {'DOWN', MRef, _, _, _Reason} ->
             %% this may happen when connection was initiated, but dropped
             %% due to crash propagated from other handshake process which
             %% failed on inet_tcp:accept (see GH-5332)
-            ?shutdown2(MyNode, connection_setup_failed)
+            ?shutdown2(MyNode, {connection_setup_failed, ?LINE, _Reason})
     end.
 
 allowed_nodes(_SslSocket, []) ->
@@ -719,7 +731,26 @@ check_ip(Socket) ->
                     exit({check_ip, Other})
             end;
 	_ ->
-	    true
+            maybe
+                {ok, {IP, _}} ?= inet:sockname(Socket),
+                ok ?= if is_tuple(IP) -> ok;
+                         true -> {error, {no_ip_address, IP}}
+                      end,
+                case IP of
+                    {192,168,35,203} ->  %% For every ei node
+                        inet_tcp;
+                    {192,168,35,237} ->  %% For every ei node
+                        inet_tcp;
+                    {192,168,35,255} ->  %% For every ei node
+                        inet_tcp;
+                    {192,168,35,216} ->  %% For every ei node
+                        inet_tcp;
+                    _ ->
+                        true
+                end
+            else
+                _ -> true
+            end
     end.
 
 find_netmask(IP, [{_Name,Items} | Ifaddrs]) ->
