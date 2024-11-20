@@ -68,6 +68,7 @@ groups() ->
      {ssl,             ssl_backends()},
      {cryptcookie,     cryptcookie_backends()},
      {plain,           categories()},
+     {plain2,          categories()},
      {socket,          categories()},
      {socket_iostream, categories()},
      %%
@@ -104,6 +105,7 @@ protocols() ->
     [%% {group, ssl},
      %% {group, cryptcookie},
      {group, plain},
+     {group, plain2},
      {group, socket},
      {group, socket_iostream}].
 
@@ -326,13 +328,26 @@ init_per_group(cryptcookie_inet_ktls_ih, Config) ->
 init_per_group(plain, Config) ->
     [{ssl_dist, false}, {ssl_dist_prefix, "Plain"}|Config];
 %%
+init_per_group(plain2, Config) ->
+    try inet_epmd_socket:supported() of
+        ok ->
+            [{ssl_dist, false},
+             {ssl_dist_prefix, "Plain2"},
+             {ssl_dist_args, "-proto_dist inet_epmd -inet_epmd dist"}
+            | Config];
+        Problem ->
+            {skip, Problem}
+    catch
+        Class : Reason : Stacktrace ->
+            {fail, {Class, Reason, Stacktrace}}
+    end;
+%%
 init_per_group(socket, Config) ->
     try inet_epmd_socket:supported() of
         ok ->
             [{ssl_dist, false},
              {ssl_dist_prefix, "Socket"},
-             {ssl_dist_args,
-              "-proto_dist inet_epmd -inet_epmd socket"}
+             {ssl_dist_args, "-proto_dist inet_epmd -inet_epmd socket"}
             | Config];
         Problem ->
             {skip, Problem}
