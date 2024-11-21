@@ -160,7 +160,7 @@ count(Config) ->
 
 -define(FPROF_CLIENT, false).
 -define(FPROF_SERVER, false).
--define(EPROF_CLIENT, false).
+-define(EPROF_CLIENT, true).
 -define(EPROF_SERVER, false).
 
 -define(TPROF_CLIENT, false).
@@ -337,7 +337,7 @@ do_test(Type, {Func, _}=TC, Loop, ParallellConnections, Server) ->
 			   ?FPROF_CLIENT andalso Id =:= 1 andalso
 			       start_profile(fprof, [self(),new]),
 			   ?EPROF_CLIENT andalso Id =:= 1 andalso
-			       start_profile(eprof, [ssl_connection_sup, ssl_manager]),
+			       start_profile(eprof, []),
                            ?TPROF_CLIENT andalso Id =:= 1 andalso
                                start_profile(tprof, []),
 			   ok = ?MODULE:Func(Loop, Type, CData),
@@ -517,9 +517,11 @@ tc(Fun, Mod, Line) ->
     end.
 -endif.
 
-start_profile(eprof, Procs) ->
-    profiling = eprof:start_profiling(Procs),
-    io:format("(E)Profiling ...",[]);
+start_profile(eprof, _Procs) ->
+    tprof:start(#{type => call_time}),
+    tprof:enable_trace({all_children, ssl_sup}),
+    io:format("(T)Profiling ...",[]),
+    tprof:set_pattern('_', '_' , '_');
 start_profile(fprof, Procs) ->
     fprof:trace([start, {procs, Procs}]),
     io:format("(F)Profiling ...",[]);
@@ -530,11 +532,12 @@ start_profile(tprof, _) ->
     tprof:set_pattern('_', '_' , '_').
 
 stop_profile(eprof, File) ->
-    profiling_stopped = eprof:stop_profiling(),
-    eprof:log(File),
-    io:format(".analysed => ~s ~n",[File]),
-    eprof:analyze(total),
-    eprof:stop();
+    Sample = tprof:collect(),
+    tprof:stop(),
+    {ok, Fd} = file:open(File, [write]),
+    tprof:format(Fd, tprof:inspect(Sample)),
+    io:format("Analyze stored in: ~p~n",[File]),
+    file:close(Fd);
 stop_profile(fprof, File) ->
     fprof:trace(stop),
     io:format("..collect..",[]),
@@ -543,10 +546,13 @@ stop_profile(fprof, File) ->
     io:format(".analysed => ~s ~n",[File]),
     fprof:stop(),
     ok;
-stop_profile(tprof, _File) ->
+stop_profile(tprof, File) ->
     Sample = tprof:collect(),
     tprof:stop(),
-    tprof:format(tprof:inspect(Sample)).
+    {ok, Fd} = file:open(File, [write]),
+    tprof:format(Fd, tprof:inspect(Sample)),
+    io:format("Analyze stored in: ~p~n",[File]),
+    file:close(Fd).
 
 ssl_opts(listen, Opts, Certs) ->
     [{backlog, 500} | ssl_opts(server_config, Opts, Certs)];
@@ -564,6 +570,7 @@ ssl_opts(Role, TCOpts, Certs) ->
              {reuseaddr, true},
              {mode,binary},
              {nodelay, true},
+             %% {cb_info, tls_socket_tcp:cb_info()},
              {versions, [Version]},
              {ciphers, [ #{key_exchange => KeyEx, cipher => aes_128_gcm,
                            mac => aead, prf => sha256}
