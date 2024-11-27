@@ -380,6 +380,9 @@ handle_info(Msg, StateName, State) ->
 %%====================================================================
 %% State transition handling
 %%====================================================================	     
+
+next_event(connection,  #ssl_tls{} = Record, State) ->
+    handle_protocol_record(Record, connection, State);
 next_event(StateName, Record, State) ->
     next_event(StateName, Record, State, []).
 
@@ -440,7 +443,7 @@ handle_protocol_record(#ssl_tls{type = ?APPLICATION_DATA, fragment = Data}, Stat
             TimerAction = [{{timeout, recv}, infinity, timeout}],
             next_event(StateName, Record, State, TimerAction);
         {Record, State} ->
-            next_event(StateName, Record, State, [])
+            next_event(StateName, Record, State)
     end;
 handle_protocol_record(#ssl_tls{type = ?APPLICATION_DATA, fragment = Data}, StateName, State0) ->
     case ssl_gen_statem:read_application_data(Data, State0) of
