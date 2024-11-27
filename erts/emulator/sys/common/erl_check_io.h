@@ -58,6 +58,13 @@ Eterm erts_check_io_info(void *proc);
 void erts_io_notify_port_task_executed(ErtsPortTaskType type,
                                        ErtsPortTaskHandle *handle,
                                        void (*reset)(ErtsPortTaskHandle *));
+
+/**
+ * Handles an nif select non-message signal. Returns the message eterm.
+ * 
+ * @param sig The signal that has arrived
+ */
+Eterm erts_io_handle_nif_select(ErtsMessage *sig);
 /**
  * Returns the maximum number of fds that the check io framework can handle.
  */
