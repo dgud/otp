@@ -658,10 +658,16 @@ next_tls_record(Data, StateName,
         end,
     MaxFragLen = maps:get(max_fragment_length, State#state.connection_states, undefined),
     case tls_record:get_tls_records(Data, Versions, Buf0, MaxFragLen, Downgrade) of
-	{Records, Buf1} ->
+	{Records, Buf1} when StateName == connection ->
 	    CT1 = CT0 ++ Records,
 	    next_record(StateName, Buffers#protocol_buffers{tls_record_buffer = Buf1,
                                                             tls_cipher_texts = CT1}, State);
+        {Records, Buf1} ->
+            CT1 = CT0 ++ Records,
+            [ssl_logger:debug(get(log_level), inbound, 'record', Record) || Record <- Records],
+	    next_record(StateName, Buffers#protocol_buffers{tls_record_buffer = Buf1,
+                                                            tls_cipher_texts = CT1}, State);
+
 	#alert{} = Alert ->
 	    handle_record_alert(Alert, State)
     end.
