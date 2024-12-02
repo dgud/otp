@@ -35,11 +35,9 @@
 #include "sys.h"
 #include "global.h"
 #include "erl_port.h"
-#include "erl_port_task.h"
 #include "erl_check_io.h"
 #include "erl_thr_progress.h"
 #include "erl_bif_unique.h"
-#include "erl_proc_sig_queue.h"
 #include "dtrace-wrapper.h"
 #include "lttng-wrapper.h"
 #define ERTS_WANT_TIMER_WHEEL_API
@@ -52,7 +50,7 @@
                 (STATE) ? (STATE)->fd : (ErtsSysFdType)-1, ##__VA_ARGS__, \
                 ev2str((STATE) ? (STATE)->events : ERTS_POLL_EV_NONE),  \
                 ev2str((STATE) ? (STATE)->active_events : ERTS_POLL_EV_NONE), \
-                (STATE) ? event_state_flag_to_str((STATE)->flags) : ERTS_EV_FLAG_CLEAR)
+                (STATE) ? flag2str((STATE)->flags) : ERTS_EV_FLAG_CLEAR)
 #define DEBUG_PRINT_MODE
 #else
 #define DEBUG_PRINT(...)
@@ -76,27 +74,24 @@ typedef enum {
 } EventStateType;
 
 typedef enum {
-    ERTS_EV_FLAG_CLEAR         = 0x0,
-    ERTS_EV_FLAG_USED          = 0x1,   /* ERL_DRV_USE has been turned on */
+    ERTS_EV_FLAG_CLEAR         = 0,
+    ERTS_EV_FLAG_USED          = 1,   /* ERL_DRV_USE has been turned on */
 #if ERTS_POLL_USE_SCHEDULER_POLLING
-    ERTS_EV_FLAG_SCHEDULER     = 0x2,   /* Set when the fd has been migrated
+    ERTS_EV_FLAG_SCHEDULER     = 2,   /* Set when the fd has been migrated
                                          to scheduler pollset */
-    ERTS_EV_FLAG_IN_SCHEDULER  = 0x4,   /* Set when the fd is currently in
+    ERTS_EV_FLAG_IN_SCHEDULER  = 4,   /* Set when the fd is currently in
                                          scheduler pollset */
 #else
     ERTS_EV_FLAG_SCHEDULER     = ERTS_EV_FLAG_CLEAR,
     ERTS_EV_FLAG_IN_SCHEDULER  = ERTS_EV_FLAG_CLEAR,
 #endif
 #ifdef ERTS_POLL_USE_FALLBACK
-    ERTS_EV_FLAG_FALLBACK      = 0x8,   /* Set when kernel poll rejected fd
+    ERTS_EV_FLAG_FALLBACK      = 8,   /* Set when kernel poll rejected fd
                                          and it was put in the nkp version */
 #else
     ERTS_EV_FLAG_FALLBACK      = ERTS_EV_FLAG_CLEAR,
 #endif
     ERTS_EV_FLAG_WANT_ERROR    = 0x10,  /* ERL_NIF_SELECT_ERROR turned on */
-#if ERTS_POLL_USE_SCHEDULER_POLLING
-    ERTS_EV_FLAG_NIF_SELECT    = 0x20,  /* Set if a nif select message is in-flight */
-#endif
 
     /* Combinations, defined only to be displayed by debugger (gdb) */
     ERTS_EV_FLAG_USED_FALLBACK = ERTS_EV_FLAG_USED | ERTS_EV_FLAG_FALLBACK,
@@ -116,13 +111,9 @@ static const char* event_state_flag_to_str(EventStateFlags f)
     case ERTS_EV_FLAG_FALLBACK | ERTS_EV_FLAG_USED: return "USED|FLBK";
 
 #if ERTS_POLL_USE_SCHEDULER_POLLING
-    case ERTS_EV_FLAG_CLEAR | ERTS_EV_FLAG_NIF_SELECT: return "CLEAR|NIF_SELECT";
-    case ERTS_EV_FLAG_USED | ERTS_EV_FLAG_NIF_SELECT: return "USED|NIF_SELECT";
     case ERTS_EV_FLAG_SCHEDULER: return "SCHD";
     case ERTS_EV_FLAG_SCHEDULER | ERTS_EV_FLAG_USED: return "USED|SCHD";
     case ERTS_EV_FLAG_SCHEDULER | ERTS_EV_FLAG_IN_SCHEDULER: return "IN_SCHD";
-    case ERTS_EV_FLAG_SCHEDULER | ERTS_EV_FLAG_IN_SCHEDULER |
-        ERTS_EV_FLAG_NIF_SELECT: return "IN_SCHD|NIF_SELECT";
     case ERTS_EV_FLAG_SCHEDULER | ERTS_EV_FLAG_IN_SCHEDULER
         | ERTS_EV_FLAG_USED: return "USED|IN_SCHD";
 #endif
@@ -178,10 +169,6 @@ typedef struct {
     int count;                    /* Number of times this fd has triggered
                                      without being deselected. */
 } ErtsDrvEventState;
-
-static erts_mtx_t nif_select_fds_mtx;
-static ErtsSysFdType nif_select_fds[256];
-static Uint16 nif_select_cnt = 0;
 
 struct drv_ev_state_shared {
 
@@ -624,13 +611,7 @@ abort_tasks(ErtsDrvEventState *state, int mode)
     }
 }
 
-typedef struct {
-    Eterm message;
-    ErlNifEvent evt;
-} ErtsNifSelectSignalData;
-
 static void prepare_select_msg(struct erts_nif_select_event* e,
-                               ErlNifEvent evt,
                                enum ErlNifSelectFlags mode,
                                Eterm recipient,
                                ErtsResource* resource,
@@ -639,10 +620,8 @@ static void prepare_select_msg(struct erts_nif_select_event* e,
                                Eterm event_atom)
 {
     ErtsMessage* mp;
-    ErtsNifSelectSignalData* xsig;
-    Eterm* hp, *hp_start;
-    Uint hsz = sizeof(ErtsNifSelectSignalData) / sizeof(Eterm); /* size of msg ptr */
-
+    Eterm* hp;
+    Uint hsz;
 
     if (is_not_nil(e->pid)) {
         ASSERT(e->mp);
@@ -651,25 +630,22 @@ static void prepare_select_msg(struct erts_nif_select_event* e,
 
     if (mode & ERL_NIF_SELECT_CUSTOM_MSG) {
         if (msg_env) {
-            mp = erts_create_message_from_nif_env(msg_env, hsz);
+            mp = erts_create_message_from_nif_env(msg_env);
             ERL_MESSAGE_TERM(mp) = msg;
-            hp = &mp->hfrag.mem[0];
-            hp_start = hp;
         }
         else {
-            Eterm msgsz = size_object(msg);
-            hsz += msgsz;
+            hsz = size_object(msg);
             mp = erts_alloc_message(hsz, &hp);
-            hp_start = hp;
-            ERL_MESSAGE_TERM(mp) = copy_struct(msg, msgsz, &hp, &mp->hfrag.off_heap);
+            ERL_MESSAGE_TERM(mp) = copy_struct(msg, hsz, &hp, &mp->hfrag.off_heap);
         }
     }
     else {
         ErtsBinary* bin;
         Eterm resource_term, ref_term, tuple;
+        Eterm* hp_start;
 
          /* {select, Resource, Ref, EventAtom} */
-        hsz += 5 + ERTS_MAGIC_REF_THING_SIZE;
+        hsz = 5 + ERTS_MAGIC_REF_THING_SIZE;
         if (is_internal_ref(msg))
             hsz += ERTS_REF_THING_SIZE;
         else
@@ -693,46 +669,25 @@ static void prepare_select_msg(struct erts_nif_select_event* e,
         tuple = TUPLE4(hp, am_select, resource_term, ref_term, event_atom);
         hp += 5;
         ERL_MESSAGE_TERM(mp) = tuple;
-        ASSERT(hp == hp_start + hsz - sizeof(ErtsNifSelectSignalData)/sizeof(Eterm));
+        ASSERT(hp == hp_start + hsz); (void)hp_start;
     }
-
-    /* Save original msg ptr */
-    mp->hfrag.used_size = hp - hp_start;
-    xsig = (ErtsNifSelectSignalData*)hp;
-    xsig->message = ERL_MESSAGE_TERM(mp);
-    xsig->evt = evt;
 
     ASSERT(is_not_nil(recipient));
     e->pid = recipient;
     e->mp = mp;
 }
 
-Eterm
-erts_io_handle_nif_select(ErtsMessage *sig) {
-    ErtsDrvEventState *state;
-    ErtsNifSelectSignalData* xsig = (ErtsNifSelectSignalData*) (char *) (&sig->hfrag.mem[0]
-                                            + sig->hfrag.used_size);
-    ASSERT(sig->hfrag.used_size < sig->hfrag.alloc_size);
-
-#if ERTS_POLL_USE_SCHEDULER_POLLING
-    if (sched_pollset) {
-        erts_mtx_lock(&nif_select_fds_mtx);
-        erts_port_task_dec_outstanding_io_tasks();
-//        erts_fprintf(stderr, "Enqueue %d\r\n", xsig->evt);
-        nif_select_fds[nif_select_cnt++] = xsig->evt;
-        erts_mtx_unlock(&nif_select_fds_mtx);
-    }
-#endif
-    return xsig->message;
-}
-
 static ERTS_INLINE void send_select_msg(struct erts_nif_select_event* e)
 {
-    if (!erts_proc_sig_send_nif_select(e->pid, e->mp)) {
+    Process* rp = erts_proc_lookup(e->pid);
+
+    ASSERT(is_internal_pid(e->pid));
+    if (!rp) {
         erts_cleanup_messages(e->mp);
-    } else {
-        erts_port_task_inc_outstanding_io_tasks();
+        return;
     }
+
+    erts_queue_message(rp, 0, e->mp, ERL_MESSAGE_TERM(e->mp), am_system);
 }
 
 static void clear_select_event(struct erts_nif_select_event* e)
@@ -1217,26 +1172,11 @@ enif_select_x(ErlNifEnv* env,
     old_events = state->events;
 
     if (on) {
-        if (state->type == ERTS_EV_TYPE_NONE)
-            ctl_op = ERTS_POLL_OP_ADD;
-        else {
-            if (!(state->flags & ERTS_EV_FLAG_IN_SCHEDULER) &&
-                 (ctl_events == ERTS_POLL_EV_IN)) {
-                if (!(state->flags & ERTS_EV_FLAG_FALLBACK) &&
-                    (state->flags & ERTS_EV_FLAG_NIF_SELECT) &&
-                    erts_sched_poll_enabled())
-                  state->count++;
-                if (state->count > 10 && erts_sched_poll_enabled()) {
-                    if (!(state->flags & ERTS_EV_FLAG_SCHEDULER))
-                        ctl_op = ERTS_POLL_OP_ADD;
-                    state->flags |= ERTS_EV_FLAG_IN_SCHEDULER|ERTS_EV_FLAG_SCHEDULER;
-                    DEBUG_PRINT_FD("moving to scheduler ps", state);
-                }
-            }
-        }
         ctl_events &= ~old_events;
         state->events |= ctl_events;
         state->active_events |= ctl_events;
+        if (state->type == ERTS_EV_TYPE_NONE)
+            ctl_op = ERTS_POLL_OP_ADD;
         if (ctl_events & ERTS_POLL_EV_ERR)
             state->flags |= ERTS_EV_FLAG_WANT_ERROR;
     }
@@ -1285,17 +1225,17 @@ enif_select_x(ErlNifEnv* env,
         ASSERT(state->type == ERTS_EV_TYPE_NIF);
         ASSERT(state->driver.stop.resource == resource);
         if (mode & ERL_DRV_READ) {
-            prepare_select_msg(&state->driver.nif->in, e, mode, recipient,
+            prepare_select_msg(&state->driver.nif->in, mode, recipient,
                                resource, msg, msg_env, am_ready_input);
             msg_env = NULL;
         }
         if (mode & ERL_DRV_WRITE) {
-            prepare_select_msg(&state->driver.nif->out, e, mode, recipient,
+            prepare_select_msg(&state->driver.nif->out, mode, recipient,
                                resource, msg, msg_env, am_ready_output);
             msg_env = NULL;
         }
         if (mode & ERL_NIF_SELECT_ERROR) {
-            prepare_select_msg(&state->driver.nif->err, e, mode, recipient,
+            prepare_select_msg(&state->driver.nif->err, mode, recipient,
                                resource, msg, msg_env, am_ready_error);
         }
         ret = 0;
@@ -1767,33 +1707,6 @@ erts_check_io(ErtsPollThread *psi, ErtsMonotonicTime timeout_time, int poll_only
     int poll_ret, i;
     ERTS_MSACC_PUSH_AND_SET_STATE(ERTS_MSACC_STATE_CHECK_IO);
 
-    ErtsSchedulerData *esdp = erts_get_scheduler_data();
-    int is_normal_sched = !!esdp && esdp->type == ERTS_SCHED_NORMAL;
-
-    if (is_normal_sched) {
-        ErtsSysFdType fds[256];
-        Uint16 cnt;
-        erts_mtx_lock(&nif_select_fds_mtx);
-        memcpy(fds, nif_select_fds, nif_select_cnt * sizeof(ErtsSysFdType));
-        cnt = nif_select_cnt;
- //       if (nif_select_cnt)
- //           erts_fprintf(stderr, "%d: Need to clear %d fds\r\n", esdp->no, nif_select_cnt);
-        nif_select_cnt = 0;
-        erts_mtx_unlock(&nif_select_fds_mtx);
-        for (int i = 0; i < cnt; i++) {
-            ErtsDrvEventState *state;
-            ErtsSysFdType fd = fds[i];
-            erts_mtx_t *mtx = fd_mtx(fd);
-            erts_mtx_lock(mtx);
-            state = get_drv_ev_state(fd);
-            if (state) {
- //               erts_fprintf(stderr, "Clearing %d\r\n", fd);
-                state->flags &= ~ERTS_EV_FLAG_NIF_SELECT;
-            }
-            erts_mtx_unlock(mtx);
-        }
-    }
-
  restart:
 
 #ifdef ERTS_ENABLE_LOCK_CHECK
@@ -1840,9 +1753,6 @@ erts_check_io(ErtsPollThread *psi, ErtsMonotonicTime timeout_time, int poll_only
 			  erl_errno_id(poll_ret), poll_ret);
 	    erts_send_error_to_logger_nogl(dsbufp);
 	}
-        // if (is_normal_sched) {
-        //     erts_fprintf(stderr, "%d: woke up\r\n", esdp->no);
-        // }
         ERTS_MSACC_POP_STATE();
 	return;
     }
@@ -1984,11 +1894,6 @@ erts_check_io(ErtsPollThread *psi, ErtsMonotonicTime timeout_time, int poll_only
                 check_fd_cleanup(state, &free_select, &free_nif);
             }
 
-#if ERTS_POLL_USE_SCHEDULER_POLLING
- //           erts_fprintf(stderr, "Setting flag on %d\r\n", fd);
-            state->flags |= ERTS_EV_FLAG_NIF_SELECT;
-#endif
-
             erts_mtx_unlock(fd_mtx(fd));
 
             if (is_not_nil(in_ev.pid)) {
@@ -2076,10 +1981,6 @@ erts_check_io(ErtsPollThread *psi, ErtsMonotonicTime timeout_time, int poll_only
         psi->pollres = erts_alloc(ERTS_ALC_T_POLLSET,
                                   sizeof(ErtsPollResFd) * psi->pollres_len);
     }
-
-    // if (is_normal_sched) {
-    //     erts_fprintf(stderr, "%d: woke up\r\n", esdp->no);
-    // }
 
     ERTS_MSACC_POP_STATE();
 }
@@ -2394,8 +2295,6 @@ erts_init_check_io(int *argc, char **argv)
 #endif
 
     if (erts_sched_poll_enabled()) {
-        erts_mtx_init(&nif_select_fds_mtx, "drv_ev_nif_select", NIL,
-            ERTS_LOCK_FLAGS_PROPERTY_STATIC | ERTS_LOCK_FLAGS_CATEGORY_IO);
         psiv[0].pollres_len = ERTS_CHECK_IO_POLL_RES_LEN;
         psiv[0].pollres = erts_alloc(ERTS_ALC_T_POLLSET,
                                      sizeof(ErtsPollResFd) * ERTS_CHECK_IO_POLL_RES_LEN);

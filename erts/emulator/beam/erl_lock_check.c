@@ -146,7 +146,6 @@ static erts_lc_lock_order_t erts_lock_order[] = {
     {"proc_btm",				"pid"},
     {"safe_hash",				"address"},
     {"pollset",				        "address"},
-    {"drv_ev_nif_select",                       NULL},
     LEVEL,
     {"erl_db_catree_route_node",		"index"},
     {"proc_status",				"pid"},
