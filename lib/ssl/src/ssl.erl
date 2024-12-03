@@ -211,7 +211,7 @@ traffic and upgrading it to use TLS.
 
 Both sides needs to agree on the upgrade.
 """.
--type socket()                   :: gen_tcp:socket(). % exported
+-type socket()                   :: gen_tcp:socket() | socket:socket(). % exported
 
 -doc(#{title => <<"Socket">>}).
 -doc """
@@ -2151,9 +2151,8 @@ connect(Host, Port, TLSOptions, infinity).
 
 connect(TCPSocket, TLSOptions0, Timeout)
   when is_list(TLSOptions0), ?IS_TIMEOUT(Timeout) ->
-
     try
-        CbInfo = handle_option_cb_info(TLSOptions0, tls),
+        CbInfo = handle_option_cb_info(TLSOptions0, tls, TCPSocket),
         Transport = element(1, CbInfo),
         {ok, Config} = handle_options(Transport, TCPSocket, TLSOptions0, client, undefined),
         tls_socket:upgrade(TCPSocket, Config, Timeout)
@@ -2426,7 +2425,7 @@ handshake(#sslsocket{socket_handle = {Controller,_}, connection_cb = dtls_gen_co
 handshake(Socket, SslOptions, Timeout)
   when is_list(SslOptions), ?IS_TIMEOUT(Timeout) ->
     try
-        CbInfo = handle_option_cb_info(SslOptions, tls),
+        CbInfo = handle_option_cb_info(SslOptions, tls, Socket),
         Transport = element(1, CbInfo),
         ConnetionCb = connection_cb(SslOptions),
         {ok, #config{transport_info = CbInfo, ssl = SslOpts, emulated = EmOpts}} =
@@ -2435,13 +2434,13 @@ handshake(Socket, SslOptions, Timeout)
         {ok, Port} = tls_socket:port(Transport, Socket),
         {ok, SessionIdHandle} = tls_socket:session_id_tracker(ssl_unknown_listener, SslOpts),
         ssl_gen_statem:handshake(ConnetionCb, Port, Socket,
-                                 {SslOpts, 
+                                 {SslOpts,
                                   tls_socket:emulated_socket_options(EmOpts, #socket_options{}),
                                   [{session_id_tracker, SessionIdHandle}]},
                                  self(), CbInfo, Timeout)
     catch
         Error = {error, _Reason} -> Error
-    end.   
+    end.
 
 %%--------------------------------------------------------------------
 -doc(#{equiv => handshake_continue(HsSocket, Options, infinity)}).
@@ -3811,7 +3810,7 @@ handle_options(Transport, Socket, Opts0, Role, Host) ->
     #{protocol := Protocol} = SslOpts,
     {Sock, Emulated} = emulated_options(Transport, Socket, Protocol, SockOpts0),
     ConnetionCb = connection_cb(Protocol),
-    CbInfo = handle_option_cb_info(Opts0, Protocol),
+    CbInfo = handle_option_cb_info(Opts0, Protocol, Socket),
 
     {ok, #config{
             ssl = SslOpts,
@@ -4752,8 +4751,9 @@ set_opt_new(_, _, _, _, Opts) ->
 
 %%%%
 
+default_cb_info(tls_socket) ->
+    tls_socket_tcp:cb_info();
 default_cb_info(tls) ->
-    %% tls_socket_tcp:cb_info();
     {gen_tcp, tcp, tcp_closed, tcp_error, tcp_passive};
 default_cb_info(dtls) ->
     {gen_udp, udp, udp_closed, udp_error, udp_passive}.
@@ -4764,6 +4764,11 @@ handle_cb_info(CbInfo) when tuple_size(CbInfo) =:= 5 ->
     CbInfo;
 handle_cb_info(CbInfo) ->
     option_error(cb_info, CbInfo).
+
+handle_option_cb_info(Options, tls, {'$socket', _}) ->
+    handle_option_cb_info(Options, tls_socket);
+handle_option_cb_info(Options, Protocol, _) ->
+    handle_option_cb_info(Options, Protocol).
 
 handle_option_cb_info(Options, Protocol) ->
     CbInfo = proplists:get_value(cb_info, Options, default_cb_info(Protocol)),
@@ -4943,9 +4948,20 @@ emulated_options(undefined, undefined, Protocol, Opts) ->
     end;
 emulated_options(Transport, Socket, Protocol, Opts) ->
     EmulatedOptions = tls_socket:emulated_options(),
-    {ok, Original} = tls_socket:getopts(Transport, Socket, EmulatedOptions),
-    {Inet, Emulated0} = emulated_options(undefined, undefined, Protocol, Opts),
-    {Inet, lists:ukeymerge(1, Emulated0, Original)}.
+    {ok, Inherited} = case Socket of
+                          {'$socket', _} ->
+                              %% This can't be set on a socket socket,
+                              %% so set Inherited the only possibly defaults.
+                              {ok, tls_socket:internal_inet_values(tcp)};
+                          _ ->
+                              tls_socket:getopts(Transport, Socket, EmulatedOptions)
+                      end,
+    Get = fun(Key) ->
+                  {Key, proplists:get_value(Key, Opts, proplists:get_value(Key, Inherited))}
+          end,
+    {Inet, _} = emulated_options(undefined, undefined, Protocol, Opts),
+    Emulated = [Get(Key) || Key <- EmulatedOptions],
+    {Inet, Emulated}.
 
 handle_cipher_option(Value, Versions)  when is_list(Value) ->       
     try binary_cipher_suites(Versions, Value) of

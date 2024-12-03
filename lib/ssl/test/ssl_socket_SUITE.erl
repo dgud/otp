@@ -74,8 +74,8 @@
 %%--------------------------------------------------------------------
 all() -> 
     [
-    {group, tls},
-    {group, dtls}  
+     {group, tls},
+     {group, dtls}
     ].
 
 groups() ->
@@ -118,9 +118,9 @@ end_per_suite(_Config) ->
     application:stop(crypto).
 
 init_per_group(dtls, Config) ->    
-    [{protocol_opts, [{protocol, dtls}]} | proplists:delete(protocol_opts, Config)];
+    [{group_opts, [{protocol, dtls}]} | proplists:delete(group_opts, Config)];
 init_per_group(tls, Config) ->    
-    [{protocol_opts, [{protocol, tls}]} | proplists:delete(protocol_opts, Config)];
+    [{group_opts, [{protocol, tls}]} | proplists:delete(group_opts, Config)];
 init_per_group(_GroupName, Config) ->    
     [{client_type, erlang},
      {server_type, erlang} | Config].

@@ -57,23 +57,10 @@ cb_info() ->
     %% {gen_tcp, tcp, tcp_closed, tcp_error, tcp_passive}
     {?MODULE, '$socket', '$socket_closed', '$socket', '$socket_passive'}.
 
-setopts(Socket, [{active, N}]) when is_integer(N) ->
-    if N > 1 ->
-            ?CT_LOG("~p Set active ~w~n ~p", [self(), N, process_info(self(), current_stacktrace)]),
-            self() ! {'$socket', Socket, select, nowait},
-            socket:setopt(Socket, {otp,select_read}, true);
-       N == 1 ->
-            ?CT_LOG("Send socket select", [1]),
-            self() ! {'$socket', Socket, select, nowait},
-            ok;
-       true ->
-            ?CT_LOG("ignore active ~w", [N]),
-            ok
-    end;
 setopts(Socket, List) ->
     try
         Opts = check_opts(List),
-        [ok = socket:setopt(Socket, Opt, Val) || {_,_}=Opt := Val <- Opts],
+        [ok = setopt(Socket, Opt, Val) || Opt := Val <- Opts],
         ok
     catch _:Err ->
             Err
@@ -81,12 +68,16 @@ setopts(Socket, List) ->
 
 getopts(Socket, Keys) ->
     try
-        Get = fun(Key) ->
-                      SocketKey = maps:get(Key, socket_opts()),
-                      {ok, Val} = socket:getopt(Socket, SocketKey),
-                      Val
+        Get = fun(Key, Acc) ->
+                      case maps:get(Key, socket_opts(), not_existing_opt) of
+                          not_existing_opt ->
+                              Acc;
+                          SocketKey ->
+                              {ok, Val} = socket:getopt(Socket, SocketKey),
+                              [{Key, Val}|Acc]
+                      end
               end,
-        {ok, [{Key, Get(Key)} || Key <- Keys]}
+        {ok, lists:foldr(Get, [], Keys)}
     catch _:Err ->
             Err
     end.
@@ -225,6 +216,30 @@ data_available(Socket, _select, Handle, Activate) ->
     ?CT_LOG("~w recv res ~w", [get(role), iolist_size(Res)]),
     Res.
 
+%% Helpers
+
+setopt(Socket, active, N) ->
+    if
+        N == true; N == 1 ->
+            ?CT_LOG("Send socket select", [1]),
+            self() ! {'$socket', Socket, select, nowait},
+            ok;
+        N == false ->
+            socket:setopt(Socket, {otp,select_read}, false);
+        N > 1 ->
+            ?CT_LOG("~p Set active ~w", [self(), N]),
+            self() ! {'$socket', Socket, select, nowait},
+            socket:setopt(Socket, {otp,select_read}, true);
+        true ->
+            ?CT_LOG("ignore active ~w", [N]),
+            ok
+    end;
+setopt(Socket, {_,_}=Opt, Val) ->
+    ok = socket:setopt(Socket, Opt, Val);
+setopt(_Socket, _Opt, _Val) ->
+    ?CT_LOG("setopt: Ignore: ~p ~p", [_Opt, _Val]),
+    ok.
+
 connect_1([IP|IPs], Port, Opts, Timeout, _Err) ->
     Family = which_family(IP),
     SockAddr = #{family => Family, addr => IP, port => Port},
@@ -281,8 +296,12 @@ check_opts(Opts0) ->
     Def = #{
             tcp_module => inet_tcp
            },
+    ?CT_LOG("Opts: ~p~n", [Opts0]),
     lists:foldr(fun check_opts_1/2, Def, Opts0).
 
+
+check_opts_1({active, Val}, Opts) ->
+    Opts#{active => Val};
 check_opts_1(inet, Opts) ->
     Opts#{tcp_module => inet_tcp};
 check_opts_1(inet6, Opts) ->

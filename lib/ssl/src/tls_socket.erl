@@ -120,7 +120,7 @@ upgrade(Socket, #config{transport_info = {Transport,_,_,_,_}= CbInfo,
     case peername(Transport, Socket) of
 	{ok, {Address, Port}} ->
 	    ssl_gen_statem:connect(ConnectionCb, Address, Port, Socket,
-				   {SslOptions, 
+				   {SslOptions,
 				    emulated_socket_options(EmOpts, #socket_options{}), undefined},
 				   self(), CbInfo, Timeout);
 	{error, Error} ->
@@ -135,7 +135,7 @@ connect(Address, Port,
     try Transport:connect(Address, Port, SocketOpts ++ internal_inet_values(Transport), Timeout) of
 	{ok, Socket} ->
 	    ssl_gen_statem:connect(ConnetionCb, Address, Port, Socket,
-				   {SslOpts, 
+				   {SslOpts,
 				    emulated_socket_options(EmOpts, #socket_options{}), undefined},
 				   self(), CbInfo, Timeout);
 	{error, Reason} ->
