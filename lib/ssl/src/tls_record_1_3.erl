@@ -342,10 +342,10 @@ additional_data(Length) ->
 nonce(Seq, IV) ->
     %% crypto:exor(<<0:(bit_size(IV)-64),?UINT64(Seq)>>, IV).
     Size = (bit_size(IV)-64),
-    <<Head:Size/bits, W1:32/native, W0:32/native>> = IV,
+    <<Head:Size/bits, ?UINT32(W1), ?UINT32(W0)>> = IV,
     Seq0 = Seq band 16#FFFF_FFFF,
     Seq1 = (Seq bsr 32) band 16#FFFF_FFFF,
-    <<Head:Size/bits, (W1 bxor Seq1):32/native, (W0 bxor Seq0):32/native>>.
+    <<Head:Size/bits, ?UINT32((W1 bxor Seq1)), ?UINT32((W0 bxor Seq0))>>.
 
 encode_tls_cipher_text(Type, {MajVer,MinVer}, Encoded) ->
     Length = erlang:iolist_size(Encoded),
