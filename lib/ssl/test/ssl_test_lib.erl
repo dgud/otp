@@ -408,7 +408,7 @@ init_per_group_openssl(GroupName, Config0) ->
 	    end;
         CryptoSupport ->
             ssl:start(),
-            Config0;
+            add_transport(GroupName, Config0);
         true ->
             {skip, "Missing crypto support"}
     end.
@@ -418,7 +418,12 @@ end_per_group(GroupName, Config) ->
       true ->
           clean_protocol_version(Config);
       false ->
-          Config
+          case GroupName of
+              transport_socket ->
+                  proplists:delete(transport, proplists:delete(group_opts, Config));
+              _ ->
+                  Config
+          end
   end.
 
 openssl_ocsp_support(Config) ->
@@ -2320,7 +2325,7 @@ basic_test(COpts, SOpts, Config) ->
     {Server, Port} = start_server(SType,  COpts, ssl_options(SOpts, Config), Config),
     Client = start_client(CType, Port, ssl_options(COpts, Config), Config),
     gen_check_result(Server, SType, Client, CType),
-    stop(Server, Client).    
+    stop(Server, Client).
 
 basic_alert(ClientOpts, ServerOpts, Config, Alert) ->
     SType = proplists:get_value(server_type, Config),
@@ -3741,8 +3746,18 @@ ssl_options(Option, Config) when is_atom(Option) ->
            end,
     Opts ++ GroupOpts;
 ssl_options(Options, Config) when is_list(Options) ->
-    GroupOpts = proplists:get_value(group_opts, Config, []),
-    Options ++ GroupOpts;
+    case proplists:get_value(group_opts, Config, []) of
+        [] ->
+            Options;
+        GroupOpts0 ->
+            GO = lists:foldr(fun({Key,_}=Opt, Acc) ->
+                                     case proplists:is_defined(Key, Options) of
+                                         true -> Acc;
+                                         false -> [Opt|Acc]
+                                     end
+                             end, [], GroupOpts0),
+            Options ++ GO
+    end;
 ssl_options(OptionFun, Config) when is_function(OptionFun, 0) ->
     GroupOpts = proplists:get_value(group_opts, Config, []),
     OptionFun() ++ GroupOpts.

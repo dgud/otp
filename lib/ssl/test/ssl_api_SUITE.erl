@@ -262,15 +262,16 @@ groups() ->
                            new_options_in_handshake,
                            handshake_continue_tls13_client])
       ++ (since_1_2() -- [conf_signature_algs])},
-     {'tlsv1.2', [],  gen_api_tests() ++ since_1_2() ++ handshake_paus_tests() ++ pre_1_3() ++ [honor_client_cipher_order_tls12,
-                                                                                                honor_server_cipher_order_tls12]},
+     {'tlsv1.2', [],  gen_api_tests() ++ since_1_2() ++ handshake_paus_tests() ++ pre_1_3() ++
+          [honor_client_cipher_order_tls12,honor_server_cipher_order_tls12]},
      {'tlsv1.1', [],  gen_api_tests() ++ handshake_paus_tests() ++ pre_1_3() ++ pre_1_2()},
-     {'tlsv1', [],  gen_api_tests() ++ handshake_paus_tests() ++ pre_1_3() ++ pre_1_2() ++ beast_mitigation_test()},
+     {'tlsv1', [],  gen_api_tests() ++ handshake_paus_tests() ++ pre_1_3() ++ pre_1_2() ++
+          beast_mitigation_test()},
      {'dtlsv1.2', [], gen_api_tests() -- [new_options_in_handshake, hibernate_server] ++
           handshake_paus_tests() -- [handshake_continue_tls13_client] ++ pre_1_3()},
      {'dtlsv1', [],  gen_api_tests() -- [new_options_in_handshake, hibernate_server] ++
           handshake_paus_tests() -- [handshake_continue_tls13_client] ++ pre_1_3() ++ pre_1_2()},
-     {transport_socket,  gen_api_tests() -- [ssl_not_started]}
+     {transport_socket,  gen_api_tests() -- [ssl_not_started, dh_params]}
     ].
 
 since_1_2() ->
@@ -2236,19 +2237,23 @@ new_options_in_handshake(Config) when is_list(Config) ->
     ServerOpts = ssl_test_lib:ssl_options(server_rsa_opts, Config),
     Version = ssl_test_lib:protocol_version(Config),
     {ClientNode, ServerNode, Hostname} = ssl_test_lib:run_where(Config),
+    
+    Filter = fun(any) when Version =:= 'tlsv1.3' ->
+                     true;
+                (_) when Version =:= 'tlsv1.3' ->
+                     false;
+                (dhe_rsa) ->
+                     true;
+                (ecdhe_rsa) ->
+                     true;
+                (rsa) ->
+                     false;
+                (_) ->
+                     false
+             end,
 
     Ciphers = [_, Cipher | _] = ssl:filter_cipher_suites(ssl:cipher_suites(all, Version), 
-                                                         [{key_exchange,
-                                                 fun(dhe_rsa) ->
-                                                         true;
-                                                    (ecdhe_rsa) ->
-                                                         true;
-                                                    (rsa) ->
-                                                         false;
-                                                    (_) ->
-                                                         false
-                                                 end
-                                                }]),
+                                                         [{key_exchange, Filter}]),
     
     Server = ssl_test_lib:start_server([{node, ServerNode}, {port, 0}, 
 					{from, self()}, 

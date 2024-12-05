@@ -71,6 +71,8 @@ getopts(Socket, Keys) ->
         Get = fun(Key, Acc) ->
                       case maps:get(Key, socket_opts(), not_existing_opt) of
                           not_existing_opt ->
+                              throw({error, {not_supported, Key}});
+                          inet_option_only ->
                               Acc;
                           SocketKey ->
                               {ok, Val} = socket:getopt(Socket, SocketKey),
@@ -337,6 +339,12 @@ check_opts_1(Opt, Opts) ->
 
 socket_opts() ->
     #{
+      mode   => inet_option_only,
+      active => inet_option_only,
+      header => inet_option_only,
+      packet => inet_option_only,
+      packet_size => inet_option_only,
+
       %% Level: otp
       buffer => {otp, rcvbuf},
       debug  => {otp, debug},
