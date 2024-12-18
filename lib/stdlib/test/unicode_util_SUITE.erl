@@ -31,7 +31,8 @@
          count/1]).
 
 -export([debug/0, id/1, bin_split/1, uc_loaded_size/0,
-        time_count/4  %% Used by stdlib_bench_SUITE
+         time_count/4,  %% Used by stdlib_bench_SUITE
+         gc_test_data/3, fetch/2
         ]).
 
 suite() ->
@@ -135,6 +136,88 @@ gc(Config) ->
 
     0 = fold(fun verify_gc/3, 0, DataDir ++ "/GraphemeBreakTest.txt"),
     ok.
+
+%%  DEVANAGARI must parse IndicSyllabicCategory.txt
+%%
+%%   https://www.unicode.org/reports/tr29/tr29-45.html#Table_Combining_Char_Sequences_and_Grapheme_Clusters
+%% 
+%%   
+%% https://www.unicode.org/reports/tr44/tr44-34.html#Indic_Conjunct_Break
+%%  Indic_Conjunct_Break	E	I	This property defines values used in Grapheme Cluster Break algorithm in [UAX29].
+%% Generated as follows:
+
+%% Define the set of applicable scripts. For Unicode 15.1, the set is defined as
+%% S = [\p{sc=Beng}\p{sc=Deva}\p{sc=Gujr}\p{sc=Mlym}\p{sc=Orya}\p{sc=Telu}]
+%% Then for any character C:
+%% InCB = Linker iff C in [S &\p{Indic_Syllabic_Category=Virama}]
+%% InCB = Consonant iff C in [S &\p{Indic_Syllabic_Category=Consonant}]
+%% InCB = Extend iff C in
+%% [\p{gcb=Extend}
+%% \p{gcb=ZWJ}
+%% -\p{InCB=Linker}
+%% -\p{InCB=Consonant}
+%% -[\u200C]]
+%% Otherwise, InCB = None (the default value)
+%%
+%%
+
+
+%% # Derived Property: Indic_Conjunct_Break
+%% #  Generated from the Grapheme_Cluster_Break, Indic_Syllabic_Category,
+%% #  Canonical_Combining_Class, and Script properties as described in UAX #44:
+%% #  https://www.unicode.org/reports/tr44/.
+
+%% #  All code points not explicitly listed for Indic_Conjunct_Break
+%% #  have the value None.
+
+%% # @missing: 0000..10FFFF; InCB; None
+
+%% # Indic_Conjunct_Break=Linker
+
+%% 094D          ; InCB; Linker # Mn       DEVANAGARI SIGN VIRAMA
+%% 09CD          ; InCB; Linker # Mn       BENGALI SIGN VIRAMA
+%% 0ACD          ; InCB; Linker # Mn       GUJARATI SIGN VIRAMA
+%% 0B4D          ; InCB; Linker # Mn       ORIYA SIGN VIRAMA
+%% 0C4D          ; InCB; Linker # Mn       TELUGU SIGN VIRAMA
+%% 0D4D          ; InCB; Linker # Mn       MALAYALAM SIGN VIRAMA
+
+%% # Total code points: 6
+
+%% # ================================================
+
+%% # Indic_Conjunct_Break=Consonant
+
+%% 0915..0939    ; InCB; Consonant # Lo  [37] DEVANAGARI LETTER KA..DEVANAGARI LETTER HA
+%% 0958..095F    ; InCB; Consonant # Lo   [8] DEVANAGARI LETTER QA..DEVANAGARI LETTER YYA
+%% 0978..097F    ; InCB; Consonant # Lo   [8] DEVANAGARI LETTER MARWARI DDA..DEVANAGARI LETTER BBA
+%% 0995..09A8    ; InCB; Consonant # Lo  [20] BENGALI LETTER KA..BENGALI LETTER NA
+%% 09AA..09B0    ; InCB; Consonant # Lo   [7] BENGALI LETTER PA..BENGALI LETTER RA
+%% 09B2          ; InCB; Consonant # Lo       BENGALI LETTER LA
+%% 09B6..09B9    ; InCB; Consonant # Lo   [4] BENGALI LETTER SHA..BENGALI LETTER HA
+%% 09DC..09DD    ; InCB; Consonant # Lo   [2] BENGALI LETTER RRA..BENGALI LETTER RHA
+%% 09DF          ; InCB; Consonant # Lo       BENGALI LETTER YYA
+%% 09F0..09F1    ; InCB; Consonant # Lo   [2] BENGALI LETTER RA WITH MIDDLE DIAGONAL..BENGALI LETTER RA WITH LOWER DIAGONAL
+%% 0A95..0AA8    ; InCB; Consonant # Lo  [20] GUJARATI LETTER KA..GUJARATI LETTER NA
+%% 0AAA..0AB0    ; InCB; Consonant # Lo   [7] GUJARATI LETTER PA..GUJARATI LETTER RA
+%% 0AB2..0AB3    ; InCB; Consonant # Lo   [2] GUJARATI LETTER LA..GUJARATI LETTER LLA
+%% 0AB5..0AB9    ; InCB; Consonant # Lo   [5] GUJARATI LETTER VA..GUJARATI LETTER HA
+%% 0AF9          ; InCB; Consonant # Lo       GUJARATI LETTER ZHA
+%% 0B15..0B28    ; InCB; Consonant # Lo  [20] ORIYA LETTER KA..ORIYA LETTER NA
+%% 0B2A..0B30    ; InCB; Consonant # Lo   [7] ORIYA LETTER PA..ORIYA LETTER RA
+%% 0B32..0B33    ; InCB; Consonant # Lo   [2] ORIYA LETTER LA..ORIYA LETTER LLA
+%% 0B35..0B39    ; InCB; Consonant # Lo   [5] ORIYA LETTER VA..ORIYA LETTER HA
+%% 0B5C..0B5D    ; InCB; Consonant # Lo   [2] ORIYA LETTER RRA..ORIYA LETTER RHA
+%% 0B5F          ; InCB; Consonant # Lo       ORIYA LETTER YYA
+%% 0B71          ; InCB; Consonant # Lo       ORIYA LETTER WA
+%% 0C15..0C28    ; InCB; Consonant # Lo  [20] TELUGU LETTER KA..TELUGU LETTER NA
+%% 0C2A..0C39    ; InCB; Consonant # Lo  [16] TELUGU LETTER PA..TELUGU LETTER HA
+%% 0C58..0C5A    ; InCB; Consonant # Lo   [3] TELUGU LETTER TSA..TELUGU LETTER RRRA
+%% 0D15..0D3A    ; InCB; Consonant # Lo  [38] MALAYALAM LETTER KA..MALAYALAM LETTER TTTA
+
+
+
+
+
 
 verify_gc(Line0, N, Acc) ->
     Line = unicode:characters_to_list(Line0),
