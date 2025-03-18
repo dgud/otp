@@ -72,10 +72,12 @@ used for flattening deep lists.
 -compile(nowarn_deprecated_catch).
 
 -export([fwrite/2,fwrite/3,fread/2,fread/3,format/2,format/3]).
+-export([fwrite_bin/2, fwrite_bin/3, format_bin/2, format_bin/3]).
 -export([scan_format/2,unscan_format/1,build_text/1,build_text/2]).
 -export([print/1,print/4,indentation/2]).
 
--export([write/1,write/2,write/3,nl/0,format_prompt/1,format_prompt/2]).
+-export([write/1,write/2,write/3, write_bin/2]).
+-export([nl/0,format_prompt/1,format_prompt/2]).
 -export([write_binary/3]).
 -export([write_atom/1,write_string/1,write_string/2,write_latin1_string/1,
          write_latin1_string/2, write_char/1, write_latin1_char/1]).
@@ -207,6 +209,32 @@ Valid option:
 fwrite(Format, Args, Options) ->
     format(Format, Args, Options).
 
+
+-doc(#{equiv => fwrite_bin(Format, Data, [])}).
+-doc(#{since => <<"OTP 29.0">>}).
+-spec fwrite_bin(Format, Data) -> unicode:unicode_binary() when
+      Format :: io:format(),
+      Data :: [term()].
+
+fwrite_bin(F, A) ->
+    format_bin(F, A, []).
+
+-doc("""
+   Binary variant of `fwrite/3`
+
+   Returns a UTF-8 encoded binary.
+   """).
+-doc(#{since => <<"OTP 29.0">>}).
+-spec fwrite_bin(Format, Data, Options) -> unicode:unicode_binary() when
+      Format :: io:format(),
+      Data :: [term()],
+      Options :: [Option],
+      Option :: {'chars_limit', CharsLimit},
+      CharsLimit :: chars_limit().
+
+fwrite_bin(F, A, Opts) ->
+    format_bin(F, A, Opts).
+
 -doc """
 Tries to read `String` in accordance with the control sequences in `Format`.
 
@@ -234,6 +262,7 @@ _Example:_
 {ok,[15.6,1.73e-5,24.5],[]}
 ```
 """.
+
 -spec fread(Format, String) -> Result when
       Format :: string(),
       String :: string(),
@@ -310,6 +339,38 @@ format(Format, Args) ->
 
 format(Format, Args, Options) ->
     try io_lib_format:fwrite(Format, Args, Options)
+    catch
+        C:R:S ->
+            test_modules_loaded(C, R, S),
+            erlang:error(badarg, [Format, Args])
+    end.
+
+
+-doc(#{equiv => fwrite_bin(Format, Data, [])}).
+-doc(#{since => <<"OTP 29.0">>}).
+-spec format_bin(Format, Data) -> unicode:unicode_binary() when
+      Format :: io:format(),
+      Data :: [term()].
+
+format_bin(Format, Args) ->
+    try io_lib_format:fwrite_bin(Format, Args)
+    catch
+        C:R:S ->
+            test_modules_loaded(C, R, S),
+            erlang:error(badarg, [Format, Args])
+    end.
+
+-doc(#{equiv => fwrite_bin(Format, Data, Options)}).
+-doc(#{since => <<"OTP 29.0">>}).
+-spec format_bin(Format, Data, Options) -> chars() when
+      Format :: io:format(),
+      Data :: [term()],
+      Options :: [Option],
+      Option :: {'chars_limit', CharsLimit},
+      CharsLimit :: chars_limit().
+
+format_bin(Format, Args, Options) ->
+    try io_lib_format:fwrite_bin(Format, Args, Options)
     catch
         C:R:S ->
             test_modules_loaded(C, R, S),
@@ -513,7 +574,8 @@ _Example:_
       Options :: [Option],
       Option :: {'chars_limit', CharsLimit}
               | {'depth', Depth}
-              | {'encoding', 'latin1' | 'utf8' | 'unicode'},
+              | {'encoding', 'latin1' | 'utf8' | 'unicode'}
+              | {'maps_order', maps:iterator_order()},
       CharsLimit :: chars_limit(),
       Depth :: depth().
 
@@ -536,25 +598,159 @@ write(Term, Options) when is_list(Options) ->
 write(Term, Depth) ->
     write(Term, [{depth, Depth}, {encoding, latin1}]).
 
+-doc """
+Behaves as `write/2` but returns a UTF-8 binary string.
+""".
+-spec write_bin(Term, Depth) -> unicode:unicode_binary() when
+      Term :: term(),
+      Depth :: depth();
+           (Term, Options) -> chars() when
+      Term :: term(),
+      Options :: [Option],
+      Option :: {'chars_limit', CharsLimit}
+              | {'depth', Depth}
+              | {'maps_order', maps:iterator_order()},
+      CharsLimit :: chars_limit(),
+      Depth :: depth().
+
+write_bin(Term, Options) when is_list(Options) ->
+    Depth = get_option(depth, Options, -1),
+    CharsLimit = get_option(chars_limit, Options, -1),
+    MapsOrder = get_option(maps_order, Options, undefined),
+    if
+        Depth =:= 0; CharsLimit =:= 0 ->
+            <<"...">>;
+        is_integer(CharsLimit), CharsLimit < 0, is_integer(Depth) ->
+            write_bin1(Term, Depth, MapsOrder, <<>>);
+        is_integer(CharsLimit), CharsLimit > 0 ->
+            RecDefFun = fun(_, _) -> no end,
+            If = io_lib_pretty:intermediate
+                   (Term, Depth, CharsLimit, RecDefFun, unicode, _Str=false, MapsOrder),
+            io_lib_pretty:write(If)
+    end.
+
+write_bin1(_Term, 0, _O, Acc) ->
+    <<Acc/binary, "...">>;
+write_bin1(Term, _D, _O, Acc) when is_integer(Term) ->
+    <<Acc/binary, (integer_to_binary(Term))/binary>>;
+write_bin1(Term, _D, _O, Acc) when is_float(Term) ->
+    <<Acc/binary, (float_to_binary(Term, [short]))/binary>>;
+write_bin1(Atom, _D, _O, Acc) when is_atom(Atom) ->
+    <<Acc/binary, (unicode:characters_to_binary(write_atom(Atom)))/binary>>;
+write_bin1(Term, _D, _O, Acc) when is_port(Term) ->
+    <<Acc/binary, (list_to_binary(erlang:port_to_list(Term)))/binary>>;
+write_bin1(Term, _D, _O, Acc) when is_pid(Term) ->
+    <<Acc/binary, (list_to_binary(pid_to_list(Term)))/binary>>;
+write_bin1(Term, _D, _O, Acc) when is_reference(Term) ->
+    <<Acc/binary, (list_to_binary(erlang:ref_to_list(Term)))/binary>>;
+write_bin1(<<_/bitstring>>=Term, D, _O, Acc) ->
+    write_binary_bin(Term, D, Acc);
+write_bin1([], _D, _O, Acc) ->
+    <<Acc/binary, "[]">>;
+write_bin1({}, _D, _O, Acc) ->
+    <<Acc/binary, "{}">>;
+write_bin1(F, _D, _O, Acc) when is_function(F) ->
+    <<Acc/binary, (list_to_binary(erlang:fun_to_list(F)))/binary>>;
+write_bin1([H|T], D, O, Acc) ->
+    if
+	D =:= 1 -> <<Acc/binary, "[...]">>;
+	true ->
+            Head = write_bin1(H, D-1, O, <<Acc/binary, $[>>),
+            write_tail_bin(T, D-1, O, Head)
+    end;
+write_bin1(T, D, O, Acc) when is_tuple(T) ->
+    if
+	D =:= 1 -> <<Acc/binary, "{...}">>;
+	true ->
+            First = write_bin1(element(1, T), D-1, O, <<Acc/binary, ${>>),
+            write_tuple_bin(T, 2, D-1, O, First)
+    end;
+write_bin1(Term, 1, _O, Acc) when is_map(Term) ->
+    <<Acc/binary, "#{}">>;
+write_bin1(Map, D, O, Acc) when is_map(Map), is_integer(D) ->
+    I = maps:iterator(Map, O),
+    case maps:next(I) of
+        {K, V, NextI} ->
+            D0 = D - 1,
+            Start = write_map_assoc_bin(K, V, D0, O, <<Acc/binary, $#, ${>>),
+            write_map_body_bin(NextI, D0, D0, O, Start);
+        none ->
+            ~"#{}"
+    end.
+
+write_tail_bin([], _D, _O, Acc) -> <<Acc/binary, $]>>;
+write_tail_bin(_, 1, _O, Acc) -> <<Acc/binary, "|...]">>;
+write_tail_bin([H|T], D, O, Acc) ->
+    Head = write_bin1(H, D-1, O, <<Acc/binary,$,>>),
+    write_tail_bin(T, D-1, O, Head);
+write_tail_bin(Other, D, O, Acc) ->
+    Tail = write_bin1(Other, D-1, O, <<Acc/binary, $|>>),
+    <<Tail/binary, $]>>.
+
+write_tuple_bin(T, I, _D, _O, Acc) when I > tuple_size(T) ->
+    <<Acc/binary, $}>>;
+write_tuple_bin(_, _I, 1, _O, Acc) ->
+    <<Acc/binary, ",...}">>;
+write_tuple_bin(T, I, D, O, Acc) ->
+    Elem = write_bin1(element(I, T), D-1, O, <<Acc/binary, $,>>),
+    write_tuple_bin(T, I+1, D-1, O, Elem).
+
+write_map_body_bin(_, 1, _D0, _O, Acc) ->
+    <<Acc/binary, ",...}">>;
+write_map_body_bin(I, D, D0, O, Acc) ->
+    case maps:next(I) of
+        {K, V, NextI} ->
+            W = write_map_assoc_bin(K, V, D0, O, <<Acc/binary, $,>>),
+            write_map_body_bin(NextI, D - 1, D0, O, W);
+        none ->
+            <<Acc/binary, "}">>
+    end.
+write_map_assoc_bin(K, V, D, O, Acc) ->
+    KBin = write_bin1(K, D, O, Acc),
+    write_bin1(V, D, O, <<KBin/binary, " => ">>).
+
+write_binary_bin(B, D, Acc) ->
+    {S, _} = write_binary_bin(B, D, -1, Acc),
+    S.
+
+write_binary_bin(B, D, T, Acc) when is_integer(T) ->
+    write_binary_body_bin(B, D, tsub(T, 4), <<Acc/binary, "<<" >>).
+
+write_binary_body_bin(<<>> = B, _D, _T, Acc) ->
+    {<<Acc/binary, ">>" >>, B};
+write_binary_body_bin(B, D, T, Acc) when D =:= 1; T =:= 0->
+    {<<Acc/binary, "...>>">>, B};
+write_binary_body_bin(<<X:8>>, _D, _T, Acc) ->
+    {<<Acc/binary, (integer_to_binary(X))/binary, ">>">>, <<>>};
+write_binary_body_bin(<<X:8,Rest/bitstring>>, D, T, Acc) ->
+    IntBin = integer_to_binary(X),
+    S = <<Acc/binary, IntBin/binary, $,>>,
+    write_binary_body_bin(Rest, D-1, tsub(T, byte_size(IntBin) + 1), S);
+write_binary_body_bin(B, _D, _T, Acc) ->
+    L = bit_size(B),
+    <<X:L>> = B,
+    {<<Acc/binary, (integer_to_binary(L))/binary, $:, (integer_to_binary(X))/binary>>,
+     <<>>}.
+
+
 write1(_Term, 0, _E, _O) -> "...";
 write1(Term, _D, _E, _O) when is_integer(Term) -> integer_to_list(Term);
 write1(Term, _D, _E, _O) when is_float(Term) -> io_lib_format:fwrite_g(Term);
 write1(Atom, _D, latin1, _O) when is_atom(Atom) -> write_atom_as_latin1(Atom);
 write1(Atom, _D, _E, _O) when is_atom(Atom) -> write_atom(Atom);
-write1(Term, _D, _E, _O) when is_port(Term) -> write_port(Term);
+write1(Term, _D, _E, _O) when is_port(Term) -> erlang:port_to_list(Term);
 write1(Term, _D, _E, _O) when is_pid(Term) -> pid_to_list(Term);
-write1(Term, _D, _E, _O) when is_reference(Term) -> write_ref(Term);
+write1(Term, _D, _E, _O) when is_reference(Term) -> erlang:ref_to_list(Term);
 write1(<<_/bitstring>>=Term, D, _E, _O) -> write_binary(Term, D);
 write1([], _D, _E, _O) -> "[]";
 write1({}, _D, _E, _O) -> "{}";
+write1(F, _D, _E, _O) when is_function(F) -> erlang:fun_to_list(F);
 write1([H|T], D, E, O) ->
     if
 	D =:= 1 -> "[...]";
 	true ->
 	    [$[,[write1(H, D-1, E, O)|write_tail(T, D-1, E, O)],$]]
     end;
-write1(F, _D, _E, _O) when is_function(F) ->
-    erlang:fun_to_list(F);
 write1(Term, D, E, O) when is_map(Term) ->
     write_map(Term, D, E, O);
 write1(T, D, E, O) when is_tuple(T) ->
@@ -580,12 +776,6 @@ write_tuple(T, I, _D, _E, _O) when I > tuple_size(T) -> "";
 write_tuple(_, _I, 1, _E, _O) -> [$, | "..."];
 write_tuple(T, I, D, E, O) ->
     [$,,write1(element(I, T), D-1, E, O)|write_tuple(T, I+1, D-1, E, O)].
-
-write_port(Port) ->
-    erlang:port_to_list(Port).
-
-write_ref(Ref) ->
-    erlang:ref_to_list(Ref).
 
 write_map(_, 1, _E, _O) -> "#{}";
 write_map(Map, D, E, O) when is_integer(D) ->

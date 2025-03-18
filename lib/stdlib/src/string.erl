@@ -364,7 +364,7 @@ reverse(CD) ->
 
 %% Slice a string and return rest of string
 %% Note: counts grapheme_clusters
--doc(#{equiv => slice(String, Length, infinity)}).
+-doc(#{equiv => slice(String, Start, infinity)}).
 -doc(#{group => <<"Functions">>,since => <<"OTP 20.0">>}).
 -spec slice(String, Start) -> Slice when
       String::unicode:chardata(),
