@@ -794,8 +794,8 @@ rp(Term, Col, Ll, D, M, RF) ->
                 OrigRes;
             Other ->
                 io:format("Exp: ~w~nGot: ~w~n", [OrigRes, Other]),
-                io:format("Binary failed: io_lib_pretty:print_bin(~p, ~w). ", [Term, Args]),
-                Other
+                io:format("Binary failed:~nio_lib_pretty:print_bin(~0p,~n   ~w). ", [Term, Args]),
+                UTF8
         end
     catch _:Reason:ST ->
             io:format("Exp: ~w~n~n", [OrigRes]),
