@@ -780,7 +780,29 @@ rp(Term, Col, Ll, D, M, RF) ->
     %%           [Col, Ll, D, Term]),
     R = io_lib_pretty:print(Term, Col, Ll, D, M, RF),
     %% io:format("~s~n<--~n", [R]),
-    lists:flatten(io_lib:format("~s", [R])).
+    OrigRes = lists:flatten(io_lib:format("~s", [R])),
+    Args = [{column, Col}, {line_length, Ll}, {depth, D},
+            {line_max_chars, M}, {record_print_fun, RF},
+            %% Default values for print/[1,3,4,5,6]
+            {chars_limit, -1}, {encoding, latin1},
+            {strings, true}, {maps_order, undefined}],
+    try
+        UTF8 = io_lib_pretty:print_bin(Term, Args),
+        true = is_binary(UTF8),
+        case unicode:characters_to_list(UTF8) of
+            OrigRes ->
+                OrigRes;
+            Other ->
+                io:format("Exp: ~w~nGot: ~w~n", [OrigRes, Other]),
+                io:format("Binary failed: io_lib_pretty:print_bin(~p, ~w). ", [Term, Args]),
+                Other
+        end
+    catch _:Reason:ST ->
+            io:format("Exp: ~w~n~n", [OrigRes]),
+            io:format("GOT CRASH: ~p in ~p~n",[Reason, ST]),
+            io:format("Binary crashed: io_lib_pretty:print_bin(~p, ~w). ", [Term, Args]),
+            Reason
+    end.
 
 fmt(Fmt, Args) ->
     FormatList = io_lib:scan_format(Fmt, Args),

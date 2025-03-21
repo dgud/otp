@@ -448,14 +448,14 @@ write_tail(E, S) ->
 write_bin({{tuple, _IsTagged, L}, _, _, _}, Acc) ->
     write_list_bin(L, $,, $}, <<Acc/binary, ${>>);
 write_bin({{list, L}, _, _, _}, Acc) ->
-    write_list_bin(L, $,, $], <<Acc/binary, $[>>);
+    write_list_bin(L, $|, $], <<Acc/binary, $[>>);
 write_bin({{map, Pairs}, _, _, _}, Acc) ->
     write_list_bin(Pairs, $,, $}, <<Acc/binary, "#{">>);
 write_bin({{map_pair, K, V}, _, _, _}, Acc0) ->
     Acc = write_bin(K, Acc0),
     write_bin(V, <<Acc/binary, " => ">>);
 write_bin({{record, [{Name0,_} | L]}, _, _, _}, Acc) ->
-    Name = unicode:characters_to_list(Name0),
+    Name = unicode:characters_to_binary(Name0),
     true = is_binary(Name),
     write_fields_bin(L, <<Acc/binary, Name/binary, ${>>);
 write_bin({{bin, S}, _, _, _}, Acc) ->
@@ -477,7 +477,7 @@ write_fields_bin([F | Fs], Acc) ->
 write_fields_tail_bin([], Acc) ->
     <<Acc/binary, $}>>;
 write_fields_tail_bin({dots, _, _, _}, Acc) ->
-    <<Acc/binary, "...}">>;
+    <<Acc/binary, ",...}">>;
 write_fields_tail_bin([F | Fs], Acc) ->
     write_fields_tail_bin(Fs, write_field_bin(F, <<Acc/binary, $,>>)).
 
@@ -494,7 +494,7 @@ write_list_bin([E | Es], S, End, Acc) ->
 write_tail_bin([], _S, End, Acc) ->
     <<Acc/binary, End>>;
 write_tail_bin([E | Es], S, End, Acc) ->
-    write_tail_bin(Es, S, End, write_bin(E, <<Acc/binary, S>>));
+    write_tail_bin(Es, S, End, write_bin(E, <<Acc/binary, $,>>));
 write_tail_bin({dots, _, _, _}, S, End, Acc) ->
     <<Acc/binary, S, "...", End>>;
 write_tail_bin(E, S, End, Acc) ->
@@ -929,23 +929,23 @@ printable_bin0(Bin, D, T, InEnc, Type) ->
 printable_bin(_Bin, 0, _D, _In, _Out) ->
     false;
 printable_bin(Bin, Len, D, latin1, Out) when is_binary(Bin) ->
-    case printable_latin1_bin(Bin, Len, true) of
-        {all, Ascii} when Len =:= byte_size(Bin) ->
+    case printable_latin1_bin(Bin, Len) of
+        all when Len =:= byte_size(Bin) ->
             case Out of
-                binary -> {Ascii, Bin};
-                list -> {Ascii, binary_to_list(Bin)}
+                binary -> {true, Bin};
+                list -> {true, binary_to_list(Bin)}
             end;
-        {all, Ascii} ->
+        all ->
             case Out of
-                binary -> {Ascii, true, binary:part(Bin, 0, Len)};
-                list -> {Ascii, true, binary_to_list(Bin, 1, Len)}
+                binary -> {true, true, binary:part(Bin, 0, Len)};
+                list -> {true, true, binary_to_list(Bin, 1, Len)}
             end;
-        {NC, Ascii} when is_integer(NC), D > 0, Len - NC >= D ->
+        NC when is_integer(NC), D > 0, Len - NC >= D ->
             case Out of
-                binary -> {Ascii, true, binary:part(Bin, 0, Len - NC)};
-                list -> {Ascii, true, binary_to_list(Bin, 1, Len - NC)}
+                binary -> {true, true, binary:part(Bin, 0, Len - NC)};
+                list -> {true, true, binary_to_list(Bin, 1, Len - NC)}
             end;
-        {NC, _} when is_integer(NC) ->
+        NC when is_integer(NC) ->
             false
     end;
 printable_bin(Bin, Len, D, _Uni, Out) ->
@@ -989,33 +989,13 @@ printable_latin1_list([$\e | Cs], N) -> printable_latin1_list(Cs, N - 1);
 printable_latin1_list([], _) -> all;
 printable_latin1_list(_, N) -> N.
 
-printable_latin1_bin(<<>>, _, Ascii) -> {all, Ascii};
-printable_latin1_bin(_, 0, Ascii) -> {0, Ascii};
-printable_latin1_bin(<<Char:8, Rest/binary>>, N, Ascii) ->
+printable_latin1_bin(<<>>, _) -> all;
+printable_latin1_bin(_, 0) -> 0;
+printable_latin1_bin(<<Char:8, Rest/binary>>, N) ->
     case printable_char(Char, latin1) of
-        true when Char > 127 -> printable_latin1_bin(Rest, N-1, false);
-        true -> printable_latin1_bin(Rest, N-1, Ascii);
-        false -> {N, Ascii}
+        true -> printable_latin1_bin(Rest, N-1);
+        false -> N
     end.
-
-%% valid_utf8(<<>>,_) ->
-%%     true;
-%% valid_utf8(_,0) ->
-%%     true;
-%% valid_utf8(<<_/utf8, R/binary>>,N) ->
-%%     valid_utf8(R,N-1);
-%% valid_utf8(_,_) ->
-%%     false.
-
-%% printable_unicode(<<C/utf8, R/binary>>=Bin, I, L, Range) when I > 0 ->
-%%     case printable_char(C,Range) of
-%%         true ->
-%%             printable_unicode(R, I - 1, [C | L],Range);
-%%         false ->
-%%             {I, Bin, lists:reverse(L)}
-%%     end;
-%% printable_unicode(Bin, I, L,_) ->
-%%     {I, Bin, lists:reverse(L)}.
 
 printable_unicode_bin(<<C/utf8, R/binary>>=Bin, I, Range) when I > 0 ->
     case printable_char(C, Range) of
