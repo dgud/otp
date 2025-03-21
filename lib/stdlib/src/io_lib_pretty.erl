@@ -25,10 +25,11 @@
 %%% In this module "print" means the formatted printing while "write"
 %%% means just writing out onto one line.
 
--export([print/1,print/2,print/3,print/4,print/5,print/6]).
+-export([print/1,print/2,print/3,print/4,print/5,print/6,
+         print_bin/2]).
 
 %% To be used by io_lib only.
--export([intermediate/7, write/1]).
+-export([intermediate/7, write/1, write/2]).
 
 %%%
 %%% Exported functions
@@ -68,6 +69,21 @@ print(Term) ->
                 | {'strings', boolean()}
                 | {'maps_order', maps:iterator_order()}.
 -type options() :: [option()].
+
+
+-spec print_bin(term(), options()) -> unicode:unicode_binary().
+print_bin(Term, Options) when is_list(Options) ->
+    Col = get_option(column, Options, 1),
+    Ll = get_option(line_length, Options, 80),
+    D = get_option(depth, Options, -1),
+    M = get_option(line_max_chars, Options, -1),
+    T = get_option(chars_limit, Options, -1),
+    RecDefFun = get_option(record_print_fun, Options, no_fun),
+    InEncoding = get_option(encoding, Options, epp:default_encoding()),
+    Strings = get_option(strings, Options, true),
+    MapsOrder = get_option(maps_order, Options, undefined),
+    Data = print(Term, Col, Ll, D, M, T, RecDefFun, {InEncoding, utf8}, Strings, MapsOrder),
+    unicode:characters_to_binary(Data).
 
 -spec print(term(), rec_print_fun()) -> chars();
            (term(), options()) -> chars().
@@ -116,15 +132,15 @@ print(Term, Col, Ll, D, M, RecDefFun) ->
 %% M = CHAR_MAX (-1 if no max, 60 when printing from shell)
 print(_, _, _, 0, _M, _T, _RF, _Enc, _Str, _Ord) -> "...";
 print(_, _, _, _D, _M, 0, _RF, _Enc, _Str, _Ord) -> "...";
-print(Term, Col, Ll, D, M, T, RecDefFun, Enc, Str, Ord) when Col =< 0 ->
+print(Term, Col, Ll, D, M, T, RecDefFun, Enc, Str, Ord)
+  when Col =< 0 ->
     %% ensure Col is at least 1
     print(Term, 1, Ll, D, M, T, RecDefFun, Enc, Str, Ord);
-print(Atom, _Col, _Ll, _D, _M, _T, _RF, Enc, _Str, _Ord) when is_atom(Atom) ->
+print(Atom, _Col, _Ll, _D, _M, _T, _RF, Enc, _Str, _Ord)
+  when is_atom(Atom) ->
     write_atom(Atom, Enc);
-print(Term, Col, Ll, D, M0, T, RecDefFun, Enc, Str, Ord) when is_tuple(Term);
-                                                         is_list(Term);
-                                                         is_map(Term);
-                                                         is_bitstring(Term) ->
+print(Term, Col, Ll, D, M0, T, RecDefFun, Enc, Str, Ord)
+  when is_tuple(Term); is_list(Term); is_map(Term); is_bitstring(Term) ->
     %% preprocess and compute total number of chars
     {_, Len, _Dots, _} = If =
         case T < 0 of
@@ -135,10 +151,10 @@ print(Term, Col, Ll, D, M0, T, RecDefFun, Enc, Str, Ord) when is_tuple(Term);
     M = max_cs(M0, Len),
     if
         Ll =:= 0 ->
-            write(If);
+            write(If, Enc);
         Len < Ll - Col, Len =< M ->
             %% write the whole thing on a single line when there is room
-            write(If);
+            write(If, Enc);
         true ->
             %% compute the indentation TInd for tagged tuples and records
             TInd = while_fail([-1, 4], 
@@ -146,9 +162,12 @@ print(Term, Col, Ll, D, M0, T, RecDefFun, Enc, Str, Ord) when is_tuple(Term);
                               1),
             pp(If, Col, Ll, M, TInd, indent(Col), 0, 0)
     end;
-print(Term, _Col, _Ll, _D, _M, _T, _RF, _Enc, _Str, _Ord) ->
+print(Term, _Col, _Ll, _D, _M, _T, _RF, Enc, _Str, _Ord) ->
     %% atomic data types (bignums, atoms, ...) are never truncated
-    io_lib:write(Term).
+    case Enc of
+        {_, utf8} -> io_lib:write_bin(Term, []);
+        _ -> io_lib:write(Term)
+    end.
 
 %%%
 %%% Local functions
@@ -332,9 +351,9 @@ pp_tail([{_, Len, _, _}=E | Es], Col0, Col, Ll, M, TInd, Ind, LD, S, W) ->
 pp_tail({dots, _, _, _}, _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, S, _W) ->
     [S | "..."];
 pp_tail({_, Len, _, _}=E, _Col0, Col, Ll, M, _TInd, _Ind, LD, S, W)
-                  when Len + 1 < Ll - Col - (LD + 1), 
-                       Len + 1 + W + (LD + 1) =< M, 
-                       ?ATM(E) ->
+  when Len + 1 < Ll - Col - (LD + 1),
+       Len + 1 + W + (LD + 1) =< M,
+       ?ATM(E) ->
     [S | write(E)];
 pp_tail(E, Col0, _Col, Ll, M, TInd, Ind, LD, S, _W) ->
     [S, $\n, Ind | pp(E, Col0, Ll, M, TInd, Ind, LD + 1, 0)].
@@ -368,6 +387,11 @@ pp_binary(S, N, _N0, Ind) ->
         false ->
             S
     end.
+
+write(If, {_, utf8}) ->
+    write_bin(If, <<>>);
+write(If, _) ->
+    write(If).
 
 %% write the whole thing on a single line
 write({{tuple, _IsTagged, L}, _, _, _}) ->
@@ -418,6 +442,64 @@ write_tail({dots, _, _, _}, S) ->
     [S | "..."];
 write_tail(E, S) ->
     [S | write(E)].
+
+
+%% write the whole thing on a single line
+write_bin({{tuple, _IsTagged, L}, _, _, _}, Acc) ->
+    write_list_bin(L, $,, $}, <<Acc/binary, ${>>);
+write_bin({{list, L}, _, _, _}, Acc) ->
+    write_list_bin(L, $,, $], <<Acc/binary, $[>>);
+write_bin({{map, Pairs}, _, _, _}, Acc) ->
+    write_list_bin(Pairs, $,, $}, <<Acc/binary, "#{">>);
+write_bin({{map_pair, K, V}, _, _, _}, Acc0) ->
+    Acc = write_bin(K, Acc0),
+    write_bin(V, <<Acc/binary, " => ">>);
+write_bin({{record, [{Name0,_} | L]}, _, _, _}, Acc) ->
+    Name = unicode:characters_to_list(Name0),
+    true = is_binary(Name),
+    write_fields_bin(L, <<Acc/binary, Name/binary, ${>>);
+write_bin({{bin, S}, _, _, _}, Acc) ->
+    Bin = unicode:characters_to_binary(S),
+    true = is_binary(Bin),
+    <<Acc/binary, Bin/binary>>;
+write_bin({S, _, _, _}, Acc) ->
+    Bin = unicode:characters_to_binary(S),
+    true = is_binary(Bin),
+    <<Acc/binary, Bin/binary>>.
+
+write_fields_bin([], Acc) ->
+    <<Acc/binary, $}>>;
+write_fields_bin({dots, _, _, _}, Acc) ->
+    <<Acc/binary, "...}">>;
+write_fields_bin([F | Fs], Acc) ->
+    write_fields_tail_bin(Fs, write_field_bin(F, Acc)).
+
+write_fields_tail_bin([], Acc) ->
+    <<Acc/binary, $}>>;
+write_fields_tail_bin({dots, _, _, _}, Acc) ->
+    <<Acc/binary, "...}">>;
+write_fields_tail_bin([F | Fs], Acc) ->
+    write_fields_tail_bin(Fs, write_field_bin(F, <<Acc/binary, $,>>)).
+
+write_field_bin({{field, Name, _NameL, F}, _, _, _}, Acc) ->
+    Bin = unicode:characters_to_binary(Name),
+    true = is_binary(Bin),
+    write_bin(F, <<Acc/binary, Bin/binary, " = ">>).
+
+write_list_bin({dots, _, _, _}, _S, End, Acc) ->
+    <<Acc/binary, "...", End>>;
+write_list_bin([E | Es], S, End, Acc) ->
+    write_tail_bin(Es, S, End, write_bin(E, Acc)).
+
+write_tail_bin([], _S, End, Acc) ->
+    <<Acc/binary, End>>;
+write_tail_bin([E | Es], S, End, Acc) ->
+    write_tail_bin(Es, S, End, write_bin(E, <<Acc/binary, S>>));
+write_tail_bin({dots, _, _, _}, S, End, Acc) ->
+    <<Acc/binary, S, "...", End>>;
+write_tail_bin(E, S, End, Acc) ->
+    Bin = write_bin(E, <<Acc/binary, S>>),
+    <<Bin/binary, End>>.
 
 -type more() :: fun((chars_limit(), DeltaDepth :: non_neg_integer()) ->
                             intermediate_format()).
@@ -521,14 +603,14 @@ print_length(List, D, T, RF, Enc, Str, Ord) when is_list(List) ->
     case Str andalso printable_list(List, D, T, Enc) of
         true ->
             %% print as string, escaping double-quotes in the list
-            S = write_string(List, Enc),
-            {S, io_lib:chars_length(S), 0, no_more};
+            {S, Len} = write_string(List, Enc),
+            {S, Len, 0, no_more};
         {true, Prefix} ->
             %% Truncated lists when T < 0 could break some existing code.
-            S = write_string(Prefix, Enc),
+            {S, Len} = write_string(Prefix, Enc),
             %% NumOfDots = 0 to avoid looping--increasing the depth
             %% does not make Prefix longer.
-            {[S | "..."], 3 + io_lib:chars_length(S), 0, no_more};
+            {[S | "..."], 3 + Len, 0, no_more};
         false ->
             case print_length_list(List, D, T, RF, Enc, Str, Ord) of
                 {What, Len, Dots, _More} when Dots > 0 ->
@@ -561,41 +643,7 @@ print_length(<<_/bitstring>> = Bin, 1, _T, RF, Enc, Str, Ord) ->
     More = fun(T1, Dd) -> ?FUNCTION_NAME(Bin, 1+Dd, T1, RF, Enc, Str, Ord) end,
     {"<<...>>", 7, 3, More};
 print_length(<<_/bitstring>> = Bin, D, T, RF, Enc, Str, Ord) ->
-    D1 = D - 1,
-    case
-        Str andalso
-        (bit_size(Bin) rem 8) =:= 0 andalso
-        printable_bin0(Bin, D1, tsub(T, 6), Enc)
-    of
-        {true, List} when is_list(List) ->
-            S = io_lib:write_string(List, $"), %"
-            {[$<,$<,S,$>,$>], 4 + length(S), 0, no_more};
-        {false, List} when is_list(List) ->
-            S = io_lib:write_string(List, $"), %"
-            {[$<,$<,S,"/utf8>>"], 9 + io_lib:chars_length(S), 0, no_more};
-        {true, true, Prefix} ->
-            S = io_lib:write_string(Prefix, $"), %"
-            More = fun(T1, Dd) ->
-                           ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
-                   end,
-            {[$<,$<,S|"...>>"], 7 + length(S), 3, More};
-        {false, true, Prefix} ->
-            S = io_lib:write_string(Prefix, $"), %"
-            More = fun(T1, Dd) ->
-                           ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
-                   end,
-            {[$<,$<,S|"/utf8...>>"], 12 + io_lib:chars_length(S), 3, More};
-        false ->
-            case io_lib:write_binary(Bin, D, T) of
-                {S, <<>>} ->
-                    {{bin, S}, iolist_size(S), 0, no_more};
-                {S, _Rest} ->
-                    More = fun(T1, Dd) ->
-                                   ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
-                           end,
-                    {{bin, S}, iolist_size(S), 3, More}
-            end
-    end;    
+    print_length_binary(Bin, D, T, RF, Enc, Str, Ord);
 print_length(Term, _D, _T, _RF, _Enc, _Str, _Ord) ->
     S = io_lib:write(Term),
     %% S can contain unicode, so iolist_size(S) cannot be used here
@@ -735,6 +783,81 @@ list_length_tail([{_, Len, Dots, _} | Es], Acc, DotsAcc) ->
 list_length_tail({_, Len, Dots, _}, Acc, DotsAcc) ->
     {Acc + 1 + Len, DotsAcc + Dots}.
 
+print_length_binary(Bin, D, T, RF, {InEnc, utf8} = Enc, Str, Ord) ->
+    D1 = D - 1,
+    case
+        Str andalso
+        (bit_size(Bin) rem 8) =:= 0 andalso
+        printable_bin0(Bin, D1, tsub(T, 6), InEnc, binary)
+    of
+        {true, _Bin} ->
+            Len = byte_size(Bin), %% input ASCII
+            Utf8 = io_lib:write_string_bin(Bin, [], latin1),
+            {[$<,$<,$",Utf8,$",$>,$>], 6 + Len, 0, no_more};
+        {false, _Bin} ->
+            Utf8 = io_lib:write_string_bin(Bin, [], unicode),
+            Len = string:length(Utf8),
+            {[$<,$<,$",Utf8,"\"/utf8>>"], 11 + Len, 0, no_more};
+        {true, true, Prefix} ->
+            S = io_lib:write_string_bin(Prefix, [], latin1), %"
+            More = fun(T1, Dd) ->
+                           ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
+                   end,
+            {[$<,$<,$",S|"\"...>>"], 7 + byte_size(Prefix), 3, More};
+        {false, true, Prefix} ->
+            S = io_lib:write_string_bin(Prefix, [], unicode), %"
+            More = fun(T1, Dd) ->
+                           ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
+                   end,
+            {[$<,$<,$",S|"\"/utf8...>>"], 14 + string:length(S), 3, More};
+        false ->
+            case io_lib:write_binary_bin(Bin, D, T, <<>>) of
+                {S, <<>>} ->
+                    {{bin, S}, iolist_size(S), 0, no_more};
+                {S, _Rest} ->
+                    More = fun(T1, Dd) ->
+                                   ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
+                           end,
+                    {{bin, S}, iolist_size(S), 3, More}
+            end
+    end;
+print_length_binary(Bin, D, T, RF, Enc, Str, Ord) ->  %% list output
+    D1 = D - 1,
+    case
+        Str andalso
+        (bit_size(Bin) rem 8) =:= 0 andalso
+        printable_bin0(Bin, D1, tsub(T, 6), Enc, list)
+    of
+        {true, List} when is_list(List) ->
+            S = io_lib:write_string(List, $"), %"
+            {[$<,$<,S,$>,$>], 4 + length(S), 0, no_more};
+        {false, List} when is_list(List) ->
+            S = io_lib:write_string(List, $"), %"
+            {[$<,$<,S,"/utf8>>"], 9 + io_lib:chars_length(S), 0, no_more};
+        {true, true, Prefix} ->
+            S = io_lib:write_string(Prefix, $"), %"
+            More = fun(T1, Dd) ->
+                           ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
+                   end,
+            {[$<,$<,S|"...>>"], 7 + length(S), 3, More};
+        {false, true, Prefix} ->
+            S = io_lib:write_string(Prefix, $"), %"
+            More = fun(T1, Dd) ->
+                           ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
+                   end,
+            {[$<,$<,S|"/utf8...>>"], 12 + io_lib:chars_length(S), 3, More};
+        false ->
+            case io_lib:write_binary(Bin, D, T) of
+                {S, <<>>} ->
+                    {{bin, S}, iolist_size(S), 0, no_more};
+                {S, _Rest} ->
+                    More = fun(T1, Dd) ->
+                                   ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
+                           end,
+                    {{bin, S}, iolist_size(S), 3, More}
+            end
+    end.
+
 %% ?CHARS printable characters has depth 1.
 -define(CHARS, 4).
 
@@ -785,7 +908,7 @@ is_flat([C|Cs], N) when is_integer(C) ->
 is_flat(_, _N) ->
     false.
 
-printable_bin0(Bin, D, T, Enc) ->
+printable_bin0(Bin, D, T, InEnc, Type) ->
     Len = case D >= 0 of
               true ->
                   %% Use byte_size() also if Enc =/= latin1.
@@ -801,57 +924,53 @@ printable_bin0(Bin, D, T, Enc) ->
               false when T >= 0 -> % cannot happen
                   T
           end,
-    printable_bin(Bin, Len, D, Enc).
+    printable_bin(Bin, Len, D, InEnc, Type).
 
-printable_bin(_Bin, 0, _D, _Enc) ->
+printable_bin(_Bin, 0, _D, _In, _Out) ->
     false;
-printable_bin(Bin, Len, D, latin1) ->
-    N = erlang:min(20, Len),
-    L = binary_to_list(Bin, 1, N),
-    case printable_latin1_list(L, N) of
-        all when N =:= byte_size(Bin)  ->
-            {true, L};
-        all when N =:= Len -> % N < byte_size(Bin)
-            {true, true, L};
-        all ->
-            case printable_bin1(Bin, 1 + N, Len - N) of
-                0 when byte_size(Bin) =:= Len ->
-                    {true, binary_to_list(Bin)};
-                NC when D > 0, Len - NC >= D ->
-                    {true, true, binary_to_list(Bin, 1, Len - NC)};
-                NC when is_integer(NC) ->
-                    false
+printable_bin(Bin, Len, D, latin1, Out) when is_binary(Bin) ->
+    case printable_latin1_bin(Bin, Len, true) of
+        {all, Ascii} when Len =:= byte_size(Bin) ->
+            case Out of
+                binary -> {Ascii, Bin};
+                list -> {Ascii, binary_to_list(Bin)}
             end;
-        NC when is_integer(NC), D > 0, N - NC >= D ->
-            {true, true, binary_to_list(Bin, 1, N - NC)};
-        NC when is_integer(NC) ->
+        {all, Ascii} ->
+            case Out of
+                binary -> {Ascii, true, binary:part(Bin, 0, Len)};
+                list -> {Ascii, true, binary_to_list(Bin, 1, Len)}
+            end;
+        {NC, Ascii} when is_integer(NC), D > 0, Len - NC >= D ->
+            case Out of
+                binary -> {Ascii, true, binary:part(Bin, 0, Len - NC)};
+                list -> {Ascii, true, binary_to_list(Bin, 1, Len - NC)}
+            end;
+        {NC, _} when is_integer(NC) ->
             false
     end;
-printable_bin(Bin, Len, D, _Uni) ->
-    case valid_utf8(Bin,Len) of
-	true ->
-	    case printable_unicode(Bin, Len, [], io:printable_range()) of
-		{_, <<>>, L} ->
-		    {byte_size(Bin) =:= length(L), L};
-		{NC, Bin1, L} when D > 0, Len - NC >= D ->
-		    {byte_size(Bin)-byte_size(Bin1) =:= length(L), true, L};
-		{_NC, _Bin, _L} ->
-		    false
-	    end;
-	false ->
-	    printable_bin(Bin, Len, D, latin1)
-    end.
-
-printable_bin1(_Bin, _Start, 0) ->
-    0;
-printable_bin1(Bin, Start, Len) ->
-    N = erlang:min(10000, Len),
-    L = binary_to_list(Bin, Start, Start + N - 1),
-    case printable_latin1_list(L, N) of
-        all ->
-            printable_bin1(Bin, Start + N, Len - N);
-        NC when is_integer(NC) ->
-            Len - (N - NC)
+printable_bin(Bin, Len, D, _Uni, Out) ->
+    case printable_unicode_bin(Bin, Len, io:printable_range()) of
+        not_utf8 ->
+            printable_bin(Bin, Len, D, latin1, Out);
+        {N, <<>>} when (Len - N) =:= byte_size(Bin) ->  %% Ascii only
+            case Out of
+                binary ->  {true, Bin};
+                list -> {true, binary_to_list(Bin)}
+            end;
+        {_N, <<>>} ->
+            case Out of
+                binary -> {false, Bin};
+                list -> {false, unicode:characters_to_list(Bin)}
+            end;
+        {N, RestBin} when D > 0, Len - N >= D ->
+            Sz = byte_size(Bin)-byte_size(RestBin),
+            Part = binary:part(Bin, 0, Sz),
+            case Out of
+                binary -> {Sz =:= (Len - N), true, Part};
+                list -> {Sz =:= (Len - N), true, unicode:characters_to_list(Part)}
+            end;
+        _ ->
+            false
     end.
 
 %% -> all | integer() >=0. Adopted from io_lib.erl.
@@ -870,24 +989,45 @@ printable_latin1_list([$\e | Cs], N) -> printable_latin1_list(Cs, N - 1);
 printable_latin1_list([], _) -> all;
 printable_latin1_list(_, N) -> N.
 
-valid_utf8(<<>>,_) ->
-    true;
-valid_utf8(_,0) ->
-    true;
-valid_utf8(<<_/utf8, R/binary>>,N) ->
-    valid_utf8(R,N-1);
-valid_utf8(_,_) ->
-    false.
+printable_latin1_bin(<<>>, _, Ascii) -> {all, Ascii};
+printable_latin1_bin(_, 0, Ascii) -> {0, Ascii};
+printable_latin1_bin(<<Char:8, Rest/binary>>, N, Ascii) ->
+    case printable_char(Char, latin1) of
+        true when Char > 127 -> printable_latin1_bin(Rest, N-1, false);
+        true -> printable_latin1_bin(Rest, N-1, Ascii);
+        false -> {N, Ascii}
+    end.
 
-printable_unicode(<<C/utf8, R/binary>>=Bin, I, L, Range) when I > 0 ->
-    case printable_char(C,Range) of
-        true ->
-            printable_unicode(R, I - 1, [C | L],Range);
-        false ->
-            {I, Bin, lists:reverse(L)}
+%% valid_utf8(<<>>,_) ->
+%%     true;
+%% valid_utf8(_,0) ->
+%%     true;
+%% valid_utf8(<<_/utf8, R/binary>>,N) ->
+%%     valid_utf8(R,N-1);
+%% valid_utf8(_,_) ->
+%%     false.
+
+%% printable_unicode(<<C/utf8, R/binary>>=Bin, I, L, Range) when I > 0 ->
+%%     case printable_char(C,Range) of
+%%         true ->
+%%             printable_unicode(R, I - 1, [C | L],Range);
+%%         false ->
+%%             {I, Bin, lists:reverse(L)}
+%%     end;
+%% printable_unicode(Bin, I, L,_) ->
+%%     {I, Bin, lists:reverse(L)}.
+
+printable_unicode_bin(<<C/utf8, R/binary>>=Bin, I, Range) when I > 0 ->
+    case printable_char(C, Range) of
+        true -> printable_unicode_bin(R, I-1, Range);
+        false -> {I, Bin}
     end;
-printable_unicode(Bin, I, L,_) ->
-    {I, Bin, lists:reverse(L)}.
+printable_unicode_bin(<<_/utf8, _/binary>>=Bin, I, _Range) ->
+    {I, Bin};
+printable_unicode_bin(<<>>, I, _Range) ->
+    {I, <<>>};
+printable_unicode_bin(_, _, _) ->
+    not_utf8.
 
 printable_char($\n,_) -> true;
 printable_char($\r,_) -> true;
@@ -910,10 +1050,15 @@ write_atom(A, latin1) ->
 write_atom(A, _Uni) ->
     io_lib:write_atom(A).
 
-write_string(S, latin1) ->
-    io_lib:write_latin1_string(S, $"); %"
-write_string(S, _Uni) ->
-    io_lib:write_string(S, $"). %"
+write_string(S0, latin1) ->
+    S = io_lib:write_latin1_string(S0, $"), %"
+    {S, io_lib:chars_length(S)};
+write_string(S0, {InEnc, Out}) ->
+    S = io_lib:write_string(S0, $"),
+    {unicode:characters_to_binary(S, InEnc, Out), io_lib:chars_length(S)}; %"
+write_string(S0, _Uni) ->
+    S = io_lib:write_string(S0, $"), %"
+    {S, io_lib:chars_length(S)}.
 
 expand({_, _, _Dots=0, no_more} = If, _T, _Dd) -> If;
 expand({{tuple,IsTagged,L}, _Len, _, no_more}, T, Dd) ->

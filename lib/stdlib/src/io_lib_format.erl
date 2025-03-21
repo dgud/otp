@@ -606,10 +606,12 @@ print(T, D, F, right, P, _Pad, Enc, Type, Str, Ord, ChLim, _I) ->
                {depth, D},
                {encoding, Enc},
                {strings, Str},
-               {maps_order, Ord},
-               {output, Type}
+               {maps_order, Ord}
               ],
-    io_lib_pretty:print(T, Options).
+    case Type of
+        list -> io_lib_pretty:print(T, Options);
+        binary -> io_lib_pretty:print_bin(T, Options)
+    end.
 
 %% fwrite_e(Float, Field, Adjust, Precision, PadChar)
 

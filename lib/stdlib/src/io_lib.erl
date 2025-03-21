@@ -78,9 +78,11 @@ used for flattening deep lists.
 
 -export([write/1,write/2,write/3, write_bin/2]).
 -export([nl/0,format_prompt/1,format_prompt/2]).
--export([write_binary/3]).
+-export([write_binary/3, write_binary_bin/4]).
 -export([write_atom/1,write_string/1,write_string/2,write_latin1_string/1,
-         write_latin1_string/2, write_char/1, write_latin1_char/1]).
+         write_latin1_string/2, write_char/1, write_latin1_char/1,
+         write_string_bin/3
+        ]).
 
 -export([write_atom_as_latin1/1, write_string_as_latin1/1,
          write_string_as_latin1/2, write_char_as_latin1/1]).
@@ -626,7 +628,7 @@ write_bin(Term, Options) when is_list(Options) ->
             RecDefFun = fun(_, _) -> no end,
             If = io_lib_pretty:intermediate
                    (Term, Depth, CharsLimit, RecDefFun, unicode, _Str=false, MapsOrder),
-            io_lib_pretty:write(If)
+            io_lib_pretty:write(If, {unicode,utf8})
     end.
 
 write_bin1(_Term, 0, _O, Acc) ->
@@ -712,6 +714,13 @@ write_map_assoc_bin(K, V, D, O, Acc) ->
 write_binary_bin(B, D, Acc) ->
     {S, _} = write_binary_bin(B, D, -1, Acc),
     S.
+
+-doc false.
+-spec write_binary_bin(Bin, Depth, T, Acc) -> {unicode:unicode_binary(), binary()} when
+      Bin :: binary(),
+      Depth :: integer(),
+      T :: integer(),
+      Acc :: unicode:unicode_binary().
 
 write_binary_bin(B, D, T, Acc) when is_integer(T) ->
     write_binary_body_bin(B, D, tsub(T, 4), <<Acc/binary, "<<" >>).
@@ -927,6 +936,90 @@ write_string(S) ->
 
 write_string(S, Q) ->
     [Q|write_string1(unicode_as_unicode, S, Q)].
+
+-doc "Returns the UTF-8 binary encoded `String` surrounded by `Qoute`.".
+-spec write_string_bin(String, Qoute, InEnc) -> unicode:unicode_binary() when
+      String :: string() | binary(),
+      Qoute  :: integer() | [],
+      InEnc  :: 'unicode' | 'latin1'.  %% In case of binary input
+
+write_string_bin(S, Q, _InEnc) when is_list(S) ->
+    Bin = unicode:characters_to_binary(write_string(S, Q)),
+    true = is_binary(Bin),
+    Bin;
+write_string_bin(S, Q, latin1) when is_binary(S) ->
+    Escaped = string_bin_escape_latin1(S, S, Q, [], 0, 0),
+    Bin = unicode:characters_to_binary([Q,Escaped,Q], latin1, utf8),
+    true = is_binary(Bin),
+    Bin;
+write_string_bin(S, Q, unicode) when is_binary(S) ->
+    Escaped = string_bin_escape_unicode(S, S, Q, [], 0, 0),
+    case Q of
+        [] when is_binary(Escaped) -> Escaped;
+        _ -> unicode:characters_to_binary([Q,Escaped,Q])
+    end.
+
+string_bin_escape_latin1(<<Byte, Rest/binary>>, Orig, Q, Acc, Skip0, Len) ->
+    case needs_escape(Byte, Q) of
+        false ->
+            string_bin_escape_latin1(Rest, Orig, Q, Acc, Skip0, Len+1);
+        Escape when Len =:= 0 ->
+            Skip = Skip0 + Len + 1,
+            string_bin_escape_latin1(Rest, Orig, Q, [Acc | Escape], Skip, 0);
+        Escape ->
+            Skip = Skip0 + Len + 1,
+            Part = binary_part(Orig, Skip0, Len),
+            string_bin_escape_latin1(Rest, Orig, Q, [Acc, Part | Escape], Skip, 0)
+    end;
+string_bin_escape_latin1(_, Orig, _, _Acc, 0, _) ->
+    Orig;
+string_bin_escape_latin1(_, Orig, _, Acc, Skip, Len) ->
+    case Len =:= 0 of
+        true -> Acc;
+        false -> [Acc | binary_part(Orig, Skip, Len)]
+    end.
+
+string_bin_escape_unicode(<<Byte, Rest/binary>>, Orig, Q, Acc, Skip0, Len) when Byte > 127 ->
+    string_bin_escape_unicode(Rest, Orig, Q, Acc, Skip0, Len+1);
+string_bin_escape_unicode(<<Byte, Rest/binary>>, Orig, Q, Acc, Skip0, Len) ->
+    case needs_escape(Byte, Q) of
+        false ->
+            string_bin_escape_unicode(Rest, Orig, Q, Acc, Skip0, Len+1);
+        Escape when Len =:= 0 ->
+            Skip = Skip0 + Len + 1,
+            string_bin_escape_unicode(Rest, Orig, Q, [Acc | Escape], Skip, 0);
+        Escape ->
+            Skip = Skip0 + Len + 1,
+            Part = binary_part(Orig, Skip0, Len),
+            string_bin_escape_unicode(Rest, Orig, Q, [Acc, Part | Escape], Skip, 0)
+    end;
+string_bin_escape_unicode(_, Orig, _, _Acc, 0, _) ->
+    Orig;
+string_bin_escape_unicode(_, Orig, _, Acc, Skip, Len) ->
+    case Len =:= 0 of
+        true -> Acc;
+        false -> [Acc | binary_part(Orig, Skip, Len)]
+    end.
+
+needs_escape(Q, Q)   -> [$\\, Q];
+needs_escape($\\, _) -> [$\\, $\\];
+needs_escape(C, _) when C >= $\s,   C =< $~ ->
+    false;
+needs_escape($\n, _) -> [$\\, $n];
+needs_escape($\r, _) -> [$\\, $r];
+needs_escape($\t, _) -> [$\\, $t];
+needs_escape($\v, _) -> [$\\, $v];
+needs_escape($\b, _) -> [$\\, $b];
+needs_escape($\f, _) -> [$\\, $f];
+needs_escape($\e, _) -> [$\\, $e];
+needs_escape($\d, _) -> [$\\, $d];
+needs_escape(C, _) when C >= $\240, C =< $\377 ->
+    false;
+needs_escape(C, _) when C < $\240 ->
+    C1 = (C bsr 6) + $0,
+    C2 = ((C bsr 3) band 7) + $0,
+    C3 = (C band 7) + $0,
+    [$\\,C1,C2,C3].
 
 %% Backwards compatibility.
 -doc false.
