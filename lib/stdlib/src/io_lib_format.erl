@@ -445,7 +445,7 @@ indentation([C|Cs], I) ->
     indentation(Cs, indentation(C, I));
 indentation(Bin, I) when is_binary(Bin) ->
     case binary:matches(Bin, [~"\n", ~"\t"]) of
-        [] -> I;
+        [] -> string:length(Bin) + I;
         Ms -> indentation_bin(Ms, 0, Bin, I)
     end;
 indentation([], I) ->

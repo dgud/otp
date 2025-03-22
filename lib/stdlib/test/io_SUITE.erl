@@ -812,7 +812,23 @@ fmt(Fmt, Args) ->
     Chars3 = lists:flatten(io_lib:format(Fmt, Args)),
     Chars1 = Chars2,
     Chars2 = Chars3,
-    Chars3.
+    try
+        Utf8 = io_lib:format_bin(Fmt, Args),
+        true = is_binary(Utf8),
+        case unicode:characters_to_list(Utf8) of
+            Chars3 ->
+                Chars3;
+            Other ->
+                io:format("Exp: ~w~nGot: ~w~n", [Chars3, Other]),
+                io:format("Binary failed:~nio_lib:format_bin(\"~ts\",~n   ~w). ", [Fmt, Args]),
+                Utf8
+        end
+    catch _:Reason:ST ->
+            io:format("Exp: ~w~n~n", [Chars3]),
+            io:format("GOT CRASH: ~p in ~p~n",[Reason, ST]),
+            io:format("Binary crashed: io_lib:format_bin(\"~ts\", ~w). ", [Fmt, Args]),
+            Reason
+    end.
 
 rfd(a, 0) ->
     [];

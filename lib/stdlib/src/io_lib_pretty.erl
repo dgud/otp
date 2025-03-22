@@ -756,7 +756,8 @@ write_tail_bin(E, S, End, Acc) ->
         }.
 
 -spec intermediate(term(), depth(), pos_integer(), rec_print_fun(),
-                   encoding(), boolean(), boolean()) -> intermediate_format().
+                   encoding() | {encoding, utf8},
+                   boolean(), boolean()) -> intermediate_format().
 
 intermediate(Term, D, T, RF, Enc, Str, Ord) when T > 0 ->
     D0 = 1,
@@ -1255,6 +1256,8 @@ printable_char(C,unicode) ->
     C > 16#FFFF andalso C =< 16#10FFFF.
 
 write_atom(A, latin1) ->
+    io_lib:write_atom_as_latin1(A);
+write_atom(A, {latin1, _}) ->
     io_lib:write_atom_as_latin1(A);
 write_atom(A, _Uni) ->
     io_lib:write_atom(A).
