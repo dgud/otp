@@ -826,53 +826,84 @@ iolist_to_bin(L, F, CharsLimit, latin1) when CharsLimit < 0; CharsLimit >= F ->
     Bin = unicode:characters_to_binary(L, latin1, unicode),
     {Bin, iolist_size(L)};
 iolist_to_bin(L, F, CharsLimit, unicode) when CharsLimit < 0; CharsLimit >= F ->
-    Bin = unicode:characters_to_binary(L),
-    true = is_binary(Bin),
-    {Bin, undefined};
-iolist_to_bin(L, _, CharsLimit, Enc) ->
-    limit_iolist_to_bin(L, sub(CharsLimit, 3), normal, Enc, 0, <<>>).
-
-limit_iolist_to_bin(Cs, 0, normal, Enc, Size0, Acc) ->
-    {Bin, Size} = limit_iolist_to_bin(Cs, 4, final, Enc, 0, <<>>),
-    if Size < 4 ->
-            {<<Acc/binary, Bin/binary>>, Size0+Size};
-       true ->
-            {<<Acc/binary, "...">>, Size0+3}
+    case unicode:characters_to_binary(L) of
+        Bin when is_binary(Bin) ->
+            {Bin, undefined};
+        {error, Ok, Bad} ->
+            %% Try latin1, strange allowing mixing latin1 and utf8
+            %% but we handled it before for unknown reason.
+            {Bin, _} = iolist_to_bin(Bad, F, CharsLimit, latin1),
+            {iolist_to_binary([Ok|Bin]), undefined}
     end;
-limit_iolist_to_bin(_Cs, 0, final, _, Size, Acc) ->
-    {Acc, Size};
-limit_iolist_to_bin([C|Cs], Limit, Mode, latin1, Size, Acc)
+iolist_to_bin(L, _, CharsLimit, Enc) ->
+    {Acc, Sz, _Limit, Rest} = limit_iolist_to_bin(L, sub(CharsLimit, 3), Enc, 0, <<>>),
+    case string:is_empty(Rest) of
+        true ->
+            {Acc, Sz};
+        false ->
+            {Cont, Size, _, _} = limit_iolist_to_bin(Rest, 4, Enc, 0, <<>>),
+            if Size < 4 ->
+                    {<<Acc/binary, Cont/binary>>, Sz+Size};
+               true ->
+                    {<<Acc/binary, "...">>, Sz+3}
+            end
+    end.
+
+limit_iolist_to_bin(Cs, 0, _, Size, Acc) ->
+    {Acc, Size, 0, Cs};
+limit_iolist_to_bin([C|Cs], Limit, latin1, Size, Acc)
   when C >= $\000, C =< $\377 ->
-    limit_iolist_to_bin(Cs, Limit-1, Mode, latin1, Size+1, <<Acc/binary, C/utf8>>);
-limit_iolist_to_bin([C|Cs], Limit, Mode, unicode, Size, Acc) ->
-    limit_iolist_to_bin(Cs, Limit-1, Mode, unicode, Size+1, <<Acc/binary, C/utf8>>);
-limit_iolist_to_bin(Bin0, Limit, Mode, latin1, Size0, Acc)
+    limit_iolist_to_bin(Cs, Limit-1, latin1, Size+1, <<Acc/binary, C/utf8>>);
+limit_iolist_to_bin(Bin0, Limit, latin1, Size0, Acc)
   when is_binary(Bin0) ->
     case byte_size(Bin0) of
         Sz when Sz > Limit ->
             {B1, B2} = split_binary(Bin0, Limit),
             Bin = unicode:characters_to_binary(B1, latin1, unicode),
-            limit_iolist_to_bin(B2, 0, Mode, latin1, Size0+Limit, <<Acc/binary, Bin/binary>>);
+            {<<Acc/binary, Bin/binary>>, Size0+Limit, 0, B2};
         Sz ->
             Bin = unicode:characters_to_binary(Bin0, latin1, unicode),
-            {<<Acc/binary, Bin/binary>>, Size0+Sz}
+            {<<Acc/binary, Bin/binary>>, Size0+Sz, Limit-Sz, []}
     end;
-limit_iolist_to_bin(Bin0, Limit, Mode, unicode, Size0, Acc)
+limit_iolist_to_bin(Bin0, Limit, unicode, Size0, Acc)
   when is_binary(Bin0) ->
-    case string:length(Bin0) of
+    try string:length(Bin0) of
         Sz when Sz > Limit ->
             B1 = string:slice(Bin0, 0, Limit),
             Skip = byte_size(Bin0) - byte_size(B1),
             <<_:Skip/binary, B2/binary>> = Bin0,
-            limit_iolist_to_bin(B2, 0, Mode, unicode, Size0+Limit, <<Acc/binary, B1/binary>>);
+            {<<Acc/binary, B1/binary>>, Size0+Limit, 0, B2};
         Sz ->
-            {<<Acc/binary, Bin0/binary>>, Size0+Sz}
+            {<<Acc/binary, Bin0/binary>>, Size0+Sz, Limit-Sz, []}
+    catch _:_ ->  %% We allow latin1 as binary strings, so try that
+            limit_iolist_to_bin(Bin0, Limit, latin1, Size0, Acc)
     end;
-limit_iolist_to_bin([Deep|Cs], Limit, Mode, Enc, Size0, Acc0) ->
-    {Acc, Size} = limit_iolist_to_bin(Deep, Limit, Mode, Enc, 0, Acc0),
-    limit_iolist_to_bin(Cs, Limit-Size, Mode, Enc, Size0+Size, Acc);
-limit_iolist_to_bin([], _, _, _, Size, Acc) ->
-    {Acc, Size}.
+limit_iolist_to_bin(CPs, Limit, unicode, Size, Acc) ->
+    case string:next_grapheme(CPs) of
+        {error, <<C,Cs1/binary>>} ->
+            %% This is how ~ts handles Latin1 binaries with option
+            %% chars_limit.
+            limit_iolist_to_bin(Cs1, Limit-1, unicode, Size+1, <<Acc/binary, C/utf8>>);
+        {error, [C|Cs1]} -> % not all versions of module string return this
+            limit_iolist_to_bin(Cs1, Limit-1, unicode, Size+1, <<Acc/binary, C/utf8>>);
+        [] ->
+            {Acc, Size, Limit, []};
+        [GC|Cs1] when is_integer(GC) ->
+            limit_iolist_to_bin(Cs1, Limit-1, unicode, Size+1, <<Acc/binary, GC/utf8>>);
+        [GC|Cs1] ->
+            Utf8 = unicode:characters_to_binary(GC),
+            limit_iolist_to_bin(Cs1, Limit-1, unicode, Size+1, <<Acc/binary, Utf8/binary>>)
+    end;
+limit_iolist_to_bin([Deep|Cs], Limit0, Enc, Size0, Acc0) ->
+    {Acc, Sz, L, Cont} = limit_iolist_to_bin(Deep, Limit0, Enc, Size0, Acc0),
+    case string:is_empty(Cont) of
+        true ->
+            limit_iolist_to_bin(Cs, L, Enc, Sz, Acc);
+        false ->
+            limit_iolist_to_bin([Cont|Cs], L, Enc, Sz, Acc)
+    end;
+limit_iolist_to_bin([], Limit, _Enc, Size, Acc) ->
+    {Acc, Size, Limit, []}.
 
 limit_field(F, CharsLimit) when CharsLimit < 0; F =:= none ->
     F;
@@ -920,7 +951,7 @@ string_bin(S, Sz, none, _Adj, P, Pad, Enc) ->
 string_bin(S, Sz, F, Adj, P, Pad, Enc) when F >= P ->
     if F > P ->
 	    if Sz > P ->
-		    adjust(flat_trunc(S, P, Enc), chars(Pad, F-P), Adj);
+                    adjust(flat_trunc(S, P, Enc), chars(Pad, F-P), Adj);
 	       Sz < P ->
 		    adjust([S|chars(Pad, P-Sz)], chars(Pad, F-P), Adj);
 	       true -> % N == P

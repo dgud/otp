@@ -742,7 +742,7 @@ write_binary_body_bin(<<X:8,Rest/bitstring>>, D, T, Acc) ->
 write_binary_body_bin(B, _D, _T, Acc) ->
     L = bit_size(B),
     <<X:L>> = B,
-    {<<Acc/binary, (integer_to_binary(L))/binary, $:, (integer_to_binary(X))/binary,
+    {<<Acc/binary, (integer_to_binary(X))/binary, $:, (integer_to_binary(L))/binary,
        ">>">>,
      <<>>}.
 

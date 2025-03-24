@@ -1033,7 +1033,7 @@ print_length_binary(Bin, D, T, RF, {InEnc, utf8} = Enc, Str, Ord) ->
             More = fun(T1, Dd) ->
                            ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
                    end,
-            {[$<,$<,$",S|"\"...>>"], 7 + byte_size(Prefix), 3, More};
+            {[$<,$<,$",S|"\"...>>"], 9 + byte_size(Prefix), 3, More};
         {false, true, Prefix} ->
             S = io_lib:write_string_bin(Prefix, [], unicode), %"
             More = fun(T1, Dd) ->
@@ -1094,6 +1094,8 @@ print_length_binary(Bin, D, T, RF, Enc, Str, Ord) ->  %% list output
 %% only flat lists are "printable"
 printable_list(_L, 1, _T, _Enc) ->
     false;
+printable_list(L, D, T, {latin1, _}) ->
+    printable_list(L, D, T, latin1);
 printable_list(L, _D, T, latin1) when T < 0 ->
     io_lib:printable_latin1_list(L);
 printable_list(L, _D, T, latin1) when T >= 0 ->
