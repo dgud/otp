@@ -76,7 +76,7 @@ used for flattening deep lists.
 -export([scan_format/2,unscan_format/1,build_text/1,build_text/2]).
 -export([print/1,print/4,indentation/2]).
 
--export([write/1,write/2,write/3, write_bin/2]).
+-export([write/1,write/2,write/3,write/5,write_bin/2,write_bin/5]).
 -export([nl/0,format_prompt/1,format_prompt/2]).
 -export([write_binary/3, write_binary_bin/4]).
 -export([write_atom/1,write_string/1,write_string/2,write_latin1_string/1,
@@ -591,6 +591,12 @@ write(Term, Options) when is_list(Options) ->
     Encoding = get_option(encoding, Options, epp:default_encoding()),
     CharsLimit = get_option(chars_limit, Options, -1),
     MapsOrder = get_option(maps_order, Options, undefined),
+    write(Term, Depth, Encoding, MapsOrder, CharsLimit);
+write(Term, Depth) ->
+    write(Term, [{depth, Depth}, {encoding, latin1}]).
+
+-doc false.
+write(Term, Depth, Encoding, MapsOrder, CharsLimit) ->
     if
         Depth =:= 0; CharsLimit =:= 0 ->
             "...";
@@ -601,21 +607,17 @@ write(Term, Options) when is_list(Options) ->
             If = io_lib_pretty:intermediate
                  (Term, Depth, CharsLimit, RecDefFun, Encoding, _Str=false, MapsOrder),
             io_lib_pretty:write(If)
-    end;
-write(Term, Depth) ->
-    write(Term, [{depth, Depth}, {encoding, latin1}]).
+    end.
 
 -doc """
 Behaves as `write/2` but returns a UTF-8 binary string.
 """.
--spec write_bin(Term, Depth) -> unicode:unicode_binary() when
-      Term :: term(),
-      Depth :: depth();
-           (Term, Options) -> chars() when
+-spec write_bin(Term, Options) -> unicode:unicode_binary() when
       Term :: term(),
       Options :: [Option],
       Option :: {'chars_limit', CharsLimit}
               | {'depth', Depth}
+              | {'encoding', 'latin1' | 'utf8' | 'unicode'}
               | {'maps_order', maps:iterator_order()},
       CharsLimit :: chars_limit(),
       Depth :: depth().
@@ -626,6 +628,21 @@ write_bin(Term, Options) when is_list(Options) ->
     InEncoding = get_option(encoding, Options, epp:default_encoding()),
     CharsLimit = get_option(chars_limit, Options, -1),
     MapsOrder = get_option(maps_order, Options, undefined),
+    write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit).
+
+-doc """
+Behaves as `write/2` but returns a UTF-8 binary string.
+""".
+-spec write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit) ->
+          unicode:unicode_binary() when
+      Term :: term(),
+      Depth :: depth(),
+      InEncoding :: 'latin1' | 'utf8' | 'unicode',
+      MapsOrder :: maps:iterator_order(),
+      CharsLimit :: chars_limit(),
+      Depth :: depth().
+
+write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit) ->
     if
         Depth =:= 0; CharsLimit =:= 0 ->
             <<"...">>;

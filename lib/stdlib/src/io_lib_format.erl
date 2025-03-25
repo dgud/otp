@@ -528,30 +528,18 @@ control_limited($s, [L0], F, Adj, P, Pad, Enc, Type, _Str, _Ord, CL, _I) ->
             string_bin(B, Sz, limit_field(F, CL), Adj, P, Pad, Enc)
     end;
 control_limited($w, [A], F, Adj, P, Pad, Enc, Type, _Str, Ord, CL, _I) ->
-    Opts = [
-            {depth, -1},
-            {encoding, Enc},
-            {chars_limit, CL},
-            {maps_order, Ord}
-           ],
     Chars = case Type of
-                list -> io_lib:write(A, Opts);
-                binary -> io_lib:write_bin(A, Opts)
+                list -> io_lib:write(A, -1, Enc, Ord, CL);
+                binary -> io_lib:write_bin(A, -1, Enc, Ord, CL)
             end,
     term(Chars, F, Adj, P, Pad, Enc);
 control_limited($p, [A], F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I) ->
     print(A, -1, F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I);
 control_limited($W, [A,Depth], F, Adj, P, Pad, Enc, Type, _Str, Ord, CL, _I)
   when is_integer(Depth) ->
-    Opts = [
-            {depth, Depth},
-            {encoding, Enc},
-            {chars_limit, CL},
-            {maps_order, Ord}
-           ],
     Chars = case Type of
-                list -> io_lib:write(A, Opts);
-                binary -> io_lib:write_bin(A, Opts)
+                list -> io_lib:write(A, Depth, Enc, Ord, CL);
+                binary -> io_lib:write_bin(A, Depth, Enc, Ord, CL)
             end,
     term(Chars, F, Adj, P, Pad, Enc);
 control_limited($P, [A,Depth], F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I)
