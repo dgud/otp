@@ -22,6 +22,9 @@
 
 -compile(nowarn_deprecated_catch).
 
+-dialyzer([{nowarn_function, [iolist_to_bin/4]},
+           no_improper_lists]).
+
 %% Formatting functions of io library.
 
 -export([fwrite/2,fwrite/3,
@@ -941,7 +944,7 @@ string_field(S, _, _, _, _, _) -> % N == F
 
 string_bin(S, _, none, _Adj, none, _Pad, _Enc) ->
     S;
-string_bin(S, -1, F, Adj, P, Pad, Enc) ->
+string_bin(S, undefined, F, Adj, P, Pad, Enc) ->
     unicode = Enc, %% Assert size=-1 should only happen for unicode
     string_bin(S, string:length(S), F, Adj, P, Pad, Enc);
 string_bin(S, Sz, F, Adj, none, Pad, Enc) ->

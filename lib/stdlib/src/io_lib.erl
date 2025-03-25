@@ -107,6 +107,11 @@ used for flattening deep lists.
 -export_type([chars/0, latin1_string/0, continuation/0,
               fread_error/0, fread_item/0, format_spec/0, chars_limit/0]).
 
+-dialyzer([{nowarn_function,
+            [string_bin_escape_unicode/6,
+             string_bin_escape_latin1/6]},
+           no_improper_lists]).
+
 %%----------------------------------------------------------------------
 
 -doc "An possibly deep list containing only `t:char/0`s.".
@@ -364,7 +369,7 @@ format_bin(Format, Args) ->
 
 -doc(#{equiv => fwrite_bin(Format, Data, Options)}).
 -doc(#{since => <<"OTP 29.0">>}).
--spec format_bin(Format, Data, Options) -> chars() when
+-spec format_bin(Format, Data, Options) -> unicode:unicode_binary() when
       Format :: io:format(),
       Data :: [term()],
       Options :: [Option],
