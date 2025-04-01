@@ -124,7 +124,7 @@ build_bin(Cs) ->
 
 build_bin(Cs, Options) ->
     CharsLimit = get_option(chars_limit, Options, -1),
-    Res1 = build_small_bin(Cs, <<>>),
+    Res1 = build_small_bin(Cs),
     {P, S, W, Other} = count_small(Res1),
     case P + S + W of
         0 ->
@@ -364,8 +364,10 @@ build_limited([#{control_char := C, args := As, width := F, adjust := Ad,
                      sub(MaxLen0, Len)
              end,
     if
-	NumOfPs > 0 -> [S|build_limited(Cs, NumOfPs, Count, MaxLen, indentation(S, I))];
-	true -> [S|build_limited(Cs, NumOfPs, Count, MaxLen, I)]
+	NumOfPs > 0 ->
+            [S|build_limited(Cs, NumOfPs, Count, MaxLen, indentation(S, I))];
+	true ->
+            [S|build_limited(Cs, NumOfPs, Count, MaxLen, I)]
     end;
 build_limited([$\n|Cs], NumOfPs, Count, MaxLen, _I) ->
     [$\n|build_limited(Cs, NumOfPs, Count, MaxLen, 0)];
@@ -380,23 +382,23 @@ decr_pc($P, Pc) -> Pc - 1;
 decr_pc(_, Pc) -> Pc.
 
 build_small_bin([#{control_char := C, args := As, width := F, adjust := Ad,
-                   precision := P, pad_char := Pad, encoding := Enc}=CC | Cs], Bin) ->
+                   precision := P, pad_char := Pad, encoding := Enc}=CC | Cs]) ->
     case control_small(C, As, F, Ad, P, Pad, Enc) of
         not_small ->
-            [Bin, CC | build_small_bin(Cs, <<>>)];
+            [CC | build_small_bin(Cs)];
         [$\n|_] = NL ->
-            [Bin, iolist_to_binary(NL) | build_small_bin(Cs, <<>>)];
+            [NL | build_small_bin(Cs)];
         S ->
             SBin = unicode:characters_to_binary(S, Enc, unicode),
             true = is_binary(SBin),
-            [Bin | build_small_bin(Cs, SBin)]
+            [SBin | build_small_bin(Cs)]
     end;
-build_small_bin([$\t|Cs], Bin) ->
-    [Bin, $\t | build_small_bin(Cs, <<>>)];
-build_small_bin([C|Cs], Bin) ->
-    build_small_bin(Cs, <<Bin/binary, C/utf8>>);
-build_small_bin([], Bin) ->
-    [Bin].
+build_small_bin([$\t|Cs]) ->
+    [$\t | build_small_bin(Cs)];
+build_small_bin([C|Cs]) ->
+    [C | build_small_bin(Cs)];
+build_small_bin([]) ->
+    [].
 
 build_limited_bin([#{control_char := C, args := As, width := F, adjust := Ad,
                      precision := P, pad_char := Pad, encoding := Enc,
@@ -420,13 +422,13 @@ build_limited_bin([#{control_char := C, args := As, width := F, adjust := Ad,
 	true ->
             [S|build_limited_bin(Cs, NumOfPs, Count, MaxLen, I)]
     end;
-build_limited_bin([<<>>|Cs], NumOfPs, Count, MaxLen, I) ->
-    build_limited_bin(Cs, NumOfPs, Count, MaxLen, I);
-build_limited_bin([<<$\n, _/bits>>=Bin|Cs], NumOfPs, Count, MaxLen, _I) ->
-    [Bin|build_limited_bin(Cs, NumOfPs, Count, MaxLen, 0)];
+build_limited_bin([[$\n|_]=NL|Cs], NumOfPs, Count, MaxLen, _I) ->
+    [NL|build_limited_bin(Cs, NumOfPs, Count, MaxLen, 0)];
 build_limited_bin([$\t|Cs], NumOfPs, Count, MaxLen, I) ->
     [$\t|build_limited_bin(Cs, NumOfPs, Count, MaxLen, ((I + 8) div 8) * 8)];
-build_limited_bin([Bin|Cs], NumOfPs, Count, MaxLen, I) ->
+build_limited_bin([C|Cs], NumOfPs, Count, MaxLen, I) when is_integer(C) ->
+    [C|build_limited_bin(Cs, NumOfPs, Count, MaxLen, 1+I)];
+build_limited_bin([Bin|Cs], NumOfPs, Count, MaxLen, I) when is_binary(Bin) ->
     [Bin|build_limited_bin(Cs, NumOfPs, Count, MaxLen, byte_size(Bin)+I)];
 build_limited_bin([], _, _, _, _) -> [].
 
@@ -435,7 +437,7 @@ build_limited_bin([], _, _, _, _) -> [].
 %%  indentation. We assume tabs at 8 cols.
 
 -spec indentation(String, StartIndent) -> integer() when
-      String :: io_lib:chars(),
+      String :: unicode:chardata(),
       StartIndent :: integer().
 
 indentation([$\n|Cs], _I) ->
@@ -447,23 +449,17 @@ indentation([C|Cs], I) when is_integer(C) ->
 indentation([C|Cs], I) ->
     indentation(Cs, indentation(C, I));
 indentation(Bin, I) when is_binary(Bin) ->
-    case binary:matches(Bin, [~"\n", ~"\t"]) of
-        [] -> string:length(Bin) + I;
-        Ms -> indentation_bin(Ms, 0, Bin, I)
-    end;
+    indentation_bin(Bin, I);
 indentation([], I) ->
     I.
 
-indentation_bin([{Pos, 1}|Rest], Last, Orig, I) ->
-    case binary:at(Orig, Pos) of
-        $\n ->
-            indentation_bin(Rest, Pos, Orig, 0);
-        $\t ->
-            <<_:Last/binary, Str:(Pos - Last -1)/binary, _/binary>> = Orig,
-            Chars = string:length(Str),
-            indentation_bin(Rest, Pos, Orig, ((Chars+I + 8) div 8) * 8)
-    end;
-indentation_bin([], _Last, _Orig, I) ->
+indentation_bin(<<$\n, Cs/binary>>, _I) ->
+    indentation_bin(Cs, 0);
+indentation_bin(<<$\t, Cs/binary>>, I) ->
+    indentation_bin(Cs, ((I + 8) div 8) * 8);
+indentation_bin(<<_, Cs/binary>>, I) ->
+    indentation_bin(Cs, I+1);
+indentation_bin(<<>>, I) ->
     I.
 
 %% control_small(FormatChar, [Argument], FieldWidth, Adjust, Precision,
@@ -590,7 +586,7 @@ print(T, D, none, Adj, P, Pad, E, Type, Str, Ord, ChLim, I) ->
     print(T, D, 80, Adj, P, Pad, E, Type, Str, Ord, ChLim, I);
 print(T, D, F, Adj, none, Pad, E, Type, Str, Ord, ChLim, I) ->
     print(T, D, F, Adj, I+1, Pad, E, Type, Str, Ord, ChLim, I);
-print(T, D, F, right, P, _Pad, Enc, Type, Str, Ord, ChLim, _I) ->
+print(T, D, F, right, P, _Pad, Enc, list, Str, Ord, ChLim, _I) ->
     Options = [{chars_limit, ChLim},
                {column, P},
                {line_length, F},
@@ -599,10 +595,17 @@ print(T, D, F, right, P, _Pad, Enc, Type, Str, Ord, ChLim, _I) ->
                {strings, Str},
                {maps_order, Ord}
               ],
-    case Type of
-        list -> io_lib_pretty:print(T, Options);
-        binary -> io_lib_pretty:print_bin(T, Options)
-    end.
+    io_lib_pretty:print(T, Options);
+print(T, D, F, right, P, _Pad, Enc, binary, Str, Ord, ChLim, _I) ->
+    Options = #{chars_limit => ChLim,
+                column => P,
+                line_length => F,
+                depth => D,
+                encoding => Enc,
+                strings => Str,
+                maps_order => Ord
+               },
+    io_lib_pretty:print_bin(T, Options).
 
 %% fwrite_e(Float, Field, Adjust, Precision, PadChar)
 

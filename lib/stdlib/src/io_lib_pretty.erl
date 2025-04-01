@@ -69,19 +69,19 @@ print(Term) ->
                 | {'strings', boolean()}
                 | {'maps_order', maps:iterator_order()}.
 -type options() :: [option()].
+-type options_map() :: map().
 
-
--spec print_bin(term(), options()) -> unicode:unicode_binary().
-print_bin(Term, Options) when is_list(Options) ->
-    Col = get_option(column, Options, 1),
-    Ll = get_option(line_length, Options, 80),
-    D = get_option(depth, Options, -1),
-    M = get_option(line_max_chars, Options, -1),
-    T = get_option(chars_limit, Options, -1),
-    RecDefFun = get_option(record_print_fun, Options, no_fun),
-    InEncoding = get_option(encoding, Options, epp:default_encoding()),
-    Strings = get_option(strings, Options, true),
-    MapsOrder = get_option(maps_order, Options, undefined),
+-spec print_bin(term(), options_map()) -> unicode:unicode_binary().
+print_bin(Term, Options) when is_map(Options) ->
+    Col = maps:get(column, Options, 1),
+    Ll = maps:get(line_length, Options, 80),
+    D = maps:get(depth, Options, -1),
+    M = maps:get(line_max_chars, Options, -1),
+    T = maps:get(chars_limit, Options, -1),
+    RecDefFun = maps:get(record_print_fun, Options, no_fun),
+    InEncoding = maps:get(encoding, Options, epp:default_encoding()),
+    Strings = maps:get(strings, Options, true),
+    MapsOrder = maps:get(maps_order, Options, undefined),
     Data = print(Term, Col, Ll, D, M, T, RecDefFun, {InEncoding, utf8}, Strings, MapsOrder),
     unicode:characters_to_binary(Data).
 
@@ -170,7 +170,7 @@ print(Term, Col, Ll, D, M0, T, RecDefFun, Enc, Str, Ord)
 print(Term, _Col, _Ll, _D, _M, _T, _RF, Enc, _Str, _Ord) ->
     %% atomic data types (bignums, atoms, ...) are never truncated
     case Enc of
-        {_, utf8} -> io_lib:write_bin(Term, []);
+        {_, utf8} -> io_lib:write_bin(Term, -1, unicode, none, -1);
         _ -> io_lib:write(Term)
     end.
 

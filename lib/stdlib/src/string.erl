@@ -1146,6 +1146,14 @@ length_1(Str, N) ->
         {error, Err} -> error({badarg, Err})
     end.
 
+length_b(<<CP2, CP3, CP4, CP5, CP6, CP7, CP8, CP9, Rest/binary>>,
+         CP1, N)
+  when CP1 =/= $\r,CP2 =/= $\r,CP3 =/= $\r,CP4 =/= $\r,
+       CP5 =/= $\r,CP6 =/= $\r,CP7 =/= $\r, CP9 =/= $\r,
+       CP2 < 128, CP2 < 128, CP3 < 128, CP4 < 128,
+       CP5 < 128, CP6 < 128, CP7 < 128, CP8 < 128,
+       CP9 < 128 ->
+    length_b(Rest, CP8, N+8);
 length_b(<<CP2/utf8, Rest/binary>>, CP1, N)
   when ?ASCII_LIST(CP1,CP2) ->
     length_b(Rest, CP2, N+1);

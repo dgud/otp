@@ -790,7 +790,7 @@ rp(Term, Col, Ll, D, M, RF) ->
 
 check_bin_p(OrigRes, Term, Args) ->
     try
-        UTF8 = io_lib_pretty:print_bin(Term, Args),
+        UTF8 = io_lib_pretty:print_bin(Term, maps:from_list(Args)),
         true = is_binary(UTF8),
         case unicode:characters_to_list(UTF8) of
             OrigRes ->
@@ -2089,12 +2089,12 @@ format_max(Node, Args) ->
     rpc_call_max(Node, io_lib, format, Args).
 
 rpc_call_max(Node, M, F, Args) ->
-    BinF = case F of
-               print -> print_bin;
-               format -> format_bin
-           end,
+    {BinF,BinAs} = case {F, Args} of
+                       {print, [A1,A2]} -> {print_bin, [A1, maps:from_list(A2)]};
+                       {format, _} -> {format_bin, Args}
+                   end,
     Orig = lists:flatten(rpc:call(Node, M, F, Args)),
-    Utf8 = rpc:call(Node, M, BinF, Args),
+    Utf8 = rpc:call(Node, M, BinF, BinAs),
     try
         true = is_binary(Utf8),
         case unicode:characters_to_list(Utf8) of

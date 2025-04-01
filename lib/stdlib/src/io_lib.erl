@@ -753,19 +753,19 @@ write_binary_bin(B, D, T, Acc) when is_integer(T) ->
 
 write_binary_body_bin(<<>> = B, _D, _T, Acc) ->
     {<<Acc/binary, ">>" >>, B};
-write_binary_body_bin(B, D, T, Acc) when D =:= 1; T =:= 0->
+write_binary_body_bin(<<_/bitstring>>=B, D, T, Acc) when D =:= 1; T =:= 0->
     {<<Acc/binary, "...>>">>, B};
 write_binary_body_bin(<<X:8>>, _D, _T, Acc) ->
     {<<Acc/binary, (integer_to_binary(X))/binary, ">>">>, <<>>};
 write_binary_body_bin(<<X:8,Rest/bitstring>>, D, T, Acc) ->
     IntBin = integer_to_binary(X),
-    S = <<Acc/binary, IntBin/binary, $,>>,
-    write_binary_body_bin(Rest, D-1, tsub(T, byte_size(IntBin) + 1), S);
+    write_binary_body_bin(Rest, D-1, tsub(T, byte_size(IntBin) + 1),
+                          <<Acc/binary, IntBin/binary, $,>>);
 write_binary_body_bin(B, _D, _T, Acc) ->
     L = bit_size(B),
     <<X:L>> = B,
-    {<<Acc/binary, (integer_to_binary(X))/binary, $:, (integer_to_binary(L))/binary,
-       ">>">>,
+    {<<Acc/binary, (integer_to_binary(X))/binary, $:,
+       (integer_to_binary(L))/binary,">>">>,
      <<>>}.
 
 
