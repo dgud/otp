@@ -448,19 +448,27 @@ indentation([C|Cs], I) when is_integer(C) ->
     indentation(Cs, I+1);
 indentation([C|Cs], I) ->
     indentation(Cs, indentation(C, I));
-indentation(Bin, I) when is_binary(Bin) ->
-    indentation_bin(Bin, I);
+indentation(Bin, I0) when is_binary(Bin) ->
+    indentation_bin(Bin, I0);
 indentation([], I) ->
     I.
 
-indentation_bin(<<$\n, Cs/binary>>, _I) ->
-    indentation_bin(Cs, 0);
-indentation_bin(<<$\t, Cs/binary>>, I) ->
-    indentation_bin(Cs, ((I + 8) div 8) * 8);
-indentation_bin(<<_, Cs/binary>>, I) ->
-    indentation_bin(Cs, I+1);
-indentation_bin(<<>>, I) ->
-    I.
+indentation_bin(Bin, I) ->
+    indentation_bin(Bin, Bin, 0, 0, I).
+
+indentation_bin(<<$\n, Cs/binary>>, Orig, _Start, N,_I) ->
+    indentation_bin(Cs, Orig, N+1, 0, 0);
+indentation_bin(<<$\t, Cs/binary>>, Orig, Start, N, I0) ->
+    Part = binary:part(Orig, Start, N),
+    PSz = string:length(Part),
+    indentation_bin(Cs, Orig, N+1, N+1, ((I0+PSz + 8) div 8) * 8);
+indentation_bin(<<_, Cs/binary>>, Orig, Start, N, I) ->
+    indentation_bin(Cs, Orig, Start, N+1, I);
+indentation_bin(<<>>, Orig, Start, N, I) ->
+    Part = binary:part(Orig, Start, N),
+    PSz = string:length(Part),
+    I + PSz.
+
 
 %% control_small(FormatChar, [Argument], FieldWidth, Adjust, Precision,
 %%               PadChar, Encoding) -> String
