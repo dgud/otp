@@ -184,7 +184,7 @@ max_cs(M, Len) when M < 0 ->
 max_cs(M, _Len) ->
     M.
 
--define(ATM(T), is_list(element(1, T))).
+-define(ATM(T), is_list(element(1, T)) orelse is_binary(element(1, T))).
 -define(ATM_PAIR(Pair),
         ?ATM(element(2, element(1, Pair))) % Key
         andalso
