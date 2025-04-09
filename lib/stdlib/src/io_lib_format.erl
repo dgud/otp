@@ -353,7 +353,7 @@ build_limited([#{control_char := C, args := As, width := F, adjust := Ad,
                    MaxLen0 < 0 -> MaxLen0;
                    true -> MaxLen0 div Count0
                end,
-    S = control_limited(C, As, F, Ad, P, Pad, Enc, list, Str, Ord, MaxChars, I),
+    S = control_limited(C, As, F, Ad, P, Pad, Enc, Str, Ord, MaxChars, I),
     NumOfPs = decr_pc(C, NumOfPs0),
     Count = Count0 - 1,
     MaxLen = if
@@ -403,22 +403,23 @@ build_small_bin([]) ->
 build_limited_bin([#{control_char := C, args := As, width := F, adjust := Ad,
                      precision := P, pad_char := Pad, encoding := Enc,
                      strings := Str} = Map | Cs],
-                  NumOfPs0, Count0, MaxLen0, I) ->
+                  NumOfPs0, Count0, MaxLen0, I0) ->
     Ord = maps:get(maps_order, Map, undefined),
     MaxChars = if
                    MaxLen0 < 0 -> MaxLen0;
                    true -> MaxLen0 div Count0
                end,
-    S = control_limited(C, As, F, Ad, P, Pad, Enc, binary, Str, Ord, MaxChars, I),
+    {S, Sz, I} = control_limited_bin(C, As, F, Ad, P, Pad, Enc, Str, Ord, MaxChars, I0),
     NumOfPs = decr_pc(C, NumOfPs0),
     Count = Count0 - 1,
     MaxLen = if
                  MaxLen0 < 0 -> MaxLen0; % optimization
-                 true -> sub(MaxLen0, string:length(S))
+                 Sz < 0 -> sub(MaxLen0, string:length(S));
+                 true -> sub(MaxLen0, Sz)
              end,
     if
-	NumOfPs > 0 ->
-            [S|build_limited_bin(Cs, NumOfPs, Count, MaxLen, indentation(S, I))];
+	NumOfPs > 0, I < 0 ->
+            [S|build_limited_bin(Cs, NumOfPs, Count, MaxLen, indentation(S, I0))];
 	true ->
             [S|build_limited_bin(Cs, NumOfPs, Count, MaxLen, I)]
     end;
@@ -520,35 +521,55 @@ control_small($n, [], F, Adj, P, Pad, _Enc) -> newline(F, Adj, P, Pad);
 control_small($i, [_A], _F, _Adj, _P, _Pad, _Enc) -> [];
 control_small(_C, _As, _F, _Adj, _P, _Pad, _Enc) -> not_small.
 
-control_limited($s, [L0], F, Adj, P, Pad, Enc, Type, _Str, _Ord, CL, _I) ->
-    if Type =:= list, Enc =:= latin1 ->
+control_limited($s, [L0], F, Adj, P, Pad, Enc, _Str, _Ord, CL, _I) ->
+    if Enc =:= latin1 ->
             L = iolist_to_chars(L0, F, CL),
             string(L, limit_field(F, CL), Adj, P, Pad, Enc);
-       Type =:= list, Enc =:= unicode ->
+       Enc =:= unicode ->
             L = cdata_to_chars(L0, F, CL),
-            uniconv(string(L, limit_field(F, CL), Adj, P, Pad, Enc));
-       Type =:= binary ->
-            {B, Sz} = iolist_to_bin(L0, F, CL, Enc),
-            string_bin(B, Sz, limit_field(F, CL), Adj, P, Pad, Enc)
+            uniconv(string(L, limit_field(F, CL), Adj, P, Pad, Enc))
     end;
-control_limited($w, [A], F, Adj, P, Pad, Enc, Type, _Str, Ord, CL, _I) ->
-    Chars = case Type of
-                list -> io_lib:write(A, -1, Enc, Ord, CL);
-                binary -> io_lib:write_bin(A, -1, Enc, Ord, CL)
-            end,
+control_limited($w, [A], F, Adj, P, Pad, Enc, _Str, Ord, CL, _I) ->
+    Chars = io_lib:write(A, -1, Enc, Ord, CL),
     term(Chars, F, Adj, P, Pad, Enc);
-control_limited($p, [A], F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I) ->
-    print(A, -1, F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I);
-control_limited($W, [A,Depth], F, Adj, P, Pad, Enc, Type, _Str, Ord, CL, _I)
+control_limited($p, [A], F, Adj, P, Pad, Enc, Str, Ord, CL, I) ->
+    print(A, -1, F, Adj, P, Pad, Enc, list, Str, Ord, CL, I);
+control_limited($W, [A,Depth], F, Adj, P, Pad, Enc, _Str, Ord, CL, _I)
   when is_integer(Depth) ->
-    Chars = case Type of
-                list -> io_lib:write(A, Depth, Enc, Ord, CL);
-                binary -> io_lib:write_bin(A, Depth, Enc, Ord, CL)
-            end,
+    Chars = io_lib:write(A, Depth, Enc, Ord, CL),
     term(Chars, F, Adj, P, Pad, Enc);
-control_limited($P, [A,Depth], F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I)
+control_limited($P, [A,Depth], F, Adj, P, Pad, Enc, Str, Ord, CL, I)
   when is_integer(Depth) ->
-    print(A, Depth, F, Adj, P, Pad, Enc, Type, Str, Ord, CL, I).
+    print(A, Depth, F, Adj, P, Pad, Enc, list, Str, Ord, CL, I).
+
+control_limited_bin($s, [L0], F, Adj, P, Pad, Enc, _Str, _Ord, CL, _I) ->
+    {B, Sz} = iolist_to_bin(L0, F, CL, Enc),
+    string_bin(B, Sz, limit_field(F, CL), Adj, P, Pad, Enc);
+control_limited_bin($w, [A], F, Adj, P, Pad, Enc, _Str, Ord, CL, I) ->
+    {Chars, Sz} = io_lib:write_bin(A, -1, Enc, Ord, CL),
+    term_bin(Chars, F, Adj, P, Pad, Enc, Sz, I);
+control_limited_bin($p, [A], F, Adj, P, Pad, Enc, Str, Ord, CL, I) ->
+    print(A, -1, F, Adj, P, Pad, Enc, binary, Str, Ord, CL, I);
+control_limited_bin($W, [A,Depth], F, Adj, P, Pad, Enc, _Str, Ord, CL, I)
+  when is_integer(Depth) ->
+    {Chars, Sz} = io_lib:write_bin(A, Depth, Enc, Ord, CL),
+    term_bin(Chars, F, Adj, P, Pad, Enc, Sz, I);
+control_limited_bin($P, [A,Depth], F, Adj, P, Pad, Enc, Str, Ord, CL, I)
+  when is_integer(Depth) ->
+    print(A, Depth, F, Adj, P, Pad, Enc, binary, Str, Ord, CL, I).
+
+term_bin(T, none, _Adj, none, _Pad, _Enc, Sz, I) ->
+    {T, Sz, Sz+I};
+term_bin(T, none, Adj, P, Pad, Enc, Sz, I) ->
+    term_bin(T, P, Adj, P, Pad, Enc, Sz, I);
+term_bin(T, F, Adj, P0, Pad, _Enc, Sz, I) ->
+    P = erlang:min(Sz, case P0 of none -> F; _ -> min(P0, F) end),
+    if
+	Sz > P ->
+	    {adjust(chars($*, P), chars(Pad, F-P), Adj), F, I+F};
+	F >= P ->
+            {adjust(T, chars(Pad, F-Sz), Adj), F, I+F}
+    end.
 
 -ifdef(UNICODE_AS_BINARIES).
 uniconv(C) ->
@@ -604,7 +625,7 @@ print(T, D, F, right, P, _Pad, Enc, list, Str, Ord, ChLim, _I) ->
                {maps_order, Ord}
               ],
     io_lib_pretty:print(T, Options);
-print(T, D, F, right, P, _Pad, Enc, binary, Str, Ord, ChLim, _I) ->
+print(T, D, F, right, P, _Pad, Enc, binary, Str, Ord, ChLim, I) ->
     Options = #{chars_limit => ChLim,
                 column => P,
                 line_length => F,
@@ -613,7 +634,11 @@ print(T, D, F, right, P, _Pad, Enc, binary, Str, Ord, ChLim, _I) ->
                 strings => Str,
                 maps_order => Ord
                },
-    io_lib_pretty:print_bin(T, Options).
+    {Bin, Sz, Col} = Res = io_lib_pretty:print_bin(T, Options),
+    case Col > 0 of
+        true  -> Res;
+        false -> {Bin, Sz, I - Col}
+    end.
 
 %% fwrite_e(Float, Field, Adjust, Precision, PadChar)
 
@@ -942,26 +967,38 @@ string_field(S, _, _, _, _, _) -> % N == F
     S.
 
 string_bin(S, _, none, _Adj, none, _Pad, _Enc) ->
-    S;
+    {S, -1, -1};
 string_bin(S, undefined, F, Adj, P, Pad, Enc) ->
     unicode = Enc, %% Assert size=-1 should only happen for unicode
     string_bin(S, string:length(S), F, Adj, P, Pad, Enc);
 string_bin(S, Sz, F, Adj, none, Pad, Enc) ->
-    string_field(S, F, Adj, Sz, Pad, Enc);
+    string_field_bin(S, F, Adj, Sz, Pad, Enc);
 string_bin(S, Sz, none, _Adj, P, Pad, Enc) ->
-    string_field(S, P, left, Sz, Pad, Enc);
-string_bin(S, Sz, F, Adj, P, Pad, Enc) when F >= P ->
+    string_field_bin(S, P, left, Sz, Pad, Enc);
+string_bin(S0, Sz, F, Adj, P, Pad, Enc) when F >= P ->
     if F > P ->
 	    if Sz > P ->
-                    adjust(flat_trunc(S, P, Enc), chars(Pad, F-P), Adj);
+                    S = adjust(flat_trunc(S0, P, Enc), chars(Pad, F-P), Adj),
+                    {S, F, -1};
 	       Sz < P ->
-		    adjust([S|chars(Pad, P-Sz)], chars(Pad, F-P), Adj);
+		    S = adjust([S0|chars(Pad, P-Sz)], chars(Pad, F-P), Adj),
+                    {S, F, -1};
 	       true -> % N == P
-		    adjust(S, chars(Pad, F-P), Adj)
+		    S = adjust(S0, chars(Pad, F-P), Adj),
+                    {S, Sz+(F-P), -1}
 	    end;
        true -> % F == P
-	    string_field(S, F, Adj, Sz, Pad, Enc)
+	    string_field_bin(S0, F, Adj, Sz, Pad, Enc)
     end.
+
+string_field_bin(S0, F, _Adj, N, _Pad, Enc) when N > F ->
+    S = flat_trunc(S0, F, Enc),
+    {S, F, -1};
+string_field_bin(S0, F, Adj, N, Pad, _Enc) when N < F ->
+    S = adjust(S0, chars(Pad, F-N), Adj),
+    {S, N+F-N, -1};
+string_field_bin(S, _, _, N, _, _) -> % N == F
+    {S, N, -1}.
 
 
 %% unprefixed_integer(Int, Field, Adjust, Base, PadChar, Lowercase)
@@ -1056,7 +1093,7 @@ lowercase([H|T]) ->
 lowercase([]) ->
     [].
 
-%% Make sure T does change sign.
+%% Make sure T does not change sign.
 sub(T, _) when T < 0 -> T;
 sub(T, E) when T >= E -> T - E;
 sub(_, _) -> 0.

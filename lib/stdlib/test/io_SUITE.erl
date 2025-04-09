@@ -790,7 +790,7 @@ rp(Term, Col, Ll, D, M, RF) ->
 
 check_bin_p(OrigRes, Term, Args) ->
     try
-        UTF8 = io_lib_pretty:print_bin(Term, maps:from_list(Args)),
+        {UTF8, _, _} = io_lib_pretty:print_bin(Term, maps:from_list(Args)),
         true = is_binary(UTF8),
         case unicode:characters_to_list(UTF8) of
             OrigRes ->
@@ -2088,29 +2088,47 @@ print_max(Node, Args) ->
 format_max(Node, Args) ->
     rpc_call_max(Node, io_lib, format, Args).
 
-rpc_call_max(Node, M, F, Args) ->
-    {BinF,BinAs} = case {F, Args} of
-                       {print, [A1,A2]} -> {print_bin, [A1, maps:from_list(A2)]};
-                       {format, _} -> {format_bin, Args}
-                   end,
-    Orig = lists:flatten(rpc:call(Node, M, F, Args)),
-    Utf8 = rpc:call(Node, M, BinF, BinAs),
+rpc_call_max(Node, io_lib_pretty=M, print=F, [A1,A2]=Args) ->
+    BinAs = [A1, maps:from_list(A2)],
+    Orig = lists:flatten(rpc:call(Node, M, print, Args)),
     try
+        {Utf8, _, _} = rpc:call(Node, M, print_bin, BinAs),
         true = is_binary(Utf8),
         case unicode:characters_to_list(Utf8) of
             Orig ->
                 lists:max(Orig);
             Other ->
                 io:format("Exp: ~w~nGot: ~w~n", [Orig, Other]),
-                io:format("Binary failed:~n~w:~w(~0p). ", [M, BinF, Args]),
+                io:format("Binary failed:~n~w:~w(~0p). ", [M, print_bin, BinAs]),
                 Utf8
         end
     catch _:Reason:ST ->
             io:format("Exp: ~w~n~n", [Orig]),
             io:format("GOT CRASH: ~p in ~p~n",[Reason, ST]),
-            io:format("Binary crashed: ~w:~w(~0p). ", [M, BinF, Args]),
+            io:format("Binary crashed: ~w:~w(~0p). ", [M, print_bin, BinAs]),
+            Reason
+    end;
+rpc_call_max(Node, M, format=F, Args) ->
+    {BinF,BinAs} = {format_bin, Args},
+    Orig = lists:flatten(rpc:call(Node, M, F, Args)),
+    try
+        Utf8 = rpc:call(Node, M, BinF, BinAs),
+        true = is_binary(Utf8),
+        case unicode:characters_to_list(Utf8) of
+            Orig ->
+                lists:max(Orig);
+            Other ->
+                io:format("Exp: ~w~nGot: ~w~n", [Orig, Other]),
+                io:format("Binary failed:~n~w:~w(~0p). ", [M, BinF, BinAs]),
+                Utf8
+        end
+    catch _:Reason:ST ->
+            io:format("Exp: ~w~n~n", [Orig]),
+            io:format("GOT CRASH: ~p in ~p~n",[Reason, ST]),
+            io:format("Binary crashed: ~w:~w(~0p). ", [M, BinF, BinAs]),
             Reason
     end.
+
 
 %% Make sure that a bad specification for a printable range is rejected.
 bad_printable_range(Config) when is_list(Config) ->

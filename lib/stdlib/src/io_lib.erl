@@ -628,118 +628,127 @@ write_bin(Term, Options) when is_list(Options) ->
     InEncoding = get_option(encoding, Options, epp:default_encoding()),
     CharsLimit = get_option(chars_limit, Options, -1),
     MapsOrder = get_option(maps_order, Options, undefined),
-    write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit).
+    {S, _Sz} = write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit),
+    S.
 
 -doc """
 Behaves as `write/2` but returns a UTF-8 binary string.
 """.
 -spec write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit) ->
-          unicode:unicode_binary() when
+          {unicode:unicode_binary(), Sz::integer()} when
       Term :: term(),
       Depth :: depth(),
       InEncoding :: 'latin1' | 'utf8' | 'unicode',
-      MapsOrder :: maps:iterator_order(),
-      CharsLimit :: chars_limit(),
-      Depth :: depth().
+      MapsOrder :: maps:iterator_order() | undefined,
+      CharsLimit :: chars_limit().
 
 write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit) ->
     if
         Depth =:= 0; CharsLimit =:= 0 ->
-            <<"...">>;
+            {<<"...">>, 3};
         is_integer(CharsLimit), CharsLimit < 0, is_integer(Depth) ->
-            write_bin1(Term, Depth, InEncoding, MapsOrder, <<>>);
+            write_bin1(Term, Depth, InEncoding, MapsOrder, 0, <<>>);
         is_integer(CharsLimit), CharsLimit > 0 ->
             RecDefFun = fun(_, _) -> no end,
             If = io_lib_pretty:intermediate
                    (Term, Depth, CharsLimit, RecDefFun, {InEncoding, utf8}, _Str=false, MapsOrder),
-            io_lib_pretty:write(If, {unicode,utf8})
+            Bin = io_lib_pretty:write(If, {unicode,utf8}),  %% FIXME
+            {Bin, string:length(Bin)}
     end.
 
-write_bin1(_Term, 0, _Enc, _O, Acc) ->
-    <<Acc/binary, "...">>;
-write_bin1(Term, _D, _Enc, _O, Acc) when is_integer(Term) ->
-    <<Acc/binary, (integer_to_binary(Term))/binary>>;
-write_bin1(Term, _D, _Enc, _O, Acc) when is_float(Term) ->
-    <<Acc/binary, (float_to_binary(Term, [short]))/binary>>;
-write_bin1(Atom, _D, latin1, _O, Acc) when is_atom(Atom) ->
-    <<Acc/binary, (unicode:characters_to_binary(write_atom_as_latin1(Atom)))/binary>>;
-write_bin1(Atom, _D, _Enc, _O, Acc) when is_atom(Atom) ->
-    <<Acc/binary, (unicode:characters_to_binary(write_atom(Atom)))/binary>>;
-write_bin1(Term, _D, _Enc, _O, Acc) when is_port(Term) ->
-    <<Acc/binary, (list_to_binary(erlang:port_to_list(Term)))/binary>>;
-write_bin1(Term, _D, _Enc, _O, Acc) when is_pid(Term) ->
-    <<Acc/binary, (list_to_binary(pid_to_list(Term)))/binary>>;
-write_bin1(Term, _D, _Enc, _O, Acc) when is_reference(Term) ->
-    <<Acc/binary, (list_to_binary(erlang:ref_to_list(Term)))/binary>>;
-write_bin1(<<_/bitstring>>=Term, D, _Enc, _O, Acc) ->
-    write_binary_bin(Term, D, Acc);
-write_bin1([], _D, _Enc, _O, Acc) ->
-    <<Acc/binary, "[]">>;
-write_bin1({}, _D, _Enc, _O, Acc) ->
-    <<Acc/binary, "{}">>;
-write_bin1(F, _D, _Enc, _O, Acc) when is_function(F) ->
-    <<Acc/binary, (list_to_binary(erlang:fun_to_list(F)))/binary>>;
-write_bin1([H|T], D, Enc, O, Acc) ->
+write_bin1(_Term, 0, _Enc, _O, Sz, Acc) ->
+    {<<Acc/binary, "...">>, Sz+3};
+write_bin1(Term, _D, _Enc, _O, Sz, Acc) when is_integer(Term) ->
+    Int = integer_to_binary(Term),
+    {<<Acc/binary, Int/binary>>, byte_size(Int) + Sz};
+write_bin1(Term, _D, _Enc, _O, Sz, Acc) when is_float(Term) ->
+    Float = float_to_binary(Term, [short]),
+    {<<Acc/binary, Float/binary>>, byte_size(Float)+Sz};
+write_bin1(Atom, _D, latin1, _O, Sz, Acc) when is_atom(Atom) ->
+    Str = unicode:characters_to_binary(write_atom_as_latin1(Atom)),
+    {<<Acc/binary, Str/binary>>, byte_size(Str)+Sz};
+write_bin1(Atom, _D, _Enc, _O, Sz, Acc) when is_atom(Atom) ->
+    Str = write_atom(Atom),
+    {<<Acc/binary, (unicode:characters_to_binary(Str))/binary>>, length(Str)+Sz};
+write_bin1(Term, _D, _Enc, _O, Sz, Acc) when is_port(Term) ->
+    Str = (list_to_binary(erlang:port_to_list(Term))),
+    {<<Acc/binary, Str/binary>>, byte_size(Str)+Sz};
+write_bin1(Term, _D, _Enc, _O, Sz, Acc) when is_pid(Term) ->
+    Str = (list_to_binary(pid_to_list(Term))),
+    {<<Acc/binary, Str/binary>>, byte_size(Str)+Sz};
+write_bin1(Term, _D, _Enc, _O, Sz, Acc) when is_reference(Term) ->
+    Str = (list_to_binary(erlang:ref_to_list(Term))),
+    {<<Acc/binary, Str/binary>>, byte_size(Str)+Sz};
+write_bin1(<<_/bitstring>>=Term, D, _Enc, _O, Sz, Acc) ->
+    write_binary_bin0(Term, D, Sz, Acc);
+write_bin1([], _D, _Enc, _O, Sz, Acc) ->
+    {<<Acc/binary, "[]">>, Sz+2};
+write_bin1({}, _D, _Enc, _O, Sz, Acc) ->
+    {<<Acc/binary, "{}">>, Sz+2};
+write_bin1(F, _D, _Enc, _O, Sz, Acc) when is_function(F) ->
+    Str = (list_to_binary(erlang:fun_to_list(F))),
+    {<<Acc/binary, Str/binary>>, byte_size(Str) + Sz};
+write_bin1([H|T], D, Enc, O, Sz, Acc) ->
     if
-	D =:= 1 -> <<Acc/binary, "[...]">>;
+	D =:= 1 -> {<<Acc/binary, "[...]">>, Sz+5};
 	true ->
-            Head = write_bin1(H, D-1, Enc, O, <<Acc/binary, $[>>),
-            write_tail_bin(T, D-1, Enc, O, Head)
+            {Head, Sz1} = write_bin1(H, D-1, Enc, O, Sz+1, <<Acc/binary, $[>>),
+            write_tail_bin(T, D-1, Enc, O, Sz1, Head)
     end;
-write_bin1(T, D, Enc, O, Acc) when is_tuple(T) ->
+write_bin1(T, D, Enc, O, Sz, Acc) when is_tuple(T) ->
     if
-	D =:= 1 -> <<Acc/binary, "{...}">>;
+	D =:= 1 -> {<<Acc/binary, "{...}">>, Sz+5};
 	true ->
-            First = write_bin1(element(1, T), D-1, Enc, O, <<Acc/binary, ${>>),
-            write_tuple_bin(T, 2, D-1, Enc, O, First)
+            {First, Sz1} = write_bin1(element(1, T), D-1, Enc, O, Sz+1, <<Acc/binary, ${>>),
+            write_tuple_bin(T, 2, D-1, Enc, O, Sz1, First)
     end;
-write_bin1(Term, 1, _Enc, _O, Acc) when is_map(Term) ->
-    <<Acc/binary, "#{}">>;
-write_bin1(Map, D, Enc, O, Acc) when is_map(Map), is_integer(D) ->
+write_bin1(Term, 1, _Enc, _O, Sz, Acc) when is_map(Term) ->
+    {<<Acc/binary, "#{}">>, Sz+3};
+write_bin1(Map, D, Enc, O, Sz, Acc) when is_map(Map), is_integer(D) ->
     I = maps:iterator(Map, O),
     case maps:next(I) of
         {K, V, NextI} ->
             D0 = D - 1,
-            Start = write_map_assoc_bin(K, V, D0, Enc, O, <<Acc/binary, $#, ${>>),
-            write_map_body_bin(NextI, D0, D0, Enc, O, Start);
+            {Start,Sz1} = write_map_assoc_bin(K, V, D0, Enc, O, Sz+2, <<Acc/binary, $#, ${>>),
+            write_map_body_bin(NextI, D0, D0, Enc, O, Sz1, Start);
         none ->
-            ~"#{}"
+            {~"#{}", 3}
     end.
 
-write_tail_bin([], _D, _Enc, _O, Acc) -> <<Acc/binary, $]>>;
-write_tail_bin(_, 1, _Enc, _O, Acc) -> <<Acc/binary, "|...]">>;
-write_tail_bin([H|T], D, Enc, O, Acc) ->
-    Head = write_bin1(H, D-1, Enc, O, <<Acc/binary,$,>>),
-    write_tail_bin(T, D-1, Enc, O, Head);
-write_tail_bin(Other, D, Enc, O, Acc) ->
-    Tail = write_bin1(Other, D-1, Enc, O, <<Acc/binary, $|>>),
-    <<Tail/binary, $]>>.
+write_tail_bin([], _D, _Enc, _O, Sz, Acc) -> {<<Acc/binary, $]>>, Sz+1};
+write_tail_bin(_, 1, _Enc, _O, Sz, Acc) -> {<<Acc/binary, "|...]">>, Sz+1};
+write_tail_bin([H|T], D, Enc, O, Sz, Acc) ->
+    {Head, Sz1} = write_bin1(H, D-1, Enc, O, Sz+1, <<Acc/binary,$,>>),
+    write_tail_bin(T, D-1, Enc, O, Sz1, Head);
+write_tail_bin(Other, D, Enc, O, Sz, Acc) ->
+    {Tail, Sz1} = write_bin1(Other, D-1, Enc, O, Sz+1, <<Acc/binary, $|>>),
+    {<<Tail/binary, $]>>, Sz1+1}.
 
-write_tuple_bin(T, I, _D, _Enc, _O, Acc) when I > tuple_size(T) ->
-    <<Acc/binary, $}>>;
-write_tuple_bin(_, _I, 1, _Enc, _O, Acc) ->
-    <<Acc/binary, ",...}">>;
-write_tuple_bin(T, I, D, Enc, O, Acc) ->
-    Elem = write_bin1(element(I, T), D-1, Enc, O, <<Acc/binary, $,>>),
-    write_tuple_bin(T, I+1, D-1, Enc, O, Elem).
+write_tuple_bin(T, I, _D, _Enc, _O, Sz, Acc) when I > tuple_size(T) ->
+    {<<Acc/binary, $}>>, Sz+1};
+write_tuple_bin(_, _I, 1, _Enc, _O, Sz, Acc) ->
+    {<<Acc/binary, ",...}">>, Sz+4};
+write_tuple_bin(T, I, D, Enc, O, Sz, Acc) ->
+    {Elem, Sz1} = write_bin1(element(I, T), D-1, Enc, O, Sz+1, <<Acc/binary, $,>>),
+    write_tuple_bin(T, I+1, D-1, Enc, O, Sz1, Elem).
 
-write_map_body_bin(_, 1, _D0, _Enc, _O, Acc) ->
-    <<Acc/binary, ",...}">>;
-write_map_body_bin(I, D, D0, Enc, O, Acc) ->
+write_map_body_bin(_, 1, _D0, _Enc, _O, Sz, Acc) ->
+    {<<Acc/binary, ",...}">>, Sz+5};
+write_map_body_bin(I, D, D0, Enc, O, Sz, Acc) ->
     case maps:next(I) of
         {K, V, NextI} ->
-            W = write_map_assoc_bin(K, V, D0, Enc, O, <<Acc/binary, $,>>),
-            write_map_body_bin(NextI, D - 1, D0, Enc, O, W);
+            {W, Sz1} = write_map_assoc_bin(K, V, D0, Enc, O, Sz+1, <<Acc/binary, $,>>),
+            write_map_body_bin(NextI, D - 1, D0, Enc, O, Sz1, W);
         none ->
-            <<Acc/binary, "}">>
+            {<<Acc/binary, "}">>, Sz+1}
     end.
-write_map_assoc_bin(K, V, D, Enc, O, Acc) ->
-    KBin = write_bin1(K, D, Enc, O, Acc),
-    write_bin1(V, D, Enc, O, <<KBin/binary, " => ">>).
+write_map_assoc_bin(K, V, D, Enc, O, Sz, Acc) ->
+    {KBin, Sz1} = write_bin1(K, D, Enc, O, Sz, Acc),
+    write_bin1(V, D, Enc, O, Sz1 + 4, <<KBin/binary, " => ">>).
 
-write_binary_bin(B, D, Acc) ->
+write_binary_bin0(B, D, Sz, Acc) ->
     {S, _} = write_binary_bin(B, D, -1, Acc),
-    S.
+    {S, byte_size(S)+Sz}.
 
 -doc false.
 -spec write_binary_bin(Bin, Depth, T, Acc) -> {unicode:unicode_binary(), binary()} when
