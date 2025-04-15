@@ -47,7 +47,7 @@ macros described here and in the User's Guide:
 -feature(maybe_expr,enable).
 
 -define(_PKCS_FRAME_HRL_, true).
--include("public_key.hrl").
+-include("public_key_internal.hrl").
 
 -record('PBEParameter', {
   salt,
@@ -414,17 +414,21 @@ pem_encode(PemEntries) when is_list(PemEntries) ->
 -spec pem_entry_decode(PemEntry) -> term() when PemEntry :: pem_entry() .
 
 pem_entry_decode({'SubjectPublicKeyInfo', Der, _}) ->
-    {_, {'AlgorithmIdentifier', AlgId, Params}, Key0}
-        = der_decode('SubjectPublicKeyInfo', Der),
+    #'SubjectPublicKeyInfo'{algorithm=AlgId0,subjectPublicKey=Key0} =
+        der_decode('SubjectPublicKeyInfo', Der),
+    #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId,parameters=Params0} =
+        AlgId0,
     KeyType = pubkey_cert_records:supportedPublicKeyAlgorithms(AlgId),
     case KeyType of
         'RSAPublicKey' ->
             der_decode(KeyType, Key0);
         'DSAPublicKey' ->
-            {params, DssParams} = der_decode('DSAParams', Params),
-            {der_decode(KeyType, Key0), DssParams};
+            #'DSA-Params'{p=P, q=Q, g=G} = Params0,
+            Params = #'Dss-Parms'{p=P, q=Q, g=G},
+            {der_decode(KeyType, Key0), Params};
         'ECPoint' ->
-            ECCParams = ec_decode_params(AlgId, Params),
+            error('NYI'),
+            ECCParams = ec_decode_params(AlgId, Params0),
             {#'ECPoint'{point = Key0}, ECCParams}
     end;
 pem_entry_decode({Asn1Type, Der, not_encrypted}) when is_atom(Asn1Type),
@@ -489,6 +493,15 @@ pem_entry_encode('SubjectPublicKeyInfo',
                                    KeyDer),
     pem_entry_encode('SubjectPublicKeyInfo', Spki);
 pem_entry_encode('SubjectPublicKeyInfo',
+                 {DsaInt, Params0=#'Dss-Parms'{}}) when is_integer(DsaInt) ->
+    #'Dss-Parms'{p=P, q=Q, g=G} = Params0,
+    Params = #'DSA-Params'{p=P, q=Q, g=G},
+    KeyDer = der_encode('DSAPublicKey', DsaInt),
+    AlgId = #'SubjectPublicKeyInfo_algorithm'{algorithm=?'id-dsa',
+                                              parameters=Params},
+    Spki = subject_public_key_info(AlgId, KeyDer),
+    pem_entry_encode('SubjectPublicKeyInfo', Spki);
+pem_entry_encode('SubjectPublicKeyInfo',
 		 {#'ECPoint'{point = Key}, {namedCurve, ?'id-Ed25519' = ID}}) when is_binary(Key)->
     Spki = subject_public_key_info(#'AlgorithmIdentifier'{algorithm = ID}, Key),
     pem_entry_encode('SubjectPublicKeyInfo', Spki);
@@ -504,6 +517,7 @@ pem_entry_encode('SubjectPublicKeyInfo',
                                    Key),
     pem_entry_encode('SubjectPublicKeyInfo', Spki);
 pem_entry_encode(Asn1Type, Entity)  when is_atom(Asn1Type) ->
+    io:format("~p\n", [Entity]),
     Der = der_encode(Asn1Type, Entity),
     {Asn1Type, Der, not_encrypted}.
 
@@ -582,10 +596,14 @@ get_asn1_module('OCSPResponse') -> 'OCSP-2009';
 get_asn1_module('ResponseData') -> 'OCSP-2009';
 
 get_asn1_module('Certificate') -> 'PKIX1Explicit-2009';
+get_asn1_module('CertificateList') -> 'PKIX1Explicit-2009';
 get_asn1_module('CertificationRequest') -> 'PKCS-10';
 get_asn1_module('ContentInfo') -> 'CryptographicMessageSyntax-2009';
 get_asn1_module('DHParameter') -> 'PKCS-3';
+get_asn1_module('ECPrivateKey') -> 'ECPrivateKey';
+get_asn1_module('DSA-Params') -> 'PKIXAlgs-2009';
 get_asn1_module('DSAPrivateKey') -> 'DSS';
+get_asn1_module('DSAPublicKey') -> 'PKIXAlgs-2009';
 get_asn1_module('RSAPrivateKey') -> 'PKCS-1';
 get_asn1_module('RSASSA-PSS-params') -> 'PKIX1-PSS-OAEP-Algorithms-2009';
 get_asn1_module('SubjectPublicKeyInfo') -> 'PKIX1Explicit-2009';
@@ -1268,6 +1286,7 @@ verify(Digest, none, Signature, Key = {_, #'DSA-Params'{}}, Options) when is_bin
     %% Backwards compatible
     verify({digest, Digest}, sha, Signature, Key, Options);
 verify(DigestOrPlainText, DigestType, Signature, Key, Options) when is_binary(Signature) ->
+    io:format(":: ~p\n", [Key]),
     case format_verify_key(Key) of
 	badarg ->
 	    erlang:error(badarg, [DigestOrPlainText, DigestType, Signature, Key, Options]);
@@ -1437,19 +1456,17 @@ pkix_verify(DerCert, Key = {#'ECPoint'{}, _}) when is_binary(DerCert) ->
                                              Cert :: cert().
 %%--------------------------------------------------------------------
 pkix_crl_verify(CRL, Cert) when is_binary(CRL) ->
-    pkix_crl_verify(der_decode('CertificateList', CRL), Cert).
-%% pkix_crl_verify(CRL, Cert) when is_binary(Cert) ->
-%%     pkix_crl_verify(CRL, pkix_decode_cert(Cert, otp));
-%% pkix_crl_verify(#'CertificateList'{} = CRL, #'OTPCertificate'{} = Cert) ->
-%%     TBSCert = Cert#'OTPCertificate'.tbsCertificate, 
-%%     PublicKeyInfo = TBSCert#'OTPTBSCertificate'.subjectPublicKeyInfo,
-%%     PublicKey = PublicKeyInfo#'SubjectPublicKeyInfo'.subjectPublicKey,
-%%     _AlgInfo = PublicKeyInfo#'SubjectPublicKeyInfo'.algorithm,
-%%     %% PublicKeyParams = AlgInfo#'PublicKeyAlgorithm'.parameters,
-%%     error('NYI'),
-%%     pubkey_crl:verify_crl_signature(CRL, 
-%% 				    der_encode('CertificateList', CRL), 
-%% 				    aPublicKey, PublicKeyParams).
+    pkix_crl_verify(der_decode('CertificateList', CRL), Cert);
+pkix_crl_verify(CRL, Cert) when is_binary(Cert) ->
+    pkix_crl_verify(CRL, pkix_decode_cert(Cert, otp));
+pkix_crl_verify(#'CertificateList'{} = CRL, #'OTPCertificate'{} = Cert) ->
+    TBSCert = Cert#'OTPCertificate'.tbsCertificate,
+    PublicKeyInfo = TBSCert#'OTPTBSCertificate'.subjectPublicKeyInfo,
+    AlgInfo = PublicKeyInfo#'SubjectPublicKeyInfo'.algorithm,
+    PublicKeyParams = AlgInfo#'SubjectPublicKeyInfo_algorithm'.parameters,
+    pubkey_crl:verify_crl_signature(CRL,
+                                    der_encode('CertificateList', CRL),
+                                    aPublicKey, PublicKeyParams).
 
 %%--------------------------------------------------------------------
 -doc "Checks if `IssuerCert` issued `Cert`.".
@@ -1540,10 +1557,10 @@ pkix_subject_id(Cert) when is_binary(Cert) ->
                     Issuer :: issuer_name() .
 %%--------------------------------------------------------------------
 pkix_crl_issuer(CRL) when is_binary(CRL) ->
-    pkix_crl_issuer(der_decode('CertificateList', CRL)).
-%% pkix_crl_issuer(#'CertificateList'{} = CRL) ->
-%%     pubkey_cert_records:transform(
-%%       CRL#'CertificateList'.tbsCertList#'TBSCertList'.issuer, decode).
+    pkix_crl_issuer(der_decode('CertificateList', CRL));
+pkix_crl_issuer(#'CertificateList'{} = CRL) ->
+    pubkey_cert_records:transform(
+      CRL#'CertificateList'.toBeSigned#'TBSCertList'.issuer, decode).
 
 %%--------------------------------------------------------------------
 -doc(#{group => <<"Certificate API">>,
@@ -2730,7 +2747,8 @@ ec_key({PubKey, PrivateKey}, Params) ->
 
 encode_name_for_short_hash({rdnSequence, Attributes0}) ->
     Attributes = lists:map(fun normalise_attribute/1, Attributes0),
-    {Encoded, _} = 'OTP-PUB-KEY':'enc_RDNSequence'(Attributes, []),
+    io:format("~p\n", [Attributes]),
+    {ok,Encoded} = 'PKIX1Explicit-2009':encode('RDNSequence', Attributes),
     Encoded.
 
 %% Normalise attribute for "short hash".  If the attribute value
@@ -2772,7 +2790,7 @@ normalise_attribute_value(String) ->
     %% We can't use the encoding function for the actual type of the
     %% attribute, since some of them don't allow utf8Strings, which is
     %% the required encoding when creating the hash.
-    {NewBinary, _} = 'OTP-PUB-KEY':'enc_X520CommonName'({utf8String, NormalisedString}, []),
+    {NewBinary, _} = 'PKIX1Explicit-2009':'enc_X520CommonName'({uTF8String, NormalisedString}, []),
     NewBinary.
 
 normalise_string(String) ->
