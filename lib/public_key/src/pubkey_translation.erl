@@ -34,6 +34,11 @@
          value   % term()
         }).
 
+decode(#'SubjectPublicKeyInfo'{algorithm=AlgId0,subjectPublicKey=Key}) ->
+    #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId1,parameters=Params1} = AlgId0,
+    AlgId = decode(AlgId1),
+    Params = decode(Params1),
+    {'SubjectPublicKeyInfo', {'AlgorithmIdentifier', AlgId, Params}, Key};
 decode(#'DSA-Params'{p=P,q=Q,g=G}) ->
     #'Dss-Parms'{p=P,q=Q,g=G};
 decode(#'SingleAttribute'{type=T,value=V}) ->
