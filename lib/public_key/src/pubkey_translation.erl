@@ -25,13 +25,35 @@
 
 -export([decode/1,encode/1]).
 
-encode(Other) ->
-    Other.
+-define(_PKCS_FRAME_HRL_, true).
+-include("public_key_internal.hrl").
 
+-record('AttributeTypeAndValue',
+        {
+         type,   % id_attributes()
+         value   % term()
+        }).
+
+decode(#'SingleAttribute'{type=T,value=V}) ->
+    #'AttributeTypeAndValue'{type=T,value=V};
 decode(Tuple) when is_tuple(Tuple) ->
     list_to_tuple(decode_list(tuple_to_list(Tuple)));
+decode(List) when is_list(List) ->
+    decode_list(List);
 decode(Other) ->
     Other.
 
 decode_list(List) ->
     [decode(E) || E <- List].
+
+encode(#'AttributeTypeAndValue'{type=T,value=V}) ->
+    #'SingleAttribute'{type=T,value=V};
+encode(Tuple) when is_tuple(Tuple) ->
+    list_to_tuple(encode_list(tuple_to_list(Tuple)));
+encode(List) when is_list(List) ->
+    encode_list(List);
+encode(Other) ->
+    Other.
+
+encode_list(List) ->
+    [encode(E) || E <- List].
