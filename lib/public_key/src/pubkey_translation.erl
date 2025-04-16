@@ -34,6 +34,8 @@
          value   % term()
         }).
 
+decode(#'DSA-Params'{p=P,q=Q,g=G}) ->
+    #'Dss-Parms'{p=P,q=Q,g=G};
 decode(#'SingleAttribute'{type=T,value=V}) ->
     #'AttributeTypeAndValue'{type=T,value=V};
 decode(Tuple) when is_tuple(Tuple) ->
@@ -48,6 +50,8 @@ decode_list(List) ->
 
 encode(#'AttributeTypeAndValue'{type=T,value=V}) ->
     #'SingleAttribute'{type=T,value=V};
+encode(#'Dss-Parms'{p=P,q=Q,g=G}) ->
+    #'DSA-Params'{p=P,q=Q,g=G};
 encode(Tuple) when is_tuple(Tuple) ->
     list_to_tuple(encode_list(tuple_to_list(Tuple)));
 encode(List) when is_list(List) ->

@@ -49,6 +49,12 @@ macros described here and in the User's Guide:
 -define(_PKCS_FRAME_HRL_, true).
 -include("public_key_internal.hrl").
 
+%% Superseded by SingleAttribute.
+-record('AttributeTypeAndValue', {
+  type,
+  value
+}).
+
 -record('PBEParameter', {
   salt,
   iterationCount
@@ -215,7 +221,7 @@ provide additional options understood by the fun.
 
 -doc(#{group => <<"Keys">>}).
 -doc "ASN.1 defined public key format for the DSA algorithm.".
--type dsa_public_key()       :: {dss_public_key(), #'DSA-Params'{}}.
+-type dsa_public_key()       :: {dss_public_key(), #'Dss-Parms'{}}.
 
 -doc(#{group => <<"Keys">>}).
 -doc "ASN.1 defined public key format for the DSS algorithm (part of DSA key).".
@@ -302,7 +308,7 @@ A certificate is identified by its serial-number and Issuer Name.
 -doc """
 The value of the issuer part of a certificate.
 """.
--type issuer_name()          :: {rdnSequence,[[#'SingleAttribute'{}]]} .
+-type issuer_name()          :: {rdnSequence,[[#'AttributeTypeAndValue'{}]]} .
 
 -doc(#{group => <<"Certificates">>}).
 -doc """
@@ -416,19 +422,17 @@ pem_encode(PemEntries) when is_list(PemEntries) ->
 pem_entry_decode({'SubjectPublicKeyInfo', Der, _}) ->
     #'SubjectPublicKeyInfo'{algorithm=AlgId0,subjectPublicKey=Key0} =
         der_decode('SubjectPublicKeyInfo', Der),
-    #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId,parameters=Params0} =
+    #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId,parameters=Params} =
         AlgId0,
     KeyType = pubkey_cert_records:supportedPublicKeyAlgorithms(AlgId),
     case KeyType of
         'RSAPublicKey' ->
             der_decode(KeyType, Key0);
         'DSAPublicKey' ->
-            #'DSA-Params'{p=P, q=Q, g=G} = Params0,
-            Params = #'Dss-Parms'{p=P, q=Q, g=G},
             {der_decode(KeyType, Key0), Params};
         'ECPoint' ->
             error('NYI'),
-            ECCParams = ec_decode_params(AlgId, Params0),
+            ECCParams = ec_decode_params(AlgId, Params),
             {#'ECPoint'{point = Key0}, ECCParams}
     end;
 pem_entry_decode({Asn1Type, Der, not_encrypted}) when is_atom(Asn1Type),
@@ -595,6 +599,14 @@ get_asn1_module('BasicOCSPResponse') -> 'OCSP-2009';
 get_asn1_module('OCSPResponse') -> 'OCSP-2009';
 get_asn1_module('ResponseData') -> 'OCSP-2009';
 
+get_asn1_module('AuthorityInfoAccessSyntax') -> 'PKIX1Implicit-2009';
+get_asn1_module('AuthorityKeyIdentifier') -> 'PKIX1Implicit-2009';
+get_asn1_module('BasicConstraints') -> 'PKIX1Implicit-2009';
+get_asn1_module('ExtKeyUsageSyntax') -> 'PKIX1Implicit-2009';
+get_asn1_module('KeyUsage') -> 'PKIX1Implicit-2009';
+get_asn1_module('RSAPublicKey') -> 'PKIXAlgs-2009';
+get_asn1_module('SubjectKeyIdentifier') -> 'CryptographicMessageSyntax-2009';
+
 get_asn1_module('Certificate') -> 'PKIX1Explicit-2009';
 get_asn1_module('CertificateList') -> 'PKIX1Explicit-2009';
 get_asn1_module('CertificationRequest') -> 'PKCS-10';
@@ -606,10 +618,7 @@ get_asn1_module('DSAPrivateKey') -> 'DSS';
 get_asn1_module('DSAPublicKey') -> 'PKIXAlgs-2009';
 get_asn1_module('RSAPrivateKey') -> 'PKCS-1';
 get_asn1_module('RSASSA-PSS-params') -> 'PKIX1-PSS-OAEP-Algorithms-2009';
-get_asn1_module('SubjectPublicKeyInfo') -> 'PKIX1Explicit-2009';
-get_asn1_module(Asn1Type) ->
-    io:format("ASN.1 type: ~p\n", [Asn1Type]),
-    blurf.
+get_asn1_module('SubjectPublicKeyInfo') -> 'PKIX1Explicit-2009'.
 
 handle_pkcs_frame_error('PrivateKeyInfo', Der, _) ->
     try
@@ -1781,7 +1790,7 @@ Available options:
 
   ```erlang
   fun(#'DistributionPoint'{}, #'CertificateList'{},
-      {rdnSequence,[#'SingleAttribute'{}]}, UserState::term()) ->
+      {rdnSequence,[#'AttributeTypeAndValue'{}]}, UserState::term()) ->
   	{ok, #'OTPCertificate'{}, [der_encoded]}
   ```
 
@@ -1947,7 +1956,7 @@ pkix_verify_hostname(Cert = #'OTPCertificate'{tbsCertificate = TbsCert}, Referen
 		    PresentedCNs =
 			[{cn, to_string(V)}
 			 || ATVs <- RDNseq, % RDNseq is list-of-lists
-			    #'SingleAttribute'{type = ?'id-at-commonName',
+			    #'AttributeTypeAndValue'{type = ?'id-at-commonName',
 						     value = {_T,V}} <- ATVs
 						% _T = kind of string (teletexString etc)
 			],
@@ -2754,18 +2763,18 @@ encode_name_for_short_hash({rdnSequence, Attributes0}) ->
 
 %% Normalise attribute for "short hash".  If the attribute value
 %% hasn't been decoded yet, decode it so we can normalise it.
-normalise_attribute([#'SingleAttribute'{
+normalise_attribute([#'AttributeTypeAndValue'{
                         type = _Type,
                         value = Binary} = ATV]) when is_binary(Binary) ->
     case pubkey_cert_records:transform(ATV, decode) of
-	#'SingleAttribute'{value = Binary} ->
+	#'AttributeTypeAndValue'{value = Binary} ->
 	    %% Cannot decode attribute; return original.
 	    [ATV];
-	DecodedATV = #'SingleAttribute'{} ->
+	DecodedATV = #'AttributeTypeAndValue'{} ->
 	    %% The new value will either be String or {Encoding,String}.
 	    normalise_attribute([DecodedATV])
     end;
-normalise_attribute([#'SingleAttribute'{
+normalise_attribute([#'AttributeTypeAndValue'{
                         type = _Type,
                         value = {Encoding, String}} = ATV])
   when
@@ -2776,14 +2785,14 @@ normalise_attribute([#'SingleAttribute'{
     %% These string types all give us something that the unicode
     %% module understands.
     NewValue = normalise_attribute_value(String),
-    [ATV#'SingleAttribute'{value = NewValue}];
-normalise_attribute([#'SingleAttribute'{
+    [ATV#'AttributeTypeAndValue'{value = NewValue}];
+normalise_attribute([#'AttributeTypeAndValue'{
                         type = _Type,
                         value = String} = ATV]) when is_list(String) ->
     %% A string returned by pubkey_cert_records:transform/2, for
     %% certain attributes that commonly have incorrect value types.
     NewValue = normalise_attribute_value(String),
-    [ATV#'SingleAttribute'{value = NewValue}].
+    [ATV#'AttributeTypeAndValue'{value = NewValue}].
 
 normalise_attribute_value(String) ->
     Converted = unicode:characters_to_binary(String),

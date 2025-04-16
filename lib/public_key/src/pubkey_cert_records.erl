@@ -291,9 +291,10 @@ decode_supportedPublicKey(#'SubjectPublicKeyInfo'{algorithm=PA,
               'ECPoint' ->
                   #'ECPoint'{point = SPK0};
               _ ->
-                  Mod = get_asn1_module(Type),
-                  {ok, SPK1} = Mod:decode(Type, SPK0),
-                  SPK1
+                  public_key:der_decode(Type, SPK0)
+                  %% Mod = get_asn1_module(Type),
+                  %% {ok, SPK1} = Mod:decode(Type, SPK0),
+                  %% SPK1
           end,
     #'SubjectPublicKeyInfo'{subjectPublicKey = SPK, algorithm=PA}.
 
@@ -305,9 +306,10 @@ encode_supportedPublicKey(#'SubjectPublicKeyInfo'{algorithm= PA =
               'ECPoint' ->
                   SPK0#'ECPoint'.point;
               _ ->
-                  Mod = get_asn1_module(Type),
-                  {ok, SPK1} = Mod:encode(Type, SPK0),
-                  SPK1
+                  public_key:der_encode(Type, SPK0)
+                  %% Mod = get_asn1_module(Type),
+                  %% {ok, SPK1} = Mod:encode(Type, SPK0),
+                  %% SPK1
           end,
     #'SubjectPublicKeyInfo'{subjectPublicKey = SPK, algorithm=PA}.
 
@@ -353,12 +355,14 @@ decode_extensions(Exts) ->
 			  Type ->
                               case Type of
                                   'SubjectAltName' ->
-                                      {ok, Value} = 'PKIX1Implicit-2009':decode('GeneralNames',
-                                                                                iolist_to_binary(Value0)),
+                                      {ok, Value0} = 'PKIX1Implicit-2009':decode('GeneralNames',
+                                                                                 iolist_to_binary(Value0)),
+                                      Value = pubkey_translation:decode(Value0),
                                       Ext#'Extension'{extnValue=transform(Value,decode)};
                                   'IssuerAltName' ->
-                                      {ok, Value} = 'PKIX1Implicit-2009':decode('GeneralNames',
-                                                                                iolist_to_binary(Value0)),
+                                      {ok, Value0} = 'PKIX1Implicit-2009':decode('GeneralNames',
+                                                                                 iolist_to_binary(Value0)),
+                                      Value = pubkey_translation:decode(Value0),
                                       Ext#'Extension'{extnValue=transform(Value,decode)};
                                   _ ->
                                       Mod = get_asn1_module(Type),
