@@ -48,6 +48,7 @@ MODULES = \
         pubkey_cert_records \
 	pubkey_crl \
 	pubkey_os_cacerts \
+	pubkey_translation \
 #	pubkey_pbe \
 	pubkey_cert \
 	pubkey_policy_tree \

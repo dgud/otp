@@ -585,7 +585,7 @@ der_decode(Asn1Type, Der) when is_atom(Asn1Type), is_binary(Der) ->
     Asn1Module = get_asn1_module(Asn1Type),
     try
 	{ok, Decoded} = Asn1Module:decode(Asn1Type, Der),
-	Decoded
+        pubkey_translation:decode(Decoded)
     catch
 	error:{badmatch, {error, _}} = Error ->
 	    erlang:error(Error)
@@ -775,9 +775,10 @@ der_encode(Asn1Type, Entity) when (Asn1Type == 'PrivateKeyInfo') orelse
 	error:{badmatch, {error, _}} = Error ->
              erlang:error(Error)
      end;
-der_encode(Asn1Type, Entity) when is_atom(Asn1Type) ->
+der_encode(Asn1Type, Entity0) when is_atom(Asn1Type) ->
     Asn1Module = get_asn1_module(Asn1Type),
     try
+        Entity = pubkey_translation:encode(Entity0),
 	{ok, Encoded} = Asn1Module:encode(Asn1Type, Entity),
 	Encoded
     catch
