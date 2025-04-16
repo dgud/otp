@@ -28,5 +28,10 @@
 encode(Other) ->
     Other.
 
+decode(Tuple) when is_tuple(Tuple) ->
+    list_to_tuple(decode_list(tuple_to_list(Tuple)));
 decode(Other) ->
     Other.
+
+decode_list(List) ->
+    [decode(E) || E <- List].
