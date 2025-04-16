@@ -36,7 +36,7 @@
          github_4801/1, chars_limit/1, error_info/1, otp_17525/1,
          unscan_format_without_maps_order/1, build_text_without_maps_order/1]).
 
--export([pretty/2, trf/3]).
+-export([pretty/2, trf/3, rfd/2]).
 
 %%-define(debug, true).
 
@@ -790,7 +790,20 @@ rp(Term, Col, Ll, D, M, RF) ->
 
 check_bin_p(OrigRes, Term, Args) ->
     try
-        {UTF8, _, _} = io_lib_pretty:print_bin(Term, maps:from_list(Args)),
+        {UTF8, _, Width} = io_lib_pretty:print_bin(Term, maps:from_list(Args)),
+
+        StartCol = proplists:get_value(column, Args, 0),
+        OrigW = io_lib_format:indentation(OrigRes, StartCol),
+        case Width > 0 of
+            true when Width == OrigW -> ok;
+            false when (StartCol - Width) == OrigW -> ok;
+            _ ->
+                io:format("Width fail, start: ~w got ~w correct ~w~n", [StartCol, Width, OrigW]),
+                io:put_chars(OrigRes),
+                io:nl(),
+                io:put_chars(UTF8),
+                exit(bad_width)
+        end,
         true = is_binary(UTF8),
         case unicode:characters_to_list(UTF8) of
             OrigRes ->

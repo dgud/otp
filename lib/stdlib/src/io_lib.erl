@@ -650,10 +650,11 @@ write_bin(Term, Depth, InEncoding, MapsOrder, CharsLimit) ->
             write_bin1(Term, Depth, InEncoding, MapsOrder, 0, <<>>);
         is_integer(CharsLimit), CharsLimit > 0 ->
             RecDefFun = fun(_, _) -> no end,
-            If = io_lib_pretty:intermediate
-                   (Term, Depth, CharsLimit, RecDefFun, {InEncoding, utf8}, _Str=false, MapsOrder),
-            Bin = io_lib_pretty:write(If, {unicode,utf8}),  %% FIXME
-            {Bin, string:length(Bin)}
+            If = io_lib_pretty:intermediate(Term, Depth, CharsLimit, RecDefFun,
+                                            {InEncoding, utf8}, _Str=false, MapsOrder),
+            {_, Len, _, _} = If,
+            Bin = io_lib_pretty:write(If, {unicode,utf8}),
+            {Bin, Len}
     end.
 
 write_bin1(_Term, 0, _Enc, _O, Sz, Acc) ->
@@ -974,26 +975,30 @@ write_string(S, Q) ->
     [Q|write_string1(unicode_as_unicode, S, Q)].
 
 -doc "Returns the UTF-8 binary encoded `String` surrounded by `Qoute`.".
--spec write_string_bin(String, Qoute, InEnc) -> unicode:unicode_binary() when
+-spec write_string_bin(String, Qoute, InEnc) -> {unicode:unicode_binary(), Sz::integer()} when
       String :: string() | binary(),
       Qoute  :: integer() | [],
       InEnc  :: 'unicode' | 'latin1'.  %% In case of binary input
 
 write_string_bin(S, Q, _InEnc) when is_list(S) ->
-    Bin = unicode:characters_to_binary(write_string(S, Q)),
+    Escaped = write_string(S,Q),
+    Sz = chars_length(Escaped),
+    Bin = unicode:characters_to_binary(Escaped),
     true = is_binary(Bin),
-    Bin;
+    {Bin, Sz};
 write_string_bin(S, Q, latin1) when is_binary(S) ->
     Escaped = string_bin_escape_latin1(S, S, Q, [], 0, 0),
+    Sz = iolist_size(Escaped) + if Q == [] -> 0; true -> 2 end,
     Bin = unicode:characters_to_binary([Q,Escaped,Q], latin1, utf8),
     true = is_binary(Bin),
-    Bin;
+    {Bin, Sz};
 write_string_bin(S, Q, unicode) when is_binary(S) ->
     Escaped = string_bin_escape_unicode(S, S, Q, [], 0, 0),
-    case Q of
-        [] when is_binary(Escaped) -> Escaped;
-        _ -> unicode:characters_to_binary([Q,Escaped,Q])
-    end.
+    Bin = case Q of
+              [] when is_binary(Escaped) -> Escaped;
+              _ -> unicode:characters_to_binary([Q,Escaped,Q])
+          end,
+    {Bin, string:length(Bin)}.
 
 string_bin_escape_latin1(<<Byte, Rest/binary>>, Orig, Q, Acc, Skip0, Len) ->
     case needs_escape(Byte, Q) of

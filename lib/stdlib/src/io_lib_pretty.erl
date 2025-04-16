@@ -82,7 +82,10 @@ print_bin(Term, Options) when is_map(Options) ->
     InEncoding = maps:get(encoding, Options, epp:default_encoding()),
     Strings = maps:get(strings, Options, true),
     MapsOrder = maps:get(maps_order, Options, undefined),
-    print_bin(Term, Col, Ll, D, M, T, RecDefFun, {InEncoding, utf8}, Strings, MapsOrder).
+    print_bin(Term, Col, Ll, D, M, T, RecDefFun, {InEncoding, utf8}, Strings, MapsOrder);
+print_bin(Term, Options) when is_list(Options) ->
+    print_bin(Term, maps:from_list(Options)).
+
 
 -spec print(term(), rec_print_fun()) -> chars();
            (term(), options()) -> chars().
@@ -198,21 +201,18 @@ print_bin(Term, Col, Ll, D, M0, T, RecDefFun, Enc, Str, Ord)
             TInd = while_fail([-1, 4],
                               fun(I) -> cind(If, Col, Ll, M, I, 0, 0) end,
                               1),
-            %% io:format("~w: ~w~n", [?LINE, Col]),
-            {Bin, NL, NCol} = pp_bin(If, Col, Ll, M, TInd, indent(Col), 0, 0, 0, <<>>),
+            {Bin, NL, W} = pp_bin(If, Col, Ll, M, TInd, indent(Col), 0, 0, 0, 0, <<>>),
             case NL > 0 of
                 true ->
-                    {Bin, Len+Col*NL, NCol};
+                    {Bin, Len+Col*NL, W-1};
                 false ->
-                    {Bin, Len, -NCol}
+                    {Bin, Len, -W}
             end
     end;
 print_bin(Term, _Col, _Ll, _D, _M, _T, _RF, _Enc, _Str, _Ord) ->
     %% atomic data types (bignums, atoms, ...) are never truncated
     {Bin, Sz} = io_lib:write_bin(Term, -1, unicode, undefined, -1),
     {Bin, Sz, -Sz}.
-
-
 
 %%%
 %%% Local functions
@@ -224,7 +224,7 @@ max_cs(M, Len) when M < 0 ->
 max_cs(M, _Len) ->
     M.
 
--define(ATM(T), is_list(element(1, T)) orelse is_binary(element(1, T))).
+-define(ATM(T), (is_list(element(1, T)) orelse is_binary(element(1, T)))).
 -define(ATM_PAIR(Pair),
         ?ATM(element(2, element(1, Pair))) % Key
         andalso
@@ -436,238 +436,244 @@ pp_binary(S, N, _N0, Ind) ->
 
 -define(IND(Spaces), (list_to_binary(Spaces))/binary).
 
-pp_bin({_S,Len,_,_} = If, Col, Ll, M, _TInd, _Ind, LD, NL, W, Acc)
+pp_bin({_S,Len,_,_} = If, Col, Ll, M, _TInd, _Ind, LD, NL, W, Pos, Acc)
   when Len < Ll - Col - LD, Len + W + LD =< M ->
-    {write_bin(If, Acc), NL, W+Len};
-pp_bin({{list,L}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Acc) ->
-    pp_list_bin(L, Col + 1, Ll, M, TInd, indent(1, Ind), LD, $|, $], NL, W + 1,
+    {write_bin(If, Acc), NL, Pos+Len};
+pp_bin({{list,L}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Pos, Acc) ->
+    pp_list_bin(L, Col+1, Ll, M, TInd, indent(1, Ind), LD, $|, $], NL, W+1, Pos+1,
                 <<Acc/binary, $[>>);
-pp_bin({{tuple,true,L}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Acc) ->
-    pp_tag_tuple_bin(L, Col, Ll, M, TInd, Ind, LD, NL, W + 1,
+pp_bin({{tuple,true,L}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Pos, Acc) ->
+    pp_tag_tuple_bin(L, Col, Ll, M, TInd, Ind, LD, NL, W+1, Pos+1,
                      <<Acc/binary, ${>>);
-pp_bin({{tuple,false,L}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Acc) ->
-    pp_list_bin(L, Col + 1, Ll, M, TInd, indent(1, Ind), LD, $,, $}, NL, W + 1,
+pp_bin({{tuple,false,L}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Pos, Acc) ->
+    pp_list_bin(L, Col+1, Ll, M, TInd, indent(1, Ind), LD, $,, $}, NL, W+1, Pos+1,
                 <<Acc/binary, ${>>);
-pp_bin({{map,Pairs}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Acc) ->
-     pp_map_bin(Pairs, Col + 2, Ll, M, TInd, indent(2, Ind), LD, NL, W + 1,
-                <<Acc/binary, $#, ${>>);
-pp_bin({{record,[{Name0,NLen} | L]}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Acc) ->
+pp_bin({{map,Pairs}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Pos, Acc) ->
+    pp_map_bin(Pairs, Col+2, Ll, M, TInd, indent(2, Ind), LD, NL, W+2, Pos,
+               <<Acc/binary, $#, ${>>);
+pp_bin({{record,[{Name0,NLen} | L]}, _Len, _, _}, Col, Ll, M, TInd, Ind, LD, NL, W, Pos, Acc) ->
     Name = unicode:characters_to_binary(Name0),
-    pp_record_bin(L, NLen, Col, Ll, M, TInd, Ind, LD, NL, W + NLen+1,
+    pp_record_bin(L, NLen, Col, Ll, M, TInd, Ind, LD, NL, W+NLen+1, Pos+NLen+1,
                   <<Acc/binary, Name/binary, ${>>);
-pp_bin({{bin,S}, _Len, _, _}, Col, Ll, M, _TInd, Ind, LD, NL, W, Acc) ->
-    pp_binary_bin(S, Col + 2, Ll, M, indent(2, Ind), LD, NL, W, Acc);
-pp_bin({S,Len,_,_}, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
+pp_bin({{bin,S}, _Len, _, _}, Col, Ll, M, _TInd, Ind, LD, NL, W, Pos, Acc) ->
+    pp_binary_bin(S, Col+2, Ll, M, indent(2, Ind), LD, NL, W, Pos, Acc);
+pp_bin({S,Len,_,_}, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
     Bin = unicode:characters_to_binary(S),
-    {<<Acc/binary, Bin/binary>>, NL, W+Len}.
+    {<<Acc/binary, Bin/binary>>, NL, Pos+Len}.
 
 %%  Print a tagged tuple by indenting the rest of the elements
 %%  differently to the tag. Tuple has size >= 2.
-pp_tag_tuple_bin({dots, _, _, _}, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, "...}">>, NL, W+4};
-pp_tag_tuple_bin([{Tag0,Tlen,_,_} | L], Col, Ll, M, TInd, Ind, LD, NL, W, Acc) ->
+pp_tag_tuple_bin({dots, _, _, _}, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, "...}">>, NL, Pos+4};
+pp_tag_tuple_bin([{Tag0,Tlen,_,_} | L], Col, Ll, M, TInd, Ind, LD, NL, W, Pos, Acc) ->
     %% this uses TInd
-    TagInd = Tlen + 2,
-    Tcol = Col + TagInd,
+    TagInd = Tlen+2,
+    Tcol = Col+TagInd,
     Tag = unicode:characters_to_binary(Tag0),
     S = $,,
     if
         TInd > 0, TagInd > TInd ->
-            Col1 = Col + TInd,
+            Col1 = Col+TInd,
             Indent = indent(TInd, Ind),
-            pp_tail_bin(L, Col1, Tcol, Ll, M, TInd, Indent, LD, S, $}, NL, W+Tlen,
+            pp_tail_bin(L, Col1, Tcol, Ll, M, TInd, Indent, LD, S, $}, NL, W+Tlen, Pos+Tlen,
                         <<Acc/binary, Tag/binary>>);
         true ->
             Indent = indent(TagInd, Ind),
-            pp_list_bin(L, Tcol, Ll, M, TInd, Indent, LD, S, $}, NL, W+Tlen+1,
+            pp_list_bin(L, Tcol, Ll, M, TInd, Indent, LD, S, $}, NL, W+Tlen+1, Pos+Tlen+1,
                         <<Acc/binary, Tag/binary, S>>)
     end.
 
-pp_map_bin([], _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, $}>>, NL, W+1};                           % cannot happen
-pp_map_bin({dots, _, _, _}, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, "...}">>, NL, W+4};                       % cannot happen
-pp_map_bin([P | Ps], Col, Ll, M, TInd, Ind, LD, NL0, W, Acc) ->
-    {PS, NL, PW} = pp_pair_bin(P, Col, Ll, M, TInd, Ind, last_depth(Ps, LD), NL0, W, Acc),
-    pp_pairs_tail_bin(Ps, Col, Col + PW, Ll, M, TInd, Ind, LD, NL, PW, PS).
+pp_map_bin([], _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, $}>>, NL, Pos+1};                           % cannot happen
+pp_map_bin({dots, _, _, _}, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, "...}">>, NL, Pos+4};                       % cannot happen
+pp_map_bin([P | Ps], Col, Ll, M, TInd, Ind, LD, NL0, W, Pos0, Acc) ->
+    {PS, NL, Pos, PW} = pp_pair_bin(P, Col, Ll, M, TInd, Ind, last_depth(Ps, LD), NL0, W, Pos0, Acc),
+    pp_pairs_tail_bin(Ps, Col, Col+PW, Ll, M, TInd, Ind, LD, NL, PW, Pos, PS).
 
-pp_pairs_tail_bin([], _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, $}>>, NL, W+1};
-pp_pairs_tail_bin({dots, _, _, _}, _Col0, _Col, _M, _Ll, _TInd, _Ind, _L, NL, W, Acc) ->
-    {<<Acc/binary, ",...}">>, NL, W+5};
-pp_pairs_tail_bin([{_, Len, _, _}=P | Ps], Col0, Col, Ll, M, TInd, Ind, LD, NL0, W, Acc) ->
+pp_pairs_tail_bin([], _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, $}>>, NL, Pos+1};
+pp_pairs_tail_bin({dots, _, _, _}, _Col0, _Col, _M, _Ll, _TInd, _Ind, _L, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, ",...}">>, NL, Pos+5};
+pp_pairs_tail_bin([{_, Len, _, _}=P | Ps], Col0, Col, Ll, M, TInd, Ind, LD, NL0, W, Pos, Acc) ->
     LD1 = last_depth(Ps, LD),
-    ELen = 1 + Len,
+    ELen = 1+Len,
     if
-        LD1 =:= 0, ELen + 1 < Ll - Col, W + ELen + 1 =< M, ?ATM_PAIR(P);
-        LD1 > 0, ELen < Ll - Col - LD1, W + ELen + LD1 =< M, ?ATM_PAIR(P) ->
-            pp_pairs_tail_bin(Ps, Col0, Col+ELen, Ll, M, TInd, Ind, LD, NL0, W+ELen,
+        LD1 =:= 0, ELen+1 < Ll-Col, W+ELen+1 =< M, ?ATM_PAIR(P);
+        LD1 > 0, ELen < Ll-Col-LD1, W+ELen+LD1 =< M, ?ATM_PAIR(P) ->
+            pp_pairs_tail_bin(Ps, Col0, Col+ELen, Ll, M, TInd, Ind, LD, NL0, W+ELen, Pos+ELen,
                               write_bin(P, <<Acc/binary, $,>>));
         true ->
-            {PS, NL, PW} = pp_pair_bin(P, Col0, Ll, M, TInd, Ind, LD1, NL0+1, 0,
-                                       <<Acc/binary, $,, $\n, ?IND(Ind)>>),
-            pp_pairs_tail_bin(Ps, Col0, Col0 + PW, Ll, M, TInd, Ind, LD, NL, PW, PS)
+            {PS, NL, Pos1, PW} = pp_pair_bin(P, Col0, Ll, M, TInd, Ind, LD1, NL0+1, 0, Col0,
+                                             <<Acc/binary, $,, $\n, ?IND(Ind)>>),
+            pp_pairs_tail_bin(Ps, Col0, Col0+PW, Ll, M, TInd, Ind, LD, NL, PW, Pos1, PS)
     end.
 
-pp_pair_bin({_, Len, _, _}=Pair, Col, Ll, M, _TInd, _Ind, LD, NL, W, Acc)
-  when Len < Ll - Col - LD, Len + W + LD =< M ->
+pp_pair_bin({_, Len, _, _}=Pair, Col, Ll, M, _TInd, _Ind, LD, NL, W, Pos, Acc)
+  when Len < Ll - Col - LD, Len+W+LD =< M ->
     {write_bin(Pair, Acc),
      NL,
+     Len+Pos,
      if
          ?ATM_PAIR(Pair) ->
              Len;
          true ->
              Ll % force nl
      end};
-pp_pair_bin({{map_pair, K, V}, _Len, _, _}, Col0, Ll, M, TInd, Ind0, LD, NL0, W, Acc0) ->
+pp_pair_bin({{map_pair, K, V}, _Len, _, _}, Col0, Ll, M, TInd, Ind0, LD, NL0, W, Pos0, Acc0) ->
     I = map_value_indent(TInd),
     Ind = indent(I, Ind0),
-    {Acc1, NL1, _} = pp_bin(K, Col0, Ll, M, TInd, Ind0, LD, NL0, W, Acc0),
-    {Acc2, NL, _} = pp_bin(V, Col0 + I, Ll, M, TInd, Ind, LD, NL1+1, 0, <<Acc1/binary, " =>\n", ?IND(Ind)>>),
-    {Acc2, NL, Ll}.
+    {Acc1, NL1, _} = pp_bin(K, Col0, Ll, M, TInd, Ind0, LD, NL0, W, Pos0, Acc0),
+    {Acc2, NL, Pos} = pp_bin(V, Col0+I, Ll, M, TInd, Ind, LD, NL1+1, 0, Col0+I,
+                             <<Acc1/binary, " =>\n", ?IND(Ind)>>),
+    {Acc2, NL, Pos, Ll}.
 
-pp_record_bin([], _Nlen, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, $}>>, NL, W+1};
-pp_record_bin({dots, _, _, _}, _Nlen, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, "...}">>, NL, W+4};
-pp_record_bin([F | Fs], Nlen, Col0, Ll, M, TInd, Ind0, LD, NL0, W0, Acc) ->
-    Nind = Nlen + 1,
+pp_record_bin([], _Nlen, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, $}>>, NL, Pos+1};
+pp_record_bin({dots, _, _, _}, _Nlen, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, "...}">>, NL, Pos+4};
+pp_record_bin([F | Fs], Nlen, Col0, Ll, M, TInd, Ind0, LD, NL0, W0, Pos0, Acc) ->
+    Nind = Nlen+1,
     {Col, Ind, S, W} = rec_indent(Nind, TInd, Col0, Ind0, W0),
-    {FS, NL, FW} = pp_field_bin(F, Col, Ll, M, TInd, Ind, last_depth(Fs, LD), NL0, W,
-                                <<Acc/binary, ?IND(S)>>),
-    pp_fields_tail_bin(Fs, Col, Col + FW, Ll, M, TInd, Ind, LD, NL, W + FW, FS).
+    {Pos1, NL1} = if W == 0 -> {Col, NL0+1}; true -> {Pos0, NL0} end,
+    {FS, NL, Pos, FW} = pp_field_bin(F, Col, Ll, M, TInd, Ind, last_depth(Fs, LD), NL1, W, Pos1,
+                                     <<Acc/binary, ?IND(S)>>),
+    pp_fields_tail_bin(Fs, Col, Col+FW, Ll, M, TInd, Ind, LD, NL, W+FW, Pos, FS).
 
-pp_fields_tail_bin([], _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, $}>>, NL, W+1};
-pp_fields_tail_bin({dots, _, _ ,_}, _Col0, _Col, _M, _Ll, _TInd, _Ind, _LD, NL, W, Acc) ->
-    {<<Acc/binary, ",...}">>, NL, W+5};
-pp_fields_tail_bin([{_, Len, _, _}=F | Fs], Col0, Col, Ll, M, TInd, Ind, LD, NL0, W, Acc) ->
+pp_fields_tail_bin([], _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, $}>>, NL, Pos+1};
+pp_fields_tail_bin({dots, _, _ ,_}, _Col0, _Col, _M, _Ll, _TInd, _Ind, _LD, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, ",...}">>, NL, Pos+5};
+pp_fields_tail_bin([{_, Len, _, _}=F | Fs], Col0, Col, Ll, M, TInd, Ind, LD, NL0, W, Pos0, Acc) ->
     LD1 = last_depth(Fs, LD),
-    ELen = 1 + Len,
+    ELen = 1+Len,
     if
-        LD1 =:= 0, ELen + 1 < Ll - Col, W + ELen + 1 =< M, ?ATM_FLD(F);
-        LD1 > 0, ELen < Ll - Col - LD1, W + ELen + LD1 =< M, ?ATM_FLD(F) ->
-            pp_fields_tail_bin(Fs, Col0, Col+ELen, Ll, M, TInd, Ind, LD, NL0, W+ELen,
+        LD1 =:= 0, ELen+1 < Ll-Col, W+ELen+1 =< M, ?ATM_FLD(F);
+        LD1 > 0, ELen < Ll-Col-LD1, W+ELen+LD1 =< M, ?ATM_FLD(F) ->
+            pp_fields_tail_bin(Fs, Col0, Col+ELen, Ll, M, TInd, Ind, LD, NL0, W+ELen, Pos0+ELen,
                                write_field_bin(F, <<Acc/binary, $,>>));
         true ->
-            {FS, NL, FW} = pp_field_bin(F, Col0, Ll, M, TInd, Ind, LD1, NL0+1, 0,
-                                        <<Acc/binary, $,, $\n, ?IND(Ind)>>),
-            pp_fields_tail_bin(Fs, Col0, Col0 + FW, Ll, M, TInd, Ind, LD, NL, FW, FS)
+            {FS, NL, Pos, FW} = pp_field_bin(F, Col0, Ll, M, TInd, Ind, LD1, NL0+1, 0, Col0,
+                                             <<Acc/binary, $,, $\n, ?IND(Ind)>>),
+            pp_fields_tail_bin(Fs, Col0, Col0+FW, Ll, M, TInd, Ind, LD, NL, FW, Pos, FS)
     end.
 
-pp_field_bin({_, Len, _, _}=Fl, Col, Ll, M, _TInd, _Ind, LD, NL, W, Acc)
-  when Len < Ll - Col - LD, Len + W + LD =< M ->
+pp_field_bin({_, Len, _, _}=Fl, Col, Ll, M, _TInd, _Ind, LD, NL, W, Pos, Acc)
+  when Len < Ll-Col-LD, Len+W+LD =< M ->
     {write_field_bin(Fl, Acc),
      NL,
+     Len+Pos,
      if
          ?ATM_FLD(Fl) -> Len;
          true -> Ll % force nl
      end};
-pp_field_bin({{field, Name0, NameL, F},_,_, _}, Col0, Ll, M, TInd, Ind0, LD, NL0, W0, Acc0) ->
-    {Col, Ind, S, W} = rec_indent(NameL, TInd, Col0, Ind0, W0 + NameL),
+pp_field_bin({{field, Name0, NameL, F},_,_, _}, Col0, Ll, M, TInd, Ind0, LD, NL0, W0, Pos0, Acc0) ->
+    {Col, Ind, S, W} = rec_indent(NameL, TInd, Col0, Ind0, W0+NameL),
     Name = unicode:characters_to_binary(Name0),
-    {Acc, NL, _} =
+    {Acc, NL, Pos} =
         case W of
             0 ->
                 Acc1 = <<Acc0/binary, Name/binary, " =", ?IND(S)>>,
-                pp_bin(F, Col, Ll, M, TInd, Ind, LD, NL0+1, W, Acc1);
+                pp_bin(F, Col, Ll, M, TInd, Ind, LD, NL0+1, W, Col, Acc1);
             _ ->
                 Acc1 = <<Acc0/binary, Name/binary, " = ", ?IND(S)>>,
-                pp_bin(F, Col, Ll, M, TInd, Ind, LD, NL0, W, Acc1)
-            end,
-    {Acc, NL, Ll}. % force nl
+                pp_bin(F, Col, Ll, M, TInd, Ind, LD, NL0, W, Pos0, Acc1)
+        end,
+    {Acc, NL, Pos, Ll}. % force nl
 
-pp_list_bin({dots, _, _, _}, _Col0, _Ll, _M, _TInd, _Ind, _LD, _S, C, NL, W, Acc) ->
-    {<<Acc/binary, "...", C>>, NL, W+4};
-pp_list_bin([E | Es], Col0, Ll, M, TInd, Ind, LD, S, C, NL0, W, Acc) ->
-    {ES, NL, WE} = pp_element_bin(E, Col0, Ll, M, TInd, Ind, last_depth(Es, LD), NL0, W, Acc),
-    pp_tail_bin(Es, Col0, Col0 + WE, Ll, M, TInd, Ind, LD, S, C, NL, W + WE, ES).
+pp_list_bin({dots, _, _, _}, _Col0, _Ll, _M, _TInd, _Ind, _LD, _S, C, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, "...", C>>, NL, Pos+4};
+pp_list_bin([E | Es], Col0, Ll, M, TInd, Ind, LD, S, C, NL0, W, Pos0, Acc) ->
+    {ES, NL, Pos, WE} = pp_element_bin(E, Col0, Ll, M, TInd, Ind, last_depth(Es, LD), NL0, W, Pos0, Acc),
+    pp_tail_bin(Es, Col0, Col0+WE, Ll, M, TInd, Ind, LD, S, C, NL, W+WE, Pos, ES).
 
-pp_tail_bin([], _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, _S, C, NL, W, Acc) ->
-    {<<Acc/binary, C>>, NL, W+1};
-pp_tail_bin([{_, Len, _, _}=E | Es], Col0, Col, Ll, M, TInd, Ind, LD, S, C, NL0, W, Acc) ->
+pp_tail_bin([], _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, _S, C, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, C>>, NL, Pos+1};
+pp_tail_bin([{_, Len, _, _}=E | Es], Col0, Col, Ll, M, TInd, Ind, LD, S, C, NL0, W, Pos0, Acc) ->
     LD1 = last_depth(Es, LD),
-    ELen = 1 + Len,
+    ELen = 1+Len,
     if
-        LD1 =:= 0, ELen + 1 < Ll - Col, W + ELen + 1 =< M, ?ATM(E);
-        LD1 > 0, ELen < Ll - Col - LD1, W + ELen + LD1 =< M, ?ATM(E) ->
-            pp_tail_bin(Es, Col0, Col + ELen, Ll, M, TInd, Ind, LD, S, C, NL0, W+ELen,
+        LD1 =:= 0, ELen+1 < Ll-Col, W+ELen+1 =< M, ?ATM(E);
+        LD1 > 0, ELen < Ll-Col-LD1, W+ELen+LD1 =< M, ?ATM(E) ->
+            pp_tail_bin(Es, Col0, Col+ELen, Ll, M, TInd, Ind, LD, S, C, NL0, W+ELen, Pos0+ELen,
                         write_bin(E, <<Acc/binary, $,>>));
         true ->
-            {ES, NL, WE} = pp_element_bin(E, Col0, Ll, M, TInd, Ind, LD1, NL0+1, 0,
-                                          <<Acc/binary, $,, $\n, ?IND(Ind)>>),
-            pp_tail_bin(Es, Col0, Col0 + WE, Ll, M, TInd, Ind, LD, S, C, NL, WE, ES)
+            {ES, NL, Pos, WE} = pp_element_bin(E, Col0, Ll, M, TInd, Ind, LD1, NL0+1, 0, Col0,
+                                               <<Acc/binary, $,, $\n, ?IND(Ind)>>),
+            pp_tail_bin(Es, Col0, Col0+WE, Ll, M, TInd, Ind, LD, S, C, NL, WE, Pos, ES)
     end;
-pp_tail_bin({dots, _, _, _}, _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, S, C, NL, W, Acc) ->
-    {<<Acc/binary, S, "...", C>>, NL, W+5};
-pp_tail_bin({_, Len, _, _}=E, _Col0, Col, Ll, M, _TInd, _Ind, LD, S, C, NL, W, Acc)
-  when Len + 1 < Ll - Col - (LD + 1),
-       Len + 1 + W + (LD + 1) =< M,
+pp_tail_bin({dots, _, _, _}, _Col0, _Col, _Ll, _M, _TInd, _Ind, _LD, S, C, NL, _W, Pos, Acc) ->
+    {<<Acc/binary, S, "...", C>>, NL, Pos+5};
+pp_tail_bin({_, Len, _, _}=E, _Col0, Col, Ll, M, _TInd, _Ind, LD, S, C, NL, W, Pos, Acc)
+  when Len+1 < Ll - Col - (LD+1),
+       Len+1+W+(LD+1) =< M,
        ?ATM(E) ->
     Acc1 = write_bin(E, <<Acc/binary, S>>),
-    {<<Acc1/binary, C>>, NL, W+1+Len};
-pp_tail_bin(E, Col0, _Col, Ll, M, TInd, Ind, LD, S, C, NL0, _W, Acc) ->
-    {Acc1, NL, Col1} = pp_bin(E, Col0, Ll, M, TInd, Ind, LD + 1, NL0+1, 0,
-                              <<Acc/binary, S, $\n, ?IND(Ind)>>),
-    {<<Acc1/binary, C>>, NL, Col1+1}.
+    {<<Acc1/binary, C>>, NL, Pos+1+Len};
+pp_tail_bin(E, Col0, _Col, Ll, M, TInd, Ind, LD, S, C, NL0, _W, _Pos0, Acc) ->
+    {Acc1, NL, Pos} = pp_bin(E, Col0, Ll, M, TInd, Ind, LD+1, NL0+1, 0, Col0,
+                             <<Acc/binary, S, $\n, ?IND(Ind)>>),
+    {<<Acc1/binary, C>>, NL, Pos+1}.
 
-pp_element_bin({_, Len, _, _}=E, Col, Ll, M, _TInd, _Ind, LD, NL, W, Acc)
-  when Len < Ll - Col - LD, Len + W + LD =< M, ?ATM(E) ->
-    {write_bin(E, Acc), NL, Len};
-pp_element_bin(E, Col, Ll, M, TInd, Ind, LD, NL0, W, Acc) ->
-    {Acc1, NL, _} = pp_bin(E, Col, Ll, M, TInd, Ind, LD, NL0, W, Acc),
-    {Acc1, NL, Ll}. % force nl
+pp_element_bin({_, Len, _, _}=E, Col, Ll, M, _TInd, _Ind, LD, NL, W, Pos, Acc)
+  when Len < Ll - Col - LD, Len+W+LD =< M, ?ATM(E) ->
+    {write_bin(E, Acc), NL, Pos+Len, Len};
+pp_element_bin(E, Col, Ll, M, TInd, Ind, LD, NL0, W, Pos0, Acc) ->
+    {Acc1, NL, Pos} = pp_bin(E, Col, Ll, M, TInd, Ind, LD, NL0, W, Pos0, Acc),
+    {Acc1, NL, Pos, Ll}. % force nl
 
-pp_binary_bin(Orig, Col, Ll, M, Ind, LD, NL, W, Acc) ->
+pp_binary_bin(Orig, Col, Ll, M, Ind, LD, NL, W, Pos, Acc) ->
     N = erlang:max(8, erlang:min(Ll - Col, M - 4 - W) - LD),
     <<$<,$<,Rest/binary>> = Orig,
-    pp_binary_bin_ind(Rest, Orig, Ind, 0, 2, N, N, Col, NL, Acc).
+    pp_binary_bin_ind(Rest, Orig, Ind, 0, 2, N, N, NL, Pos, Acc).
 
-pp_binary_bin_ind(<<_,$,, Rest/binary>>, Orig, Ind, S, I, N, N0, Col, NL, Acc) ->
+pp_binary_bin_ind(<<_,$,, Rest/binary>>, Orig, Ind, S, I, N, N0, NL, Pos, Acc) ->
     N1 = N-2,
     case N1 < 0 of
         false ->
-            pp_binary_bin_ind(Rest, Orig, Ind, S, I+2, N1, N0, Col, NL, Acc);
+            pp_binary_bin_ind(Rest, Orig, Ind, S, I+2, N1, N0, NL, Pos, Acc);
         true ->
             Part = binary:part(Orig, S, I),
-            pp_binary_bin_ind(Rest, Orig, Ind, S+I, 2, N0-2, N0, Col, NL+1,
+            pp_binary_bin_ind(Rest, Orig, Ind, S+I, 2, N0-2, N0, NL+1, 0,
                               <<Acc/binary, Part/binary, $\n, ?IND(Ind)>>)
     end;
-pp_binary_bin_ind(<<_,_,$,, Rest/binary>>, Orig, Ind, S, I, N, N0, Col, NL, Acc) ->
+pp_binary_bin_ind(<<_,_,$,, Rest/binary>>, Orig, Ind, S, I, N, N0, NL, Pos, Acc) ->
     N1 = N-3,
     case N1 < 0 of
         false ->
-            pp_binary_bin_ind(Rest, Orig, Ind, S, I+3, N1, N0, Col, NL, Acc);
+            pp_binary_bin_ind(Rest, Orig, Ind, S, I+3, N1, N0, NL, Pos, Acc);
         true ->
             Part = binary:part(Orig, S, I),
-            pp_binary_bin_ind(Rest, Orig, Ind, S+I, 3, N0-3, N0, Col, NL+1,
+            pp_binary_bin_ind(Rest, Orig, Ind, S+I, 3, N0-3, N0, NL+1, Pos,
                               <<Acc/binary, Part/binary, $\n, ?IND(Ind)>>)
     end;
-pp_binary_bin_ind(<<_,_,_,$,, Rest/binary>>, Orig, Ind, S, I, N, N0, Col, NL, Acc) ->
+pp_binary_bin_ind(<<_,_,_,$,, Rest/binary>>, Orig, Ind, S, I, N, N0, NL, Pos, Acc) ->
     N1 = N-4,
     case N1 < 0 of
         false ->
-            pp_binary_bin_ind(Rest, Orig, Ind, S, I+4, N1, N0, Col, NL, Acc);
+            pp_binary_bin_ind(Rest, Orig, Ind, S, I+4, N1, N0, NL, Pos, Acc);
         true ->
             Part = binary:part(Orig, S, I),
-            pp_binary_bin_ind(Rest, Orig, Ind, S+I, 4, N0-4, N0, Col, NL+1,
+            pp_binary_bin_ind(Rest, Orig, Ind, S+I, 4, N0-4, N0, NL+1, Pos,
                               <<Acc/binary, Part/binary, $\n, ?IND(Ind)>>)
     end;
-pp_binary_bin_ind(Bin, Orig, Ind, S, I, N, _, _Col, NL, Acc) ->
+pp_binary_bin_ind(Bin, Orig, Ind, S, I, N, _, NL, Pos0, Acc) ->
+    Col = iolist_size(Ind)+1,
+    Pos = if Pos0 =:= 0 -> Col; true -> Pos0 end,
     case (byte_size(Bin)-2) > N of  %% Don't count bin closing ">>"
         false when S =:= 0 ->
-            Sz = byte_size(Bin),
-            {<<Acc/binary, Orig/binary>>, NL, Sz};
+            Sz = byte_size(Orig),
+            {<<Acc/binary, Orig/binary>>, NL, Pos+Sz};
         false ->
             Sz = byte_size(Orig)-S,
             Part = binary:part(Orig, S, Sz),
-            {<<Acc/binary, Part/binary>>, NL, Sz};
+            {<<Acc/binary, Part/binary>>, NL, Pos+Sz};
         true ->
             Part1 = binary:part(Orig, S, I),
             Sz = byte_size(Orig) - (S+I),
             Part2 = binary:part(Orig, S+I, Sz),
             {<<Acc/binary, Part1/binary, $\n, ?IND(Ind), Part2/binary>>,
-             NL+1, Sz}
+             NL+1, Col+Sz}
     end.
 
 %% write the whole thing on a single line
@@ -741,8 +747,9 @@ write_bin({{record, [{Name0,_} | L]}, _, _, _}, Acc) ->
     Name = unicode:characters_to_binary(Name0),
     write_fields_bin(L, <<Acc/binary, Name/binary, ${>>);
 write_bin({{bin, S}, _, _, _}, Acc) ->
-    Bin = unicode:characters_to_binary(S),
-    <<Acc/binary, Bin/binary>>;
+    <<Acc/binary, S/binary>>;
+write_bin({S, _, _, _}, Acc) when is_binary(S) ->
+    <<Acc/binary, S/binary>>;
 write_bin({S, _, _, _}, Acc) ->
     Bin = unicode:characters_to_binary(S),
     <<Acc/binary, Bin/binary>>.
@@ -808,7 +815,8 @@ write_tail_bin(E, S, End, Acc) ->
 
 -spec intermediate(term(), depth(), pos_integer(), rec_print_fun(),
                    encoding() | {encoding, utf8},
-                   boolean(), boolean()) -> intermediate_format().
+                   boolean(), maps:iterator_order() | undefined) ->
+          intermediate_format().
 
 intermediate(Term, D, T, RF, Enc, Str, Ord) when T > 0 ->
     D0 = 1,
@@ -823,8 +831,8 @@ intermediate(Term, D, T, RF, Enc, Str, Ord) when T > 0 ->
 find_upper(Lower, Term, T, Dl, Dd, D, RF, Enc, Str, Ord, LastLen) ->
     Dd2 = Dd * 2,
     D1 = case D < 0 of
-             true -> Dl + Dd2;
-             false -> min(Dl + Dd2, D)
+             true -> Dl+Dd2;
+             false -> min(Dl+Dd2, D)
          end,
     If = expand(Lower, T, D1 - Dl),
     case If of
@@ -851,7 +859,7 @@ search_depth(Lower, Upper, _Term, T, Dl, Du, _RF, _Enc, _Str, _Ord)
             Upper
     end;
 search_depth(Lower, Upper, Term, T, Dl, Du, RF, Enc, Str, Ord) ->
-    D1 = (Dl  + Du) div 2,
+    D1 = (Dl +Du) div 2,
     If = expand(Lower, T, D1 - Dl),
     case If of
 	{_, Len, _, _} when Len > T ->
@@ -1072,25 +1080,23 @@ print_length_binary(Bin, D, T, RF, {InEnc, utf8} = Enc, Str, Ord) ->
         printable_bin0(Bin, D1, tsub(T, 6), InEnc, binary)
     of
         {true, _Bin} ->
-            Len = byte_size(Bin), %% input ASCII
-            Utf8 = io_lib:write_string_bin(Bin, [], latin1),
+            {Utf8, Len} = io_lib:write_string_bin(Bin, [], latin1),
             {[$<,$<,$",Utf8,$",$>,$>], 6 + Len, 0, no_more};
         {false, _Bin} ->
-            Utf8 = io_lib:write_string_bin(Bin, [], unicode),
-            Len = string:length(Utf8),
+            {Utf8, Len} = io_lib:write_string_bin(Bin, [], unicode),
             {[$<,$<,$",Utf8,"\"/utf8>>"], 11 + Len, 0, no_more};
         {true, true, Prefix} ->
-            S = io_lib:write_string_bin(Prefix, [], latin1), %"
+            {S, Len} = io_lib:write_string_bin(Prefix, [], latin1), %"
             More = fun(T1, Dd) ->
                            ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
                    end,
-            {[$<,$<,$",S|"\"...>>"], 9 + byte_size(Prefix), 3, More};
+            {[$<,$<,$",S|"\"...>>"], 9 + Len, 3, More};
         {false, true, Prefix} ->
-            S = io_lib:write_string_bin(Prefix, [], unicode), %"
+            {S, Len} = io_lib:write_string_bin(Prefix, [], unicode), %"
             More = fun(T1, Dd) ->
                            ?FUNCTION_NAME(Bin, D+Dd, T1, RF, Enc, Str, Ord)
                    end,
-            {[$<,$<,$",S|"\"/utf8...>>"], 14 + string:length(S), 3, More};
+            {[$<,$<,$",S|"\"/utf8...>>"], 14 + Len, 3, More};
         false ->
             case io_lib:write_binary_bin(Bin, D, T, <<>>) of
                 {S, <<>>} ->
@@ -1318,9 +1324,8 @@ write_atom(A, _Uni) ->
 write_string(S0, latin1) ->
     S = io_lib:write_latin1_string(S0, $"), %"
     {S, io_lib:chars_length(S)};
-write_string(S0, {InEnc, Out}) ->
-    S = io_lib:write_string(S0, $"),
-    {unicode:characters_to_binary(S, InEnc, Out), io_lib:chars_length(S)}; %"
+write_string(S0, {InEnc, _Out}) ->
+    io_lib:write_string_bin(S0, $", InEnc); %"
 write_string(S0, _Uni) ->
     S = io_lib:write_string(S0, $"), %"
     {S, io_lib:chars_length(S)}.
