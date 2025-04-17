@@ -43,6 +43,11 @@ decode(#'DSA-Params'{p=P,q=Q,g=G}) ->
     #'Dss-Parms'{p=P,q=Q,g=G};
 decode(#'SingleAttribute'{type=T,value=V}) ->
     #'AttributeTypeAndValue'{type=T,value=V};
+decode({'OneAsymmetricKey', Vsn, KeyAlg, PrivKey, Attrs, PubKey} = Orig) ->   %% Defined In PKCS_FRAME
+    case Vsn of
+        v1 -> {'PrivateKeyInfo', Vsn, KeyAlg, PrivKey, Attrs, PubKey};
+        _  -> Orig
+    end;
 decode(Tuple) when is_tuple(Tuple) ->
     list_to_tuple(decode_list(tuple_to_list(Tuple)));
 decode(List) when is_list(List) ->
@@ -53,8 +58,15 @@ decode(Other) ->
 decode_list(List) ->
     [decode(E) || E <- List].
 
+encode({'SubjectPublicKeyInfo', {'AlgorithmIdentifier', AlgId0, Params}, Key}) ->
+    AlgId1 = encode(AlgId0),
+    Params1 = encode(Params),
+    Alg = #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId1,parameters=Params1},
+    #'SubjectPublicKeyInfo'{algorithm=Alg,subjectPublicKey=Key};
 encode(#'AttributeTypeAndValue'{type=T,value=V}) ->
     #'SingleAttribute'{type=T,value=V};
+encode({'PrivateKeyInfo', Vsn, KeyAlg, PrivKey, Attrs, PubKey}) ->
+    {'OneAsymmetricKey', Vsn, KeyAlg, PrivKey, Attrs, PubKey};
 encode(#'Dss-Parms'{p=P,q=Q,g=G}) ->
     #'DSA-Params'{p=P,q=Q,g=G};
 encode(Tuple) when is_tuple(Tuple) ->
