@@ -305,11 +305,11 @@
 
 -record('SubjectPublicKeyInfo',
         {
-         algorithm,       % #AlgorithmIdentifier{}
+         algorithm,       % #'PublicKeyAlgorithm'{}
          subjectPublicKey % binary()
         }).
 
--record('SubjectPublicKeyInfoAlgorithm',
+-record('PublicKeyAlgorithm',
         {
          algorithm,  % id_public_key_algorithm()
          parameters  % public_key_params()
@@ -646,11 +646,6 @@
 %%%
 %%% Undocumented but used by test suite.
 %%%
-
--record('PublicKeyAlgorithm', {
-  algorithm,
-  parameters = asn1_NOVALUE
-}).
 
 -record('DHParameter', {
   prime,

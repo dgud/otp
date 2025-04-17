@@ -38,7 +38,7 @@ decode(#'SubjectPublicKeyInfo'{algorithm=AlgId0,subjectPublicKey=Key}) ->
     #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId1,parameters=Params1} = AlgId0,
     AlgId = decode(AlgId1),
     Params = decode(Params1),
-    {'SubjectPublicKeyInfo', {'AlgorithmIdentifier', AlgId, Params}, Key};
+    {'SubjectPublicKeyInfo', {'PublicKeyAlgorithm', AlgId, Params}, Key};
 decode(#'DSA-Params'{p=P,q=Q,g=G}) ->
     #'Dss-Parms'{p=P,q=Q,g=G};
 decode(#'SingleAttribute'{type=T,value=V}) ->
@@ -58,7 +58,7 @@ decode(Other) ->
 decode_list(List) ->
     [decode(E) || E <- List].
 
-encode({'SubjectPublicKeyInfo', {'AlgorithmIdentifier', AlgId0, Params}, Key}) ->
+encode({'SubjectPublicKeyInfo', {'PublicKeyAlgorithm', AlgId0, Params}, Key}) ->
     AlgId1 = encode(AlgId0),
     Params1 = encode(Params),
     Alg = #'SubjectPublicKeyInfo_algorithm'{algorithm=AlgId1,parameters=Params1},
