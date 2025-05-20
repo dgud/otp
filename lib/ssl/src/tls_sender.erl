@@ -358,7 +358,10 @@ connection(info, dist_data,
       end;
 connection(info, {'$socket', Socket, select, _SelectHandle},
            #data{env = #env{transport_cb = Transport}} = StateData) ->
-    do_async_send(Transport, Socket, connection, StateData);
+    do_async_send(Transport, Socket, connection, ok, StateData);
+connection(info, {'$socket', Socket, completion, {_Handle, Status}},
+           #data{env = #env{transport_cb = Transport}} = StateData) ->
+    do_async_send(Transport, Socket, connection, Status, StateData);
 connection(info, tick, #data{buff = Buff} = StateData) ->
     consume_ticks(),
     case Buff of
@@ -385,7 +388,10 @@ connection(Type, Msg, StateData) ->
 
 async_wait(info, {'$socket', Socket, select, _SelectHandle},
            #data{env = #env{transport_cb = Transport}} = StateData) ->
-    do_async_send(Transport, Socket, connection, StateData);
+    do_async_send(Transport, Socket, connection, ok, StateData);
+async_wait(info, {'$socket', Socket, completion, {_Handle, Status}},
+           #data{env = #env{transport_cb = Transport}} = StateData) ->
+    do_async_send(Transport, Socket, connection, Status, StateData);
 async_wait(info, tick, _StateData) ->
     consume_ticks(),
     %% No need to send tick, have outgoing data in buffer
@@ -418,13 +424,13 @@ handshake(cast, {new_write, WriteState0, Version},
     WriteState = maps:remove(aead_handle, WriteState0),
     ConnectionStates = ConnectionStates0#{current_write => WriteState},
     KeyUpdateAt = key_update_at(Version, WriteState, KeyUpdateAt0),
-     case Version of
-         ?TLS_1_3 ->
-             maybe_traffic_keylog_1_3(Fun, Role, ConnectionStates, N);
-          _ ->
-             ok
-     end,
-    {next_state, connection, 
+    case Version of
+        ?TLS_1_3 ->
+            maybe_traffic_keylog_1_3(Fun, Role, ConnectionStates, N);
+        _ ->
+            ok
+    end,
+    {next_state, connection,
      StateData#data{connection_states = ConnectionStates,
                     env = Env#env{negotiated_version = Version,
                                            key_update_at = KeyUpdateAt}}};
@@ -450,7 +456,11 @@ death_row(state_timeout, Reason, _StateData) ->
     {stop, {shutdown, Reason}};
 death_row(info, {'$socket', Socket, select, _SelectHandle},
           #data{env = #env{transport_cb = Transport}} = StateData) ->
-    do_async_send(Transport, Socket, death_row, StateData);
+    do_async_send(Transport, Socket, death_row, ok, StateData);
+death_row(info, {'$socket', Socket, completion, {_Handle, Status}},
+          #data{env = #env{transport_cb = Transport}} = StateData) ->
+    do_async_send(Transport, Socket, death_row, Status, StateData);
+
 death_row(info = Type, Msg, StateData) ->
     handle_common(death_row, Type, Msg, StateData);
 death_row(_Type, _Msg, _StateData) ->
@@ -605,24 +615,33 @@ send_or_buffer(Transport, Socket, Msgs, From, #data{buff = undefined} = StateDat
                 false ->
                     {block, StateData0#data{buff = Async#async{reply_to = From}}}
             end;
+        {completion, _CompletionInfo} ->
+            send_reply(From, ok),
+            {ok, StateData0#data{buff = #async{}}};
         {error, _Err} = Error ->
             send_reply(From, Error),
             Error
     end;
 %% Buffer exists, push more data to buffer
-send_or_buffer(_Transport, _Socket, Msgs, From, #data{buff = Async} = StateData0) ->
-    #async{high = High, size = Sz0, q_rev = Q} = Async,
+send_or_buffer(_Transport, _Socket, Msgs, From, #data{buff = Async0} = StateData) ->
+    #async{high = High, size = Sz0, q_rev = Q} = Async0,
     Sz = Sz0 + iolist_size(Msgs),
-    StateData = StateData0#data{buff = Async#async{size = Sz, q_rev = [Msgs|Q]}},
+    Async = Async0#async{size = Sz, q_rev = [Msgs|Q]},
     case Sz < High of
         true ->
             send_reply(From, ok),
-            {ok, StateData};
+            {ok, StateData#data{buff = Async}};
         false ->
             {block, StateData#data{buff = Async#async{reply_to = From}}}
     end.
 
-do_async_send(Transport, Socket, Nextstate, #data{buff = Async0} = StateData) ->
+do_async_send(_Transport, _Socket, Nextstate, _Result,
+              #data{buff = #async{q_rev = [], reply_to = From}} = StateData) ->
+    %% Windows, nothing is waiting
+    undefined = From, %% Assert
+    {next_state, Nextstate, StateData#data{buff = undefined}};
+do_async_send(Transport, Socket, Nextstate, Result,
+              #data{buff = #async{q_rev = RevMsgQ, reply_to = From} = Async0} = StateData) ->
     #async{q_rev = RevMsgQ, reply_to = From} = Async0,
     MsgQ = lists:reverse(RevMsgQ),
     case tls_socket:send_async(Transport, Socket, MsgQ) of
@@ -641,6 +660,9 @@ do_async_send(Transport, Socket, Nextstate, #data{buff = Async0} = StateData) ->
             end;
         {select, _SelectInfo} ->
             {keep_state_and_data, []};
+        {completion, _} ->
+            send_reply(From, Result),
+            {keep_state, StateData#data{buff =  #async{}}};
         {error, Err} = Error ->
             send_reply(From, Error),
             log_error(Err),  %% What TODO here
@@ -652,11 +674,11 @@ send_reply(undefined, _Msg) -> ok;
 send_reply(From, Msg) -> gen_statem:reply(From, Msg).
 
 log_error(Atom) when is_atom(Atom) ->
-    ?SSL_LOG(notice, "ssl send socket error ~w", [Atom]);
+    ?SSL_LOG(notice, "ssl send socket error", Atom);
 log_error({invalid, _} = Reason) ->
-    ?SSL_LOG(notice, "ssl send socket error ~w", [Reason]);
+    ?SSL_LOG(notice, "ssl send socket error", Reason);
 log_error({Reason, _Bytes}) ->
-    ?SSL_LOG(notice, "ssl send socket error ~w", [Reason]).
+    ?SSL_LOG(notice, "ssl send socket error", Reason).
 
 %% TLS 1.3 Post Handshake Data
 send_post_handshake_data(Handshake, From, StateName,
