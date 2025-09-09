@@ -341,15 +341,22 @@ handle_cast(
     State
 ) when To =:= State#state.me ->
     Succeeded =
-        PeerBranch < State#state.branch orelse
-            (PeerBranch =:= State#state.branch andalso
-                (PeerTenureId > State#state.tenure_id orelse
-                    (PeerTenureId =:= State#state.tenure_id andalso
-                        (State#state.leader =:= From orelse State#state.leader =:= undefined) andalso
-                        (State#state.voted_for =:= From orelse
-                            (State#state.voted_for =:= undefined andalso
-                                {PeerLastLogTerm, PeerLastLogIndex} >=
-                                    {last_log_tenure(State), State#state.append_index}))))),
+        if
+            PeerBranch < State#state.branch -> true;
+            PeerBranch > State#state.branch -> false;
+            %% Equal Branch
+            PeerTenureId > State#state.tenure_id -> true;
+            PeerTenureId < State#state.tenure_id -> false;
+            %% And equal TenureId
+            State#state.leader =:= From orelse State#state.leader =:= undefined ->
+                if State#state.voted_for =:= From -> true;
+                   State#state.voted_for =:= undefined ->
+                        {PeerLastLogTerm, PeerLastLogIndex} >=
+                            {last_log_tenure(State), State#state.append_index};
+                   true -> false
+                end;
+            true -> false
+        end,
     State1 =
         case Succeeded of
             true ->
