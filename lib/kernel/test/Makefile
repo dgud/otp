@@ -121,6 +121,7 @@ MODULES= \
 	logger_std_h_SUITE \
 	logger_stress_SUITE \
 	logger_test_lib \
+	merge_raft_SUITE \
 	net_SUITE \
 	prim_net_SUITE \
 	os_SUITE \

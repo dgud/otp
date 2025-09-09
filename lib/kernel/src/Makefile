@@ -134,6 +134,11 @@ MODULES = \
         logger_server \
         logger_simple_h \
         logger_sup \
+	merge_raft \
+	merge_raft_kv \
+	merge_raft_nodes \
+	merge_raft_reg \
+	merge_raft_trans \
 	net \
 	net_adm \
 	net_kernel \
@@ -197,7 +202,7 @@ ERL_COMPILE_FLAGS += -I../include
 # Targets
 # ----------------------------------------------------
 
-$(TYPES): $(TARGET_FILES) 
+$(TYPES): $(TARGET_FILES)
 
 # Note: In the open-source build clean must not destroyed the preloaded
 # beam files.
@@ -230,6 +235,21 @@ $(ESRC)/inet_dns_record_adts.hrl: $(ESRC)/inet_dns_record_adts.pl
 
 $(EBIN)/erl_epmd.beam: $(ESRC)/erl_epmd.erl
 	$(V_ERLC) $(ERL_COMPILE_FLAGS) $(EPMD_FLAGS) -o$(EBIN) $<
+
+BEHAVIOUR = -pa $(EBIN)
+
+$(EBIN)/merge_raft_kv.beam:  $(ESRC)/merge_raft_kv.erl $(EBIN)/merge_raft.$(EMULATOR)
+	$(V_ERLC) $(ERL_COMPILE_FLAGS) $(BEHAVIOUR) -o$(EBIN) $<
+
+$(EBIN)/merge_raft_nodes.beam:  $(ESRC)/merge_raft_nodes.erl $(EBIN)/merge_raft.$(EMULATOR)
+	$(V_ERLC) $(ERL_COMPILE_FLAGS) $(BEHAVIOUR) -o$(EBIN) $<
+
+$(EBIN)/merge_raft_reg.beam:   $(ESRC)/merge_raft_reg.erl $(EBIN)/merge_raft.$(EMULATOR)
+	$(V_ERLC) $(ERL_COMPILE_FLAGS) $(BEHAVIOUR) -o$(EBIN) $<
+
+$(EBIN)/merge_raft_trans.beam:   $(ESRC)/merge_raft_trans.erl $(EBIN)/merge_raft.$(EMULATOR)
+	$(V_ERLC) $(ERL_COMPILE_FLAGS) $(BEHAVIOUR) -o$(EBIN) $<
+
 
 # ----------------------------------------------------
 # Release Target
