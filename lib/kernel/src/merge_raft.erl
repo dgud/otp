@@ -398,8 +398,9 @@ candidate({call, From}, #log_request{redirect = Redirect} = LR, #sdata{leader = 
   when Leader =/= undefined, Redirect > 0 ->
     peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {call, From}}),
     {keep_state, maybe_prepare_reply(LR, SData)};
-candidate(cast, #append_request{to = Me} = AR, #sdata{me = Me} = SData) ->
-    {keep_state, handle_append_request(AR, SData)};
+candidate(cast, #append_request{to = Me} = AR, #sdata{me = Me} = SData0) ->
+    #sdata{role = Role} = SData = handle_append_request(AR, SData0),
+    {next_state, Role, handle_append_request(AR, SData)};
 candidate(cast, #vote_reply{to = Me} = VR, #sdata{me = Me} = SData0) ->
     {NextState, SData} = handle_vote_reply(VR, SData0),
     {next_state, NextState, SData};
@@ -448,15 +449,15 @@ leader(CallOrCast, #log_request{reply_to = ReplyTo0, log = Log} = LR0, #sdata{me
                      ReplyTo0
              end,
     LR = LR0#log_request{reply_to = LogRef},
-    io:format(user, "~w: Got ~.0p~n", [node(), LR]),
     SData1 = maybe_single_member_commit(insert(LogRef, Log, maybe_prepare_reply(LR, SData0))),
     %% Future: not always do a immediate send, batch a little bit
     Members = maps:keys(committed_members(SData1)) -- [Me],
     SData = lists:foldl(fun maybe_send_append/2, SData1, Members),
     {keep_state, SData};
 %% Should the leader get this !!!!
-%% leader(cast, #append_request{to = Me} = AR,  #sdata{me = Me} = SData) ->
-%%     {keep_state, handle_append_request(AR, SData)};
+leader(cast, #append_request{to = Me} = AR,  #sdata{me = Me} = SData0) ->
+    #sdata{role = Role} = SData = handle_append_request(AR, SData0),
+    {next_state, Role, handle_append_request(AR, SData)};
 leader(cast, #append_reply{to = Me} = AR, #sdata{me=Me} = SData0) ->
     {NextState, SData} = handle_append_reply(AR, SData0),
     {next_state, NextState, SData};
@@ -612,7 +613,7 @@ handle_append_request(#append_request{
             (PeerBranch =:= SData#sdata.branch andalso PeerTenureId > SData#sdata.tenure_id) ->
                 (to_follower(PeerBranch, PeerTenureId, SData))#sdata{leader = From, voted_for = From};
             PeerBranch =:= SData#sdata.branch andalso PeerTenureId =:= SData#sdata.tenure_id ->
-                                                % This should never happen
+                %% This should never happen
                 SData#sdata.leader =/= undefined andalso SData#sdata.leader =/= From andalso error("wrong leader"),
                 SData#sdata{
                   leader = From,
@@ -717,19 +718,15 @@ handle_append_reply(#append_reply{
 
 -spec handle_discover(#discover{}, #sdata{}) -> #sdata{}.
 handle_discover(#discover{from = From, branch = PeerBranch, members = Members}, State) ->
-    io:format(user, "~w: Got discover from ~w~n", [node(), peer_node(From)]),
     if
         is_map_key(From, State#sdata.peers) orelse
         map_size(State#sdata.paused) =/= 0 orelse
         PeerBranch =:= State#sdata.branch ->
-            io:format(user, "~w: discover ignored~n", [node()]),
             State;  %% Ignore
         PeerBranch < State#sdata.branch ->
             %% Newer tree will pause itself and join to older tree
-            io:format(user, "~w: join ~w~n", [node(), peer_node(From)]),
             maybe_single_member_commit(insert({internal, make_ref()}, {pause, Members}, State));
         true ->
-            io:format(user, "~w: forward ~w~n", [node(), peer_node(From)]),
             discover([From], State)
     end.
 
@@ -783,9 +780,6 @@ handle_leader_tick(SData) ->
     NowMs = now_ms(),
     erlang:send_after(?TICK_TIMEOUT_MS, self(), ?TICK_MESSAGE),
     SData1 = lists:foldl(fun maybe_send_append/2, SData, maps:keys(committed_members(SData)) -- [SData#sdata.me]),
-    io:format(user, "~w: Handle tick paused ~w merge tmo ~w Index: ~w~n",
-              [node(), map_size(SData1#sdata.paused), NowMs > SData1#sdata.merge_timeout_ms,
-               SData1#sdata.append_index =:= SData1#sdata.apply_index]),
     SData2 =
         if
             map_size(SData1#sdata.paused) =:= 0 ->
@@ -801,7 +795,6 @@ handle_leader_tick(SData) ->
                 % We may want to let follower to be able to send this message too
                 MergeLog = {merge, committed_members(SData1), (SData1#sdata.module):serialize(SData1#sdata.custom_db)},
                 peer_send(Dest, #log_request{log = MergeLog}),
-                io:format(user, "~w: send merge request ~w~n", [node(), peer_node(Dest)]),
                 SData1#sdata{merge_timeout_ms = now_ms() + ?MERGE_TIMEOUT_MS};
             true ->
                 SData1
@@ -924,7 +917,6 @@ insert(LogRef, {merge, Members, _CustomDbSerialized} = Log, SData) ->
     %% If all members merged and leaved and somehow magically a merge message arrived, we are in trouble
     %% It is solvable by passing Branch instead of Members, but it needs to permenately store all the past branches
     %% Right now we don't handle this
-    io:format(user, "~w: Merge ~p ~n", [node(), maps:keys(Members)]),
     case lists:all(fun(Peer) -> not is_map_key(Peer, SData#sdata.peers) end, maps:keys(Members)) of
         true ->
             append({SData#sdata.append_index + 1, {SData#sdata.tenure_id, LogRef, Log}}, SData);
@@ -1143,7 +1135,6 @@ reply({call, From} = LogRef, Message, SData) ->
     ok = gen_statem:reply(From, Message),
     SData#sdata{replies = maps:remove(LogRef, SData#sdata.replies)};
 reply(_, {error, _} = Error, SData) ->
-    io:format(user, "~w: ERROR ~w~n", [node(), Error]),
     ?LOG_WARNING("Internal error: ~w~n", [Error]),
     SData;
 reply(_LogRef, _Message, SData) ->
@@ -1257,7 +1248,6 @@ append({LogId, {_TenureId, _LogRef, Log} = LogValue}, SData) ->
     SData1 =
         case Log of
             {merge, Members, _CustomDbSerialized} ->
-                io:format("~w:~w Do Merge ~n", [node(), ?LINE]),
                 NowMembers = maps:merge(get_members(LogId - 1, SData), Members),
                 NowMs = now_ms(),
                 SData#sdata{
@@ -1454,6 +1444,10 @@ initial_members(Name, Options) ->
       || PidOrNode <- maps:get(members, Options, nodes())].
 
 -spec peer_pid(peer()) -> pid().
-peer_pid({_, Pid}) -> Pid.
--spec peer_node(peer()) -> node().
-peer_node({_, Pid}) -> node(Pid).
+peer_pid({_, Pid}) when is_pid(Pid) ->
+    Pid.
+
+%% -spec peer_node(peer()) -> node().
+%% peer_node({_, Pid}) when is_pid(Pid) ->
+%%     node(Pid).
+
