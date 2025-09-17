@@ -85,7 +85,7 @@ init_per_testcase(TestCase, Config) ->
     [{peers, Peers} | Config].
 
 end_per_testcase(_TestCase, Config) ->
-    [peer:stop(Peer) || Peer := _ <- proplists:get_value(peers, Config)],
+    catch [peer:stop(Peer) || Peer := _ <- proplists:get_value(peers, Config)],
     ok.
 
 all() ->
@@ -117,10 +117,20 @@ kv(Config) ->
     true = peer:call(P4, net_kernel, connect_node, [N3]),
     true = peer:call(P3, net_kernel, connect_node, [N2]),
     true = peer:call(P5, net_kernel, connect_node, [N4]),
+
+    timer:sleep(5000),
+
+    {ok, 1} = peer:call(P1, merge_raft_kv, sync_get, [?FUNCTION_NAME, a]),
+    {ok, 2} = peer:call(P2, merge_raft_kv, sync_get, [?FUNCTION_NAME, b]),
+    io:format("~w: a ~w~n",[?LINE, [{Node, erpc:call(Node, merge_raft_kv, sync_get, [?FUNCTION_NAME, a])}
+                                    || _ := Node <- Peers]]),
+    io:format("~w: a ~w~n",[?LINE, [{Node, erpc:call(Node, merge_raft_kv, sync_get, [?FUNCTION_NAME, b])}
+                                    || _ := Node <- Peers]]),
+
     ?WAIT_UNTIL({ok, 1} = peer:call(P5, merge_raft_kv, async_get, [?FUNCTION_NAME, a])),
     ?WAIT_UNTIL({ok, 2} = peer:call(P5, merge_raft_kv, async_get, [?FUNCTION_NAME, b])),
-    ?WAIT_UNTIL({ok, 1} = peer:call(P5, merge_raft_kv, sync_get, [?FUNCTION_NAME, a])),
-    ?WAIT_UNTIL({ok, 2} = peer:call(P5, merge_raft_kv, sync_get, [?FUNCTION_NAME, b])),
+    {ok, 1} = peer:call(P5, merge_raft_kv, sync_get, [?FUNCTION_NAME, a]),
+    {ok, 2} = peer:call(P5, merge_raft_kv, sync_get, [?FUNCTION_NAME, b]),
     [
         receive
             {'DOWN', Mon, process, Pid, Reason} ->
