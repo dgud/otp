@@ -60,27 +60,27 @@ end_per_suite(_Config) ->
 init_per_testcase(TestCase, Config) ->
     Self = self(),
     [
-        spawn_link(
-            fun() ->
-                Opts = #{
-                    name => ?CT_PEER_NAME(TestCase),
-                    connection => 0,
-                    args => ["-connect_all", "false", "-kernel", "+S", "4:4"]
-                },
-                {ok, Peer, Node} = ?CT_PEER(Opts),
-                ok = peer:call(Peer, code, add_pathsa, [code:get_path()]),
-                Self ! {self(), Peer, Node},
-                timer:sleep(infinity)
-            end
-        )
-     || _ <- lists:seq(1, 5)
+     spawn_link(
+       fun() ->
+               Opts = #{
+                        name => atom_to_list(TestCase) ++ "_" ++ integer_to_list(NodeNR),
+                        connection => 0,
+                        args => ["-connect_all", "false", "-kernel", "+S", "4:4"]
+                       },
+               {ok, Peer, Node} = ?CT_PEER(Opts),
+               ok = peer:call(Peer, code, add_pathsa, [code:get_path()]),
+               Self ! {self(), Peer, Node},
+               timer:sleep(infinity)
+       end
+      )
+     || NodeNR <- lists:seq(1, 5)
     ],
     Pids = [
-        receive
-            {Pid, Peer, Node} -> {Pid, Peer, Node}
-        end
-     || _ <- lists:seq(1, 5)
-    ],
+            receive
+                {Pid, Peer, Node} -> {Pid, Peer, Node}
+            end
+            || _ <- lists:seq(1, 5)
+           ],
     Peers = #{Peer => Node || {_Pid, Peer, Node} <- Pids},
     [{peers, Peers} | Config].
 
