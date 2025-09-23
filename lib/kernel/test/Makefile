@@ -122,6 +122,7 @@ MODULES= \
 	logger_stress_SUITE \
 	logger_test_lib \
 	merge_raft_SUITE \
+	mr_cb_test \
 	net_SUITE \
 	prim_net_SUITE \
 	os_SUITE \

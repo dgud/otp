@@ -17,10 +17,13 @@ merge_raft behaviour
 
 %% API functions
 -export([
-    commit_async/2,
-    commit_sync/2,
-    commit_sync/3
-]).
+         commit_async/2,
+         commit_sync/2,
+         commit_sync/3,
+
+         local_lookup/2,
+         connect/2
+        ]).
 
 %% gen_statem callbacks
 -export(
@@ -33,45 +36,6 @@ merge_raft behaviour
 
 -include_lib("kernel/include/logger.hrl").
 
--type custom_log() :: dynamic().
--type custom_db() :: dynamic().
--type custom_db_serialized() :: dynamic().
--type custom_result() :: dynamic().
-
--type server_name() :: atom().
--type server_module() :: module().
--type options() ::
-        #{
-          module := server_module(),
-          name => server_name(),
-          members => [pid() | node()],
-          extra_logs => non_neg_integer()
-         }.
--type error() :: {error, dynamic()}.
-
--type time_ms() :: non_neg_integer().
--type time_ns() :: non_neg_integer().
--type peer() :: {time_ns(), pid()}.
--type members() :: #{peer() => []}.
--type paused() :: members().
-% Future: add read_only
--type role() :: leader | follower | candidate.
--type branch() :: peer().
--type tenure_id() :: non_neg_integer().
--type log_id() :: non_neg_integer().
--type log_ref() :: {cast | internal, reference()} | {call, gen_statem:from()}.
--type log_message() ::
-    {custom, custom_log()}
-    | {merge, members(), custom_db_serialized()}
-    | {leave, peer()}
-    | {leader, peer()}
-    | {pause, paused()}.
--type log() :: log_message() | {snapshot, members(), paused(), custom_db_serialized()}.
--type log_value() :: {tenure_id(), log_ref(), log()}.
--type log_entry() :: {log_id(), log_value()}.
--type logs() :: #{log_id() => log_value()}.
-
--type commit_metadata() :: {branch(), log_id(), tenure_id(), log_ref()}.
 
 -define(HEARTBEAT_TIMEOUT_MS, (900 + rand:uniform(200))).
 -define(ELECTION_TIMEOUT_MS, (5000 + rand:uniform(5000))).
@@ -83,8 +47,9 @@ merge_raft behaviour
 -define(BATCH_SIZE, 100).
 -define(REDIRECT, 1).
 
-% Send to state.peers
-% Vote if sender tenure is higher or equal and receiver is not voted, even if sender is not in state.peers
+%% Send to state.peers
+%% Vote if sender tenure is higher or equal and
+%% receiver is not voted, even if sender is not in state.peers
 -record(vote_request, {
     from :: peer(),
     to :: peer(),
@@ -146,6 +111,16 @@ merge_raft behaviour
          log :: log_message()
         }).
 
+-record(local_lookup,
+        {
+         req :: dynamic()
+        }).
+
+-record(connect,
+        {
+         servers :: [node() | pid()]
+        }).
+
 -record(discover, {
     redirect = ?REDIRECT :: non_neg_integer(),
     from :: peer(),
@@ -191,6 +166,46 @@ merge_raft behaviour
     replies :: #{log_ref() => []}
 }).
 
+-type custom_log() :: dynamic().
+-type custom_db() :: dynamic().
+-type custom_db_serialized() :: dynamic().
+-type custom_result() :: dynamic().
+
+-type server_name() :: atom().
+-type server_module() :: module().
+-type options() ::
+        #{
+          module := server_module(),
+          name => server_name(),
+          members => [pid() | node()],
+          extra_logs => non_neg_integer()
+         }.
+-type error() :: {error, dynamic()}.
+
+-type time_ms() :: non_neg_integer().
+-type time_ns() :: non_neg_integer().
+-type peer() :: {time_ns(), pid()}.
+-type members() :: #{peer() => []}.
+-type paused() :: #{peer() => [], discover => #discover{}}.
+% Future: add read_only
+-type role() :: follower | candidate | leader.
+-type branch() :: peer().
+-type tenure_id() :: non_neg_integer().
+-type log_id() :: non_neg_integer().
+-type log_ref() :: {cast | internal, reference()} | {call, gen_statem:from()}.
+-type log_message() ::
+    {custom, custom_log()}
+    | {merge, members(), custom_db_serialized()}
+    | {leave, peer()}
+    | {leader, peer()}
+    | {pause, #discover{}}.
+-type log() :: log_message() | {snapshot, members(), paused(), custom_db_serialized()}.
+-type log_value() :: {tenure_id(), log_ref(), log()}.
+-type log_entry() :: {log_id(), log_value()}.
+-type logs() :: #{log_id() => log_value()}.
+
+-type commit_metadata() :: {branch(), log_id(), tenure_id(), log_ref()}.
+
 -export_type([
     % custom data structures
     custom_log/0,
@@ -212,23 +227,27 @@ merge_raft behaviour
     commit_metadata/0
 ]).
 
-% Initialize an empty db or load from backup
-%
-% If the callback returns a commit_metadata(),
-% the server will pause itself until joined the target branch,
-% with assuming all data up to index is known
-% To be implemented
+%% Initialize an empty db or load from backup
+%%
+%% If the callback returns a commit_metadata(),
+%% the server will pause itself until joined the target branch,
+%% with assuming all data up to index is known
+%% To be implemented
 -callback db_init(peer(), server_name()) -> {undefined | commit_metadata(), custom_db()}.
-% custom_db is expected being able to be serialized and applied to another custom_db as a result of merge
-% To be implemented in async way so that large amount of data can be transferred and applied
--callback apply_custom(commit_metadata(), custom_log(), custom_db()) -> {custom_result(), custom_db()}.
-% In very rare (unlikely ever happen) racing case the same custom_db_serialized can be applied twice to the custom_db
-% It is a design choice to avoid aggregating unlimited data in RAFT
-% It is up for user to decide how to handle that, e.g.
-% 1. Mark owner for every data and cleanup related data if a member leaves
-% 2. Store all past merge histories (unlimited data usage but should be relatively small amount of data)
-% 3. Simply allow double merge
--callback apply_merge(commit_metadata(), members(), custom_db_serialized(), custom_db()) -> custom_db().
+%% custom_db is expected being able to be serialized and applied to
+%% another custom_db as a result of merge To be implemented in async
+%% way so that large amount of data can be transferred and applied
+-callback apply_custom(commit_metadata(), custom_log(), custom_db()) ->
+    {custom_result(), custom_db()}.
+%% In very rare (unlikely ever happen) racing case the same
+%% custom_db_serialized can be applied twice to the custom_db It is a
+%% design choice to avoid aggregating unlimited data in RAFT It is up
+%% for user to decide how to handle that, e.g.  1. Mark owner for every
+%% data and cleanup related data if a member leaves 2. Store all past
+%% merge histories (unlimited data usage but should be relatively small
+%% amount of data) 3. Simply allow double merge
+-callback apply_merge(commit_metadata(), members(), custom_db_serialized(), custom_db()) ->
+    custom_db().
 -callback apply_leave(commit_metadata(), peer(), custom_db()) -> custom_db().
 -callback apply_replace(custom_db_serialized(), custom_db()) -> custom_db().
 -callback serialize(custom_db()) -> custom_db_serialized().
@@ -241,11 +260,11 @@ merge_raft behaviour
 -spec child_spec(options()) -> supervisor:child_spec().
 child_spec(Option) ->
     #{
-        id => ?MODULE,
-        start => {?MODULE, start_link, [Option]},
-        restart => transient,
-        shutdown => 1000,
-        modules => [?MODULE]
+      id => ?MODULE,
+      start => {?MODULE, start_link, [Option]},
+      restart => transient,
+      shutdown => 1000,
+      modules => [?MODULE]
     }.
 
 -spec start_link(options()) -> gen_server:start_ret().
@@ -264,17 +283,27 @@ start(#{module := Module} = Option) when is_atom(Module) ->
 % API functions
 %==============================================================================
 
--spec commit_async(server_name(), custom_log()) -> ok.
+-spec commit_async(server_name() | pid(), custom_log()) -> ok.
 commit_async(Name, Log) ->
     gen_statem:cast(Name, #log_request{log = {custom, Log}}).
 
--spec commit_sync(server_name(), custom_log()) -> {ok, custom_result()} | error().
+-spec commit_sync(server_name() | pid(), custom_log()) -> {ok, custom_result()} | error().
 commit_sync(Name, Log) ->
     commit_sync(Name, Log, 5000).
 
--spec commit_sync(server_name(), custom_log(), timeout()) -> {ok, custom_result()} | error().
+-spec commit_sync(server_name() | pid(), custom_log(), timeout()) ->
+          {ok, custom_result()} | error().
 commit_sync(Name, Log, Timeout) ->
     gen_statem:call(Name, #log_request{log = {custom, Log}}, Timeout).
+
+-spec local_lookup(server_name() | pid(), custom_log()) -> {ok, custom_result()} | error().
+local_lookup(Name, Log) ->
+    gen_statem:call(Name, #local_lookup{req = Log}).
+
+-spec connect(server_name() | pid(), [server_name() | pid()]) -> [pid()].
+connect(Name, Servers) when (is_pid(Name) orelse is_atom(Name)) andalso is_list(Servers) ->
+    gen_statem:call(Name, #connect{servers = Servers}).
+
 
 %%==============================================================================
 %% gen_statem callbacks
@@ -335,47 +364,20 @@ init(#{module := Module} = Options) ->
       Type :: cast | {call, gen_statem:from()} | info,
       Request :: #vote_request{}
                | #append_request{}
-               | #append_reply{}
                | #transfer_leader_request{}
                | #log_request{}
+               | #local_lookup{}
                | #discover{}
+               | #connect{}
                | ?TICK_MESSAGE
                | {nodeup | nodedown, node()},
       Result :: gen_statem:event_handler_result(role(), #sdata{}).
-follower(cast, #log_request{redirect = Redirect} = LR, #sdata{leader = Leader} = SData)
-  when Leader =/= undefined, Redirect > 0 ->
-    peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {cast, make_ref()}}),
-    {keep_state, maybe_prepare_reply(LR, SData)};
-follower({call, From}, #log_request{redirect = Redirect} = LR, #sdata{leader = Leader} = SData)
-  when Leader =/= undefined, Redirect > 0 ->
-    peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {call,From}}),
-    {keep_state, maybe_prepare_reply(LR, SData)};
 
-follower(cast, #append_request{to = Me} = AR, #sdata{me = Me} = SData) ->
-    {keep_state, handle_append_request(AR, SData)};
-follower(cast, #vote_request{to = Me} = VR, #sdata{me = Me} = SData0) ->
-    SData = handle_vote_request(?FUNCTION_NAME, VR, SData0),
-    {keep_state, SData};
-follower(cast, #discover{redirect = Redirect} = DR, #sdata{leader = Leader})
-  when Leader =/= undefined, Redirect > 0 ->
-    peer_send(Leader, DR#discover{redirect = Redirect - 1}),
-    keep_state_and_data;
 follower(cast, #transfer_leader_request{to = Me} = TLR, #sdata{me = Me} = SData0) ->
     {NextState, SData} = handle_transfer_leader_request(TLR, SData0),
     {next_state, NextState, SData};
-follower(info, ?TICK_MESSAGE, SData0) ->
-    #sdata{role = Role} = SData = handle_tick(SData0),
-    {next_state, Role, SData};
-follower(info, {NodeUpDown, Node}, SData0)
-  when Node == node(), NodeUpDown == nodeup; NodeUpDown == nodedown ->
-    #sdata{role = Role} = SData = reset(SData0),
-    {next_state, Role, SData};
-follower({call, From}, _Msg, _SData0) ->
-    ?LOG_DEBUG("Dropped msg: ~P", [_Msg, 20]),
-    {keep_state_and_data, [{reply, From, {error, bad_message}}]};
-follower(_, _Msg, _SData0) ->
-    ?LOG_DEBUG("Dropped msg: ~P", [_Msg, 20]),
-    keep_state_and_data.
+follower(Type, Msg, SData) ->
+    handle_common(?FUNCTION_NAME, Type, Msg, SData).
 
 -spec candidate(Type, Request, #sdata{}) -> Result when
       Type :: cast | {call, gen_statem:from()} | info,
@@ -385,45 +387,18 @@ follower(_, _Msg, _SData0) ->
                | #append_reply{}
                | #transfer_leader_request{}
                | #log_request{}
+               | #local_lookup{}
+               | #connect{}
                | #discover{}
                | ?TICK_MESSAGE
                | {nodeup | nodedown, node()},
       Result :: gen_statem:event_handler_result(role()).
 
-candidate(cast, #log_request{redirect = Redirect} = LR, #sdata{leader = Leader} = SData)
-  when Leader =/= undefined, Redirect > 0 ->
-    peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {cast, make_ref()}}),
-    {keep_state, maybe_prepare_reply(LR, SData)};
-candidate({call, From}, #log_request{redirect = Redirect} = LR, #sdata{leader = Leader} = SData)
-  when Leader =/= undefined, Redirect > 0 ->
-    peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {call, From}}),
-    {keep_state, maybe_prepare_reply(LR, SData)};
-candidate(cast, #append_request{to = Me} = AR, #sdata{me = Me} = SData0) ->
-    #sdata{role = Role} = SData = handle_append_request(AR, SData0),
-    {next_state, Role, handle_append_request(AR, SData)};
 candidate(cast, #vote_reply{to = Me} = VR, #sdata{me = Me} = SData0) ->
     {NextState, SData} = handle_vote_reply(VR, SData0),
     {next_state, NextState, SData};
-candidate(cast, #vote_request{to = Me} = VR, #sdata{me = Me} = SData0) ->
-    SData = handle_vote_request(?FUNCTION_NAME, VR, SData0),
-    {keep_state, SData};
-candidate(cast, #discover{redirect = Redirect} = DR, #sdata{leader = Leader})
-  when Leader =/= undefined, Redirect > 0 ->
-    peer_send(Leader, DR#discover{redirect = Redirect - 1}),
-    keep_state_and_data;
-candidate(info, ?TICK_MESSAGE, SData0) ->
-    #sdata{role = Role} = SData = handle_tick(SData0),
-    {next_state, Role, SData};
-candidate(info, {NodeUpDown, Node}, SData0)
-  when Node == node(), NodeUpDown == nodeup; NodeUpDown == nodedown ->
-    #sdata{role = Role} = SData = reset(SData0),
-    {next_state, Role, SData};
-candidate({call, From}, _Msg, _SData0) ->
-    ?LOG_DEBUG("Dropped msg: ~P", [_Msg, 20]),
-    {keep_state_and_data, [{reply, From, {error, bad_message}}]};
-candidate(_, _Msg, _SData0) ->
-    ?LOG_DEBUG("Dropped msg: ~P", [_Msg, 20]),
-    keep_state_and_data.
+candidate(Type, Msg, SData) ->
+    handle_common(?FUNCTION_NAME, Type, Msg, SData).
 
 -spec leader(Type, Request, #sdata{}) -> Result when
       Type :: cast | {call, gen_statem:from()} | info,
@@ -431,8 +406,8 @@ candidate(_, _Msg, _SData0) ->
                | #vote_reply{}
                | #append_request{}
                | #append_reply{}
-               | #transfer_leader_request{}
                | #log_request{}
+               | #local_lookup{}
                | #discover{}
                | ?TICK_MESSAGE
                | {nodeup | nodedown, node()},
@@ -454,10 +429,6 @@ leader(CallOrCast, #log_request{reply_to = ReplyTo0, log = Log} = LR0, #sdata{me
     Members = maps:keys(committed_members(SData1)) -- [Me],
     SData = lists:foldl(fun maybe_send_append/2, SData1, Members),
     {keep_state, SData};
-%% Should the leader get this !!!!
-leader(cast, #append_request{to = Me} = AR,  #sdata{me = Me} = SData0) ->
-    #sdata{role = Role} = SData = handle_append_request(AR, SData0),
-    {next_state, Role, handle_append_request(AR, SData)};
 leader(cast, #append_reply{to = Me} = AR, #sdata{me=Me} = SData0) ->
     {NextState, SData} = handle_append_reply(AR, SData0),
     {next_state, NextState, SData};
@@ -486,12 +457,79 @@ leader(info, {nodeup, Node}, #sdata{name = Name} = SData) ->
         undefined -> {keep_state, SData};
         _ -> {keep_state, discover([{Name, Node}], SData)}
     end;
-leader({call, From}, _Msg, _SData0) ->
-    ?LOG_DEBUG("Dropped msg: ~P", [_Msg, 20]),
+leader(Type, Msg, SData) ->
+    handle_common(?FUNCTION_NAME, Type, Msg, SData).
+
+-spec handle_common(role(), Type, Request, #sdata{}) -> Result when
+      Type :: cast | {call, gen_statem:from()} | info,
+      Request ::  #append_request{}
+                | #log_request{}
+                | #vote_request{}
+                | #local_lookup{}
+                | #connect{}
+                | #discover{}
+                | ?TICK_MESSAGE
+                | {nodeup | nodedown, node()}
+                | dynamic(),  %% We handle error cases or why it is complaining?
+      Result :: gen_statem:event_handler_result(role()).
+
+%% Should the leader get this !!!!
+handle_common(_StateName, cast, #append_request{to = Me} = AR,  #sdata{me = Me} = SData0) ->
+    #sdata{role = Role} = SData = handle_append_request(AR, SData0),
+    {next_state, Role, SData};
+handle_common(_StateName, cast, #log_request{redirect = Redirect} = LR,
+              #sdata{leader = Leader} = SData)
+  when Leader =/= undefined, Redirect > 0 ->
+    peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {cast, make_ref()}}),
+    {keep_state, maybe_prepare_reply(LR, SData)};
+handle_common(_StateName, {call, From}, #log_request{redirect = Redirect} = LR,
+              #sdata{leader = Leader} = SData)
+  when Leader =/= undefined, Redirect > 0 ->
+    peer_send(Leader, LR#log_request{redirect = Redirect - 1, reply_to = {call,From}}),
+    {keep_state, maybe_prepare_reply(LR, SData)};
+handle_common(_StateName, {call, From}, #connect{servers = Servers0},
+              #sdata{name=Name, peers=Peers, me=Me} = SData0) ->
+    To = fun(Node, Acc) when is_atom(Node), Name =/= undefined ->
+                 [{Name, Node}|Acc];
+            (Pid, Acc) when is_pid(Pid) ->
+                 [Pid|Acc];
+            (_, Acc) ->
+                 Acc
+         end,
+    Servers = lists:foldl(To, [], Servers0),
+    SData = discover(Servers, SData0),
+    Prev = [peer_pid(Peer) || Peer := _ <- Peers],
+    {keep_state, SData, [{reply, From, [peer_pid(Me)|Prev]}]};
+handle_common(StateName, cast, #vote_request{to = Me} = VR, #sdata{me = Me} = SData0) ->
+    SData = handle_vote_request(StateName, VR, SData0),
+    {keep_state, SData};
+handle_common(_StateName, cast, #discover{redirect = Redirect} = DR, #sdata{leader = Leader})
+  when Leader =/= undefined, Redirect > 0 ->
+    peer_send(Leader, DR#discover{redirect = Redirect - 1}),
+    keep_state_and_data;
+handle_common(_StateName, info, ?TICK_MESSAGE, SData0) ->
+    #sdata{role = Role} = SData = handle_tick(SData0),
+    {next_state, Role, SData};
+handle_common(_StateName, info, {NodeUpDown, Node}, SData0)
+  when Node == node(), NodeUpDown == nodeup; NodeUpDown == nodedown ->
+    #sdata{role = Role} = SData = reset(SData0),
+    {next_state, Role, SData};
+handle_common(_StateName, {call, From}, #local_lookup{req = Custom},
+              #sdata{module=Mod, custom_db = DB0} = SData) ->
+    CommitMetadata = {SData#sdata.branch, SData#sdata.apply_index,
+                      SData#sdata.apply_index, SData#sdata.logs},
+    {Result, _DB} = Mod:apply_custom(CommitMetadata, Custom, DB0),
+    {keep_state_and_data, [{reply, From, {ok, Result}}]};
+handle_common(_StateName, cast, #append_request{to = Me} = AR, #sdata{me = Me} = SData0) ->
+    #sdata{role = Role} = SData = handle_append_request(AR, SData0),
+    {next_state, Role, handle_append_request(AR, SData)};
+handle_common(StateName, {call, From}, Msg, _SData) ->
+    ?LOG_DEBUG("~w (~w) Dropped msg: ~P", [?MODULE, StateName, Msg, 20]),
     {keep_state_and_data, [{reply, From, {error, bad_message}}]};
-leader(_, _Msg, _SData0) ->
-    ?LOG_DEBUG("Dropped msg: ~P", [_Msg, 20]),
+handle_common(StateName, Meta, Msg, _SData) ->
+    ?LOG_DEBUG("~w (~w) Dropped ~w msg: ~P", [?MODULE, StateName, Meta, Msg, 20]),
     keep_state_and_data.
+
 
 -spec handle_vote_request(role(), #vote_request{}, #sdata{}) -> #sdata{}.
 handle_vote_request(_State,
@@ -611,10 +649,12 @@ handle_append_request(#append_request{
         if
             PeerBranch < SData#sdata.branch;
             (PeerBranch =:= SData#sdata.branch andalso PeerTenureId > SData#sdata.tenure_id) ->
-                (to_follower(PeerBranch, PeerTenureId, SData))#sdata{leader = From, voted_for = From};
+                SData0 = to_follower(PeerBranch, PeerTenureId, SData),
+                SData0#sdata{leader = From, voted_for = From};
             PeerBranch =:= SData#sdata.branch andalso PeerTenureId =:= SData#sdata.tenure_id ->
                 %% This should never happen
-                SData#sdata.leader =/= undefined andalso SData#sdata.leader =/= From andalso error("wrong leader"),
+                SData#sdata.leader =/= undefined andalso SData#sdata.leader =/= From
+                    andalso error("wrong leader"),
                 SData#sdata{
                   leader = From,
                   %% not necessary to update voted_for
@@ -632,7 +672,8 @@ handle_append_request(#append_request{
                 SData
         end,
     Result =
-        %% From the protocol, we expect append request can only be send from one leader per branch and tenure
+        %% From the protocol, we expect append request can only be
+        %% send from one leader per branch and tenure
         if
             SData1#sdata.branch =/= PeerBranch orelse SData1#sdata.tenure_id =/= PeerTenureId ->
                 not_leader;
@@ -687,27 +728,26 @@ handle_append_reply(#append_reply{
         PeerTenureId =:= State#sdata.tenure_id,
         State#sdata.role =:= leader,
         is_map_key(From, State#sdata.peers) ->
-            PeerState = map_get(From, State#sdata.peers),
-            State1 = State#sdata{
-                       peers = (State#sdata.peers)#{
-                                                    From =>
-                                                        case Result of
-                                                            success ->
-                                                                PeerState#peer_state{
-                                                                  match_index = max(PeerState#peer_state.match_index, PeerAppendId),
-                                                                  liveness_timeout_ms = now_ms() + ?LIVENESS_TIMEOUT_MS
-                                                                 };
-                                                % Change the sending base index if conflict happens or peer needs older data
-                                                            need_older ->
-                                                                PeerState#peer_state{
-                                                                  base_index = PeerAppendId,
-                                                                  liveness_timeout_ms = now_ms() + ?LIVENESS_TIMEOUT_MS
-                                                                 };
-                                                            not_leader ->
-                                                                PeerState
-                                                        end
-                                                   }
-                      },
+            Peers = State#sdata.peers,
+            PeerState0 = map_get(From, Peers),
+            PeerState =
+                case Result of
+                    success ->
+                        PeerState0#peer_state{
+                          match_index = max(PeerState0#peer_state.match_index, PeerAppendId),
+                          liveness_timeout_ms = now_ms() + ?LIVENESS_TIMEOUT_MS
+                         };
+                    %% Change the sending base index if conflict happens or
+                    %% peer needs older data
+                    need_older ->
+                        PeerState0#peer_state{
+                          base_index = PeerAppendId,
+                          liveness_timeout_ms = now_ms() + ?LIVENESS_TIMEOUT_MS
+                         };
+                    not_leader ->
+                        PeerState0
+                end,
+            State1 = State#sdata{peers = Peers#{From => PeerState}},
             {leader, maybe_cleanup(maybe_commit(maybe_send_append(From, State1)))};
         PeerBranch < State#sdata.branch;
         (PeerBranch =:= State#sdata.branch andalso PeerTenureId > State#sdata.tenure_id) ->
@@ -717,15 +757,19 @@ handle_append_reply(#append_reply{
     end.
 
 -spec handle_discover(#discover{}, #sdata{}) -> #sdata{}.
-handle_discover(#discover{from = From, branch = PeerBranch, members = Members}, State) ->
+handle_discover(#discover{from = From, branch = PeerBranch} = Disc, State) ->
     if
         is_map_key(From, State#sdata.peers) orelse
-        map_size(State#sdata.paused) =/= 0 orelse
         PeerBranch =:= State#sdata.branch ->
             State;  %% Ignore
+        map_size(State#sdata.paused) =/= 0 ->
+            %% Redirect discover to the leader to be
+            DR = maps:get(discover, State#sdata.paused),
+            peer_send(DR#discover.from, Disc),
+            State;
         PeerBranch < State#sdata.branch ->
             %% Newer tree will pause itself and join to older tree
-            maybe_single_member_commit(insert({internal, make_ref()}, {pause, Members}, State));
+            maybe_single_member_commit(insert({internal, make_ref()}, {pause, Disc}, State));
         true ->
             discover([From], State)
     end.
@@ -779,7 +823,8 @@ handle_leader_tick(SData) ->
     %% We need to update reset_timer here ?? FIXME ???
     NowMs = now_ms(),
     erlang:send_after(?TICK_TIMEOUT_MS, self(), ?TICK_MESSAGE),
-    SData1 = lists:foldl(fun maybe_send_append/2, SData, maps:keys(committed_members(SData)) -- [SData#sdata.me]),
+    SData1 = lists:foldl(fun maybe_send_append/2, SData,
+                         maps:keys(committed_members(SData)) -- [SData#sdata.me]),
     SData2 =
         if
             map_size(SData1#sdata.paused) =:= 0 ->
@@ -790,10 +835,11 @@ handle_leader_tick(SData) ->
             NowMs > SData1#sdata.merge_timeout_ms,
             % not SData#sdata.wait_snapshot,
             SData1#sdata.append_index =:= SData1#sdata.apply_index ->
-                Destinations = maps:keys(SData1#sdata.paused),
+                Destinations = maps:keys(SData1#sdata.paused) -- [discover],
                 Dest = lists:nth(rand:uniform(length(Destinations)), Destinations),
                 % We may want to let follower to be able to send this message too
-                MergeLog = {merge, committed_members(SData1), (SData1#sdata.module):serialize(SData1#sdata.custom_db)},
+                MergeLog = {merge, committed_members(SData1),
+                            (SData1#sdata.module):serialize(SData1#sdata.custom_db)},
                 peer_send(Dest, #log_request{log = MergeLog}),
                 SData1#sdata{merge_timeout_ms = now_ms() + ?MERGE_TIMEOUT_MS};
             true ->
@@ -803,24 +849,28 @@ handle_leader_tick(SData) ->
     % Can be optimized
     AppendMembers2 = appended_members(SData2),
     SData3 = lists:foldl(
-        fun(ToLeave, SDataAcc) ->
-            insert({internal, make_ref()}, {leave, ToLeave}, SDataAcc)
-        end,
-        SData2,
-        [
-            PeerA
-         || {_, PidA} = PeerA := _ <- AppendMembers2,
-            {_, PidB} = PeerB := _ <- AppendMembers2,
-            node(PidA) =:= node(PidB),
-            PeerA < PeerB
-        ] ++
-            [
+               fun(ToLeave, SDataAcc) ->
+                       insert({internal, make_ref()}, {leave, ToLeave}, SDataAcc)
+               end,
+               SData2,
+               %% This code doesn't work with un-named processes
+               %% this can be solved if leader monitor processes and remove them
+               %% when they die.
+               
+               %% [
+               %%     PeerA
+               %%  || {_, PidA} = PeerA := _ <- AppendMembers2,
+               %%     {_, PidB} = PeerB := _ <- AppendMembers2,
+               %%     node(PidA) =:= node(PidB),
+               %%     PeerA < PeerB
+               %% ] ++
+               [
                 Peer
-             || Peer := #peer_state{liveness_timeout_ms = LivenessTimeoutMs} <- SData2#sdata.peers,
-                is_map_key(Peer, AppendMembers2),
-                NowMs > LivenessTimeoutMs
-            ]
-    ),
+                || Peer := #peer_state{liveness_timeout_ms = LivenessTimeoutMs} <- SData2#sdata.peers,
+                   is_map_key(Peer, AppendMembers2),
+                   NowMs > LivenessTimeoutMs
+               ]
+              ),
     maybe_reset(SData3).
 
 -spec terminate(Reason, SData) -> ok when
@@ -837,13 +887,13 @@ terminate(_Reason, SData) ->
 % Try to see if there is any other cluster that we can merge
 
 -spec discover([pid() | peer() | {atom(), node()}], #sdata{}) -> #sdata{}.
-discover(Peers, #sdata{name = Name} = SData) when is_list(Peers) ->
+discover(Peers, #sdata{name = _Name} = SData) when is_list(Peers) ->
     Msg = #discover{
              from = SData#sdata.me,
              branch = SData#sdata.branch,
              members = committed_members(SData)},
     Send = fun({_StartNs, Pid}, St) when is_pid(Pid) -> gen_statem:cast(Pid, Msg), St;
-              (Process, St) when Name =/= undefined -> gen_statem:cast(Process, Msg), St
+              (Process, St) -> gen_statem:cast(Process, Msg), St
            end,
     lists:foldl(Send, SData, Peers).
 
@@ -877,7 +927,7 @@ send_snapshot(Peer, SData) ->
     Log = {
         snapshot,
         committed_members(SData),
-        SData#sdata.paused,
+        maps:remove(discover, SData#sdata.paused),
         (SData#sdata.module):serialize(SData#sdata.custom_db)
     },
     peer_send(
@@ -914,8 +964,9 @@ insert(LogRef, {leave, LeavePeer} = Log, SData) ->
 %% Questionable: Assume no member change is pending commit?
 insert(LogRef, {merge, Members, _CustomDbSerialized} = Log, SData) ->
     %% Anyone is not supposed to join twice to the cluster
-    %% If all members merged and leaved and somehow magically a merge message arrived, we are in trouble
-    %% It is solvable by passing Branch instead of Members, but it needs to permenately store all the past branches
+    %% If all members merged and leaved and somehow magically a merge message arrived,
+    %% we are in trouble. It is solvable by passing Branch instead of Members,
+    %% but it needs to permenately store all the past branches
     %% Right now we don't handle this
     case lists:all(fun(Peer) -> not is_map_key(Peer, SData#sdata.peers) end, maps:keys(Members)) of
         true ->
@@ -955,8 +1006,9 @@ maybe_send_append(Peer, SData) ->
         NowMs > HeartbeatTimeoutMs ->
             send_empty_append(Peer, SData),
             SData#sdata{
-                peers = Peers#{Peer := PeerSData#peer_state{heartbeat_timeout_ms = NowMs + ?HEARTBEAT_TIMEOUT_MS}}
-            };
+                peers = Peers#{Peer := PeerSData#peer_state{
+                                         heartbeat_timeout_ms = NowMs + ?HEARTBEAT_TIMEOUT_MS}}
+             };
         % We don't have the log peer need, send snapshot
         BaseIndex =:= 0; not is_map_key(BaseIndex, SData#sdata.logs) ->
             send_snapshot(Peer, SData),
@@ -1034,7 +1086,8 @@ maybe_commit(SData) ->
         ->
             case IsMerge of
                 true ->
-                    maybe_commit(commit(NextIndex, SData#sdata{reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS}));
+                    maybe_commit(commit(NextIndex, SData#sdata{reset_timeout_ms =
+                                                                   now_ms() + ?RESET_TIMEOUT_MS}));
                 _ ->
                     case gb_trees:larger(NextIndex, SData#sdata.member_tree) of
                         {MemberChangeIndex, _} when MemberChangeIndex =< CommitIndex ->
@@ -1045,7 +1098,8 @@ maybe_commit(SData) ->
                                 )
                             );
                         _ ->
-                            commit(CommitIndex, SData#sdata{reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS})
+                            commit(CommitIndex, SData#sdata{reset_timeout_ms =
+                                                                now_ms() + ?RESET_TIMEOUT_MS})
                     end
             end;
         _ ->
@@ -1236,7 +1290,8 @@ append([], SData) ->
     SData;
 append([Head | Tail], SData) ->
     append(Tail, append(Head, SData));
-append({LogId, {TenureId, LogRef, _Log}} = LogEntry, SData) when is_map_key(LogId, SData#sdata.logs) ->
+append({LogId, {TenureId, LogRef, _Log}} = LogEntry, SData)
+  when is_map_key(LogId, SData#sdata.logs) ->
     case SData#sdata.logs of
         #{LogId := {TenureId, LogRef, _}} ->
             SData;
@@ -1272,11 +1327,13 @@ append({LogId, {_TenureId, _LogRef, Log} = LogValue}, SData) ->
                 };
             {leave, Peer} ->
                 NowMembers = maps:remove(Peer, get_members(LogId - 1, SData)),
-                SData#sdata{member_tree = gb_trees:insert(LogId, NowMembers, SData#sdata.member_tree)};
-            {pause, Paused} ->
-                SData#sdata{paused = Paused};
+                SData#sdata{member_tree =
+                                gb_trees:insert(LogId, NowMembers, SData#sdata.member_tree)};
+            {pause, #discover{members = Members} = Discover} ->
+                SData#sdata{paused = Members#{discover => Discover}};
             {snapshot, Members, Paused, CustomDbSerialized} ->
-                CustomDb = (SData#sdata.module):apply_replace(CustomDbSerialized, SData#sdata.custom_db),
+                CustomDb = (SData#sdata.module):apply_replace(CustomDbSerialized,
+                                                              SData#sdata.custom_db),
                 SData#sdata{
                     wait_snapshot = false,
                     logs = #{},
@@ -1285,7 +1342,9 @@ append({LogId, {_TenureId, _LogRef, Log} = LogValue}, SData) ->
                     cleanup_index = LogId,
                     member_tree = gb_trees:from_orddict([{LogId, Members}]),
                     paused = Paused,
-                    peers = #{Peer => #peer_state{} || Peer := _ <- Members, Peer =/= SData#sdata.me},
+                    peers = #{Peer => #peer_state{} ||
+                                Peer := _ <- Members,
+                                Peer =/= SData#sdata.me},
                     custom_db = CustomDb
                 };
             _ ->
@@ -1317,15 +1376,18 @@ delete(_LogId, SData) ->
         append_index = SData1#sdata.append_index - 1,
         member_tree = gb_trees:delete_any(SData1#sdata.append_index, SData1#sdata.member_tree)
     },
-    reply(LogRef, {error, failed}, SData2).
+    reply(LogRef, {error, {failed, _LogId}}, SData2).
 
 -spec commit(log_id(), #sdata{}) -> #sdata{}.
 commit(LogId, SData) ->
     % Future: make this async
-    do_apply(LogId, SData#sdata{commit_index = min(max(LogId, SData#sdata.commit_index), SData#sdata.append_index)}).
+    do_apply(LogId, SData#sdata{commit_index = min(max(LogId, SData#sdata.commit_index),
+                                                   SData#sdata.append_index)}).
 
 -spec do_apply(log_id(), #sdata{}) -> #sdata{}.
-do_apply(LogId, SData) when LogId < SData#sdata.apply_index; SData#sdata.apply_index >= SData#sdata.commit_index ->
+do_apply(LogId, SData)
+  when LogId < SData#sdata.apply_index;
+       SData#sdata.apply_index >= SData#sdata.commit_index ->
     SData;
 do_apply(_LogId, SData) ->
     case map_get(SData#sdata.apply_index + 1, SData#sdata.logs) of
@@ -1336,7 +1398,8 @@ do_apply(_LogId, SData) ->
                 CustomLog,
                 SData#sdata.custom_db
             ),
-            reply(LogRef, {ok, Result}, SData#sdata{apply_index = SData#sdata.apply_index + 1, custom_db = CustomDb});
+            reply(LogRef, {ok, Result}, SData#sdata{apply_index = SData#sdata.apply_index + 1,
+                                                    custom_db = CustomDb});
         {TenureId, LogRef, {merge, Members, CustomDbSerialized}} ->
             CommitMetadata = {SData#sdata.branch, SData#sdata.apply_index, TenureId, LogRef},
             CustomDb = (SData#sdata.module):apply_merge(
@@ -1350,7 +1413,8 @@ do_apply(_LogId, SData) ->
             reset(SData);
         {TenureId, LogRef, {leave, Peer}} ->
             CommitMetadata = {SData#sdata.branch, SData#sdata.apply_index, TenureId, LogRef},
-            CustomDb = (SData#sdata.module):apply_leave(CommitMetadata, Peer, SData#sdata.custom_db),
+            CustomDb = (SData#sdata.module):apply_leave(CommitMetadata, Peer,
+                                                        SData#sdata.custom_db),
             SData#sdata{
                 apply_index = SData#sdata.apply_index + 1,
                 custom_db = CustomDb,
@@ -1366,7 +1430,8 @@ do_apply(_LogId, SData) ->
     end.
 
 -spec cleanup(log_id(), #sdata{}) -> #sdata{}.
-cleanup(LogId, SData) when LogId < SData#sdata.cleanup_index; SData#sdata.cleanup_index >= SData#sdata.apply_index ->
+cleanup(LogId, SData)
+  when LogId < SData#sdata.cleanup_index; SData#sdata.cleanup_index >= SData#sdata.apply_index ->
     SData;
 cleanup(_LogId, SData) ->
     CleanupLogId = SData#sdata.cleanup_index - maps:get(extra_logs, SData#sdata.options, 1000),

@@ -18,7 +18,8 @@
 
 %% Test cases
 -export([
-    kv/1
+         basic/1,
+         kv/1
 ]).
 
 -define(WAIT_UNTIL(Condition, TimeLimitMs),
@@ -58,33 +59,40 @@ end_per_suite(_Config) ->
     ok.
 
 init_per_testcase(TestCase, Config) ->
-    Self = self(),
-    [
-     spawn_link(
-       fun() ->
-               Opts = #{
-                        name => atom_to_list(TestCase) ++ "_" ++ integer_to_list(NodeNR),
-                        connection => 0,
-                        args => ["-connect_all", "false", "-kernel", "+S", "4:4"]
-                       },
-               {ok, Peer, Node} = ?CT_PEER(Opts),
-               ok = peer:call(Peer, code, add_pathsa, [code:get_path()]),
-               Self ! {self(), Peer, Node},
-               timer:sleep(infinity)
-       end
-      )
-     || NodeNR <- lists:seq(1, 5)
-    ],
-    Pids = [
-            receive
-                {Pid, Peer, Node} -> {Pid, Peer, Node}
-            end
-            || _ <- lists:seq(1, 5)
-           ],
-    Peers = #{Peer => Node || {_Pid, Peer, Node} <- Pids},
-    [{peers, Peers} | Config].
+    NeedPeers = [kv],
+    case lists:member(TestCase, NeedPeers) of
+        true ->
+            Self = self(),
+            [
+             spawn_link(
+               fun() ->
+                       Opts = #{
+                                name => atom_to_list(TestCase) ++ "_" ++ integer_to_list(NodeNR),
+                                connection => 0,
+                                args => ["-connect_all", "false", "-kernel", "+S", "4:4"]
+                               },
+                       {ok, Peer, Node} = ?CT_PEER(Opts),
+                       ok = peer:call(Peer, code, add_pathsa, [code:get_path()]),
+                       Self ! {self(), Peer, Node},
+                       timer:sleep(infinity)
+               end
+              )
+             || NodeNR <- lists:seq(1, 5)
+            ],
+            Pids = [
+                    receive
+                        {Pid, Peer, Node} -> {Pid, Peer, Node}
+                    end
+                    || _ <- lists:seq(1, 5)
+                   ],
+            Peers = #{Peer => Node || {_Pid, Peer, Node} <- Pids},
+            [{peers, Peers} | Config];
+        false ->
+            Config
+    end.
 
 end_per_testcase(_TestCase, Config) ->
+    dbg:stop(),
     catch [peer:stop(Peer) || Peer := _ <- proplists:get_value(peers, Config)],
     ok.
 
@@ -93,9 +101,9 @@ all() ->
 
 groups() ->
     [
-        {basic, [parallel], [
-            kv
-        ]}
+        {basic, [], %% [parallel],
+         [basic, kv]
+        }
     ].
 
 %%--------------------------------------------------------------------
@@ -118,7 +126,7 @@ kv(Config) ->
     true = peer:call(P3, net_kernel, connect_node, [N2]),
     true = peer:call(P5, net_kernel, connect_node, [N4]),
 
-    timer:sleep(5000),
+    timer:sleep(3000),
 
     {ok, 1} = peer:call(P1, merge_raft_kv, sync_get, [?FUNCTION_NAME, a]),
     {ok, 2} = peer:call(P2, merge_raft_kv, sync_get, [?FUNCTION_NAME, b]),
@@ -139,4 +147,48 @@ kv(Config) ->
             ok
         end
      || Mon <- Mons
-    ].
+    ],
+    ok.
+
+basic(_Config) ->
+    Pids = [Pid || _ <- lists:seq(1,5), {ok, Pid} <- [mr_cb_test:start()]],
+    Mons = [monitor(process, Pid) || Pid <- Pids],
+    [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
+    io:format("Network Pids: ~w~n", [Pids]),
+    mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
+    timer:sleep(200),
+
+    {ok, ok} = mr_cb_test:put(Pid1, a, 1),
+    {ok, ok} = mr_cb_test:put(Pid2, b, 2),
+
+    [Pid2] = lists:sort(mr_cb_test:connect(Pid2, [Pid1])),
+    [Pid4] = lists:sort(mr_cb_test:connect(Pid4, [Pid3])),
+    [Pid3] = lists:sort(mr_cb_test:connect(Pid3, [Pid2])),
+    [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
+
+    timer:sleep(5000),
+
+    Verify = fun(Pid) ->
+                     maybe
+                         {ok, 1} ?= mr_cb_test:leader_get(Pid, a),
+                         {ok, 1} ?= mr_cb_test:get(Pid, a),
+                         {ok, 2} ?= mr_cb_test:leader_get(Pid, b),
+                         {ok, 2} ?= mr_cb_test:get(Pid, b),
+                         false
+                     else Reason ->
+                             {true, {Pid, Reason}}
+                     end
+             end,
+
+    [] = lists:filtermap(Verify, Pids -- [Pid4, Pid5]),
+
+    [
+     receive
+         {'DOWN', Mon, process, Pid, Reason} ->
+             error({Pid, Reason})
+     after 0 ->
+             ok
+     end
+     || Mon <- Mons
+    ],
+    ok.
