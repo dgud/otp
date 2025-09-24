@@ -155,7 +155,7 @@ basic(_Config) ->
     Mons = [monitor(process, Pid) || Pid <- Pids],
     [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
     io:format("Network Pids: ~w~n", [Pids]),
-    mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
+    %% mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
     timer:sleep(200),
 
     {ok, ok} = mr_cb_test:put(Pid1, a, 1),
@@ -166,7 +166,10 @@ basic(_Config) ->
     [Pid3] = lists:sort(mr_cb_test:connect(Pid3, [Pid2])),
     [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
 
-    timer:sleep(5000),
+    timer:sleep(500),
+    [ct:log("~tw~n", [merge_raft:get_info(Pid)]) || Pid <- Pids],
+    timer:sleep(3000),
+    [ct:log("~tw~n", [merge_raft:get_info(Pid)]) || Pid <- Pids],
 
     Verify = fun(Pid) ->
                      maybe
@@ -174,13 +177,14 @@ basic(_Config) ->
                          {ok, 1} ?= mr_cb_test:get(Pid, a),
                          {ok, 2} ?= mr_cb_test:leader_get(Pid, b),
                          {ok, 2} ?= mr_cb_test:get(Pid, b),
+                         ct:log("Checked pid ~w~n",[Pid]),
                          false
                      else Reason ->
                              {true, {Pid, Reason}}
                      end
              end,
 
-    [] = lists:filtermap(Verify, Pids -- [Pid4, Pid5]),
+    [] = lists:filtermap(Verify, Pids),
 
     [
      receive

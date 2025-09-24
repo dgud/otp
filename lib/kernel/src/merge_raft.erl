@@ -25,6 +25,9 @@ merge_raft behaviour
          connect/2
         ]).
 
+%% Debug functions
+-export([get_info/1]).
+
 %% gen_statem callbacks
 -export(
    [init/1,
@@ -305,6 +308,11 @@ connect(Name, Servers) when (is_pid(Name) orelse is_atom(Name)) andalso is_list(
     gen_statem:call(Name, #connect{servers = Servers}).
 
 
+-spec get_info(server_name() | pid()) -> map().
+get_info(Name) ->
+    gen_statem:call(Name, get_info).
+
+
 %%==============================================================================
 %% gen_statem callbacks
 %%==============================================================================
@@ -523,6 +531,8 @@ handle_common(_StateName, {call, From}, #local_lookup{req = Custom},
 handle_common(_StateName, cast, #append_request{to = Me} = AR, #sdata{me = Me} = SData0) ->
     #sdata{role = Role} = SData = handle_append_request(AR, SData0),
     {next_state, Role, handle_append_request(AR, SData)};
+handle_common(_, {call, From}, get_info, SData) ->
+    {keep_state_and_data, [{reply, From, make_info(SData)}]};
 handle_common(StateName, {call, From}, Msg, _SData) ->
     ?LOG_DEBUG("~w (~w) Dropped msg: ~P", [?MODULE, StateName, Msg, 20]),
     {keep_state_and_data, [{reply, From, {error, bad_message}}]};
@@ -1324,7 +1334,7 @@ append({LogId, {_TenureId, _LogRef, Log} = LogValue}, SData) ->
                          || Peer := _ <- Members
                         }
                     )
-                };
+                 };
             {leave, Peer} ->
                 NowMembers = maps:remove(Peer, get_members(LogId - 1, SData)),
                 SData#sdata{member_tree =
@@ -1497,6 +1507,19 @@ get_members(LogId, SData) ->
         none ->
             error("bad member tree")
     end.
+
+-spec make_info(#sdata{}) -> map().
+make_info(#sdata{me = Me, leader = Leader, role = Role,
+                 append_index = Append,
+                 commit_index = Commit,
+                 apply_index  = Apply,
+                 tenure_id = Tenure,
+                 peers = Peers
+                } = SData) ->
+    #{a_id => Me, a_leader => Leader, a_role => Role,
+      idx_tenure => Tenure, idx_append => Append, idx_commit => Commit, idx_apply => Apply,
+      member_peers => maps:keys(Peers),
+      member_all => appended_members(SData)}.
 
 -spec initial_members(undefined | atom(), map()) -> [pid() | {atom(), node()}].
 initial_members(undefined, Options) ->
