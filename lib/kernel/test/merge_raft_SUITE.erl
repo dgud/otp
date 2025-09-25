@@ -92,7 +92,7 @@ init_per_testcase(TestCase, Config) ->
     end.
 
 end_per_testcase(_TestCase, Config) ->
-    dbg:stop(),
+    catch dbg:stop(),
     catch [peer:stop(Peer) || Peer := _ <- proplists:get_value(peers, Config)],
     ok.
 
@@ -156,20 +156,19 @@ basic(_Config) ->
     [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
     io:format("Network Pids: ~w~n", [Pids]),
     %% mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
-    timer:sleep(200),
+    %% timer:sleep(200),
 
     {ok, ok} = mr_cb_test:put(Pid1, a, 1),
     {ok, ok} = mr_cb_test:put(Pid2, b, 2),
 
     [Pid2] = lists:sort(mr_cb_test:connect(Pid2, [Pid1])),
+    ct:log("~w", [sync([Pid1,Pid2])]),
     [Pid4] = lists:sort(mr_cb_test:connect(Pid4, [Pid3])),
-    [Pid3] = lists:sort(mr_cb_test:connect(Pid3, [Pid2])),
+    ct:log("~w", [sync([Pid3,Pid4])]),
+    [Pid3, Pid4] = lists:sort(mr_cb_test:connect(Pid3, [Pid2])),
+    ct:log("~w", [sync([Pid1, Pid2, Pid3,Pid4])]),
     [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
-
-    timer:sleep(500),
-    [ct:log("~tw~n", [merge_raft:get_info(Pid)]) || Pid <- Pids],
-    timer:sleep(3000),
-    [ct:log("~tw~n", [merge_raft:get_info(Pid)]) || Pid <- Pids],
+    ct:log("~w", [sync(Pids)]),
 
     Verify = fun(Pid) ->
                      maybe
@@ -177,7 +176,7 @@ basic(_Config) ->
                          {ok, 1} ?= mr_cb_test:get(Pid, a),
                          {ok, 2} ?= mr_cb_test:leader_get(Pid, b),
                          {ok, 2} ?= mr_cb_test:get(Pid, b),
-                         ct:log("Checked pid ~w~n",[Pid]),
+                         ct:log("Checked pid ~w",[Pid]),
                          false
                      else Reason ->
                              {true, {Pid, Reason}}
@@ -185,6 +184,10 @@ basic(_Config) ->
              end,
 
     [] = lists:filtermap(Verify, Pids),
+
+    {Time, {ok, 2}} = timer:tc(fun() -> mr_cb_test:leader_get(Pid3, b) end),
+    ct:log("Read took: ~w µs", [Time]),
+    true = Time < 500_000,
 
     [
      receive
@@ -196,3 +199,23 @@ basic(_Config) ->
      || Mon <- Mons
     ],
     ok.
+
+sync(Pids) ->
+    timer:tc(fun() -> sync(Pids, [], 50) end).
+
+sync([Pid|_] = Pids, _Failed, N) when N > 0 ->
+    #{idx_commit := Id, a_leader := Leader} = merge_raft:get_info(Pid),
+    IsSync = fun(Check) ->
+                     case merge_raft:get_info(Check) of
+                         #{idx_commit := Id, a_leader := Leader} -> false;
+                         Bad -> {true, Bad}
+                     end
+             end,
+    case lists:filtermap(IsSync, Pids) of
+        []  ->
+            synced;
+        Failed ->
+            timer:sleep(100),
+            sync(Pids, Failed, N-1)
+    end.
+

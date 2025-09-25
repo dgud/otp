@@ -718,7 +718,7 @@ handle_append_request(#append_request{
                  true ->
                      0;
                  _ ->
-                     min(SData2#sdata.append_index, PrevLogIndex)
+                     SData2#sdata.append_index
              end
         }
      ),
@@ -866,7 +866,7 @@ handle_leader_tick(SData) ->
                %% This code doesn't work with un-named processes
                %% this can be solved if leader monitor processes and remove them
                %% when they die.
-               
+
                %% [
                %%     PeerA
                %%  || {_, PidA} = PeerA := _ <- AppendMembers2,
@@ -1082,39 +1082,42 @@ maybe_commit(SData) ->
         end,
     % Can improve performance here but probably an over kill
     MatchList = lists:sort(
-        [SData#sdata.append_index] ++
-            [
-                (map_get(Peer, SData#sdata.peers))#peer_state.match_index
-             || Peer := _ <- Members,
-                is_map_key(Peer, SData#sdata.peers)
-            ]
-    ),
-    case lists:nth((map_size(Members) + 1) div 2, MatchList) of
-        CommitIndex when
-            CommitIndex > SData#sdata.commit_index,
-            element(1, map_get(CommitIndex, SData#sdata.logs)) =:= SData#sdata.tenure_id
-        ->
-            case IsMerge of
-                true ->
-                    maybe_commit(commit(NextIndex, SData#sdata{reset_timeout_ms =
-                                                                   now_ms() + ?RESET_TIMEOUT_MS}));
+                  [SData#sdata.append_index] ++
+                      [
+                  (map_get(Peer, SData#sdata.peers))#peer_state.match_index
+                       || Peer := _ <- Members,
+                          is_map_key(Peer, SData#sdata.peers)
+                      ]
+                 ),
+    CommitIndex = lists:nth((map_size(Members) + 1) div 2, MatchList),
+%%    debug_leader_commit(MatchList, (map_size(Members) + 1) div 2, CommitIndex, SData#sdata.commit_index),
+    case CommitIndex > SData#sdata.commit_index andalso
+        element(1, map_get(CommitIndex, SData#sdata.logs)) =:= SData#sdata.tenure_id
+    of
+        true when IsMerge ->
+            maybe_commit(commit(NextIndex, SData#sdata{reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS}));
+        true ->
+            case gb_trees:larger(NextIndex, SData#sdata.member_tree) of
+                {MemberChangeIndex, _} when MemberChangeIndex =< CommitIndex ->
+                    maybe_commit(
+                      commit(
+                        MemberChangeIndex - 1,
+                        SData#sdata{reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS}
+                       )
+                     );
                 _ ->
-                    case gb_trees:larger(NextIndex, SData#sdata.member_tree) of
-                        {MemberChangeIndex, _} when MemberChangeIndex =< CommitIndex ->
-                            maybe_commit(
-                                commit(
-                                    MemberChangeIndex - 1,
-                                    SData#sdata{reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS}
-                                )
-                            );
-                        _ ->
-                            commit(CommitIndex, SData#sdata{reset_timeout_ms =
-                                                                now_ms() + ?RESET_TIMEOUT_MS})
-                    end
+                    commit(CommitIndex, SData#sdata{reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS})
             end;
-        _ ->
+        false ->
             SData
     end.
+
+%% -spec debug_leader_commit(list(), integer(), integer(), integer()) -> ok.
+%% debug_leader_commit(MatchList, MemberI, CommitIndex, MyCI) ->
+%%     io:format("~w: ~w: commit ~w(~w) => ~w > ~w = ~w~n",
+%%               [?LINE, self(), MatchList, MemberI,
+%%                CommitIndex, MyCI, CommitIndex > MyCI]).
+
 
 -spec maybe_cleanup(#sdata{}) -> #sdata{}.
 maybe_cleanup(SData) when SData#sdata.role =/= leader ->
