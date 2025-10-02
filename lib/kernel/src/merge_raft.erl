@@ -1392,36 +1392,38 @@ delete(_LogId, SData) ->
     reply(LogRef, {error, {failed, _LogId}}, SData2).
 
 -spec commit(log_id(), #sdata{}) -> #sdata{}.
-commit(LogId, SData) ->
-    % Future: make this async
-    do_apply(LogId, SData#sdata{commit_index = min(max(LogId, SData#sdata.commit_index),
-                                                   SData#sdata.append_index)}).
+commit(CommitIndex, #sdata{apply_index = ApplyIndex} = SData0) ->
+    %% Future: make this async
+    do_apply(ApplyIndex, CommitIndex, SData0).
+
+-spec do_apply(log_id(), log_id(), #sdata{}) -> #sdata{}.
+do_apply(ApplyIndex, CommitIndex, SData0)
+  when ApplyIndex < CommitIndex ->
+    SData = do_apply(ApplyIndex, SData0),
+    do_apply(ApplyIndex+1, CommitIndex, SData);
+do_apply(ApplyIndex, CommitIndex, SData) ->
+    SData#sdata{commit_index = CommitIndex, apply_index = ApplyIndex}.
 
 -spec do_apply(log_id(), #sdata{}) -> #sdata{}.
-do_apply(LogId, SData)
-  when LogId < SData#sdata.apply_index;
-       SData#sdata.apply_index >= SData#sdata.commit_index ->
-    SData;
-do_apply(_LogId, SData) ->
-    case map_get(SData#sdata.apply_index + 1, SData#sdata.logs) of
+do_apply(ApplyIndex, SData) ->
+    case map_get(ApplyIndex + 1, SData#sdata.logs) of
         {TenureId, LogRef, {custom, CustomLog}} ->
-            CommitMetadata = {SData#sdata.branch, SData#sdata.apply_index, TenureId, LogRef},
+            CommitMetadata = {SData#sdata.branch, ApplyIndex, TenureId, LogRef},
             {Result, CustomDb} = (SData#sdata.module):apply_custom(
                 CommitMetadata,
                 CustomLog,
                 SData#sdata.custom_db
             ),
-            reply(LogRef, {ok, Result}, SData#sdata{apply_index = SData#sdata.apply_index + 1,
-                                                    custom_db = CustomDb});
+            reply(LogRef, {ok, Result}, SData#sdata{custom_db = CustomDb});
         {TenureId, LogRef, {merge, Members, CustomDbSerialized}} ->
-            CommitMetadata = {SData#sdata.branch, SData#sdata.apply_index, TenureId, LogRef},
+            CommitMetadata = {SData#sdata.branch, ApplyIndex, TenureId, LogRef},
             CustomDb = (SData#sdata.module):apply_merge(
                 CommitMetadata,
                 Members,
                 CustomDbSerialized,
                 SData#sdata.custom_db
             ),
-            SData#sdata{apply_index = SData#sdata.apply_index + 1, custom_db = CustomDb};
+            SData#sdata{custom_db = CustomDb};
         {_TenureId, _LogRef, {leave, Peer}} when Peer =:= SData#sdata.me ->
             reset(SData);
         {TenureId, LogRef, {leave, Peer}} ->
@@ -1429,14 +1431,13 @@ do_apply(_LogId, SData) ->
             CustomDb = (SData#sdata.module):apply_leave(CommitMetadata, Peer,
                                                         SData#sdata.custom_db),
             SData#sdata{
-                apply_index = SData#sdata.apply_index + 1,
                 custom_db = CustomDb,
                 peers = maps:remove(Peer, SData#sdata.peers)
             };
         {_TenureId, _LogRef, {leader, _Peer}} ->
-            SData#sdata{apply_index = SData#sdata.apply_index + 1};
+            SData;
         {_TenureId, _LogRef, {pause, _Paused}} ->
-            SData#sdata{apply_index = SData#sdata.apply_index + 1};
+            SData;
         {_TenureId, _LogRef, {snapshot, _Members, _Paused, _CustomDbSerialized}} ->
             % This should never happen
             error("wrong apply")
