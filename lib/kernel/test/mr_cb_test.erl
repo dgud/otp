@@ -178,6 +178,9 @@ trace(Options) ->
     [dbg:ctpl(merge_raft, F) || F <- Disable],
     ok.
 
+tracer({trace_ts, _From, 'send', {io_request, _, _,Msg}, _To, Time}, State) ->
+    io:format("~s DBG_IO: ~n ~s~n",[format_time(Time),format_msg(Msg, State)]),
+    State;
 tracer({trace_ts, From, 'send', Msg, To, Time}, State) ->
     io:format("~s ~w >> ~w ~s~n",[format_time(Time),From,To,format_msg(Msg, State)]),
     State;
@@ -201,11 +204,13 @@ format_msg({call, {Pid, _}, Msg}, State) ->
     io_lib:bformat("call ~w ~s", [Pid, format(Msg, State)]);
 format_msg({'$gen_cast', Msg}, State) ->
     io_lib:bformat("cast ~s", [format(Msg, State)]);
+format_msg({put_chars, unicode, io_lib, format, [F,A]}, _State) ->
+    io_lib:bformat(F, A);
 format_msg(Msg, State) ->
     format(Msg, State).
 
 format_call({merge_raft, F, [_Type, Msg, SData]}, _, State)
-  when F == leader; F == candidate; F == follower ->
+  when F == leader; F == candidate; F == follower; F == follower_wait ->
     io_lib:bformat("~w << ~s ~s", [F,format(Msg, State),format(SData, State)]);
 format_call({M,F,As}, ST0, State) ->
     Args = lists:join(",", [format(A, State) || A <- As]),
@@ -218,7 +223,7 @@ format_call({M,F,As}, ST0, State) ->
 format_return({merge_raft, handle_common, _A}, _ReturnValue, _State) ->
     ~"return handle_common";
 format_return({merge_raft, SName, _A}, ReturnValue, State)
-  when SName == leader; SName == follower; SName == candidate ->
+  when SName == leader; SName == follower; SName == candidate; SName == follower_wait ->
     try element(1, ReturnValue) of
         keep_state_and_data ->
             io_lib:bformat("~w ~w", [keep_state_and_data, SName]);
@@ -256,4 +261,4 @@ format_time(MonTimeNano) ->
     Sec = SysTime div 1000_000_000,
     {_Data, {H,M,S}} = calendar:system_time_to_local_time(Sec, second),
     io_lib:bformat("~.2.0w:~.2.0w:~.2.0w.~.9.0w", [H,M,S,Nano]).
-    
+

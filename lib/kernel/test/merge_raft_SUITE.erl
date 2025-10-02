@@ -18,7 +18,9 @@
 
 %% Test cases
 -export([
-         basic/1,
+         connect/1,
+         follower_dies/1,
+         leader_dies/1,
          kv/1
 ]).
 
@@ -46,9 +48,9 @@
 
 suite() ->
     [
-        {timetrap, {seconds, 100}},
-        {auto_meckanic, #{enable_autoclean => true}},
-        {appatic, #{enable_autoclean => true}}
+     {timetrap, {seconds, 10}},
+     {auto_meckanic, #{enable_autoclean => true}},
+     {appatic, #{enable_autoclean => true}}
     ].
 
 init_per_suite(Config) ->
@@ -60,6 +62,7 @@ end_per_suite(_Config) ->
 
 init_per_testcase(TestCase, Config) ->
     NeedPeers = [kv],
+    logger:set_module_level(merge_raft, debug),
     case lists:member(TestCase, NeedPeers) of
         true ->
             Self = self(),
@@ -97,12 +100,12 @@ end_per_testcase(_TestCase, Config) ->
     ok.
 
 all() ->
-    [{group, basic}].
+    [{group, connect}].
 
 groups() ->
     [
-        {basic, [], %% [parallel],
-         [basic, kv]
+        {connect, [], %% [parallel],
+         [connect, kv, follower_dies, leader_dies]
         }
     ].
 
@@ -150,7 +153,7 @@ kv(Config) ->
     ],
     ok.
 
-basic(_Config) ->
+connect(_Config) ->
     Pids = [Pid || _ <- lists:seq(1,5), {ok, Pid} <- [mr_cb_test:start()]],
     Mons = [monitor(process, Pid) || Pid <- Pids],
     [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
@@ -170,20 +173,7 @@ basic(_Config) ->
     [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
     ct:log("~w", [sync(Pids)]),
 
-    Verify = fun(Pid) ->
-                     maybe
-                         {ok, 1} ?= mr_cb_test:leader_get(Pid, a),
-                         {ok, 1} ?= mr_cb_test:get(Pid, a),
-                         {ok, 2} ?= mr_cb_test:leader_get(Pid, b),
-                         {ok, 2} ?= mr_cb_test:get(Pid, b),
-                         ct:log("Checked pid ~w",[Pid]),
-                         false
-                     else Reason ->
-                             {true, {Pid, Reason}}
-                     end
-             end,
-
-    [] = lists:filtermap(Verify, Pids),
+    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{a,1},{b,2}]) end, Pids),
 
     {Time, {ok, 2}} = timer:tc(fun() -> mr_cb_test:leader_get(Pid3, b) end),
     ct:log("Read took: ~w µs", [Time]),
@@ -198,7 +188,119 @@ basic(_Config) ->
      end
      || Mon <- Mons
     ],
+    [exit(Pid, kill) || Pid <- Pids],
     ok.
+
+follower_dies(_Config) ->
+    Pids = [Pid || _ <- lists:seq(1,5), {ok, Pid} <- [mr_cb_test:start()]],
+    Mons = [monitor(process, Pid) || Pid <- Pids],
+    [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
+    io:format("Network Pids: ~w~n", [Pids]),
+    %% mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
+    %% timer:sleep(200),
+
+    {ok, ok} = mr_cb_test:put(Pid1, a, 1),
+    {ok, ok} = mr_cb_test:put(Pid2, b, 2),
+
+    [Pid2] = lists:sort(mr_cb_test:connect(Pid2, [Pid1])),
+    ct:log("~w", [sync([Pid1,Pid2])]),
+    [Pid4] = lists:sort(mr_cb_test:connect(Pid4, [Pid3])),
+    ct:log("~w", [sync([Pid3,Pid4])]),
+    [Pid3, Pid4] = lists:sort(mr_cb_test:connect(Pid3, [Pid2])),
+    ct:log("~w", [sync([Pid1, Pid2, Pid3,Pid4])]),
+    [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
+    ct:log("~w", [sync(Pids)]),
+
+    {ReadT, true} = timer:tc(fun() -> {ok, 2} == mr_cb_test:leader_get(Pid3, b) end),
+    ct:log("Before took: ~w µs", [ReadT]),
+
+    #{a_role := leader} = merge_raft:get_info(Pid1),
+    exit(Pid2, kill),
+    ok = receive {'DOWN', _Mon, process, Pid2, killed} -> ok end,
+
+    {Time, true} = timer:tc(fun() -> {ok, ok} == mr_cb_test:put(Pid3, c, 3) end),
+    ct:log("After took: ~w µs", [Time]),
+    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{a,1},{b,2},{c,3}]) end, Pids -- [Pid2]),
+
+
+    %% FIXME: Take decision of how to handle less members than qourum
+
+    [exit(Pid, kill) || Pid <- [Pid3]], % ,Pid4]],
+    receive {'DOWN', _, process, Pid3, killed} -> ok end,
+    %%receive {'DOWN', _, process, Pid4, killed} -> ok end,
+
+    {ok, ok} = mr_cb_test:put(Pid5, c, 4),
+    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{c,4}]) end, [Pid1,Pid5]),
+
+    [
+     receive
+         {'DOWN', Mon, process, Pid, Reason} ->
+             error({Pid, Reason})
+     after 0 ->
+             ok
+     end
+     || Mon <- Mons
+    ],
+    [exit(Pid, kill) || Pid <- Pids],
+    ok.
+
+leader_dies(_Config) ->
+    Pids = [Pid || _ <- lists:seq(1,5), {ok, Pid} <- [mr_cb_test:start()]],
+    Mons = [monitor(process, Pid) || Pid <- Pids],
+    [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
+    io:format("Network Pids: ~w~n", [Pids]),
+
+    {ok, ok} = mr_cb_test:put(Pid1, a, 1),
+    {ok, ok} = mr_cb_test:put(Pid2, b, 2),
+
+    [Pid2] = lists:sort(mr_cb_test:connect(Pid2, [Pid1])),
+    ct:log("~w", [sync([Pid1,Pid2])]),
+    [Pid4] = lists:sort(mr_cb_test:connect(Pid4, [Pid3])),
+    ct:log("~w", [sync([Pid3,Pid4])]),
+    [Pid3, Pid4] = lists:sort(mr_cb_test:connect(Pid3, [Pid2])),
+    ct:log("~w", [sync([Pid1, Pid2, Pid3,Pid4])]),
+    [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
+    ct:log("~w", [sync(Pids)]),
+
+    %% mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
+    timer:sleep(100),
+
+    ct:log("~p", [merge_raft:get_info(Pid2)]),
+    #{a_role := leader} = merge_raft:get_info(Pid1),
+    exit(Pid1, kill),
+    ok = receive {'DOWN', _Mon, process, Pid1, killed} -> ok end,
+
+    {ok, ok} = mr_cb_test:put(Pid3, c, 3),
+    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{a,1},{b,2},{c,3}]) end, Pids -- [Pid1]),
+
+
+    [
+     receive
+         {'DOWN', Mon, process, Pid, Reason} ->
+             error({Pid, Reason})
+     after 0 ->
+             ok
+     end
+     || Mon <- Mons
+    ],
+    [exit(Pid, kill) || Pid <- Pids],
+    ok.
+
+
+verify(Pid, List) ->
+    Verify = fun({K,V}) ->
+                     maybe
+                         {ok, V} ?= mr_cb_test:leader_get(Pid, K),
+                         {ok, V} ?= mr_cb_test:get(Pid, K),
+                         false
+                     else Reason ->
+                             {true, {Pid, Reason}}
+                     end
+             end,
+    case lists:filtermap(Verify, List) of
+        [] -> false;
+        Other -> {true, Other}
+    end.
 
 sync(Pids) ->
     timer:tc(fun() -> sync(Pids, [], 50) end).
