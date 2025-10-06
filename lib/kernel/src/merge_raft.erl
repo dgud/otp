@@ -669,9 +669,10 @@ handle_vote_reply(#vote_reply{
             Voted = length(Votes) + 1,
             if   %% FIXME + 1 twice here ??
                 Voted + 1 >= Quorum ->
-                    %% FIXME  leader should be linked to Peers now
-                    [send_empty_append(Peer, SData1) || Peer := _ <- Members,
-                                                        Peer =/= SData1#sdata.me],
+                    [begin
+                         link(peer_pid(Peer)),
+                         send_empty_append(Peer, SData1)
+                     end || Peer := _ <- Members, Peer =/= SData1#sdata.me],
                     NowMs = now_ms(),
                     SData2 = SData1#sdata{
                                role = leader,
@@ -720,6 +721,12 @@ handle_append_request(#append_request{
             PeerBranch < SData#sdata.branch;
             (PeerBranch =:= SData#sdata.branch andalso PeerTenureId > SData#sdata.tenure_id) ->
                 SData0 = to_follower(PeerBranch, PeerTenureId, SData),
+                link(peer_pid(From)),
+                PrevLeader = SData#sdata.leader,
+                case PrevLeader of
+                    undefined -> ok;
+                    _ -> unlink(peer_pid(PrevLeader))
+                end,
                 SData0#sdata{leader = From, voted_for = From};
             PeerBranch =:= SData#sdata.branch andalso PeerTenureId =:= SData#sdata.tenure_id ->
                 %% This should never happen

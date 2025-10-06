@@ -173,11 +173,14 @@ connect(_Config) ->
     [Pid5] = lists:sort(mr_cb_test:connect(Pid5, [Pid4])),
     ct:log("~w", [sync(Pids)]),
 
-    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{a,1},{b,2}]) end, Pids),
+    [] = verify(Pids, [{a,1},{b,2}]),
 
     {Time, {ok, 2}} = timer:tc(fun() -> mr_cb_test:leader_get(Pid3, b) end),
     ct:log("Read took: ~w µs", [Time]),
     true = Time < 500_000,
+
+    #{a_role := leader, member_links := Ls} = merge_raft:get_info(Pid1),
+    [] = lists:sort([Pid2, Pid3, Pid4, Pid5]) -- lists:sort(Ls),
 
     [
      receive
@@ -220,7 +223,7 @@ follower_dies(_Config) ->
 
     {Time, true} = timer:tc(fun() -> {ok, ok} == mr_cb_test:put(Pid3, c, 3) end),
     ct:log("After took: ~w µs", [Time]),
-    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{a,1},{b,2},{c,3}]) end, Pids -- [Pid2]),
+    [] = verify(Pids -- [Pid2], [{a,1},{b,2},{c,3}]),
 
 
     %% FIXME: Take decision of how to handle less members than qourum
@@ -230,7 +233,7 @@ follower_dies(_Config) ->
     %%receive {'DOWN', _, process, Pid4, killed} -> ok end,
 
     {ok, ok} = mr_cb_test:put(Pid5, c, 4),
-    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{c,4}]) end, [Pid1,Pid5]),
+    [] = verify([Pid1,Pid5], [{c,4}]),
 
     [
      receive
@@ -271,8 +274,10 @@ leader_dies(_Config) ->
     ok = receive {'DOWN', _Mon, process, Pid1, killed} -> ok end,
 
     {ok, ok} = mr_cb_test:put(Pid3, c, 3),
-    [] = lists:filtermap(fun(Pid) -> verify(Pid, [{a,1},{b,2},{c,3}]) end, Pids -- [Pid1]),
+    [] = verify(Pids -- [Pid1], [{a,1},{b,2},{c,3}]),
 
+    #{a_role := leader, member_links := Ls} = merge_raft:get_info(Pid2),
+    [] = lists:sort([Pid3, Pid4, Pid5]) -- lists:sort(Ls),
 
     [
      receive
@@ -287,6 +292,18 @@ leader_dies(_Config) ->
     ok.
 
 
+verify(Pids, KVList) when is_list(Pids), is_list(KVList) ->
+    lists:filtermap(fun(Pid) ->
+                            maybe
+                                false ?= verify(Pid, KVList),
+                                ok ?= check_meta(Pid),
+                                false
+                            else Reason ->
+                                    {true, Reason}
+                            end
+                    end,
+                    Pids);
+
 verify(Pid, List) ->
     Verify = fun({K,V}) ->
                      maybe
@@ -300,6 +317,21 @@ verify(Pid, List) ->
     case lists:filtermap(Verify, List) of
         [] -> false;
         Other -> {true, Other}
+    end.
+
+check_meta(Pid) ->
+    #{a_leader := Leader, a_id := Id,
+      member_links := Links, member_peers := Peers} = merge_raft:get_info(Pid),
+    if Leader =:= Id ->
+            Pids = [Proc || {_, Proc} <- Peers],
+            case lists:sort(Links) -- lists:sort(Pids) of
+                [] -> ok;
+                Other -> {Pid, {leader_links, Other}}
+            end;
+       element(2, Leader) == hd(Links) ->
+            ok;
+       true ->
+            {Pid, {failed_link, Leader, Links}}
     end.
 
 sync(Pids) ->
