@@ -212,6 +212,8 @@ format_msg(Msg, State) ->
 format_call({merge_raft, F, [_Type, Msg, SData]}, _, State)
   when F == leader; F == candidate; F == follower; F == follower_wait ->
     io_lib:bformat("~w << ~s ~s", [F,format(Msg, State),format(SData, State)]);
+format_call({merge_raft, debug_format, [Format, Args]}, _, _State) ->
+    io_lib:bformat("DBG_IO~n " ++ Format, Args);
 format_call({M,F,As}, ST0, State) ->
     Args = lists:join(",", [format(A, State) || A <- As]),
     ST = case maps:get(st, State, false) of
@@ -223,7 +225,8 @@ format_call({M,F,As}, ST0, State) ->
 format_return({merge_raft, handle_common, _A}, _ReturnValue, _State) ->
     ~"return handle_common";
 format_return({merge_raft, SName, _A}, ReturnValue, State)
-  when SName == leader; SName == follower; SName == candidate; SName == follower_wait ->
+  when SName == leader; SName == follower;
+       SName == candidate; SName == follower_wait ->
     try element(1, ReturnValue) of
         keep_state_and_data ->
             io_lib:bformat("~w ~w", [keep_state_and_data, SName]);

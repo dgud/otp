@@ -51,6 +51,9 @@ merge_raft behaviour
 -define(BATCH_SIZE, 100).
 -define(REDIRECT, 1).
 
+-define(DBG(F,As), debug_format("~w: ~w: " ++ F, [?LINE, self() | As])).
+
+
 %% Send to state.peers
 %% Vote if sender tenure is higher or equal and
 %% receiver is not voted, even if sender is not in state.peers
@@ -167,7 +170,7 @@ merge_raft behaviour
     merge_timeout_ms :: time_ms(),
     reset_timeout_ms :: time_ms(),
     custom_db :: custom_db(),
-    replies :: #{log_ref() => []}
+    replies :: [{tuple(), #log_request{}}]  %% Reverse ordered list of requests
 }).
 
 -type custom_log() :: dynamic().
@@ -362,7 +365,7 @@ init(#{module := Module} = Options) ->
                merge_timeout_ms = 0,
                reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS,
                custom_db = CustomDb,
-               replies = #{}
+               replies = []
               },
     State1 = discover(Imembers, State),
 
@@ -390,14 +393,21 @@ follower(info, {'EXIT', LPid, _Reason}, #sdata{me = Me, leader = Leader} = SData
   when LPid =:= element(2, Leader) ->
     [Oldest|_] = lists:sort(lists:delete(Leader,maps:keys(appended_members(SData)))),
     %% FIXME cleanup remove leader from peers/members
+
+    %% Outstanding requests, resend them after leader election
+    Events = [{next_event, Op, LR} ||
+                 {Op, LR} <- lists:reverse(SData#sdata.replies)],
+
     case Me =:= Oldest of
         true -> %% I'm the oldest, i.e likely to become a leader
             {next_state, candidate,
-             initialize_election(SData#sdata{leader = undefined})};
+             initialize_election(SData#sdata{leader = undefined, replies = []}),
+             Events};
         false ->
             {next_state, follower_wait,
-             SData#sdata{leader = undefined,
-                         election_timeout_ms = ?ELECTION_TIMEOUT_MS + now_ms()}}
+             SData#sdata{leader = undefined, replies = [],
+                         election_timeout_ms = ?ELECTION_TIMEOUT_MS + now_ms()},
+             Events}
     end;
 follower(Type, Msg, SData) ->
     handle_common(?FUNCTION_NAME, Type, Msg, SData).
@@ -536,7 +546,7 @@ leader(Type, Msg, SData) ->
 handle_common(_StateName, cast, #append_request{to = Me} = AR,  #sdata{me = Me} = SData0) ->
     #sdata{role = Role} = SData = handle_append_request(AR, SData0),
     {next_state, Role, SData};
-handle_common(_StateName, Type, #log_request{redirect = Redirect} = LR,
+handle_common(_StateName, Type, #log_request{redirect = Redirect} = LR0,
               #sdata{leader = Leader} = SData) ->
     if Leader =:= undefined ->
             {keep_state_and_data, [postpone]};
@@ -553,9 +563,9 @@ handle_common(_StateName, Type, #log_request{redirect = Redirect} = LR,
                           cast -> {cast, make_ref()};
                           {call, _} -> Type
                       end,
-            peer_send(Leader, LR#log_request{redirect = Redirect - 1,
-                                             reply_to = ReplyTo}),
-            {keep_state, maybe_prepare_reply(LR, SData)}
+            LR1 = LR0#log_request{reply_to = ReplyTo},
+            peer_send(Leader, LR1#log_request{redirect = Redirect - 1}),
+            {keep_state, maybe_prepare_reply(LR1, SData)}
     end;
 handle_common(_StateName, {call, From}, #connect{servers = Servers0},
               #sdata{name=Name, peers=Peers, me=Me} = SData0) ->
@@ -1160,7 +1170,10 @@ maybe_commit(SData) ->
                       ]
                  ),
     CommitIndex = lists:nth((map_size(Members) + 1) div 2, MatchList),
-    debug_leader_commit(MatchList, (map_size(Members) + 1) div 2, CommitIndex, SData#sdata.commit_index),
+    ?DBG("commit ~w(~w) => ~w > ~w = ~w~n",
+         [MatchList, (map_size(Members) + 1) div 2, CommitIndex,
+          SData#sdata.commit_index, CommitIndex > SData#sdata.commit_index]),
+
     case CommitIndex > SData#sdata.commit_index andalso
         element(1, map_get(CommitIndex, SData#sdata.logs)) =:= SData#sdata.tenure_id
     of
@@ -1182,12 +1195,10 @@ maybe_commit(SData) ->
             SData
     end.
 
--spec debug_leader_commit(list(), integer(), integer(), integer()) -> ok.
-debug_leader_commit(_MatchList, _MemberI, _CommitIndex, _MyCI) ->
-    %% try io:format("~w: ~w: commit ~w(~w) => ~w > ~w = ~w~n",
-    %%               [?LINE, self(), _MatchList, _MemberI,
-    %%                _CommitIndex, _MyCI, _CommitIndex > _MyCI])
-    %% catch _:_ -> ok end,
+-spec debug_format(string(), list()) -> ok.
+debug_format(_F, _As) ->
+    %% mr_cb_test tracing will print this
+    %% io:format(_F, _As),
     ok.
 
 -spec maybe_cleanup(#sdata{}) -> #sdata{}.
@@ -1263,15 +1274,18 @@ send_election(Peer, SData) ->
 %==============================================================================
 
 -spec maybe_prepare_reply(#log_request{}, #sdata{}) -> #sdata{}.
-maybe_prepare_reply(#log_request{redirect = ?REDIRECT, reply_to = {call, _} = ReplyTo}, SData) ->
-    SData#sdata{replies = (SData#sdata.replies)#{ReplyTo => []}};
+maybe_prepare_reply(#log_request{redirect = ?REDIRECT,
+                                 reply_to = {call, _} = ReplyTo} = LR, SData) ->
+    SData#sdata{replies = [{ReplyTo, LR}|SData#sdata.replies]};
 maybe_prepare_reply(_LogRequest, SData) ->
     SData.
 
 -spec reply(log_ref(), {ok, custom_result()} | error(), #sdata{}) -> #sdata{}.
-reply({call, From} = LogRef, Message, SData) ->
-    ok = gen_statem:reply(From, Message),
-    SData#sdata{replies = maps:remove(LogRef, SData#sdata.replies)};
+reply({call, From} = LogRef, Message, #sdata{role = Role, replies = Replies} = SData) ->
+    if Role =:= leader -> ok = gen_statem:reply(From, Message);
+       true -> ignore
+    end,
+    SData#sdata{replies = lists:keydelete(LogRef, 1, Replies)};
 reply(_, {error, _} = Error, SData) ->
     ?LOG_WARNING("Internal error: ~w~n", [Error]),
     SData;
@@ -1357,7 +1371,7 @@ reset(#sdata{me = {OldNs, Pid}} = SData) ->
         merge_timeout_ms = 0,
         reset_timeout_ms = now_ms() + ?RESET_TIMEOUT_MS,
         custom_db = (SData#sdata.module):reset(Me, SData#sdata.custom_db),
-        replies = #{}
+        replies = []
     }.
 
 -spec maybe_reset(#sdata{}) -> #sdata{}.

@@ -21,8 +21,9 @@
          connect/1,
          follower_dies/1,
          leader_dies/1,
+         updates_while_leader_dies/1,
          kv/1
-]).
+        ]).
 
 -define(WAIT_UNTIL(Condition, TimeLimitMs),
     (fun() ->
@@ -105,7 +106,7 @@ all() ->
 groups() ->
     [
         {connect, [], %% [parallel],
-         [connect, kv, follower_dies, leader_dies]
+         [connect, kv, follower_dies, leader_dies, updates_while_leader_dies]
         }
     ].
 
@@ -129,7 +130,7 @@ kv(Config) ->
     true = peer:call(P3, net_kernel, connect_node, [N2]),
     true = peer:call(P5, net_kernel, connect_node, [N4]),
 
-    timer:sleep(3000),
+    timer:sleep(500),
 
     {ok, 1} = peer:call(P1, merge_raft_kv, sync_get, [?FUNCTION_NAME, a]),
     {ok, 2} = peer:call(P2, merge_raft_kv, sync_get, [?FUNCTION_NAME, b]),
@@ -266,7 +267,6 @@ leader_dies(_Config) ->
     ct:log("~w", [sync(Pids)]),
 
     %% mr_cb_test:trace(#{ps => [Pid1,Pid2, Pid3], fs => all}),
-    timer:sleep(100),
 
     ct:log("~p", [merge_raft:get_info(Pid2)]),
     #{a_role := leader} = merge_raft:get_info(Pid1),
@@ -291,11 +291,64 @@ leader_dies(_Config) ->
     [exit(Pid, kill) || Pid <- Pids],
     ok.
 
+updates_while_leader_dies(_Config) ->
+    Pids = [Pid || _ <- lists:seq(1,5), {ok, Pid} <- [mr_cb_test:start()]],
+    Mons = [monitor(process, Pid) || Pid <- Pids],
+    [Pid1, Pid2, Pid3, Pid4, Pid5] = Pids,
+    io:format("Network Pids: ~w~n", [Pids]),
+
+    {ok, ok} = mr_cb_test:put(Pid1, a, 1),
+    {ok, ok} = mr_cb_test:put(Pid2, b, 2),
+
+    mr_cb_test:connect(Pid2, [Pid1]),
+    mr_cb_test:connect(Pid4, [Pid3]),
+    ct:log("~w", [sync([Pid3, Pid4])]),
+    mr_cb_test:connect(Pid3, [Pid2]),
+    mr_cb_test:connect(Pid5, [Pid4]),
+    ct:log("~w", [sync(Pids)]),
+
+    Writer = fun W(Pid, N) ->
+                     {ok, ok} = mr_cb_test:put(Pid, N, {sync, N}),
+                     receive {Tester, done} -> Tester ! {self(), N}
+                     after 0 -> W(Pid, N+1)
+                     end
+             end,
+    mr_cb_test:trace(#{ps => [Pid2], fs => all}),
+    WPid = spawn_link(fun() -> Writer(Pid2, 1) end),
+    #{a_role := leader} = merge_raft:get_info(Pid1),
+    exit(Pid1, kill),
+    ok = receive {'DOWN', _Mon, process, Pid1, killed} -> ok end,
+    WPid ! {self(), done},
+    receive
+        {WPid, N} ->
+            verify(Pids -- [Pid1], [{K, ok} || K <- lists:seq(1,N)])
+    after 5000 ->
+            exit(timeout)
+    end,
+
+    [
+     receive
+         {'DOWN', Mon, process, Pid, Reason} ->
+             error({Pid, Reason})
+     after 0 ->
+             ok
+     end
+     || Mon <- Mons
+    ],
+
+    [exit(Pid, kill) || Pid <- Pids],
+    ok.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 verify(Pids, KVList) when is_list(Pids), is_list(KVList) ->
     lists:filtermap(fun(Pid) ->
                             maybe
+                                ct:log("Verify pid ~p", [Pid]),
                                 false ?= verify(Pid, KVList),
+                                ct:log("check meta ~p", [Pid]),
                                 ok ?= check_meta(Pid),
                                 false
                             else Reason ->
@@ -320,36 +373,48 @@ verify(Pid, List) ->
     end.
 
 check_meta(Pid) ->
-    #{a_leader := Leader, a_id := Id,
-      member_links := Links, member_peers := Peers} = merge_raft:get_info(Pid),
+    Info = #{member_peers := Peers} = merge_raft:get_info(Pid),
+    Pids = [Proc || {_, Proc} <- Peers],
+    check_meta(Pid, Info, Pids).
+
+check_meta(Pid, Info, All) ->
+    #{a_leader := Leader, a_id := Id, member_links := Links} = Info,
     if Leader =:= Id ->
-            Pids = [Proc || {_, Proc} <- Peers],
-            case lists:sort(Links) -- lists:sort(Pids) of
+            case lists:sort(Links) -- lists:sort(All) of
                 [] -> ok;
                 Other -> {Pid, {leader_links, Other}}
             end;
-       element(2, Leader) == hd(Links) ->
+       element(2, Leader) == hd(Links), length(Links) =:= 1 ->
             ok;
        true ->
             {Pid, {failed_link, Leader, Links}}
     end.
 
 sync(Pids) ->
-    timer:tc(fun() -> sync(Pids, [], 50) end).
+    timer:tc(fun() -> sync(Pids, [], 40) end).
 
 sync([Pid|_] = Pids, _Failed, N) when N > 0 ->
-    #{idx_commit := Id, a_leader := Leader} = merge_raft:get_info(Pid),
-    IsSync = fun(Check) ->
-                     case merge_raft:get_info(Check) of
-                         #{idx_commit := Id, a_leader := Leader} -> false;
-                         Bad -> {true, Bad}
-                     end
-             end,
+    #{idx_commit := Id, a_leader := Leader, member_peers := Peers0} =
+        merge_raft:get_info(Pid),
+    SPeers = lists:sort(Peers0),
+    IsSync =
+        fun(Check) ->
+                maybe
+                    Info = merge_raft:get_info(Check),
+                    #{idx_commit := Id,a_leader := Leader,
+                      member_peers := _Ps} ?= Info,
+                    %% SPeers ?= lists:sort(Ps),
+                    ok ?= check_meta(Check, Info, Pids),
+                    false
+                else Bad ->
+                        {true, Bad}
+                end
+        end,
     case lists:filtermap(IsSync, Pids) of
         []  ->
-            synced;
+            SPeers;
         Failed ->
-            timer:sleep(100),
+            timer:sleep(200),
             sync(Pids, Failed, N-1)
     end.
 
