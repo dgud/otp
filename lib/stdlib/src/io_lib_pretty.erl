@@ -344,9 +344,9 @@ pp_fields_tail([{_, Len, _, _}=F | Fs], Col0, Col, Ll, M, TInd, Ind, LD, W) ->
 pp_field({_, Len, _, _}=Fl, Col, Ll, M, _TInd, _Ind, LD, W)
          when Len < Ll - Col - LD, Len + W + LD =< M ->
     {write_field(Fl), if
-                          ?ATM_FLD(Fl) -> 
+                          ?ATM_FLD(Fl) ->
                               Len;
-                          true -> 
+                          true ->
                               Ll % force nl
                       end};
 pp_field({{field, Name, NameL, F},_,_, _}, Col0, Ll, M, TInd, Ind0, LD, W0) ->
@@ -359,7 +359,7 @@ pp_field({{field, Name, NameL, F},_,_, _}, Col0, Ll, M, TInd, Ind0, LD, W0) ->
 
 rec_indent(RInd, TInd, Col0, Ind0, W0) ->
     %% this uses TInd
-    Nl = (TInd > 0) and (RInd > TInd),
+    Nl = (TInd > 0) andalso (RInd > TInd),
     DCol = case Nl of
                true -> TInd;
                false -> RInd
@@ -1005,9 +1005,9 @@ print_length_native_record_fields([F|Fs], Rec, D, T, RF, Enc, Str, Ord) ->
              false -> T
          end,
     Key = write_atom(F, Enc),
-    KeyL = io_lib:chars_length(Key),
-    {_, VL, VD, _} = ValT = print_length(records:get(F, Rec), D, tsub(T1, KeyL+3), RF, Enc, Str, Ord),
-    [{{field, Key, KeyL, ValT}, KeyL+VL+3, VD, no_more}
+    KeyL = io_lib:chars_length(Key) + 3,
+    {_, VL, VD, _} = ValT = print_length(records:get(F, Rec), D-1, tsub(T1, KeyL), RF, Enc, Str, Ord),
+    [{{field, Key, KeyL, ValT}, KeyL+VL, VD, no_more}
     | print_length_native_record_fields(Fs, Rec, D-1, tsub(T1, KeyL+VL), RF, Enc, Str, Ord)].
 
 print_length_tuple(Tuple, 1, _T, RF, Enc, Str, Ord) ->
