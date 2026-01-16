@@ -3340,10 +3340,21 @@ build_text_without_maps_order(_Config) ->
 
 native_records(_Config) ->
     "#io_SUITE:empty{}" = fmt("~w", [#empty{}]),
+
+    "#io_SUITE:vector{x = 1, y = 2}" = fmt("~w", [#vector{x=1, y=2}]),
+    "..." = fmt("~W", [#vector{x=1, y=2}, 0]),
+    "#io_SUITE:vector{...}" = fmt("~W", [#vector{x=1, y=2}, 1]),
+    "#io_SUITE:vector{x = 1, ...}" = fmt("~W", [#vector{x=1, y=2}, 2]),
+
     "#io_SUITE:order{zzzz = 0, true = 1, aaaa = 2, wwww = 3}" = fmt("~w", [#order{}]),
+
     "#io_SUITE:order{zzzz = #io_SUITE:empty{}, true = 1, "
         "aaaa = #io_SUITE:vector{x = 0.0, y = 10.0}, wwww = 3}" =
         fmt("~w", [#order{zzzz = #empty{}, aaaa = #vector{x = 0.0, y = 10.0}}]),
+
+    "#io_SUITE:order{zzzz = #io_SUITE:empty{}, true = 1, "
+        "aaaa = #io_SUITE:vector{...}, ...}" =
+        fmt("~W", [#order{zzzz = #empty{}, aaaa = #vector{x = 0.0, y = 10.0}}, 4]),
 
     "#io_SUITE:empty{}" = fmt("~p", [#empty{}]),
     "#io_SUITE:order{zzzz = 0, true = 1, aaaa = 2, wwww = 3}" = fmt("~p", [#order{}]),
