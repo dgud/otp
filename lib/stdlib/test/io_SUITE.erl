@@ -3336,27 +3336,42 @@ build_text_without_maps_order(_Config) ->
 
 -record #empty{}.
 -record #vector{x, y}.
--record #order{zzzz=0, true=1, aaaa=2, wwww=3}.
+-record #order{zzzz=0, true=1, aaaaaaaaaaaaaaaaaaaaa=2, wwww=3}.
 
 native_records(_Config) ->
     "#io_SUITE:empty{}" = fmt("~w", [#empty{}]),
 
-    "#io_SUITE:vector{x = 1, y = 2}" = fmt("~w", [#vector{x=1, y=2}]),
+    "#io_SUITE:vector{x = 1,y = 2}" = fmt("~w", [#vector{x=1, y=2}]),
     "..." = fmt("~W", [#vector{x=1, y=2}, 0]),
     "#io_SUITE:vector{...}" = fmt("~W", [#vector{x=1, y=2}, 1]),
-    "#io_SUITE:vector{x = 1, ...}" = fmt("~W", [#vector{x=1, y=2}, 2]),
+    "#io_SUITE:vector{x = 1,...}" = fmt("~W", [#vector{x=1, y=2}, 2]),
 
-    "#io_SUITE:order{zzzz = 0, true = 1, aaaa = 2, wwww = 3}" = fmt("~w", [#order{}]),
+    "#io_SUITE:order{zzzz = 0,true = 1,aaaaaaaaaaaaaaaaaaaaa = 2,wwww = 3}" = fmt("~w", [#order{}]),
 
-    "#io_SUITE:order{zzzz = #io_SUITE:empty{}, true = 1, "
-        "aaaa = #io_SUITE:vector{x = 0.0, y = 10.0}, wwww = 3}" =
-        fmt("~w", [#order{zzzz = #empty{}, aaaa = #vector{x = 0.0, y = 10.0}}]),
+    "#io_SUITE:order{zzzz = #io_SUITE:empty{},true = 1,"
+        "aaaaaaaaaaaaaaaaaaaaa = #io_SUITE:vector{x = 0.0,y = 10.0},wwww = 3}" =
+        fmt("~w", [#order{zzzz = #empty{}, aaaaaaaaaaaaaaaaaaaaa = #vector{x = 0.0, y = 10.0}}]),
 
-    "#io_SUITE:order{zzzz = #io_SUITE:empty{}, true = 1, "
-        "aaaa = #io_SUITE:vector{...}, ...}" =
-        fmt("~W", [#order{zzzz = #empty{}, aaaa = #vector{x = 0.0, y = 10.0}}, 4]),
+    "#io_SUITE:order{zzzz = #io_SUITE:empty{},true = 1,"
+        "aaaaaaaaaaaaaaaaaaaaa = #io_SUITE:vector{...},...}" =
+        fmt("~W", [#order{zzzz = #empty{}, aaaaaaaaaaaaaaaaaaaaa = #vector{x = 0.0, y = 10.0}}, 4]),
 
-    "#io_SUITE:empty{}" = fmt("~p", [#empty{}]),
-    "#io_SUITE:order{zzzz = 0, true = 1, aaaa = 2, wwww = 3}" = fmt("~p", [#order{}]),
+    %% ~p and ~P
+    "..." = p(#empty{}, 0),
+    "#io_SUITE:empty{}" = p(#empty{}, 1),
+    "#io_SUITE:vector{...}" = p(#vector{x = 0, y = 0}, 1),
+    "#io_SUITE:vector{x = 0,y = 0}" = p(#vector{x = 0, y = 0}, -1),
+    """
+#io_SUITE:order{zzzz = 0,true = 1,aaaaaaaaaaaaaaaaaaaaa = 2,
+                wwww = 3}
+""" = p(#order{}, -1),
 
+"""
+#io_SUITE:order{zzzz = 0,
+                true = #io_SUITE:order{zzzz = 0,true = 1,
+                                    aaaaaaaaaaaaaaaaaaaaa = 2,wwww = 3},
+                aaaaaaaaaaaaaaaaaaaaa = 2,
+                wwww = #io_SUITE:order{zzzz = 0,true = 1,
+                                    aaaaaaaaaaaaaaaaaaaaa = 2,wwww = 3}}
+""" = p(#order{true = #order{}, wwww = #order{}}, -1),
     ok.
