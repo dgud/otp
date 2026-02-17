@@ -258,6 +258,7 @@ relax_test(_Config) ->
 
 resize_test(_Config) ->
     ?assert(resize(0, new()) =:= new()),
+    ?assert(array:to_list(resize(1, new())) == [undefined]), %% Bug found by prop tests
     ?assert(resize(99, new(99)) =:= new(99)),
     ?assert(resize(99, relax(new(99))) =:= relax(new(99))),
     ?assert(is_fix(resize(100, new(10)))),

@@ -594,8 +594,10 @@ set(_I, _V, _A) ->
 %% Enlarging the array upwards to accommodate an index `I'
 
 grow(I, E, S) when is_integer(I), is_integer(E) ->
-    S1 = find_max(I, S),
-    {S1, ?reduce(S1)};
+    case find_max(I, S) of
+        S -> {S, S};
+        S1 -> {S1, ?reduce(S1)}
+    end;
 grow(I, E, 0) ->
     grow_1(I, E, 0);
 grow(I, E, S) ->
