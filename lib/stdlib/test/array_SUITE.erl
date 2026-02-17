@@ -54,7 +54,15 @@
          foldr_test/1,
          sparse_foldr_test/1,
          import_export/1,
-         doctests/1
+         doctests/1,
+         %% Property tests
+         prop_new/1, prop_is_array/1, prop_set_get/1, prop_size/1,
+         prop_sparse_size/1, prop_default/1, prop_fix_relax/1,
+         prop_resize/1, prop_reset/1, prop_to_list/1, prop_from_list/1,
+         prop_to_orddict/1, prop_from_orddict/1, prop_map/1,
+         prop_foldl/1, prop_foldr/1, prop_shift/1, prop_slice/1,
+         prop_append_prepend/1, prop_mapfoldl/1, prop_mapfoldr/1,
+         prop_sparse_mapfoldl/1, prop_sparse_mapfoldr/1
         ]).
 
 
@@ -84,17 +92,37 @@ all() ->
      to_orddict_test, sparse_to_orddict_test,
      from_orddict_test, map_test, sparse_map_test,
      foldl_test, sparse_foldl_test, foldr_test, sparse_foldr_test,
-     import_export, doctests].
+     import_export, doctests,
+     {group, property}].
 
 groups() ->
-    [].
+    [{property, [],
+      [prop_new, prop_is_array, prop_set_get, prop_size,
+       prop_sparse_size, prop_default, prop_fix_relax,
+       prop_resize, prop_reset, prop_to_list, prop_from_list,
+       prop_to_orddict, prop_from_orddict, prop_map,
+       prop_foldl, prop_foldr, prop_shift, prop_slice,
+       prop_append_prepend, prop_mapfoldl, prop_mapfoldr,
+       prop_sparse_mapfoldl, prop_sparse_mapfoldr]}].
 
-init_per_suite(Config) ->
-    Config.
+init_per_suite(Config0) ->
+    case ct_property_test:init_per_suite(Config0) of
+        Config when is_list(Config) ->
+            Config;
+        {skip, _} -> Config0;
+        Fail -> Fail
+    end.
 
 end_per_suite(_Config) ->
     ok.
 
+init_per_group(property, Config) ->
+    case proplists:get_value(property_test_tool, Config, none) of
+        none ->
+            {skip, "No known property based tool found"};
+        _ ->
+            Config
+    end;
 init_per_group(_GroupName, Config) ->
     Config.
 
@@ -872,3 +900,82 @@ import_export(_Config) ->
 
 doctests(Config) when is_list(Config) ->
     shell_docs:test(array, []).
+
+
+%%
+%% Property-based tests
+%%
+
+prop_new(Config) ->
+    do_proptest(prop_new, Config).
+
+prop_is_array(Config) ->
+    do_proptest(prop_is_array, Config).
+
+prop_set_get(Config) ->
+    do_proptest(prop_set_get, Config).
+
+prop_size(Config) ->
+    do_proptest(prop_size, Config).
+
+prop_sparse_size(Config) ->
+    do_proptest(prop_sparse_size, Config).
+
+prop_default(Config) ->
+    do_proptest(prop_default, Config).
+
+prop_fix_relax(Config) ->
+    do_proptest(prop_fix_relax, Config).
+
+prop_resize(Config) ->
+    do_proptest(prop_resize, Config).
+
+prop_reset(Config) ->
+    do_proptest(prop_reset, Config).
+
+prop_to_list(Config) ->
+    do_proptest(prop_to_list, Config).
+
+prop_from_list(Config) ->
+    do_proptest(prop_from_list, Config).
+
+prop_to_orddict(Config) ->
+    do_proptest(prop_to_orddict, Config).
+
+prop_from_orddict(Config) ->
+    do_proptest(prop_from_orddict, Config).
+
+prop_map(Config) ->
+    do_proptest(prop_map, Config).
+
+prop_foldl(Config) ->
+    do_proptest(prop_foldl, Config).
+
+prop_foldr(Config) ->
+    do_proptest(prop_foldr, Config).
+
+prop_shift(Config) ->
+    do_proptest(prop_shift, Config).
+
+prop_slice(Config) ->
+    do_proptest(prop_slice, Config).
+
+prop_append_prepend(Config) ->
+    do_proptest(prop_append_prepend, Config).
+
+prop_mapfoldl(Config) ->
+    do_proptest(prop_mapfoldl, Config).
+
+prop_mapfoldr(Config) ->
+    do_proptest(prop_mapfoldr, Config).
+
+prop_sparse_mapfoldl(Config) ->
+    do_proptest(prop_sparse_mapfoldl, Config).
+
+prop_sparse_mapfoldr(Config) ->
+    do_proptest(prop_sparse_mapfoldr, Config).
+
+do_proptest(Prop, Config) ->
+    ct_property_test:quickcheck(
+        array_prop:Prop(),
+        Config).
