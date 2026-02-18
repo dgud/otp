@@ -13,7 +13,7 @@ ok1() ->
   array:set(17, gazonk, array:new()).
 
 wrong1() ->
-  {array, _, _, undefined, _, _, _, _} = array:new(42).
+  {array, _, _, _, undefined, _, _, _, _} = array:new(42).
 
 wrong2() ->
   case is_tuple(array:new(42)) of
