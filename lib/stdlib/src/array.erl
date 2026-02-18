@@ -130,8 +130,7 @@ beyond the last set entry:
 %%
 %% A tree is either a leaf, with LEAFSIZE elements (the "base"), an
 %% internal node with LEAFSIZE elements, or an unexpanded tree,
-%% represented by a single integer: the number of elements that may be
-%% stored in the tree when it is expanded. 
+%% represented by EMPTY.
 %%
 %% Note that to update an entry in a tree of height h = log[b] n, the
 %% total number of written words is (b+1)+(h-1)*(b+2), since tuples use
