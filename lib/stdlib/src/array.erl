@@ -153,9 +153,9 @@ beyond the last set entry:
 -define(MASK(X), ((1 bsl (X))-1)).
 -define(SIZE(S), (1 bsl (S))).
 -define(NODESIZE, ?LEAFSIZE).       % must not be LEAFSIZE-1; keep same as leaf
--define(NEW_NODE(S), erlang:make_tuple((?NODESIZE),(S))).  % when E = S
+-define(NEW_NODE(S), erlang:make_tuple(?NODESIZE,?EMPTY)).  % S not actually used
 -define(NEW_LEAF(D), erlang:make_tuple(?LEAFSIZE,(D))).
-
+-define(EMPTY, []).  % placeholder for empty subtree (keep as immediate)
 -define(NEW_CACHE(D), ?NEW_LEAF(D)).
 
 -define(reduce(X), ((X) - ?SHIFT)).
@@ -325,18 +325,17 @@ new_1(_Options, _Size, _Fixed, _Default) ->
     erlang:error(badarg).
 
 new(Size, Fixed, Default) ->
-    E = find_max(Size - 1, ?SHIFT),
+    S = find_bits(Size - 1, ?SHIFT),
     C = ?NEW_CACHE(Default),
     #array{size = Size, zero = 0, fix = Fixed, cache = C, cache_index = 0,
-           default = Default, elements = E, bits = ?reduce(E)}.
+           default = Default, elements = ?EMPTY, bits = S}.
 
--spec find_max(integer(), non_neg_integer()) -> non_neg_integer().
+-spec find_bits(integer(), non_neg_integer()) -> non_neg_integer().
 
-find_max(I, S) when I >= ?SIZE(S) ->
-    find_max(I, ?extend(S));
-find_max(_I, S) ->
-    S.
-
+find_bits(I, S) when I < ?SIZE(?extend(S)) ->
+    S;
+find_bits(I, S) ->
+    find_bits(I, ?extend(S)).
 
 -doc """
 Returns `true` if `X` is an array, otherwise `false`.
@@ -389,22 +388,6 @@ See also `relax/1`, `set/3`.
 fix(#array{}=A) ->
     A#array{fix = true}.
 
-%% similar to set_1()
-set_leaf(_I, 0, _E, C) ->
-    C;
-set_leaf(I, S, E, C) when is_integer(E) ->
-    set_leaf_1(I, S, C);
-set_leaf(I, S, E, C) when S > 0 ->
-    IDiv = (I bsr S) band ?MASK,
-    I1 = IDiv+1,
-    setelement(I1, E, set_leaf(I, ?reduce(S), element(I1, E), C)).
-
-set_leaf_1(I, S, C) when S > 0 ->
-    IDiv = (I bsr S) band ?MASK,
-    setelement(IDiv+1, ?NEW_NODE(S), set_leaf_1(I, ?reduce(S), C));
-set_leaf_1(_I, _S, C) ->
-    C.
-
 -doc """
 Checks if the array has fixed size. Returns `true` if the array is fixed,
 otherwise `false`.
@@ -427,15 +410,6 @@ See also `fix/1`.
 relax(#array{size = N}=A) when is_integer(N), N >= 0 ->
     A#array{fix = false}.
 
-
-%% similar to get_1
-get_leaf(_I, _, E, D) when is_integer(E) ->
-    ?NEW_CACHE(D);
-get_leaf(_I, 0, E, _D) ->
-    E;
-get_leaf(I, S, E, D) ->
-    IDiv = (I bsr S) band ?MASK,
-    get_leaf(I, ?reduce(S), element(IDiv + 1, E), D).
 
 -doc """
 Change the array size.
@@ -471,16 +445,16 @@ resize(_Size, _) ->
 
 %% like grow(), but only used when explicitly resizing down
 shrink(I, _S, _E, _D) when I < 0 ->
-    S = find_max(I, ?SHIFT),
-    {S, ?reduce(S)};
+    S = find_bits(I, ?SHIFT),
+    {?EMPTY, S};
 shrink(I, S, E, D) ->
     shrink_1(I, S, E, D).
 
 %% I is the largest index, 0 or more (empty arrays handled above)
 %% This first discards any unnecessary tuples from the top
-shrink_1(I, _S, E, _D) when is_integer(E) ->
-    S = find_max(I, ?SHIFT),
-    {S, ?reduce(S)};
+shrink_1(I, _S, ?EMPTY, _D) ->
+    S = find_bits(I, ?SHIFT),
+    {?EMPTY, S};
 shrink_1(I, 0, E, D) ->
     {prune(E, I, D), 0};
 shrink_1(I, S, E, D) when I < ?SIZE(S) ->
@@ -490,8 +464,8 @@ shrink_1(I, S, E, D) ->
 
 %% Here we have at least one top tuple that should be kept
 %% and we must not discard any intermediate levels
-shrink_2(_I, S, E, _D) when is_integer(E) ->
-    {E, S};
+shrink_2(_I, S, ?EMPTY, _D) ->
+    {?EMPTY, S};
 shrink_2(I, 0, E, D) ->
     {prune(E, I, D), 0};
 shrink_2(I, S, E, D) ->
@@ -554,7 +528,7 @@ set(I0, Value, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI
                     CI1 = I - R,
                     E1 = set_leaf(CI, S, E, C),
                     C1 = get_leaf(CI1, S, E1, D),
-                    C2 = setelement(1 + I - CI1, C1, Value),
+                    C2 = setelement(1 + R, C1, Value),
                     A#array{elements = E1, cache = C2, cache_index = CI1}
             end;
        Fix ->
@@ -590,11 +564,9 @@ set(_I, _V, _A) ->
 
 %% Enlarging the array upwards to accommodate an index `I'
 
-grow(I, E, S) when is_integer(I), is_integer(E) ->
-    case find_max(I, S) of
-        S -> {S, S};
-        S1 -> {S1, ?reduce(S1)}
-    end;
+grow(I, ?EMPTY, S) when is_integer(I) ->
+    S1 = find_bits(I, S),
+    {?EMPTY, S1};
 grow(I, E, 0) ->
     grow_1(I, E, 0);
 grow(I, E, S) ->
@@ -607,6 +579,31 @@ grow_1(I, E, S) ->
         true ->
             grow_1(I, setelement(1, ?NEW_NODE(S), E), S1)
     end.
+
+%% similar to get_1
+get_leaf(_I, _, ?EMPTY, D) ->
+    ?NEW_CACHE(D);
+get_leaf(_I, 0, E, _D) ->
+    E;
+get_leaf(I, S, E, D) ->
+    IDiv = (I bsr S) band ?MASK,
+    get_leaf(I, ?reduce(S), element(IDiv + 1, E), D).
+
+%% similar to set_1()
+set_leaf(_I, 0, _E, C) ->
+    C;
+set_leaf(I, S, ?EMPTY, C) ->
+    set_leaf_1(I, S, C);
+set_leaf(I, S, E, C) when S > 0 ->
+    IDiv = (I bsr S) band ?MASK,
+    I1 = IDiv+1,
+    setelement(I1, E, set_leaf(I, ?reduce(S), element(I1, E), C)).
+
+set_leaf_1(I, S, C) when S > 0 ->
+    IDiv = (I bsr S) band ?MASK,
+    setelement(IDiv+1, ?NEW_NODE(S), set_leaf_1(I, ?reduce(S), C));
+set_leaf_1(_I, _S, C) ->
+    C.
 
 
 -doc """
@@ -641,7 +638,7 @@ shift(_Steps, _A) ->
 
 %% Enlarging the array to the left until the zero point is no longer negative.
 
-grow_left(Z, E, S) when is_integer(E) ->
+grow_left(Z, ?EMPTY, S) ->
     grow_left_2(Z, S);
 grow_left(Z, E, S) ->
     grow_left_1(Z, E, S).
@@ -654,7 +651,7 @@ grow_left_1(Z, E, S) ->
     grow_left_1(Z + I*?SIZE(S1), setelement(I+1, ?NEW_NODE(S1), E), S1).
 
 grow_left_2(Z, S) when Z >= 0 ->
-    {?extend(S), S, Z};
+    {?EMPTY, S, Z};
 grow_left_2(Z, S) ->
     S1 = ?extend(S),
     I = ?NODESIZE div 2,
@@ -760,7 +757,7 @@ get(I0, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI, eleme
 get(_I, _A) ->
     erlang:error(badarg).
 
-get_1(_I, _S, E, D) when is_integer(E) ->
+get_1(_I, _S, ?EMPTY, D) ->
     D;
 get_1(I, 0, E, _D) ->
     element((I band ?MASK)+1, E);
@@ -804,7 +801,7 @@ reset(I0, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI, def
 reset(_I, _A) ->
     erlang:error(badarg).
 
-reset_1(_I, _, E, _D) when is_integer(E) ->
+reset_1(_I, _, ?EMPTY, _D) ->
     throw(default);
 reset_1(I, 0, E, D) ->
     Indx = (I band ?MASK)+1,
@@ -899,7 +896,7 @@ from_list_1(I, Xs, D, N, As, Es) ->
 
 %% Building the internal nodes (note that the input is reversed).
 from_list_2_0(N, Es, S) ->
-    from_list_2(?NODESIZE, pad(((N-1) bsr S) + 1, ?NODESIZE, S, Es),
+    from_list_2(?NODESIZE, pad(((N-1) bsr S) + 1, ?NODESIZE, ?EMPTY, Es),
 		S, N, [], []).
 
 from_list_2(0, Xs, S, N, As, Es) ->
@@ -1143,17 +1140,17 @@ collect_leafs(I, [X | Xs], S, N, As0, Es0)
     Step0 = (X bsr S),
     if
 	Step0 < I ->
-	    As = push_n(Step0, S, As0),
+	    As = push_n(Step0, ?EMPTY, As0),
 	    collect_leafs(I-Step0, Xs, S, N, As, Es0);
 	I =:= ?NODESIZE ->
 	    Step = Step0 rem ?NODESIZE,
-	    As = push_n(Step, S, As0),
+	    As = push_n(Step, ?EMPTY, As0),
 	    collect_leafs(I-Step, Xs, S, N, As, [X|Es0]);
 	I =:= Step0 ->
-	    As = push_n(I, S, As0),
+	    As = push_n(I, ?EMPTY, As0),
 	    collect_leafs(0, Xs, S, N, As, Es0);
 	true ->
-	    As = push_n(I, S, As0),
+	    As = push_n(I, ?EMPTY, As0),
 	    Step = Step0 - I,
 	    collect_leafs(0, [Step bsl S|Xs], S, N, As, Es0)
     end;
@@ -1244,7 +1241,7 @@ foldl(Low, High, Function, Acc,
 foldl(_, _, _, _, _) ->
     erlang:error(badarg).
 
-foldl_1(Low, High, Ix, S, E, D, F, A) when is_integer(E) ->
+foldl_1(Low, High, Ix, S, ?EMPTY, D, F, A) ->
     foldl_4(Low, High, Ix, S, D, F, A);
 foldl_1(Low, High, Ix, 0, E, _D, F, A) ->
     foldl_3(Low, High, Ix, E, F, A);
@@ -1382,7 +1379,7 @@ foldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_inde
 foldr(_, _, _, _, _) ->
     erlang:error(badarg).
 
-foldr_1(Low, High, Ix, S, E, D, F, A) when is_integer(E) ->
+foldr_1(Low, High, Ix, S, ?EMPTY, D, F, A) ->
     foldr_4(Low, High, Ix, S, D, F, A);
 foldr_1(Low, High, Ix, 0, E, _D, F, A) ->
     foldr_3(Low, High, Ix, E, F, A);
@@ -1536,7 +1533,7 @@ mapfoldl(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_i
 mapfoldl(_, _, _, _, _) ->
     erlang:error(badarg).
 
-mapfoldl_1(Low, High, Ix, S, E, D, F, A) when is_integer(E) ->
+mapfoldl_1(Low, High, Ix, S, ?EMPTY, D, F, A) ->
     mapfoldl_1(Low, High, Ix, S, unfold(S, D), D, F, A);
 mapfoldl_1(Low, High, Ix, 0, E, _D, F, A) ->
     mapfoldl_3(Low, High, Ix, tuple_to_list(E), F, A, [], 0);
@@ -1618,8 +1615,8 @@ sparse_mapfoldl(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, 
 sparse_mapfoldl(_, _, _, _, _) ->
     erlang:error(badarg).
 
-sparse_mapfoldl_1(_Low, _High, _Ix, _S, E, _D, _F, A) when is_integer(E) ->
-    {E, A};
+sparse_mapfoldl_1(_Low, _High, _Ix, _S, ?EMPTY, _D, _F, A) ->
+    {?EMPTY, A};
 sparse_mapfoldl_1(Low, High, Ix, 0, E, D, F, A) ->
     sparse_mapfoldl_3(Low, High, Ix, tuple_to_list(E), D, F, A, [], 0);
 sparse_mapfoldl_1(Low, High, Ix, S, E, D, F, A) ->
@@ -1707,7 +1704,7 @@ mapfoldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_i
 mapfoldr(_, _, _, _, _) ->
     erlang:error(badarg).
 
-mapfoldr_1(Low, High, Ix, S, E, D, F, A) when is_integer(E) ->
+mapfoldr_1(Low, High, Ix, S, ?EMPTY, D, F, A) ->
     mapfoldr_1(Low, High, Ix, S, unfold(S, D), D, F, A);
 mapfoldr_1(Low, High, Ix, 0, E, _D, F, A) ->
     mapfoldr_3(Low, High, Ix, lists:reverse(tuple_to_list(E)), F, A, [], ?LEAFSIZE-1);
@@ -1784,8 +1781,8 @@ sparse_mapfoldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, 
 sparse_mapfoldr(_, _, _, _, _) ->
     erlang:error(badarg).
 
-sparse_mapfoldr_1(_Low, _High, _Ix, _S, E, _D, _F, A) when is_integer(E) ->
-    {E, A};
+sparse_mapfoldr_1(_Low, _High, _Ix, _S, ?EMPTY, _D, _F, A) ->
+    {?EMPTY, A};
 sparse_mapfoldr_1(Low, High, Ix, 0, E, D, F, A) ->
     sparse_mapfoldr_3(Low, High, Ix, lists:reverse(tuple_to_list(E)), D, F, A, [], ?LEAFSIZE-1);
 sparse_mapfoldr_1(Low, High, Ix, S, E, D, F, A) ->
