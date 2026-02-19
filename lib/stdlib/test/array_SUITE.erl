@@ -62,7 +62,7 @@
          prop_resize/1, prop_reset/1, prop_to_list/1, prop_from_list/1,
          prop_to_orddict/1, prop_from_orddict/1, prop_map/1,
          prop_foldl/1, prop_foldr/1, prop_shift/1, prop_slice/1,
-         prop_append_prepend/1, prop_mapfoldl/1, prop_mapfoldr/1,
+         prop_append_prepend/1, prop_concat/1, prop_mapfoldl/1, prop_mapfoldr/1,
          prop_sparse_mapfoldl/1, prop_sparse_mapfoldr/1
         ]).
 
@@ -103,7 +103,7 @@ groups() ->
        prop_resize, prop_reset, prop_to_list, prop_from_list,
        prop_to_orddict, prop_from_orddict, prop_map,
        prop_foldl, prop_foldr, prop_shift, prop_slice,
-       prop_append_prepend, prop_mapfoldl, prop_mapfoldr,
+       prop_append_prepend, prop_concat, prop_mapfoldl, prop_mapfoldr,
        prop_sparse_mapfoldl, prop_sparse_mapfoldr]}].
 
 init_per_suite(Config0) ->
@@ -979,6 +979,9 @@ prop_slice(Config) ->
 
 prop_append_prepend(Config) ->
     do_proptest(prop_append_prepend, Config).
+
+prop_concat(Config) ->
+    do_proptest(prop_concat, Config).
 
 prop_mapfoldl(Config) ->
     do_proptest(prop_mapfoldl, Config).

@@ -28,7 +28,7 @@
          prop_resize/0, prop_reset/0, prop_to_list/0, prop_from_list/0,
          prop_to_orddict/0, prop_from_orddict/0, prop_map/0,
          prop_foldl/0, prop_foldr/0, prop_shift/0, prop_slice/0,
-         prop_append_prepend/0, prop_mapfoldl/0, prop_mapfoldr/0,
+         prop_append_prepend/0, prop_concat/0, prop_mapfoldl/0, prop_mapfoldr/0,
          prop_sparse_mapfoldl/0, prop_sparse_mapfoldr/0]).
 
 %%%%%%%%%%%%%%%%%%
@@ -64,6 +64,8 @@ array_with_list(N, Type, ListAcc, ArrAcc) ->
                  {List ++ ListAcc, lists:foldl(ArraySet, ArrAcc, List)}),
             ?LET(List, list(Type),
                  {List ++ ListAcc, lists:foldl(fun array:prepend/2, ArrAcc, lists:reverse(List))}),
+            ?LET(List, list(Type),
+                 {List ++ ListAcc, array:concat(array:from_list(List), ArrAcc)}),
             %% Set and reset random position single
             ?LET({I, V}, {small_nat(), Type}, array_list_set(I,V,ListAcc, ArrAcc)),
             ?LET(I, small_nat(), array_list_reset(I, ListAcc, ArrAcc)),
@@ -353,6 +355,14 @@ prop_append_prepend() ->
                         A2 = array:prepend(V, A),
                         array:to_list(A2) =:= [V | List]
                     end
+            end).
+
+prop_concat() ->
+    ?FORALL({{List1, A1}, {List2, A2}},
+            {array_with_list(), array_with_list()},
+            begin
+                A3 = array:concat(A1, A2),
+                array:to_list(A3) =:= List1 ++ List2
             end).
 
 prop_mapfoldl() ->
