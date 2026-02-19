@@ -44,6 +44,7 @@
          slice_test/1,
          prepend_test/1,
          append_test/1,
+         concat_test/1,
          to_orddict_test/1,
          sparse_to_orddict_test/1,
          from_orddict_test/1,
@@ -69,9 +70,9 @@
 -export([t/0,t/1]).
 
 -import(array,
-        [new/0, new/1, new/2, is_array/1, set/3, get/2, %size/1,
-         sparse_size/1, default/1, reset/2, to_list/1, sparse_to_list/1,
-         shift/2, slice/3, prepend/2, append/2, from/2, from/3,
+        [new/0, new/1, new/2, is_array/1, set/3, get/2, sparse_size/1,
+         default/1, reset/2, to_list/1, sparse_to_list/1, shift/2, slice/3,
+         prepend/2, append/2, concat/2, concat/1, from/2, from/3,
          from_list/1, from_list/2, to_orddict/1, sparse_to_orddict/1,
          from_orddict/1, from_orddict/2, map/2, sparse_map/2, foldl/3,
          foldr/3, sparse_foldl/3, sparse_foldr/3, fix/1, relax/1, is_fix/1,
@@ -89,7 +90,7 @@ all() ->
      set_get_test, to_list_test, sparse_to_list_test,
      from_list_test, from_test,
      shift_test, slice_test, prepend_test, append_test,
-     to_orddict_test, sparse_to_orddict_test,
+     concat_test, to_orddict_test, sparse_to_orddict_test,
      from_orddict_test, map_test, sparse_map_test,
      foldl_test, sparse_foldl_test, foldr_test, sparse_foldr_test,
      import_export, doctests,
@@ -565,6 +566,22 @@ append_test(_Config) ->
      ?assertEqual([1,2,3,4,5,6], to_list(append(6, from_list(lists:seq(1,5))))),
      ?assertEqual(lists:seq(1,?LEAFSIZE+1), to_list(append(?LEAFSIZE+1, from_list(lists:seq(1,?LEAFSIZE)))))
     ].
+
+concat_test(_Config) ->
+     ?assertEqual([1,2], to_list(concat(from_list([1]), from_list([2])))),
+     ?assertEqual([1,2,3,4,5,6], to_list(concat(from_list([1,2,3]), from_list([4,5,6])))),
+     ?assertEqual([2,3,4,5,6], to_list(concat(from_list([2,3]), from_list([4,5,6])))),
+     ?assertEqual([1,2,3], to_list(concat(from_list([1,2,3]), from_list([])))),
+     ?assertEqual([1,2,3], to_list(concat(from_list([]), from_list([1,2,3])))),
+     ?assertEqual([], to_list(concat(from_list([]), from_list([])))),
+     ?assertEqual([], to_list(concat(new(), new()))),
+     ?assertError(badarg, concat(from_list([1,2,3]),no_array)),
+     ?assertError(badarg, concat(no_array,from_list([1,2,3]))),
+
+     ?assertEqual([2,3,4,5,6], to_list(concat([from_list([2,3]), from_list([4,5,6])]))),
+     ?assertEqual([1,2,3,4,5,6], to_list(concat([from_list([1]), from_list([2,3]), new(), from_list([4,5,6]), new()]))),
+     ?assertError(badarg, concat(no_list)),
+     ?assertError(badarg, concat([])).
 
 to_orddict_test(_Config) ->
     N0 = ?LEAFSIZE,

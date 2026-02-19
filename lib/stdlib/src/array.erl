@@ -101,7 +101,7 @@ beyond the last set entry:
 -export([new/0, new/1, new/2, is_array/1, set/3, get/2, size/1,
 	 sparse_size/1, default/1, reset/2, to_list/1, sparse_to_list/1,
 	 from_list/1, from_list/2, to_orddict/1, sparse_to_orddict/1,
-         from/2, from/3,
+         concat/2, concat/1, from/2, from/3,
 	 from_orddict/1, from_orddict/2, map/2, sparse_map/2, foldl/3,
 	 foldl/5, foldr/3, foldr/5, sparse_foldl/3, sparse_foldl/5,
 	 sparse_foldr/3, sparse_foldr/5, mapfoldl/3, mapfoldl/5,
@@ -682,6 +682,8 @@ slice(_I, _N, _A) ->
 
 -doc """
 Append a single value to the right side of the array.
+
+See also `prepend/2`, `concat/2`.
 """.
 -spec append(Value :: any(), Array :: array(Type)) -> array(Type).
 append(Value, #array{size = N, zero = Z, cache = C, cache_index = CI,
@@ -720,6 +722,8 @@ append(_V, _A) ->
 
 -doc """
 Prepend a single value to the left side of the array.
+
+See also `append/2`, `concat/2`.
 """.
 -spec prepend(Value :: any(), Array :: array(Type)) -> array(Type).
 prepend(Value, #array{size = N, zero = Z}=A) when is_integer(N), is_integer(Z) ->
@@ -812,6 +816,35 @@ reset_1(I, S, E, D) ->
     IDiv = (I bsr S) band ?MASK,
     I1 = IDiv + 1,
     setelement(I1, E, reset_1(I, ?reduce(S), element(I1, E), D)).
+
+
+-doc """
+Concatenates two arrays.
+
+See also `concat/1`, `append/2`, `prepend/2`.
+""".
+-spec concat(Left :: array(Type), Right :: array(Type)) -> array(Type).
+
+concat(#array{size = LeftN}=Left, #array{size = RightN}=Right) ->
+    if RightN > LeftN ->
+            foldr(fun (_I, V, Acc) -> prepend(V, Acc) end, Right, Left);
+       true ->
+            foldl(fun (_I, V, Acc) -> append(V, Acc) end, Left, Right)
+    end;
+concat(_, _) ->
+    erlang:error(badarg).
+
+-doc """
+Concatenates a nonempty list of arrays.
+
+See also `concat/2`.
+""".
+-spec concat(Arrays :: [array(Type)]) -> array(Type).
+
+concat([A0|As]) ->
+    lists:foldl(fun (A, Acc) -> concat(Acc, A) end, A0, As);
+concat(_) ->
+    erlang:error(badarg).
 
 
 -doc """
