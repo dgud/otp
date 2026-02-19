@@ -152,7 +152,10 @@ beyond the last set entry:
 -define(MASK(X), ((1 bsl (X))-1)).
 -define(SIZE(S), (1 bsl (S))).
 -define(NODESIZE, ?LEAFSIZE).       % must not be LEAFSIZE-1; keep same as leaf
--define(NEW_NODE(S), erlang:make_tuple(?NODESIZE,?EMPTY)).  % S not actually used
+-define(NEW_NODE(S),   %% Hardcoded to get a literal
+        {?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY,
+         ?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY,?EMPTY, ?EMPTY, ?EMPTY, ?EMPTY}).
+%% -define(NEW_NODE(S), erlang:make_tuple(?NODESIZE,(?EMPTY))).     %% S not actually used
 -define(NEW_LEAF(D), erlang:make_tuple(?LEAFSIZE,(D))).
 -define(EMPTY, []).  % placeholder for empty subtree (keep as immediate)
 -define(NEW_CACHE(D), ?NEW_LEAF(D)).
@@ -517,7 +520,7 @@ See also `get/2`, `reset/2`.
 
 set(I0, Value, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI,
                      default = D, elements = E, bits = S}=A)
-  when is_integer(I0), I0 >= 0, is_integer(N), is_integer(CI), is_integer(S) ->
+  when is_integer(I0), I0 >= 0, is_integer(N), is_integer(CI), is_integer(S), is_integer(Z) ->
     I = I0 + Z,
     if I0 < N ->
             if I >= CI, I < CI + ?LEAFSIZE ->
@@ -621,7 +624,8 @@ values outside the range get pruned.
 -spec shift(Steps :: integer(), Array :: array(Type)) -> array(Type).
 shift(0, A=#array{}) ->
     A;
-shift(Steps, #array{size = N, zero = Z}=A) when is_integer(Steps), is_integer(N), Steps =< N, is_integer(Z) ->
+shift(Steps, #array{size = N, zero = Z}=A)
+  when is_integer(Steps), is_integer(N), Steps =< N, is_integer(Z) ->
     Z1 = Z + Steps,
     N1 = N - Steps,
     if Z1 >= 0 ->
@@ -673,7 +677,8 @@ were shifted out. Use `resize/2` or `resize/1` if you want to ensure that
 values outside the range get pruned.
 """.
 -spec slice(I :: array_indx(), Length :: non_neg_integer(), Array :: array(Type)) -> array(Type).
-slice(I, Length, #array{size = N}=A) when is_integer(I), I >= 0, is_integer(N), N >= 0, I + Length =< N ->
+slice(I, Length, #array{size = N}=A)
+  when is_integer(I), I >= 0, is_integer(N), N >= 0, I + Length =< N ->
     A1 = shift(I, A),
     A1#array{size = Length};
 slice(_I, _N, _A) ->
@@ -688,24 +693,22 @@ See also `prepend/2`, `concat/2`.
 -spec append(Value :: any(), Array :: array(Type)) -> array(Type).
 append(Value, #array{size = N, zero = Z, cache = C, cache_index = CI,
                      default = D, elements = E, bits = S}=A)
-  when is_integer(N), is_integer(CI), is_integer(S) ->
+  when is_integer(N), is_integer(CI), is_integer(S), is_integer(Z) ->
     I = N + Z,
     N1 = N + 1,
     %% for speed, this is an inlined copy of the growing case from set/3
     %% since append always allows growing
-    if I < ?SIZE(?extend(S)) ->
+    if
+        I < CI + ?LEAFSIZE ->
+            A#array{size = N1, cache = setelement(1 + I - CI, C, Value)};
+        I < ?SIZE(?extend(S)) ->
             R = I band ?MASK,
             CI1 = I - R,
-            if CI1 =/= CI ->
-                    E1 = set_leaf(CI, S, E, C),
-                    C1 = get_leaf(CI1, S, E1, D),
-                    C2 = setelement(1 + R, C1, Value),
-                    A#array{size = N1, elements = E1,
-                            cache = C2, cache_index = CI1};
-               true ->
-                    C1 = setelement(1 + R, C, Value),
-                    A#array{size = N1, cache = C1, cache_index = CI1}
-            end;
+            E1 = set_leaf(CI, S, E, C),
+            C1 = get_leaf(CI1, S, E1, D),
+            C2 = setelement(1 + R, C1, Value),
+            A#array{size = N1, elements = E1,
+                    cache = C2, cache_index = CI1};
        true ->
             R = I band ?MASK,
             CI1 = I - R,
@@ -726,7 +729,7 @@ Prepend a single value to the left side of the array.
 See also `append/2`, `concat/2`.
 """.
 -spec prepend(Value :: any(), Array :: array(Type)) -> array(Type).
-prepend(Value, #array{size = N, zero = Z}=A) when is_integer(N), is_integer(Z) ->
+prepend(Value, #array{}=A) ->
     set(0, Value, shift(-1, A)).
 
 
@@ -743,8 +746,9 @@ See also `set/3`.
 """.
 -spec get(I :: array_indx(), Array :: array(Type)) -> Value :: Type.
 
-get(I0, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI, elements = E, default = D, bits = S})
-  when is_integer(I0), I0 >= 0, is_integer(N), is_integer(CI), is_integer(S) ->
+get(I0, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI,
+               elements = E, default = D, bits = S})
+  when is_integer(I0), I0 >= 0, is_integer(N), is_integer(CI), is_integer(S), is_integer(Z) ->
     if I0 < N ->
             I = I0 + Z,
             if I >= CI, I < CI + ?LEAFSIZE ->
@@ -785,8 +789,9 @@ See also `new/2`, `set/3`.
 """.
 -spec reset(I :: array_indx(), Array :: array(Type)) -> array(Type).
 
-reset(I0, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI, default = D, elements = E, bits = S}=A)
-    when is_integer(I0), I0 >= 0, is_integer(N), is_integer(CI), is_integer(S) ->
+reset(I0, #array{size = N, zero = Z, fix = Fix, cache = C, cache_index = CI,
+                 default = D, elements = E, bits = S}=A)
+  when is_integer(I0), I0 >= 0, is_integer(N), is_integer(CI), is_integer(S), is_integer(Z) ->
     if I0 < N ->
             I = I0 + Z,
             if I >= CI, I < CI + ?LEAFSIZE ->
@@ -1269,8 +1274,11 @@ If `Function` is not a function, the call fails with reason `badarg`.
 
 See also `foldl/3`, `sparse_foldl/5`.
 """.
--spec foldl(Low :: array_indx(), High :: array_indx(), Function, InitialAcc :: A, Array :: array(Type)) -> A when
-      Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> A).
+-spec foldl(Low, High, Function, InitialAcc :: A, Array) -> A when
+      Low :: array_indx(),
+      High :: array_indx(),
+      Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> A),
+      Array :: array(Type).
 
 foldl(Low, High, Function, Acc,
       #array{size = N, zero = Z, cache = C, cache_index = CI, elements = E, default = D, bits = S})
@@ -1410,11 +1418,15 @@ If `Function` is not a function, the call fails with reason `badarg`.
 
 See also `foldr/3`, `sparse_foldr/5`.
 """.
--spec foldr(Low :: array_indx(), High :: array_indx(), Function, InitialAcc :: A, Array :: array(Type)) -> A when
+-spec foldr(Low, High, Function, InitialAcc :: A, Array :: array(Type)) -> A when
+      Low :: array_indx(),
+      High :: array_indx(),
       Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> A).
 
-foldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI, elements = E, default = D, bits = S})
-  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
+foldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C,
+                                       cache_index = CI, elements = E, default = D, bits = S})
+  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3),
+       is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
     if Low =< High ->
             E1 = set_leaf(CI, S, E, C),
             foldr_1(Low + Z, High + Z, High, S, E1, D, Function, Acc);
@@ -1562,11 +1574,15 @@ If `Function` is not a function, the call fails with reason `badarg`.
 
 See also `mapfoldl/3`, `sparse_mapfoldl/5`.
 """.
--spec mapfoldl(Low :: array_indx(), High :: array_indx(), Function, InitialAcc :: A, Array :: array(Type)) -> {array(Type), A} when
+-spec mapfoldl(Low, High, Function, InitialAcc :: A, Array :: array(Type)) -> {array(Type), A} when
+      Low :: array_indx(),
+      High :: array_indx(),
       Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> {Type, A}).
 
-mapfoldl(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI, elements = E, default = D, bits = S}=Array)
-  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
+mapfoldl(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI,
+                                          elements = E, default = D, bits = S}=Array)
+  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3),
+       is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
     if Low =< High ->
             E0 = set_leaf(CI, S, E, C),
             {E1, Acc1} = mapfoldl_1(Low + Z, High + Z, Low, S, E0, D, Function, Acc),
@@ -1644,11 +1660,16 @@ Like `mapfoldl/5` but skips default-valued entries.
 
 See also `sparse_mapfoldl/3`, `sparse_mapfoldr/5`.
 """.
--spec sparse_mapfoldl(Low :: array_indx(), High :: array_indx(), Function, InitialAcc :: A, Array :: array(Type)) -> {array(Type), A} when
-      Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> {Type, A}).
+-spec sparse_mapfoldl(Low, High, Function, InitialAcc :: A, Array) -> {array(Type), A} when
+      Low :: array_indx(),
+      High :: array_indx(),
+      Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> {Type, A}),
+      Array :: array(Type).
 
-sparse_mapfoldl(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI, elements = E, default = D, bits = S}=Array)
-  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
+sparse_mapfoldl(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI,
+                                                 elements = E, default = D, bits = S}=Array)
+  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N),
+       High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
     if Low =< High ->
             E0 = set_leaf(CI, S, E, C),
             {E1, Acc1} = sparse_mapfoldl_1(Low + Z, High + Z, Low, S, E0, D, Function, Acc),
@@ -1733,11 +1754,15 @@ If `Function` is not a function, the call fails with reason `badarg`.
 
 See also `mapfoldr/3`, `mapfoldl/5`, `sparse_mapfoldr/5`.
 """.
--spec mapfoldr(Low :: array_indx(), High :: array_indx(), Function, InitialAcc :: A, Array :: array(Type)) -> {array(Type), A} when
+-spec mapfoldr(Low, High, Function, InitialAcc :: A, Array :: array(Type)) -> {array(Type), A} when
+      Low :: array_indx(),
+      High :: array_indx(),
       Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> {Type, A}).
 
-mapfoldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI, elements = E, default = D, bits = S}=Array)
-  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
+mapfoldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI,
+                                          elements = E, default = D, bits = S}=Array)
+  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N),
+       High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
     if Low =< High ->
             E0 = set_leaf(CI, S, E, C),
             {E1, Acc1} = mapfoldr_1(Low + Z, High + Z, High, S, E0, D, Function, Acc),
@@ -1810,11 +1835,16 @@ Like `mapfoldr/5` but skips default-valued entries.
 
 See also `sparse_mapfoldr/3`, `sparse_mapfoldl/5`
 """.
--spec sparse_mapfoldr(Low :: array_indx(), High :: array_indx(), Function, InitialAcc :: A, Array :: array(Type)) -> {array(Type), A} when
-      Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> {Type, A}).
+-spec sparse_mapfoldr(Low, High, Function, InitialAcc :: A, Array) -> {array(Type), A} when
+      Low :: array_indx(),
+      High :: array_indx(),
+      Function :: fun((Index :: array_indx(), Value :: Type, Acc :: A) -> {Type, A}),
+      Array :: array(Type).
 
-sparse_mapfoldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI, elements = E, default = D, bits = S}=Array)
-  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N), High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
+sparse_mapfoldr(Low, High, Function, Acc, #array{size = N, zero = Z, cache = C, cache_index = CI,
+                                                 elements = E, default = D, bits = S}=Array)
+  when is_integer(Low), Low >= 0, is_integer(High), is_function(Function, 3), is_integer(N),
+       High < N, is_integer(Z), is_integer(CI), is_integer(S) ->
     if Low =< High ->
             E0 = set_leaf(CI, S, E, C),
             {E1, Acc1} = sparse_mapfoldr_1(Low + Z, High + Z, High, S, E0, D, Function, Acc),
