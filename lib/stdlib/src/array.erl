@@ -821,6 +821,10 @@ reset_1(I, S, E, D) ->
 -doc """
 Concatenates two arrays.
 
+Note: the result will have the fixedness of the larger array, or of the
+left array if they have equal size. Use `fix/1` or `relax/1` if you want
+to ensure a particular fixedness.
+
 See also `concat/1`, `append/2`, `prepend/2`.
 """.
 -spec concat(Left :: array(Type), Right :: array(Type)) -> array(Type).
@@ -879,6 +883,9 @@ Converts a list to an extendible array. `Default` is used as the value for
 uninitialized entries of the array.
 
 If `List` is not a proper list, the call fails with reason `badarg`.
+
+Note: Use `fix/1` on the resulting array if you want to prevent accesses
+outside the size range.
 
 See also `new/2`, `to_list/1`.
 """.
@@ -977,6 +984,9 @@ until `done` is returned, otherwise the call fails with reason `badarg`.
 
 `Default` is used as the value for uninitialized entries of the array.
 
+Note: Use `fix/1` on the resulting array if you want to prevent accesses
+outside the size range.
+
 ## Examples
 
 ```erlang
@@ -1073,6 +1083,9 @@ array. `Default` is used as the value for uninitialized entries of the array.
 
 If `Orddict` is not a proper, ordered list of pairs whose first elements are
 non-negative integers, the call fails with reason `badarg`.
+
+Note: Use `fix/1` on the resulting array if you want to prevent accesses
+outside the size range.
 
 See also `new/2`, `to_orddict/1`.
 """.
