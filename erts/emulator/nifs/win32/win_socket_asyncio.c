@@ -797,7 +797,8 @@ static void esaio_completion_accept_completed(ErlNifEnv*         env,
                                               ErlNifPid*         opCaller,
                                               ESAIOOpDataAccept* opDataP,
                                               ESockRequestor*    reqP);
-static void esaio_completion_accept_not_active(ESockDescriptor* descP);
+static void esaio_completion_accept_not_active(ErlNifEnv*         env,
+                                               ESockDescriptor* descP);
 static void esaio_completion_accept_fail(ErlNifEnv*       env,
                                          ESockDescriptor* descP,
                                          int              error,
@@ -847,7 +848,8 @@ static void esaio_completion_send_fail(ErlNifEnv*       env,
                                        ESockDescriptor* descP,
                                        int              error,
                                        BOOLEAN_T        inform);
-static void esaio_completion_send_not_active(ESockDescriptor* descP);
+static void esaio_completion_send_not_active(ErlNifEnv*       env,
+                                             ESockDescriptor* descP);
 static BOOLEAN_T esaio_completion_sendv(ESAIOThreadData*  dataP,
                                         ESockDescriptor*  descP,
                                         OVERLAPPED*       ovl,
@@ -979,7 +981,8 @@ static ERL_NIF_TERM esaio_completion_recv_partial_part(ErlNifEnv*       env,
                                                        ESAIOOpDataRecv* opDataP,
                                                        ssize_t          read,
                                                        DWORD            flags);
-static void esaio_completion_recv_not_active(ESockDescriptor* descP);
+static void esaio_completion_recv_not_active(ErlNifEnv*       env,
+                                             ESockDescriptor* descP);
 static void esaio_completion_recv_closed(ESockDescriptor* descP,
                                          int              error);
 static void esaio_completion_recv_fail(ErlNifEnv*       env,
@@ -7451,7 +7454,7 @@ void esaio_completion_accept_success(ErlNifEnv*         env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_accept_not_active(descP);
+            esaio_completion_accept_not_active(env, descP);
         }
     } else {
         /* Request was actually completed directly
@@ -7791,11 +7794,12 @@ void esaio_completion_accept_completed(ErlNifEnv*         env,
  * A accept request has completed but the request is no longer valid.
  */
 static
-void esaio_completion_accept_not_active(ESockDescriptor* descP)
+void esaio_completion_accept_not_active(ErlNifEnv*         env,
+                                        ESockDescriptor* descP)
 {
     SSDBG( descP,
            ("WIN-ESAIO",
-            "esaio_completion_accept_not_active(%d) -> "
+            __FUNCTION__ "(%d) -> "
             "success for not active accept request\r\n", descP->sock) );
 
     MLOCK(ctrl.cntMtx);
@@ -7803,6 +7807,29 @@ void esaio_completion_accept_not_active(ESockDescriptor* descP)
     esock_cnt_inc(&ctrl.unexpectedAccepts, 1);
 
     MUNLOCK(ctrl.cntMtx);
+
+    /* We can only send the 'close' message to the closer
+     * when all requests has been processed!
+     */
+
+    /* Check "our" queue */
+    if (descP->acceptorsQ.first == NULL) {
+
+        /* Check "other" queue(s) and if there is a closer pid */
+        if ((descP->readersQ.first == NULL) &&
+            (descP->writersQ.first == NULL)) {
+
+            SSDBG( descP,
+                   ("WIN-ESAIO",
+                    __FUNCTION__ "(%d) -> "
+                    "all queues are empty => "
+                    "\r\n   send close message"
+                    "\r\n", descP->sock) );
+
+            esaio_stop(env, descP);
+
+        }
+    }
 
     SSDBG( descP,
            ("WIN-ESAIO",
@@ -7962,7 +7989,7 @@ void esaio_completion_send_success(ErlNifEnv*       env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_send_not_active(descP);
+            esaio_completion_send_not_active(env, descP);
         }
 
     } else {
@@ -8348,7 +8375,8 @@ ERL_NIF_TERM esaio_completion_send_partial(ErlNifEnv*       env,
  * A send request has completed but the request is no longer valid.
  */
 static
-void esaio_completion_send_not_active(ESockDescriptor* descP)
+void esaio_completion_send_not_active(ErlNifEnv*       env,
+                                      ESockDescriptor* descP)
 {
     /* This send request is *not* "active"!
      * The send (send, sendto, sendmsg) operation
@@ -8365,7 +8393,7 @@ void esaio_completion_send_not_active(ESockDescriptor* descP)
 
     SSDBG( descP,
            ("WIN-ESAIO",
-            "esaio_completion_send_not_active(%d) -> "
+            __FUNCTION__ "(%d) -> "
             "success for not active send request\r\n",
             descP->sock) );
 
@@ -8375,9 +8403,33 @@ void esaio_completion_send_not_active(ESockDescriptor* descP)
 
     MUNLOCK(ctrl.cntMtx);
 
+    /* We can only send the 'close' message to the closer
+     * when all requests has been processed!
+     */
+
+    /* Check "our" queue */
+    if (descP->writersQ.first == NULL) {
+
+        /* Check "other" queue(s) and if there is a closer pid */
+        if ((descP->readersQ.first == NULL) &&
+            (descP->acceptorsQ.first == NULL)) {
+
+            SSDBG( descP,
+                   ("WIN-ESAIO",
+                    __FUNCTION__ "(%d) -> "
+                    "all queues are empty => "
+                    "\r\n   send close message"
+                    "\r\n",
+                    descP->sock) );
+
+            esaio_stop(env, descP);
+
+        }
+    }
+
     SSDBG( descP,
            ("WIN-ESAIO",
-            "esaio_completion_send_not_active(%d) -> done\r\n",
+            __FUNCTION__ "(%d) -> done\r\n",
             descP->sock) );
 
 }
@@ -8538,7 +8590,7 @@ void esaio_completion_sendv_success(ErlNifEnv*        env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_send_not_active(descP);
+            esaio_completion_send_not_active(env, descP);
         }
 
         cleanup = TRUE;
@@ -8878,7 +8930,7 @@ void esaio_completion_sendto_success(ErlNifEnv*         env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_send_not_active(descP);
+            esaio_completion_send_not_active(env, descP);
         }
 
     } else {
@@ -9215,7 +9267,7 @@ void esaio_completion_sendmsg_success(ErlNifEnv*          env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_send_not_active(descP);
+            esaio_completion_send_not_active(env, descP);
         }
 
     } else {
@@ -9526,7 +9578,7 @@ void esaio_completion_recv_success(ErlNifEnv*       env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_recv_not_active(descP);
+            esaio_completion_recv_not_active(env, descP);
             FREE_BIN( &opDataP->buf );
         }
 
@@ -10075,7 +10127,8 @@ ERL_NIF_TERM esaio_completion_recv_partial_part(ErlNifEnv*       env,
  * A recv request has completed but the request is no longer valid.
  */
 static
-void esaio_completion_recv_not_active(ESockDescriptor* descP)
+void esaio_completion_recv_not_active(ErlNifEnv*       env,
+                                      ESockDescriptor* descP)
 {
     /* This receive request is *not* "active"!
      * The receive (recv,recvfrom,recvmsg) operation
@@ -10092,7 +10145,7 @@ void esaio_completion_recv_not_active(ESockDescriptor* descP)
 
     SSDBG( descP,
            ("WIN-ESAIO",
-            "esaio_completion_recv_not_active {%d} -> "
+            __FUNCTION__ "(%d) -> "
             "success for not active read request\r\n", descP->sock) );
 
     MLOCK(ctrl.cntMtx);
@@ -10101,9 +10154,33 @@ void esaio_completion_recv_not_active(ESockDescriptor* descP)
 
     MUNLOCK(ctrl.cntMtx);
 
+    /* We can only send the 'close' message to the closer
+     * when all requests has been processed!
+     */
+
+    /* Check "our" queue */
+    if (descP->readersQ.first == NULL) {
+
+        /* Check "other" queue(s) and if there is a closer pid */
+        if ((descP->writersQ.first == NULL) &&
+            (descP->acceptorsQ.first == NULL)) {
+
+            SSDBG( descP,
+                   ("WIN-ESAIO",
+                    __FUNCTION__ "(%d) -> "
+                    "all queues are empty => "
+                    "\r\n   send close message"
+                    "\r\n",
+                    descP->sock) );
+
+            esaio_stop(env, descP);
+
+        }
+    }
+
     SSDBG( descP,
            ("WIN-ESAIO",
-            "esaio_completion_recv_not_active {%d} -> done\r\n",
+            __FUNCTION__ "(%d) -> done\r\n",
             descP->sock) );
 
 }
@@ -10287,7 +10364,7 @@ void esaio_completion_recvfrom_success(ErlNifEnv*           env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_recv_not_active(descP);
+            esaio_completion_recv_not_active(env, descP);
             FREE_BIN( &opDataP->buf );
         }
 
@@ -10927,7 +11004,7 @@ void esaio_completion_recvmsg_success(ErlNifEnv*          env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
-            esaio_completion_recv_not_active(descP);
+            esaio_completion_recv_not_active(env, descP);
             FREE_BIN( &opDataP->data[0] );
             FREE_BIN( &opDataP->ctrl );
         }
