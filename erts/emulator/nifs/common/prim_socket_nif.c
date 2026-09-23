@@ -2862,6 +2862,7 @@ ERL_NIF_TERM esock_atom_esock_name; // This has a "special" name ('$esock_name')
     LOCAL_ATOM_DECL(num_ptcp);         \
     LOCAL_ATOM_DECL(num_pudp);         \
     LOCAL_ATOM_DECL(num_readers);      \
+    LOCAL_ATOM_DECL(close_dbg);        \
     LOCAL_ATOM_DECL(num_sockets);      \
     LOCAL_ATOM_DECL(num_tdgrams);      \
     LOCAL_ATOM_DECL(num_tseqpkgs);     \
@@ -4700,6 +4701,7 @@ ERL_NIF_TERM esock_socket_info(ErlNifEnv*       env,
     ERL_NIF_TERM readers   = esock_socket_info_readers(env, descP);
     ERL_NIF_TERM writers   = esock_socket_info_writers(env, descP);
     ERL_NIF_TERM acceptors = esock_socket_info_acceptors(env, descP);
+    ERL_NIF_TERM closeDbg  = MKUI(env, descP->closeDbg); /* [DEBUG] temporary */
 
     {
         ERL_NIF_TERM keys[]
@@ -4713,7 +4715,8 @@ ERL_NIF_TERM esock_socket_info(ErlNifEnv*       env,
                esock_atom_counters,
                atom_num_readers,
                atom_num_writers,
-               atom_num_acceptors};
+               atom_num_acceptors,
+               atom_close_dbg};                          /* [DEBUG] temporary */
         ERL_NIF_TERM vals[]
             = {domain,
                type,
@@ -4725,7 +4728,8 @@ ERL_NIF_TERM esock_socket_info(ErlNifEnv*       env,
                counters,
                readers,
                writers,
-               acceptors};
+               acceptors,
+               closeDbg};                                /* [DEBUG] temporary */
         ERL_NIF_TERM info;
         unsigned int numKeys  = NUM(keys);
         unsigned int numVals  = NUM(vals);

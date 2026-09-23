@@ -5621,6 +5621,9 @@ BOOLEAN_T do_stop(ErlNifEnv*       env,
         descP->connectorP = NULL;
     }
 
+    /* [DEBUG] temporary: record do_stop result (no I/O). */
+    descP->closeDbg |= (ret ? 0x01 : 0x02);
+
     return ret;
 }
 
@@ -11684,6 +11687,8 @@ void esaio_stop(ErlNifEnv*       env,
          * - send message to trigger nif_finalize_close()
          */
 
+        descP->closeDbg |= 0x04; /* [DEBUG] temporary: SEND branch */
+
         SSDBG( descP,
                ("WIN-ESAIO",
                 "esaio_stop(%d) -> send close msg to %T\r\n",
@@ -11696,6 +11701,8 @@ void esaio_stop(ErlNifEnv*       env,
 
     } else {
         int err;
+
+        descP->closeDbg |= 0x08; /* [DEBUG] temporary: NO-msg branch */
 
         /* We do not have a closer process
          * - have to do an unclean (non blocking) close */

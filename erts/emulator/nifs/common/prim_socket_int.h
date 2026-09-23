@@ -527,6 +527,16 @@ typedef struct {
     ESockMonitor       closerMon;
     ErlNifEnv*         closeEnv;
     ERL_NIF_TERM       closeRef;
+    /* [DEBUG] temporary: last close-path decision, recorded WITHOUT I/O
+     * so it does not perturb the close-race timing. Surfaced in
+     * socket:info/1. Bit flags:
+     *   0x01 do_stop returned TRUE  (async: closer awaits close msg)
+     *   0x02 do_stop returned FALSE (inline close)
+     *   0x04 esaio_stop took SEND-close-msg branch
+     *   0x08 esaio_stop took NO-msg (unclean close) branch
+     *   0x10 recv_success else-branch (direct completion) drained+stopped
+     */
+    unsigned int       closeDbg;
     /* +++ Inform On (counter) Wrap +++ */
     BOOLEAN_T          iow;
     /* +++ Controller (owner) process +++ */
