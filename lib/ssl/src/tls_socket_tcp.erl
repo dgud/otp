@@ -3,7 +3,7 @@
 %%
 %% SPDX-License-Identifier: Apache-2.0
 %%
-%% Copyright Ericsson AB 2025. All Rights Reserved.
+%% Copyright Ericsson AB 2025-2026. All Rights Reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -50,6 +50,15 @@
 
          data_available/4
         ]).
+
+%% <SUPERVISED-CLOSE>
+
+-export([
+	 supervised_call/2, supervised_call/4
+	]).
+
+%% </SUPERVISED-CLOSE>
+
 
 %% -define(DBG_LOG(F,A), ct:log(default, 1, "~w:~w: " ++ F, [?MODULE, ?LINE|A], [esc_chars])).
 -define(DBG_LOG(F,A), ok).
@@ -167,8 +176,111 @@ connect(Address, Port, Opts0, Timeout) ->
             end
     end.
 
-close(Socket) ->
-    socket:close(Socket).
+%% close(Socket) ->
+%%     socket:close(Socket).
+
+%% <SUPERVISED-CLOSE>
+
+close(Sock) ->
+    Close = fun() -> socket:close(Sock) end,
+    Check = fun(Pid) when is_pid(Pid) ->
+		    GSockInfo = socket:info(),
+		    SockInfo  = socket:info(Sock),
+		    logger:log(notice,
+			       "Socket closer info: "
+			       "~n   Socket:          ~p"
+			       "~n   Socket Nif Info: ~p"
+			       "~n   Socket Info:     ~p"
+			       "~n   Closer process:  ~p"
+			       "~n      Current Function:   ~p"
+			       "~n      Current StackTrace: ~p"
+			       "~n      Reductions:         ~p"
+			       "~n      Status:             ~p"
+			       "~n      Dictionary: "
+			       "~n         ~p"
+			       "~n      Messages: "
+			       "~n         ~p",
+			       [Sock, GSockInfo, SockInfo, Pid,
+				sc_pi(Pid, current_function),
+				sc_pi(Pid, current_stacktrace),
+				sc_pi(Pid, reductions),
+				sc_pi(Pid, status),
+				sc_pi(Pid, dictionary),
+				sc_pi(Pid, messages)]),
+		    ok
+	    end,
+    supervised_call(Close, Check).
+
+-type sc_exec()  :: fun(() -> any()).
+-type sc_check() :: fun((Pid :: pid()) -> ok).
+
+-spec supervised_call(Exec, Check) -> Result when
+      Exec   :: sc_exec(),
+      Check  :: sc_check(),
+      Result :: any().
+
+supervised_call(Exec, Check) ->
+    TAction = fun(_) -> ok end,
+    Timeout = infinity,
+    supervised_call(Exec, Check, TAction, Timeout).
+
+-type sc_timeout_action() :: fun((Pid :: pid()) -> any()).
+
+-spec supervised_call(Exec, Check, TAction, Timeout) -> Result when
+      Exec    :: sc_exec(),
+      Check   :: sc_check(),
+      TAction :: sc_timeout_action(),
+      Timeout :: timeout(),
+      Result  :: any().
+
+supervised_call(Exec, Check, TAction, Timeout)
+  when is_function(Exec, 0) andalso
+       is_function(Check, 1) andalso
+       is_function(TAction, 1) andalso
+       ((Timeout =:= infinity) orelse
+	(is_integer(Timeout) andalso (Timeout > 0))) ->
+    TRef        = sc_timer_start(),
+    {Pid, MRef} = erlang:spawn_monitor(fun() -> exit( Exec() ) end),
+    sc_loop(Pid, MRef, Check, TRef, TAction, Timeout).
+
+sc_loop(Pid, MRef, _Check, TRef, TAction, Timeout) when (Timeout < 0) ->
+    erlang:cancel_timer(TRef),
+    erlang:demonitor(MRef, [flush]),
+    TAction(Pid);
+sc_loop(Pid, MRef, Check, TRef, TAction, Timeout) ->
+    TS = sc_timestamp(),
+    receive
+	{'DOWN', MRef, process, Pid, Result} ->
+	    _ = erlang:cancel_timer(TRef),
+	    Result;
+
+	{?MODULE, check} ->
+	    Check(Pid),
+	    sc_loop(Pid, MRef,
+		    Check, sc_timer_start(),
+		    TAction, sc_timeout(Timeout, TS))
+    after Timeout ->
+	    TAction(Pid)
+    end.
+		    
+					       
+sc_timer_start() ->
+    erlang:send_after(1000, self(), {?MODULE, check}, []).
+
+sc_timestamp()          -> erlang:system_time(millisecond).
+sc_timeout(infinity, _) -> infinity;
+sc_timeout(T, TS)       -> T - (sc_timestamp() - TS).
+
+sc_pi(Pid, Key) ->
+    case erlang:process_info(Pid, Key) of
+	{Key, Value} ->
+	    Value;
+	Whatever ->
+	    Whatever
+    end.
+
+%% </SUPERVISED-CLOSE>
+    
 
 shutdown(Socket, How) ->
     ?DBG_LOG("~w Shutdown ~w ~w~n",[get(tls_role), Socket, How]),

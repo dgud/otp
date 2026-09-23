@@ -7055,24 +7055,44 @@ Close a socket.
       Socket :: socket(),
       Reason :: posix() | 'closed' | 'timeout'.
 
+-define(PUT_ACTION(A),
+        put(action, [{function, ?FUNCTION_NAME},
+                     {line,     ?LINE},
+                     {action,   (A)}])).
+
 close(?socket(SockRef))
   when is_reference(SockRef) ->
+    ?PUT_ACTION('try close'),
     case prim_socket:close(SockRef) of
         ok ->
-            prim_socket:finalize_close(SockRef);
-        {ok, CloseRef} ->
+            ?PUT_ACTION('try finalize close'),
+            Res = prim_socket:finalize_close(SockRef),
+            ?PUT_ACTION(done),
+            Res;
+        {ok, CloseInfo} ->
+	    put(close_info, CloseInfo),
+	    CloseRef = case CloseInfo of
+			   #{close_ref := CR} ->
+			       CR;
+			   CR when is_reference(CR) ->
+			       CR
+		       end,
             %% We must wait for the socket_stop callback function to
             %% complete its work
+            ?PUT_ACTION({'await close with', CloseRef}),
             receive
                 ?socket_msg(?socket(SockRef), close, CloseRef) ->
-                    prim_socket:finalize_close(SockRef)
+                    ?PUT_ACTION('try finalize close'),                    
+                    Res = prim_socket:finalize_close(SockRef),
+                    ?PUT_ACTION(done),
+                    Res
             end;
         {error, _} = ERROR ->
+            ?PUT_ACTION(ERROR),
             ERROR
     end;
 close(Socket) ->
     erlang:error(badarg, [Socket]).
-
 
 
 %% ===========================================================================
