@@ -5621,6 +5621,13 @@ BOOLEAN_T do_stop(ErlNifEnv*       env,
         descP->connectorP = NULL;
     }
 
+    /* [DEBUG] temporary: record whether this close is async (ret=TRUE:
+     * closer will wait for a close msg from esaio_stop) or inline
+     * (ret=FALSE). Correlate the socket number with the hung closer. */
+    esock_warning_msg("[DBG-CLOSE] do_stop(%d) -> %s"
+                      "\r\n",
+                      descP->sock, B2S(ret));
+
     return ret;
 }
 
@@ -11684,6 +11691,14 @@ void esaio_stop(ErlNifEnv*       env,
          * - send message to trigger nif_finalize_close()
          */
 
+        /* [DEBUG] temporary: confirm the send branch is taken */
+        esock_warning_msg("[DBG-CLOSE] esaio_stop(%d) -> SEND close msg"
+                          "\r\n   closerPid: %T"
+                          "\r\n   closeRef:  %T"
+                          "\r\n",
+                          descP->sock,
+                          MKPID(env, &descP->closerPid), descP->closeRef);
+
         SSDBG( descP,
                ("WIN-ESAIO",
                 "esaio_stop(%d) -> send close msg to %T\r\n",
@@ -11696,6 +11711,16 @@ void esaio_stop(ErlNifEnv*       env,
 
     } else {
         int err;
+
+        /* [DEBUG] temporary: the no-message branch. If we see this for a
+         * socket whose closer is hung, esaio_stop ran but closeEnv was
+         * NULL / closerPid undef at that point. */
+        esock_warning_msg("[DBG-CLOSE] esaio_stop(%d) -> NO close msg "
+                          "(closerPidUndef=%s closeEnvNull=%s)"
+                          "\r\n",
+                          descP->sock,
+                          B2S(IS_PID_UNDEF(&descP->closerPid)),
+                          B2S(descP->closeEnv == NULL));
 
         /* We do not have a closer process
          * - have to do an unclean (non blocking) close */
