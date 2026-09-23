@@ -9611,7 +9611,30 @@ void esaio_completion_recv_success(ErlNifEnv*       env,
          * => Nothing to do here, other than cleanup (see below).
          * => But we do not free the "buffer" since it was "used up"
          *    when we (as assumed) got the result (directly)...
+         *
+         * BUT: if the socket is closing, this directly-completed recv
+         * may have been the last outstanding operation. The 'not active'
+         * path (which calls esaio_stop when the queues drain) was skipped
+         * because the request was never queued. So nothing else will send
+         * the close message => socket:close/1 blocks forever. Check the
+         * queues here and send it ourselves. (Observed on Windows with
+         * num_unexpected_reads > 0.) Runs under readMtx.
          */
+        if (! IS_OPEN(descP->readState)) {
+            if ((descP->readersQ.first == NULL) &&
+                (descP->writersQ.first == NULL) &&
+                (descP->acceptorsQ.first == NULL)) {
+
+                SSDBG( descP,
+                       ("WIN-ESAIO",
+                        "esaio_completion_recv_success(%d) -> "
+                        "closing, direct completion, all queues empty => "
+                        "send close message\r\n",
+                        descP->sock) );
+
+                esaio_stop(env, descP);
+            }
+        }
     }
 
     /* *Maybe* update socket (write) state
