@@ -6875,6 +6875,26 @@ void* esaio_completion_main(void* threadDataP)
 
         dataP->latest = opP->tag; // This is just for debugging
 
+        /* [DEBUG] per-socket: record the op-class of each completion
+         * delivered WHILE CLOSING. On a close hang, close_dbg tells us
+         * whether ANY completion arrived for the last op:
+         *   bit set  => a completion WAS delivered (handler ran but did
+         *               not call esaio_stop) -> H1
+         *   only 0x01 (no high bits) => NO completion was ever delivered
+         *               after do_stop -> H2 lost-completion.
+         * No I/O, plain OR, guarded so the hot (open) path is untouched. */
+        if ((descP != NULL) &&
+            (! IS_OPEN(descP->readState) || ! IS_OPEN(descP->writeState))) {
+            switch (opP->tag) {
+            case ESAIO_OP_CONNECT: descP->closeDbg |= 0x0100; break;
+            case ESAIO_OP_ACCEPT:  descP->closeDbg |= 0x0200; break;
+            case ESAIO_OP_SEND:    descP->closeDbg |= 0x0400; break;
+            case ESAIO_OP_SENDV:   descP->closeDbg |= 0x0800; break;
+            case ESAIO_OP_RECV:    descP->closeDbg |= 0x1000; break;
+            default:               descP->closeDbg |= 0x2000; break;
+            }
+        }
+
         switch (opP->tag) {
         case ESAIO_OP_TERMINATE:
             SGDBG( ("WIN-ESAIO",

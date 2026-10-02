@@ -535,6 +535,11 @@ typedef struct {
      *   0x04 esaio_stop took SEND-close-msg branch
      *   0x08 esaio_stop took NO-msg (unclean close) branch
      *   0x10 recv_success else-branch (direct completion) drained+stopped
+     * High bits: op-class of a completion delivered WHILE CLOSING
+     * (set in esaio_completion_main) - used to tell H1 (a completion ran
+     * but no esaio_stop) from H2 (no completion ever delivered):
+     *   0x0100 CONNECT  0x0200 ACCEPT  0x0400 SEND
+     *   0x0800 SENDV    0x1000 RECV    0x2000 other
      */
     unsigned int       closeDbg;
     /* +++ Inform On (counter) Wrap +++ */
