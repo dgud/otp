@@ -6996,6 +6996,41 @@ void* esaio_completion_main(void* threadDataP)
         }
 
 
+        /* [FIX-C] Centralized close completion.
+         *
+         * Every op completion (success / aborted / failure / not_active)
+         * funnels through here. Only the *_aborted and *_not_active
+         * handlers call esaio_stop(); the many *_failure handlers do NOT
+         * (confirmed: all 14 failure/fail handlers lack it). So an op that
+         * completes with a real error during close (e.g. WSAECONNRESET when
+         * the peer dies) and is the LAST outstanding op leaves the close
+         * un-signalled -> socket:close/1 hangs forever (observed as
+         * close_dbg 0x211001: RECV delivered, recv_failure ran, no
+         * esaio_stop).
+         *
+         * Fix the whole class in one place: after the handler runs, if the
+         * socket is closing, a close is still pending (closeEnv != NULL,
+         * which makes this idempotent vs handlers that already stopped),
+         * and all three request queues are drained, send the close message.
+         * Taken under BOTH mutexes in canonical order (readMtx, writeMtx)
+         * so the all-queues view is atomic. The !IS_OPEN pre-check keeps
+         * the open hot path lock-free. */
+        if ((descP != NULL) &&
+            (! IS_OPEN(descP->readState) || ! IS_OPEN(descP->writeState))) {
+            MLOCK(descP->readMtx);
+            MLOCK(descP->writeMtx);
+            if ((descP->closeEnv != NULL) &&
+                (descP->readersQ.first   == NULL) &&
+                (descP->writersQ.first   == NULL) &&
+                (descP->acceptorsQ.first == NULL)) {
+                descP->closeDbg |= 0x400000; /* [DEBUG] FIX-C fired */
+                esaio_stop(dataP->env, descP);
+            }
+            MUNLOCK(descP->writeMtx);
+            MUNLOCK(descP->readMtx);
+        }
+
+
         SGDBG( ("WIN-ESAIO", "esaio_completion_main -> free OVERLAPPED\r\n") );
 
         FREE(opP);
