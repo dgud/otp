@@ -9628,6 +9628,7 @@ void esaio_completion_recv_success(ErlNifEnv*       env,
                          opCaller,
                          &req)) {
         if (IS_OPEN(descP->readState)) {
+            descP->closeDbg |= 0x010000; /* [DEBUG] branch1: completed while OPEN (no esaio_stop) */
             esaio_completion_recv_completed(env, descP, ovl, opEnv,
                                             opCaller, opDataP,
                                             &req);
@@ -9636,6 +9637,7 @@ void esaio_completion_recv_success(ErlNifEnv*       env,
              * Is this even possible?
              * A race (completed just as the socket was closed).
              */
+            descP->closeDbg |= 0x020000; /* [DEBUG] branch2: reader found, !OPEN -> not_active */
             esaio_completion_recv_not_active(env, descP);
             FREE_BIN( &opDataP->buf );
         }
@@ -9660,6 +9662,8 @@ void esaio_completion_recv_success(ErlNifEnv*       env,
                 (descP->writersQ.first == NULL) &&
                 (descP->acceptorsQ.first == NULL)) {
 
+                descP->closeDbg |= 0x040000; /* [DEBUG] branch3: direct, !OPEN, drained -> esaio_stop */
+
                 SSDBG( descP,
                        ("WIN-ESAIO",
                         "esaio_completion_recv_success(%d) -> "
@@ -9668,7 +9672,11 @@ void esaio_completion_recv_success(ErlNifEnv*       env,
                         descP->sock) );
 
                 esaio_stop(env, descP);
+            } else {
+                descP->closeDbg |= 0x080000; /* [DEBUG] branch3: direct, !OPEN, drain condition FALSE -> SKIP */
             }
+        } else {
+            descP->closeDbg |= 0x100000; /* [DEBUG] branch3: direct, still OPEN -> no stop */
         }
     }
 
@@ -9799,6 +9807,13 @@ void esaio_completion_recv_failure(ErlNifEnv*       env,
 {
     ESockRequestor req;
     ERL_NIF_TERM   reason;
+
+    /* [DEBUG] recv_failure has NO close/esaio_stop handling. If a recv
+     * completes with an error (e.g. WSAECONNRESET when the peer/controller
+     * dies) at the instant of close and it is the last op, no close msg is
+     * ever sent -> hang. Tag it so the next hang confirms this path. */
+    if (! IS_OPEN(descP->readState))
+        descP->closeDbg |= 0x200000;
 
     /* We do not know what this is
      * but we can "assume" that the request failed so we need to
