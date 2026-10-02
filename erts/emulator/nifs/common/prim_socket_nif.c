@@ -17057,6 +17057,7 @@ ESockDescriptor* esock_alloc_descriptor(SOCKET sock)
     // sprintf(buf, "esock.close[" SOCKET_FORMAT_STR "]", sock);
     descP->closeEnv         = NULL;
     descP->closeRef         = esock_atom_undefined;
+    descP->closeDbg         = 0; /* [DEBUG] temporary: zero the close-path probe */
     enif_set_pid_undefined(&descP->closerPid);
     MON_INIT(&descP->closerMon);
 
