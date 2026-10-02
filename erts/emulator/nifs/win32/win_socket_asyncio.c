@@ -7929,12 +7929,15 @@ BOOLEAN_T esaio_completion_send(ESAIOThreadData* dataP,
         SSDBG( descP,
                ("WIN-ESAIO", "esaio_completion_send(%d) -> no error"
                 "\r\n", descP->sock) );
+        /* [FIX-A verification] both mutexes, canonical order - see brief */
+        MLOCK(descP->readMtx);
         MLOCK(descP->writeMtx);
 
         esaio_completion_send_success(env, descP, ovl, opEnv,
                                       opCaller, opDataP);
 
         MUNLOCK(descP->writeMtx);
+        MUNLOCK(descP->readMtx);
         break;
 
     case WSA_OPERATION_ABORTED:
@@ -8530,12 +8533,15 @@ BOOLEAN_T esaio_completion_sendv(ESAIOThreadData*  dataP,
         SSDBG( descP,
                ("WIN-ESAIO", "esaio_completion_sendv(%d) -> no error"
                 "\r\n", descP->sock) );
+        /* [FIX-A verification] both mutexes, canonical order - see brief */
+        MLOCK(descP->readMtx);
         MLOCK(descP->writeMtx);
 
         esaio_completion_sendv_success(env, descP, ovl, opEnv,
                                        opCaller, opDataP);
 
         MUNLOCK(descP->writeMtx);
+        MUNLOCK(descP->readMtx);
         break;
 
     case WSA_OPERATION_ABORTED:
@@ -9528,11 +9534,17 @@ BOOLEAN_T esaio_completion_recv(ESAIOThreadData* dataP,
         SSDBG( descP,
                ("WIN-ESAIO", "esaio_completion_recv(%d) -> no error"
                 "\r\n", descP->sock) );
+        /* [FIX-A verification] A success completion arriving during close
+         * must check ALL queues to decide esaio_stop(); that cross-queue
+         * check is only race-free under BOTH mutexes in canonical order
+         * (readMtx then writeMtx), same as the aborted path. See brief. */
         MLOCK(descP->readMtx);
+        MLOCK(descP->writeMtx);
 
         esaio_completion_recv_success(env, descP, ovl, opEnv,
                                       opCaller, opDataP);
 
+        MUNLOCK(descP->writeMtx);
         MUNLOCK(descP->readMtx);
         break;
 
